@@ -273,7 +273,7 @@ module nts.uk.at.view.kbt002.b {
 
             private buildWorkplaceStr(wkpIdList: any) {
                 let self = this;
-                var wkpText;
+                var wkpText = '';
                 //                wkpList = _.sortBy(wkpList, 'hierarchyCode');
                 if (wkpIdList) {
                     if (wkpIdList.length == 0) {
@@ -281,7 +281,11 @@ module nts.uk.at.view.kbt002.b {
                     } else if (wkpIdList.length == 1) {
                         var wkpId = wkpIdList[0];
                         var wkp = _.find(self.workplaceList(), function(o) { return o.workplaceId == wkpId; });
-                        wkpText = wkp.hierarchyCode + ' ' + wkp.name;
+                        if(_.isNil(wkp)){
+                            wkpText = getText('KBT002_193');
+                        }else{
+                            wkpText = wkp.hierarchyCode + ' ' + wkp.name;
+                        }
                     } else {
                         var workplaceList = [];
                         //                        var firstWkpId = wkpIdList[0];
@@ -289,15 +293,24 @@ module nts.uk.at.view.kbt002.b {
                         //                        var firstWkp = _.find(self.workplaceList(), function(o) { return o.workplaceId == firstWkpId; });
                         //                        var lastWkp = _.find(self.workplaceList(), function(o) { return o.workplaceId == lastWkpId; });
                         _.each(wkpIdList, wkpId => {
-                            var workplace = _.find(self.workplaceList(), function(o) { return o.workplaceId == wkpId; });
-                            workplaceList.push(workplace);
+                            let workplace = _.find(self.workplaceList(), function(o) { return o.workplaceId == wkpId; });
+                            if(!_.isNil(workplace)){
+                                workplaceList.push(workplace);
+                            }
+                            
                         });
-                        workplaceList = _.sortBy(workplaceList, function(wkp) {
-                            return parseInt(wkp.hierarchyCode);
-                        });
-                        var firstWkp = workplaceList[0];
-                        var lastWkp = workplaceList[workplaceList.length - 1];
-                        wkpText = firstWkp.hierarchyCode + ' ' + firstWkp.name + ' ～ ' + lastWkp.hierarchyCode + ' ' + lastWkp.name;
+                        if(workplaceList.length >1){
+                            workplaceList = _.sortBy(workplaceList, function(wkp) {
+                                return parseInt(wkp.hierarchyCode);
+                            });
+                            let firstWkp = workplaceList[0];
+                            let lastWkp = workplaceList[workplaceList.length - 1];    
+                            wkpText = firstWkp.hierarchyCode + ' ' + firstWkp.name + ' ～ ' + lastWkp.hierarchyCode + ' ' + lastWkp.name;
+                        }else if(workplaceList.length ==1){
+                            wkpText = workplaceList[0].hierarchyCode + ' ' + workplaceList[0].name + ' ～ ' + getText('KBT002_193');
+                        }else{
+                            wkpText = getText('KBT002_193') + ' ～ ' + getText('KBT002_193');
+                        }
                     }
                 }
                 self.wkpListText(wkpText);
@@ -431,18 +444,18 @@ module nts.uk.at.view.kbt002.b {
                     command.execItemName = self.currentExecItem().execItemName();
                     command.perScheduleCls = self.currentExecItem().perScheduleClsReCreate();//B7_1
                     command.targetMonth = 0;
-                    command.targetDate =  1;
+                    command.targetDate =  1;  
                     command.creationPeriod = 1;
                     command.creationTarget = 1;
                     command.recreateWorkType = self.currentExecItem().recreateWorkType();//B15_3
                     command.manualCorrection = self.currentExecItem().manualCorrection();//B15_4
                     command.createEmployee = false;
                     command.recreateTransfer = self.currentExecItem().recreateTransfer();//B15_2(1)
-                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsReCreate();//B14_2
+                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsReCreate();//B14_3
                     command.dailyPerfItem = 0;
                     command.midJoinEmployee = false;
-                    command.reflectResultCls = false;
-                    command.monthlyAggCls = false;
+                    command.reflectResultCls = self.currentExecItem().dailyPerfClsReCreate();
+                    command.monthlyAggCls = self.currentExecItem().dailyPerfClsReCreate();
                     command.execScopeCls = 1;
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();

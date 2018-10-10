@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.pub.workrule.closure.DCClosureExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
@@ -41,7 +40,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -152,8 +150,7 @@ public class DPLock {
 		if (mode == ScreenMode.APPROVAL.value) {
 			long startTime = System.currentTimeMillis();
 			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(
-					dateRange.getStartDate(), dateRange.getEndDate(), employeeIdApproval,
-					AppContexts.user().companyId(), 1);
+					new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), employeeIdApproval, 1);
 			System.out.println("thoi gian getApp: "+ (System.currentTimeMillis() - startTime));
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvalRoot == null ? Collections.emptyMap()
 					: approvalRoot.getApprovalRootSituations().stream().collect(
@@ -227,11 +224,11 @@ public class DPLock {
 		dto.setLockDayAndWpl(extractEmpAndRange(dateRange, companyId, employeeIds, closureDtos));
 		if(identityProcessUseSetDto.isPresent()){
 			if(identityProcessUseSetDto.get().isUseConfirmByYourself()) dto.setSignDayMap(signDayMap(companyId, employeeIds, dateRange));
-			if(identityProcessUseSetDto.get().isUseIdentityOfMonth()) dto.setLockCheckMonth(lockCheckMonth(dateRange, employeeIds));
+			if(identityProcessUseSetDto.get().isUseIdentityOfMonth()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange, closureDtos)); 
 		}
 		
 		if(approvalUseSettingDto.isPresent()){
-			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange, closureDtos));
+			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockCheckMonth(lockCheckMonth(dateRange, employeeIds));
 			if(approvalUseSettingDto.get().getUseDayApproverConfirm()) dto.setLockCheckApprovalDay(getCheckApproval(employeeIds, dateRange, employeeIdApproval, mode));
 		}
 		dto.setLockHist(lockHistMap(companyId, employeeIds));

@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 550,
-					height : 400
+					width : 380,
+					height : 410
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,28 +23,34 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="border-color: #00B050"  data-bind="ntsFormLabel: {required: true }" class="form-label enable">
+				<div
+					data-bind="ntsFormLabel: {required: false }"
+					class="form-label enable">
 					<label>#{i18n.getText('CMF002_133')}</label>
 				</div>
 				<div class="nts_dataTypes">
-					<div id="list-box" data-bind="ntsListBox: {
+					<div id="H2"
+						data-bind="ntsListBox: {
 					options: itemList,
 					optionsValue: 'code',
 					optionsText: 'name',
-					multiple: true,
-					value: selectedCodes,
+					multiple: false,
+					value: selectedCode,
 					enable: isEnable(),
-					rows: 7,
+					rows: 5,
 					columns: [
-						{ key: 'code', length: 4 },
 						{ key: 'name', length: 10 }
 					]}"></div>
 				</div>
+				<div style="margin-left: 50px; margin-top: 10px;">
+				<label>#{i18n.getText('CMF002_134')}</label>
+				</div>
 			</div>
- 			<div id="functions-area-bottom">
-				<button class="x-large" tabindex="4" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_411')}</button>
-				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF001_412')}</button>
-			</div> 
+			<div id="functions-area-bottom">
+				<button class="x-large" tabindex="4"
+					data-bind="click: saveData, timeClick: 1000, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_135')}</button>
+				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF002_136')}</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

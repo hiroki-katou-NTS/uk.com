@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 /**
  * The Class ScheCreExeWorkTypeHandler.
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheCreExeWorkTypeHandler {
 
@@ -75,7 +75,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createWorkSchedule(
 			ScheduleCreatorExecutionCommand command,
 			GeneralDate dateInPeriod,
@@ -247,7 +247,7 @@ public class ScheCreExeWorkTypeHandler {
 			}
 			// find work type set by close atr employment status
 			List<WorkTypeSet> worktypeSets = this.workTypeRepository
-					.findWorkTypeSetCloseAtr(command.getBaseGetter().getCompanyId(), closeAtr);
+					.findWorkTypeSetCloseAtrDeprecateAtr(command.getBaseGetter().getCompanyId(), closeAtr, DeprecateClassification.NotDeprecated.value);
 
 			// check empty work type set
 			if (CollectionUtil.isEmpty(worktypeSets)) {

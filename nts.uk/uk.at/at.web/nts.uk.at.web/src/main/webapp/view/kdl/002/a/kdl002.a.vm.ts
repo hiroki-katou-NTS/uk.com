@@ -19,7 +19,7 @@ module kdl002.a.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL002_3"), prop: 'workTypeCode', width: 70 },
                 { headerText: nts.uk.resource.getText("KDL002_4"), prop: 'name', width: 200 ,formatter: _.escape},
-                { headerText: nts.uk.resource.getText("KDL002_5"), prop: 'memo', width: 230 ,formatter: _.escape}
+                { headerText: nts.uk.resource.getText("KDL002_5"), prop: 'memo', width: 210 ,formatter: _.escape}
             ]);
             self.currentCodeList = ko.observableArray([]);
             self.posibleItems = [];

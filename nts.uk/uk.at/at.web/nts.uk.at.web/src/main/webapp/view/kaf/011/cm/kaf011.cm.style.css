@@ -47,5 +47,8 @@
 }
 
 .nts-switch-button {
-	width: 100px;
+	min-width: 100px;
+}
+#swb_app_com .nts-switch-button{
+	min-width: 124px;
 }

@@ -33,7 +33,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId,
 			DatePeriod datePeriod) {
-		if (targetDataType == null)
+		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
 		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd";
 		return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
@@ -45,7 +45,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId,
 			YearMonthPeriod ymPeriod) {
-		if (targetDataType == null)
+		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
 		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId "
 				+ "AND a.ymKey >= :startYm AND a.ymKey <= :endYm";
@@ -58,7 +58,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId,
 			Year yearStart, Year yearEnd) {
-		if (targetDataType == null)
+		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
 		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId "
 				+ "AND a.yKey >= :startY AND a.yKey <= :endY";
@@ -151,14 +151,14 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId IN :operationIds ORDER BY a.employeeId, a.pk.ymdKey, a.ymKey, a.yKey,a.showOrder";
 					CollectionUtil.split(operationIds, 1000, subIdList -> {
 						results.addAll(this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
-								.setParameter("operationIds", subIdList).getList(c -> c.toDomainToView()));
+								.setParameter("operationIds", subIdList).getList(c -> c.toDomain()));
 					});
 				} else {
 					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId IN :operationIds AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd ORDER BY a.employeeId, a.pk.ymdKey, a.ymKey, a.yKey,a.showOrder";
 					CollectionUtil.split(operationIds, 1000, subIdList -> {
 						results.addAll(this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 								.setParameter("operationIds", subIdList).setParameter("startYmd", period.start())
-								.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView()));
+								.setParameter("endYmd", period.end()).getList(c -> c.toDomain()));
 					});
 				}
 			} else {
@@ -167,7 +167,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 					CollectionUtil.split(operationIds, 1000, subIdList -> {
 						results.addAll(this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 							.setParameter("operationIds", subIdList).setParameter("listEmpId", listEmployeeId)
-							.getList(c -> c.toDomainToView()));
+							.getList(c -> c.toDomain()));
 					});
 				} else {
 					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId IN :operationIds AND a.employeeId IN :listEmpId AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd ORDER BY a.employeeId, a.pk.ymdKey, a.ymKey, a.yKey,a.showOrder";
@@ -175,7 +175,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						results.addAll(this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 							.setParameter("operationIds", subIdList).setParameter("listEmpId", listEmployeeId)
 							.setParameter("startYmd", period.start()).setParameter("endYmd", period.end())
-							.getList(c -> c.toDomainToView()));
+							.getList(c -> c.toDomain()));
 					});
 				}
 			}
@@ -186,7 +186,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 					CollectionUtil.split(operationIds, 1000, subIdList -> {
 						results.addAll(this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 							.setParameter("operationIds", subIdList)
-							.setParameter("targetDataType", targetDataType.value).getList(c -> c.toDomainToView()));
+							.setParameter("targetDataType", targetDataType.value).getList(c -> c.toDomain()));
 					});
 				} else {
 					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId IN :operationIds AND a.pk.targetDataType = :targetDataType AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd ORDER BY a.employeeId, a.pk.ymdKey, a.ymKey, a.yKey,a.showOrder";
@@ -195,7 +195,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							.setParameter("operationIds", subIdList)
 							.setParameter("targetDataType", targetDataType.value)
 							.setParameter("startYmd", period.start()).setParameter("endYmd", period.end())
-							.getList(c -> c.toDomainToView()));
+							.getList(c -> c.toDomain()));
 					});
 				}
 			} else {
@@ -205,7 +205,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						results.addAll(this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 							.setParameter("operationIds", subIdList)
 							.setParameter("targetDataType", targetDataType.value)
-							.setParameter("listEmpId", listEmployeeId).getList(c -> c.toDomainToView()));
+							.setParameter("listEmpId", listEmployeeId).getList(c -> c.toDomain()));
 					});
 				} else {
 					String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId IN :operationIds AND a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd ORDER BY a.employeeId, a.pk.ymdKey, a.ymKey, a.yKey,a.showOrder";
@@ -214,7 +214,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 							.setParameter("operationIds", subIdList)
 							.setParameter("targetDataType", targetDataType.value)
 							.setParameter("listEmpId", listEmployeeId).setParameter("startYmd", period.start())
-							.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView()));
+							.setParameter("endYmd", period.end()).getList(c -> c.toDomain()));
 					});
 				}
 			}
@@ -225,7 +225,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId,
 			YearMonth ym, GeneralDate ymd) {
-		if (targetDataType == null)
+		if (targetDataType == null || listEmployeeId.isEmpty())
 			return Collections.emptyList();
 		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey = :startYmd AND a.ymKey = :endYm";
 		return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)

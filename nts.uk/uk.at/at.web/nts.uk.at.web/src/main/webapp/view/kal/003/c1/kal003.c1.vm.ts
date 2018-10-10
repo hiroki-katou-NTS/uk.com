@@ -68,10 +68,11 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
-            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && _.isEmpty(param.data.uncountableAtdItem)) {
+            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && 
+             param.data.uncountableAtdItem ==null) {
                 param.data.compareStartValue = null;
                 param.data.compareEndValue = null;
-                param.data.uncountableAtdItem = null;
+                param.data.uncountableAtdItem = null; 
             }
 
                //self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);

@@ -19,6 +19,13 @@ import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 @Stateless
 public class JpaRemainMerge extends JpaRepository implements RemainMergeRepository {
 
+	private static final String DELETE_BY_PK = String.join(" ", "DELETE FROM KrcdtMonRemain a ",
+			"WHERE  a.krcdtMonRemainPk.employeeId = :employeeId ",
+			"AND    a.krcdtMonRemainPk.yearMonth = :yearMonth ",
+			"AND    a.krcdtMonRemainPk.closureId = :closureId",
+			"AND    a.krcdtMonRemainPk.closureDay = :closureDay",
+			"AND    a.krcdtMonRemainPk.isLastDay = :isLastDay");
+	
 	/** 検索 */
 	@Override
 	public Optional<RemainMerge> find(MonthMergeKey key) {
@@ -63,12 +70,12 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void remove(MonthMergeKey key) {
 		
-		this.commandProxy().remove(KrcdtMonRemain.class,
-				new KrcdtMonMergePk(
-						key.getEmployeeId(),
-						key.getYearMonth().v(),
-						key.getClosureId().value,
-						key.getClosureDate().getClosureDay().v(),
-						(key.getClosureDate().getLastDayOfMonth() ? 1 : 0)));
+		this.getEntityManager().createQuery(DELETE_BY_PK)
+				.setParameter("employeeId", key.getEmployeeId())
+				.setParameter("yearMonth", key.getYearMonth().v())
+				.setParameter("closureId", key.getClosureId().value)
+				.setParameter("closureDay", key.getClosureDate().getClosureDay().v())
+				.setParameter("isLastDay", (key.getClosureDate().getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
 	}
 }

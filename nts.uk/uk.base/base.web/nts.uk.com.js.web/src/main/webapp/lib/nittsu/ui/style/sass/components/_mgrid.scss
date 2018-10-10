@@ -79,10 +79,6 @@
 	color: #333;
 }
 
-.mgrid table tr td.mgrid-calc {
-	background-color: #F69164;
-}
-
 .mgrid table tr td.mgrid-reflect {
 	background-color: #BFEA60;
 }
@@ -93,6 +89,10 @@
 
 .mgrid table tr td.mgrid-manual-edit-target {
 	background-color: #94B7FE;
+}
+
+.mgrid table tr td.mgrid-calc {
+	background-color: #F69164;
 }
 
 .mgrid table tr td.mgrid-alarm {

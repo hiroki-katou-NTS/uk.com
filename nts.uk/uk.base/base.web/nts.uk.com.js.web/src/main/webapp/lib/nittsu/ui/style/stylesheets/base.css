@@ -980,7 +980,7 @@ div.popup-panel {
 #func-notifier-errors {
   position: absolute;
   display: none;
-  z-index: 1000;
+  z-index: 10005;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -5012,23 +5012,23 @@ div .ex-area-line.x-stay {
 }
 
 /* line 82, ../sass/components/_mgrid.scss */
-.mgrid table tr td.mgrid-calc {
-  background-color: #F69164;
-}
-
-/* line 86, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-reflect {
   background-color: #BFEA60;
 }
 
-/* line 90, ../sass/components/_mgrid.scss */
+/* line 86, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-manual-edit-other {
   background-color: #CEE6FF;
 }
 
-/* line 94, ../sass/components/_mgrid.scss */
+/* line 90, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-manual-edit-target {
   background-color: #94B7FE;
+}
+
+/* line 94, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-calc {
+  background-color: #F69164;
 }
 
 /* line 98, ../sass/components/_mgrid.scss */
@@ -5409,7 +5409,7 @@ div .ex-area-line.x-stay {
   padding-top: 8px;
   white-space: nowrap;
   background-color: #fff;
-  z-index: 999999;
+  z-index: 10001;
 }
 
 /* line 1, ../sass/frame/_contents.scss */
@@ -5422,21 +5422,17 @@ div .ex-area-line.x-stay {
   padding: 10px;
   overflow-y: auto;
 }
-/* line 7, ../sass/frame/_contents.scss */
-#master-wrapper div#contents-area:first-child {
-  max-height: calc(100vh - 86px) !important;
-}
 
-/* line 13, ../sass/frame/_contents.scss */
+/* line 10, ../sass/frame/_contents.scss */
 .fixed-flex-layout {
   display: flex;
 }
-/* line 16, ../sass/frame/_contents.scss */
+/* line 13, ../sass/frame/_contents.scss */
 .fixed-flex-layout > .fixed-flex-layout-left {
   margin-right: 30px;
   /* specify width each screens */
 }
-/* line 22, ../sass/frame/_contents.scss */
+/* line 19, ../sass/frame/_contents.scss */
 .fixed-flex-layout > .fixed-flex-layout-right {
   flex: 1;
 }

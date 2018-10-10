@@ -52,7 +52,7 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 		for (val data : datas){
 			
 			// 「締め済」でないデータは、除く
-			if (data.getClosureStatus() != ClosureStatus.PROCESSED) continue;
+			//if (data.getClosureStatus() != ClosureStatus.PROCESSED) continue;
 			
 			val yearMonth = data.getYearMonth();
 			val annualLeave = data.getAnnualLeave();

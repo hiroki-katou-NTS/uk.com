@@ -89,7 +89,6 @@ module nts.custombinding {
                 }
 
                 if (!element) {
-                    console.log('disposed');
                     clearInterval(inter);
                 }
             }, 100);
@@ -98,9 +97,6 @@ module nts.custombinding {
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
-                    html {
-                        -ms-overflow-y: hidden;
-                    }
                     .layout-control.dragable{
                         width: 1245px;
                     }
@@ -1246,7 +1242,7 @@ module nts.custombinding {
 
         private services = {
             getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
-            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${location.href.indexOf('cps/007') > -1}`),
             getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
             getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
@@ -1631,6 +1627,7 @@ module nts.custombinding {
                                 }
                                 break;
                             case ITEM_SINGLE_TYPE.NUMERIC:
+                            case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                 constraint.charType = 'Numeric';
                                 if (dts.decimalPart == 0) {
                                     constraint.valueType = "Integer";
@@ -1672,9 +1669,6 @@ module nts.custombinding {
                                 break;
                             case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
                                 constraint.valueType = "RELATE_CATEGORY";
-                                break;
-                            case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
-                                constraint.valueType = "NUMBERIC_BUTTON";
                                 break;
                             case ITEM_SINGLE_TYPE.READONLY_BUTTON:
                                 constraint.valueType = "READONLY_BUTTON";
@@ -2274,6 +2268,7 @@ module nts.custombinding {
                                         [
                                             ITEM_SINGLE_TYPE.STRING,
                                             ITEM_SINGLE_TYPE.NUMERIC,
+                                            ITEM_SINGLE_TYPE.NUMBERIC_BUTTON,
                                             ITEM_SINGLE_TYPE.TIME,
                                             ITEM_SINGLE_TYPE.TIMEPOINT
                                         ].indexOf((x.item || {}).dataTypeValue) > -1 &&

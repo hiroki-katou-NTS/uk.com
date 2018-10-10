@@ -83,6 +83,7 @@ module nts.uk.ui {
             if ($("#functions-area-bottom").length != 0) {
                 content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
             }
+            
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
             //            } 

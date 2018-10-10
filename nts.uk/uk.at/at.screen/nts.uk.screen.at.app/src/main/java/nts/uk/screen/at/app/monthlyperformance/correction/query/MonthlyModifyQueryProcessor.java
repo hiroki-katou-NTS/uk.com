@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,8 @@ public class MonthlyModifyQueryProcessor {
 		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty()){
 			return new ArrayList<>();
 		}
-		return query.getEmployeeIds().stream().map(employee -> {
-			MonthlyRecordWorkDto recordData = this.monthlyRecordWorkFinder.find(employee, yearMonth, closureId,	closureDate);
+		List<MonthlyRecordWorkDto> lstData = this.monthlyRecordWorkFinder.find(query.getEmployeeIds(), Arrays.asList(yearMonth));
+		return lstData.stream().map(recordData -> {
 			return MonthlyModifyResult.builder()
 					.items(AttendanceItemUtil.toItemValues(recordData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
 					.employeeId(recordData.getEmployeeId())

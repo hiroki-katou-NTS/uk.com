@@ -65,7 +65,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject
@@ -105,7 +105,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			integraionList.add(provisionalDailyRecord);
 		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(new CalculateOption(true, true), integraionList, companySetting,ExecutionType.NORMAL_EXECUTION);
+		return calculateDailyRecordServiceCenter.calculateForSchedule(new CalculateOption(true, true), integraionList, companySetting);
 	}
 
 	/**

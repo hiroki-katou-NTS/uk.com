@@ -42,6 +42,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         initEmployeeList: KnockoutObservableArray<UnitModel>;
         enable: KnockoutObservable<boolean>;
+        enableTagetDate: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
@@ -65,6 +66,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         //E
         dateOperator: KnockoutObservable<string>;
         isDisplayTarget: KnockoutObservable<boolean>;
+        displayTargetDate: KnockoutObservable<boolean>;
         logTypeSelectedName: KnockoutObservable<string>;
         tarGetDataTypeSelectedName: KnockoutObservable<string>;
         targetNumber: KnockoutObservable<string>;
@@ -150,7 +152,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.displayStep2 = ko.observable(false);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
             self.checkFormatDate = ko.observable('1');
-
         }
 
         //C list selectedEmployeeCodeTarget
@@ -169,6 +170,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.employeeList = ko.observableArray([]);
             //Date
             self.enable = ko.observable(true);
+            self.enableTagetDate = ko.observable(true);
             self.required = ko.observable(true);
 
             self.startDateString = ko.observable("");
@@ -376,6 +378,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.logTypeSelectedName = ko.observable("");
             self.tarGetDataTypeSelectedName = ko.observable("");
             self.isDisplayTarget = ko.observable(false);
+            self.displayTargetDate = ko.observable(true);
             self.targetNumber = ko.observable("");
             self.operatorNumber = ko.observable("");
         }
@@ -722,6 +725,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -775,6 +780,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                         filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -862,6 +869,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -925,7 +934,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var header = ui.element.find("th[role='columnheader']");
                 ui.element.parent().addClass("default-overflow");
                 ui.element.parent().css("overflow-x","");
-                let screenModel = new viewmodel.ScreenModel();
+
                 let helpButton = $('<button>', {
                     text: getText('?'),
                     'data-bind': 'ntsHelpButton: { textId: "CLI003_68", textParams: ["{#CLI003_68}"], position: "right center" }'
@@ -936,9 +945,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     var currentSetting = headerSetting[i];
 
                     if (currentSetting.headerText == textHeaderCheck) {
-                        var x = header.filter("th[aria-label='" + currentSetting.key + "']")
-                            .find(".ui-iggrid-headertext").text(currentSetting.headerText);
+                        var xHeader = header.filter("th[aria-label='" + currentSetting.key + "']").find(".ui-iggrid-headertext");
+                        var x = xHeader.text(currentSetting.headerText);
                         x.append(helpButton);
+                        xHeader.attr("id","help-button-id");
                     } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
@@ -947,6 +957,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 helpButton.click(function() {
                     var container = helpButton.closest(".igscroll-touchscrollable");
                     var tooltip = helpButton.parent().find(".nts-help-button-image");
+                    $(".ui-iggrid-header.ui-widget-header").css("overflow", "visible");
+                    $("#help-button-id").css({"overflow":"visible"});
+                    tooltip.css("width","350px");
                     if (tooltip.css("display") !== "none") {
                         container.addClass("default-overflow");
                         container.removeClass("overflow-show");
@@ -958,7 +971,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         container.css("overflow-x","auto");
                         $("#igGridLog").data("icon-showed", null);
                     }
-                })
+                });
                 //  binding new viewmodel for only button help
                 ko.applyBindings({}, helpButton[0]);
             });
@@ -990,6 +1003,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
             $(document).delegate("#igGridLog", "iggridresizingcolumnresizing", function(evt, ui) {
                 $(".ui-iggrid-scrolldiv.ui-widget-content.igscroll-touchscrollable.default-overflow").css("overflow-x", "auto");
+                $(".ui-iggrid-header.ui-widget-header").css({"width":"100% !important"}); // th
+                $(".ui-iggrid-headertext").css({"white-space":"nowrap","overflow":"hidden","display":"block"}); // span
             });
         }
 
@@ -1169,6 +1184,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
             if (checkLogType == RECORD_TYPE.DATA_CORRECT && targetDataType === "") {
                 checkLogType = null;
             }
+            if (checkLogType != RECORD_TYPE.UPDATE_PERSION_INFO) {
+                 self.enableTagetDate(true);
+            }
             switch (checkLogType) {
                 case RECORD_TYPE.LOGIN:
                 case RECORD_TYPE.START_UP:
@@ -1188,6 +1206,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     break;
                 }
                 case RECORD_TYPE.UPDATE_PERSION_INFO:
+                    {
+                        self.enableTagetDate(false);
+                    }
                 case RECORD_TYPE.DATA_REFERENCE:
                 case RECORD_TYPE.DATA_MANIPULATION:
                 case RECORD_TYPE.DATA_CORRECT:
@@ -1995,10 +2016,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             //Check to display or not Screen C infomation.
             self.isDisplayTarget(false);
-
+            self.displayTargetDate(true);
 
             switch (Number(self.logTypeSelectedCode())) {
                 case RECORD_TYPE.UPDATE_PERSION_INFO:
+                    {
+                        self.isDisplayTarget(true);
+                        self.displayTargetDate(false);
+                        break;
+                    }
                 case RECORD_TYPE.DATA_REFERENCE:
                 case RECORD_TYPE.DATA_MANIPULATION:
                 case RECORD_TYPE.DATA_CORRECT:

@@ -75,16 +75,16 @@ public class MonthlyDayoffRemainDataDto extends MonthlyItemCommon {
 	@Override
 	public MonthlyDayoffRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		return new MonthlyDayoffRemainData(employeeId, ym, closureID, 
-				closureDate == null ? 0 : closureDate.getClosureDay(), 
+				closureDate == null ? 1 : closureDate.getClosureDay(), 
 				closureDate == null ? false : closureDate.getLastDayOfMonth(), 
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				datePeriod == null ? null : datePeriod.getStart(), 
 				datePeriod == null ? null : datePeriod.getEnd(), 
-				occurrenceDayTimes == null ? null : occurrenceDayTimes.toOff(), 
-				useDayTimes == null ? null : useDayTimes.toOff(),
-				remainingDayTimes == null ? null : remainingDayTimes.toOffRemain(), 
-				carryForWardDayTimes == null ? null : carryForWardDayTimes.toOffRemain(),
-				unUsedDayTimes == null ? null : unUsedDayTimes.toOff());
+				occurrenceDayTimes == null ? new DayAndTimeDto().toOff() : occurrenceDayTimes.toOff(), 
+				useDayTimes == null ? new DayAndTimeDto().toOff() : useDayTimes.toOff(),
+				remainingDayTimes == null ? new DayAndTimeDto().toOffRemain() : remainingDayTimes.toOffRemain(), 
+				carryForWardDayTimes == null ? new DayAndTimeDto().toOffRemain() : carryForWardDayTimes.toOffRemain(),
+				unUsedDayTimes == null ? new DayAndTimeDto().toOff() : unUsedDayTimes.toOff());
 	}
 	@Override
 	public YearMonth yearMonth() {

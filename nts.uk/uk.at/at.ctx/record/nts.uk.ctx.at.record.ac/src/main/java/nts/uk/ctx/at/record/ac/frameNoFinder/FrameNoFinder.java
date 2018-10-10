@@ -37,4 +37,17 @@ public class FrameNoFinder implements FrameNoAdapter{
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.
+	 * FrameNoAdapter#findByFrameNos(java.util.List)
+	 */
+	@Override
+	public List<FrameNoAdapterDto> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory) {
+		return attendanceItemLinkingPub.findByFrameNos(frameNos, typeOfItem, frameCategory).stream()
+				.map(f -> new FrameNoAdapterDto(f.getAttendanceItemId(), f.getFrameNo(), f.getFrameCategory()))
+				.collect(Collectors.toList());
+	}
+
 }

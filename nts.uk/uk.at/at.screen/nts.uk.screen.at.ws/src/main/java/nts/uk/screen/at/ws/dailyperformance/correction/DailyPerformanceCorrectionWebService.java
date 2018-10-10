@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
@@ -140,6 +144,9 @@ public class DailyPerformanceCorrectionWebService {
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute("domainOlds", dtoResult.getDomainOld());
 		session.setAttribute("domainEdits", null);
+		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+		session.setAttribute("dataSource", dtoResult.getLstData());
+		
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
@@ -151,6 +158,8 @@ public class DailyPerformanceCorrectionWebService {
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute("domainOlds", results.getDomainOld());
 		session.setAttribute("domainEdits", null);
+		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
+		session.setAttribute("dataSource", results.getLstData());
 		results.setDomainOld(Collections.emptyList());
 		return results;
 	}
@@ -162,6 +171,8 @@ public class DailyPerformanceCorrectionWebService {
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute("domainOlds", results.getDomainOld());
 		session.setAttribute("domainEdits", null);
+		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
+		session.setAttribute("dataSource", results.getLstData());
 		results.setDomainOld(Collections.emptyList());
 		return results;
 	}
@@ -198,13 +209,13 @@ public class DailyPerformanceCorrectionWebService {
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
-			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		}else{
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		
+		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
         return dailyModifyResCommandFacade.insertItemDomain(dataParent);
 	}
 	
@@ -245,7 +256,8 @@ public class DailyPerformanceCorrectionWebService {
 		}
 		param.setDailys(dailyEdits);
 		val result = loadRowProcessor.reloadGrid(param);
-		session.setAttribute("domainEdits", result.getDomainOld());
+		session.setAttribute("domainEdits", null);
+		if(!param.getOnlyLoadMonth())session.setAttribute("domainOlds", result.getDomainOld());
 		result.setDomainOld(Collections.emptyList());
 		return result;
 	}
@@ -275,6 +287,12 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
+	@Path("getnameattItembytype/{type}")
+	public List<AttItemName> getNameOfAttendanceItemByType(@PathParam(value = "type") int type) {
+		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemNameByType(type);
+	}
+	
+	@POST
 	@Path("getNamedailyAttItem")
 	public List<AttItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
 		return this.dailyPerformanceAuthoritySetting.getListAttendanceItemName(dailyAttendanceItemIds);
@@ -295,7 +313,7 @@ public class DailyPerformanceCorrectionWebService {
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
-			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		}else{
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
@@ -314,12 +332,16 @@ public class DailyPerformanceCorrectionWebService {
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
-			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		}else{
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		
+		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
+		dataParent.setLstData((List<DPDataDto>) session.getAttribute("dataSource"));
+		
 		val result = dailyCalculationService.calculateCorrectedResults(dataParent);
 		session.setAttribute("domainEdits", result.getCalculatedRows());
 		result.setCalculatedRows(Collections.emptyList());
@@ -338,4 +360,7 @@ public class DailyPerformanceCorrectionWebService {
 		return dpDisplayLockProcessor.processDisplayLock(param);
 	}
 
+	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos){
+		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
+	}
 }

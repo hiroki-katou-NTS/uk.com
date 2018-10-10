@@ -33,7 +33,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 
@@ -107,7 +107,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		return find(employeeId, Arrays.asList(yearMonth));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId,
@@ -121,8 +121,8 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		List<AbsenceLeaveRemainDataDto> absenceLeave = absenceLeaveFinder.find(employeeId, yearMonth);
 		List<SpecialHolidayRemainDataDto> specialHoliday = specialHolidayFinder.find(employeeId, yearMonth);
 		List<MonthlyRemarksDto> remarks = remarksFinder.find(employeeId, yearMonth);
-		List<MonthlyCareHdRemainDto> care = remarksFinder.find(employeeId, yearMonth);
-		List<MonthlyChildCareHdRemainDto> childCare = remarksFinder.find(employeeId, yearMonth);
+		List<MonthlyCareHdRemainDto> care = careFinder.find(employeeId, yearMonth);
+		List<MonthlyChildCareHdRemainDto> childCare = childCareFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());

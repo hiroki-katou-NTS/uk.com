@@ -22,7 +22,7 @@ public class JpaStandardWidgetRepository extends JpaRepository implements Standa
 			+ "AND t.ccgmtTopPagePartPK.topPagePartID IN :toppagePartIDs "
 			+ "AND t.ccgmtTopPagePartPK.companyID =:cID";
 
-	private static final String  SELECT_BY_ID = SELECT_ALL + "AND s.sptstStandardWidgetPK.toppagePartID =:toppagePartID";
+	private static final String  SELECT_BY_ID = SELECT_ALL + "AND s.sptstStandardWidgetPK.toppagePartID =:toppagePartID AND s.sptstStandardWidgetPK.companyID =:companyID";
 	
 	@Override
 	public List<StandardWidget> getAll(){
@@ -31,9 +31,10 @@ public class JpaStandardWidgetRepository extends JpaRepository implements Standa
 	}
 
 	@Override
-	public Optional<StandardWidget> getByID(String ToppagePartID) {
+	public Optional<StandardWidget> getByID(String ToppagePartID, String companyID) {
 		return this.queryProxy().query(SELECT_BY_ID , Object[].class)
 				.setParameter("toppagePartID", ToppagePartID)
+				.setParameter("companyID", companyID)
 				.getSingle(c -> joinObjectToDomain(c));
 	}
 

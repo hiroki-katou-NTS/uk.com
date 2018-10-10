@@ -26,4 +26,7 @@ public class KmnmtAttendanceTypePK implements Serializable{
 	/*勤怠項目名称*/
 	@Column(name = "SCREEN_USE_ATR")
 	public int screenUseAtr;
+	/*勤怠項目の種類*/
+	@Column(name = "ATTENDANCEITEM_TYPE")
+	public int attendanctType;
 }

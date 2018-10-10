@@ -90,7 +90,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
 
@@ -233,7 +233,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * command.CommandHandlerContext)
 	 */
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -293,7 +293,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 *            the domain
 	 */
 	// スケジュールを再設定する
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, List<GeneralDate> betweenDates,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
@@ -503,7 +503,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param mapFlowWorkSetting
 	 * @param mapDiffTimeWorkSetting
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void createScheduleBasedPersonWithMultiThread(
 			ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator,
@@ -516,7 +516,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
 //		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
-		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(command.getEmployeeId(), new ArrayList<>());
+		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
 		
 		if (masterCache.getListWorkingConItem().size() > 1) {
 			// 労働条件が途中で変化するなら、計算キャッシュは利用しない
@@ -691,132 +691,83 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
+		CollectionUtil.split(scheduleCreators, 100, subList -> {
+			this.parallel.forEach(subList, scheduleCreator -> {
+				
+				RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
+				
+				// check is client submit cancel
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+					this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
+					return;
+				}
+			
+				// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+				StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+						command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
+						masterCache.getEmpGeneralInfo());
+				if (stateAndValueDatePeriod.state) {
+					DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+					ScheduleCreateContent content = command.getContent();
+					List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
+					// 実施区分を判断, 処理実行区分を判断
+					// EA No2115
+					if (content.getImplementAtr() == ImplementAtr.RECREATE && content.getReCreateContent()
+							.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
+						BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
+						commandReset.setCompanyId(command.getCompanyId());
+						commandReset.setConfirm(content.getConfirm());
+						commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
+						commandReset.setExecutionId(exeId);
+						commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
+						commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
+						commandReset.setTargetStartDate(period.start());
+						commandReset.setTargetEndDate(period.end());
+						commandReset.setCompanySetting(companySetting);
+						// スケジュールを再設定する (Thiết lập lại schedule)
+						this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
+								masterCache.getEmpGeneralInfo(), masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
+					} else {
+						// 入力パラメータ「作成方法区分」を判断-check parameter
+						// CreateMethodAtr
+						if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
+							command.setCompanySetting(companySetting);
+							this.createScheduleBasedPersonWithMultiThread(
+									command,
+									scheduleCreator,
+									scheduleExecutionLog,
+									context,
+									betweenDates,
+									masterCache,
+									listBasicSchedule,
+									registrationListDateSchedule);
+						}
+					}
 
-		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
-			
-			RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
-			
-			// check is client submit cancel
-			if (asyncTask.hasBeenRequestedToCancel()) {
-				asyncTask.finishedAsCancelled();
-				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-				return;
-			}
-		
-			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
-					masterCache.getEmpGeneralInfo());
-			if (stateAndValueDatePeriod.state) {
-				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-				ScheduleCreateContent content = command.getContent();
-				List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
-				// 実施区分を判断, 処理実行区分を判断
-				// EA No2115
-				if (content.getImplementAtr() == ImplementAtr.RECREATE && content.getReCreateContent()
-						.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-					BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
-					commandReset.setCompanyId(command.getCompanyId());
-					commandReset.setConfirm(content.getConfirm());
-					commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
-					commandReset.setExecutionId(exeId);
-					commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
-					commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
-					commandReset.setTargetStartDate(period.start());
-					commandReset.setTargetEndDate(period.end());
-					commandReset.setCompanySetting(companySetting);
-					// スケジュールを再設定する (Thiết lập lại schedule)
-					this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
-							masterCache.getEmpGeneralInfo(), masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
+					scheduleCreator.updateToCreated();
+					this.scheduleCreatorRepository.update(scheduleCreator);
 				} else {
-					// 入力パラメータ「作成方法区分」を判断-check parameter
-					// CreateMethodAtr
-					if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-						command.setCompanySetting(companySetting);
-						this.createScheduleBasedPersonWithMultiThread(
-								command,
-								scheduleCreator,
-								scheduleExecutionLog,
-								context,
-								betweenDates,
-								masterCache,
-								listBasicSchedule,
-								registrationListDateSchedule);
+					scheduleCreator.updateToCreated();
+					this.scheduleCreatorRepository.update(scheduleCreator);
+					// EA修正履歴　No2378
+					// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
+					ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
+							.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+					if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+						this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 					}
 				}
 
-				scheduleCreator.updateToCreated();
-				this.scheduleCreatorRepository.update(scheduleCreator);
-			} else {
-				scheduleCreator.updateToCreated();
-				this.scheduleCreatorRepository.update(scheduleCreator);
-				// EA修正履歴　No2378
-				// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
-				ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-						.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
-				if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
-					this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
-				}
-			}
-
-			// 暫定データを作成する (Tạo data tạm)
-			registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
-				// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+				// 暫定データを作成する (Tạo data tạm)
+				registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
+					// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+				});
 			});
 		});
 		
-//		for (val scheduleCreator : scheduleCreators) {
-//
-//			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-//			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-//					command.getCompanyId(), scheduleCreator.getEmployeeId(), dateBeforeCorrection, empGeneralInfo);
-//			if (stateAndValueDatePeriod.state) {
-//				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-//				ScheduleCreateContent content = command.getContent();
-//				List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
-//				// 実施区分を判断, 処理実行区分を判断
-//				// EA No2115
-//				if (content.getImplementAtr() == ImplementAtr.RECREATE
-//						&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-//					BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
-//					commandReset.setCompanyId(command.getCompanyId());
-//					commandReset.setConfirm(content.getConfirm());
-//					commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
-//					commandReset.setExecutionId(exeId);
-//					commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
-//					commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
-//					commandReset.setTargetStartDate(period.start());
-//					commandReset.setTargetEndDate(period.end());
-//					// スケジュールを再設定する (Thiết lập lại schedule)
-//					this.resetScheduleWithMultiThread(commandReset, context, betweenDates, empGeneralInfo,
-//							listBusTypeOfEmpHis);
-//				} else {
-//					// 入力パラメータ「作成方法区分」を判断-check parameter
-//					// CreateMethodAtr
-//					if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-//						this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator, scheduleExecutionLog,
-//								context, betweenDates, empGeneralInfo, mapEmploymentStatus, listWorkingConItem,
-//								listWorkType, listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting,
-//								mapFlowWorkSetting, mapDiffTimeWorkSetting, listShortWorkTimeDto);
-//					}
-//				}
-//
-//				scheduleCreator.updateToCreated();
-//				this.scheduleCreatorRepository.update(scheduleCreator);
-//			}
-//			
-//			if (asyncTask.hasBeenRequestedToCancel()) {
-//				asyncTask.finishedAsCancelled();
-//				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-//				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-//				break;
-//			}
-//			
-//		}
-		
-
 		// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
 		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
 				.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();

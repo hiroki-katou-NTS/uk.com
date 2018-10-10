@@ -96,7 +96,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
-		dailyProcessor.setHideCheckbok(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
+		dailyProcessor.setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
@@ -119,7 +119,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		}
 
 		// get employmentCode
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange.getEndDate());
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		List<String> listEmployeeId = lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList());
 		List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId, errorCodes);
@@ -267,7 +267,7 @@ public class DailyPerformanceErrorCodeProcessor {
 
 				boolean lockDaykWpl = dailyProcessor.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
                 boolean lockHist = dailyProcessor.lockHist(dpLock.getLockHist(), data);
-                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approveRootStatus.isCheckApproval();
+                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
                 boolean lockConfirmMonth = dailyProcessor.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
                 
                 lockDaykWpl = dailyProcessor.lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);	

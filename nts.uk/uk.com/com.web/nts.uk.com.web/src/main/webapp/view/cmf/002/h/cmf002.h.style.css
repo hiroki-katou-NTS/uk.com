@@ -1,7 +1,9 @@
 #contents-area {
 	margin: 20px;
 }
-
+#master-wrapper {
+    overflow: hidden;
+}
 div.form-label {
     display: inline-block;
     box-sizing: border-box;
@@ -44,7 +46,7 @@ div.label {
 
 .nts_dataTypes {
 	margin-left: 50px;
-    width: 252px;
+    width: 200px;
 }
 
 
@@ -98,3 +100,4 @@ button.large {
     height: 34px;
     box-shadow: 0 4px rgba(0, 0, 0, 0.4);
 }
+

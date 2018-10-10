@@ -200,7 +200,7 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
@@ -933,7 +933,7 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
-
+                                setShared("KDL002_isShowNoSelectRow", true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -989,6 +989,7 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    setShared("KDL002_isShowNoSelectRow", true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
                                     setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -1380,25 +1381,68 @@ module nts.layout {
                         category: 'CS00020',
                         workTypeCode: 'IS00148',
                         workTypeTime: 'IS00149'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00193',
+                        workTypeTime: 'IS00194'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00202',
+                        workTypeTime: 'IS00203'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00211',
+                        workTypeTime: 'IS00212'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00220',
+                        workTypeTime: 'IS00221'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00229',
+                        workTypeTime: 'IS00230'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00238',
+                        workTypeTime: 'IS00239'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00184',
+                        workTypeTime: 'IS00185'
                     }
                 ],
                 initCDL008Data = (data: IItemData) => {
                     if (location.href.indexOf('/view/cps/002') > -1) {
-                        setShared('inputCDL008', {
-                            selectedCodes: [ko.toJS(data.value)],
-                            baseDate: ko.toJS((__viewContext || {
+                        let baseDateParam = ko.toJS((__viewContext || {
                                 viewModel: {
                                     currentEmployee: {
                                         hireDate: new Date()
                                     }
                                 }
-                            }).viewModel.currentEmployee).hireDate,
-                            isMultiple: false,
-                            selectedSystemType: 5,
-                            isrestrictionOfReferenceRange: false,
-                            showNoSelection: !data.required,
-                            isShowBaseDate: false
-                        }, true);
+                            }).viewModel.currentEmployee).hireDate;
+                        
+                        if (__viewContext.viewModel.wrkPlaceStartDate()) {
+                            baseDateParam = __viewContext.viewModel.wrkPlaceStartDate();
+                        }
+                        
+                        if (!!CS00017_IS00082) {
+                            let startValue = CS00017_IS00082.data.value();
+                            baseDateParam = startValue;
+                        }
+                        if (_.isNil(baseDateParam) || !moment.utc(baseDateParam, "YYYYMMDD").isValid()) {
+                            setShared('inputCDL008', null);
+                        } else {
+                        
+                            setShared('inputCDL008', {
+                                selectedCodes: [ko.toJS(data.value)],
+                                baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
+                                isMultiple: false,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                isrestrictionOfReferenceRange: false,
+                                showNoSelection: !data.required,
+                                isShowBaseDate: false
+                            }, true);
+                        }
                     } else if (location.href.indexOf('/view/cps/001') > -1) {
                         if (!!CS00017_IS00082) {
                             let v = CS00017_IS00082.data.value();
@@ -1428,7 +1472,15 @@ module nts.layout {
                                     isShowBaseDate: false
                                 }, true);
                             } else {
-                                setShared('inputCDL008', null);
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
                             }
                         }
                     }
@@ -2339,7 +2391,7 @@ module nts.layout {
 
 
             if (CS00070IS00781) {
-                fetch.get_cats().done(cats => {
+                fetch.get_cats(false).done(cats => {
                     let cat = _(cats.categoryList).find(c => _.isEqual(c.categoryCode, 'CS00020')) || {};
                     // update categoryName
                     CS00070IS00781.data.resourceParams([cat.categoryName]);

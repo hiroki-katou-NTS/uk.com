@@ -41,7 +41,7 @@ module nts.uk.ui.gridlist {
                 this.flag = index % 2 == 0;
                 this.ruleCode = index;
                 this.time = "13:36";
-                this.addressCode1 = "001";
+                this.addressCode1 = "111";
                 this.addressCode2 = "002";
                 this.address1 = "0";
                 this.address2 = "愛知県日本";
@@ -196,6 +196,8 @@ module nts.uk.ui.gridlist {
                             getUserId: function(k) { return String(k); },
                             errorColumns: [ "ruleCode" ],
                             errorsOnPage: true,
+//                            minRows: 31,
+//                            maxRows: 50,
 //                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
@@ -227,7 +229,7 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'Address<br/>Code1', key: 'addressCode1', dataType: 'string', width: '150px', columnCssClass: 'currency-symbol',
                                                 constraint: {
                                                     cDisplayType: "Currency",
-                                                    min: 3, max: 9,
+                                                    min: 1, max: 99999,
                                                     required: true
                                                 }},
                                             { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px'}
@@ -238,7 +240,8 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'ComboCode1', key: 'comboCode1', dataType: 'string', width: '60px', ntsType: 'comboCode_combo',
                                                 constraint: {
                                                     cDisplayType: "Integer",
-                                                    min: 1, max: 3,
+//                                                    min: 1, max: 3,
+                                                    values: [1, 3],
                                                     required: true
                                                 }},
                                             { headerText: 'Combo', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
@@ -338,6 +341,7 @@ module nts.uk.ui.gridlist {
                                             { columnKey: 'time', summaryCalculator: "Time" },
                                             { columnKey: 'ruleCode', summaryCalculator: "Number" },
                                             { columnKey: 'header3', summaryCalculator: "Number" },
+                                            { columnKey: 'addressCode1', summaryCalculator: "Number", formatter: "Currency" }
                                           ]
                                         }
                                       ],
