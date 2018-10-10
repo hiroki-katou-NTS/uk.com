@@ -94,8 +94,14 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-		.setParameter("processingYmds", ymds).executeUpdate();	
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmpIds -> {
+			CollectionUtil.split(ymds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYMD -> {
+				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
+					.setParameter("employeeIds", lstEmpIds)
+					.setParameter("processingYmds", lstYMD).executeUpdate();	
+			});
+		});
+		this.getEntityManager().flush();
 	}
 
 	@Override

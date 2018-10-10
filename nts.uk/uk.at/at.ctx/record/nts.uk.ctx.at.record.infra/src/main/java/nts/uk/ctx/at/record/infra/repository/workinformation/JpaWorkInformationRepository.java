@@ -400,10 +400,15 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			DatePeriod datePeriod) {
 		if(employeeIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeIds", employeeIds)
+		List<WorkInfoOfDailyPerformance> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeIds", subList)
 				.setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain()));
+		});
+		
+		return resultList;
 	}
 
 	@Override
@@ -422,10 +427,16 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	public List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates) {
 		if(dates.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeId", employeeId)
+		
+		List<WorkInfoOfDailyPerformance> resultList = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", subList)
 				.setParameter("dates", dates)
-				.getList(f -> f.toDomain());
+				.getList(f -> f.toDomain()));
+		});
+		
+		return resultList;
 	}
 
 }

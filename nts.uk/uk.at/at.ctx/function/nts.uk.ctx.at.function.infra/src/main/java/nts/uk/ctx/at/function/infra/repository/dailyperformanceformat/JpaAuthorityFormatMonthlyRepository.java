@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatMonthly;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
@@ -106,11 +108,14 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 
 	@Override
 	public void deleteExistData(String companyId, String dailyPerformanceFormatCode,List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
-			.setParameter("attendanceItemIds", attendanceItemIds)
-			.setParameter("companyId", companyId)
-			.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
-			.executeUpdate();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+				.setParameter("attendanceItemIds", subList)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+				.executeUpdate();
+		});
+		
 	}
 
 	@Override

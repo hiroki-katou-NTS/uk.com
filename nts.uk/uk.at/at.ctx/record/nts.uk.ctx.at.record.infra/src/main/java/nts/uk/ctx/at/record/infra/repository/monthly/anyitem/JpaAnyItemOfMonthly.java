@@ -785,11 +785,13 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 
 		List<AnyItemOfMonthly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			List<KrcdtMonAnyItemValueMerge> anyItemLst = this.queryProxy()
-					.query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnyItemValueMerge.class)
-					.setParameter("employeeIds", splitData).setParameter("yearMonths", yearMonthValues).getList();
-			anyItemLst.stream().forEach(c -> {
-				results.addAll(c.toDomainAnyItemOfMonthly());
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				List<KrcdtMonAnyItemValueMerge> anyItemLst = this.queryProxy()
+						.query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnyItemValueMerge.class)
+						.setParameter("employeeIds", splitData).setParameter("yearMonths", lstYearMonth).getList();
+				anyItemLst.stream().forEach(c -> {
+					results.addAll(c.toDomainAnyItemOfMonthly());
+				});
 			});
 		});
 		return results;

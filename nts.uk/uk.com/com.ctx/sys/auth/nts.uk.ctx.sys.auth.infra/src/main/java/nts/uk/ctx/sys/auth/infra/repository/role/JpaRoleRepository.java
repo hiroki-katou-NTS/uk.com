@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
@@ -38,7 +39,6 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			+ " WHERE e.cid = :companyId AND e.roleType = :roleType"
 			+ " AND e.assignAtr = :roleAtr ORDER BY e.assignAtr ASC, e.code ASC ";
 	
-	private static final Integer MAX_ELEMENTS = 1000;
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
 	 */
@@ -58,7 +58,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// select root
 		cq.select(root);
 
-		CollectionUtil.split(lstRoleId, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(lstRoleId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> predicateList = new ArrayList<>();
 
@@ -86,16 +86,20 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 		// select root
 		cq.select(root);
+		
+		List<SacmtRole> resultList = new ArrayList<>();
+		CollectionUtil.split(lstRoleId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> predicateList = new ArrayList<>();
 
-		// add where
-		List<Predicate> predicateList = new ArrayList<>();
-
-		predicateList.add(root.get(SacmtRole_.roleId).in(lstRoleId));
-		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.cid), companyId));
-		cq.where(predicateList.toArray(new Predicate[] {}));
-
-		List<SacmtRole> sacmtRoles = em.createQuery(cq).getResultList();
-		return sacmtRoles.stream().map(sacmtRole -> {
+			predicateList.add(root.get(SacmtRole_.roleId).in(subList));
+			predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.cid), companyId));
+			cq.where(predicateList.toArray(new Predicate[] {}));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		
+		return resultList.stream().map(sacmtRole -> {
 			return new Role(new JpaRoleGetMemento(sacmtRole));
 		}).collect(Collectors.toList());
 	}

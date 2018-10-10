@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeMonthly;
@@ -99,11 +101,14 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	 */
 	@Override
 	public void deleteExistData(String companyId, String businessTypeCode, List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
-		.setParameter("companyId", companyId)
-		.setParameter("businessTypeCode", businessTypeCode)
-		.setParameter("attendanceItemIds", attendanceItemIds)
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+				.setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode)
+				.setParameter("attendanceItemIds", subList)
 				.executeUpdate();
+		});
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -151,9 +156,14 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	
 	@Override
 	public List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, Collection<String> listBusinessTypeCode) {
-		return this.queryProxy().query(FIND_BY_LIST_CODE, KrcmtBusinessTypeMonthly.class)
-				.setParameter("companyId", companyId)
-				.setParameter("listBusinessTypeCode", listBusinessTypeCode).getList(f -> toDomain(f));
+		List<BusinessTypeFormatMonthly> resultList = new ArrayList<>();
+		CollectionUtil.split(new ArrayList<String>(listBusinessTypeCode), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_CODE, KrcmtBusinessTypeMonthly.class)
+					.setParameter("companyId", companyId)
+					.setParameter("listBusinessTypeCode", subList)
+					.getList(f -> toDomain(f)));
+		});
+		return resultList;
 	}
 
 	@Override

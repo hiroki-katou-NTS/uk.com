@@ -2,13 +2,16 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
@@ -57,9 +60,15 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	
 	@Override
 	public List<Identification> findByListEmployeeID(List<String> employeeIDs,GeneralDate startDate,GeneralDate endDate) {
-		return this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
-				.setParameter("employeeIds", employeeIDs).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).getList(c -> c.toDomain());
+		List<Identification> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
+				.setParameter("employeeIds", subList)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -109,8 +118,14 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 
 	@Override
 	public List<Identification> findByEmployeeID(String employeeID, List<GeneralDate> dates) {
-		return this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
-				.setParameter("employeeId", employeeID).setParameter("dates", dates).getList(c -> c.toDomain());
+		List<Identification> resultList = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
+				.setParameter("employeeId", employeeID)
+				.setParameter("dates", subList)
+				.getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 
 }

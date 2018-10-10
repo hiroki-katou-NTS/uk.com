@@ -125,14 +125,16 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 
 	@Override
 	public List<RemarksMonthlyRecord> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
-val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
 		List<RemarksMonthlyRecord> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtRemarksMonthlyRecord.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtRemarksMonthlyRecord.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList(c -> c.toDomain()));
+			});
 		});
 		return results;
 	}

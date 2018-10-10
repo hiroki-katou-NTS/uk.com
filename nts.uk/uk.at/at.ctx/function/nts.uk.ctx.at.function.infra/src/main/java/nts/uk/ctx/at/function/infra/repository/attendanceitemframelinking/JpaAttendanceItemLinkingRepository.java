@@ -5,12 +5,14 @@
 package nts.uk.ctx.at.function.infra.repository.attendanceitemframelinking;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
@@ -121,11 +123,22 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		if (CollectionUtil.isEmpty(frameNos)) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(FIND_BY_FRAME_NO, KfnmtAttendanceLink.class)
-				.setParameter("frameNos", frameNos.stream().map(BigDecimal::valueOf).collect(Collectors.toList()))
-				.setParameter("typeOfItem", BigDecimal.valueOf(typeOfItem))
-				.setParameter("frameCategory", BigDecimal.valueOf(frameCategory))
-				.getList(KfnmtAttendanceLink::toDomain);
+
+		BigDecimal bTypeOfItem = BigDecimal.valueOf(typeOfItem);
+		BigDecimal bFrameCategory = BigDecimal.valueOf(frameCategory);
+		List<AttendanceItemLinking> resultList = new ArrayList<>();
+		CollectionUtil.split(
+				frameNos.stream().map(BigDecimal::valueOf).collect(Collectors.toList()), 
+				DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, 
+				subList -> {
+					resultList.addAll(this.queryProxy().query(FIND_BY_FRAME_NO, KfnmtAttendanceLink.class)
+							.setParameter("frameNos", subList)
+							.setParameter("typeOfItem", bTypeOfItem)
+							.setParameter("frameCategory", bFrameCategory)
+							.getList(KfnmtAttendanceLink::toDomain));
+		});
+		
+		return resultList;
 	}
 
 }

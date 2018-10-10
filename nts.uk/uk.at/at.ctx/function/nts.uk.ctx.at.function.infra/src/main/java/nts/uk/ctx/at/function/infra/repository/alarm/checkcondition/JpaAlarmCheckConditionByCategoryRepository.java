@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.alarm.checkcondition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,7 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -73,9 +76,15 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 	@Override
 	public List<AlarmCheckConditionByCategory> findByCategoryAndCode(String companyId, int category, List<String> codes) {
 		String query = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId AND c.pk.category = :category AND c.pk.code IN :codes ";
-		return this.queryProxy().query(query, KfnmtAlarmCheckConditionCategory.class)
-				.setParameter("companyId", companyId).setParameter("category", category).setParameter("codes", codes)
-				.getList(c -> KfnmtAlarmCheckConditionCategory.toDomain(c));
+		List<AlarmCheckConditionByCategory> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(query, KfnmtAlarmCheckConditionCategory.class)
+					.setParameter("companyId", companyId).setParameter("category", category).setParameter("codes", subList)
+					.getList(c -> KfnmtAlarmCheckConditionCategory.toDomain(c)));
+		});
+		
+		return resultList;
 	}
 
 	@Override

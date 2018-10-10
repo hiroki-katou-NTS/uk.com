@@ -21,6 +21,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -40,9 +41,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaWorkplaceInfoRepository extends JpaRepository implements WorkplaceInfoRepository {
-
-	/** The Constant MAX_ELEMENTS. */
-	private static final Integer MAX_ELEMENTS = 1000;
 
 	/** The Constant FIND_WKP_DETAIL_HIERARCHY_ORDER. */
 	private static final String FIND_WKP_DETAIL_HIERARCHY_ORDER = "SELECT C FROM BsymtWorkplaceInfo AS C "
@@ -290,7 +288,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		// Split query where in.
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(
@@ -335,7 +333,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
 
-		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(
@@ -379,7 +377,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
 
-		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK)
@@ -426,7 +424,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(historyList, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(historyList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
@@ -471,8 +469,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
 
-		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subWkpList) -> {
-			CollectionUtil.split(histIds, MAX_ELEMENTS, (subHistList) -> {
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subWkpList) -> {
+			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subHistList) -> {
 				// add where
 				List<Predicate> lstpredicateWhere = new ArrayList<>();
 				lstpredicateWhere.add(
@@ -514,7 +512,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(historyList, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(historyList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			

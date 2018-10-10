@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonAlarmCheckCondRepository;
@@ -23,7 +24,7 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulMonAlarmsByListID(List<String> listErrorAlarmCheckID) {
 		List<MulMonthAlarmCheckCond> data = new ArrayList<>();
-		CollectionUtil.split(listErrorAlarmCheckID, 1000, subIdList ->{
+		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList ->{
 			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtMulMonAlarmCheck.class)
 					.setParameter("listErrorAlarmCheckID", subIdList).getList(c->c.toDomain())
 					);

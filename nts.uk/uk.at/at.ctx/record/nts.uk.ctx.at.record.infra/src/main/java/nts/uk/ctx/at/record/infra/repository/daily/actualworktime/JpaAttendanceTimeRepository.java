@@ -353,7 +353,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
-		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
+		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
@@ -405,8 +405,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<Integer> findAtt(String employeeId, List<GeneralDate> ymd) {
-		return this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
-				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList();
+		List<Integer> resultList = new ArrayList<>();
+		CollectionUtil.split(ymd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", subList)
+				.getList());
+		});
+		return resultList;
 	}
 	
 	@Override

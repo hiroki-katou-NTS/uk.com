@@ -115,11 +115,13 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 		
 		List<SpecialHolidayRemainData> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			val entitys = this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList();
-			for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				val entitys = this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList();
+				for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+			});
 		});
 		return results;
 	}
