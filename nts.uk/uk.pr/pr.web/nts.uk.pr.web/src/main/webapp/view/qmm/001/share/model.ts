@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm011.share.model {
+module nts.uk.pr.view.qmm001.share.model {
     import getText = nts.uk.resource.getText;
 	
     export class ItemModel {

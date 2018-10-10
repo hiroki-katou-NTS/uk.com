@@ -1,133 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 430, height: 400 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm007.c.vm.js" />
+        <com:scriptfile path="qmm007.c.start.js" />
+        <com:scriptfile path="qmm007.c.service.js" />
+        <com:stylefile path="qmm007.c.style.css" />
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="title" style="margin-bottom: 10px">
+                <!-- C1_1 -->
+                <span id="C1_1" class="label">#{i18n.getText('QMM007_38')}</span>
+            </div>
+            <!-- F1_2 名称 -->
+            <div id="C1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px;">
+                <span class="label">#{i18n.getText('QMM007_5')}</span>
+                <!-- C1_3 保険名称 -->
+                <span id="C1_3" class="label"  style="margin-left: 50px" data-bind = "text: code"></span>
+                <!-- C1_4 保険名称 -->
+                <span id="C1_4" class="label"  style="margin-left: 15px" data-bind = "text: name"></span>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 100px 10px;">
+                            <span class="label">#{i18n.getText('QMM007_39')}</span>
+                        </div>
+
+                    </td>
+                    <td id="C1_6" tabindex="1">
+                        <div>
+                            <div style="" class="cell"
+                                 data-bind="ntsRadioButton: {
+										checked: methodEditing,
+										option: itemList()[0],
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										group: 'periodOption'}">
+                            </div>
+
+                            <br/>
+                            <div style="margin: 10px 10px 10px 20px;">
+                                <span class="label warning"
+                                      style="">#{i18n.getText('QMM007_42')}</span>
+                            </div>
+                            <div class="cell" style=""
+                                 data-bind="ntsRadioButton: {
+										checked: methodEditing,
+										option: itemList()[1],
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										group: 'periodOption'}">
+                            </div>
 
 
-   <div>
-        <div
-                class="sidebar-content-header flex" style="width: 103%">
-            <span class="title">#{i18n.getText('QMM011_5')}</span>
+                        </div>
 
-            <div style="margin-left: 100px; margin-top: 10px;">
-                <div>
-                    <!-- A1_1-->
-                    <button class="proceed" id="A1_1" tabindex="1"
-                            data-bind="click: register,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
-                    <!-- A1_2 -->
-                    <button id="A1_2" tabindex="2"
-                            data-bind="click: openDscreen, timeClick: 1000, enable: !enableRegis() ">#{i18n.getText('QMM011_2')}</button>
-                    <!-- A1_3-->
-                    <button id="A1_3" tabindex="3"
-                            data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
+                    </td>
+
+
+                </tr>
+
+
+            </table>
+
+
+            <div class = "C1_8"  style="margin: 10px 0px 0px 165px;">
+                <!-- F1_8 期間 -->
+                <div id = "C1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_32')}</div>
+                <!-- F1_9 最新の履歴から引き継ぐ -->
+                <div id = "C1_9" tabindex = "2" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM011_45')}',
+												value: startYearMonth,
+												required: hasRequired(),
+												enable: hasRequired(),
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'}">
                 </div>
+                <!-- F1_10 初めから作成する。 -->
+                <span id="C1_10" class="label" data-bind="text :endYearMonth "></span>
             </div>
 
         </div>
-        <div class = "content flex">
-            <div class = "left flex">
-                <div id="C1_1"
-                     data-bind="ntsPanel:{width: '220px', height: '415px',direction: 'none', visible: true}">
-                    <div id="action">
-                        <!-- C1_2 履歴追加 -->
-                        <button style="float: left" id ="C1_2" tabindex="20"  data-bind="click: openEscreen,timeClick: 1000, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
-                        <!-- C1_3 履歴編集 -->
-                        <button style="margin-left: 45px"  id ="C1_3" tabindex="21"  data-bind="click: openFscreen, timeClick: 1000, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
-                    </div>
-                    <div>
-                        <!--C1_4 労災保険料率一覧 -->
-                        <table id="C1_4" tabindex="22"
-                               data-bind="ntsGridList: {
-												name: '#QMM011_8',
-												height: 310,
-												rows: 15,
-		                                        dataSource: listOccAccIsHis,
-		                                        primaryKey: 'hisId',
-		                                        columns: [
-		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
-																{headerText: '', key: 'display', width: 200, formatter: _.escape}
-
-								                		],
-								                multiple: false,
-		                                        value: selectedEmpInsHisId
-		                        				}">
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class = "right">
-               <div class="top">
-                   <div id="C2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
-                   <!--C2_2 開始年月 -->
-                   <span id="C2_2" class="label" data-bind="text: startYearMonth"></span>
-                   <!--C2_3 開始年月和暦 -->
-                   <span id="C2_3" class="label" data-bind="text: monthlyCalendar"></span>
-                   <!--C2_4 ～  -->
-                   <label id= "C2_4" data-bind="visible: !enableRegis()">#{i18n.getText('QMM011_9')}</label>
-                   <!--C2_5 終了年月  -->
-                   <span  id="C2_5" class="label" data-bind="text: endYearMonth"></span>
-               </div>
-
-                <div class = "table" style="width: 100%">
-                    <div id ="C2_6" class="set-row" style="width: 96.5%">
-                        <hr />
-                    </div>
-                    <table id="C3_1" tabindex="23" style="width: 80%">
-                        <colgroup>
-                            <col width="20px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th class="bg-green" style="border: 1px solid #CCC"></th>
-                            <th class="bg-green" style="border: 1px solid #CCC"></th>
-                            <th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_13')}</th>
-                            <th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_12')}</th>
-                        </tr>
-                        </thead>
-                        <tbody data-bind="foreach: listAccInsurPreRate()">
-                        <tr >
-
-                            <td class="bg-green" style="border: 1px solid #CCC">
-                            <span id = "C3_4" class= "label" data-bind="text: occAccInsurBusNo"></span>
-
-                            </td>
-                            <td id = "C3_5" class="bg-green" style="border: 1px solid #CCC;text-align: left;padding-left: 20px" data-bind="text: name"></td>
-
-                            <td>
-
-                                <div style="float: left" >
-                                        <input class = "C3_6" id = "C3_6"  data-bind="attr: {tabindex: $parent.setTabIndex(occAccInsurBusNo)},
-                                               ntsNumberEditor: {
-															option : {width: '60px', decimallength: 3},
-																constraint: 'InsuranceRate',
-																value: empConRatio,
-																enable: useArt == 1,
-																required: useArt == 1,
-																name: '#{i18n.getText('QMM011_13')}'
-																	}"/>
-
-                                    <span style="padding-left: 50px;" class= "label" id= "C3_7">#{i18n.getText('QMM011_15')}</span>
-                                </div>
-
-                            </td>
-                            <td>
-                                <div id = "C3_8"
-                                     data-bind="style: {textAlign: 'left'}, attr: {tabindex: $parent.setTabIndex(occAccInsurBusNo)},
-                                                    ntsComboBox: {
-																value: fracClass,
-																name:'#{i18n.getText('QMM011_12')}',
-																options: $parent.listPerFracClass,
-																optionsText: 'name',
-																optionsValue: 'code',
-																enable : useArt == 1
-																}">
-                                </div>
-
-                            </td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div id= "functions-area-bottom">
+            <!-- C2_1 登録 -->
+            <button id="C2_1" tabindex="3" class="proceed large"
+                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_44')}</button>
+            <!-- C2_2 削除 -->
+            <button id="C2_2" tabindex="4"
+                    data-bind="click: cancel">#{i18n.getText('QMM007_37')}</button>
         </div>
-   </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
