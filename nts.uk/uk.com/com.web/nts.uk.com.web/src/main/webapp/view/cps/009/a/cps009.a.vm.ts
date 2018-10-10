@@ -1388,7 +1388,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
                 isMultiple: false,
                 selectedSystemType: 5,
-                isrestrictionOfReferenceRange: false
+                isrestrictionOfReferenceRange: false,
+                isShowBaseDate: false
             }, true);
 
             if(error.hasError()) return;
@@ -1403,7 +1404,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 let output = getShared('outputCDL008');
                 if (output) {
                     let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
-                    self.selectionName(objSel == undefined ? " " : objSel.optionText);
+                    self.selectionName(objSel == undefined ? "" : objSel.optionText);
                     self.selectedCode(output);
                 }
             });
