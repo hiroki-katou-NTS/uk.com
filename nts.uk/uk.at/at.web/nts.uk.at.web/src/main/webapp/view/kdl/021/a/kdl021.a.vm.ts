@@ -19,6 +19,7 @@ module kdl021.a.viewmodel {
             //header
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'displayCode', width: 90 },
+                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', hidden: true },
                 { headerText: nts.uk.resource.getText("KDL021_4"), prop: 'name', width: 245, formatter: _.escape }
             ]);
             self.currentCodeList = ko.observableArray();
@@ -51,7 +52,7 @@ module kdl021.a.viewmodel {
                                 lstItem[i].attendanceItemDisplayNumber.toString()));
                         };
                         //set source
-                        let data = _.sortBy(self.dataSoure, ['code']);
+                        let data = _.sortBy(self.dataSoure, ['displayCode']);
                         self.items(data);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -67,7 +68,7 @@ module kdl021.a.viewmodel {
                                 lstItem[i].attendanceItemDisplayNumber.toString()));
                         };
                         //set source
-                        let data = _.sortBy(self.dataSoure, ['code']);
+                        let data = _.sortBy(self.dataSoure, ['displayCode']);
                         self.items(data);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -97,7 +98,7 @@ module kdl021.a.viewmodel {
         clearClick() {
             var self = this;
             self.items([]);
-            let data = _.sortBy(self.dataSoure, ['code']);
+            let data = _.sortBy(self.dataSoure, ['displayCode']);
             self.items(data);
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));

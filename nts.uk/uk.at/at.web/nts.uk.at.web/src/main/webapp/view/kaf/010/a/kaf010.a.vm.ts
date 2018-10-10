@@ -417,6 +417,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
+            if(self.displayCaculationTime()){
+                if(!appcommon.CommonProcess.checkWorkTypeWorkTime(self.workTypeCd(), self.siftCD(), "kaf010-workType-workTime-div")){
+                    return;    
+                }
+            }
             $('#kaf010-pre-post-select').ntsError('check');
             if(self.displayCaculationTime()){
                 $("#inpStartTime1").trigger("validate");
@@ -750,6 +755,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+                $("#kaf010-workType-workTime-div").ntsError('clear');
+                $("#kaf010-workType-workTime-div").css("border","none");
                 //view all code of selected item 
                 var childData = nts.uk.ui.windows.getShared('childData');
                 if (childData) {

@@ -97,7 +97,7 @@ public interface EmploymentHistoryItemRepository {
 	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod datePeriod, List<String> employmentCodes );
+	//List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod datePeriod, List<String> employmentCodes );
 	
 	List<String> getLstSidByListCodeAndDatePeriod(DatePeriod datePeriod, List<String> employmentCodes );
 

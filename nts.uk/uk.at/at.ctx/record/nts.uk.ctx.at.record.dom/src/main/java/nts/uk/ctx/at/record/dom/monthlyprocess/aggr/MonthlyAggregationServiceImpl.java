@@ -15,6 +15,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
@@ -58,6 +59,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	/** エラーメッセージ情報 */
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 	
 	/**
 	 * Managerクラス
@@ -137,7 +141,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		
 		// 社員の数だけループ　（並列処理対象）
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
-		ParallelWithContext.forEach(employeeIds, employeeId -> {
+		this.parallel.forEach(employeeIds, employeeId -> {
 			if (stateHolder.isInterrupt()) return;
 		
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);

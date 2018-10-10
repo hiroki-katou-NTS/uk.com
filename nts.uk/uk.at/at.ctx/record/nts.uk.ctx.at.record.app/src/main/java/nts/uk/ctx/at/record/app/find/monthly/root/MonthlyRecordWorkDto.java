@@ -7,12 +7,11 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
 import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemain;
@@ -23,6 +22,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -89,6 +89,10 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	/** 子の看護月別残数データ: 子の看護月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_CHILD_CARE_HD_REMAIN_NAME, layout = MONTHLY_CHILD_CARE_HD_REMAIN_CODE)
 	private MonthlyChildCareHdRemainDto childCare;
+
+	/** 管理期間の36協定時間: 管理期間の36協定時間 */
+	@AttendanceItemLayout(jpPropertyName = AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME, layout = AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE)
+	private AgreementTimeOfManagePeriodDto agreementTime;
 	
 	@Override
 	public String employeeId() {
@@ -179,8 +183,17 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
+	public MonthlyRecordWorkDto withAgreementTime(AgreementTimeOfManagePeriodDto agreementTime){
+		this.agreementTime = agreementTime;
+		return this;
+	}
+	
 	public AffiliationInfoOfMonthly toAffiliation(){
 		return this.affiliation == null ? null : this.affiliation.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+	}
+	
+	public AgreementTimeOfManagePeriod toAgreementTime(){
+		return this.agreementTime == null ? null : this.agreementTime.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public AttendanceTimeOfMonthly toAttendanceTime(){
@@ -229,14 +242,14 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return new IntegrationOfMonthly(
 				Optional.ofNullable(this.attendanceTime == null ? null : this.attendanceTime.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.affiliation == null ? null : this.affiliation.toDomain(employeeId, ym, closureID, closureDate)),
-				this.anyItem.toDomain(employeeId, ym, closureID, closureDate),
-				Optional.empty(),
+				this.anyItem == null ? new ArrayList<>() : this.anyItem.toDomain(employeeId, ym, closureID, closureDate),
+				Optional.ofNullable(agreementTime == null ? null : agreementTime.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.annLeave == null ? null : this.annLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				this.specialHoliday.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()),
-				this.remarks.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()),
+				ConvertHelper.mapTo(this.specialHoliday, s -> s.toDomain(employeeId, ym, closureID, closureDate)),
+				ConvertHelper.mapTo(this.remarks, s -> s.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
 	}
@@ -244,9 +257,23 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain){
 		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 		if(domain != null) {
-			dto.setAttendanceTime(!domain.getAttendanceTime().isPresent() ? null : AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().get()));
-			dto.setAffiliation(!domain.getAffiliationInfo().isPresent() ? null : AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().get()));
-            //TO DO convert continue
+			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
+			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().orElse(null)));
+			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
+			dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTime().orElse(null)));
+			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
+			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList()));
+			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
+			dto.setChildCare(MonthlyChildCareHdRemainDto.from(domain.getChildCare().orElse(null)));
+			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
+			dto.setRemarks(ConvertHelper.mapTo(domain.getRemarks(), c -> MonthlyRemarksDto.from(c)));
+			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
+			dto.setSpecialHoliday(ConvertHelper.mapTo(domain.getSpecialLeaveRemainList(), c -> SpecialHolidayRemainDataDto.from(c)));
+			dto.setYearMonth(domain.getAffiliationInfo().get().getYearMonth());
+			dto.setEmployeeId(domain.getAffiliationInfo().get().getEmployeeId());
+			dto.setClosureDate(ClosureDateDto.from(domain.getAffiliationInfo().get().getClosureDate()));
+			dto.setClosureID(domain.getAffiliationInfo().get().getClosureId().value);
+			dto.exsistData();
 		}
 		return dto;
 	}

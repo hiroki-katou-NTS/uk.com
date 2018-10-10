@@ -62,6 +62,13 @@ public class DeductionTimeSheet {
 	// 計上用
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 
+	//休憩
+	private final List<BreakTimeOfDailyPerformance> breakTimeOfDailyList;
+	//外出
+	private final Optional<OutingTimeOfDailyPerformance> dailyGoOutSheet;
+	//短時間
+	private final List<ShortWorkingTimeSheet> shortTimeSheets;
+	
 	
 	public static DeductionTimeSheet createTimeSheetForFixBreakTime(WorkTimeMethodSet setMethod,
 			RestClockManageAtr clockManage,  Optional<OutingTimeOfDailyPerformance> dailyGoOutSheet, TimeSpanForCalc oneDayRange,
@@ -80,7 +87,8 @@ public class DeductionTimeSheet {
 				CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, Optional.empty(), Optional.empty(),
 				breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
 				,predetermineTimeSetForCalc,workType,fixWoSetting);
-		return new DeductionTimeSheet(ded,record);
+		
+		return new DeductionTimeSheet(ded,record,breakTimeOfDailyList,dailyGoOutSheet,shortTimeSheets);
 	}
 
 	/**
