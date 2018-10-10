@@ -255,7 +255,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         public toScreenB(): void{
             let self = this;
-            setShared("QMM039_A_PARAMS", new GenericHistYMPeriod(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm()));
+            let params = {
+                historyID: self.salHis.historyID(),
+                periodStartYm: self.salHis.periodStartYm(),
+                periodEndYm: self.salHis.periodEndYm()
+            }
+            setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
 
             });
