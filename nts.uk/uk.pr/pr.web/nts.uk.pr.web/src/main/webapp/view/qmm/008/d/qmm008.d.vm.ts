@@ -102,6 +102,9 @@ module nts.uk.pr.view.qmm008.d {
                             });
                         });
                     }
+                    setTimeout(function () {
+                        $("tr[data-id="+ self.currentCode()+"] ").focus();
+                    }, 100);
                 });
 
             }
@@ -228,7 +231,9 @@ module nts.uk.pr.view.qmm008.d {
                                     }
                                 }
                             }
-                            $("tr[data-id='code'] ").focus();
+                            setTimeout(function () {
+                                $("tr[data-id="+ self.currentCode()+"] ").focus();
+                            }, 100);
                         });
                         block.clear();
                     });
