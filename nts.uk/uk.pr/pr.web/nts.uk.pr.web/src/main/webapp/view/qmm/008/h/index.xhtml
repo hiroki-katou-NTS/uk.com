@@ -20,7 +20,7 @@
 				<div class="label dialog-title">#{i18n.getText('QMM008_204')}</div>
 				<div style="margin-top: 20px; min-width: 550px">
 					<div style="width: 130px; display: inline-block;"
-						 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM008_114')}</div>
+						 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM008_114')}</div>
 					<div style="display: inline-block;"
 						 data-bind="text: socialInsuranceCode"></div>
 					<span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class = "limited-label"
@@ -40,7 +40,7 @@
 					</div>
 					<div style="margin-top: 20px; margin-left: 130px;  min-width: 420px">
 						<div style="width: 100px; display: inline-block"
-							data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_196')}</div>
+							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM008_196')}</div>
 						<div id="H1_10" style="display: inline-block"
 							data-bind="ntsDatePicker: {
 							name: '#[QMM008_197]', 
