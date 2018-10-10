@@ -945,7 +945,7 @@ public class CalculationRangeOfOneDay {
 	 			 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flowRestTimezone,flowRestSetting, shortTimeSheets,
 	 			 workTimeShortTimeSet,commonSetting,holidayCalcMethodSet,predetermineTimeSetForCalc,worktype,fixWoSetting);
 	 
-	 	return new DeductionTimeSheet(dedTimeSheet,recordTimeSheet); 
+	 	return new DeductionTimeSheet(dedTimeSheet,recordTimeSheet,breakTimeOfDailyList,goOutTimeSheetList,shortTimeSheets); 
 	 }
 	 
 	 /**

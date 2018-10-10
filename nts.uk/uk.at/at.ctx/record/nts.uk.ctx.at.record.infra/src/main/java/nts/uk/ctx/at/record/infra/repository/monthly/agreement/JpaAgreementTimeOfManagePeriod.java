@@ -41,6 +41,11 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 			+ "AND a.PK.yearMonth IN :yearMonths "
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth ";
 	
+	private static final String REMOVE_BY_PK =
+			"DELETE FROM KrcdtMonMngAgreTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+	
 	private static final String REMOVE_BY_YEAR =
 			"DELETE FROM KrcdtMonMngAgreTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -122,8 +127,10 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth) {
 
-		this.commandProxy().remove(KrcdtMonMngAgreTime.class,
-				new KrcdtMonMngAgreTimePK(employeeId, yearMonth.v()));
+		this.getEntityManager().createQuery(REMOVE_BY_PK)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.executeUpdate();
 	}
 
 	/** 削除　（年度） */

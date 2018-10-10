@@ -19,7 +19,7 @@ public class DataMngOfDeleteExpired {
 	/**	特別休暇付与残数データ一覧 */
 	private List<SpecialLeaveGrantRemainingData> lstGrantData;
 	/**
-	 *  上限超過消滅日数
+	 * 付与日 と　上限超過消滅日数
 	 */
-	Map<GeneralDate, Double> limitDays;
+	private Map<GeneralDate, Double> mapGrantDays;
 }

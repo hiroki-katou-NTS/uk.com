@@ -194,7 +194,8 @@
 						</com:ko-if>
 					</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 1">
-						<input id="startValue" style="width: 100px ! important"
+						<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
+							<input id="startValue" style="width: 100px ! important"
 							class="value-input need-check"
 							data-bind="ntsTimeEditor: {
 						 				value: currentAtdItemCondition.compareStartValue,
@@ -213,6 +214,8 @@
 																			 	inputFormat: 'time',
 																			 	mode: 'time', 
 																			 	required: currentAtdItemCondition.conditionType() == 0}" />
+						</com:ko-if>
+						
 					</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 2">
 						<input id="startValue" style="width: 100px ! important"

@@ -41,6 +41,7 @@ public class LateDecisionClock {
 	 * @param predetermineTimeSet
 	 * @param deductionTimeSheet
 	 * @param lateGraceTime
+	 * @param breakTimeList 
 	 * @return
 	 */
 	public static Optional<LateDecisionClock> create(
@@ -49,7 +50,8 @@ public class LateDecisionClock {
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting lateGraceTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType) {
+			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType, 
+			List<TimeSheetOfDeductionItem> breakTimeList) {
 
 		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
@@ -67,8 +69,9 @@ public class LateDecisionClock {
 				// 猶予時間帯の作成                                                                                                   
 				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getStart(),
 																	 calｃRange.get().getStart().forwardByMinutes(lateGraceTime.getGraceTime().valueAsMinutes()));
-				// 重複している控除分をずらす(休憩と育児)
-				List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).collect(Collectors.toList());
+				// 重複している控除分をずらす(休憩)
+				//List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getBreakTimeOfDailyList().stream().map(tc -> tc.changeAllTimeSheetToDeductionItem()).flatMap(List::stream).collect(Collectors.toList());
+				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
 				//EnterPriseでは短時間系との重複はとっていないためコメントアウト
 //				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isChildCare()).map(t -> t.getTimeSheet()).collect(Collectors.toList());
 				

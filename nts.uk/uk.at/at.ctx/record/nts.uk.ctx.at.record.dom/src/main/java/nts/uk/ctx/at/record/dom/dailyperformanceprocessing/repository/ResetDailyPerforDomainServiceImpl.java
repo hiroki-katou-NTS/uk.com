@@ -419,9 +419,10 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							
 							// ---------------------
 							// neu nhu attItemIdStateOfTimeLeaving chua gia tri cua Id nao, thi Id do lay
-							// gia tri cua Old, còn nếu k chua thì lấy New							
+							// gia tri cua Old, còn nếu k chua thì lấy New			
+														
 							for(int itemId : attItemIds){
-								if (attItemIdStateOfTimeLeaving.contains(itemId)) {
+								if (attItemIdStateOfTimeLeaving.stream().anyMatch(item -> item.getAttendanceItemId() == itemId)) {
 									// get itemValue of Id
 									Optional<ItemValue> itemValue = converter.convert(itemId);
 									// merge value of Id to converter2

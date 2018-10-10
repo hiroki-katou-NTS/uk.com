@@ -365,12 +365,16 @@ public class MonthlyPerformanceCorrectionProcessor {
 			ApprovalProcessingUseSetting approvalProcessingUseSetting = optApprovalProcessingUseSetting.get();
 			if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
 				// アルゴリズム「ログイン社員の承認対象者の取得」を実行する
-				// request list 534
+//				// request list 534
+//				ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter
+//						.getApprovalEmpStatusMonth(AppContexts.user().employeeId(), new YearMonth(yearMonth),
+//								screenDto.getClosureId(), screenDto.getClosureDate().toDomain(),
+//								screenDto.getSelectedActualTime().getEndDate());
+				//Imported（就業）「基準社員の承認対象者」を取得する request list 133
 				ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter
-						.getApprovalEmpStatusMonth(AppContexts.user().employeeId(), new YearMonth(yearMonth),
-								screenDto.getClosureId(), screenDto.getClosureDate().toDomain(),
-								screenDto.getSelectedActualTime().getEndDate());
-
+						.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), 
+								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+				
 				if (approvalRootOfEmloyee == null) {
 					throw new BusinessException("Msg_916");
 				}
@@ -383,7 +387,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				for (String empId : empIds) {
 					Closure closureDataByEmployee = closureService.getClosureDataByEmployee(empId,
 							screenDto.getSelectedActualTime().getEndDate());
-					if (closureDataByEmployee != null) {
+					if (closureDataByEmployee != null  && closureDataByEmployee.getClosureId().value ==  screenDto.getClosureId()) {
 						employeeIds.add(empId);
 					}
 				}
