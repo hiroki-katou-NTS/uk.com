@@ -101,10 +101,19 @@ module nts.uk.pr.view.qmm008.d {
                                 $("#D4_3").focus();
                             });
                         });
+                        setTimeout(function () {
+                            $("tr[data-id="+ self.currentCode()+"] ").focus();
+                            _.defer(function() {
+                                $("#D4_3").focus();
+                            });
+                        }, 500);
+                        setTimeout(function () {
+                            _.defer(function() {
+                                $("#D4_3").focus();
+                            });
+                        }, 800);
                     }
-                    setTimeout(function () {
-                        $("tr[data-id="+ self.currentCode()+"] ").focus();
-                    }, 500);
+
                 });
 
             }
@@ -144,8 +153,6 @@ module nts.uk.pr.view.qmm008.d {
                                 self.currentCode(response.code);
                                 self.isEnableCode(false);
 
-                                $("tr[data-id='code'] ").focus();
-
                             });
                             _.defer(function() {
                                 $("#D4_3").focus();
@@ -167,9 +174,6 @@ module nts.uk.pr.view.qmm008.d {
                             }
                             self.isEnableCode(false);
                             $("#D4_3").focus();
-                            $("tr[data-id='code'] ").focus()
-
-
 
                         });
                         block.clear();
@@ -233,7 +237,15 @@ module nts.uk.pr.view.qmm008.d {
                             }
                             setTimeout(function () {
                                 $("tr[data-id="+ self.currentCode()+"] ").focus();
+                                _.defer(function() {
+                                    $("#D4_3").focus();
+                                });
                             }, 500);
+                            setTimeout(function () {
+                                _.defer(function() {
+                                    $("#D4_3").focus();
+                                });
+                            }, 800);
                         });
                         block.clear();
                     });

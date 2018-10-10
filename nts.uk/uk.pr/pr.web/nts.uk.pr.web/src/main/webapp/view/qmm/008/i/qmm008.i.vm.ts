@@ -18,7 +18,8 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         selectedOffice: any = null;
         selectedHistoryId: string = "";
         selectedHealthInsurance: KnockoutObservable<number> = ko.observable(null);
-
+        // for fix grid height in ie
+        treeGridHeight: KnockoutObservable<number> = ko.observable(595);
         // Contribution contribution item
         selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '', displayStartJM: '' });
         contributionRate: KnockoutObservable<model.ContributionRate> = ko.observable(null);
@@ -31,6 +32,9 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             let self = this;
             self.watchDataChanged();
             self.initBlankData();
+            if ((/Chrome/.test(navigator.userAgent)) && !(/Edge/.test(navigator.userAgent))) {
+                self.treeGridHeight(580);
+            }
         }
 
         initBlankData() {

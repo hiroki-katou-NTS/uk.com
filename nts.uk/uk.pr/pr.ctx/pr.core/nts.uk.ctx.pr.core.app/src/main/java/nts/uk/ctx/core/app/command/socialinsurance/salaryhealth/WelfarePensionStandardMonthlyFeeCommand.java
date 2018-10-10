@@ -11,15 +11,16 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateCommandWelfare;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFeeRepository;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.GradeWelfarePensionInsurancePremium;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.*;
 
 @Stateless
 public class WelfarePensionStandardMonthlyFeeCommand extends CommandHandlerWithResult<UpdateCommandWelfare, List<String>> {
 	
 	@Inject
 	private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
+
+	@Inject
+	private WelfarePensionInsuranceClassificationRepository welfarePensionInsuranceClassificationRepository;
 	
 	@Override
 	protected List<String> handle(CommandHandlerContext<UpdateCommandWelfare> context) {
@@ -30,9 +31,10 @@ public class WelfarePensionStandardMonthlyFeeCommand extends CommandHandlerWithR
 		// ドメインモデル「厚生年金保険月額保険料額」を更新する
 		Optional<EmployeesPensionMonthlyInsuranceFee> employeesPension = employeesPensionMonthlyInsuranceFeeRepository
 				.getEmployeesPensionMonthlyInsuranceFeeByHistoryId(command.getHistoryId());
+		Optional<WelfarePensionInsuranceClassification> data = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(command.getHistoryId());
 		if (employeesPension.isPresent()) {
 			List<GradeWelfarePensionInsurancePremium> dataUpdate = command.getCusWelfarePensions().stream()
-					.map(x -> x.fromToDomain()).collect(Collectors.toList());
+					.map(x -> x.fromToDomain(data)).collect(Collectors.toList());
 			employeesPension.get().updateGradeList(dataUpdate);
 			List<GradeWelfarePensionInsurancePremium> datacheck = employeesPension.get().getPensionInsurancePremium();
 			if(datacheck.isEmpty()) {

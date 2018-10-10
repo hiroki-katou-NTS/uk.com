@@ -25,7 +25,7 @@
 					data-bind="ntsSearchBox: {
 								targetKey: 'code', 
 								mode:'igTreeDrag', 
-								comId:'B1_5', 
+								comId:'B1_5_content',
 								items: healthInsuranceRateTreeList, 
 								selected: selectedHealthInsurance, 
 								selectedKey: 'code', 
@@ -37,20 +37,23 @@
 					<button style="float: right" id="B1_4" tabindex="1"
 						data-bind="click: editHistory, enable: $vm.viewmodelB.isUpdateMode() ? $vm.viewmodelB.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
 				</div>
-				<div id="B1_5" tabindex="1"
-					style="background-color: white; margin-top: 15px; height: 585px;"
-					data-bind="ntsTreeDragAndDrop:{
-										width: 290,
-										dataSource: healthInsuranceRateTreeList,
-										value: selectedHealthInsurance,
-										primaryKey: 'code',
-										childDataKey: 'child',
-										primaryText: 'displayText',
-										maxDeepLeaf: 1,
-										maxChildInNode: 20,
-										multiple: false,
-										enable: true}">
-				</div>
+				<div id = "B1_5" tabindex="1">
+                    <div id="B1_5_content"
+                        style="background-color: white; margin-top: 15px;"
+                        data-bind="ntsTreeDragAndDrop:{
+                                            width: 290,
+                                            height: treeGridHeight,
+                                            dataSource: healthInsuranceRateTreeList,
+                                            value: selectedHealthInsurance,
+                                            primaryKey: 'code',
+                                            childDataKey: 'child',
+                                            primaryText: 'displayText',
+                                            maxDeepLeaf: 1,
+                                            maxChildInNode: 20,
+                                            multiple: false,
+                                            enable: true}">
+                    </div>
+                </div>
 			</div>
 		</div>
 		<div class="fixed-flex-layout-right right-panel"
