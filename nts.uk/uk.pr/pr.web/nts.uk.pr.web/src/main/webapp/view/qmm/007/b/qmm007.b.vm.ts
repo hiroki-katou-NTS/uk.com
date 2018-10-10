@@ -21,12 +21,13 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
             block.invisible()
             let self = this;
             let params = getShared('QMM007_PARAMS_TO_SCREEN_B');
+            self.startYearMonth.subscribe((data) => {
+                self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString().split(' ').join('')]));
+            });
             if(params) {
-                self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(params.startYearMonth).toString().split(' ').join('')]));
                 self.code(params.code);
                 self.name(params.name);
-                self.startYearMonth(params.startYearMonth);
-                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM007_34', [self.convertMonthYearToString(self.startYearMonth())]));
+                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM007_34', [self.convertMonthYearToString(params.startYearMonth)]));
             }
             block.clear();
         }
