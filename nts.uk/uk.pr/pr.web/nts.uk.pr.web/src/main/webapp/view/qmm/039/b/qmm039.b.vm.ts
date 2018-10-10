@@ -7,17 +7,22 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import hasError = nts.uk.ui.errors.hasError;
     import model = nts.uk.pr.view.qmm039.share.model;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
-        timeCloseDateSelectedCode: KnockoutObservable<number>;
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
+
+
+
+
+
         constructor() {
             let self = this;
-            let params = getShared("QMM039_A_PARAMS");
+
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");
             self.dateValue = ko.observable({});
@@ -32,16 +37,52 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 self.dateValue.valueHasMutated();
             });
 
+            let params = getShared("QMM039_A_PARAMS");
+            if (params) {
 
-            let displayLastestHistory = "";
-            self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.NO_HISTORY, getText('QMM039_28', [displayLastestHistory])));
-            self.takeoverMethod(0);
+                let period = params.period, displayLastestStartHistory = "";
+                if (period && Object.keys(period).length > 0) {
+                    let startYM = period.periodStartYm;
+                    let endYM = period.periodEndYm;
+                    displayLastestStartHistory = String(startYM).substring(0, 4) + "/" + String(startYM).substring(4, 6);
+                    self.startDateString(startYM);
+                    self.endDateString(endYM);
+                }
 
-            //self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.NO_HISTORY, getText('QMM039_29'));
+                if (displayLastestStartHistory.length > 0) {
+                    self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.WITH_HISTORY, getText('QMM039_29', [displayLastestStartHistory])));
+                    self.takeoverMethod(0);
+                }
+                self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.NO_HISTORY, getText('QMM039_30')));
+
+            }
+            block.clear();
         }
 
         addNewHistory() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            if (self.takeoverMethod() == 0) {
+                let startValidPeriod = self.dateValue().startDate.replace('/', '');
 
+
+                if (startValidPeriod <= self.startDateString().toString() || startValidPeriod <= self.endDateString().toString()) {
+                    dialog.alertError({messageId: "Msg_79"});
+                    return;
+                }
+
+            }
+
+            setShared('QMM039_B_RES_PARAMS', {
+                periodStartYm: self.dateValue().startDate,
+                periodEndYm: self.dateValue().endDate,
+                takeoverMethod: self.takeoverMethod()
+            });
+            nts.uk.ui.windows.close();
         }
 
         cancel() {

@@ -147,7 +147,7 @@ module nts.uk.pr.view.qmm039.share.model {
     }
 
     export enum INHERITANCE_CLS {
-        NO_HISTORY = 0,
-        WITH_HISTORY = 1
+        WITH_HISTORY = 0,
+        NO_HISTORY = 1
     }
 }
