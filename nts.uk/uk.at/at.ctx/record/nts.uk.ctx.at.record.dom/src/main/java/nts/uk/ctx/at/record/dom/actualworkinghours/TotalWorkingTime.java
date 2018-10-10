@@ -744,7 +744,8 @@ public class TotalWorkingTime {
 	 */
 	public AttendanceTime recalcActualTime() {
 		//実働時間
-		return recalcTotalWorkingTime(); 
+		//return recalcTotalWorkingTime();
+		return this.getWithinStatutoryTimeOfDaily().getActualWorkTime();
 						 //+変形基準内残業を足して返す;
 	}
 	/**

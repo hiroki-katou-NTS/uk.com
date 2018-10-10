@@ -94,7 +94,7 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-
+        
         export function invisible() {
             let rect = calcRect();
 

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AbsenceReruitmentMngInPeriodQuery {
@@ -45,7 +46,7 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param lstDataDetail 振出振休明細
 	 * @return
 	 */
-	double calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail);
+	ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail);
 	/**
 	 * 6.残数と未消化を集計する
 	 * @param lstDataDetail 「振出振休明細」
@@ -76,7 +77,8 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param remainData
 	 * @return
 	 */
-	AbsRecDetailPara getUnUseDayOfRecInterim(InterimRecMng interimRecMng, InterimRemain remainData);
+	AbsRecDetailPara getUnUseDayOfRecInterim(InterimRecMng interimRecMng, InterimRemain remainData, LeaveSetOutput getSetForLeave,
+			GeneralDate startDate, GeneralDate baseDate, String cid, String sid);
 	/**
 	 * 5.時系列順で相殺する
 	 * @param lstDetailData

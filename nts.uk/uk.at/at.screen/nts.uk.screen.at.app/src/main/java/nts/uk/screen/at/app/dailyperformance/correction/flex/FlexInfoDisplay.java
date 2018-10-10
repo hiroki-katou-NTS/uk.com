@@ -87,7 +87,7 @@ public class FlexInfoDisplay {
 		 }
 		 //TODO 対応するドメインモデル「月別実績の勤怠時間」を取得する
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, getEmploymentCode(companyId, new DateRange(null, baseDate), employeeId));
+				.findByEmploymentCD(companyId, getEmploymentCode(companyId, baseDate, employeeId));
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		FlexShortage dataMonth = new FlexShortage();
 		List<WorkingConditionItem> workConditions = new ArrayList<>();
@@ -155,10 +155,9 @@ public class FlexInfoDisplay {
 		return true;
 	}
 	
-	private String getEmploymentCode( String companyId, DateRange dateRange, String sId) {
+	private String getEmploymentCode( String companyId, GeneralDate dateRange, String sId) {
 		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
-		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
-		return employmentCode;
+		return employment == null ? "" : employment.getEmploymentCode();
 	}
 	
 	private void mapValue(List<ItemValue> items, FlexShortage dataMonth){

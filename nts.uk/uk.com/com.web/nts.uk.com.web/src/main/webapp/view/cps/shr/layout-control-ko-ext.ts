@@ -97,9 +97,6 @@ module nts.custombinding {
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
-                    html {
-                        -ms-overflow-y: hidden;
-                    }
                     .layout-control.dragable{
                         width: 1245px;
                     }

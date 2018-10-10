@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyActualResultRCPK;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyRecordWorkType;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements MonthlyRecordWorkTypeRepository {
 
@@ -50,7 +50,7 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 		this.commandProxy().insert(newEntity);
 	}
 		
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateMonthlyRecordWorkType(MonthlyRecordWorkType monthlyRecordWorkType) {
 		KrcmtMonthlyRecordWorkType newEntity = KrcmtMonthlyRecordWorkType.toEntity(monthlyRecordWorkType);

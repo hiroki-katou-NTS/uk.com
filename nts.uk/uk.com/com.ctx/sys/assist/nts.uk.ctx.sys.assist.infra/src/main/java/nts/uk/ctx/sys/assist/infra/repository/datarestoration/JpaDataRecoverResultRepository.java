@@ -41,7 +41,7 @@ public class JpaDataRecoverResultRepository extends JpaRepository implements Dat
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void updateEndDateTimeExecutionResult(String dataRecoveryProcessId,
 			DataRecoveryOperatingCondition dataRecoveryOperatingCondition) {
 		

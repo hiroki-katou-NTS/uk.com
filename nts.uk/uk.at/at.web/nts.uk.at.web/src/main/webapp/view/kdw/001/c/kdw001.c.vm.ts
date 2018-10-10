@@ -82,7 +82,8 @@ module nts.uk.at.view.kdw001.c {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: false
+                    isShowSelectAllButton: false,
+                    maxRows: 10
                 };
 
 
@@ -316,7 +317,8 @@ module nts.uk.at.view.kdw001.c {
                                         closureID: self.closureId(),
                                         lstEmployeeID: listEmpSelectedId,
                                         periodStartDate: self.dateValue().startDate,
-                                        periodEndDate: self.dateValue().endDate
+                                        periodEndDate: self.dateValue().endDate,
+                                        processingMonth : self.startDateValidate.toString().split("/")[0]+self.startDateValidate.toString().split("/")[1]
                                     });
                                     $("#wizard").ntsWizard("next").done(function() {
                                         $('#checkBox1').focus();
@@ -343,7 +345,8 @@ module nts.uk.at.view.kdw001.c {
                                     closureID: self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
-                                    periodEndDate: self.dateValue().endDate
+                                    periodEndDate: self.dateValue().endDate,
+                                    processingMonth : self.startDateValidate.toString().split("/")[0]+self.startDateValidate.toString().split("/")[1]
                                 });
                                 $("#wizard").ntsWizard("next").done(function() {
                                     $('#checkBox1').focus();

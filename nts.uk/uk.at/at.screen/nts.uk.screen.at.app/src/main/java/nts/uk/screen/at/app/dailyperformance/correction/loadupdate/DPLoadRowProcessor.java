@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.loadupdate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +16,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
@@ -30,8 +34,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.CellEdit;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellDataDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPCellStateDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPControlDisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
@@ -103,7 +109,7 @@ public class DPLoadRowProcessor {
 			String emp = param.getOnlyLoadMonth() ? param.getLstEmployee().get(0).getId() : listEmployeeId.get(0);
 				result.setMonthResult(dPMonthFlexProcessor
 						.getDPMonthFlex(new DPMonthFlexParam(companyId, emp, param.getDateMonth(),
-								process.getEmploymentCode(companyId, new DateRange(null, param.getDateMonth()), emp), dailyPerformanceDto, param.getAutBussCode())));
+								process.getEmploymentCode(companyId, param.getDateMonth(), emp), dailyPerformanceDto, param.getAutBussCode())));
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
@@ -146,6 +152,9 @@ public class DPLoadRowProcessor {
 		result.setDomainOld(param.getDailys().stream().map(x ->{
 			return mapDtoChange.getOrDefault(Pair.of(x.getEmployeeId(), x.getDate()), x);
 		}).collect(Collectors.toList()));
+		
+		Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld = param.getDailys().stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
+		result.setLstCellStateCalc(itemCalcScreen(mapDtoChange, mapDtoOld, param.getLstData(), param.getLstAttendanceItem().stream().collect(Collectors.toMap(x -> x.getId(), x -> x)), param.getCellEdits()));
 		Map<String, DailyModifyResult> resultDailyMap = resultDailys.stream().collect(Collectors
 				.toMap(x -> process.mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -259,6 +268,42 @@ public class DPLoadRowProcessor {
 		
 		result.setLstData(lstData);
 		return result;
+	}
+	
+	public List<DPCellStateDto> itemCalcScreen(Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange, Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld, List<DPDataDto> lstData, Map<Integer, DPAttendanceItem> itemHeaders, List<CellEdit> cellEdits){
+		List<DPCellStateDto> lstCellCalcAll = new ArrayList<>();
+		mapDtoChange.forEach((key, dtoNew) -> {
+			val dtoOld = mapDtoOld.get(key);
+			DailyItemValue dailyItemNew = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoNew, itemHeaders.keySet()))
+							.createEmpAndDate(dtoNew.employeeId(), dtoNew.workingDate());
+			
+			DailyItemValue dailyItemOld = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoOld, itemHeaders.keySet()))
+					.createEmpAndDate(dtoOld.employeeId(), dtoOld.workingDate());
+			
+			Optional<DPDataDto> data = lstData.stream().filter(x -> x.getDate().equals(key.getRight()) && x.getEmployeeId().equals(key.getLeft())).findFirst();
+			
+		    if(data.isPresent()) lstCellCalcAll.addAll(lstCellCalc(dailyItemOld.getItems(), dailyItemNew.getItems(), itemHeaders, data.get(), cellEdits));
+		});
+		return lstCellCalcAll;
+	}
+	
+	public List<DPCellStateDto> lstCellCalc(List<ItemValue> itemOlds, List<ItemValue> itemNews, Map<Integer, DPAttendanceItem> itemHeaders, DPDataDto dataSource, List<CellEdit> cellEdits){
+		List<DPCellStateDto> lstCellCalc = new ArrayList<>();
+		itemOlds = itemOlds.stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
+		List<ItemValue> itemNewTemps = itemNews.stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
+		List<ItemValue> items = itemOlds.stream().filter(x -> !itemNewTemps.contains(x) && !cellEdits.contains(new CellEdit("_"+dataSource.getId(), x.getItemId()))).collect(Collectors.toList());
+		items.stream().forEach(x ->{
+			val item = itemHeaders.get(x.getItemId());
+			if (item != null && itemHeaders.get(x.getItemId()).getAttendanceAtr() == 4) {
+				lstCellCalc.add(new DPCellStateDto("_"+dataSource.getId(), DPText.NO+ x.getItemId(), Arrays.asList(DPText.STATE_CALC)));
+				lstCellCalc.add(new DPCellStateDto("_"+dataSource.getId(), DPText.NAME+ x.getItemId(), Arrays.asList(DPText.STATE_CALC)));
+			} else if (item != null) {
+				lstCellCalc.add(new DPCellStateDto("_"+dataSource.getId(), DPText.ADD_CHARACTER+ x.getItemId(), Arrays.asList(DPText.STATE_CALC)));
+			}else{
+				//
+			}
+		});
+		return lstCellCalc;
 	}
 
 }

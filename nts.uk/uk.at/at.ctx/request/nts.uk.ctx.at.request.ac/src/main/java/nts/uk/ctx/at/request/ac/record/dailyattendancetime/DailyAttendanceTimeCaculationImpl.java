@@ -3,6 +3,7 @@
 package nts.uk.ctx.at.request.ac.record.dailyattendancetime;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
@@ -42,9 +44,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
 		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
 		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
-		dailyAttendanceTimePubImport.setBreakStartTime(breakStartTimes.stream().map(x->new AttendanceTime(x)).collect(Collectors.toList()));
-		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime.stream().map(x->new AttendanceTime(x)).collect(Collectors.toList()));
-		
+		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
+		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
 		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		
@@ -57,6 +58,13 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		return dailyAttendanceTimeCaculationImport;
 	}
 	
+	private List<AttendanceTime> getTimes(List<Integer> inputTimes) {
+		List<AttendanceTime> startTimes = !CollectionUtil.isEmpty(inputTimes)
+				? inputTimes.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList())
+				: Collections.emptyList();
+		return startTimes;
+	}
+
 	/**
 	 * @param timeCal
 	 * @return

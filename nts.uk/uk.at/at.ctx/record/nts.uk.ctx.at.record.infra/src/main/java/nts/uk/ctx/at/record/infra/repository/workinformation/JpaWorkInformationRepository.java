@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -21,11 +22,15 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfoPK;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -190,9 +195,48 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod) {
-		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_DESC, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeId", employeeId).setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+		try {
+			PreparedStatement sqlSchedule = this.connection().prepareStatement(
+					"select * from KRCDT_WORK_SCHEDULE_TIME where SID = ? and YMD >= ? and YMD <= ? order by YMD desc");
+			sqlSchedule.setString(1, employeeId);
+			sqlSchedule.setDate(2, Date.valueOf(datePeriod.start().localDate()));
+			sqlSchedule.setDate(3, Date.valueOf(datePeriod.end().localDate()));
+			List<KrcdtWorkScheduleTime> scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
+				KrcdtWorkScheduleTime entity = new KrcdtWorkScheduleTime();
+				entity.krcdtWorkScheduleTimePK = new KrcdtWorkScheduleTimePK(
+						rec.getString("SID"),
+						rec.getGeneralDate("YMD"),
+						rec.getInt("WORK_NO"));
+				entity.attendance = rec.getInt("ATTENDANCE");
+				entity.leaveWork = rec.getInt("LEAVE_WORK");
+				return entity;
+			});
+			
+			PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
+					"select * from KRCDT_DAI_PER_WORK_INFO where SID = ? and YMD >= ? and YMD <= ? order by YMD desc ");
+			sqlWorkInfo.setString(1, employeeId);
+			sqlWorkInfo.setDate(2, Date.valueOf(datePeriod.start().localDate()));
+			sqlWorkInfo.setDate(3, Date.valueOf(datePeriod.end().localDate()));
+			
+			return new NtsResultSet(sqlWorkInfo.executeQuery()).getList(rec -> {
+				GeneralDate ymd = rec.getGeneralDate("YMD");
+				int calcState = rec.getInt("CALCULATION_STATE"),
+						goStraight = rec.getInt("GO_STRAIGHT_ATR"),
+						backStraight = rec.getInt("BACK_STRAIGHT_ATR"),
+						dayOfWeek = rec.getInt("DAY_OF_WEEK"); 
+				return new WorkInfoOfDailyPerformance(employeeId, 
+						new WorkInformation(rec.getString("RECORD_WORK_WORKTIME_CODE"), rec.getString("RECORD_WORK_WORKTYPE_CODE")), 
+						new WorkInformation(rec.getString("SCHEDULE_WORK_WORKTIME_CODE"), rec.getString("SCHEDULE_WORK_WORKTYPE_CODE")), 
+						calcState == CalculationState.Calculated.value ? CalculationState.Calculated : CalculationState.No_Calculated, 
+						goStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+						ymd, EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), scheduleTimes.stream()
+																	.filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd)).map(c -> c.toDomain())
+																	.collect(Collectors.toList()));
+			});
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -212,10 +256,12 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void updateByKey(WorkInfoOfDailyPerformance domain) {
-		Optional<KrcdtDaiPerWorkInfo> dataOpt = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", domain.getEmployeeId())
-				.setParameter("ymd", domain.getYmd()).getSingle();
-		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo(new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd()));
+
 		if(domain != null){
+			KrcdtDaiPerWorkInfo data = this.findKrcdtDaiPerWorkInfoWithJdbc(
+					domain.getEmployeeId(), domain.getYmd())
+					.orElseGet(() -> new KrcdtDaiPerWorkInfo(new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd())));
+
 			if(domain.getRecordInfo() != null){
 				data.recordWorkWorktimeCode = domain.getRecordInfo().getWorkTimeCode() == null 
 						? null : domain.getRecordInfo().getWorkTimeCode().v();
@@ -230,19 +276,85 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			data.backStraightAttribute = domain.getBackStraightAtr().value;
 			data.goStraightAttribute = domain.getGoStraightAtr().value;
 			data.dayOfWeek = domain.getDayOfWeek().value;
-			if(data.scheduleTimes != null && !data.scheduleTimes.isEmpty()){
+			if(domain.getScheduleTimeSheets().isEmpty()){
 				this.commandProxy().removeAll(data.scheduleTimes);
-				this.getEntityManager().flush();
+//				this.getEntityManager().flush();
+			} else {
+				if(data.scheduleTimes == null || data.scheduleTimes.isEmpty()){
+					data.scheduleTimes = domain.getScheduleTimeSheets().stream().map(c -> 
+														new KrcdtWorkScheduleTime(
+																new KrcdtWorkScheduleTimePK(
+																		domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
+																		c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
+																.collect(Collectors.toList());
+				} else {
+					data.scheduleTimes.stream().forEach(st -> {
+						domain.getScheduleTimeSheets().stream()
+								.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo)
+								.findFirst().ifPresent(dst -> {
+									st.attendance = dst.getAttendance().valueAsMinutes();
+									st.leaveWork = dst.getLeaveWork().valueAsMinutes();
+								});
+					});
+				}
 			}
-			data.scheduleTimes = domain.getScheduleTimeSheets().stream().map(c -> 
-								new KrcdtWorkScheduleTime(
-										new KrcdtWorkScheduleTimePK(
-												domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
-												c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
-										.collect(Collectors.toList());
+			
 			this.commandProxy().update(data);
 			this.commandProxy().updateAll(data.scheduleTimes);
 		}
+	}
+	
+	@SneakyThrows
+	private Optional<KrcdtDaiPerWorkInfo> findKrcdtDaiPerWorkInfoWithJdbc(String employeeId, GeneralDate ymd) {
+		
+		PreparedStatement stmtFindById = this.connection().prepareStatement(
+				"select * from KRCDT_DAI_PER_WORK_INFO"
+				+ " where SID = ? and YMD = ?");
+		stmtFindById.setString(1, employeeId);
+		stmtFindById.setDate(2, Date.valueOf(ymd.toLocalDate()));
+		
+		return new NtsResultSet(stmtFindById.executeQuery()).getSingle(rec -> {
+			KrcdtDaiPerWorkInfoPK pk = new KrcdtDaiPerWorkInfoPK();
+			pk.employeeId = rec.getString("SID");
+			pk.ymd = rec.getGeneralDate("YMD");
+			
+			KrcdtDaiPerWorkInfo entity = new KrcdtDaiPerWorkInfo();
+			entity.krcdtDaiPerWorkInfoPK = pk;
+			entity.recordWorkWorktypeCode = rec.getString("RECORD_WORK_WORKTYPE_CODE");
+			entity.recordWorkWorktimeCode = rec.getString("RECORD_WORK_WORKTIME_CODE");
+			entity.scheduleWorkWorktypeCode = rec.getString("SCHEDULE_WORK_WORKTYPE_CODE");
+			entity.scheduleWorkWorktimeCode = rec.getString("SCHEDULE_WORK_WORKTIME_CODE");
+			entity.calculationState = rec.getInt("CALCULATION_STATE");
+			entity.goStraightAttribute = rec.getInt("GO_STRAIGHT_ATR");
+			entity.backStraightAttribute = rec.getInt("BACK_STRAIGHT_ATR");
+			entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
+			
+			try {
+				PreparedStatement stmtSche = this.connection().prepareStatement(
+						"select * from KRCDT_WORK_SCHEDULE_TIME"
+						+ " where SID = ? and YMD = ?");
+				stmtSche.setString(1, pk.employeeId);
+				stmtSche.setDate(2, Date.valueOf(pk.ymd.toLocalDate()));
+				
+				entity.scheduleTimes = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
+					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
+					pks.employeeId = rs.getString("SID");
+					pks.ymd = rs.getGeneralDate("YMD");
+					pks.workNo = rs.getInt("WORK_NO");
+					
+					KrcdtWorkScheduleTime es = new KrcdtWorkScheduleTime();
+					es.krcdtWorkScheduleTimePK = pks;
+					es.attendance = rs.getInt("ATTENDANCE");
+					es.leaveWork = rs.getInt("LEAVE_WORK");
+					
+					return es;
+				});
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			
+			return entity;
+		});
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +22,7 @@ public class DailyPerformanceCalculationDto {
 	private List<DailyModifyResult> resultValues;
 	
 	private DataResultAfterIU resultError;
+	
+	private List<DPCellStateDto> lstCellStateCalc = new ArrayList<>();
 	
 }

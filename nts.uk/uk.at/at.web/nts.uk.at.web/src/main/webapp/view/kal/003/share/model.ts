@@ -1839,7 +1839,7 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             let param = ko.mapping.toJS(self);
             if(modeX ==1){
-                //KAL003C
+                //KAL003C monthly
                 nts.uk.ui.windows.setShared("KAL003CParams", {mode: modeX, data: param}, true);
                 nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml").onClosed(() => {
                     let output = getShared("KAL003CResult");
@@ -1858,7 +1858,7 @@ module nts.uk.at.view.kal003.share.model {
                     }
                     self.setTextDisplay(modeX);
                 });
-            }else{
+            }else{ //daily
                 nts.uk.ui.windows.setShared("KAL003C1Params", {mode: modeX, data: param}, true);
                 nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c1/index.xhtml").onClosed(() => {
                     let output = getShared("KAL003C1Result");
@@ -2249,7 +2249,7 @@ module nts.uk.at.view.kal003.share.model {
         messageColor: string;
         displayMessage : string;
         erAlAtdItem : ErAlAtdItemCondition;
-        continuonsMonths : number;
+        continuousMonths : number;
         times : number;
         compareOperator: number;
         rowId: number;
@@ -2264,7 +2264,7 @@ module nts.uk.at.view.kal003.share.model {
         messageColor : KnockoutObservable<boolean> = ko.observable(false);
         displayMessage :KnockoutObservable<string> = ko.observable('');
         erAlAtdItem : KnockoutObservableArray<ErAlAtdItemCondition>;
-        continuonsMonths : KnockoutObservable<number> = ko.observable(0);
+        continuousMonths : KnockoutObservable<number> = ko.observable(0);
         times : KnockoutObservable<number> = ko.observable(0);
         compareOperator : KnockoutObservable<number> = ko.observable(0);
         rowId: KnockoutObservable<number> = ko.observable(0);
@@ -2281,7 +2281,7 @@ module nts.uk.at.view.kal003.share.model {
             self.typeCheckItem.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
             });
-            self.continuonsMonths(param.continuonsMonths||0);
+            self.continuousMonths(param.continuousMonths||0);
             self.times= ko.observable(param.times||0);
             self.compareOperator(param.compareOperator || 0);
             self.rowId(param.rowId || 0);

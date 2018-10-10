@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,22 +30,34 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecordToAttendanceItemConverter {
 
 	private final MonthlyRecordWorkDto monthlyRecord;
 	
-	private MonthlyRecordToAttendanceItemConverterImpl(){
+	private final OptionalItemRepository optionalItem;
+	
+	private final String compId = AppContexts.user().companyId(); 
+	
+	private final Map<Integer, OptionalItemAtr> optionalAttr;
+	
+	private MonthlyRecordToAttendanceItemConverterImpl(OptionalItemRepository optionalItem){
 		this.monthlyRecord = new MonthlyRecordWorkDto();
+		this.optionalItem = optionalItem;
+		this.optionalAttr = this.optionalItem.findAll(compId).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 	}
 	
-	public static MonthlyRecordToAttendanceItemConverter builder() {
-		return new MonthlyRecordToAttendanceItemConverterImpl();
+	public static MonthlyRecordToAttendanceItemConverter builder(OptionalItemRepository optionalItem) {
+		return new MonthlyRecordToAttendanceItemConverterImpl(optionalItem);
 	}
 	
 	@Override
@@ -122,7 +135,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 	
 	@Override
 	public MonthlyRecordToAttendanceItemConverter withAnyItem(List<AnyItemOfMonthly> domains) {
-		this.monthlyRecord.withAnyItem(AnyItemOfMonthlyDto.from(domains));
+		this.monthlyRecord.withAnyItem(AnyItemOfMonthlyDto.fromWith(domains, optionalAttr));
 		return this;
 	}
 	
