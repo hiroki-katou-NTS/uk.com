@@ -7,10 +7,14 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+                    nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
+                    nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName
+            </com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 600,
-					height : 410
+					width : 550,
+					height : 350
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,15 +27,15 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>
+				<div style="margin: 20px;">
 					<div class="title_content">
-					<!-- T1ユーザ設定の複写 -->
+						<!-- T1ユーザ設定の複写 -->
 						<div class="title_content_left">#{i18n.getText('CMF002_250')}</div>
 					</div>
-					
+
 					<div class="content_center">
 						<table id="table_content">
-						<!-- row1 -->
+							<!-- row1 -->
 							<tr>
 								<!-- T2コピー元情報： -->
 								<td>
@@ -39,13 +43,19 @@
 								</td>
 								<td class="td_left">
 									<!-- T2_1コード/名称 -->
-									<div style="border-color: #00B050" data-bind="ntsFormLabel: {required: true }" class="form-label enable">
+									<div style="border-color: #00B050"
+										data-bind="ntsFormLabel: {required: false }"
+										class="form-label enable">
 										<label>#{i18n.getText('CMF002_254')}</label>
 									</div>
 								</td>
 								<!-- T2_2条件設定名 -->
-								<td class="td_center"><div class="lable"><label data-bind="text: conditionCode"></label></div></td>
-								<td class="td_right"><div class="lable"><label data-bind="text: conditionName"></label></div></td>
+								<td class="td_center"><div class="lable">
+										<label data-bind="text: conditionSetCd"></label>
+									</div></td>
+								<td class="td_right"><div class="lable">
+										<label data-bind="text: conditionName"></label>
+									</div></td>
 							</tr>
 							<!-- row2 -->
 							<tr>
@@ -55,31 +65,30 @@
 								</td>
 								<!-- T3_1条件コード/名称 -->
 								<td class="td_left">
-									<div data-bind="ntsFormLabel: {required: true }" class="form-label enable" >
+									<div data-bind="ntsFormLabel: {required: true }"
+										class="form-label enable">
 										<label>#{i18n.getText('CMF002_254')}</label>
 									</div>
-								</td>	
+								</td>
 								<!-- T3_2コード -->
-								<td><input class="td_center_sp" id="M4" tabindex="1" data-bind="ntsTextEditor: {value: newCondCode, 
-																					name: '#[CMF002_256]',
-																					required: true}" /></td>
+								<td><input class="td_center_sp" id="T3_2" tabindex="1"
+									data-bind="ntsTextEditor: {value: copyDestinationCode, name: '#[CMF002_256]', optionsText: 'name', required: true, constraint: 'ExternalOutputConditionCode'}" /></td>
 								<!-- T3_3名称 -->
-								<td class="td_right"><input tabindex="2" data-bind="ntsTextEditor: {value: newCondName, 
-																					name: '#[CMF002_257]',
-																					required: true}" /></td>
+								<td class="td_right"><input tabindex="2" id="T3_3" style="width: 185px;"
+									data-bind="ntsTextEditor: {value: destinationName, name: '#[CMF002_257]', optionsText: 'name', required: true, constraint: 'ExternalOutputConditionName'}" /></td>
 							</tr>
 						</table>
 						<!-- T4上書きチェック -->
-						<div class="checkbox_bottom" tabindex="3" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF002_258')}',  style: 'warnpanel'}"></div>
+						    <div class="checkbox_bottom" tabindex="3" data-bind=" ntsCheckBox: { checked: overWrite, style: 'warnpanel'}">#{i18n.getText('CMF002_258')}</div>
 					</div>
 				</div>
 			</div>
- 			<div id="functions-area-bottom">
- 				<!-- T20_1実行-->
-				<button class="x-large" tabindex="4" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_259')}</button>
+			<div id="functions-area-bottom">
+				<!-- T20_1実行-->
+				<button class="x-large" tabindex="4" data-bind="click: excuteCopy, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_259')}</button>
 				<!-- T20_2キャンセル  -->
 				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF002_260')}</button>
-			</div> 
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

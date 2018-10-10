@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.attendanceitem;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -66,10 +68,12 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 public class StoredProcdureProcessing implements StoredProcdureProcess {
 	
 	/**Iﾜｰｸ休*/
-	private static final String DEFAULT_WORK_TYPE = "100";
+	private static final WorkTypeCode DEFAULT_WORK_TYPE = new WorkTypeCode("100");
 	
 	/**Iﾜｰｸ*/
-	private static final List<String> DEFAULT_WORK_TIME = Arrays.asList("100", "101");
+	private static final List<WorkTimeCode> DEFAULT_WORK_TIME = Arrays.asList(new WorkTimeCode("100"), new WorkTimeCode("101"));
+	
+	private static final List<Integer> MONTHKY_ANYITEM_TO_PROCESS = Arrays.asList(20, 22, 24, 46, 1, 2);
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -230,7 +234,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				processOptionalItem(() -> timePre > 0, optionalItem, COUNT_ON, COUNT_OFF, 18, 28);
 				
 				/** 任意項目19: 事前残業1~10 > 0 かつ　乖離時間が発生していない事が条件 */
-				processOptionalItem(() -> timePre > 0 && time <= 0 && timeFlex <= 0, 
+				processOptionalItem(() -> timePre > 0 && overTime.stream().allMatch(t -> t <= 0) && timeFlex <= 0, 
 						optionalItem, COUNT_ON, COUNT_OFF, 19);
 				
 				/** 任意項目21: 事前残業1~10 > 0 かつ　乖離時間が発生している事が条件 */
@@ -348,26 +352,26 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	}
 	
 	@Override
-	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		monthlyProcessing(companyId, employeeId, yearMonth, closureId, closureDate, Optional.empty(), new ArrayList<>());
+		return monthlyProcessing(companyId, employeeId, yearMonth, closureId, closureDate, Optional.empty(), new ArrayList<>());
 	}
 	
 	@Override
-	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime) {
-		monthlyProcessing(companyId, employeeId, yearMonth, closureId, closureDate, attendanceTime, new ArrayList<>());
+		return monthlyProcessing(companyId, employeeId, yearMonth, closureId, closureDate, attendanceTime, new ArrayList<>());
 	}
 	
 	@Override
-	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime, List<AnyItemOfMonthly> monthlyOptionalItems) {
 		/** 任意項目の件数を取得 */
 		if(!attendanceTime.isPresent()){
 			attendanceTime = attendanceTimeOfMonthly.find(employeeId, yearMonth, closureId, closureDate);
 		}
 		if(!attendanceTime.isPresent()){
-			return;
+			return new ArrayList<>(monthlyOptionalItems);
 		}
 		
 		/** 任意項目の件数を取得 */
@@ -379,23 +383,35 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		/** 残業日数を取得 */
 		int countOver = countOverTime(employeeId, attendanceTime);
 		
-		if(monthlyOptionalItems.isEmpty()){
-			monthlyOptionalItems = monthlyOptionalItem.find(employeeId, yearMonth, closureId, closureDate, Arrays.asList(20, 22, 24, 46, 1, 2));
+		List<AnyItemOfMonthly> dataToProcess = new ArrayList<>(monthlyOptionalItems);
+
+		if(dataToProcess.isEmpty()){
+			dataToProcess = monthlyOptionalItem.find(employeeId, yearMonth, closureId, closureDate, MONTHKY_ANYITEM_TO_PROCESS);
+		} else {
+			List<Integer> notExist = new ArrayList<>(MONTHKY_ANYITEM_TO_PROCESS);
+			
+			notExist.removeAll(dataToProcess.stream().map(c -> c.getAnyItemId()).distinct().collect(Collectors.toList()));
+			
+			if(!notExist.isEmpty()){
+				dataToProcess.addAll(monthlyOptionalItem.find(employeeId, yearMonth, closureId, closureDate, notExist));
+			}
 		}
 		
 		/** 任意項目20: 割合を計算 */
-		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 20, getOnDefault(count18, count19), monthlyOptionalItems);
+		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 20, getOnDefault(count18, count19), dataToProcess);
 		
 		/** 任意項目22: 割合を計算 */
-		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 22, getOnDefault(count18, count21), monthlyOptionalItems);
+		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 22, getOnDefault(count18, count21), dataToProcess);
 		
 		/** 任意項目24: 割合を計算 */
-		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 24, getOnDefault(countOver, count23), monthlyOptionalItems);
+		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 24, getOnDefault(countOver, count23), dataToProcess);
 		
 		/** 任意項目46: 割合を計算 */
-		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 46, sumFor46(monthlyOptionalItems), monthlyOptionalItems);
+		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 46, sumFor46(dataToProcess), dataToProcess);
 		
-		monthlyOptionalItem.persistAndUpdate(monthlyOptionalItems);
+		monthlyOptionalItem.persistAndUpdate(dataToProcess);
+		
+		return dataToProcess;
 	}
 
 	private int countOverTime(String employeeId, Optional<AttendanceTimeOfMonthly> attendanceTime) {
@@ -462,7 +478,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		if(downer == 0 || upper == 0){
 			return 0;
 		}
-		return BigDecimal.valueOf(upper).multiply(V100).divide(BigDecimal.valueOf(downer), RoundingMode.HALF_UP).doubleValue();
+		return BigDecimal.valueOf(upper).multiply(V100).divide(BigDecimal.valueOf(downer), RoundingMode.HALF_UP).round(new MathContext(1, RoundingMode.HALF_UP)).doubleValue();
 	}
 	
 	private boolean isWeekday(WorkTypeUnit atr, WorkTypeClassification oneDay, WorkTypeClassification morning,
@@ -472,18 +488,18 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 															|| afternoon == WorkTypeClassification.Attendance || afternoon == WorkTypeClassification.Shooting));
 	}
 
-	private int getTimeStamp(Optional<TimeActualStamp> stamp){
+	private Integer getTimeStamp(Optional<TimeActualStamp> stamp){
 		if(stamp.isPresent()){
 			return getWorkStamp(stamp.get().getStamp());
 		}
-		return 0;
+		return null;
 	}
 	
-	private int getWorkStamp(Optional<WorkStamp> stamp){
+	private Integer getWorkStamp(Optional<WorkStamp> stamp){
 		if(stamp.isPresent() && stamp.get().getTimeWithDay() != null){
 			return stamp.get().getTimeWithDay().valueAsMinutes();
 		}
-		return 0;
+		return null;
 	}
 	
 	private int getAttendanceTime(AttendanceTime time) {
@@ -521,7 +537,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			WorkTypeClassification morning, WorkTypeClassification afternoon) {
 		AttendanceTime actualWork = d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime();
-		return (atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday 
+		return ((atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday 
 				|| oneDay == WorkTypeClassification.SpecialHoliday || oneDay == WorkTypeClassification.SubstituteHoliday))
 			|| (atr == WorkTypeUnit.MonringAndAfternoon && 
 						((morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SpecialHoliday) ||
@@ -529,7 +545,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.SubstituteHoliday) ||
 						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
-						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.SpecialHoliday)))
+						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.SpecialHoliday))))
 			&&  (actualWork == null || actualWork.valueAsMinutes() == 0);
 	}
 

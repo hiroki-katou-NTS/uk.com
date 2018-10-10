@@ -24,5 +24,22 @@ public class AsbRemainTotalInfor {
 	private double scheUseDays;
 	/**	予定発生日数 */
 	private double scheOccurrenceDays;
-	
+	/**
+	 * 繰越・実績内残日数を取得する
+	 * @return
+	 */
+	public double recordGrantDays() {
+		//繰越・実績内残日数を算出する
+		//繰越・実績内残日数：繰越日数＋実績発生日数－実績使用日数
+		return this.carryForwardDays + this.recordOccurrenceDays - this.getRecordUseDays();
+	}
+	/**
+	 * 	予定内残日数を取得する
+	 * @return
+	 */
+	public double scheGrantDays() {
+		//予定内残日数を算出する
+		//予定内残日数：予定発生日数－予定使用日数
+		return this.scheOccurrenceDays - this.scheUseDays;
+	}
 }

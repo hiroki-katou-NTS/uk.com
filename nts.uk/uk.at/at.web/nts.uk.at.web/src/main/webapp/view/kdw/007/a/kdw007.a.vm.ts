@@ -186,9 +186,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             if (self.screenMode() == ScreenMode.Daily) {
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                block.invisible();
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
                 service.findMonthlyCondition(foundItem.errorAlarmCheckID, foundItem.code).done((data) => {
                     self.resetMonthlyConditon(self.selectedErrorAlarm(), data);
+                }).always(() => {
+                    block.clear();
                 });
             }
             self.selectedTab('tab-1');
@@ -359,6 +362,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         updateTab() {
             let self = this;
+            self.tabs()[0].visible(false);
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
@@ -372,7 +376,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                var data = ko.mapping.toJS(self.selectedErrorAlarm());
+                let data = ko.mapping.toJS(self.selectedErrorAlarm());
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;
@@ -1232,7 +1236,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(null);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(null);
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(1);
             self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
@@ -1262,13 +1266,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.displayLeftOperator("");
             self.displayRightOperator("");
             switch (self.compareOperator()) {
-                case 0:
+                case 1:
                     self.displayLeftOperator("＝");
                     break;
-                case 1:
+                case 0:
                     self.displayLeftOperator("≠");
                     break;
-                case 2:
+                case 5:
                     self.displayLeftOperator("＞");
                     break;
                 case 3:
@@ -1277,7 +1281,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 case 4:
                     self.displayLeftOperator("＜");
                     break;
-                case 5:
+                case 2:
                     self.displayLeftOperator("≦");
                     break;
                 case 6:
@@ -1425,7 +1429,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.singleAtdItem(param ? param.singleAtdItem : null);
             self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, true) ? param.compareStartValue : null);
             self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, true) ? param.compareEndValue : null);
-            self.compareOperator(param ? param.compareOperator : 0);
+            self.compareOperator(param ? param.compareOperator : 1);
             self.setTextDisplay();
         }
     }

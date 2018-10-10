@@ -227,7 +227,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 						specHd == null || specHd.getRelationCD() == null ? Optional.empty() :  Optional.of(specHd.getRelationCD()));
 				//申請する日数(ノート1)：
 				int appDay = 0;//申請する日数
-				if(spHdEv.getIncludeHolidays().equals(UseAtr.USE)){//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがtrue：
+				if(spHdEv.getIncludeHolidays().value == UseAtr.USE.value){//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがtrue：
 					//申請する日数 = 申請する終了日 - 申請する開始日 + 1
 					appDay = startDate.daysTo(endDate) + 1;
 				}else{//したメインモデル「事象に対する特別休暇」．休日を取得日に含めるがfalse：

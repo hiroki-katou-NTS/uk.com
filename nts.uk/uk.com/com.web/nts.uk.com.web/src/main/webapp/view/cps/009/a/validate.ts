@@ -84,7 +84,7 @@ module validationcps009 {
                         break;
 
                     case ITEM_SINGLE_TYPE.NUMERIC:
-                        if (_.isNil(item.numbereditor.value()) || _.isEmpty(item.numbereditor.value())) {
+                        if (_.isNil(item.numbereditor.value())) {
                             $element.ntsError('set', {
                                 messageId: "Msg_824",
                                 messageParams: [item.itemName()]
@@ -94,7 +94,7 @@ module validationcps009 {
                         break;
 
                     case ITEM_SINGLE_TYPE.TIME:
-                        if (_.isNil(item.dateWithDay()) || _.isEmpty(item.dateWithDay())) {
+                        if (_.isNil(item.dateWithDay())) {
                             $element.ntsError('set', {
                                 messageId: "Msg_824",
                                 messageParams: [item.itemName()]
@@ -103,7 +103,7 @@ module validationcps009 {
                         break;
 
                     case ITEM_SINGLE_TYPE.TIMEPOINT:
-                        if (_.isNil(item.dateWithDay()) || _.isEmpty(item.dateWithDay())) {
+                        if (_.isNil(item.dateWithDay())) {
                             $element.ntsError('set', {
                                 messageId: "Msg_824",
                                 messageParams: [item.itemName()]
@@ -114,6 +114,7 @@ module validationcps009 {
                     default: break;
 
                 }
+               
 
             } else if (element.tagName.toUpperCase() == "BUTTON") {
                 if (_.isNil(item.selectionName()) || _.isEmpty(item.selectionName())) {
@@ -122,29 +123,21 @@ module validationcps009 {
                         messageParams: [item.itemName()]
                     });
                 }
-            } else {
-                if (item.dataType() == 3 && !!v.enableControl) {
-                    if (_.isNil(item.dateValue()) || _.isEmpty(item.dateValue())) {
-                        $element.addClass("error");
-                        $element.find('.nts-input').attr('nameid', item.itemName());
-                        $element.find('.nts-input').ntsError('set', {
-                            messageId: "Msg_824",
-                            messageParams: [item.itemName()]
-                        });
-                    }
-                } else {
-
-                    if ((item.dataType()== 6) &&(_.isNil(item.selectedCode()) || _.isEmpty(item.selectedCode()))) {
-                        $element.find('.nts-input').attr('nameid', item.itemName());
-                        $element.addClass("error");
-                        $element.ntsError('set', {
-                            messageId: "Msg_824",
-                            messageParams: [item.itemName()]
-                        });
-                    }
-                }
+            } else  if ((item.dataType()== 6)  && !!v.enableControl &&(_.isNil(item.selectedCode()) || _.isEmpty(item.selectedCode()))) {
+                $element.find('.nts-input').attr('nameid', item.itemName());
+                $element.addClass("error");
+                $element.ntsError('set', {
+                    messageId: "Msg_824",
+                    messageParams: [item.itemName()]
+                });
+            } else if((item.dataType()== 3) && _.isNil(item.dateValue()) && !!v.enableControl){
+                $element.addClass("error");
+                $element.find('.nts-input').attr('nameid', item.itemName());
+                $element.find('.nts-input').ntsError('set', {
+                    messageId: "Msg_824",
+                    messageParams: [item.itemName()]
+                });
             }
-
         });
     }
 

@@ -171,7 +171,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					interimMngAbsRec,
 					useRecMng);
 			AbsRecRemainMngOfInPeriod remainMng = absRecMngService.getAbsRecMngInPeriod(mngParam);
-			if(remainMng.getRemainDays() < 0) {
+			if(!remainMng.getPError().isEmpty()) {
 				outputData.setChkPause(true);
 			}
 		}

@@ -457,7 +457,7 @@ public class PeregCommandFacade {
 					case CONTINUOUS_HISTORY_FOR_ENDDATE:
 					case DUPLICATEHISTORY:
 					case NODUPLICATEHISTORY:
-						if(specialItemCode.contains(item.itemCode()) || item.itemCode().equals(dateRange.getStartDateCode())) {
+						if(specialItemCode.contains(item.itemCode()) || (isHistory == true && item.itemCode().equals(dateRange.getStartDateCode()))) {
 							stringKey = item.valueAfter();
 						}
 						if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE
@@ -527,7 +527,8 @@ public class PeregCommandFacade {
 					if (ItemValue.filterItem(item) != null) {
 						input.getItems().stream().forEach(c ->{
 							if(item.itemCode().equals(c.itemCode())) {
-								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+								ItemValue convertItem = ItemValue.setContentForCPS001(item);
+								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
 							}
 						});
 						

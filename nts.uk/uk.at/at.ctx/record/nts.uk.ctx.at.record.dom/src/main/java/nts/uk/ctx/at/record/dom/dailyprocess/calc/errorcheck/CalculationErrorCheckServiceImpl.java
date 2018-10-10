@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -28,6 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
 	@Inject
 	private DivTimeSysFixedCheckService divTimeSysFixedCheckService;
@@ -222,7 +227,14 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//休日打刻
 			case HOLIDAY_STAMP:
 				//アルゴリズムが存在しない(2018.07.02)
-				return Collections.emptyList();
+				val result = dailyRecordCreateErrorAlermService.checkHolidayStamp(integrationOfDaily);
+				if(!result.isPresent()) {
+					return Collections.emptyList();
+				}
+				else {
+					return Arrays.asList(result.get());
+				}
+				
 			//二重打刻
 			case DOUBLE_STAMP:
 				return dailyRecordCreateErrorAlermService.doubleStampAlgorithm(integrationOfDaily);

@@ -23,4 +23,9 @@ public class AbsDaysRemain {
 	 * 未消化日数 || 使用日数
 	 */
 	private double unDigestedDays;
+	/**
+	 * True: エラーがあります。、
+	 * False：　エラーがない
+	 */
+	private boolean errors;
 }

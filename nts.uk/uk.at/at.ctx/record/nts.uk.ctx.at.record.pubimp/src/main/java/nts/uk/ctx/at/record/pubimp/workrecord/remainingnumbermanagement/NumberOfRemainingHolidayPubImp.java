@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
@@ -43,7 +43,7 @@ public class NumberOfRemainingHolidayPubImp implements NumberOfRemainingHolidays
 			throw new RuntimeException("集計開始日 Not Present");
 		}
 		AggrResultOfAnnAndRsvLeave numberOfHolidaysRemaining = getAnnAndRsvRemNumWithinPeriod.algorithm(companyId, employeeId, new DatePeriod(closingDate.get(), referenceDate), 
-																										TempAnnualLeaveMngMode.OTHER, referenceDate, false, 
+																										InterimRemainMngMode.OTHER, referenceDate, false, 
 																										false, Optional.empty(), 
 																										Optional.empty(), Optional.empty(), Optional.empty(), 
 																										Optional.empty(), Optional.empty(), Optional.empty());

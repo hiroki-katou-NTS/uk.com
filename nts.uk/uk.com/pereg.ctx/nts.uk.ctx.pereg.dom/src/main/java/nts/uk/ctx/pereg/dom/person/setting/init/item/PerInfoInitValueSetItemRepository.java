@@ -41,6 +41,14 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @return List<PerInfoInitValueSetItem>
 	 */
 	List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String perInfoCtgId, String cid);
+	
+	/**
+	 * get all init value item: initvalueItem ^ itemDefined
+	 * 
+	 * @param perInfoCtgId
+	 * @return List<PerInfoInitValueSetItem>
+	 */
+	List<PerInfoInitValueSetItemDetail> getAllInitItemForComboBox(String settingId, String perInfoCtgId, String cid);
 
 	// sonnlb
 

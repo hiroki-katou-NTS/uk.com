@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -55,7 +57,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//アルゴリズム「未使用の振出(確定)を取得する」を実行する
 		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec, paramInput.getDateData().start());
 		//繰越数を計算する
-		double carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);		
+		ResultAndError carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);		
 		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
 		//アルゴリズム「未使用の振出(暫定)を取得する」を実行する
 		lstAbsRec = this.lstInterimInfor(paramInput, lstAbsRec);
@@ -76,12 +78,15 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		if(remainUnDigestedDays.getRemainDays() < 0) {
 			lstError.add(PauseError.PAUSEREMAINNUMBER);
 		}
+		if(!carryForwardDays.isErrors()) {
+			lstError.add(PauseError.OFFSETNUMBER);
+		}
 		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
 				remainUnDigestedDays.getRemainDays(), 
 				remainUnDigestedDays.getUnDigestedDays(),
 				occurrenceUseDays.getRemainDays(),
 				occurrenceUseDays.getUnDigestedDays(),
-				carryForwardDays,
+				carryForwardDays.getRerultDays(),
 				lstError);
 		return outputData;
 	}
@@ -186,21 +191,23 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
-	public double calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail) {
+	public ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail) {
 		// アルゴリズム「6.残数と未消化を集計する」を実行
-		return this.getRemainUnDigestedDays(lstDataDetail, startDate).getRemainDays();
+		AbsDaysRemain outPut = this.getRemainUnDigestedDays(lstDataDetail, startDate);
+		return new ResultAndError(outPut.getRemainDays(), outPut.isErrors());
 	}
 
 	@Override
 	public AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate) {
-		AbsDaysRemain outData = new AbsDaysRemain(0, 0);
+		AbsDaysRemain outData = new AbsDaysRemain(0, 0, false);
 		double unOffSetDays = 0;
 		//「振出振休明細」をループする
 		for (AbsRecDetailPara detailData : lstDataDetail) {
 			//「振出振休明細」．発生消化区分をチェックする
 			if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
-				//残日数 -= ループ中の「振休の未相殺」．未相殺日数
-				//outData.setRemainDays(outData.getRemainDays() - detailData.getUnOffsetOfAb().get().getUnOffSetDays());
+				//「相殺できないエラー」を「振休の集計結果」．エラー情報に追加する
+				outData.setErrors(true);
+				//残日数 -= ループ中の「振休の未相殺」．未相殺日数				
 				unOffSetDays += detailData.getUnOffsetOfAb().get().getUnOffSetDays();
 			} else if (detailData.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
 				UnUseOfRec recData = detailData.getUnUseOfRec().get();
@@ -497,7 +504,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 
 	@Override
 	public AbsDaysRemain getOccurrenceUseDays(List<AbsRecDetailPara> lstDetailData, DatePeriod dateData) {
-		AbsDaysRemain outputData = new AbsDaysRemain(0, 0);
+		AbsDaysRemain outputData = new AbsDaysRemain(0, 0, false);//TODO
 		
 		//パラメータ「List<振休振出明細>」を取得
 		for (AbsRecDetailPara detailData : lstDetailData) {
@@ -596,7 +603,39 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					lstRecMng.add(optRecMng.get());
 				}
 			}	
-		}		
+		}
+		//20181003 DuDT fix bug 101491 ↓
+		List<InterimRemain> lstTmpAbs = new ArrayList<>(lstInterimMngOfAbs);
+		List<InterimAbsMng> lstAbsUsen = new ArrayList<>(lstAbsMng);
+		List<InterimRemain> lstTmpRec = new ArrayList<>(lstInterimMngOfRec);
+		List<InterimRecMng> lstRecMngUsen = new ArrayList<>(lstRecMng);
+		if(paramInput.isOverwriteFlg() && !paramInput.getInterimMng().isEmpty()) {
+			for (InterimRemain interimRemain : paramInput.getInterimMng()) {
+				List<InterimRemain> lstInterimAbsUsen = lstTmpAbs.stream()
+						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstInterimAbsUsen.isEmpty()) {
+					InterimRemain temp = lstInterimAbsUsen.get(0);
+					lstInterimMngOfAbs.remove(temp);
+					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getAbsenceMngId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tmpAbsUsen.isEmpty()) {
+						lstAbsUsen.remove(tmpAbsUsen.get(0));
+					}
+				}
+				List<InterimRemain> lstRecUsen = lstTmpRec.stream()
+						.filter(b -> b.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstRecUsen.isEmpty()) {
+					InterimRemain temp = lstRecUsen.get(0);
+					lstInterimMngOfRec.remove(temp);
+					List<InterimRecMng> tempLstRec = lstRecMngUsen.stream().filter(b -> b.getRecruitmentMngId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tempLstRec.isEmpty()) {
+						lstRecMng.remove(tempLstRec.get(0));
+					}
+				}
+			}
+		}
+		//20181003 DuDT fix bug 101491 ↑
 		List<AbsRecDetailPara> lstOutputOfAbs = this.lstOutputOfAbs(lstAbsMng, lstInterimMngOfAbs, paramInput);
 		List<AbsRecDetailPara> lstOutputOfRec = this.lstOutputOfRec(lstRecMng, lstInterimMngOfRec, paramInput);
 		lstAbsRec.addAll(lstOutputOfAbs);

@@ -19,6 +19,7 @@ public class FlexShortageRCDto {
 	private String redConditionMessage;
 	private String flexHoliday;
 	private List<RCMessageErrorDaily> messageError = new ArrayList<>();
+	private ItemFlex dataCalc;
 	
 	public FlexShortageRCDto createError(boolean error) {
 		this.error = error;
@@ -28,6 +29,11 @@ public class FlexShortageRCDto {
 	public FlexShortageRCDto createMessage(String redConditionMessage, String flexHoliday) {
 		this.redConditionMessage = redConditionMessage;
 		this.flexHoliday = flexHoliday;
+		return this;
+	}
+	
+	public FlexShortageRCDto createDataCalc(ItemFlex dataCalc) {
+		this.dataCalc = dataCalc;
 		return this;
 	}
 	

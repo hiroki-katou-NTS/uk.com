@@ -173,7 +173,7 @@ module cps001.c.vm {
             }
 
 
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+            confirm({ messageId: "Msg_1449" }).ifYes(() => {
                 let sid = emp.id;
                 block();
                 service.removedata(sid).done(() => {

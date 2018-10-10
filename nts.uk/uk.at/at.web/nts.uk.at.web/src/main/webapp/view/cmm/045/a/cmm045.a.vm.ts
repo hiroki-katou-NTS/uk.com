@@ -199,9 +199,8 @@ module cmm045.a.viewmodel {
                         }
                         let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
                         character.save('AppListExtractCondition', paramSave);
-//                        console.log(data);
                         let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                         let lstAppGroup: Array<vmbase.AppPrePostGroup> = [];
                         self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
@@ -627,7 +626,7 @@ module cmm045.a.viewmodel {
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
             let contentv4 = time1 + time2;
-            let contentv42 = getText('CMM045_269') + self.convertFrameTime(overTime.lstFrame);
+            let contentv42 = self.convertFrameTime(overTime.lstFrame);
             //No.417
             let timeNo417 = self.displayTimeNo417(overTime.timeNo417);
             let appCt005 = contentv42 + timeNo417 + reason
@@ -654,7 +653,8 @@ module cmm045.a.viewmodel {
             _.each(lstSort, function(item) {
                 if (item.applicationTime != 0) {//時間外深夜時間
                     if (count < 3) {
-                        framName += item.name + self.convertTime_Short_HM(item.applicationTime);
+                        //ver42
+                        framName += '　' + item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
                     count += 1;
@@ -662,7 +662,7 @@ module cmm045.a.viewmodel {
             });
             let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
+            let result = framName + otherInfo;
             return result;
         }
         sortFrameTime(lstFrame: Array<vmbase.OverTimeFrame>, appType: number): any {
@@ -822,7 +822,7 @@ module cmm045.a.viewmodel {
             
             //ver14
             let contentv4 = time1 + time2;
-            let contentv42 = getText('CMM045_269') + self.convertFrameTime(overTime.lstFrame);
+            let contentv42 = self.convertFrameTime(overTime.lstFrame);
             let appContentPost: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
             
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
@@ -854,7 +854,7 @@ module cmm045.a.viewmodel {
                 //ver14
 //                let reasonOtPre = self.displaySet().appReasonDisAtr == 0 || groups.reasonAppPre == '' ? '' : '<br/>' + groups.reasonAppPre;
                 let content1 = time1 + time2;
-                let content2 = getText('CMM045_269') + self.convertFrameTime(groups.appPre.lstFrame);
+                let content2 = self.convertFrameTime(groups.appPre.lstFrame);
                 appPre = detailSet == 1 ? content1 + content2 : content2;
             }
             let appResContent = '';
@@ -863,7 +863,7 @@ module cmm045.a.viewmodel {
             let timeRes2 = groups.strTime2  == '' ? '' : groups.strTime2 + getText('CMM045_100') + groups.endTime2;
             //ver14
             let contentRes1 =  timeRes1 + timeRes2;
-            let contentRes2 = getText('CMM045_269') + self.convertFrameTime(groups.lstFrameRes);
+            let contentRes2 = self.convertFrameTime(groups.lstFrameRes);
             let appRes = detailSet == 1 ? contentRes1 + contentRes2 : contentRes2;
             appResContent = getText('CMM045_274') + getText('CMM045_268') + '　' + appRes;
             let appInfor = {
@@ -1666,7 +1666,7 @@ module cmm045.a.viewmodel {
             }else{
                 paramNew = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
             }
             //luu
                 character.save('AppListExtractCondition', paramNew);

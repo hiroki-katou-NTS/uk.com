@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemA
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControlPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -54,14 +55,43 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 				.query(SELECT_BY_AUTHORITY_DAILY_ID, KshstDailyServiceTypeControl.class)
 				.setParameter("companyID", dailyAttendanceItemAuthority.getCompanyID())
 				.setParameter("authorityDailyID", dailyAttendanceItemAuthority.getAuthorityDailyId()).getList();
-		 int minCount = Math.min(updateEntity.size(), newEntity.size());
-		for (int i = 0; i < minCount; i++) {
-			updateEntity.get(i).toUse = newEntity.get(i).toUse;
-			if (newEntity.get(i).toUse == 1) {
-				updateEntity.get(i).canBeChangedByOthers = newEntity.get(i).canBeChangedByOthers;
-				updateEntity.get(i).youCanChangeIt = newEntity.get(i).youCanChangeIt;
+		 //int minCount = Math.min(updateEntity.size(), newEntity.size());
+		
+		//update item có và xóa item k có
+		for (int i = 0; i < updateEntity.size(); i++) {
+			boolean checkExist = false;
+			for(int j = 0; j < newEntity.size(); j++) {
+				if(updateEntity.get(i).kshstDailyServiceTypeControlPK.itemDailyID == newEntity.get(j).kshstDailyServiceTypeControlPK.itemDailyID ) {
+					updateEntity.get(i).toUse = newEntity.get(j).toUse;
+					if (newEntity.get(j).toUse == 1) {
+						updateEntity.get(i).canBeChangedByOthers = newEntity.get(j).canBeChangedByOthers;
+						updateEntity.get(i).youCanChangeIt = newEntity.get(j).youCanChangeIt;
+					}
+					this.commandProxy().update(updateEntity.get(i));
+					checkExist = true;
+					break;
+				}
 			}
-			this.commandProxy().update(updateEntity.get(i));
+			if(!checkExist) {
+				this.commandProxy().remove(KshstDailyServiceTypeControl.class,updateEntity.get(i).kshstDailyServiceTypeControlPK);
+				
+			}
+			
+		}
+		
+		//add item có
+		for (int i = 0; i < newEntity.size(); i++) {
+			boolean checkExist = false;
+			for(int j = 0; j < updateEntity.size(); j++) {
+				if(newEntity.get(i).kshstDailyServiceTypeControlPK.itemDailyID == updateEntity.get(j).kshstDailyServiceTypeControlPK.itemDailyID ) {
+					checkExist = true;
+					break;
+				}
+			}
+			if(!checkExist) {
+				this.commandProxy().insert(newEntity.get(i));
+			}
+			
 		}
 	}
 

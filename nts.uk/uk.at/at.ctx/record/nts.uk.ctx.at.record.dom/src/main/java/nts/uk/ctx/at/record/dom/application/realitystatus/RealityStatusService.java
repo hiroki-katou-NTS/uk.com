@@ -149,10 +149,10 @@ public class RealityStatusService {
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// 月別確認を利用する
 			if (useSeting.isMonthlyConfirm()) {
-				// Request list 113
+				// Request list 532
 				// imported(申請承認）「上司確認の状況」を取得する
 				List<ApproveRootStatusForEmpImport> listApproval = approvalStatusAdapter
-						.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cid, 2);
+						.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(emp.getStartDate(), emp.getEndDate()));
 				Optional<ApproveRootStatusForEmpImport> approval = listApproval.stream().findFirst();
 				// 承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
 				if (approval.isPresent()
@@ -504,9 +504,9 @@ public class RealityStatusService {
 		// 社員ID（リスト）
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// imported（申請承認）「List<日付、状態＞」を取得する
-			// RequestList113
+			// RequestList 532
 			List<ApproveRootStatusForEmpImport> listAppRootStatus = approvalStatusAdapter
-					.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cId, 2);
+					.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(emp.getStartDate(), emp.getEndDate()));
 			Optional<ApproveRootStatusForEmpImport> appRootStatus = listAppRootStatus.stream().findFirst();
 			// 承認ルートの状況
 			if (appRootStatus.isPresent()
@@ -573,10 +573,10 @@ public class RealityStatusService {
 			String empName = Objects.isNull(empInfo) ? "" : empInfo.getEmployeeCode() + "　 " +empInfo.getPname();
 
 			if (useSetting.isMonthlyConfirm()) {
-				// Request list 113
+				// Request list 532
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Optional<ApproveRootStatusForEmpImport> appRootStatus = approvalStatusAdapter
-						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream().findFirst();
+						.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(startDate, endDate)).stream().findFirst();
 				if (appRootStatus.isPresent()) {
 					routeStatus = appRootStatus.get();
 				}

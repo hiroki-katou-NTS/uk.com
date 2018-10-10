@@ -71,9 +71,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
-import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
@@ -82,6 +80,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -671,7 +670,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
-		
 		}
 		else {
 			DailyReportData dailyReportData = new DailyReportData();
@@ -802,9 +800,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
 									List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream().
 											filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
-									if (lstItemMasterUnregistered.stream().map(item -> {
-										return getNameFromCode(item.getItemId(), item.getValue(), queryData, outSche);
-										}).filter(item -> StringUtils.equalsAnyIgnoreCase(item, MASTER_UNREGISTERED)).count() > 0) {
+									
+									List<String> names = lstItemMasterUnregistered.stream()
+											.map(item -> this.getNameFromCode(item.getItemId(),
+													item.getValue(), queryData, outSche))
+											.collect(Collectors.toList());
+
+									boolean masterUnregistedFlag = names.stream()
+											.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
+													MASTER_UNREGISTERED));
+										
+									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 									}
 								}
@@ -877,7 +883,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 								int attendanceId = itemValue.getItemId();
 								if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-									String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
+									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 									itemValue.setValue(value);
 								}
 								// Workaround for optional attendance item from KMK002
@@ -886,6 +892,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									optOptionalItem.ifPresent(optionalItem -> {
 										switch(optionalItem.getOptionalItemAtr()) {
 										case TIME:
+											//int val = Integer.parseInt(itemValue.getValue());
 											itemValue.setValueType(ValueType.TIME.value);
 											break;
 										case NUMBER:
@@ -896,6 +903,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 											break;
 										}
 									});
+									
+//									try {
+//										int val = Integer.parseInt(itemValue.getValue());
+//										itemValue.setValueType(ValueType.TIME.value);
+//									} catch (Exception e) {
+//										itemValue.setValueType(ValueType.AMOUNT.value);
+//									}
 								}
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 							}
@@ -1018,9 +1032,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
 						List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream().
 								filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
-						if (lstItemMasterUnregistered.stream().map(item -> {
-							return getNameFromCode(item.getItemId(), item.getValue(), queryData, outSche);
-							}).filter(item -> StringUtils.equalsAnyIgnoreCase(item, MASTER_UNREGISTERED)).count() > 0) {
+						
+						List<String> names = lstItemMasterUnregistered.stream()
+								.map(item -> this.getNameFromCode(item.getItemId(),
+										item.getValue(), queryData, outSche))
+								.collect(Collectors.toList());
+
+						boolean masterUnregistedFlag = names.stream()
+								.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
+										MASTER_UNREGISTERED));
+							
+						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 						}
 					}
@@ -1089,7 +1111,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 					int attendanceId = itemValue.getItemId();
 					if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-						String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
+						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 						itemValue.setValue(value);
 					}
 					// Workaround for optional attendance item from KMK002
@@ -1107,7 +1129,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								itemValue.setValueType(ValueType.AMOUNT.value);
 								break;
 							}
-						});
+						}); 
+						
+//						try {
+//							int val = Integer.parseInt(itemValue.getValue());
+//							itemValue.setValueType(ValueType.TIME.value);
+//						} catch (Exception e) {
+//							itemValue.setValueType(ValueType.AMOUNT.value);
+//						}
 					}
 					
 					detailedDate.actualValue.add(new ActualValue(attendanceId, itemValue.getValue(), itemValue.getValueType()));
@@ -1976,22 +2005,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	// Column 4, 6, 8,...
 				            	ActualValue actualValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
-				            	Style style = cell.getStyle();
-				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-				            	if (valueTypeEnum.isTime()) {
-									String value = actualValue.getValue();
-									if (value != null)
-										cell.setValue(getTimeAttr(value, true));
-									else
-										cell.setValue(getTimeAttr("0", true));
-									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-				            	}
-				            	else {
-									cell.setValue(actualValue.getValue());
-									style.setHorizontalAlignment(TextAlignmentType.LEFT);
-								}
-				            	setFontStyle(style);
-				            	cell.setStyle(style);
+				            	writeDetailValue(actualValue, cell);
 				            }
 				            
 				            curRow++;
@@ -2068,33 +2082,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            length = Math.min(mapPersonalTotal.size() - start, CHUNK_SIZE);
 			            
 			            lstItemRow = mapPersonalTotal.values().stream().collect(Collectors.toList()).subList(start, start + length);
-			            int valueType;
 			            
 			            for (int j = 0; j < length; j++) {
 			            	TotalValue totalValue = lstItemRow.get(j);
-			            	String value = totalValue.getValue();
-			            	valueType = totalValue.getValueType();
-
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-			            	Style style = cell.getStyle();
-			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-			            	if (valueTypeEnum.isIntegerCountable()) {
-			            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-			            			cell.putValue(value, true);
-			            		}
-			            		else {
-			            			if (value != null)
-										cell.setValue(getTimeAttr(value, false));
-									else
-										cell.setValue(getTimeAttr("0", false));
-			            		}
-								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-							}
-			            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-			            		cell.putValue(value, true);
-			            	}
-			            	setFontStyle(style);
-			            	cell.setStyle(style);
+			            	writeTotalValue(totalValue, cell);
 			            }
 			            currentRow++;
 			        }
@@ -2190,27 +2182,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            
 	            for (int j = 0; j < length; j++) {
 	            	TotalValue totalValue = lstItemRow.get(j);
-	            	String value = totalValue.getValue();
 	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-	            	Style style = cell.getStyle();
-	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-	            	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.putValue(value, true);
-	            		}
-	            		else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value, false));
-							else
-								cell.setValue(getTimeAttr("0", false));
-	            		}
-						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.putValue(value, true);
-	            	}
-	            	setFontStyle(style);
-	            	cell.setStyle(style);
+	            	writeTotalValue(totalValue, cell);
 	            }
 	            currentRow++;
 	        }
@@ -2320,27 +2293,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            
 				            for (int j = 0; j < length; j++) {
 				            	TotalValue totalValue = lstItemRow.get(j);
-				            	String value = totalValue.getValue();
 				            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-				            	Style style = cell.getStyle();
-				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-				            	if (valueTypeEnum.isIntegerCountable()) {
-				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-				            			cell.putValue(value, true);
-				            		}
-				            		else {
-				            			if (value != null)
-											cell.setValue(getTimeAttr(value, false));
-										else
-											cell.setValue(getTimeAttr("0", false));
-				            		}
-									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-								}
-				            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-				            		cell.putValue(value, true);
-				            	}
-				            	setFontStyle(style);
-				            	cell.setStyle(style);
+				            	writeTotalValue(totalValue, cell);
 				            }
 				        }
 				        currentRow += dataRowCount;
@@ -2350,6 +2304,35 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		return currentRow;
+	}
+
+	/**
+	 * Write detail value.
+	 *
+	 * @param actualValue the actual value
+	 * @param cell the cell
+	 */
+	private void writeDetailValue(ActualValue actualValue, Cell cell) {
+		Style style = cell.getStyle();
+		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+		if (valueTypeEnum.isTime()) {
+			String value = actualValue.getValue();
+			if (value != null) {
+				if (valueTypeEnum == ValueType.TIME) {
+					cell.setValue(getTimeAttr(value, false));
+				} else {
+					cell.setValue(getTimeAttr(value, true));
+				}
+			} else
+				cell.setValue(getTimeAttr("0", true));
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		}
+		else {
+			cell.setValue(actualValue.getValue());
+			style.setHorizontalAlignment(TextAlignmentType.LEFT);
+		}
+		setFontStyle(style);
+		cell.setStyle(style);
 	}
 	
 	/**
@@ -2524,19 +2507,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	ActualValue actualValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
-			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-			            	if (valueTypeEnum.isTime()) {
-								String value = actualValue.getValue();
-								if (value != null)
-									cell.setValue(getTimeAttr(value, true));
-								else
-									cell.setValue(getTimeAttr("0", true));
-								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-			            	}
-			            	else {
-								cell.setValue(actualValue.getValue());
-								style.setHorizontalAlignment(TextAlignmentType.LEFT);
-							}
+			            	writeDetailValue(actualValue, cell);
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
 			            }
@@ -2725,27 +2696,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    
 			    for (int j = 0; j < length; j++) {
 			    	totalValue = lstItemRow.get(j);
-			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	Style style = cell.getStyle();
-		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-		        	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.putValue(value, true);
-	            		}
-	            		else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value, false));
-							else
-								cell.setValue(getTimeAttr("0", false));
-	            		}
-						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.putValue(value, true);
-	            	}
-	            	setFontStyle(style);
-	            	cell.setStyle(style);
+		        	writeTotalValue(totalValue, cell);
 			    }
 			    currentRow++;
 			}
@@ -2754,6 +2706,29 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		return currentRow;
+	}
+
+	private void writeTotalValue(TotalValue totalValue, Cell cell) {
+		Style style = cell.getStyle();
+		String value = totalValue.getValue();
+    	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+    	if (valueTypeEnum.isIntegerCountable()) {
+    		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
+    			cell.putValue(value, true);
+    		}
+    		else {
+    			if (value != null)
+					cell.setValue(getTimeAttr(value, false));
+				else
+					cell.setValue(getTimeAttr("0", false));
+    		}
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		}
+    	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+    		cell.putValue(value, true);
+    	}
+    	setFontStyle(style);
+    	cell.setStyle(style);
 	}
 	
 	/**
@@ -2788,25 +2763,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    	totalValue =lstItemRow.get(j);
 			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	Style style = cell.getStyle();
-		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-		        	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.putValue(value, true);
-	            		}
-	            		else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value, false));
-							else
-								cell.setValue(getTimeAttr("0", false));
-	            		}
-						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.putValue(value, true);
-	            	}
-	            	setFontStyle(style);
-	            	cell.setStyle(style);
+		        	writeTotalValue(totalValue, cell);
 			    }
 			    currentRow++;
 			}
@@ -2922,10 +2879,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			RemarksContentChoice choice, List<ErrorAlarmWorkRecordCode> lstOutputErrorCode, RemarkQueryDataContainer remarkDataContainer) {
 		PrintRemarksContent printRemarksContent = null;
 		List<EmployeeDailyPerError> errorList = remarkDataContainer.getErrorList();
-		List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		//List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
 		
 		// 遅刻早退
-		if (errorList.size() > 0 && (errorCodeList.contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || errorCodeList.contains(SystemFixedErrorAlarm.LATE.value))) {
+		if (errorList.size() > 0) {
 			// Late come
 			boolean isLateCome = false, isEarlyLeave = false;
 			Optional<EmployeeDailyPerError> optErrorLateCome = errorList.stream()
@@ -2960,8 +2917,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<EditStateOfDailyPerformanceDto> editStateDto = remarkDataContainer.getEditStateDto();
 			List<GeneralDate> lstEditStateDate = new ArrayList<>();
 			// Likely lstEditStateDate only has 0-1 element
-			editStateDto.stream().filter(x -> x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF.value
-										   || x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER.value).forEach(x -> lstEditStateDate.add(x.getYmd()));
+			editStateDto.stream().filter(x -> (x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF.value
+										   || x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER.value)
+										   && x.getYmd().compareTo(currentDate) == 0).forEach(x -> lstEditStateDate.add(x.getYmd()));
 			
 			if (lstEditStateDate.size() > 0 && choice == RemarksContentChoice.MANUAL_INPUT) {
 				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.MANUAL_INPUT.value);
@@ -2987,43 +2945,41 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		// 事前申請超過
-		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)) {
-			Optional<EmployeeDailyPerError> optErrorIncorrectStamp = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)).findFirst();
-			if (optErrorIncorrectStamp.isPresent() && (choice == RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorExceedByApplication = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_OVERTIME_APP_EXCESS.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_HOLIDAYWORK_APP_EXCESS.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_FLEX_APP_EXCESS.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_MIDNIGHT_EXCESS.value)).findFirst();
+		if (optErrorExceedByApplication.isPresent() && (choice == RemarksContentChoice.EXCEED_BY_APPLICATION)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.EXCEED_BY_APPLICATION.value);
+		}
+		
+		// 打刻順序不正
+		Optional<EmployeeDailyPerError> optErrorIncorrectStamp = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)).findFirst();
+		if (optErrorIncorrectStamp.isPresent() && (choice == RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT.value);
 		}
 		
 		// 打刻漏れ
-		if (errorList.isEmpty() && (errorCodeList.contains(SystemFixedErrorAlarm.TIME_LEAVING_STAMP_LEAKAGE.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PCLOG_STAMP_LEAKAGE.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.ENTRANCE_STAMP_LACKING.value))) {
-			Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PCLOG_STAMP_LEAKAGE.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.ENTRANCE_STAMP_LACKING.value)).findFirst();
-			if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.ENGRAVING)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.ENGRAVING.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.TIME_LEAVING_STAMP_LEAKAGE.value)).findFirst();
+		if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.ENGRAVING)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.ENGRAVING.value);
 		}
 		
 		// 二重打刻
-		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.DOUBLE_STAMP.value)) {
-			Optional<EmployeeDailyPerError> optErrorDoubleStamp = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DOUBLE_STAMP.value)).findFirst();
-			if (optErrorDoubleStamp.isPresent() && (choice == RemarksContentChoice.DOUBLE_ENGRAVED)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DOUBLE_ENGRAVED.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorDoubleStamp = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DOUBLE_STAMP.value)).findFirst();
+		if (optErrorDoubleStamp.isPresent() && (choice == RemarksContentChoice.DOUBLE_ENGRAVED)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DOUBLE_ENGRAVED.value);
 		}
 		
 		// 休日打刻
-		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.HOLIDAY_STAMP.value)) {
-			Optional<EmployeeDailyPerError> optErrorDoubleStamp = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.HOLIDAY_STAMP.value)).findFirst();
-			if (optErrorDoubleStamp.isPresent() && (choice == RemarksContentChoice.HOLIDAY_STAMP)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.HOLIDAY_STAMP.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorHolidayStamp = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.HOLIDAY_STAMP.value)).findFirst();
+		if (optErrorHolidayStamp.isPresent() && (choice == RemarksContentChoice.HOLIDAY_STAMP)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.HOLIDAY_STAMP.value);
 		}
 		
 		return Optional.ofNullable(printRemarksContent);
@@ -3040,84 +2996,131 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<CodeName> lstPosition = queryData.getLstPosition();
 		List<CodeName> lstEmployment = queryData.getLstEmployment();
 		
-		if (IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(id -> id == attendanceId)) {
-			Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
-			if (optWorkType.isPresent()) {
-				WorkType workType = optWorkType.get();
-				if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
-					return workType.getName().v();
-				else
-					return workType.getAbbreviationName().v();
-			}
-		}
-		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
-			Optional<WorkTimeSetting> optWorkTime = lstWorkTime.stream().filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
-			if (optWorkTime.isPresent()) {
-				WorkTimeSetting workTime = optWorkTime.get();
-				if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
-					return workTime.getWorkTimeDisplayName().getWorkTimeName().v();
-				else
-					return workTime.getWorkTimeDisplayName().getWorkTimeAbName().v();
-			}
-		}
-		if (IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optWorkLocation = lstWorkLocation.stream().filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
-			if (optWorkLocation.isPresent()) {
-				CodeName workLocation = optWorkLocation.get();
-				return workLocation.getName();
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_WORKPLACE) {
-			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream().filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
-			if (optWorkplace.isPresent()) {
-				CodeName workplace = optWorkplace.get();
-				return workplace.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optReason = lstReason.stream().filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
-			if (optReason.isPresent()) {
-				CodeName reason = optReason.get();
-				return reason.getName();
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
-			Optional<CodeName> optClassification = lstClassification.stream().filter(classification -> classification.getCode().equalsIgnoreCase(code)).findFirst();
-			if (optClassification.isPresent()) {
-				CodeName classification = optClassification.get();
-				return classification.getName();
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_POSITION) {
-			Optional<CodeName> optPosition = lstPosition.stream().filter(position -> position.getId().equalsIgnoreCase(code)).findFirst();
-			if (optPosition.isPresent()) {
-				CodeName position = optPosition.get();
-				return position.getName();
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_EMPLOYMENT) {
-			Optional<CodeName> optEmployment = lstEmployment.stream().filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
-			if (optEmployment.isPresent()) {
-				CodeName employment = optEmployment.get();
-				return employment.getName();
-			}
+		// Not set -> won't check master unregistered
+		if (StringUtils.isEmpty(code)) {
+			return "";
 		}
 		
+		if (IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(id -> id == attendanceId)) {
+			Optional<WorkType> optWorkType = lstWorkType.stream()
+					.filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
+
+			if (!optWorkType.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			WorkType workType = optWorkType.get();
+			if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME) {
+				return workType.getName().v();
+			}
+
+			return workType.getAbbreviationName().v();
+		}
+		
+		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
+			Optional<WorkTimeSetting> optWorkTime = lstWorkTime.stream()
+					.filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
+			
+			if (!optWorkTime.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			WorkTimeSetting workTime = optWorkTime.get();
+			if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME) {
+				return workTime.getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+
+			return workTime.getWorkTimeDisplayName().getWorkTimeAbName().v();
+		}
+		
+		if (IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(id -> id == attendanceId)) {
+			Optional<CodeName> optWorkLocation = lstWorkLocation.stream()
+					.filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
+			
+			if (!optWorkLocation.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+			
+			CodeName workLocation = optWorkLocation.get();
+			return workLocation.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_WORKPLACE) {
+			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream()
+					.filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
+			if (!optWorkplace.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName workplace = optWorkplace.get();
+			return workplace.getName();
+		}
+
+		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
+			Optional<CodeName> optReason = lstReason.stream()
+					.filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
+			if (!optReason.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName reason = optReason.get();
+			return reason.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
+			Optional<CodeName> optClassification = lstClassification.stream()
+					.filter(classification -> classification.getCode().equalsIgnoreCase(code))
+					.findFirst();
+
+			if (!optClassification.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName classification = optClassification.get();
+			return classification.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_POSITION) {
+			Optional<CodeName> optPosition = lstPosition.stream()
+					.filter(position -> position.getId().equalsIgnoreCase(code)).findFirst();
+
+			if (!optPosition.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName position = optPosition.get();
+			return position.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_EMPLOYMENT) {
+			Optional<CodeName> optEmployment = lstEmployment.stream()
+					.filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
+			if (!optEmployment.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName employment = optEmployment.get();
+			return employment.getName();
+		}
+
 		if (IntStream.of(ATTENDANCE_ID_CALCULATION_MAP).anyMatch(id -> id == attendanceId)) {
 			return EnumAdaptor.valueOf(Integer.valueOf(code), AutoCalAtrOvertime.class).description;
 		}
+
 		if (IntStream.of(ATTENDANCE_ID_OVERTIME_MAP).anyMatch(id -> id == attendanceId)) {
-			return EnumAdaptor.valueOf(Integer.valueOf(code), TimeLimitUpperLimitSetting.class).description;
+			return EnumAdaptor.valueOf(Integer.valueOf(code),
+					TimeLimitUpperLimitSetting.class).description;
 		}
+
 		if (IntStream.of(ATTENDANCE_ID_OUTSIDE_MAP).anyMatch(id -> id == attendanceId)) {
-			return TextResource.localize(EnumAdaptor.valueOf(Integer.valueOf(code), GoingOutReason.class).nameId);
+			return TextResource.localize(
+					EnumAdaptor.valueOf(Integer.valueOf(code), GoingOutReason.class).nameId);
 		}
+
 		if (IntStream.of(ATTENDANCE_ID_USE_MAP).anyMatch(id -> id == attendanceId)) {
-			return EnumAdaptor.valueOf(Integer.valueOf(code), UseAtr.class).description;
+			return EnumAdaptor.valueOf(Integer.valueOf(code), ManageAtr.class).description;
 		}
+
 		return "";
 	}
 	

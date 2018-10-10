@@ -275,7 +275,7 @@ public class RegisterLayoutFinder {
 
 			FindInitItemDto findInitCommand = new FindInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
-			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand, isRegisFrLayoutCPS002));
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand, isRegisFrLayoutCPS002 , false));
 		});
 		return result;
 	}

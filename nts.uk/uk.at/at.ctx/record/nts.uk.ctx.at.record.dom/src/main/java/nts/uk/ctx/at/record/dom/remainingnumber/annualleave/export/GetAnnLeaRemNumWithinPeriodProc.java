@@ -40,10 +40,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
@@ -82,6 +79,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
 	/** 月次処理用の暫定残数管理データを作成する */
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 暫定年休管理データを作成する */
+	private CreateInterimAnnualMngData createInterimAnnual;
 	/** 暫定残数管理データ */
 	private InterimRemainRepository interimRemainRepo;
 	/** 暫定年休管理データ */
@@ -106,7 +105,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	/** 集計期間 */
 	private DatePeriod aggrPeriod;
 	/** モード */
-	private TempAnnualLeaveMngMode mode;
+	private InterimRemainMngMode mode;
 	/** 翌月管理データ取得フラグ */
 	private boolean isGetNextMonthData;
 	/** 出勤率計算フラグ */
@@ -133,6 +132,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			GetClosureStartForEmployee getClosureStartForEmployee,
 			CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate,
 			InterimRemainOffMonthProcess interimRemOffMonth,
+			CreateInterimAnnualMngData createInterimAnnual,
 			InterimRemainRepository interimRemainRepo,
 			TmpAnnualHolidayMngRepository tmpAnnualLeaveMng,
 			AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo,
@@ -152,6 +152,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		this.getClosureStartForEmployee = getClosureStartForEmployee;
 		this.calcNextAnnualLeaveGrantDate = calcNextAnnualLeaveGrantDate;
 		this.interimRemOffMonth = interimRemOffMonth;
+		this.createInterimAnnual = createInterimAnnual;
 		this.interimRemainRepo = interimRemainRepo;
 		this.tmpAnnualLeaveMng = tmpAnnualLeaveMng;
 		this.attendanceTimeOfMonthlyRepo = attendanceTimeOfMonthlyRepo;
@@ -181,7 +182,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			String companyId,
 			String employeeId,
 			DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode,
+			InterimRemainMngMode mode,
 			GeneralDate criteriaDate,
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
@@ -219,7 +220,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			String companyId,
 			String employeeId,
 			DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode,
+			InterimRemainMngMode mode,
 			GeneralDate criteriaDate,
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
@@ -627,7 +628,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		List<TmpAnnualLeaveMngWork> results = new ArrayList<>();
 		
 		// 「モード」をチェック
-		if (this.mode == TempAnnualLeaveMngMode.MONTHLY){
+		if (this.mode == InterimRemainMngMode.MONTHLY){
 			// 月次モード
 			
 			// 月別実績用の暫定残数管理データを作成する
@@ -643,7 +644,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				results.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
 		}
-		if (this.mode == TempAnnualLeaveMngMode.OTHER){
+		if (this.mode == InterimRemainMngMode.OTHER){
 			// その他モード
 			
 			// 「暫定年休管理データ」を取得する
@@ -664,15 +665,12 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					this.employeeId, this.aggrPeriod);
 			for (val attendanceTime : attendanceTimes){
 				
+				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
+				val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
+						attendanceTime, attendanceTime.getDatePeriod().end());
+				
 				// 「暫定年休管理データ」を返す
-				val flexTime = attendanceTime.getMonthlyCalculation().getFlexTime();
-				results.add(TmpAnnualLeaveMngWork.of(
-						"compens",
-						attendanceTime.getDatePeriod().end(),
-						"000",
-						new UseDay(flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v()),
-						CreateAtr.FLEXCOMPEN,
-						RemainAtr.SINGLE));
+				if (compensFlexWorkOpt.isPresent()) results.add(compensFlexWorkOpt.get());
 			}
 		}
 		

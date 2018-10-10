@@ -68,10 +68,11 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
-            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && _.isEmpty(param.data.uncountableAtdItem)) {
+            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && 
+             param.data.uncountableAtdItem ==null) {
                 param.data.compareStartValue = null;
                 param.data.compareEndValue = null;
-                param.data.uncountableAtdItem = null;
+                param.data.uncountableAtdItem = null; 
             }
 
                //self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
@@ -253,7 +254,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                     //Open dialog KDL021
-                    nts.uk.ui.windows.setShared('Multiple', false);
+                    nts.uk.ui.windows.setShared('Multiple', true);
                     nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.uncountableAtdItem()]);
@@ -291,7 +292,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             //Open dialog KDL021
             self.getListItemByAtr().done((lstItem) => {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                nts.uk.ui.windows.setShared('Multiple', false);
+                nts.uk.ui.windows.setShared('Multiple', true);
                 nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.currentAtdItemCondition.singleAtdItem()]);
