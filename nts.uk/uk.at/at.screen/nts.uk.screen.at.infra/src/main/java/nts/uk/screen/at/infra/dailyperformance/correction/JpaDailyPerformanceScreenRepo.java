@@ -1203,7 +1203,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
 		val statement = this.connection().prepareStatement(
-				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ?");
+				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1");
 		statement.setString(1, AppContexts.user().companyId());
 		statement.setInt(2, closureId);
 		

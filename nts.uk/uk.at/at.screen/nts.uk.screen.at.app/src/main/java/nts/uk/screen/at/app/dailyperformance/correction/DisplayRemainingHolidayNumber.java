@@ -57,6 +57,7 @@ public class DisplayRemainingHolidayNumber {
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		AnnualHolidaySetOutput output = absenceProc.getSettingForAnnualHoliday(companyId);
 		if (output.isYearHolidayManagerFlg()) {
+			//RequestList198
 			ReNumAnnLeaReferenceDateImport remainNum = annLeaveRemainAdapter
 					.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
