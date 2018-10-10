@@ -703,7 +703,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_281");
 		}
-		
+		if (employeeId != null) {
 		//アルゴリズム「在職状態を取得」を実行する
 		//Request No.280
 		StatusOfEmploymentImport employmentStatus = this.statusEmploymentAdapter.getStatusOfEmployment(employeeId,
@@ -723,6 +723,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			this.service.callLoginRecord(param);
 
 			throw new BusinessException("Msg_286");
+			}
 		}
 		
 		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
