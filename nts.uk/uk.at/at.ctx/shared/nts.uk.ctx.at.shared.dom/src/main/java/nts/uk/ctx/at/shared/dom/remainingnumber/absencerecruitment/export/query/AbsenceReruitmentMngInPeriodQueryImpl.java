@@ -86,7 +86,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		if(remainUnDigestedDays.getRemainDays() < 0) {
 			lstError.add(PauseError.PAUSEREMAINNUMBER);
 		}
-		if(!carryForwardDays.isErrors()) {
+		if(carryForwardDays.isErrors()) {
 			lstError.add(PauseError.OFFSETNUMBER);
 		}
 		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
