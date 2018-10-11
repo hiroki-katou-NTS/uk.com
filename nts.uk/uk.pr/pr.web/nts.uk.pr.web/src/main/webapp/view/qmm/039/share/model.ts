@@ -19,17 +19,17 @@ module nts.uk.pr.view.qmm039.share.model {
     export interface ICurrentProcessDate {
         processCategNo: string;
         cID: string;
-        salCurProcessDate: number;
+        giveCurrTreatYear: number;
     }
     export class CurrentProcessDate {
         processCategNo: KnockoutObservable<string> = ko.observable(null);
         cID: KnockoutObservable<string> = ko.observable(null);
-        salCurProcessDate: KnockoutObservable<number> = ko.observable(null);
+        giveCurrTreatYear: KnockoutObservable<number> = ko.observable(null);
 
         constructor(params: ICurrentProcessDate) {
             this.processCategNo(params ? params.processCategNo : null);
             this.cID(params ? params.cID : null);
-            this.salCurProcessDate(params ? params.salCurProcessDate : null);
+            this.giveCurrTreatYear(params ? params.giveCurrTreatYear : null);
         }
     }
 
