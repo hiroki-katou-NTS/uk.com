@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.app.find.workingcondition;
 
 import java.util.Optional;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
@@ -25,6 +26,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 開始日
 	 */
+	@Getter
 	@PeregItem("IS00119")
 	private GeneralDate startDate;
 
