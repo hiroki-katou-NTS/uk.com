@@ -1,25 +1,25 @@
-package nts.uk.ctx.sys.portal.app.command.event;
+package nts.uk.ctx.sys.portal.ac.globalevent;
 
-import java.util.List;
 import javax.inject.Inject;
+
 import nts.arc.layer.dom.event.DomainEventSubscriber;
+import nts.uk.ctx.sys.auth.pub.event.RoleByRoleTiesGlobalEvent;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesEvent;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-public class LinkComAdminRoleSubscriber implements DomainEventSubscriber<RoleByRoleTiesEvent> {
+public class LinkComAdminRoleSubscriber implements DomainEventSubscriber<RoleByRoleTiesGlobalEvent> {
 	@Inject
 	private RoleByRoleTiesRepository roleTiesRepo;
 
 	@Override
-	public Class<RoleByRoleTiesEvent> subscribedToEventType() {
-		return RoleByRoleTiesEvent.class;
+	public Class<RoleByRoleTiesGlobalEvent> subscribedToEventType() {
+		return RoleByRoleTiesGlobalEvent.class;
 	}
 
 	@Override
-	public void handle(RoleByRoleTiesEvent domainEvent) {
+	public void handle(RoleByRoleTiesGlobalEvent domainEvent) {
 		this.process(domainEvent.getRoleId());
 
 	}
