@@ -1,6 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking;
-
-import java.util.List;
+package nts.uk.ctx.sys.auth.dom.role.personrole;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
