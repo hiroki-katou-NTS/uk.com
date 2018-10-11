@@ -263,9 +263,9 @@ public class OverTimeDto {
 					? Collections.emptyList() 
 					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
 				0, 
-				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
+				appOverTime.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
 				Collections.emptyList(),
-				new SiftType(appOverTime.getSiftCode().v(),""),
+				appOverTime.getSiftCode() == null ? null : new SiftType(appOverTime.getSiftCode().v(),""),
 				Collections.emptyList(),
 				appOverTime.getWorkClockFrom1(), 
 				appOverTime.getWorkClockTo1(),  

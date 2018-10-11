@@ -454,14 +454,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     
                     self.selectedDirection(obj.moveMouse)
                 }
-
+                
                 var param = {
                     dateRange: dateRangeParam ? {
                         startDate: moment(dateRangeParam.startDate).utc().toISOString(),
                         endDate: moment(dateRangeParam.endDate).utc().toISOString()
                     } : null,
                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
-                    initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
+                    initScreen: (_.isEmpty(self.characteristics) || !_.isEmpty(self.shareObject())) ? 0 : 1,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: [],
                     formatCodes: self.formatCodes(),
@@ -998,6 +998,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 $("#next-month").attr('style', 'background-color: white !important');
                                 $("#next-month").ntsError("clear");
                             }
+                             nts.uk.ui.block.clear();
                         }
 
                         if (_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined && !errorFlex) {
@@ -1018,8 +1019,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }else{
                               self.loadRowScreen(false, true);
                             }
-                        } else {
                             nts.uk.ui.block.clear();
+                        } else {
                             let errorAll = false;
                             if (dataAfter.errorMap[0] != undefined) {
                                 self.listCareError(dataAfter.errorMap[0])
@@ -1057,6 +1058,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listErrorMonth = dataAfter.errorMap[5];
                                 errorAll = true;
                             }
+                            nts.uk.ui.block.clear();
                             if(errorAll) self.showErrorDialog();
                         }
                         dfd.resolve();
@@ -1214,7 +1216,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 let cellDatas = row.cellDatas;
                                 let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
                                 _.forEach(cellDatas, cell => {
-                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625') {
+                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625' && !_.isEmpty(rrow)) {
                                         // cell chinh sua man hinh
                                         let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
                                         // cell sau tinh toan
@@ -1414,8 +1416,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         $("#dpGrid").mGrid("hideZero", true)
                         $("#dpGrid").mGrid("hideZero", false)
                     }
-                    nts.uk.ui.block.clear();
                 }, 1000);
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -2211,7 +2213,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         proceedUnLock() {
             let self = this;
             //Msg_982
-            nts.uk.ui.dialog.caution({ messageId: "Msg_982" }).then(() => {
+             nts.uk.ui.dialog.confirm({ messageId: "Msg_982" }).ifYes(() => {
                 if (!self.hasEmployee) return;
                 self.showLock(false);
                 self.unLock(true);
@@ -2255,6 +2257,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             let dfd = $.Deferred();
             service.lock(param).done((data) => {
+                nts.uk.ui.block.clear();
                 let dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
                 _.forEach(dataSourceRow, (valueUpdate) => {
                     $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true, true)
@@ -3736,8 +3739,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //selected items
                         setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
                         modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                            var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                            if (lst != undefined && lst[0].code != "") {
+                            let lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                            if (lst != undefined && lst.length > 0 && lst[0].code != "") {
                                 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());
                             } else {
                                 self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());

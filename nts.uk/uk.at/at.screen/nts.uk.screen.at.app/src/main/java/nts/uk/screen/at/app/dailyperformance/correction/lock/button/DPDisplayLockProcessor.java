@@ -95,6 +95,7 @@ public class DPDisplayLockProcessor {
 		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt,
 				approvalUseSettingDtoOpt);
 		Map<String, Boolean> disableSignMap = new HashMap<>();
+		process.getApplication(listEmployeeId, dateRange, disableSignMap);
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
 		

@@ -488,7 +488,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_FIND_JOB_INFO = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT JOB_CD, JOB_NAME, JOB_ID FROM BSYMT_JOB_INFO w JOIN BSYMT_JOB_HIST a");
+		builderString.append("SELECT w.JOB_CD, w.JOB_NAME, w.JOB_ID FROM BSYMT_JOB_INFO w JOIN BSYMT_JOB_HIST a ");
 		builderString.append("ON w.JOB_ID = a.JOB_ID AND w.CID = a.CID AND w.HIST_ID = a.HIST_ID ");
 		builderString.append("WHERE a.CID = ? AND a.START_DATE <= ? AND a.END_DATE >= ? ");
 		SEL_FIND_JOB_INFO_JDBC = builderString.toString();
@@ -532,7 +532,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_ALL_WORKPLACE = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT WKPCD, WKP_NAME FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a");
+		builderString.append("SELECT WKPCD, WKP_NAME FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a ");
 		builderString.append("ON w.WKPID = a.WKPID AND w.CID = a.CID AND w.HIST_ID = a.HIST_ID ");
 		builderString.append("WHERE a.CID = ? AND a.START_DATE <= ? AND a.END_DATE >= ? ");
 		SEL_ALL_WORKPLACE_JDBC = builderString.toString();
@@ -1203,7 +1203,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
 		val statement = this.connection().prepareStatement(
-				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ?");
+				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1");
 		statement.setString(1, AppContexts.user().companyId());
 		statement.setInt(2, closureId);
 		

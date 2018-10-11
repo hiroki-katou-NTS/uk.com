@@ -157,7 +157,7 @@ public class DailyCalculationCommandFacade {
 				return returnData;
 			}
 		}
-		return new DailyPerformanceCalculationDto(null, null, new DataResultAfterIU(resultError, flexShortage), Collections.emptyList());
+		return new DailyPerformanceCalculationDto(null, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage), Collections.emptyList());
 	}
 
 	/**

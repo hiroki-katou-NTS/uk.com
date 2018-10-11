@@ -423,9 +423,7 @@ public class OptionalWidgetKtgFinder {
 						GeneralDate date = GeneralDate.today();
 						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails(); 
 						for (SpecialLeaveGrantDetails items : lstSpeLeaveGrantDetails) {
-							if (items.getDataAtr().value == DataAtr.GRANTSCHE.value
-									&& items.getGrantDate().afterOrEquals(startDate)
-									&& items.getGrantDate().beforeOrEquals(endDate)) {
+							if (items.getGrantDate().afterOrEquals(startDate) && items.getGrantDate().beforeOrEquals(endDate)) {
 								date = items.getGrantDate();
 								showAfter = true;
 							}

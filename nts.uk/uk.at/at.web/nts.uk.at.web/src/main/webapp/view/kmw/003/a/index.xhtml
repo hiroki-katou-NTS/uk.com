@@ -128,13 +128,12 @@
 								]}">
 						</div>
 					</div>
-					<div class="control-group">
+					<div class="control-group" id = "id-vertical-middle">
 						<!--A4_1 締め日--> 
 						<div class="label" style="width: 70px">#{i18n.getText('KMW003_10')}</div>
 						<!--A4_2 対象締め日--> 
 						<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
 						<!--A4_7 -->
-						
 						<div id="cbClosureInfo"
 							data-bind="ntsComboBox: {
 										visibleItemsCount: 5,
@@ -149,7 +148,6 @@
 										]}">
 						</div>  
 								
-						
 						<!--A4_6 複数実績メッセージ--> 
 						<div id="multi-archieve-message" data-bind="{visible:showButton().enable_multiActualTime}" class="label">#{i18n.getText('KMW003_13')}</div>
 					</div>

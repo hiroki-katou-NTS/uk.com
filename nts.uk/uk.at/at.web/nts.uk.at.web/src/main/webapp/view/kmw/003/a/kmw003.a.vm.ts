@@ -170,7 +170,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.updateDate(value);
             });
             $(document).mouseup(function(e) {
-                var container = $(".ui-tooltip");
+                let container = $(".ui-tooltip");
                 if (!container.is(e.target) &&
                     container.has(e.target).length === 0) {
                     $("#tooltip").hide();
@@ -264,15 +264,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             var self = this;
             _.each(data.lstControlDisplayItem.columnSettings, function(item) {
 
-                if (self.displayFormat() == 0) {
-                    if (item.columnKey == "date") {
-                        item['summaryCalculator'] = "合計";
-                    }
-                } else {
-                    if (item.columnKey == "employeeCode") {
-                        item['summaryCalculator'] = "合計";
-                    }
-                }
                 if (item.typeFormat != null && item.typeFormat != undefined) {
                     if (item.typeFormat == 2) {
                         //so lan
@@ -289,6 +280,20 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     else if (item.typeFormat == 4) {
                         //so tien 
                         item['summaryCalculator'] = "Number";
+                    }else{
+                        if (self.displayFormat() == 0) {
+                            if (item.columnKey == "date") {
+                                item['summaryCalculator'] = "合計";
+                            } else {
+                                item['summaryCalculator'] = "";
+                            }
+                        } else {
+                            if (item.columnKey == "employeeCode") {
+                                item['summaryCalculator'] = "合計";
+                            } else {
+                                item['summaryCalculator'] = "";
+                            }
+                        }
                     }
                 } else {
                     item['summaryCalculator'] = "Number";
@@ -409,6 +414,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() { 
                         nts.uk.request.jumpToTopPage();
                     });  
+                 } else if(error.messageId=="Msg_916"){
+                    nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() { 
+                        //nts.uk.request.jumpToTopPage();
+                        nts.uk.ui.block.clear();
+                    }); 
                 } else {
                     if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                         //Open KDM003C to select format code
@@ -743,8 +753,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             //            self.monthlyParam().initMenuMode = self.initMode();
-//            self.monthlyParam().closureId = self.closureId();
-            self.monthlyParam().yearMonth = date;
+            self.monthlyParam().closureId = self.closureId(); 
+            self.monthlyParam().yearMonth = date; 
             self.monthlyParam().lstEmployees = self.lstEmployee();
 
             if ($("#dpGrid").data('mGrid')) {
@@ -897,7 +907,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 userId: self.employIdLogin,
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
-                showErrorsOnPage: true,
+                errorsOnPage: true,
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
@@ -1496,8 +1506,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
-                container.css("top", "-5px");
-                container.css("left", "255px");
+                container.css("top", "-1px");
+                container.css("left", "258px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container
