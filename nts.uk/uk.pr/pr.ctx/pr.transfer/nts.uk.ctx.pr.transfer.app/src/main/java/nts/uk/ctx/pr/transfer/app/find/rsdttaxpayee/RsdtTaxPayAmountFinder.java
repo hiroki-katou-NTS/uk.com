@@ -19,28 +19,27 @@ public class RsdtTaxPayAmountFinder {
     private RsdtTaxPayAmountService rsdtTaxPayAmountService;
 
     /**
-     * 初期データ取得処理
+     * 部門取得処理
      */
-    public InitRsdtTaxPayAmountDto initRsdtTaxPayAmount(RsdtTaxPayAmountParam param) {
-        // アルゴリズム「部門取得処理」を実行する
-        List<EmpInfoDeptDto> ListEmpInfoDept = employeeInformationAdapter
+    public List<EmpInfoDeptDto> getEmpInfoDept(RsdtTaxPayAmountParam param) {
+        // ドメインモデル「所属部門」をすべて取得する
+        return employeeInformationAdapter
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(param.getListSId(), param.getBaseDate(),
                         false,
                         true,
                         false,
                         false,
                         false,
-                        false)).stream().map(x -> EmpInfoDeptDto.builder()
-                        .sid(x.getEmployeeId())
-                        .departmentCode(x.getDepartment().getDepartmentCode())
-                        .departmentName(x.getDepartment().getDepartmentName())
-                        .build()).collect(Collectors.toList());
-
-        //アルゴリズム「対象データ取得処理」を実施する
-        List<RsdtTaxPayAmountDto> listRsdtTaxPayAmount = rsdtTaxPayAmountService.getRsdtTaxPayAmount(param.getListSId(),
-                param.getYear());
-
-        return new InitRsdtTaxPayAmountDto(ListEmpInfoDept, listRsdtTaxPayAmount);
+                        false)).stream().map(x -> {
+                    EmpInfoDeptDto dto = new EmpInfoDeptDto();
+                    dto.setSid(x.getEmployeeId());
+                    if(x.getDepartment() != null){
+                        dto.setDepartmentName(x.getDepartment().getDepartmentName());
+                    }else{
+                        dto.setDepartmentName("");
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
     }
 
     /**

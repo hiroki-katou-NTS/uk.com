@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.transfer.ws.rsdttaxpayee;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.InitRsdtTaxPayAmountDto;
+import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.EmpInfoDeptDto;
 import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.RsdtTaxPayAmountFinder;
 import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.RsdtTaxPayAmountParam;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.service.RsdtTaxPayAmountDto;
@@ -20,9 +20,9 @@ public class RsdtTaxPayAmountWebService extends WebService {
     private RsdtTaxPayAmountFinder rsdtTaxPayAmountFinder;
 
     @POST
-    @Path("initRsdtTaxPayAmount")
-    public InitRsdtTaxPayAmountDto initRsdtTaxPayAmount(RsdtTaxPayAmountParam param) {
-        return rsdtTaxPayAmountFinder.initRsdtTaxPayAmount(param);
+    @Path("getEmpInfoDept")
+    public List<EmpInfoDeptDto> getEmpInfoDept(RsdtTaxPayAmountParam param) {
+        return rsdtTaxPayAmountFinder.getEmpInfoDept(param);
     }
 
     @POST

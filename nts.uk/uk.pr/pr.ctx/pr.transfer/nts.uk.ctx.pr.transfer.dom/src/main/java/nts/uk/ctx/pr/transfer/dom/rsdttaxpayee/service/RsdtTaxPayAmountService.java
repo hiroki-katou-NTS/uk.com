@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.service;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.EmployeeResidentTaxPayeeInfoAdapter;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.EmployeeResidentTaxPayeeInfoImport;
@@ -8,9 +7,6 @@ import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.PayeeInfoAdapter;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.PayeeInfoImport;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.amountinfo.EmployeeResidentTaxPayAmountInfoAdapter;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.amountinfo.EmployeeResidentTaxPayAmountInfoImport;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationAdapter;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationImport;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayee;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -71,13 +67,6 @@ public class RsdtTaxPayAmountService {
 
     /**
      * mapRsdtTaxPayAmount
-     *
-     * @param listSId
-     * @param listEmpRsdtTaxPayeeInfo
-     * @param listPayeeInfo
-     * @param listEmpRsdtTaxPayAmountInfo
-     * @param listRsdtTaxPayee
-     * @return
      */
     private List<RsdtTaxPayAmountDto> mapRsdtTaxPayAmount(List<String> listSId,
                                                           List<EmployeeResidentTaxPayeeInfoImport> listEmpRsdtTaxPayeeInfo,
@@ -129,15 +118,9 @@ public class RsdtTaxPayAmountService {
 
     /**
      * getRsdtTaxPayeeName
-     *
-     * @param sid
-     * @param mapRsdtTaxPayeeInfo
-     * @param mapPayeeInfo
-     * @param mapRsdtTaxPayee
-     * @return
      */
-    String getRsdtTaxPayeeName(String sid, HashMap<String, String> mapRsdtTaxPayeeInfo,
-                               HashMap<String, String> mapPayeeInfo, HashMap<String, String> mapRsdtTaxPayee) {
+    private String getRsdtTaxPayeeName(String sid, HashMap<String, String> mapRsdtTaxPayeeInfo,
+                                       HashMap<String, String> mapPayeeInfo, HashMap<String, String> mapRsdtTaxPayee) {
         if (!mapRsdtTaxPayeeInfo.containsKey(sid)) return "";
         String histId = mapRsdtTaxPayeeInfo.get(sid);
         if (!mapPayeeInfo.containsKey(histId)) return "";
