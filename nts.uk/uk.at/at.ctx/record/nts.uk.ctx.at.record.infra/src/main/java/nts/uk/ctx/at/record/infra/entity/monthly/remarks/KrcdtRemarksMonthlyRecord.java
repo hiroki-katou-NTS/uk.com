@@ -66,7 +66,7 @@ public RemarksMonthlyRecord toDomain(){
 				EnumAdaptor.valueOf(this.recordPK.closureId, ClosureId.class),
 				this.recordPK.remarksNo,
 				new YearMonth(this.recordPK.yearMonth),
-				new ClosureDate(this.recordPK.closureDay, (true)),
+				new ClosureDate(this.recordPK.closureDay, this.recordPK.isLastDay == 1),
 				new DatePeriod(this.startYmd, 
 						       this.endYmd),
 				new RecordRemarks(this.recordRemarks)
