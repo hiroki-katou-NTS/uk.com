@@ -50,8 +50,9 @@ public class SettingItemDtoMapping {
 		if (CollectionUtil.isEmpty(selectionItemList)) {
 			return;
 		}
+
 		selectionItemList.forEach(item -> {
-			
+
 			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
 					item.getSelectionItemRefCd(), baseDate, employeeId, null, true,
 					perInfoCategory.getPersonEmployeeType(), true, perInfoCategory.getCategoryCode().v());
@@ -65,7 +66,7 @@ public class SettingItemDtoMapping {
 					}
 				}
 			}
-			
+
 			if (isCompare == false && isRadio == false) {
 				item.getSaveData().setValue("");
 			}

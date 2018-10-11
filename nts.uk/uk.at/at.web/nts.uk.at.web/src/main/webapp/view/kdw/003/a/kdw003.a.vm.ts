@@ -1216,7 +1216,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 let cellDatas = row.cellDatas;
                                 let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
                                 _.forEach(cellDatas, cell => {
-                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625') {
+                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625' && !_.isEmpty(rrow)) {
                                         // cell chinh sua man hinh
                                         let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
                                         // cell sau tinh toan

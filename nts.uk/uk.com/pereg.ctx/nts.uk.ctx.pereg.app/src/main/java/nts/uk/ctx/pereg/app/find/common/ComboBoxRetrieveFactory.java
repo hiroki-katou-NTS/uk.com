@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
+import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
@@ -49,6 +50,8 @@ import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.pereg.app.find.person.info.item.CodeNameRefTypeDto;
@@ -125,6 +128,9 @@ public class ComboBoxRetrieveFactory {
 	@Inject
 	private GrantDateTblRepository gdTblRepository;
 	
+	@Inject
+	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
+	
 	private static final Map<String, Class<?>> enumMap;
 	static {
 		Map<String, Class<?>> aMap = new HashMap<>();
@@ -187,7 +193,7 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, workplaceId, isRequired, perEmplType, isDataType6, categoryCode);
+		return getComboBox(RefType, refCd, standardDate, employeeId, workplaceId, isRequired, perEmplType, isDataType6, categoryCode, null);
 	}
 
 	/**
@@ -214,12 +220,12 @@ public class ComboBoxRetrieveFactory {
 			break;
 		}
 		return getComboBox(referenceType, referenceCode, comboBoxParam.getStandardDate(), comboBoxParam.getEmployeeId(),
-				comboBoxParam.getWorkplaceId(), comboBoxParam.isRequired(), perEmplType, true, null);
+				comboBoxParam.getWorkplaceId(), comboBoxParam.isRequired(), perEmplType, true, null, comboBoxParam.getBaseDate());
 
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			String workplaceId, String categoryCode) {
+			String workplaceId, String categoryCode, GeneralDate realBaseDate) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -282,7 +288,20 @@ public class ComboBoxRetrieveFactory {
 				} else {
 					// this case shouldn't happen
 				}
+			} else if (employeeId != null) {
+				if (standardDate == null && realBaseDate != null) {
+					PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00020", employeeId, "", realBaseDate));
+					if (resultDto != null) {
+						WorkingConditionDto wrkCond = (WorkingConditionDto) resultDto.getDomainDto();
+						standardDate = wrkCond.getStartDate();
+					} 
+				}
+				Optional<AffWorkplaceHistory> affWorkplaceHist = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(employeeId, standardDate);
+				if (!affWorkplaceHist.isPresent()){
+					workplaceId = null;
+				}
 			}
+			
 			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
 			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
@@ -433,7 +452,7 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired,
-			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
+			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, GeneralDate realBaseDate) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -445,7 +464,7 @@ public class ComboBoxRetrieveFactory {
 			resultList = getCodeNameComboBox(referenceCode, standardDate, perEmplType);
 			break;
 		case DESIGNATED_MASTER:
-			resultList = getMasterComboBox(referenceCode, employeeId, standardDate, workplaceId, categoryCode);
+			resultList = getMasterComboBox(referenceCode, employeeId, standardDate, workplaceId, categoryCode, realBaseDate);
 			break;
 
 		}

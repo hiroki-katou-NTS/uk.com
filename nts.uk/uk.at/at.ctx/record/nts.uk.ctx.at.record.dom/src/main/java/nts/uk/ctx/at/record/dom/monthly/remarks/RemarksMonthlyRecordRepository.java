@@ -96,4 +96,10 @@ public interface RemarksMonthlyRecordRepository {
 	 * @param yearMonth
 	 */
 	void removeByYearMonth(String employeeId, YearMonth yearMonth);
+
+	Optional<RemarksMonthlyRecord> find(String employeeId, ClosureId closureId, RemarksNo remarksNo,
+			YearMonth yearMonth, ClosureDate closureDate);
+
+	void remove(String employeeId, ClosureId closureId, RemarksNo remarksNo, YearMonth yearMonth,
+			ClosureDate closureDate);
 }

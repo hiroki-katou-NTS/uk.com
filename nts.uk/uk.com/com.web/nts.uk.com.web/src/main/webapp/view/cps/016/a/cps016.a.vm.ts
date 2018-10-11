@@ -63,13 +63,13 @@ module nts.uk.com.view.cps016.a.viewmodel {
         //開�
         start(): JQueryPromise<any> {
             let self = this;
-            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin,
+                systemAdmin = __viewContext.user.role.systemAdmin;
             
-            if (groupCompanyAdmin === 'null') {
+            if (groupCompanyAdmin === 'null' && systemAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
                 });
-
             } else {
                 let dfd = $.Deferred();
 
