@@ -112,7 +112,7 @@ module cps001.c.vm {
                 return;
             }
 
-            confirm({ messageId: "Msg_528" }).ifYes(() => {
+            confirm({messageId: "Msg_528"}, {buttonStyles: { yes: "proceed" } }).ifYes(() => {
                 let itemListLength = self.listEmployee().length,
                     indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; }),
                     objToRestore = {
