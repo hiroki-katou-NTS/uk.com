@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Stateless
-public class EmpInfoAdapterImpl implements EmployeeInformationAdapter {
+public class EmployeeInfoAdapterImpl implements EmployeeInformationAdapter {
 
     //@Inject
     //EmployeeInformationPub employeeInformationPub;
