@@ -20,11 +20,11 @@
     <ui:define name="content">
         <div id="contents-area">
             <div class="label dialog-title">#{i18n.getText('QMM039_26')}</div>
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 20px;" class="flex valign-center">
                 <div style="width: 150px; display: inline-block;"
-                     data-bind="ntsFormLabel: {required: true}" id="C2_1">#{i18n.getText('QMM039_23')}</div>
+                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>
                 <div style="width: 280px;display: inline-flex">
-                    <div style="display: inline-block;" id="B1_2"
+                    <div style="display: inline-block;" id="B1_3"
                          data-bind="ntsDateRangePicker: {
 							required: true, enable: true, name: '#[QMM039_23]',
 									showNextPrevious: false, value: dateValue, type: 'yearmonth',valueFormat: 'YYYYMM'}"
@@ -42,7 +42,7 @@
             <div style="width: 150px; display: inline-block;"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM039_28')}</div>
             <div style="width: 280px;display: inline-flex">
-                <div id="B1_6" data-bind="ntsRadioBoxGroup: {
+                <div tabindex="2" id="B1_6" data-bind="ntsRadioBoxGroup: {
                                     name:'#[QMM039_28]',
 									options: takeoverItem,
 									optionsValue: 'value',
@@ -56,8 +56,8 @@
         </div>
         <div id="functions-area-bottom">
             <button tabindex ="3" class="x-large proceed "
-                    data-bind="click: addNewHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_202')}</button>
-            <button tabindex ="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM008_203')}</button>
+                    data-bind="click: addNewHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM039_31')}</button>
+            <button tabindex ="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM039_32')}</button>
         </div>
     </ui:define>
 </ui:composition>
