@@ -66,7 +66,7 @@ module cps001.b.vm {
                         unblock();
                     });
                 }
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }

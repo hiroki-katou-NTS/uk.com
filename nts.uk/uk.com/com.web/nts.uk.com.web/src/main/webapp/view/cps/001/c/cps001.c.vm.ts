@@ -155,7 +155,7 @@ module cps001.c.vm {
 
                 });
 
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }
@@ -195,7 +195,7 @@ module cps001.c.vm {
                 }).fail((mes) => {
                     unblock();
                 });
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }
