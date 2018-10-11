@@ -40,5 +40,8 @@ public class KrcdtRemarksMonthlyRecordPK implements Serializable{
 	@Column(name = "CLOSURE_DAY")
 	public Integer closureDay;
 	
+	/** 末日とする */
+	@Column(name = "IS_LAST_DAY")
+	public Integer isLastDay;
 	
 }

@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -156,6 +158,7 @@ import nts.uk.shr.com.primitive.WorkplaceCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordService{
 
 	/*勤務種類*/

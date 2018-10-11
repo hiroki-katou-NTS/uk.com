@@ -236,6 +236,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
 						continue;
 					}
+					if(x.getFrameNo() == 11 || x.getFrameNo() == 12){
+						continue;
+					}
 					if (x.getApplicationTime().v() > 0) {
 						totalWorkUnit += x.getApplicationTime().v();
 						if (count < 3) {
@@ -264,8 +267,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							case NORMALOVERTIME: {
 								type = "残業時間";
 								List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
-								Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+//								Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+//								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 								if(!CollectionUtil.isEmpty(normalLst)){
 									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 									if (!lstFramOt.isEmpty()){
@@ -273,14 +276,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 										break;
 									}
 								}
-								if(plusNo11.isPresent()){
-									type = "時間外深夜時間";
-									break;
-								}
-								if(plusNo12.isPresent()){
-									type = "ﾌﾚｯｸｽ超過";
-									break;
-								}
+//								if(plusNo11.isPresent()){
+//									type = "時間外深夜時間";
+//									break;
+//								}
+//								if(plusNo12.isPresent()){
+//									type = "ﾌﾚｯｸｽ超過";
+//									break;
+//								}
 							}
 							case RESTTIME: {
 								type = "休憩時間";
@@ -294,8 +297,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-						+ I18NText.getText("CMM045_230", frameInfo);
+				content += " " + frameInfo;
 				break;
 			}
 			case POSTERIOR: {
@@ -334,6 +336,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						if(x.getApplicationTime()==null){
 							continue;
 						}
+						if(x.getFrameNo() == 11 || x.getFrameNo() == 12){
+							continue;
+						}
 						if (x.getApplicationTime().v() > 0) {
 							totalWorkUnit += x.getApplicationTime().v();
 							if (count < 3) {
@@ -362,8 +367,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								case NORMALOVERTIME: {
 									type = "残業時間";
 									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
-									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+//									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+//									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 									if(!CollectionUtil.isEmpty(normalLst)){
 										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 										if (!lstFramOt.isEmpty()){
@@ -371,14 +376,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 									}
-									if(plusNo11.isPresent()){
-										type = "時間外深夜時間";
-										break;
-									}
-									if(plusNo12.isPresent()){
-										type = "ﾌﾚｯｸｽ超過";
-										break;
-									}
+//									if(plusNo11.isPresent()){
+//										type = "時間外深夜時間";
+//										break;
+//									}
+//									if(plusNo12.isPresent()){
+//										type = "ﾌﾚｯｸｽ超過";
+//										break;
+//									}
 								}
 								case RESTTIME: {
 									type = "休憩時間";
@@ -392,8 +397,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-					content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-							+ I18NText.getText("CMM045_230", frameInfo);
+					content += " " + frameInfo;
 				}
 
 				// AFTER
@@ -420,6 +424,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				}
 				for (val x : overTime.getOverTimeInput()) {
 					if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+						continue;
+					}
+					if(x.getFrameNo() == 11 || x.getFrameNo() == 12){
 						continue;
 					}
 					if (x.getApplicationTime().v() > 0) {
@@ -451,8 +458,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								case NORMALOVERTIME: {
 									type = "残業時間";
 									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
-									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+//									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
+//									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 									if(!CollectionUtil.isEmpty(normalLst)){
 										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 										if (!lstFramOt.isEmpty()){
@@ -460,14 +467,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 									}
-									if(plusNo11.isPresent()){
-										type = "時間外深夜時間";
-										break;
-									}
-									if(plusNo12.isPresent()){
-										type = "ﾌﾚｯｸｽ超過";
-										break;
-									}
+//									if(plusNo11.isPresent()){
+//										type = "時間外深夜時間";
+//										break;
+//									}
+//									if(plusNo12.isPresent()){
+//										type = "ﾌﾚｯｸｽ超過";
+//										break;
+//									}
 								}
 								case RESTTIME: {
 									type = "休憩時間";
@@ -482,8 +489,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-						+ I18NText.getText("CMM045_230", frameInfo);
+				content += " " + frameInfo;
 			}
 			case NONE: {
 				

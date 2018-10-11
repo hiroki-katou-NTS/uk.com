@@ -26,10 +26,12 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -60,7 +62,11 @@ public class OptionalItemFinder {
 
 	/** The attd item name adapter. */
 	@Inject
-	private DailyAttendanceItemNameAdapter attdItemNameAdapter;
+	private DailyAttendanceItemNameAdapter dailyAttdItemNameAdapter;
+	
+	/** The monthly attd item name adapter. */
+	@Inject
+	private MonthlyAttendanceItemNameAdapter monthlyAttdItemNameAdapter;
 
 	/**
 	 * Find.
@@ -121,12 +127,41 @@ public class OptionalItemFinder {
 	 */
 	private Map<Integer, String> getAttendanceItems(PerformanceAtr atr) {
 		Map<Integer, String> result;
-		if (atr == PerformanceAtr.DAILY_PERFORMANCE) {
-			result = this.dailyRepo.getList(AppContexts.user().companyId()).stream().collect(
-					Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
-		} else {
-			result = this.monthlyRepo.findAll(AppContexts.user().companyId()).stream().collect(
-					Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, item -> item.getAttendanceName().v()));
+		switch (atr) {
+		case DAILY_PERFORMANCE: {
+			result = this.dailyRepo.getList(AppContexts.user().companyId()).stream()
+					.collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId,
+							item -> item.getAttendanceName().v()));
+
+			// get attd item name list
+			List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.dailyAttdItemNameAdapter
+					.getDailyAttendanceItemName(new ArrayList<Integer>(result.keySet()));
+
+			// set attendance item name
+			attdItemNames.forEach(item -> {
+				result.replace(item.getAttendanceItemId(), item.getAttendanceItemName());
+			});
+			break;
+		}
+
+		case MONTHLY_PERFORMANCE: {
+			result = this.monthlyRepo.findAll(AppContexts.user().companyId()).stream()
+					.collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId,
+							item -> item.getAttendanceName().v()));
+
+			// get attd item name list
+			List<AttendanceItemName> attdItemNames = monthlyAttdItemNameAdapter
+					.getNameOfMonthlyAttendanceItem(new ArrayList<Integer>(result.keySet()));
+
+			// set attendance item name
+			attdItemNames.forEach(item -> {
+				result.replace(item.getAttendanceItemId(), item.getAttendanceItemName());
+			});
+			break;
+		}
+
+		default:
+			throw new RuntimeException("Not support this enum value!");
 		}
 
 		// result not found
@@ -134,14 +169,6 @@ public class OptionalItemFinder {
 			return Collections.emptyMap();
 		}
 
-		// get attd item name list
-		List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.attdItemNameAdapter
-				.getDailyAttendanceItemName(new ArrayList<Integer>(result.keySet()));
-
-		// set attendance item name
-		attdItemNames.forEach(item -> {
-			result.replace(item.getAttendanceItemId(), item.getAttendanceItemName());
-		});
 		return result;
 	}
 

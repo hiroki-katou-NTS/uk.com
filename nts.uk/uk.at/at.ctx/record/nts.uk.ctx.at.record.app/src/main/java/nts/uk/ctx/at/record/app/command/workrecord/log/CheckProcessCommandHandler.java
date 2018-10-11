@@ -22,7 +22,7 @@ public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcess
 	@Inject
 	private ProcessFlowOfDailyCreationDomainService processFlowOfDailyCreationDomainService;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	protected void handle(CommandHandlerContext<CheckProcessCommand> context) {
 		val asyncContext = context.asAsync();

@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -249,7 +251,8 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		if(approvalPhaseState.getApprovalForm()==ApprovalForm.EVERYONE_APPROVED){
 			// 指定する社員が承認を行った承認者かチェックする
 			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-					.filter(frame -> frame.getApproverID().equals(employeeID) || frame.getRepresenterID().equals(employeeID)).findAny();
+					.filter(frame -> (Strings.isNotBlank(frame.getApproverID())&&frame.getApproverID().equals(employeeID)) || 
+							(Strings.isNotBlank(frame.getRepresenterID())&&frame.getRepresenterID().equals(employeeID))).findAny();
 			if(opApprovalFrame.isPresent()){
 				// 解除できるフラグ = true
 				canCancel = true;

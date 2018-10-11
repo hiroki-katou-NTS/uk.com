@@ -131,7 +131,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 												&& c.getDatePeriod().start().beforeOrEquals(cd)).findFirst().orElse(null);
 				
 				if(appRootInstance==null){
-					throw new BusinessException("Msg_1430", cei);
+					throw new BusinessException("Msg_1430", "承認者");
 				}
 				// 対象日の就業実績確認状態を取得する
 				AppRootConfirm appRootConfirm = arcs.stream().filter(c -> c.getEmployeeID().equals(cei) && c.getRecordDate().equals(cd)).findFirst()

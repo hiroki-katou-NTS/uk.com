@@ -56,19 +56,22 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 	private GrantDateTblRepository grantTableRepos;
 	@Override
 	public InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode,
-			DatePeriod complileDate) {
+			DatePeriod complileDate,SpecialHoliday specialHoliday) {
 		InforSpecialLeaveOfEmployee outputData = new InforSpecialLeaveOfEmployee(InforStatus.NOTUSE, Optional.empty(), new ArrayList<>(), false);
 		//ドメインモデル「特別休暇基本情報」を取得する
 		Optional<SpecialLeaveBasicInfo> optBasicInfor = leaveBasicInfoRepo.getBySidLeaveCdUser(sid, specialLeaveCode, UseAtr.USE);
 		if(!optBasicInfor.isPresent()) {
 			return outputData;
 		}
-		//ドメインモデル「特別休暇」を取得する
-		Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
-		if(!optSpecialHoliday.isPresent()) {
-			return outputData;
+		if(specialHoliday == null) {
+			//ドメインモデル「特別休暇」を取得する
+			Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
+			if(!optSpecialHoliday.isPresent()) {
+				return outputData;
+			}
+			specialHoliday = optSpecialHoliday.get();	
 		}
-		SpecialHoliday specialHoliday = optSpecialHoliday.get();		
+			
 		SpecialLeaveBasicInfo leaverBasicInfo = optBasicInfor.get();
 		//付与日数情報を取得する
 		GrantDaysInforByDates grantDayInfors = this.getGrantDays(cid, sid, complileDate, specialHoliday, leaverBasicInfo);
