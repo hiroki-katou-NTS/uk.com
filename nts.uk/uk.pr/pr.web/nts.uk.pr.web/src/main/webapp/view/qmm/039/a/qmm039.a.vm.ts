@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
     export class ScreenModel {
         itemList: KnockoutObservableArray<>;
-        isEnable: KnockoutObservable<boolean>;
+        isEnableHis: KnockoutObservable<boolean> = ko.observable(false);
         salHis: any;
         dataSource: any;
         singleSelectedCode: any;
@@ -34,12 +34,18 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         constructor() {
             let self = this;
             // initial ccg options
-            self.isEnable = ko.observable(true);
             self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
             let sal = new SalIndAmount({amountOfMoney: 2013});
             self.itemList = ko.observableArray([
                 new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm().toString().substr(0,4) + '/' + self.salHis.periodStartYm().toString().substr(4,self.salHis.periodStartYm().length), self.salHis.periodEndYm().toString().substr(0,4) + '/' + self.salHis.periodEndYm().toString().substr(4,self.salHis.periodEndYm().length)), sal.amountOfMoney()),
             ]);
+            self.itemList.subscribe(function (newValue) {
+                if(newValue.length > 0){
+                    self.isEnableHis(true);
+                }else {
+                    self.isEnableHis(false);
+                }
+            });
             self.dataSource = ko.observableArray([new Node('code1', 'name1'), new Node('code2', 'name3')]);
             self.singleSelectedCode = ko.observable(null);
             self.currencyeditor = {
@@ -81,16 +87,16 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
                 showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
+                showSameWorkplace: false,
+                showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: true,
-                showClassification: true,
-                showJobTitle: true,
-                showWorktype: true,
-                isMutipleCheck: true,
+                showWorkplace: false,
+                showClassification: false,
+                showJobTitle: false,
+                showWorktype: false,
+                isMutipleCheck: false,
 
                 /**
                  * Self-defined function: Return data from CCG001
@@ -208,8 +214,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             let params = {
                 empId: '000001',
                 personalValcode: '000001',
-                startDate: self.salHis.periodStartYm(),
-                endDate: self.salHis.periodEndYm(),
+                period: {
+                    periodStartYm: self.salHis.periodStartYm(),
+                    periodEndYm: self.salHis.periodEndYm()
+                },
                 itemClass: 2,
             }
             setShared("QMM039_C_PARAMS", params);
@@ -294,11 +302,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     }
 
     export class SystemType {
-        static EMPLOYMENT = 1;
-        static SALARY = 2;
-        static PERSONNEL = 3;
-        static ACCOUNTING = 4;
-        static OH = 6;
+        static PERSONAL_INFORMATION = 1;
+        static EMPLOYMENT = 2;
+        static SALARY = 3;
+        static HUMAN_RESOURCES = 4;
+        static ADMINISTRATOR = 5;
     }
 
     class Node {
