@@ -13,6 +13,8 @@ public interface PerProcessClsSetRepository
 
     Optional<PerProcessClsSet> getPerProcessClsSetById(String processCateNo);
 
+    Optional<PerProcessClsSet> getPerProcessClsSetByUIDAndCID(String uid,String cid);
+
     void add(PerProcessClsSet domain);
 
     void update(PerProcessClsSet domain);

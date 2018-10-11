@@ -9,6 +9,11 @@
 
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
         <com:scriptfile path="qmm040.a.start.js"/>
         <com:scriptfile path="qmm040.a.service.js"/>
         <com:scriptfile path="qmm040.a.vm.js"/>
@@ -17,10 +22,14 @@
 
     <ui:define name="sidebar">
         <ul class="navigator">
-            <li><a data-bind="click: click: function (){$vm.onSelectTab(0)}" href="#tabpanel-1" role="tab-navigator">#{i18n.getText('QMM040_3')}</a></li>
-            <li><a data-bind="click: click: function (){$vm.onSelectTab(1)}" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('QMM040_4')}</a></li>
-            <li><a data-bind="click: click: function (){$vm.onSelectTab(2)}" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('QMM040_5')}</a></li>
-            <li><a data-bind="click: click: function (){$vm.onSelectTab(3)}" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('QMM040_6')}</a></li>
+            <li><a data-bind="click: function (){$vm.onSelectTab(0)}" href="#tabpanel-1"
+                   role="tab-navigator">#{i18n.getText('QMM040_3')}</a></li>
+            <li><a data-bind="click: function (){$vm.onSelectTab(1)}" href="#tabpanel-2"
+                   role="tab-navigator">#{i18n.getText('QMM040_4')}</a></li>
+            <li><a data-bind="click: function (){$vm.onSelectTab(2)}" href="#tabpanel-3"
+                   role="tab-navigator">#{i18n.getText('QMM040_5')}</a></li>
+            <li><a data-bind="click: function (){$vm.onSelectTab(3)}" href="#tabpanel-4"
+                   role="tab-navigator">#{i18n.getText('QMM040_6')}</a></li>
 
 
         </ul>
@@ -30,86 +39,109 @@
         <div id="tabpanel-1" role="tabpanel1">
             <div class="sidebar-content-header flex valign-center">
 
-                <span class="title" data-bind="titleTab"></span>
+                <span class="title" data-bind="text : titleTab"></span>
                 <button class="proceed">#{i18n.getText('QMM040_2')}</button>
                 <a class="goout" style="margin-left: 200px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
             </div>
-            <div class="contents-area">
-                <table style="height: 600px">
-                    <colgroup>
-                        <col width="100px"/>
-                        <col width="400px"/>
-                        <col width="700px"/>
+            <div class="contents-area fixed-flex-layout">
+                <div id="com-ccg001"></div>
+                <div id="panel-left" class="fixed-flex-layout-left" style="margin-left: 100px;">
+                    <div style=" margin-top: 15px" data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">
 
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <div class="flex valign-center margin-top-item">
-                                <!--A5_1 項目区分-->
+                        <div style="width: 300px" data-bind="ntsSearchBox: {
+                    searchMode: 'filter',
+                    targetKey: 'employeeCode',
+                    comId: 'A4_4',
+	                    items: employeeList,
+	                    selected: selectedEmployeeCode,
+	                    selectedKey: 'employeeCode',
+	                     fields: ['employeeName', 'employeeCode'],
+	                      mode: 'igGrid'}" />
+                        <table id="A4_4" data-bind="ntsGridList: {
+                        height: 400,
+                        options: employeeList,
+                        optionsValue: 'employeeCode',
+                        columns: tilteTable,
+                        multiple: false,
+                        value: selectedEmployeeCode
+                    }"></table>
 
-                                <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
-                                <!--A5_2 項目区分-->
-                                <div class="label margin-left-item">#{i18n.getText('QMM040_11')}</div>
-                            </div>
 
-                            <div class="flex valign-center margin-top-item">
-                                <!--A5_3 コード・名称-->
-                                <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM040_12')}</div>
-                                <!--A5_4 コード-->
-                                <span class="label margin-left-item">Demo</span>
-                                <!--A5_5 名称-->
-                                <span class="label">Demo</span>
-                            </div>
 
-                            <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">
-                                <!--A5_6 基準年月-->
-                                <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
-                                <!--A5_7 基準年月-->
-                                <div class="margin-left-item"
-                                     data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
-                                <!--A5_8 抽出-->
-                                <button class="caret-bottom"
-                                        style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
 
-                            </div>
 
-                            <table id="A5_9">
-                                <colgroup>
-                                    <col width="130px"/>
-                                    <col width="100px"/>
-                                    <col width="170px"/>
-                                    <col width="120px"/>
 
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>
-                                    <th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>
-                                    <th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>
-                                    <th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>
 
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
 
-                    </tbody>
-                </table>
+                    </div>
+
+
+                </div>
+
+                <div id="panel-right" class="fixed-flex-layout-right">
+                    <div class="flex valign-center margin-top-item">
+                        <!--A5_1 項目区分-->
+
+                        <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
+                        <!--A5_2 項目区分-->
+                        <div class="label margin-left-item">#{i18n.getText('QMM040_11')}</div>
+                    </div>
+
+                    <div class="flex valign-center margin-top-item">
+                        <!--A5_3 コード・名称-->
+                        <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM040_12')}</div>
+                        <!--A5_4 コード-->
+                        <span class="label margin-left-item" data-bind="text: employeeCode()"></span>
+                        <!--A5_5 名称-->
+                        <span style="margin-left: 5px" class="label" data-bind="text: employeeName()"></span>
+                    </div>
+
+                    <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">
+                        <!--A5_6 基準年月-->
+                        <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
+                        <!--A5_7 基準年月-->
+                        <div class="margin-left-item"
+                             data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+                        <!--A5_8 抽出-->
+                        <button class="caret-bottom"
+                                style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
+
+                    </div>
+                    <table id="substituteDataGrid"></table>
+                    <!--<table id="A5_9">-->
+                        <!--<colgroup>-->
+                            <!--<col width="130px"/>-->
+                            <!--<col width="100px"/>-->
+                            <!--<col width="170px"/>-->
+                            <!--<col width="120px"/>-->
+
+                        <!--</colgroup>-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>-->
+                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>-->
+                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>-->
+                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>-->
+
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--<tr>-->
+                            <!--<td></td>-->
+                            <!--<td></td>-->
+                            <!--<td></td>-->
+                            <!--<td></td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
+                </div>
+
+
             </div>
+
+
         </div>
 
     </ui:define>
