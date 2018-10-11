@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         //___________KCP009______________
         employeeInputList: KnockoutObservableArray<EmployeeKcp009> = ko.observableArray([]);
-        systemReference: KnockoutObservable<number> = ko.observable(SystemType.EMPLOYMENT);
+        systemReference: KnockoutObservable<number> = ko.observable(SystemType.SALARY);
         isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(false);
         selectedItem: KnockoutObservable<string> = ko.observable(null);
         selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -59,11 +59,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1,
+                systemType: SystemType.SALARY,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: false,
+                showBaseDate: true,
                 showClosure: false,
                 showAllClosure: false,
                 showPeriod: false,
@@ -207,10 +207,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             let self = this;
             let params = {
                 empId: '000001',
-                empCode: '000001',
-                empName: '大塚　太郎B',
-                employmentCode: 'employmentCode',
-                itemClass: '',
+                personalValcode: '000001',
+                startDate: self.salHis.periodStartYm(),
+                endDate: self.salHis.periodEndYm(),
+                itemClass: 2,
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
