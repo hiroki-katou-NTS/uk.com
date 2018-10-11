@@ -55,7 +55,7 @@ public class SettingItemDtoMapping {
 
 			List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
 					item.getSelectionItemRefCd(), baseDate, employeeId, null, true,
-					perInfoCategory.getPersonEmployeeType(), true, perInfoCategory.getCategoryCode().v());
+					perInfoCategory.getPersonEmployeeType(), true, perInfoCategory.getCategoryCode().v(), null);
             boolean isRadio =  item.getDataType() == DataTypeValue.SELECTION_RADIO? true: false;
             boolean isCompare = false;
 			for (ComboBoxObject cbItem : comboxList) {
