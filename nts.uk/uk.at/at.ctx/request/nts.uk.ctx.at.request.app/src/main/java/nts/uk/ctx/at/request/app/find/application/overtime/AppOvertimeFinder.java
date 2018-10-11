@@ -713,7 +713,7 @@ public class AppOvertimeFinder {
 						
 						// 09_勤務種類就業時間帯の初期選択をセットする
 						WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
-								Strings.isBlank(appDate) ? appCommonSettingOutput.generalDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
+								Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
 								workTypeOvertimes, siftTypes);
 						result.setWorkType(workTypeAndSiftType.getWorkType());
 						result.setSiftType(workTypeAndSiftType.getSiftType());
@@ -812,7 +812,7 @@ public class AppOvertimeFinder {
 				
 				// 09_勤務種類就業時間帯の初期選択をセットする
 				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
-						Strings.isBlank(appDate) ? baseDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
+						Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
 				result.setWorkType(workTypeAndSiftType.getWorkType());
 				result.setSiftType(workTypeAndSiftType.getSiftType());
 				result.setTimezones(workTypeAndSiftType.getBreakTimes().stream().map(domain->{
