@@ -264,15 +264,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             var self = this;
             _.each(data.lstControlDisplayItem.columnSettings, function(item) {
 
-                if (self.displayFormat() == 0) {
-                    if (item.columnKey == "date") {
-                        item['summaryCalculator'] = "合計";
-                    }
-                } else {
-                    if (item.columnKey == "employeeCode") {
-                        item['summaryCalculator'] = "合計";
-                    }
-                }
                 if (item.typeFormat != null && item.typeFormat != undefined) {
                     if (item.typeFormat == 2) {
                         //so lan
@@ -289,6 +280,20 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     else if (item.typeFormat == 4) {
                         //so tien 
                         item['summaryCalculator'] = "Number";
+                    }else{
+                        if (self.displayFormat() == 0) {
+                            if (item.columnKey == "date") {
+                                item['summaryCalculator'] = "合計";
+                            } else {
+                                item['summaryCalculator'] = "";
+                            }
+                        } else {
+                            if (item.columnKey == "employeeCode") {
+                                item['summaryCalculator'] = "合計";
+                            } else {
+                                item['summaryCalculator'] = "";
+                            }
+                        }
                     }
                 } else {
                     item['summaryCalculator'] = "Number";
