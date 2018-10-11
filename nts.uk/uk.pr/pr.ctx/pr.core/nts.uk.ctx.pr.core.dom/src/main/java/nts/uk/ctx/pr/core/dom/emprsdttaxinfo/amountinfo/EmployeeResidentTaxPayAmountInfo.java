@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.emprsdttaxinfo.amountinfo;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.time.calendar.Year;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
  * 社員住民税納付額情報
  */
 @Getter
+@Setter
 public class EmployeeResidentTaxPayAmountInfo extends AggregateRoot {
 
     /**

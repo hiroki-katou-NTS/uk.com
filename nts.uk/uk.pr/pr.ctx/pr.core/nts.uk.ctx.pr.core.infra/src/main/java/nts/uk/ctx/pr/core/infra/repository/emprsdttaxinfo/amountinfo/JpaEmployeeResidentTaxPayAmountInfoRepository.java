@@ -44,12 +44,27 @@ public class JpaEmployeeResidentTaxPayAmountInfoRepository extends JpaRepository
     }
 
     @Override
+    public void addAll(List<EmployeeResidentTaxPayAmountInfo> domains) {
+        this.commandProxy().insertAll(QpbmtEmpRsdtTaxPayAm.toEntitys(domains));
+    }
+
+    @Override
     public void update(EmployeeResidentTaxPayAmountInfo domain) {
         this.commandProxy().update(QpbmtEmpRsdtTaxPayAm.toEntity(domain));
     }
 
     @Override
+    public void updateAll(List<EmployeeResidentTaxPayAmountInfo> domains) {
+        this.commandProxy().updateAll(QpbmtEmpRsdtTaxPayAm.toEntitys(domains));
+    }
+
+    @Override
     public void remove(String sid, int year) {
         this.commandProxy().remove(QpbmtEmpRsdtTaxPayAm.class, new QpbmtEmpRsdtTaxPayAmPk(sid, year));
+    }
+
+    @Override
+    public void removeAll(List<String> sids, int year) {
+        this.commandProxy().removeAll(QpbmtEmpRsdtTaxPayAm.class, QpbmtEmpRsdtTaxPayAmPk.toKeys(sids, year));
     }
 }

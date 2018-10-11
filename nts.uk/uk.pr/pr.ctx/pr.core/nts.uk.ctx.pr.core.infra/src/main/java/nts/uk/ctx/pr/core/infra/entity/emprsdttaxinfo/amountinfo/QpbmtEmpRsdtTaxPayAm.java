@@ -9,6 +9,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 社員住民税納付額情報
@@ -139,4 +141,11 @@ public class QpbmtEmpRsdtTaxPayAm extends UkJpaEntity implements Serializable {
                 amount.getAmountDecember().v());
     }
 
+    public static List<QpbmtEmpRsdtTaxPayAm> toEntitys(List<EmployeeResidentTaxPayAmountInfo> domains) {
+        List<QpbmtEmpRsdtTaxPayAm> entitys = new ArrayList<>();
+        for (EmployeeResidentTaxPayAmountInfo domain : domains) {
+            entitys.add(QpbmtEmpRsdtTaxPayAm.toEntity(domain));
+        }
+        return entitys;
+    }
 }
