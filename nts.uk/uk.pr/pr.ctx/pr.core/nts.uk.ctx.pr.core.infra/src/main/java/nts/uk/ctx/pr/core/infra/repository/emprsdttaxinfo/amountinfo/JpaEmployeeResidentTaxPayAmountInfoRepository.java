@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.infra.entity.emprsdttaxinfo.amountinfo.QpbmtEmpRsdtTax
 import nts.uk.ctx.pr.core.infra.entity.emprsdttaxinfo.amountinfo.QpbmtEmpRsdtTaxPayAmPk;
 
 import javax.ejb.Stateless;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,20 +16,26 @@ public class JpaEmployeeResidentTaxPayAmountInfoRepository extends JpaRepository
         implements EmployeeResidentTaxPayAmountInfoRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpRsdtTaxPayAm f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empRsdtTaxPayAmPk.sid =:sid AND  f.empRsdtTaxPayAmPk.year =:year ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING +
+            " WHERE  f.empRsdtTaxPayAmPk.sid =:sid AND  f.empRsdtTaxPayAmPk.year =:year ";
+    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING +
+            " WHERE  f.empRsdtTaxPayAmPk.sid IN :listSId AND  f.empRsdtTaxPayAmPk.year =:year ";
 
     @Override
-    public List<EmployeeResidentTaxPayAmountInfo> getAllEmployeeResidentTaxPayAmountInfo() {
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtEmpRsdtTaxPayAm.class)
-                .getList(item -> item.toDomain());
-    }
-
-    @Override
-    public Optional<EmployeeResidentTaxPayAmountInfo> getEmployeeResidentTaxPayAmountInfoById(String sid, int year) {
+    public Optional<EmployeeResidentTaxPayAmountInfo> getEmpRsdtTaxPayAmountInfoById(String sid, int year) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtEmpRsdtTaxPayAm.class)
                 .setParameter("sid", sid)
                 .setParameter("year", year)
                 .getSingle(c -> c.toDomain());
+    }
+
+    @Override
+    public List<EmployeeResidentTaxPayAmountInfo> getListEmpRsdtTaxPayAmountInfo(List<String> listSId, int year) {
+        if (listSId == null || listSId.isEmpty()) return Collections.emptyList();
+        return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, QpbmtEmpRsdtTaxPayAm.class)
+                .setParameter("listSId", listSId)
+                .setParameter("year", year)
+                .getList(item -> item.toDomain());
     }
 
     @Override

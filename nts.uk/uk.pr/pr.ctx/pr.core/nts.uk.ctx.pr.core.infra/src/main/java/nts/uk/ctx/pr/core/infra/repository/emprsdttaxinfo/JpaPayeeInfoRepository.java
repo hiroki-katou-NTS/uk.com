@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.infra.entity.emprsdttaxinfo.QpbmtPayeeInfo;
 import nts.uk.ctx.pr.core.infra.entity.emprsdttaxinfo.QpbmtPayeeInfoPk;
 
 import javax.ejb.Stateless;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,18 +17,22 @@ public class JpaPayeeInfoRepository extends JpaRepository implements PayeeInfoRe
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayeeInfo f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
             + " WHERE  f.payeeInfoPk.histId =:histId ";
-
-    @Override
-    public List<PayeeInfo> getAllPayeeInfo() {
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtPayeeInfo.class)
-                .getList(item -> item.toDomain());
-    }
+    private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING
+            + " WHERE  f.payeeInfoPk.histId IN :listHistId ";
 
     @Override
     public Optional<PayeeInfo> getPayeeInfoById(String histId) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPayeeInfo.class)
                 .setParameter("histId", histId)
                 .getSingle(c -> c.toDomain());
+    }
+
+    @Override
+    public List<PayeeInfo> getListPayeeInfo(List<String> listHistId) {
+        if (listHistId == null || listHistId.isEmpty()) return Collections.emptyList();
+        return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, QpbmtPayeeInfo.class)
+                .setParameter("listHistId", listHistId)
+                .getList(item -> item.toDomain());
     }
 
     @Override

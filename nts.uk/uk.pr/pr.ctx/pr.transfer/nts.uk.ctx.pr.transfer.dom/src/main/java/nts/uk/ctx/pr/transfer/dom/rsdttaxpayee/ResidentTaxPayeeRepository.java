@@ -8,9 +8,9 @@ import java.util.Optional;
  */
 public interface ResidentTaxPayeeRepository {
 
-    List<ResidentTaxPayee> getAllResidentTaxPayee();
-
     Optional<ResidentTaxPayee> getResidentTaxPayeeById(String cid, String code);
+
+    List<ResidentTaxPayee> getListResidentTaxPayee(String cid, List<String> codes);
 
     void add(ResidentTaxPayee domain);
 

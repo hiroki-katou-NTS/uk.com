@@ -8,9 +8,9 @@ import java.util.Optional;
  */
 public interface PayeeInfoRepository {
 
-    List<PayeeInfo> getAllPayeeInfo();
-
     Optional<PayeeInfo> getPayeeInfoById(String histId);
+
+    List<PayeeInfo> getListPayeeInfo(List<String> listHistId);
 
     void add(PayeeInfo domain);
 

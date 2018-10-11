@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.emprsdttaxinfo;
 
+import nts.arc.time.YearMonth;
+
 import java.util.Optional;
 import java.util.List;
 
@@ -8,13 +10,11 @@ import java.util.List;
  */
 public interface EmployeeResidentTaxPayeeInfoRepository {
 
-    List<EmployeeResidentTaxPayeeInfo> getAllEmployeeResidentTaxPayeeInfo();
+    List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId, YearMonth periodYM);
 
-    Optional<EmployeeResidentTaxPayeeInfo> getEmployeeResidentTaxPayeeInfoById(String sid, String histId);
+    void add(List<EmployeeResidentTaxPayeeInfo> domain);
 
-    void add(EmployeeResidentTaxPayeeInfo domain);
-
-    void update(EmployeeResidentTaxPayeeInfo domain);
+    void update(List<EmployeeResidentTaxPayeeInfo> domain);
 
     void remove(String sid, String histId);
 

@@ -8,10 +8,9 @@ import java.util.List;
 */
 public interface EmployeeResidentTaxPayAmountInfoRepository
 {
+    Optional<EmployeeResidentTaxPayAmountInfo> getEmpRsdtTaxPayAmountInfoById(String sid, int year);
 
-    List<EmployeeResidentTaxPayAmountInfo> getAllEmployeeResidentTaxPayAmountInfo();
-
-    Optional<EmployeeResidentTaxPayAmountInfo> getEmployeeResidentTaxPayAmountInfoById(String sid, int year);
+    List<EmployeeResidentTaxPayAmountInfo> getListEmpRsdtTaxPayAmountInfo(List<String> listSId, int year);
 
     void add(EmployeeResidentTaxPayAmountInfo domain);
 
