@@ -122,7 +122,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
-                showOnlyMe: true,
+                showOnlyMe: false,
                 showSameWorkplace: false,
                 showSameWorkplaceAndChild: false,
 
