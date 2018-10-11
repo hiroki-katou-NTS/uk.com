@@ -165,8 +165,8 @@ module cps001.f.vm {
                 });
                 
                 
-            }).ifCancel(() => {
-
+            }).ifNo(() => {
+                unblock();
             });
         }
 
