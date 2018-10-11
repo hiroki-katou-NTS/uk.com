@@ -821,6 +821,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 dialog.alertError({messageId : "Msg_959"});
                 return;    
             }
+            $(".overtimeHoursCheck").ntsError('clear');
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             //return if has error
