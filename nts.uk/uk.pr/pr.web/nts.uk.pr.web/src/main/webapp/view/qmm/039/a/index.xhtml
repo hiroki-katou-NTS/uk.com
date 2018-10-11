@@ -62,7 +62,7 @@
                              data-bind="ntsPanel:{width: '220px', height: '220px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
                             <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
-			                    searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
+			                    searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
                             <!--A4_4 項目リスト-->
                             <!--A4_5 コード-->
                             <!--A4_6 名称-->
@@ -79,7 +79,6 @@
                                 ],
                                 value: singleSelectedCode,
                                 optionsValue: 'code',
-                                optionsChild: 'childs',
                                 optionsText: 'nodeText',
                                 multiple: false,
                                 enable: true,
@@ -88,7 +87,7 @@
                         </div>
                         <!--A5_1 履歴選択パネル-->
                         <div class="panel"
-                             data-bind="ntsPanel:{width: '270px', height: '300px', direction: 'none', visible: true}">
+                             data-bind="ntsPanel:{width: '270px', height: '160px', direction: 'none', visible: true}">
                             <div class="row margin-bottom-12">
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
@@ -96,7 +95,7 @@
                                 </div>
                                 <div class="cell right">
                                     <!--A5_3 履歴編集-->
-                                    <button tabindex="8">#{i18n.getText('QMM039_16')}</button>
+                                    <button tabindex="8" data-bind="click: toScreenC">#{i18n.getText('QMM039_16')}</button>
                                 </div>
                             </div>
                             <!--A5_4 履歴リスト-->
@@ -109,7 +108,7 @@
                                     multiple: false,
                                     value: singleSelectedCode,
                                     enable: isEnable(),
-                                    rows: 9,
+                                    rows: 4,
                                     columns: [
                                         { key: 'historyID', length: 0, hidden: true},
                                         { key: 'period', length: 8 },
@@ -117,9 +116,9 @@
                                     ]}"></div>
                         </div>
                     </div>
-                    <div style="vertical-align: middle" class="cell">
+                    <div class="cell group-center">
                         <!--A6_1 キャレット-->
-                        <span class="caret-right caret-inline"></span>
+                        <span class="caret-right"></span>
                     </div>
                     <div class="cell">
 
@@ -164,7 +163,7 @@
                         <div class="row">
                             <div class="cell label-space">
                                 <!--A7_10 金額-->
-                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_25')}</div>
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_25')}</div>
                             </div>
                             <div class="cell">
                                 <!--A7_11 金額-->
