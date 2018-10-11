@@ -150,4 +150,9 @@ module nts.uk.pr.view.qmm039.share.model {
         WITH_HISTORY = 0,
         NO_HISTORY = 1
     }
+
+    export enum MOFIDY_METHOD {
+        DELETE = 0,
+        UPDATE = 1
+    }
 }

@@ -12,7 +12,19 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
 
         constructor() {
             var self = this;
+            let params = getShared("QMM039_C_PARAMS");
+        }
 
+        editHistory() {
+            let self = this;
+        }
+
+        updateHistory() {
+            let self = this;
+        }
+
+        deleteHistory() {
+            let self = this;
         }
 
         cancel() {

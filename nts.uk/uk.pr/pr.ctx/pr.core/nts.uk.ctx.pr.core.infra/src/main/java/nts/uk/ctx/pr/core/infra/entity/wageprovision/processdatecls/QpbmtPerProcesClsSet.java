@@ -39,13 +39,6 @@ public class QpbmtPerProcesClsSet extends UkJpaEntity implements Serializable
     @Column(name = "USER_ID")
     public String userId;
     
-    /**
-    * 会社ID
-    */
-    @Basic(optional = false)
-    @Column(name = "COMPANY_ID")
-    public String companyId;
-    
     @Override
     protected Object getKey()
     {
@@ -53,10 +46,10 @@ public class QpbmtPerProcesClsSet extends UkJpaEntity implements Serializable
     }
 
     public PerProcessClsSet toDomain() {
-        return new PerProcessClsSet(this.perProcesClsSetPk.processCateNo, this.userId, this.companyId);
+        return new PerProcessClsSet(this.perProcesClsSetPk.companyId, this.perProcesClsSetPk.processCateNo, this.userId);
     }
     public static QpbmtPerProcesClsSet toEntity(PerProcessClsSet domain) {
-        return new QpbmtPerProcesClsSet(new QpbmtPerProcesClsSetPk(domain.getProcessCateNo()),domain.getUid(), domain.getCid());
+        return new QpbmtPerProcesClsSet(new QpbmtPerProcesClsSetPk(domain.getCid(), domain.getProcessCateNo()),domain.getUid());
     }
 
 }
