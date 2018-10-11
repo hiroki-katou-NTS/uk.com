@@ -68,8 +68,9 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
             payrollUnitPriceHistoryRepository.update(payrollUnitPriceHistoryCommand.getCode(), cid, history, payrollUnitPriceSetting);
         } else if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_ADD_HISTORY){
             payrollUnitPriceRepository.update(payrollUnitPrice);
-            mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid,hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
+            mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid, hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
             payrollUnitPriceHistoryRepository.add(payrollUnitPriceHistoryCommand.getCode(), cid, history, payrollUnitPriceSetting);
+
         }
     }
 }

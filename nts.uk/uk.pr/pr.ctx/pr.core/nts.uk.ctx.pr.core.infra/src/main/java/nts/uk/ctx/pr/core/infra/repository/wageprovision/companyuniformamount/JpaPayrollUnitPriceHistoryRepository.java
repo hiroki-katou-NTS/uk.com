@@ -22,7 +22,7 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPriceHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code AND  f.payUnitPriceHisPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code ";
+    private static final String SELECT_BY_CID_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code ORDER BY f.endYearMonth DESC";
 
     @Override
     public Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid, String code, String hisId){

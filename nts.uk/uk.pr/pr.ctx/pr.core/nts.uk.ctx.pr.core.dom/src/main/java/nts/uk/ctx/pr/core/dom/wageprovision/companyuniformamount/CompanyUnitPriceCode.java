@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
-import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
