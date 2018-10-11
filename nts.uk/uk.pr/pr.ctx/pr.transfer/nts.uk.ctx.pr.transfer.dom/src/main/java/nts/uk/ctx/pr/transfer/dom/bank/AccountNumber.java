@@ -7,21 +7,19 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * 
- * @author HungTT - 銀行カナ名
+ * @author HungTT - 口座番号
  *
  */
-@StringMaxLength(15)
-@StringCharType(CharType.ANY_HALF_WIDTH)
-public class BankNameKana extends StringPrimitiveValue<BankNameKana> {
 
+@StringMaxLength(7)
+@StringCharType(CharType.NUMERIC)
+public class AccountNumber extends StringPrimitiveValue<AccountNumber> {
 	/**
-	 * 
+	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public BankNameKana(String rawValue) {
-		super(rawValue);
-		// TODO Auto-generated constructor stub
+	public AccountNumber(String arg0) {
+		super(arg0);
 	}
-
 }

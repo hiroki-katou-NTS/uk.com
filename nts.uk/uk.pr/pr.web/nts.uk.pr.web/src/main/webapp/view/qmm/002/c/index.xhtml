@@ -37,8 +37,8 @@
 					<div class="valign-center control-group">
 						<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
 						<div tabindex="3" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
-							targetKey: 'code', mode:'igTree', comId:'treegridbankbranchsource', items: sourceBankBranchList, 
-							selected: selectedSourceBranchCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+							targetKey: 'id', mode:'igTree', comId:'treegridbankbranchsource', items: sourceBankBranchList, 
+							selected: selectedSourceBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
 					</div>
 					<table id="treegridbankbranchsource" tabindex="4"
 						data-bind="ntsTreeGridView:{
@@ -47,7 +47,7 @@
 							dataSource: sourceBankBranchList,
 							selectedValues: selectedSourceBranchCodes,
 							headers: headers,
-							primaryKey: 'code',
+							primaryKey: 'id',
 							childDataKey: 'children',
 							primaryText: 'nodeText',
 							multiple: true,
@@ -66,8 +66,8 @@
 					<div class="valign-center control-group">
 						<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
 						<div tabindex="5" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
-							targetKey: 'code', mode:'igTree', comId:'treegridbankbranchdestination', items: desBankBranchList, 
-							selected: selectedDesBranchCode, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+							targetKey: 'id', mode:'igTree', comId:'treegridbankbranchdestination', items: desBankBranchList, 
+							selected: selectedDesBranchCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
 					</div>
 					<table id="treegridbankbranchdestination" tabindex="6"
 						data-bind="ntsTreeGridView:{
@@ -76,7 +76,7 @@
 							dataSource: desBankBranchList,
 							value: selectedDesBranchCode,
 							headers: headers,
-							primaryKey: 'code',
+							primaryKey: 'id',
 							childDataKey: 'children',
 							primaryText: 'nodeText',
 							multiple: false,
