@@ -409,6 +409,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() { 
                         nts.uk.request.jumpToTopPage();
                     });  
+                 } else if(error.messageId=="Msg_916"){
+                    nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() { 
+                        //nts.uk.request.jumpToTopPage();
+                        nts.uk.ui.block.clear();
+                    }); 
                 } else {
                     if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                         //Open KDM003C to select format code

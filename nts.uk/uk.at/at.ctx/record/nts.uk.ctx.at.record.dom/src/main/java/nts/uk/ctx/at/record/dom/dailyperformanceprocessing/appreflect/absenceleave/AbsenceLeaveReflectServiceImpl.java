@@ -258,7 +258,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return false;
 		}	
 		TimeActualStamp attendanceStamp = optTimeActual.get();
-		Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
+		Optional<WorkStamp> optActualStamp = attendanceStamp.getStamp();
 		if(!optActualStamp.isPresent()) {
 			return false;
 		}
