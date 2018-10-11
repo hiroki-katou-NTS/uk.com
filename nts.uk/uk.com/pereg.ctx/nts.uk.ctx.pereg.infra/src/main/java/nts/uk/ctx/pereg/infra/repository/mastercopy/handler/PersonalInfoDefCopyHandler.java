@@ -302,6 +302,9 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             Set<String> sourcePersonalInfoItemDefId = s3.stream()
                     .map(ppemtPerInfoItem -> ppemtPerInfoItem.ppemtPerInfoItemPK.perInfoItemDefId)
                     .collect(Collectors.toSet());
+            
+            Map<String, String> perInfoItemMapId = new HashMap<String, String>();
+            
             for (String defId : sourcePersonalInfoItemDefId) {
                 String newDefId = UUID.randomUUID().toString();
 
@@ -316,12 +319,20 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 PpemtPerInfoItemOrder cloneObject2 = SerializationUtils.clone(perInfoItemOrderEntity);
                 cloneObject2.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
                 s44.add(cloneObject2);
-
-                PpemtDateRangeItem dateRangeItemEntity = groupDateRangeItemByDefId.get(defId);
-                if (dateRangeItemEntity == null) continue;
-                PpemtDateRangeItem cloneObject3 = SerializationUtils.clone(dateRangeItemEntity);
-                cloneObject3.startDateItemId = newDefId;
-                s55.add(cloneObject3);
+                
+                perInfoItemMapId.put(defId, newDefId);
+            }
+            
+            for (String defId : sourcePersonalInfoItemDefId) {
+	            PpemtDateRangeItem dateRangeItemEntity = groupDateRangeItemByDefId.get(defId);
+	            
+	            if (dateRangeItemEntity == null) continue;
+	            
+	            PpemtDateRangeItem cloneObject3 = SerializationUtils.clone(dateRangeItemEntity);
+	            cloneObject3.startDateItemId = perInfoItemMapId.get(defId);
+	            cloneObject3.endDateItemId = perInfoItemMapId.get(cloneObject3.endDateItemId);
+	            cloneObject3.dateRangeItemId = perInfoItemMapId.get(cloneObject3.dateRangeItemId);
+	            s55.add(cloneObject3);
             }
 
             // insert new

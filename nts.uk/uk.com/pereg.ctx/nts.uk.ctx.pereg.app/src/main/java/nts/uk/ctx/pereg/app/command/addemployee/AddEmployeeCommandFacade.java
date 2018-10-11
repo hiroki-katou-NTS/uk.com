@@ -100,7 +100,7 @@ public class AddEmployeeCommandFacade {
 				List<ItemValue> lstItemCS00070 =  ctgWorkingCod2_Opt.get().getItems();
 				List<ItemValue> lstItemToAdd = new ArrayList<>();
 				lstItemCS00070.forEach(i70 -> {
-					if(!lstItemCS00020.stream().anyMatch(i20 -> i20.definitionId() == i70.definitionId())) {
+					if(lstItemCS00020.stream().anyMatch(i20 -> i20.definitionId() == i70.definitionId())) {
 						lstItemToAdd.add(i70);
 					}
 				});

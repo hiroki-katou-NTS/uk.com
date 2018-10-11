@@ -32,7 +32,7 @@ public enum TypeCheckWorkRecordMultipleMonth {
 	
 	CONTINUOUS_DAYS(14,"連続日数"),
 	
-	NUMBER_DAYS(15,"該当月数　日数");
+	NUMBER_DAYS(15,"該当月数日数");
 	
 	
 	
