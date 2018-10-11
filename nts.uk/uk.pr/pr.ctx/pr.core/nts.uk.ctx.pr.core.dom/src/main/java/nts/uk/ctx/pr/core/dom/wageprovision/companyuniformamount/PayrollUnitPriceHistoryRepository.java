@@ -14,9 +14,11 @@ public interface PayrollUnitPriceHistoryRepository {
 
     Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryByCidCode(String cid, String code);
 
-    void add(YearMonthHistoryItem domain, String cId, String code);
+    void add(String code,String cId, YearMonthHistoryItem domain, PayrollUnitPriceSetting payrollUnitPriceSet);
 
-    void update(YearMonthHistoryItem domain, String cId,String code);
+    void update(String code,String cId, YearMonthHistoryItem domain, PayrollUnitPriceSetting payrollUnitPriceSet);
+
+    void update(String code,String cId, YearMonthHistoryItem domain);
 
     void remove(String cid, String code, String hisId);
 }

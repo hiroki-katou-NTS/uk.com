@@ -17,8 +17,8 @@ public enum SetFixedWageClass
     DES_BY_ALL_MEMBERS(1);
 
     /** The value. */
-    public final int value;
-    private SetFixedWageClass(int value)
+    public final Integer value;
+    private SetFixedWageClass(Integer value)
     {
         this.value = value;
     }

@@ -24,8 +24,8 @@ public class PayrollUnitPriceSettingService {
 
         YearMonthHistoryItem history = payrollUnitPriceHistory.getHistory().get(0);
         payrollUnitPriceRepository.add(payrollUnitPrice);
-        payrollUnitPriceHistoryRepository.add(history,payrollUnitPriceHistory.getCId(),payrollUnitPriceHistory.getCode().v());
-        payrollUnitPriceSettingRepository.add(payrollUnitPriceSetting);
+        payrollUnitPriceHistoryRepository.add(payrollUnitPriceHistory.getCode().v(), payrollUnitPriceHistory.getCId(), history, payrollUnitPriceSetting);
+
     }
 
 }

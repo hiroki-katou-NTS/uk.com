@@ -5,6 +5,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.CompanyUnitPriceCode;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHis;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHisPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -59,13 +60,23 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
 
 
     @Override
-    public void add(YearMonthHistoryItem domain, String cId, String code) {
-        this.commandProxy().insert(QpbmtPayUnitPriceHis.toEntity(domain,cId,code));
+    public void add(String code,String cId, YearMonthHistoryItem domain, PayrollUnitPriceSetting payrollUnitPriceSet) {
+        this.commandProxy().insert(QpbmtPayUnitPriceHis.toEntity(code, cId, domain, payrollUnitPriceSet));
     }
 
     @Override
-    public void update(YearMonthHistoryItem domain, String cId, String code) {
-        this.commandProxy().update(QpbmtPayUnitPriceHis.toEntity(domain,cId,code));
+    public void update(String code,String cId, YearMonthHistoryItem domain, PayrollUnitPriceSetting payrollUnitPriceSet) {
+        this.commandProxy().update(QpbmtPayUnitPriceHis.toEntity(code, cId, domain, payrollUnitPriceSet));
+    }
+
+    @Override
+    public void update(String code,String cId, YearMonthHistoryItem domain) {
+        Optional<QpbmtPayUnitPriceHis> payUnitPriceHis = this.queryProxy().find(new QpbmtPayUnitPriceHisPk(code, cId, domain.identifier()), QpbmtPayUnitPriceHis.class);
+        if (payUnitPriceHis.isPresent()){
+            payUnitPriceHis.get().startYearMonth = domain.start().v();
+            payUnitPriceHis.get().endYearMonth = domain.end().v();
+        }
+        this.commandProxy().update(payUnitPriceHis);
     }
 
     @Override

@@ -41,9 +41,8 @@ public class PayrollUnitPriceHistoryService {
         return newHistID;
     }
 
-
-
     public void historyDeletionProcessing(String hisId, String cId,String code){
+
         Optional<PayrollUnitPriceHistory> accInsurHis = mPayrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
         if (!accInsurHis.isPresent()) {
             throw new RuntimeException("invalid employmentHistory");
@@ -60,7 +59,7 @@ public class PayrollUnitPriceHistoryService {
         if (accInsurHis.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
             accInsurHis.get().exCorrectToRemove(lastestItem);
-            mPayrollUnitPriceHistoryRepository.update(lastestItem, cId,code);
+            mPayrollUnitPriceHistoryRepository.update(code, cId, lastestItem);
         }
     }
     public void historyCorrectionProcecessing(String cId, String hisId,String code, YearMonth start, YearMonth end){
@@ -78,22 +77,15 @@ public class PayrollUnitPriceHistoryService {
         this.updateItemBefore(accInsurHis.get(), itemToBeUpdate.get(), cId,code);
     }
 
-
-    private void addPayrollUnitPriceHis(YearMonthHistoryItem itemtoBeAdded, String cId,String code){
-        if(itemtoBeAdded == null){
-            return;
-        }
-        mPayrollUnitPriceHistoryRepository.add(itemtoBeAdded, cId,code);
-    }
     private void updateItemBefore(PayrollUnitPriceHistory payrollUnitPriceHistory, YearMonthHistoryItem item, String cId,String code){
         Optional<YearMonthHistoryItem> itemToBeUpdated = payrollUnitPriceHistory.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
             return;
         }
-        mPayrollUnitPriceHistoryRepository.update(itemToBeUpdated.get(),cId,code);
+        mPayrollUnitPriceHistoryRepository.update(code, cId, itemToBeUpdated.get());
     }
     private void updatePayrollUnitPriceHis(YearMonthHistoryItem itemToBeUpdated, String cId,String code){
-        mPayrollUnitPriceHistoryRepository.update(itemToBeUpdated, cId,code);
+        mPayrollUnitPriceHistoryRepository.update(code, cId, itemToBeUpdated);
     }
 
 

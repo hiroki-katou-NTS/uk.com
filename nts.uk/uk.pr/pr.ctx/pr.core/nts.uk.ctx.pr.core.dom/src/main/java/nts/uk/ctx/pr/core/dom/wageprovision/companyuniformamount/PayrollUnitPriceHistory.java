@@ -33,6 +33,11 @@ public class PayrollUnitPriceHistory extends AggregateRoot implements Continuous
      */
     private List<YearMonthHistoryItem> history;
 
+    public PayrollUnitPriceHistory(String code, String cId, List<YearMonthHistoryItem> history) {
+        this.code = new CompanyUnitPriceCode(code);
+        this.cId = cId;
+        this.history = history;
+    }
 
     @Override
     public List<YearMonthHistoryItem> items() {

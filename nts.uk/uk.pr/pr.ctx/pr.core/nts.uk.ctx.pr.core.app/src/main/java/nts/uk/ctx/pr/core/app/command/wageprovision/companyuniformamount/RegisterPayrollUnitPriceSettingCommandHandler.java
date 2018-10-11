@@ -61,18 +61,15 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
 
         if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_NEW){
             payrollUnitPriceRepository.add(payrollUnitPrice);
-            payrollUnitPriceHistoryRepository.add(history,cid,payrollUnitPriceHistoryCommand.getCode());
-            payrollUnitPriceSettingRepository.add(payrollUnitPriceSetting);
+            payrollUnitPriceHistoryRepository.add(payrollUnitPriceHistoryCommand.getCode(),cid, history, payrollUnitPriceSetting);
         } else if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_UPDATE) {
             payrollUnitPriceRepository.update(payrollUnitPrice);
             mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid,hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
-            payrollUnitPriceHistoryRepository.update(history,cid,payrollUnitPriceHistoryCommand.getCode());
-            payrollUnitPriceSettingRepository.update(payrollUnitPriceSetting);
+            payrollUnitPriceHistoryRepository.update(payrollUnitPriceHistoryCommand.getCode(), cid, history, payrollUnitPriceSetting);
         } else if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_ADD_HISTORY){
             payrollUnitPriceRepository.update(payrollUnitPrice);
             mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid,hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
-            payrollUnitPriceHistoryRepository.add(history,cid,payrollUnitPriceHistoryCommand.getCode());
-            payrollUnitPriceSettingRepository.add(payrollUnitPriceSetting);
+            payrollUnitPriceHistoryRepository.add(payrollUnitPriceHistoryCommand.getCode(), cid, history, payrollUnitPriceSetting);
         }
     }
 }
