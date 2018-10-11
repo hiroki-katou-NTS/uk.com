@@ -16,21 +16,21 @@ import nts.arc.enums.EnumAdaptor;
 public class PerProcessClsSet extends AggregateRoot {
     
     /**
+    * 会社ID
+    */
+    private String cid;
+    
+    /**
     * 処理区分NO
     */
-    private String processCateNo;
+    private int processCateNo;
     
     /**
     * ユーザID
     */
     private String uid;
     
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    public PerProcessClsSet(String processCateNo, String userId, String companyId) {
+    public PerProcessClsSet(String companyId, int processCateNo, String userId) {
         this.cid = companyId;
         this.uid = userId;
         this.processCateNo = processCateNo;

@@ -22,10 +22,17 @@ public class QpbmtPerProcesClsSetPk implements Serializable
     private static final long serialVersionUID = 1L;
     
     /**
+    * 会社ID
+    */
+    @Basic(optional = false)
+    @Column(name = "COMPANY_ID")
+    public String companyId;
+    
+    /**
     * 処理区分NO
     */
     @Basic(optional = false)
     @Column(name = "PROCESS_CATE_NO")
-    public String processCateNo;
+    public int processCateNo;
     
 }

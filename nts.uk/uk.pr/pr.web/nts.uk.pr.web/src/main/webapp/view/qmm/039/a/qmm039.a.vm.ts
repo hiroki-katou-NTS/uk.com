@@ -2,58 +2,29 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import SalIndAmountHis = nts.uk.pr.view.qmm039.share.model.SalIndAmountHis;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
+    import format = nts.uk.text.format;
+    import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
+    import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
     export class ScreenModel {
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCodes: KnockoutObservableArray<string>;
+        itemList: KnockoutObservableArray<>;
         isEnable: KnockoutObservable<boolean>;
+        salHis: any;
         dataSource: any;
         singleSelectedCode: any;
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
-        systemReference: KnockoutObservable<number>;
-        isDisplayOrganizationName: KnockoutObservable<boolean>;
-        targetBtnText: string;
-        SalIndAmountHisFix: any;
-
         listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string>;
         tabindex: number;
-
-
-        referenceDate: KnockoutObservable<string> = ko.observable('');
-        //Help Button
         enable: KnockoutObservable<boolean>;
+        //_____CCG001________
         ccgcomponent: GroupOption;
-
-        // Options
-        isQuickSearchTab: KnockoutObservable<boolean>;
-        isAdvancedSearchTab: KnockoutObservable<boolean>;
-        isAllReferableEmployee: KnockoutObservable<boolean>;
-        isOnlyMe: KnockoutObservable<boolean>;
-        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
-        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
-        isMutipleCheck: KnockoutObservable<boolean>;
-        isSelectAllEmployee: KnockoutObservable<boolean>;
-        periodStartDate: KnockoutObservable<moment.Moment>;
-        periodEndDate: KnockoutObservable<moment.Moment>;
-        baseDate: KnockoutObservable<moment.Moment>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-        showEmployment: KnockoutObservable<boolean>; // 雇用条件
-        showWorkplace: KnockoutObservable<boolean>; // 職場条件
-        showClassification: KnockoutObservable<boolean>; // 分類条件
-        showJobTitle: KnockoutObservable<boolean>; // 職位条件
-        showWorktype: KnockoutObservable<boolean>; // 勤種条件
-        inService: KnockoutObservable<boolean>; // 在職区分
-        leaveOfAbsence: KnockoutObservable<boolean>; // 休職区分
-        closed: KnockoutObservable<boolean>; // 休業区分
-        retirement: KnockoutObservable<boolean>; // 退職区分
-        systemType: KnockoutObservable<number>;
-        showClosure: KnockoutObservable<boolean>; // 就業締め日利用
-        showBaseDate: KnockoutObservable<boolean>; // 基準日利用
-        showAllClosure: KnockoutObservable<boolean>; // 全締め表示
-        showPeriod: KnockoutObservable<boolean>; // 対象期間利用
-        periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
+        targetBtnText: string = getText("KCP009_3");
 
-
+        //___________KCP009______________
+        employeeInputList: KnockoutObservableArray<EmployeeKcp009> = ko.observableArray([]);
+        systemReference: KnockoutObservable<number> = ko.observable(SystemType.SALARY);
+        isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(false);
+        selectedItem: KnockoutObservable<string> = ko.observable(null);
         selectedEmployeeCode: KnockoutObservableArray<string>;
         employeeList: KnockoutObservableArray<TargetEmployee>;
         date: KnockoutObservable<string>;
@@ -63,15 +34,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         constructor() {
             let self = this;
             // initial ccg options
-            self.setDefaultCcg001Option();
-            // Init component.
-            self.reloadCcg001();
-            self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
+            self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
+            let sal = new SalIndAmount({amountOfMoney: 2013});
             self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給', "description"),
-                new ItemModel('2', '役職手当', "description"),
-                new ItemModel('3', '基本給', "description")
+                new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm().toString().substr(0,4) + '/' + self.salHis.periodStartYm().toString().substr(4,self.salHis.periodStartYm().length), self.salHis.periodEndYm().toString().substr(0,4) + '/' + self.salHis.periodEndYm().toString().substr(4,self.salHis.periodEndYm().length)), sal.amountOfMoney()),
             ]);
             self.dataSource = ko.observableArray([new Node('code1', 'name1'), new Node('code2', 'name3')]);
             self.singleSelectedCode = ko.observable(null);
@@ -87,74 +54,80 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            self.SalIndAmountHisFix = new SalIndAmountHis({
-                perValCode: "string",
-                cateIndicator: 1,
-                historyID: 1,
-                periodYearMonth: "string",
-                empId: "string",
-                salBonusCate: 1,
-            });
+
+            // _____CCG001________
+            self.selectedEmployee = ko.observableArray([]);
+            self.ccgcomponent = {
+                /** Common properties */
+                systemType: SystemType.SALARY,
+                showEmployeeSelection: true,
+                showQuickSearchTab: true,
+                showAdvancedSearchTab: true,
+                showBaseDate: true,
+                showClosure: false,
+                showAllClosure: false,
+                showPeriod: false,
+                periodFormatYM: false,
+
+                /** Required parameter */
+                baseDate: moment().toISOString(),
+                periodStartDate: moment().toISOString(),
+                periodEndDate: moment().toISOString(),
+                inService: true,
+                leaveOfAbsence: true,
+                closed: true,
+                retirement: true,
+
+                /** Quick search tab options */
+                showAllReferableEmployee: true,
+                showOnlyMe: true,
+                showSameWorkplace: true,
+                showSameWorkplaceAndChild: true,
+
+                /** Advanced search properties */
+                showEmployment: true,
+                showWorkplace: true,
+                showClassification: true,
+                showJobTitle: true,
+                showWorktype: true,
+                isMutipleCheck: true,
+
+                /**
+                 * Self-defined function: Return data from CCG001
+                 * @param: data: the data return from CCG001
+                 */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.selectedEmployee(data.listEmployee);
+                    self.convertEmployeeCcg01ToKcp009(data.listEmployee);
+                }
+            }
+            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            dfd.resolve(self);
+            service.getInfoEmLogin().done(function(emp) {
+                service.getWpName().done(function(wp) {
+                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
+                    } else {
+                        self.employeeInputList.push(new EmployeeKcp009(emp.sid,
+                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                        self.initKCP009();
+                        dfd.resolve();
+                    }
+                }).fail(function(result) {
+                    dfd.reject();
+                });
+            }).fail(function(result) {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
-        /**
-         * Set default ccg001 options
-         */
-        public setDefaultCcg001Option(): void {
+        initKCP009() {
             let self = this;
-            self.isQuickSearchTab = ko.observable(true);
-            self.isAdvancedSearchTab = ko.observable(true);
-            self.isAllReferableEmployee = ko.observable(true);
-            self.isOnlyMe = ko.observable(true);
-            self.isEmployeeOfWorkplace = ko.observable(true);
-            self.isEmployeeWorkplaceFollow = ko.observable(true);
-            self.isMutipleCheck = ko.observable(true);
-            self.isSelectAllEmployee = ko.observable(true);
-            self.baseDate = ko.observable(moment());
-            self.periodStartDate = ko.observable(moment());
-            self.periodEndDate = ko.observable(moment());
-            self.showEmployment = ko.observable(true); // 雇用条件
-            self.showWorkplace = ko.observable(true); // 職場条件
-            self.showClassification = ko.observable(true); // 分類条件
-            self.showJobTitle = ko.observable(true); // 職位条件
-            self.showWorktype = ko.observable(true); // 勤種条件
-            self.inService = ko.observable(true); // 在職区分
-            self.leaveOfAbsence = ko.observable(true); // 休職区分
-            self.closed = ko.observable(true); // 休業区分
-            self.retirement = ko.observable(true); // 退職区分
-            self.systemType = ko.observable(1);
-            self.showClosure = ko.observable(false); // 就業締め日利用
-            self.showBaseDate = ko.observable(true); // 基準日利用
-            self.showAllClosure = ko.observable(false); // 全締め表示
-            self.showPeriod = ko.observable(false); // 対象期間利用
-            self.periodFormatYM = ko.observable(false); // 対象期間精度
-            self.selectedEmployee = ko.observableArray([]);
-            self.selectedEmployeeCode = ko.observableArray([]);
-            self.employeeInputList = ko.observableArray([
-                {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
-
-            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(false);
-            self.targetBtnText = nts.uk.resource.getText("QMM039_10");
-            self.selectedItem = ko.observable(null);
-            self.tabindex = 1;
+            //_______KCP009_______
             // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemReference(),
@@ -165,71 +138,28 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 tabIndex: self.tabindex
             };
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-            console.log(JSON.stringify(self.listComponentOption));
         }
 
-        public reloadCcg001(): void {
-            let self = this;
-            let periodStartDate, periodEndDate: string;
-            if (self.showBaseDate()) {
-                periodStartDate = moment(self.periodStartDate()).format("YYYY-MM-DD");
-                periodEndDate = moment(self.periodEndDate()).format("YYYY-MM-DD");
-            } else {
-                periodStartDate = moment(self.periodStartDate()).format("YYYY-MM");
-                periodEndDate = moment(self.periodEndDate()).format("YYYY-MM"); // 対象期間終了日
-            }
-
-            if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()) {
-                nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
-                return;
-            }
-            self.ccgcomponent = {
-                /** Common properties */
-                systemType: self.systemType(), // システム区分
-                showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
-                showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
-                showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
-                showBaseDate: self.showBaseDate(), // 基準日利用
-                showClosure: self.showClosure(), // 就業締め日利用
-                showAllClosure: self.showAllClosure(), // 全締め表示
-                showPeriod: self.showPeriod(), // 対象期間利用
-                periodFormatYM: self.periodFormatYM(), // 対象期間精度
-
-                /** Required parameter */
-                baseDate: moment(self.baseDate()).format("YYYY-MM-DD"), // 基準日
-                periodStartDate: periodStartDate, // 対象期間開始日
-                periodEndDate: periodEndDate, // 対象期間終了日
-                inService: self.inService(), // 在職区分
-                leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
-                closed: self.closed(), // 休業区分
-                retirement: self.retirement(), // 退職区分
-
-                /** Quick search tab options */
-                showAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
-                showOnlyMe: self.isOnlyMe(), // 自分だけ
-                showSameWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
-                showSameWorkplaceAndChild: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
-
-                /** Advanced search properties */
-                showEmployment: self.showEmployment(), // 雇用条件
-                showWorkplace: self.showWorkplace(), // 職場条件
-                showClassification: self.showClassification(), // 分類条件
-                showJobTitle: self.showJobTitle(), // 職位条件
-                showWorktype: self.showWorktype(), // 勤種条件
-                isMutipleCheck: self.isMutipleCheck(), // 選択モード
-
-                /** Return data */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.selectedEmployee(data.listEmployee);
-                    self.applyKCP005ContentSearch(data.listEmployee).done(() => {
-                        setTimeout(function() {
-                            $("#employeeSearch").find("div[id *= 'scrollContainer']").scrollTop(0);
-                        }, 1000);
-                    });
-                    self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
+        convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
+                let self = this;
+                self.employeeInputList([]);
+                _.each(dataList, function(item) {
+                    self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+                });
+                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                if (dataList.length == 0) {
+                    self.selectedItem('');
+                } else {
+                    let item = self.findIdSelected(dataList, self.selectedItem());
+                    let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
+                    if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
                 }
-            }
-            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
+        }
+
+        findIdSelected(dataList: Array<any>, selectedItem: string): any {
+            return _.find(dataList, function(obj) {
+                return obj.employeeId == selectedItem;
+            })
         }
 
         public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): JQueryPromise<any> {
@@ -239,7 +169,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedEmployeeCode([]);
             for (let i = 0; i < dataList.length; i++) {
                 let employeeSearch = dataList[i];
-                let employee : UnitModel = {
+                let employee: UnitModel = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
                     workplaceName: employeeSearch.workplaceName,
@@ -258,10 +188,32 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             return dfd.promise();
         }
 
-        public toScreenB(): void{
+        public toScreenB(): void {
             let self = this;
-            setShared("QMM039_A_PARAMS", self.SalIndAmountHisFix);
+            let params = {
+                historyID: self.salHis.historyID(),
+                period: {
+                    periodStartYm: self.salHis.periodStartYm(),
+                    periodEndYm: self.salHis.periodEndYm()
+                }
+            }
+            setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
+
+            });
+        }
+
+        public toScreenC(): void {
+            let self = this;
+            let params = {
+                empId: '000001',
+                personalValcode: '000001',
+                startDate: self.salHis.periodStartYm(),
+                endDate: self.salHis.periodEndYm(),
+                itemClass: 2,
+            }
+            setShared("QMM039_C_PARAMS", params);
+            modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
 
             });
         }
@@ -332,23 +284,15 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     }
 
 
-
-
     export interface ComponentOption {
         systemReference: SystemType;
         isDisplayOrganizationName: boolean;
-        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeKcp009>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
     }
-    export interface EmployeeModel {
-        id: string;
-        code: string;
-        businessName: string;
-        depName?: string;
-        workplaceName?: string;
-    }
+
     export class SystemType {
         static EMPLOYMENT = 1;
         static SALARY = 2;
@@ -360,6 +304,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     class Node {
         code: string;
         name: string;
+
         constructor(code: string, name: string) {
             var self = this;
             self.code = code;
@@ -367,14 +312,33 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         }
     }
     class ItemModel {
-        code: string;
+        historyID: string;
+        periodStartYm: number;
+        periodEndYm: number;
         period: string;
-        amount: string;
+        amount: number;
 
-        constructor(code: string, period: string, amount: string) {
-            this.code = code;
+        constructor(historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: number) {
+            this.historyID = historyID;
+            this.periodStartYm = periodStartYm;
+            this.periodEndYm = periodEndYm;
             this.period = period;
             this.amount = amount;
+        }
+    }
+
+    export class EmployeeKcp009 {
+        id: string;
+        code: string;
+        businessName: string;
+        workplaceName: string;
+        depName: string;
+        constructor(id: string, code: string, businessName: string, workplaceName: string, depName: string) {
+            this.id = id;
+            this.code = code;
+            this.businessName = businessName;
+            this.workplaceName = workplaceName;
+            this.depName = depName;
         }
     }
 }

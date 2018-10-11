@@ -16,7 +16,7 @@ public class JpaPerProcessClsSetRepository extends JpaRepository implements PerP
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPerProcesClsSet f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.perProcesClsSetPk.processCateNo =:processCateNo ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.perProcesClsSetPk.companyId =:companyId AND  f.perProcesClsSetPk.processCateNo =:processCateNo ";
     private static final String SELECT_BY_KEY_UID_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.uid =:uid AND f.cid=:cid";
 
     @Override
@@ -26,10 +26,11 @@ public class JpaPerProcessClsSetRepository extends JpaRepository implements PerP
     }
 
     @Override
-    public Optional<PerProcessClsSet> getPerProcessClsSetById(String processCateNo){
+    public Optional<PerProcessClsSet> getPerProcessClsSetById(String companyId, int processCateNo){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPerProcesClsSet.class)
-        .setParameter("processCateNo", processCateNo)
-        .getSingle(c->c.toDomain());
+                .setParameter("companyId", companyId)
+                .setParameter("processCateNo", processCateNo)
+                .getSingle(c->c.toDomain());
     }
 
 
@@ -52,7 +53,7 @@ public class JpaPerProcessClsSetRepository extends JpaRepository implements PerP
     }
 
     @Override
-    public void remove(String processCateNo){
-        this.commandProxy().remove(QpbmtPerProcesClsSet.class, new QpbmtPerProcesClsSetPk(processCateNo));
+    public void remove(String companyId, int processCateNo){
+        this.commandProxy().remove(QpbmtPerProcesClsSet.class, new QpbmtPerProcesClsSetPk(companyId, processCateNo));
     }
 }

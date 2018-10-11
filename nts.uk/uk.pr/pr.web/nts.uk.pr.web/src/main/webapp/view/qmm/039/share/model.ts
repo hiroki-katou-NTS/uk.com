@@ -19,17 +19,17 @@ module nts.uk.pr.view.qmm039.share.model {
     export interface ICurrentProcessDate {
         processCategNo: string;
         cID: string;
-        salCurProcessDate: number;
+        giveCurrTreatYear: number;
     }
     export class CurrentProcessDate {
         processCategNo: KnockoutObservable<string> = ko.observable(null);
         cID: KnockoutObservable<string> = ko.observable(null);
-        salCurProcessDate: KnockoutObservable<number> = ko.observable(null);
+        giveCurrTreatYear: KnockoutObservable<number> = ko.observable(null);
 
         constructor(params: ICurrentProcessDate) {
             this.processCategNo(params ? params.processCategNo : null);
             this.cID(params ? params.cID : null);
-            this.salCurProcessDate(params ? params.salCurProcessDate : null);
+            this.giveCurrTreatYear(params ? params.giveCurrTreatYear : null);
         }
     }
 
@@ -51,7 +51,8 @@ module nts.uk.pr.view.qmm039.share.model {
         perValCode: string;
         cateIndicator: number;
         historyID: string;
-        periodYearMonth: string;
+        periodStartYm: number;
+        periodEndYm: number;
         empId: string;
         salBonusCate: number;
     }
@@ -59,7 +60,8 @@ module nts.uk.pr.view.qmm039.share.model {
         perValCode: KnockoutObservable<string> = ko.observable(null);
         cateIndicator: KnockoutObservable<number> = ko.observable(null);
         historyID: KnockoutObservable<string> = ko.observable(null);
-        periodYearMonth: KnockoutObservable<string> = ko.observable(null);
+        periodStartYm: KnockoutObservable<number> = ko.observable(null);
+        periodEndYm: KnockoutObservable<number> = ko.observable(null);
         empId: KnockoutObservable<string> = ko.observable(null);
         salBonusCate: KnockoutObservable<number> = ko.observable(null);
 
@@ -67,7 +69,8 @@ module nts.uk.pr.view.qmm039.share.model {
             this.perValCode(params ? params.perValCode : null);
             this.cateIndicator(params ? params.cateIndicator : null);
             this.historyID(params ? params.historyID : null);
-            this.periodYearMonth(params ? params.periodYearMonth : null);
+            this.periodStartYm(params ? params.periodStartYm : null);
+            this.periodEndYm(params ? params.periodEndYm : null);
             this.empId(params ? params.empId : null);
             this.salBonusCate(params ? params.salBonusCate : null);
         }
@@ -115,5 +118,41 @@ module nts.uk.pr.view.qmm039.share.model {
             this.accountingClosureDate(params ? params.accountingClosureDate : null);
             this.numberWorkDay(params ? params.numberWorkDay : null);
         }
+    }
+
+    export interface IGenericHistYMPeriod {
+        historyID: string;
+        periodStartYm: string;
+        periodEndYm: string;
+    }
+
+    export class GenericHistYMPeriod {
+        historyID: KnockoutObservable<string> = ko.observable(null);
+        periodStartYm: KnockoutObservable<string> = ko.observable(null);
+        periodEndYm: KnockoutObservable<string> = ko.observable(null);
+
+        constructor(params: IGenericHistYMPeriod) {
+            this.historyID(params ? params.historyID : null);
+            this.periodStartYm(params ? params.periodStartYm : null);
+            this.periodEndYm(params ? params.periodEndYm : null);
+        }
+    }
+    export class EnumModel {
+        value: number;
+        name: string;
+        constructor(value, name) {
+            this.value = value;
+            this.name = name;
+        }
+    }
+
+    export enum INHERITANCE_CLS {
+        WITH_HISTORY = 0,
+        NO_HISTORY = 1
+    }
+
+    export enum MOFIDY_METHOD {
+        DELETE = 0,
+        UPDATE = 1
     }
 }

@@ -11,7 +11,7 @@ public interface PerProcessClsSetRepository
 
     List<PerProcessClsSet> getAllPerProcessClsSet();
 
-    Optional<PerProcessClsSet> getPerProcessClsSetById(String processCateNo);
+    Optional<PerProcessClsSet> getPerProcessClsSetById(String companyId, int processCateNo);
 
     Optional<PerProcessClsSet> getPerProcessClsSetByUIDAndCID(String uid,String cid);
 
@@ -19,6 +19,6 @@ public interface PerProcessClsSetRepository
 
     void update(PerProcessClsSet domain);
 
-    void remove(String processCateNo);
+    void remove(String companyId, int processCateNo);
 
 }
