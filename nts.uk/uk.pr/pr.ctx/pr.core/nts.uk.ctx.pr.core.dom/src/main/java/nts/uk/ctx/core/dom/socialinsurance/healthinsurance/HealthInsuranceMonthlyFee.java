@@ -120,17 +120,11 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
                 // 取得した値と画面上の値を元に、「健康保険月額保険料額.等級毎健康保険料.事業主負担」の計算処理を実施する
                 // 「事業主負担率を用いて計算する」が選択されている場合
                 if (EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod)) {
-                    BigDecimal employeeHealthInsurancePremiumTemp = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getHealthInsuranceRate().v().add(individualBurdenRatio.getHealthInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT).subtract(insuredHealthInsurancePremium);
-                    BigDecimal employeeNursingCareTemp            = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getLongCareInsuranceRate().v().add(individualBurdenRatio.getLongCareInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT).subtract(insuredNursingCare);
-                    BigDecimal employeeSpecInsurancePremiumTemp   = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getSpecialInsuranceRate().v().add(individualBurdenRatio.getSpecialInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT).subtract(insuredSpecInsurancePremium);
-                    BigDecimal employeeBasicInsurancePremiumTemp  = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getBasicInsuranceRate().v().add(individualBurdenRatio.getBasicInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT).subtract(insuredBasicInsurancePremium);
-
-                    employeeHealthInsurancePremium = RoundCalculatedValue.roundCalculation(employeeHealthInsurancePremiumTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                    employeeNursingCare            = RoundCalculatedValue.roundCalculation(employeeNursingCareTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                    employeeSpecInsurancePremium   = RoundCalculatedValue.roundCalculation(employeeSpecInsurancePremiumTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
-                    employeeBasicInsurancePremium  = RoundCalculatedValue.roundCalculation(employeeBasicInsurancePremiumTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
-                }
-                else {
+                    employeeHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getHealthInsuranceRate().v().add(individualBurdenRatio.getHealthInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT).subtract(insuredHealthInsurancePremium);
+                    employeeNursingCare            = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getLongCareInsuranceRate().v().add(individualBurdenRatio.getLongCareInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT).subtract(insuredNursingCare);
+                    employeeSpecInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getSpecialInsuranceRate().v().add(individualBurdenRatio.getSpecialInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT).subtract(insuredSpecInsurancePremium);
+                    employeeBasicInsurancePremium  = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getBasicInsuranceRate().v().add(individualBurdenRatio.getBasicInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT).subtract(insuredBasicInsurancePremium);
+                } else {
                     employeeHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getHealthInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
                     employeeNursingCare            = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getLongCareInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
                     employeeSpecInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getSpecialInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
