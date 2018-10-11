@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="cell right">
                                     <!--A5_3 履歴編集-->
-                                    <button tabindex="8" data-bind="click: toScreenC">#{i18n.getText('QMM039_16')}</button>
+                                    <button tabindex="8" data-bind="click: toScreenC, enable: isEnableHis()">#{i18n.getText('QMM039_16')}</button>
                                 </div>
                             </div>
                             <!--A5_4 履歴リスト-->
@@ -107,7 +107,7 @@
                                     optionsText: 'period',
                                     multiple: false,
                                     value: singleSelectedCode,
-                                    enable: isEnable(),
+                                    enable: isEnableHis(),
                                     rows: 4,
                                     columns: [
                                         { key: 'historyID', length: 0, hidden: true},
