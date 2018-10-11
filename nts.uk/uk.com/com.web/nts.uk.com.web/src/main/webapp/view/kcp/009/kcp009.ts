@@ -64,7 +64,12 @@ module kcp009.viewmodel {
                 self.empList(data.employeeInputList());
                 //input.初期選択社員IDに値がない場合
                 if (_.isNil(data.selectedItem) || _.isNil(data.selectedItem())) {
-                    self.selectedItem = ko.observable(null);
+                    if (_.isNil(data.selectedItem)) {
+                        self.selectedItem = ko.observable(null);
+                    }
+                    else {
+                        self.selectedItem = data.selectedItem;
+                    }
                     // Set SelectedItem: First Item
                     let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
                     if (codeEmp) {//社員リストにログイン社員が含まれる
