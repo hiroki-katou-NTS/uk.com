@@ -19,7 +19,7 @@ public class LaborInsuranceOfficeFinder
     private LaborInsuranceOfficeRepository finder;
 
     public List<LaborInsuranceOfficeDto> getAllLaborInsuranceOffice(){
-        return finder.getAllLaborInsuranceOffice().stream().map(item -> LaborInsuranceOfficeDto.fromDomainToDto(item))
+        return finder.getLaborInsuranceOfficeByCompany().stream().map(item -> LaborInsuranceOfficeDto.fromDomainToDto(item))
                 .collect(Collectors.toList());
     }
 

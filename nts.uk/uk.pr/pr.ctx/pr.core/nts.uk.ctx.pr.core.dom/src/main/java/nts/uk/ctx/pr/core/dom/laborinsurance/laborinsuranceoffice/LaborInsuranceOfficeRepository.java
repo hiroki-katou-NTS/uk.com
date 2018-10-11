@@ -9,7 +9,7 @@ import java.util.List;
 public interface LaborInsuranceOfficeRepository
 {
 
-    List<LaborInsuranceOffice> getAllLaborInsuranceOffice();
+    List<LaborInsuranceOffice> getLaborInsuranceOfficeByCompany();
 
     Optional<LaborInsuranceOffice> getLaborInsuranceOfficeById(String laborOfficeCode);
 

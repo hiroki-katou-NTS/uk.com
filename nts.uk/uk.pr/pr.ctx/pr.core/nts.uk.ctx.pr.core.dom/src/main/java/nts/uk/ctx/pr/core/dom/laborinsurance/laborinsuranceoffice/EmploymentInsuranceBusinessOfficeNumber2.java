@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
-* 事業所記号
+* 雇用保険事業所番号2
 */
 @StringMaxLength(6)
 @StringCharType(CharType.ALPHA_NUMERIC)

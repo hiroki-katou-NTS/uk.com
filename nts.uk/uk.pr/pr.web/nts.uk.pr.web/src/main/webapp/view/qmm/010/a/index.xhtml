@@ -36,7 +36,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <div id="">
-                <button id="A1_1" tabindex="1" data-bind="click: createNewOffice">#{i18n.getText('QMM010_1')}</button>
+                <button id="A1_1" tabindex="1" data-bind="click: createNewOffice, enable: screenMode() == 1">#{i18n.getText('QMM010_1')}</button>
                 <button id="A1_2" class="proceed" tabindex="2"
                         data-bind="click: registerOffice, enable: $root.errors.isEmpty">#{i18n.getText('QMM010_2')}</button>
                 <button id="A1_3" tabindex="3"
@@ -54,14 +54,14 @@
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div style="margin-left: 20px; margin-top: 25px;" class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{width: '335px', height: '530px', direction: 'right', showIcon: true, visible: true}"
-                     style="margin-left: 10px;">
+                <div data-bind="ntsPanel:{width: '335px', height: '650px', direction: 'right', showIcon: true, visible: true}"
+                     style="margin-left: 10px; margin-bottom: 20px;">
                     <div style="width: 330px" tabindex="7"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'laborOfficeCode', comId: 'A2_3',
                         items: laborInsuranceOfficeList, selected: selectedLaborOfficeCode, selectedKey: 'laborOfficeCode', fields: ['laborOfficeCode', 'officeName'], mode: 'igGrid'}"/>
                     <table id="A2_3" tabindex="8"
                            data-bind="ntsGridList: {
-                            rows: 20,
+                            rows: 25,
                             name: '#[QMM010_7]',
                             options: laborInsuranceOfficeList,
                             optionsValue: 'laborOfficeCode',
@@ -162,7 +162,7 @@
                     <input tabindex="20"
                            data-bind="ntsTextEditor: {constraint: 'PhoneNumber',value: phoneNumber, name: '#[QMM010_20]'}"/>
                 </div>
-                <div class="column-1">#{i18n.getText('QMM010_21')}</div>
+                <div style = "margin-top: 10px;" class="column-1">#{i18n.getText('QMM010_21')}</div>
                 <hr></hr>
 
                 <div class="flex valign-center row">
@@ -196,6 +196,7 @@
                     <input style="margin-left: 5px;" tabindex="25"
                            data-bind="ntsTextEditor: {constraint: 'EmploymentInsuranceBusinessOfficeNumber3',value: employmentOfficeNumber3, name: '#[QMM010_27]'}"/>
                 </div>
+                <hr></hr>
                 <div class="flex row">
                     <div class="column-1"
                          data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM010_29')}</div>

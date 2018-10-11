@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm010.b{
 
         viewmodel.startPage().done(function() {
             __viewContext.bind(__viewContext.viewModel);
+            $('#B2_1_container').focus();
         });
     });
 }

@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 住所2
+ * 住所カナ2
  */
 @StringMaxLength(40)
 public class AddressKana2 extends StringPrimitiveValue<AddressKana2> {

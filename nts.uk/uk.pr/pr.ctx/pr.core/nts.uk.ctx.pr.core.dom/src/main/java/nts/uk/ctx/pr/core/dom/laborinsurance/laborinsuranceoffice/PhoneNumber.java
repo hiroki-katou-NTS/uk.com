@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 住所1
+ * 電話番号
  */
 @StringMaxLength(20)
 @StringCharType(CharType.ANY_HALF_WIDTH)

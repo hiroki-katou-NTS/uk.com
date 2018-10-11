@@ -1,12 +1,9 @@
 module nts.uk.pr.view.qmm010.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
-    import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
-    import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qmm010.share.model;
-    import LaborInsuranceOffice = nts.uk.pr.view.qmm010.share.model.LaborInsuranceOffice;
     export class ScreenModel {
         isOnStartUp: boolean = true;
         laborInsuranceOfficeList: KnockoutObservableArray<model.ILaborInsuranceOffice> = ko.observableArray([]);
@@ -21,7 +18,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
             });
         }
         startPage(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+            let self = this;
             return self.showAllOffice();
         }
 
@@ -41,7 +38,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
                     }, 100);
                 }
                 dfd.resolve();
-            }).fail(function(err) {
+            }).fail(function() {
                 dfd.reject();
             }).always(function() {
                 block.clear();
@@ -67,7 +64,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
         }
 
         searchPostalCode () {
-
+            // TODO
         }
 
         createNewOffice () {
@@ -116,7 +113,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
 
         updateLaborInsuranceOffice (command) {
             let self = this;
-            block.invisible()
+            block.invisible();
             service.updateLaborOffice(command).done(function(){
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
                     self.showAllOffice();
@@ -155,7 +152,6 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
                 let params = getShared("QMM010_A_PARAMS");
                 if (params){
                     self.selectedLaborOffice(new model.LaborInsuranceOffice(_.extend(ko.toJS(self.selectedLaborOffice), params.socialOfficeInfo)));
-                    nts.uk.ui.errors.clearAll();
                 }
             });
         }
