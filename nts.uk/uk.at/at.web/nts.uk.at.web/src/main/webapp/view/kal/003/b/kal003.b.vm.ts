@@ -801,7 +801,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.getListItemByAtr(6).done((lstItem) => {
                             let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                             //Open dialog KDL021
-                            nts.uk.ui.windows.setShared('Multiple', true);
+                            nts.uk.ui.windows.setShared('Multiple', false);
                             nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                             nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemCondition.uncountableAtdItem()]);
                             nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
