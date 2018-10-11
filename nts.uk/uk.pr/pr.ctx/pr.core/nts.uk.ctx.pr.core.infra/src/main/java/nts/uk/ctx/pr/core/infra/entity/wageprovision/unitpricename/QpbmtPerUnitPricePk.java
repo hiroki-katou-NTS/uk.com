@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 給与個人単価設定: 主キー情報
+* 給与個人単価: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtPerUnitPriceSetPk implements Serializable
+public class QpbmtPerUnitPricePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

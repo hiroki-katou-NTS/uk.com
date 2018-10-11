@@ -6,15 +6,15 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceNameRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceRepository;
 
 @Stateless
 @Transactional
-public class RemoveSalaryPerUnitPriceNameCommandHandler extends CommandHandler<SalaryPerUnitPriceNameCommand>
+public class RemoveSalaryPerUnitPriceCommandHandler extends CommandHandler<SalaryPerUnitPriceNameCommand>
 {
     
     @Inject
-    private SalaryPerUnitPriceNameRepository repository;
+    private SalaryPerUnitPriceRepository repository;
     
     @Override
     protected void handle(CommandHandlerContext<SalaryPerUnitPriceNameCommand> context) {
