@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
+
         newHisId: KnockoutObservable<string> = ko.observable('');
         enableNotes:KnockoutObservable<boolean> = ko.observable(true);
         enableSalary: KnockoutObservable<boolean> = ko.observable(true);
@@ -16,7 +17,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         enableYearMonth: KnockoutObservable<boolean> = ko.observable(true);
         enableName: KnockoutObservable<boolean> = ko.observable(true);
         enableCode: KnockoutObservable<boolean> = ko.observable(true);
-        tempDataSource: KnockoutObservableArray<Node> = ko.observableArray([]);
         isExist:  KnockoutObservable<boolean> = ko.observable(false);
         mode: KnockoutObservable<number> = ko.observable(null);
         currentSelected: KnockoutObservable<string> = ko.observable('');
@@ -25,13 +25,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         notes: KnockoutObservable<string> = ko.observable('');
         dataSource: KnockoutObservableArray<Node> = ko.observableArray([]);
         singleSelectedCode: KnockoutObservable<string> = ko.observable('');
-        selectedCodes: any;
-        selectedCodes2: any;
-        headers: any;
-        items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
 
         //formlable
         inline: KnockoutObservable<boolean>;
@@ -40,7 +33,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         enableTargetClassification: KnockoutObservable<boolean>  = ko.observable(true);
         //
         texteditor: any;
-        texteditor1: any;
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         value: KnockoutObservable<string> = ko.observable('');
@@ -49,12 +41,9 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         yearMonth: KnockoutObservable<number>;
         endYearMonth: KnockoutObservable<number> = ko.observable('9999/12');
 
-        //
         currencyeditor: any;
         //
-        itemList: KnockoutObservableArray<any>;
         fixedWageClassList:  KnockoutObservableArray<any>;
-
         selectedId: KnockoutObservable<number> = ko.observable(0);
 
         enable: KnockoutObservable<boolean> ;
@@ -76,7 +65,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
         //
         payrollUnitPriceHistory:  KnockoutObservableArray<PayrollUnitPriceHistory> = ko.observableArray([]);
-        payrollUnitPrice: KnockoutObservableArray<PayrollUnitPrice> = ko.observableArray([]);
         constructor() {
             var self = this;
 
@@ -191,16 +179,11 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             self.selectedADayPayee = ko.observable(0);
             self.selectedHourlyPay = ko.observable(0);
             self.selectedMonthlySalary = ko.observable(0);
-            //
-            self.itemList = ko.observableArray([
-                new BoxModel(1, '全員一律で指定する'),
-                new BoxModel(2, '給与契約形態ごとに指定する')
-            ]);
+
             self.fixedWageClassList = ko.observableArray([
                 new BoxModel(0, getText('全員一律で指定する')),
                 new BoxModel(1, getText('給与契約形態ごとに指定する'))
             ]);
-
 
             self.enable = ko.observable(true);
             //
@@ -218,7 +201,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             };
             //
             self.date = ko.observable('20000101');
-            self.yearMonth = ko.observable(200001);
+            self.yearMonth = ko.observable(201801);
             //
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
@@ -229,7 +212,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
-                    placeholder: "Placeholder for text editor",
+                    placeholder: "",
                     width: "50px",
                     textalign: "left"
                 })),
@@ -237,91 +220,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-
-            self.texteditor1 = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "Placeholder for text editor",
-                    width: "150px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-            self.selectedCodes = ko.observableArray([]);
-            self.selectedCodes2 = ko.observableArray([]);
-            self.headers = ko.observableArray(["Item Value Header","Item Text Header"]);
-
-            this.items = ko.observableArray([]);
-            var str = ['a0', 'b0', 'c0', 'd0'];
-            for(var j = 0; j < 4; j++) {
-                for(var i = 1; i < 51; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    this.items.push(new ItemModel(code,code,code,code));
-                }
-            }
-            this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 230 },
-                { headerText: '説明', prop: 'description', width: 150 },
-                { headerText: '説明1', prop: 'other1', width: 150 },
-                { headerText: '説明2', prop: 'other2', width: 150 }
-            ]);
-            this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
-        }
-
-        init(): JQueryPromise<any> {
-            let self = this;
-            let db = [];
-            let code = '';
-            let child = {};
-            return service.getAllPayrollUnitPriceByCID().done((list: Array<PayrollUnitPrice>)=>{
-                if(list.length > 0){
-                    self.payrollUnitPrice(list);
-                    _.each(self.payrollUnitPrice(),(value)=>{
-                        let node = new Node(value.code, value.code + ' ' +value.name, []);
-                        service.getPayrollUnitPriceHistoryByCidCode(value.code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>)=>{
-                            if(listPayrollUnitPriceHistory.length > 0){
-                                listPayrollUnitPriceHistory = _.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']);
-                                _.each(listPayrollUnitPriceHistory,(val)=>{
-                                    let childs = new Node(val.code + '_' + val.hisId + '_' + value.name, '' + val.startYearMonth + '～' + val.endYearMonth , []);
-                                    node.childs.push(childs);
-                                    if(self.code() == val.code){
-                                        code = childs.code;
-                                        self.currentSelected(code);
-                                    }
-                                });
-                                db.push(node);
-                                self.dataSource(db);
-                                if(self.mode() === null || self.mode() === MODE.ADD_HISTORY){
-                                    self.tempDataSource(self.dataSource());
-                                }
-                                if(self.tempDataSource().length > 0 && self.tempDataSource()[0].childs.length > 0 && self.mode() == null){
-                                    self.singleSelectedCode(self.tempDataSource()[0].childs[0].code);
-                                }
-
-                            }
-                        });
-                    });
-
-                }else{
-                    self.amountOfMoney(null);
-                    self.yearMonth(null);
-                    self.notes(null);
-                    self.selectedTargetClass(0);
-                    self.selectedClassification(0);
-                    self.selectedMonthSalaryPerDay(0);
-                    self.selectedADayPayee(0);
-                    self.selectedHourlyPay(0);
-                    self.selectedMonthlySalary(0);
-                    self.mode(MODE.NEW);
-                }
-
-            });
         }
 
         openBscreen(){
