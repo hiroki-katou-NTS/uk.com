@@ -14,7 +14,10 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.UpdateP
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHisKey;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistorySettingDto;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,9 +84,27 @@ public class PayrollUnitPriceHisWebService extends WebService {
 
     @POST
     @Path("getPayrollUnitPriceHisById/{code}/{hisId}")
-    public Object[] getPayrollUnitPriceHisById(@PathParam("code") String code, @PathParam("hisId") String hisId){
+    public PayrollUnitPriceHistorySettingDto getPayrollUnitPriceHisById(@PathParam("code") String code, @PathParam("hisId") String hisId){
         String cid = AppContexts.user().companyId();
-        return  payrollUnitPriceHistoryFinder.getPayrollUnitPriceHistory(cid,code,hisId);
+        Object[] object = payrollUnitPriceHistoryFinder.getPayrollUnitPriceHistory(cid,code,hisId);
+        PayrollUnitPriceHistorySettingDto payrollUnitPriceHistorySettingDto = null;
+        if(object != null || object.length > 0){
+            YearMonthHistoryItem item = (YearMonthHistoryItem)object[0];
+            PayrollUnitPriceSetting payrollUnitPriceSet = (PayrollUnitPriceSetting)object[1];
+            payrollUnitPriceHistorySettingDto = new PayrollUnitPriceHistorySettingDto(
+                    code,hisId,item.start().v(),
+                    item.end().v(),
+                    payrollUnitPriceSet.getAmountOfMoney().v(),
+                    payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().isPresent() ? payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary().value : null,
+                    payrollUnitPriceSet.getFixedWage().getSetClassification().value,
+                    payrollUnitPriceSet.getNotes().isPresent() ? payrollUnitPriceSet.getNotes().get().v() : null);
+        }
+
+        return payrollUnitPriceHistorySettingDto;
     }
 
     @POST
