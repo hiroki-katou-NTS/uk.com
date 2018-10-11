@@ -83,6 +83,7 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		Optional<EmployeesPensionMonthlyInsuranceFee> employeesPensionMonthlyInsuranceFee = employeesPensionMonthlyInsuranceFeeRepository
 				.getEmployeesPensionMonthlyInsuranceFeeByHistoryId(startCommand.getHistoryId());
 		Optional<WelfarePensionInsuranceClassification> welfarePensionInsuranceCls = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(startCommand.getHistoryId());
+		Optional<WelfarePensionInsuranceClassification> data = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(startCommand.getHistoryId());
 		if(employeesPensionMonthlyInsuranceFee.isPresent()) {
 			if(check && welfarePensionInsuranceCls.isPresent()) {
 				employeesPensionMonthlyInsuranceFee.get().algorithmMonthlyWelfarePensionInsuranceFeeCalculation(welfarePensionStandardMonthlyFee, welfarePensionInsuranceCls.get());
@@ -95,15 +96,28 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualExemptionRate().isPresent() ? TextResource.localize("QMM008_156",employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualExemptionRate().get().v().toString()) : null,
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().isPresent() ? TextResource.localize("QMM008_156",employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().get().v().toString()) : null,
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeExemptionRate().isPresent() ? TextResource.localize("QMM008_156",employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeExemptionRate().get().v().toString()) : null);
-			
-			gradeWelfarePensionInsurancePremiumDtos = employeesPensionMonthlyInsuranceFee.get().getPensionInsurancePremium().stream().map(x -> new GradeWelfarePensionInsurancePremiumDto(x.getWelfarePensionGrade(),x.getInsuredBurden().getMaleInsurancePremium().v().toString(), 
-					x.getEmployeeBurden().getMaleInsurancePremium().v().toString(), 
-					x.getInsuredBurden().getMaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getMaleExemptionInsurance().get().v().toString() : null, 
-					x.getEmployeeBurden().getMaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getMaleExemptionInsurance().get().v().toString() :null, 
-					x.getInsuredBurden().getFemaleInsurancePremium().v().toString(), 
-					x.getEmployeeBurden().getFemaleInsurancePremium().v().toString(), 
-					x.getInsuredBurden().getFemaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getFemaleExemptionInsurance().get().v().toString() : null, 
-					x.getEmployeeBurden().getFemaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getFemaleExemptionInsurance().get().v().toString() : null)).collect(Collectors.toList());
+			if (data.isPresent() && data.get().getFundClassification().value == 1) {
+				gradeWelfarePensionInsurancePremiumDtos = employeesPensionMonthlyInsuranceFee.get().getPensionInsurancePremium().stream().map(x -> new GradeWelfarePensionInsurancePremiumDto(x.getWelfarePensionGrade(),
+						x.getInsuredBurden().getMaleInsurancePremium().v().subtract(x.getInsuredBurden().getMaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getMaleExemptionInsurance().get().v() : new BigDecimal(0)).toString(),
+						x.getEmployeeBurden().getMaleInsurancePremium().v().subtract(x.getEmployeeBurden().getMaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getMaleExemptionInsurance().get().v() : new BigDecimal(0)).toString(),
+						x.getInsuredBurden().getMaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getMaleExemptionInsurance().get().v().toString() : null,
+						x.getEmployeeBurden().getMaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getMaleExemptionInsurance().get().v().toString() :null,
+						x.getInsuredBurden().getFemaleInsurancePremium().v().subtract(x.getInsuredBurden().getFemaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getFemaleExemptionInsurance().get().v() : new BigDecimal(0)).toString(),
+						x.getEmployeeBurden().getFemaleInsurancePremium().v().subtract(x.getEmployeeBurden().getFemaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getFemaleExemptionInsurance().get().v() : new BigDecimal(0)).toString(),
+						x.getInsuredBurden().getFemaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getFemaleExemptionInsurance().get().v().toString() : null,
+						x.getEmployeeBurden().getFemaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getFemaleExemptionInsurance().get().v().toString() : null)).collect(Collectors.toList());
+			} else if(data.isPresent()) {
+				gradeWelfarePensionInsurancePremiumDtos = employeesPensionMonthlyInsuranceFee.get().getPensionInsurancePremium().stream().map(x -> new GradeWelfarePensionInsurancePremiumDto(x.getWelfarePensionGrade(),
+						x.getInsuredBurden().getMaleInsurancePremium().v().toString(),
+						x.getEmployeeBurden().getMaleInsurancePremium().v().toString(),
+						x.getInsuredBurden().getMaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getMaleExemptionInsurance().get().v().toString() : null,
+						x.getEmployeeBurden().getMaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getMaleExemptionInsurance().get().v().toString() :null,
+						x.getInsuredBurden().getFemaleInsurancePremium().v().toString(),
+						x.getEmployeeBurden().getFemaleInsurancePremium().v().toString(),
+						x.getInsuredBurden().getFemaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getFemaleExemptionInsurance().get().v().toString() : null,
+						x.getEmployeeBurden().getFemaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getFemaleExemptionInsurance().get().v().toString() : null)).collect(Collectors.toList());
+			}
+
 		}
 		Optional<WelfarePensionInsuranceClassification> insuranceClassification = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(startCommand.getHistoryId());
 		Boolean display = false;
