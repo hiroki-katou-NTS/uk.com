@@ -112,11 +112,12 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
         return payUnitPriceHisPk;
     }
 
-    public Object toDomain(List<YearMonthHistoryItem> item) {
+    public Object[] toDomain(List<YearMonthHistoryItem> item) {
         PayrollUnitPriceHistory payrollUnitPriceHistory = new PayrollUnitPriceHistory(this.payUnitPriceHisPk.code, this.payUnitPriceHisPk.cid, item);
         PayrollUnitPriceSetting payrollUnitPriceSetting = new PayrollUnitPriceSetting(this.payUnitPriceHisPk.hisId, this.amountOfMoney, this.targetClass, this.monthSalaryPerDay, this.aDayPayee, this.hourlyPay, this.monthSalary, this.setClassification, this.notes);
         return new Object[]{ payrollUnitPriceHistory, payrollUnitPriceSetting };
     }
+
     public static QpbmtPayUnitPriceHis toEntity(String code, String cId, YearMonthHistoryItem item, PayrollUnitPriceSetting payrollUnitPriceSet) {
         return new QpbmtPayUnitPriceHis(
                 new QpbmtPayUnitPriceHisPk(cId, code, item.identifier()),

@@ -71,7 +71,7 @@
         <div id="right">
             <div class="div-line">
             <!-- A3_1 -->
-            <div id="A3_1" data-bind="ntsFormLabel: { constraint: 'CompanyUnitPriceCode', required: true }">#{i18n.getText('QMM007_5')}</div>
+            <div id="A3_1" data-bind="ntsFormLabel: { constraint: ['CompanyUnitPriceCode', 'SalaryUnitPriceName'], required: true }">#{i18n.getText('QMM007_5')}</div>
             <!-- A3_2 -->
                 <input id="A3_2" data-bind="ntsTextEditor: {
                                                     value: code,

@@ -4,6 +4,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import model = qmm007.share.model;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
@@ -39,7 +40,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         //datepicker
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
-        endYearMonth: KnockoutObservable<number> = ko.observable('9999/12');
+        endYearMonth: KnockoutObservable<number> = ko.observable('999912');
 
         currencyeditor: any;
         //
@@ -131,8 +132,16 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     service.getPayrollUnitPriceHisById(code, hisId).done((data) => {
                         self.yearMonth(data ? data.startYearMonth : null);
                         self.endYearMonth(data ? data.endYearMonth : null);
+
+                        //
+                        self.selectedId(data.targetClass);
+                        self.amountOfMoney(data.amountOfMoney);
+                        self.selectedMonthlySalary(data.monthlySalary);
+                        self.selectedADayPayee(data.adayPayee);
+                        self.selectedHourlyPay(data.hourlyPay)
+                        self.notes(data.notes);
                     });
-                    service.getPayrollUnitPriceSettingById(hisId).done((data) => {
+                    /*service.getPayrollUnitPriceSettingById(hisId).done((data) => {
                         if (data != undefined) {
                             self.selectedId(data.targetClass);
                             self.amountOfMoney(data.amountOfMoney);
@@ -141,7 +150,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             self.selectedHourlyPay(data.hourlyPay)
                             self.notes(data.notes);
                         }
-                    });
+                    });*/
 
                     service.getPayrollUnitPriceHistoryByCidCode(code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>) => {
                         self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
@@ -169,8 +178,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 { code: '2', name: '切り上げ' },
             ]);
             self.targetClassification = ko.observableArray([
-                { code: '0', name: '対象' },
-                { code: '1', name: '対象外' },
+                { code: '0', name: getText('QMM007_20')},
+                { code: '1', name: getText('QMM007_21')}
             ]);
             self.selectedRuleCode = ko.observable(0);
             self.selectedClassification = ko.observable(0);
@@ -429,19 +438,19 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
                 }else{
                     service.register(data).done(()=>{
-                        self.newHisId(null);
-                        let select = self.singleSelectedCode();
-                        self.createGridList().done(()=>{
-                            if(self.mode() === MODE.NEW){
-                                self.singleSelectedCode(self.currentSelected());
-                            }else{
-                                self.singleSelectedCode(select);
-                            }
-                        });
-
                         dialog.info({ messageId: "Msg_15" }).then(() => {
-
+                            self.newHisId(null);
+                            let select = self.singleSelectedCode();
+                            self.createGridList().done(()=>{
+                                if(self.mode() === MODE.NEW){
+                                    self.singleSelectedCode(self.currentSelected());
+                                }else{
+                                    self.singleSelectedCode(self.currentSelected());
+                                }
+                            });
                         });
+
+
                     }).fail(function(res: any) {
                         if (res)
                             dialog.alertError(res);
@@ -586,7 +595,10 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         CREATE_NEW = 1,
         EXTENDS_LAST_HISTORY = 0
     }
-    export enum HISTORY{
-        NEW = '000'
+    export function listSetting(): Array<model.ItemModel> {
+        return [
+            new model.ItemModel('0', getText('QMM007_20')),
+            new model.ItemModel('1', getText('QMM007_21')),
+        ];
     }
 }

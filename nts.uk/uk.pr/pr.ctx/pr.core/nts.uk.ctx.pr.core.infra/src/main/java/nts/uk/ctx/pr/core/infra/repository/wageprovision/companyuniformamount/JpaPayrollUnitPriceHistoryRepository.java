@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implements PayrollUnitPriceHistoryRepository {
@@ -33,6 +35,18 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
                .getList();
         return Optional.of(new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cid,toDomain(temp)));
 
+    }
+
+    @Override
+    public Object[] getPayrollUnitPriceHistory(String cid, String code, String hisId){
+        Optional<QpbmtPayUnitPriceHis> temp = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPayUnitPriceHis.class)
+                .setParameter("cid", cid)
+                .setParameter("code", code)
+                .setParameter("hisId", hisId)
+                .getSingle();
+        YearMonthHistoryItem yearMonthHistoryItem = new YearMonthHistoryItem(temp.get().payUnitPriceHisPk.hisId, new YearMonthPeriod(new YearMonth(temp.get().startYearMonth), new YearMonth(temp.get().endYearMonth)));
+        PayrollUnitPriceSetting payrollUnitPriceSetting = new PayrollUnitPriceSetting(temp.get().payUnitPriceHisPk.hisId, temp.get().amountOfMoney, temp.get().targetClass, temp.get().monthSalaryPerDay, temp.get().aDayPayee, temp.get().hourlyPay, temp.get().monthSalary, temp.get().setClassification, temp.get().notes);
+        return new Object[]{ yearMonthHistoryItem, payrollUnitPriceSetting };
     }
 
     @Override

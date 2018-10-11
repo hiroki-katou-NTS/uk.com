@@ -17,8 +17,6 @@ public class PayrollUnitPriceHistoryService {
     @Inject
     private PayrollUnitPriceHistoryRepository mPayrollUnitPriceHistoryRepository;
 
-    @Inject
-    private PayrollUnitPriceSettingRepository mPayrollUnitPriceSettingRepository;
 
     @Inject
     private PayrollUnitPriceRepository mPayrollUnitPriceRepository;
@@ -54,7 +52,6 @@ public class PayrollUnitPriceHistoryService {
             return;
         }
         accInsurHis.get().remove(itemToBeDelete.get());
-        this.mPayrollUnitPriceSettingRepository.remove(hisId);
         mPayrollUnitPriceHistoryRepository.remove(cId,code, hisId);
         if (accInsurHis.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);

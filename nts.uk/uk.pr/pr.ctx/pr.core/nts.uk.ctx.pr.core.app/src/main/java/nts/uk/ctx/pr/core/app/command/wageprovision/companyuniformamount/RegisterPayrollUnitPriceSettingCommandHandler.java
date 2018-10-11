@@ -32,9 +32,6 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
     PayrollUnitPriceHistoryRepository payrollUnitPriceHistoryRepository;
 
     @Inject
-    PayrollUnitPriceSettingRepository payrollUnitPriceSettingRepository;
-
-    @Inject
     private PayrollUnitPriceHistoryService mPayrollUnitPriceHistoryService;
 
     @Override

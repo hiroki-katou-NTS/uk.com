@@ -68,7 +68,7 @@ public class PayrollUnitPriceHisWebService extends WebService {
         registerPayrollUnitPriceSettingCommandHandler.handle(command);
     }
 
-    @POST
+    /*@POST
     @Path("getPayrollUnitPriceHisById/{code}/{hisId}")
     public PayrollUnitPriceHistoryDto getPayrollUnitPriceHisById(@PathParam("code") String code, @PathParam("hisId") String hisId){
         String cid = AppContexts.user().companyId();
@@ -77,6 +77,13 @@ public class PayrollUnitPriceHisWebService extends WebService {
             return payrollUnitPriceHistoryDto.get();
         }
         return null;
+    }*/
+
+    @POST
+    @Path("getPayrollUnitPriceHisById/{code}/{hisId}")
+    public Object[] getPayrollUnitPriceHisById(@PathParam("code") String code, @PathParam("hisId") String hisId){
+        String cid = AppContexts.user().companyId();
+        return  payrollUnitPriceHistoryFinder.getPayrollUnitPriceHistory(cid,code,hisId);
     }
 
     @POST

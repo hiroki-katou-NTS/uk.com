@@ -9,6 +9,7 @@ import java.util.Optional;
  */
 public interface PayrollUnitPriceHistoryRepository {
 
+    Object[] getPayrollUnitPriceHistory(String cid, String code, String hisId);
 
     Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid, String code, String hisId);
 

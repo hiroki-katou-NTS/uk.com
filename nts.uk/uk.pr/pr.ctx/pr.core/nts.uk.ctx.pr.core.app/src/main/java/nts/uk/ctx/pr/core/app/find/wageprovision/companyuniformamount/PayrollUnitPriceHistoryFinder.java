@@ -63,16 +63,23 @@ public class PayrollUnitPriceHistoryFinder {
         return Optional.empty();
     }
 
+    public Object[] getPayrollUnitPriceHistory(String cid, String code, String hisid){
+        return finder.getPayrollUnitPriceHistory(cid,code,hisid);
+    }
+
     public List<PayrollUnitPriceHistoryListDto> getAllHistoryById(String cid){
         List<PayrollUnitPriceHistoryListDto> list = new ArrayList<PayrollUnitPriceHistoryListDto>();
         List<PayrollUnitPrice> listPayrollUnitPrice = payrollUnitPriceRepository.getAllPayrollUnitPriceByCID(cid);
-        listPayrollUnitPrice.forEach(payrollUnitPrice ->{
-            Optional<PayrollUnitPriceHistory> oPayrollUnitPriceHistory = finder.getPayrollUnitPriceHistoryByCidCode(cid,payrollUnitPrice.getCode().v());
-            if(oPayrollUnitPriceHistory.isPresent()){
-                PayrollUnitPriceHistory payrollUnitPriceHistory = oPayrollUnitPriceHistory.get();
-                list.add(new PayrollUnitPriceHistoryListDto(payrollUnitPrice.getCode().v(),payrollUnitPriceHistory.getHistory().get(0).identifier(),payrollUnitPrice.getName().v(),PayrollUnitPriceHistoryDto.fromDomain(payrollUnitPriceHistory)));
-            }
-        });
+        if(listPayrollUnitPrice.size() > 0){
+            listPayrollUnitPrice.forEach(payrollUnitPrice ->{
+                Optional<PayrollUnitPriceHistory> oPayrollUnitPriceHistory = finder.getPayrollUnitPriceHistoryByCidCode(cid,payrollUnitPrice.getCode().v());
+                if(oPayrollUnitPriceHistory.isPresent()){
+                    PayrollUnitPriceHistory payrollUnitPriceHistory = oPayrollUnitPriceHistory.get();
+                    list.add(new PayrollUnitPriceHistoryListDto(payrollUnitPrice.getCode().v(),payrollUnitPriceHistory.getHistory().get(0).identifier(),payrollUnitPrice.getName().v(),PayrollUnitPriceHistoryDto.fromDomain(payrollUnitPriceHistory)));
+                }
+            });
+        }
+
         return list;
     }
 
