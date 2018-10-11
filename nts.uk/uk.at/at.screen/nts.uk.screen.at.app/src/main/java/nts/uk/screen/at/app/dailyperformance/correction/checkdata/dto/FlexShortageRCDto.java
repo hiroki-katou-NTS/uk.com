@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto.MessageError;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Data
@@ -62,6 +63,8 @@ public class FlexShortageRCDto {
 			return new RCMessageErrorDaily(TextResource.localize("Msg_1175", redConditionMessage), "Msg_1175");
 		case 2:
 			return new RCMessageErrorDaily(TextResource.localize("Msg_1291", flexHoliday), "Msg_1291");
+		case 3:
+			return new RCMessageErrorDaily(TextResource.localize("Msg_1448"), "Msg_1448");
 		default:
 			return null;
 		}
