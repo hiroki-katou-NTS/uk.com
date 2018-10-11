@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
 
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPrice;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import java.util.ArrayList;
@@ -21,7 +23,10 @@ public class PayrollUnitPriceHistoryFinder {
 
     @Inject
     private PayrollUnitPriceHistoryRepository finder;
-    
+
+    @Inject
+    private PayrollUnitPriceRepository payrollUnitPriceRepository;
+
     public List<PayrollUnitPriceHistoryDto> getPayrollUnitPriceHis(String hisId,String code){
         String cId = AppContexts.user().companyId();
         Optional<PayrollUnitPriceHistory> mPayrollUnitPriceHistory =  finder.getPayrollUnitPriceHistoryById(cId,code,hisId);
@@ -56,6 +61,19 @@ public class PayrollUnitPriceHistoryFinder {
             }
         }
         return Optional.empty();
+    }
+
+    public List<PayrollUnitPriceHistoryListDto> getAllHistoryById(String cid){
+        List<PayrollUnitPriceHistoryListDto> list = new ArrayList<PayrollUnitPriceHistoryListDto>();
+        List<PayrollUnitPrice> listPayrollUnitPrice = payrollUnitPriceRepository.getAllPayrollUnitPriceByCID(cid);
+        listPayrollUnitPrice.forEach(payrollUnitPrice ->{
+            Optional<PayrollUnitPriceHistory> oPayrollUnitPriceHistory = finder.getPayrollUnitPriceHistoryByCidCode(cid,payrollUnitPrice.getCode().v());
+            if(oPayrollUnitPriceHistory.isPresent()){
+                PayrollUnitPriceHistory payrollUnitPriceHistory = oPayrollUnitPriceHistory.get();
+                list.add(new PayrollUnitPriceHistoryListDto(payrollUnitPrice.getCode().v(),payrollUnitPriceHistory.getHistory().get(0).identifier(),payrollUnitPrice.getName().v(),PayrollUnitPriceHistoryDto.fromDomain(payrollUnitPriceHistory)));
+            }
+        });
+        return list;
     }
 
 

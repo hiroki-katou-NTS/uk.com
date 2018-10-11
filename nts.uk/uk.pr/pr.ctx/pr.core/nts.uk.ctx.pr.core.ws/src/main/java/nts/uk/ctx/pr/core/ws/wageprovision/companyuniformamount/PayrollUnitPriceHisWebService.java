@@ -85,4 +85,11 @@ public class PayrollUnitPriceHisWebService extends WebService {
         String result = addPayrollUnitPriceHistoryCommandHandler.handle(command);
         return new Object[]{result};
     }
+
+    @POST
+    @Path("getAllHistoryById")
+    public Object getAllHistoryById(PayrollUnitPriceHistoryCommand command) {
+        String cid  = AppContexts.user().companyId();
+        return payrollUnitPriceHistoryFinder.getAllHistoryById(cid);
+    }
 }

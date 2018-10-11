@@ -10,9 +10,13 @@ module nts.uk.pr.view.qmm007.a {
             getAllPayrollUnitPriceByCID: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByCID",
             getPayrollUnitPriceSettingById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceSettingById/{0}",
             getPayrollUnitPriceById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceById/{0}",
-            getPayrollUnitPriceHisById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHisById/{0}/{1}"
+            getPayrollUnitPriceHisById: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHisById/{0}/{1}",
+            getAllHistoryById: "core/wageprovision/companyuniformamount/getAllHistoryById"
         };
 
+        export  function getAllHistoryById() : JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getAllHistoryById);
+        }
         export  function getPayrollUnitPriceHisById(code: string, hisId: string) : JQueryPromise<any> {
             let _path = nts.uk.text.format(path.getPayrollUnitPriceHisById, code,hisId);
             return nts.uk.request.ajax("pr", _path);
