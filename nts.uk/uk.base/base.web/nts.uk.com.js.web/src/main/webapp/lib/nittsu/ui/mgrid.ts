@@ -11,7 +11,7 @@ module nts.uk.ui.mgrid {
     const BODY_ROW_HEIGHT = 29;
     const SUM_HEIGHT = 27;
     let defaultOptions = { columns: [], features: [] };
-    let _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource,
+    let _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {},
         _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], 
         _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, 
         _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = () => _mafollicle[_currentPage][_currentSheet], 
@@ -115,10 +115,18 @@ module nts.uk.ui.mgrid {
                         _.forEach(s.columns, c => {
                             let sc = _.find(self.columns, col => {
                                 if (col.group) {
+                                    _.forEach(col.group, gc => {
+                                        if (_.isNil(_secColumn[gc.key])) {
+                                            _secColumn[gc.key] = gc;
+                                        }
+                                    });
                                     return col.group[0].key === c;
                                 } else return col.key === c;
                             });
                             
+                            if (sc && !sc.group && !_secColumn[sc.key]) {
+                                _secColumn[sc.key] = sc;
+                            }
                             if (sc) sheetCols.push(sc);
                         });
                         
@@ -849,8 +857,12 @@ module nts.uk.ui.mgrid {
                 $.data(td, lo.VIEW, rowIdx + "-" + key);
                 
                 let tdStyle = "";
-                tdStyle += "; border-width: 1px; overflow: hidden; white-space: " 
-                            + ws + ";"; // position: relative;";
+                tdStyle += "; border-width: 1px; overflow: hidden; ";
+                if (self.options.isHeader) {
+                    tdStyle += "word-break: break-all; vertical-align: top;";
+                } else {
+                    tdStyle += "white-space: " + ws + ";"; // position: relative;";
+                }
                 
                 if (!self.visibleColumnsMap[key]) {
                     tdStyle += "; display: none;";
@@ -914,7 +926,7 @@ module nts.uk.ui.mgrid {
                 let self = this;
                 let $td = document.createElement("td");
                 $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                let tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
+                let tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
                 if (!_.isNil(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!_.isNil(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
                 else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
@@ -1078,7 +1090,7 @@ module nts.uk.ui.mgrid {
                         }
                     }
                     $.data(td, DATA, data);
-                } else if (_zeroHidden && ti.isZero(data)) {
+                } else if (_zeroHidden && ti.isZero(data, key)) {
                     td.textContent = "";
                     dkn.textBox(key);
                     let formatted = su.format(column, data);
@@ -1319,7 +1331,7 @@ module nts.uk.ui.mgrid {
                         }
                     }
                     $.data(td, DATA, data);
-                } else if (_zeroHidden && ti.isZero(data)) {
+                } else if (_zeroHidden && ti.isZero(data, key)) {
                     td.textContent = "";
                     dkn.textBox(key);
                     let formatted = su.format(column, data);
@@ -2974,6 +2986,7 @@ module nts.uk.ui.mgrid {
                     if (!check) return;
                     if (val) { //&& check.getAttribute("checked") !== "checked") {
                         check.setAttribute("checked", "checked");
+                        check.checked = true;
                         let evt = document.createEvent("HTMLEvents");
                         evt.initEvent("change", false, true);
                         evt.resetValue = reset;
@@ -2981,6 +2994,7 @@ module nts.uk.ui.mgrid {
                         check.dispatchEvent(evt);
                     } else if (!val) { // && check.getAttribute("checked") === "checked") {
                         check.removeAttribute("checked");
+                        check.checked = false;
                         let evt = document.createEvent("HTMLEvents");
                         evt.initEvent("change", false, true);
                         evt.resetValue = reset;
@@ -3176,7 +3190,7 @@ module nts.uk.ui.mgrid {
                 return -1;
             },
             destroy: function() {
-                _maxFixedWidth = 0; _maxFreeWidth = null; _columnsMap = {}; _dataSource = null;
+                _maxFixedWidth = 0; _maxFreeWidth = null; _columnsMap = {}; _dataSource = null; _secColumn = {};
                 _hasFixed = null; _validators = {}; _mDesc = null; _mEditor = null; _cloud = null;
                 _hr = null; _direction = null; _errors = []; _errorColumns = null; _errorsOnPage = null;
                 _$grid = null; _pk = null; _pkType = null; _summaries = null; _objId = null; _getObjId = null;
@@ -3202,7 +3216,7 @@ module nts.uk.ui.mgrid {
                         let control = dkn.controlType[key];
                         if (control !== dkn.TEXTBOX) return;
                         let content = $.data(c, v.DATA);
-                        if (hide && ti.isZero(content)) {
+                        if (hide && ti.isZero(content, key)) {
                             c.textContent = "";
                         } else if (!hide && c.textContent === "" && content !== "") {
                             let format = su.format(_columnsMap[key][0], content);
@@ -3468,7 +3482,7 @@ module nts.uk.ui.mgrid {
                     let spl = {}, column = _columnsMap[editor.columnKey];
                     if (!column) return;
                     let failed = khl.any({ element: $bCell }), 
-                        formatted = failed ? inputVal : (_zeroHidden && ti.isZero(inputVal) ? "" : format(column[0], inputVal, spl));
+                        formatted = failed ? inputVal : (_zeroHidden && ti.isZero(inputVal, editor.columnKey) ? "" : format(column[0], inputVal, spl));
                     $bCell.textContent = formatted;
                     let disFormat = inputVal === "" || failed ? inputVal : (spl.padded ? formatted : formatSave(column[0], inputVal));
                     wedgeCell($grid, editor, disFormat);
@@ -3596,8 +3610,8 @@ module nts.uk.ui.mgrid {
                     sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                 }
                 
-                if (zeroHidden && ti.isZero(origVal)
-                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))) {
+                if (zeroHidden && ti.isZero(origVal, coord.columnKey)
+                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))) {
                     $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                     if (!$cell) {
                         if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
@@ -3704,8 +3718,8 @@ module nts.uk.ui.mgrid {
                         if (t.colour) t.c.classList.add(t.colour);
                     }
                     
-                    if (maf && maf.zeroHidden && ti.isZero(origVal)
-                        && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))
+                    if (maf && maf.zeroHidden && ti.isZero(origVal, coord.columnKey)
+                        && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))
                         && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
                         delete maf.dirties[id][coord.columnKey];
                     } else if (maf && cellValue === origVal
@@ -3817,7 +3831,7 @@ module nts.uk.ui.mgrid {
                 }
             }
             
-            if (_zeroHidden && ti.isZero(origVal)
+            if (_zeroHidden && ti.isZero(origVal, key)
                 && (value === "" || _.isNil(value) || parseFloat(value) === 0)) {
                 if (ohsht && !_.isNil(ohsht.dirties[id]) && !_.isNil(ohsht.dirties[id][key])) {
                     delete dirties[id][coord.columnKey];
@@ -3958,6 +3972,13 @@ module nts.uk.ui.mgrid {
                 data = window.clipboardData.getData("text");
             } else {
                 data = evt.clipboardData.getData("text/plain");
+            }
+            
+            if (_mEditor && _mEditor.type === dkn.TEXTBOX) {
+                let $editor = dkn.controlType[dkn.TEXTBOX].my;
+                let $input = $editor.querySelector("input.medit");
+                $input.value = data;
+                return;
             }
             
             let formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
@@ -4217,7 +4238,7 @@ module nts.uk.ui.mgrid {
                     let failed, spl = {},
                         el = lch.cellAt(_$grid[0], c.coord.rowIdx, c.coord.columnKey),
                         column = _columnsMap[c.coord.columnKey], 
-                        formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value) ? "" : format(column[0], c.value, spl));
+                        formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value, c.coord.columnKey) ? "" : format(column[0], c.value, spl));
                     let validator = _validators[c.coord.columnKey];
                     if (validator) {
                         let result = validator.probe(c.value); 
@@ -6359,7 +6380,9 @@ module nts.uk.ui.mgrid {
             return evt.keyCode === 88;
         }
          
-        export function isZero(value: any) {
+        export function isZero(value: any, name: any) {
+            let col = _secColumn[name];
+            if (col && col.constraint && col.constraint.cDisplayType === "TimeWithDay") return false;
             return value === "0" || value === "0:00" || value === "00:00";
         }
          
