@@ -22,6 +22,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.assist.dom.mastercopy.InitValueAuthManagementAdapter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategory;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
@@ -51,6 +52,9 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 
 	/** The Constant MAX_ERROR_RECORD. */
 	private static final int MAX_ERROR_RECORD = 5;
+	
+	/** The Constant AUTHORITY_CATEGORY. */
+	private static final int AUTHORITY_CATEGORY = 1;
 
 	/** The master copy data finder. */
 	@Inject
@@ -59,6 +63,10 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	/** The copy data repository. */
 	@Inject
 	private CopyDataRepository copyDataRepository;
+	
+	/** The init value auth. */
+	@Inject
+	private InitValueAuthManagementAdapter initValueAuth;
 
 	@Override
 	protected void handle(CommandHandlerContext<MasterCopyDataCommand> context) {
@@ -160,6 +168,11 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 			}
 			countSuccess++;
 			setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+			
+			if (AUTHORITY_CATEGORY == masterCopyData.getCategoryNo().v()) {
+				initValueAuth.initValueAuth(companyId);
+				System.out.println("Category 1");
+			}
 		}
 
 		if (!errorList.isEmpty()) {
