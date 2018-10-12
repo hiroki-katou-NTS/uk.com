@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl005.a {
             hint03: KnockoutObservable<string> = ko.observable("");
             value04: KnockoutObservable<string> = ko.observable("");
             hint04: KnockoutObservable<string> = ko.observable("");
+            expirationDateText: KnockoutObservable<string> = ko.observable("");
             
             constructor() {
                 var self = this;
@@ -50,6 +51,7 @@ module nts.uk.at.view.kdl005.a {
                             self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemData.businessName]));
                             
                             service.getDetailsConfirm(itemData.employeeId, self.kdl005Data.baseDate).done(function(data) {
+                                self.expirationDateText(ExpirationDate[data.setting.expirationDate]);
                                 self.bindTimeData(data);
                                 self.bindSummaryData(data);
                             }).fail(function(res) {
@@ -93,6 +95,7 @@ module nts.uk.at.view.kdl005.a {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
                         service.getDetailsConfirm(data.employeeBasicInfo[0].employeeId, self.kdl005Data.baseDate).done(function(data) {
+                            self.expirationDateText(ExpirationDate[data.setting.expirationDate]);
                             self.bindTimeData(data);
                             self.bindSummaryData(data);
                         }).fail(function(res) {
@@ -203,31 +206,45 @@ module nts.uk.at.view.kdl005.a {
             
             bindSummaryData(data: any) {
                 var self = this;
-                
-                if(data.totalInfor != null) {
+                if (data.totalInfor != null) {
                     self.value01(data.totalInfor.carryForwardDays + nts.uk.resource.getText("KDL005_27"));
-                    self.value02(data.totalInfor.recordOccurrenceDays + nts.uk.resource.getText("KDL005_27"));
-                    self.hint02(data.totalInfor.scheOccurrenceDays + nts.uk.resource.getText("KDL005_27"));
-                    self.value03(data.totalInfor.recordUseDays + nts.uk.resource.getText("KDL005_27"));
-                    self.hint03(data.totalInfor.scheUseDays + nts.uk.resource.getText("KDL005_27"));
-                    var ramaining01 = data.totalInfor.recordOccurrenceDays - data.totalInfor.recordUseDays;
-                    var ramaining02 = data.totalInfor.scheOccurrenceDays - data.totalInfor.scheUseDays;
-                    self.value04(ramaining01 + nts.uk.resource.getText("KDL005_27"));
-                    self.hint04(ramaining02 + nts.uk.resource.getText("KDL005_27"));
                 } else {
                     self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
+                }
+                if (data.absRecMng != null) {
+
+                    self.value02(data.absRecMng.occurrenceDays + nts.uk.resource.getText("KDL005_27"));
+                    self.value03(data.absRecMng.useDays + nts.uk.resource.getText("KDL005_27"));
+                    self.value04(data.absRecMng.remainDays + nts.uk.resource.getText("KDL005_27"));
+                } else {
+
                     self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.hint02(nts.uk.resource.getText("KDL005_27", ["0"]));
                     self.value03(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.hint03(nts.uk.resource.getText("KDL005_27", ["0"]));
                     self.value04(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.hint04(nts.uk.resource.getText("KDL005_27", ["0"]));
                 }
             }
             
             cancel() {
                 nts.uk.ui.windows.close();
             }
+        }
+        
+        export enum ExpirationDate {
+            "当月",//0
+            "常に繰越",//1
+            "年度末クリア",//2
+            "1ヶ月",//3
+            "2ヶ月",//4
+            "3ヶ月",//5
+            "4ヶ月",//6
+            "5ヶ月",//7
+            "6ヶ月",//8
+            "7ヶ月",//9
+            "8ヶ月",//10
+            "9ヶ月",//11
+            "10ヶ月",//12
+            "11ヶ月",//13
+            "1年",//14
         }
         
         export class ListType {
