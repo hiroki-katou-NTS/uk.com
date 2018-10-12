@@ -744,7 +744,7 @@ module cmm045.a.viewmodel {
             _.each(lstSort, function(item, index) {
                 if (item.applicationTime != 0) {
                     if (count <= 1) {
-                        framName += item.name + self.convertTime_Short_HM(item.applicationTime);
+                        framName += '　' + item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
                     count += 1;
