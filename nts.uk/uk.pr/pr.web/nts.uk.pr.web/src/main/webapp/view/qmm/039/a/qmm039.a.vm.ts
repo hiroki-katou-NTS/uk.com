@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import format = nts.uk.text.format;
     import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
     import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
+    import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
     export class ScreenModel {
         itemList: KnockoutObservableArray<>;
         onTab: KnockoutObservable<number> = ko.observable(0);
@@ -282,13 +283,15 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         public toScreenC(): void {
             let self = this;
             let params = {
-                empId: '000001',
-                personalValcode: '000001',
+                employeeInfo: {
+                    empId: '000001',
+                    personalValcode: '000001',
+                    itemClass: ITEM_CLASS.SALARY_SUPLY
+                },
                 period: {
                     periodStartYm: self.salHis.periodStartYm(),
                     periodEndYm: self.salHis.periodEndYm()
                 },
-                itemClass: 2,
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {

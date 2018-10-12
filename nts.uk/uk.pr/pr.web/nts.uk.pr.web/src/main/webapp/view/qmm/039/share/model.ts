@@ -155,4 +155,10 @@ module nts.uk.pr.view.qmm039.share.model {
         DELETE = 0,
         UPDATE = 1
     }
+    export enum ITEM_CLASS {
+        SALARY_SUPLY = 1,
+        SALARY_DEDUCTION = 2,
+        BONUS_SUPLY = 3,
+        BONUS_DEDUCTION = 4,
+    }
 }
