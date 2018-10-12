@@ -17,7 +17,7 @@ public class JpaPerProcessClsSetRepository extends JpaRepository implements PerP
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPerProcesClsSet f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.perProcesClsSetPk.companyId =:companyId AND  f.perProcesClsSetPk.processCateNo =:processCateNo ";
-    private static final String SELECT_BY_KEY_UID_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.uid =:uid AND f.cid=:cid";
+    private static final String SELECT_BY_KEY_UID_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.userId =:uid AND f.perProcesClsSetPk.companyId=:cid";
 
     @Override
     public List<PerProcessClsSet> getAllPerProcessClsSet(){

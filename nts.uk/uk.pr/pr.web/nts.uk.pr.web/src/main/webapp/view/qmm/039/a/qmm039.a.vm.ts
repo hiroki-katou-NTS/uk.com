@@ -118,7 +118,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
                     } else {
                         self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                            emp.individualPriceCode, emp.individualPriceName, wp.name, wp.name));
                         self.initKCP009();
                         dfd.resolve();
                     }
@@ -150,14 +150,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 let self = this;
                 self.employeeInputList([]);
                 _.each(dataList, function(item) {
-                    self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+                    self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.individualPriceCode, item.individualPriceName, item.workplaceName, ""));
                 });
                 $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                 if (dataList.length == 0) {
                     self.selectedItem('');
                 } else {
                     let item = self.findIdSelected(dataList, self.selectedItem());
-                    let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
+                    let sortByEmployeeCode = _.orderBy(dataList, ["individualPriceCode"], ["asc"]);
                     if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
                 }
         }

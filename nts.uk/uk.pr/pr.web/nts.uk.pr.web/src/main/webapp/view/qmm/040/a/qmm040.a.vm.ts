@@ -2,6 +2,11 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
+
+        //SalIndAmountName
+        salIndAmountNames: KnockoutObservableArray<SalIndAmountName>;
+        salIndAmountNamesSelectedCode: KnockoutObservable<string>;
+
         //ccg001
         referenceDate: KnockoutObservable<string> = ko.observable('');
         ccgcomponent: GroupOption;
@@ -9,40 +14,44 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         tilteTable: KnockoutObservableArray<any>;
         selectedEmployeeCode: KnockoutObservable<string>;
         //amount
-        amountList:KnockoutObservableArray<Amount>;
+        amountList: KnockoutObservableArray<Amount>;
 
 
         yearMonth: KnockoutObservable<number> = ko.observable(201804);
         onTab: KnockoutObservable<number> = ko.observable(0);
         titleTab: KnockoutObservable<string> = ko.observable('');
-        employeeCode: KnockoutObservable<string>;
-        employeeName: KnockoutObservable<string>;
+        individualPriceCode: KnockoutObservable<string>;
+        individualPriceName: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
             $("#A5_9").ntsFixedTable({height: 350, width: 520});
             self.tilteTable = ko.observableArray([
-                {headerText: getText('QMM040_8'), key: 'employeeCode', width: 100},
-                {headerText: getText('QMM040_9'), key: 'employeeName', width: 200}
+                {headerText: getText('QMM040_8'), key: 'individualPriceCode', width: 100},
+                {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
 
             ]);
 
-            self.amountList=ko.observableArray([]);
+            self.salIndAmountNames = ko.observableArray([]);
+            self.salIndAmountNamesSelectedCode = ko.observable('');
 
-            self.selectedEmployeeCode= ko.observable('1');
-            self.employeeCode = ko.observable('');
-            self.employeeName = ko.observable('');
+
+            self.amountList = ko.observableArray([]);
+
+            self.selectedEmployeeCode = ko.observable('1');
+            self.individualPriceCode = ko.observable('');
+            self.individualPriceName = ko.observable('');
             self.onSelectTab(self.onTab);
 
             self.employeeList = ko.observableArray([]);
 
-            self.selectedEmployeeCode.subscribe(function (data) {
-                let temp = _.find(self.employeeList(), function (o) {
-                    return o.employeeCode==data;
+            self.salIndAmountNamesSelectedCode.subscribe(function (data) {
+                let temp = _.find(self.salIndAmountNames(), function (o) {
+                    return o.individualPriceCode == data;
                 });
-                if(temp){
-                    self.employeeCode(temp.employeeCode);
-                    self.employeeName(temp.employeeName);
+                if (temp) {
+                    self.individualPriceCode(temp.individualPriceCode);
+                    self.individualPriceName(temp.individualPriceName);
                 }
 
             });
@@ -66,17 +75,20 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     //TODO
                     self.onTab(0);
                     self.titleTab(getText('QMM040_3'));
+                    self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     $("#sidebar").ntsSideBar("active", param)
                     break;
                 case 1:
                     //TODO
                     self.onTab(1);
                     self.titleTab(getText('QMM040_4'));
+                    self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     $("#sidebar").ntsSideBar("active", param)
                     break;
                 case 2:
                     //TODO
                     self.onTab(2);
+                    self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.titleTab(getText('QMM040_5'));
                     $("#sidebar").ntsSideBar("active", param)
                     break;
@@ -84,15 +96,28 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     //TODO
                     self.onTab(3);
                     self.titleTab(getText('QMM040_6'));
+                    self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     $("#sidebar").ntsSideBar("active", param)
                     break;
                 default:
                     //TODO
                     self.onTab(0);
                     self.titleTab(getText('QMM040_3'));
+                    self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     $("#sidebar").ntsSideBar("active", 0)
                     break;
             }
+        }
+
+        public loadSalIndAmountName(cateIndicator: number): void {
+            let self = this;
+            service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
+                if(data){
+                    self.salIndAmountNames(data);
+                    self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
+                }
+
+            });
         }
 
 
@@ -136,11 +161,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     //self.selectedEmployee(data.listEmployee);
-                    if(data){
+                    if (data) {
                         self.employeeList(data.listEmployee);
                         self.selectedEmployeeCode(self.employeeList()[0].employeeCode);
                     }
-
 
 
                     self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
@@ -162,10 +186,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('QMM040_16'), key: 'employeeId', dataType: 'string', width: '130px' },
-                    { headerText: getText('QMM040_17'),  key: 'employeeName', dataType: 'string', width: '102px' },
-                    { headerText: getText('QMM040_18'), key: 'workplaceID', dataType: 'string', width: '170px' },
-                    { headerText: getText('QMM040_19'),  key: 'workplaceCode', dataType: 'string', width: '120px' },
+                    {headerText: getText('QMM040_16'), key: 'employeeId', dataType: 'string', width: '130px'},
+                    {headerText: getText('QMM040_17'), key: 'individualPriceName', dataType: 'string', width: '102px'},
+                    {headerText: getText('QMM040_18'), key: 'workplaceID', dataType: 'string', width: '170px'},
+                    {headerText: getText('QMM040_19'), key: 'workplaceCode', dataType: 'string', width: '120px'},
                     // <th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>
                     //     <th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>
                     //     <th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>
@@ -179,20 +203,18 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                         pageSize: 20
                     },
                     {
-                        name : 'Resizing',
+                        name: 'Resizing',
                         columnSettings: [
-                            { columnKey: "employeeId", allowResizing: false },
-                            { columnKey: "employeeName", allowResizing: false },
-                            { columnKey: "workplaceID", allowResizing: false },
-                            { columnKey: "workplaceCode", allowResizing: false },
+                            {columnKey: "employeeId", allowResizing: false},
+                            {columnKey: "individualPriceName", allowResizing: false},
+                            {columnKey: "workplaceID", allowResizing: false},
+                            {columnKey: "workplaceCode", allowResizing: false},
 
                         ],
                     }
                 ]
             });
         }
-
-
 
 
     }
@@ -266,7 +288,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     }
 
 
-    export interface IitemModel{
+    export interface IitemModel {
         employeeCode: string,
         employeeId: string,
         employeeName: string,
@@ -284,45 +306,86 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         workplaceId: string
         workplaceName: string;
 
-        constructor(param:IitemModel) {
-            this.employeeCode=param.employeeCode;
-            this.employeeId=param.employeeId;
-            this.employeeName=param.employeeName;
-            this.workplaceCode=param.workplaceCode;
-            this.workplaceId=param.workplaceId;
-            this.workplaceName=param.workplaceName;
+        constructor(param: IitemModel) {
+            this.employeeCode = param.employeeCode;
+            this.employeeId = param.employeeId;
+            this.employeeName = param.employeeName;
+            this.workplaceCode = param.workplaceCode;
+            this.workplaceId = param.workplaceId;
+            this.workplaceName = param.workplaceName;
         }
 
 
     }
 
-    export interface IAmount{
-        employeeId:string;
-        employeeName:string;
-        periodStart:string;
-        periodEnd:string;
+    export interface IAmount {
+        employeeId: string;
+        employeeName: string;
+        periodStart: string;
+        periodEnd: string;
     }
 
 
+    export class Amount {
+        employeeId: string;
+        employeeName: string;
+        period: string
+        AmountofMoney: KnockoutObservable<number>;
 
-    export class Amount{
-        employeeId:string;
-        employeeName:string;
-        period:string
-        AmountofMoney:KnockoutObservable<number>;
-
-        constructor(param:IAmount){
-            this.employeeId=param.employeeId;
-            this.employeeName=param.employeeName;
-            this.period= moment(param.periodStart).format("YYYY-MM") + "~" + moment(param.periodEnd).format("YYYY-MM");
-            this.AmountofMoney=ko.observable(null);
+        constructor(param: IAmount) {
+            this.employeeId = param.employeeId;
+            this.employeeName = param.employeeName;
+            this.period = moment(param.periodStart).format("YYYY-MM") + "~" + moment(param.periodEnd).format("YYYY-MM");
+            this.AmountofMoney = ko.observable(null);
         }
 
     }
 
+    export interface ISalIndAmountName {
+        individualPriceCode: string,
+        individualPriceName: string
+    }
 
 
+    export class SalIndAmountName {
+        individualPriceCode: string;
+        individualPriceName: string;
 
+        constructor(param: ISalIndAmountName) {
+            this.individualPriceCode = param.individualPriceCode;
+            this.individualPriceName = param.individualPriceName;
+        }
+    }
+
+
+    export enum PerValueCateCls {
+        SUPPLY = 0,
+        DEDUCTION = 1
+    }
+
+
+     export class ListOfItemsByItem{
+         personalValueCode:string;
+         personalAmounts:KnockoutObservableArray<PersonalAmount>;
+         constructor(personalValueCode:string,personalAmounts:Array<PersonalAmount>){
+             this.personalAmounts=ko.observableArray([]);
+             this.personalAmounts=ko.observableArray(personalAmounts);
+             this.personalValueCode=personalValueCode;
+         }
+     }
+
+    export class PersonalAmount{
+        historyID:string;
+        period:string;
+        amount:number;
+        businessName:string;
+        employeecode:string;
+
+        constructor(){
+            // this.historyID=
+        }
+
+    }
 
 
 }

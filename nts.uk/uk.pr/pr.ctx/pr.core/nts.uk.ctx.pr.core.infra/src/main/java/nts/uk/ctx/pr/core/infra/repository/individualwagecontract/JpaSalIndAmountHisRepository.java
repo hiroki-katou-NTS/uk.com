@@ -56,6 +56,11 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     }
 
     @Override
+    public Optional<SalIndAmountHis> getSalIndAmountHisByPerVal( String perValCode) {
+        return Optional.empty();
+    }
+
+    @Override
     public void add(SalIndAmountHis domain){
         this.commandProxy().insert(QpbmtSalIndAmountHis.toEntity(domain));
     }

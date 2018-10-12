@@ -14,7 +14,7 @@ public class PerProcesClsSetDto {
     /**
      * 処理区分NO
      */
-    private String processCateNo;
+    private int processCateNo;
 
     /**
      * ユーザID

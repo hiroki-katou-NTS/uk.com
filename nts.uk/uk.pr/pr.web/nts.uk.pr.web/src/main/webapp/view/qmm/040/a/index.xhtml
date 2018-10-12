@@ -52,20 +52,20 @@
 
                         <div style="width: 300px" data-bind="ntsSearchBox: {
                     searchMode: 'filter',
-                    targetKey: 'employeeCode',
+                    targetKey: 'individualPriceCode',
                     comId: 'A4_4',
-	                    items: employeeList,
-	                    selected: selectedEmployeeCode,
-	                    selectedKey: 'employeeCode',
-	                     fields: ['employeeName', 'employeeCode'],
+	                    items: salIndAmountNames,
+	                    selected: salIndAmountNamesSelectedCode,
+	                    selectedKey: 'individualPriceCode',
+	                     fields: ['individualPriceName', 'individualPriceCode'],
 	                      mode: 'igGrid'}" />
                         <table id="A4_4" data-bind="ntsGridList: {
                         height: 400,
-                        options: employeeList,
-                        optionsValue: 'employeeCode',
+                        options: salIndAmountNames,
+                        optionsValue: 'individualPriceCode',
                         columns: tilteTable,
                         multiple: false,
-                        value: selectedEmployeeCode
+                        value: salIndAmountNamesSelectedCode
                     }"></table>
 
 
@@ -93,9 +93,9 @@
                         <!--A5_3 コード・名称-->
                         <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM040_12')}</div>
                         <!--A5_4 コード-->
-                        <span class="label margin-left-item" data-bind="text: employeeCode()"></span>
+                        <span class="label margin-left-item" data-bind="text: individualPriceCode()"></span>
                         <!--A5_5 名称-->
-                        <span style="margin-left: 5px" class="label" data-bind="text: employeeName()"></span>
+                        <span style="margin-left: 5px" class="label" data-bind="text: individualPriceName()"></span>
                     </div>
 
                     <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">

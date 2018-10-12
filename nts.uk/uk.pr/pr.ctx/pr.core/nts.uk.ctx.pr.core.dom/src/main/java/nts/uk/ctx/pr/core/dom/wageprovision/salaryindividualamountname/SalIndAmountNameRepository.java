@@ -19,4 +19,7 @@ public interface SalIndAmountNameRepository
 
     void remove(String cid, String individualPriceCode);
 
+
+    public List<SalIndAmountName> getAllSalIndAmountName(String cid,int cateIndicator);
+
 }
