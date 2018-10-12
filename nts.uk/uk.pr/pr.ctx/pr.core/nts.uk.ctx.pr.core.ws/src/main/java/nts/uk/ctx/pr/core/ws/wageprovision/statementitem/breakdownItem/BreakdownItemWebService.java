@@ -23,42 +23,7 @@ import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.BreakdownItemSetD
  */
 @Path("ctx/pr/core/breakdownItem")
 @Produces("application/json")
-public class BreakdownItemWebService extends WebService {
-
-	@Inject
-	private BreakdownItemFinder breakdownItemFinder;
-
-	@Inject
-	private AddBreakdownItemSetCommandHandler addBreakdownItemSetCommandHandler;
-
-	@Inject
-	private UpdateBreakdownItemSetCommandHandler updateBreakdownItemSetCommandHandler;
-
-	@Inject
-	private RemoveBreakdownItemSetCommandHandler removeBreakdownItemSetCommandHandler;
-
-	@POST
-	@Path("getAllBreakdownItemSetById/{salaryItemId}")
-	public List<BreakdownItemSetDto> getAllBreakdownItemSetById(@PathParam("salaryItemId") String salaryItemId) {
-		return this.breakdownItemFinder.getBreakdownItemStBySalaryId(salaryItemId);
-	}
-
-	@POST
-	@Path("addBreakdownItemSet")
-	public void addAcceptCodeConvert(BreakdownItemSetCommand command) {
-		this.addBreakdownItemSetCommandHandler.handle(command);
-	}
-
-	@POST
-	@Path("updateBreakdownItemSet")
-	public void updateBreakdownItemSet(BreakdownItemSetCommand command) {
-		this.updateBreakdownItemSetCommandHandler.handle(command);
-	}
-
-	@POST
-	@Path("removeBreakdownItemSet")
-	public void removeBreakdownItemSet(BreakdownItemSetCommand command) {
-		this.removeBreakdownItemSetCommandHandler.handle(command);
-	}
+class AverageWageCalculationSetService extends WebService {
+	
 
 }
