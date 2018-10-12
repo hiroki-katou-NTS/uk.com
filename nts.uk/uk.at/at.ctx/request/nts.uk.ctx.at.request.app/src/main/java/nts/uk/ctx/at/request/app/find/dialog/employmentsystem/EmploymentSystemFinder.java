@@ -14,11 +14,17 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.SubstVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecruitmentHistoryOutPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
@@ -29,6 +35,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayO
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -52,6 +63,14 @@ public class EmploymentSystemFinder {
 	
 	@Inject
 	ShareEmploymentAdapter employeeAdaptor;
+	@Inject
+	private WorkplaceAdapter wpAdapter;
+	@Inject
+	private EmpSubstVacationRepository empSubrepo;
+	@Inject
+	private ComSubstVacationRepository comSubrepo;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 	
 	/** 
 	 * KDL005
@@ -95,12 +114,12 @@ public class EmploymentSystemFinder {
 		} else {
 			baseDate = GeneralDate.fromString(baseDate, "yyyyMMdd").toString();
 		}
-		
+		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		
 		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
-		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
+		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
 		
 		List<BreakDayOffHistoryDto> lstHistory = new ArrayList<>();
 		
@@ -141,7 +160,7 @@ public class EmploymentSystemFinder {
 				
 				Double useDays  = item.getUseDays() != null ? item.getUseDays() : 0.0;
 				
-				Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
+				Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyId, employeeId, inputDate);
 				if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
 					throw new BusinessException("khong co employeeCode");
 				}
@@ -154,7 +173,22 @@ public class EmploymentSystemFinder {
 			}
 		}
 		
-		DetailConfirmDto result = new DetailConfirmDto(closingPeriod, lstHistory, data.isPresent() ? data.get().getTotalInfor() : null);
+		DetailConfirmDto result = new DetailConfirmDto();
+		result.setClosingPeriod(closingPeriod);
+		result.setLstHistory(lstHistory);
+		result.setTotalInfor(data.isPresent() ? data.get().getTotalInfor() : null);
+		// imported（就業）「所属雇用履歴」を取得する RequestList31
+		Optional<EmploymentHistoryImported> empImpOpt = this.wpAdapter.getEmpHistBySid(companyId, employeeId,
+				inputDate);
+		// アルゴリズム「振休管理設定の取得」を実行する
+		SubstVacationSetting setting = getLeaveManagementSetting(companyId, employeeId, empImpOpt);
+		result.setSetting(SubstVacationSettingDto.fromDomain(setting));
+		// アルゴリズム「期間内の振出振休残数を取得する」を実行する
+		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId,
+				new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1)), GeneralDate.today(), false,
+				false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
+		result.setAbsRecMng(absRecMng);
 		
 		return result;
 	}
@@ -197,13 +231,13 @@ public class EmploymentSystemFinder {
 	 */
 	public NumberRestDaysDto getAcquisitionNumberRestDays(String employeeId, String baseDate) {
 		String companyId = AppContexts.user().companyId();
-		
+		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyyMMdd");
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		
 		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
 		Optional<AbsRecGenerationDigestionHis> data = absenceReruitmentManaQuery
-				.generationDigestionHis(companyId, employeeId, GeneralDate.fromString(baseDate, "yyyyMMdd"));
+				.generationDigestionHis(companyId, employeeId, inputDate);
 
 		List<RecAbsHistoryOutputDto> recAbsHistoryOutput = new ArrayList<>();
 		
@@ -249,8 +283,54 @@ public class EmploymentSystemFinder {
 			}
 		}
 
-		NumberRestDaysDto result = new NumberRestDaysDto(closingPeriod, recAbsHistoryOutput, data.isPresent() ? data.get().getAbsRemainInfor() : null);
+		NumberRestDaysDto result = new NumberRestDaysDto() ;
 		
+		result.setClosingPeriod(closingPeriod);
+		result.setRecAbsHistoryOutput(recAbsHistoryOutput);
+		result.setAbsRemainInfor(data.isPresent() ? data.get().getAbsRemainInfor() : null);
+		//imported（就業）「所属雇用履歴」を取得する RequestList31
+		Optional<EmploymentHistoryImported> empImpOpt =  this.wpAdapter.getEmpHistBySid(companyId, employeeId, inputDate);
+		// アルゴリズム「振休管理設定の取得」を実行する
+		SubstVacationSetting setting = getLeaveManagementSetting(companyId, employeeId, empImpOpt);
+		result.setSetting(SubstVacationSettingDto.fromDomain(setting));
+		//アルゴリズム「期間内の振出振休残数を取得する」を実行する
+		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId,
+																			employeeId,
+																			new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1)),
+																			GeneralDate.today(),
+																			false,
+																			false, 
+																			Collections.emptyList(),
+																			Collections.emptyList(),
+																			Collections.emptyList());
+		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
+		result.setAbsRecMng(absRecMng);
 		return result;
+	}
+
+	private SubstVacationSetting getLeaveManagementSetting(String companyId, String employeeId,
+			Optional<EmploymentHistoryImported> empImpOpt) {
+		SubstVacationSetting setting = null;
+		
+		if (empImpOpt.isPresent()) {
+			EmploymentHistoryImported empImp = empImpOpt.get();
+			String emptCD = empImp.getEmploymentCode();
+
+			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyId, emptCD);
+			if (empSubOpt.isPresent()) {
+				setting = empSubOpt.get().getSetting();
+			} else {
+				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyId);
+				if (comSubOpt.isPresent()) {
+					setting = comSubOpt.get().getSetting();
+				}
+			}
+			if (setting == null) {
+				throw new BusinessException("振休管理設定 == null");
+			}
+
+		}
+		return setting;
+
 	}
 }

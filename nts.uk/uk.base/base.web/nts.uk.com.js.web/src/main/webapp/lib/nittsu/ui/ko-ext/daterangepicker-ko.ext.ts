@@ -11,10 +11,10 @@ module nts.uk.ui.koExtentions {
          * Init. sssss 
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let data = valueAccessor();
-            let $container = $(element);
-                        
-            let construct: DateRangeHelper = new DateRangeHelper($container);
+            let data = valueAccessor(),
+                $container = $(element),
+                construct: DateRangeHelper = new DateRangeHelper($container),
+                value = ko.unwrap(data.value);
             
             construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
             
@@ -27,12 +27,17 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let data = valueAccessor();
-            let $container = $(element);
-            let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-            let required = ko.unwrap(data.required),
-                construct: DateRangeHelper = $container.data("construct");
+            let data = valueAccessor(),
+                $container = $(element),
+                enable = data.enable === undefined ? true : ko.unwrap(data.enable),
+                required = ko.unwrap(data.required),
+                construct: DateRangeHelper = $container.data("construct"),
+                value = ko.unwrap(data.value);
             
+            if(!nts.uk.util.isNullOrUndefined(value)){
+                construct.startValue(value.startDate);
+                construct.endValue(value.endDate);    
+            }
             ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function() {
                 return construct.createStartBinding(data);
             }, allBindingsAccessor, viewModel, bindingContext);
@@ -104,7 +109,7 @@ module nts.uk.ui.koExtentions {
             let self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name),
                 startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), 
                 showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious),
-                jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit),
+                jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit),
                 id = nts.uk.util.randomId(), required = ko.unwrap(data.required),
                 tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
             
