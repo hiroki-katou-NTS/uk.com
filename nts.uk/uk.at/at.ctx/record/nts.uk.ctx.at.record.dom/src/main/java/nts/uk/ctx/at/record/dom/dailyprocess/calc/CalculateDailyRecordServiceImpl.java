@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -156,6 +158,7 @@ import nts.uk.shr.com.primitive.WorkplaceCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordService{
 
 	/*勤務種類*/
@@ -346,6 +349,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param yesterDayInfo 前日の勤務情報
 	 */
 	private ManageReGetClass createRecord(IntegrationOfDaily integrationOfDaily,TimeSheetAtr timeSheetAtr, ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+		
+		//休暇加算時間設定
+		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
+		if(!holidayAddtionSetting.isPresent()) {
+			throw new BusinessException("Msg_1446");
+		}
+		HolidayAddtionSet holidayAddtionSet = holidayAddtionSetting.get();
 		
 		MasterShareContainer<String> shareContainer = companyCommonSetting.getShareContainer();
 		
@@ -543,12 +553,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<FlexCalcSetting> flexCalcSetting = Optional.empty();
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 			
-		//休暇加算時間設定
-		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
-		if(!holidayAddtionSetting.isPresent()) {
-			throw new BusinessException("Msg_1446");
-		}
-		HolidayAddtionSet holidayAddtionSet = holidayAddtionSetting.get();
+
 		
 		// 休暇クラス
 		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),

@@ -250,9 +250,9 @@ public class AppHolidayWorkDto {
 					? Collections.emptyList() 
 					: appHolidayWork.getHolidayWorkInputs().stream().map(x -> HolidayWorkInputDto.fromDomain(x)).collect(Collectors.toList()), 
 				0, 
-				new WorkTypeOvertime(appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), ""),
+				appHolidayWork.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appHolidayWork.getWorkTypeCode().v(), ""),
 				Collections.emptyList(),
-				new SiftType(appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(),""),
+				appHolidayWork.getWorkTimeCode() == null ? null : new SiftType(appHolidayWork.getWorkTimeCode().v(),""),
 				Collections.emptyList(),
 				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
 				appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(),  

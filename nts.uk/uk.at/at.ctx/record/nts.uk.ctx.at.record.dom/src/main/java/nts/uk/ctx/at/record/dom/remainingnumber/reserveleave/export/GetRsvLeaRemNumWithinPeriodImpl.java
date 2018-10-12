@@ -472,16 +472,12 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			dividedDayMap.get(nextDayOfDeadline).setLapsedAtr(true);
 		}
 		
-		// 「次回積立年休付与リスト」を「処理単位分割日リスト」に追加
+		// 「次回積立年休付与リスト」を全て「処理単位分割日リスト」に追加
 		for (val nextReserveLeaveGrant : nextReserveLeaveGrantList){
 			val grantDate = nextReserveLeaveGrant.getGrantYmd();
-			if (grantDate.beforeOrEquals(period.start().addDays(1))) continue;
+			if (grantDate.beforeOrEquals(period.start())) continue;
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 			
-			if (dividedDayMap.containsKey(grantDate)){
-				dividedDayMap.get(grantDate).setGrantAtr(true);
-				continue;
-			}
 			dividedDayMap.putIfAbsent(grantDate, new RsvLeaDividedDay(grantDate));
 			dividedDayMap.get(grantDate).setGrantAtr(true);
 			dividedDayMap.get(grantDate).setNextReserveLeaveGrant(Optional.of(NextReserveLeaveGrant.of(

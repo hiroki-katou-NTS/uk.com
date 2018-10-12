@@ -51,7 +51,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
-        
+
         firstLoad: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
@@ -76,6 +76,12 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
                 if (newWkTimeCD && nts.uk.ui._viewModel) {
                     $('#absTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTypeCD.subscribe((newWkTypeCd) => {
+                if (nts.uk.ui._viewModel) {
+                    $('.absWkingTime').ntsError("clear");
                 }
             });
         }

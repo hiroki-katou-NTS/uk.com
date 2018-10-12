@@ -264,8 +264,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 //				commandProxy().remove(getEntityManager().merge(c));
 //			});
 			commandProxy().updateAll(toUpdate);
-			commandProxy().updateAll(toRemove);
-			commandProxy().removeAll(toRemove);
+			toRemove.stream().forEach(c -> {
+				commandProxy().remove(getEntityManager().merge(c));
+			});
+//			commandProxy().updateAll(toRemove);
+//			commandProxy().removeAll(toRemove);
 			// commandProxy().removeAll(toRemove);
 		} else {
 			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());

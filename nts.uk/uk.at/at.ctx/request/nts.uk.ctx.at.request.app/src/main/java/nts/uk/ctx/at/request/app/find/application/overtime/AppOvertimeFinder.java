@@ -244,11 +244,11 @@ public class AppOvertimeFinder {
 			if (!CollectionUtil.isEmpty(breakTime.getLstTimezone())) {
 				startTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getStart().v()).collect(Collectors.toList());
 
-				startTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getEnd().v()).collect(Collectors.toList());
+				endTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getEnd().v()).collect(Collectors.toList());
 			}
 		}
 		
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRests, startTimeRests);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRests, endTimeRests);
 		Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		// 06-01_色表示チェック
@@ -331,7 +331,8 @@ public class AppOvertimeFinder {
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				overTimeDto.setDisplayCaculationTime(true);
 				// 07_勤務種類取得: lay loai di lam 
-				WorkType workType = workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).isPresent()?  workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).get() : null;
+				String workTypeCD = appOverTime.getWorkTypeCode() == null ? "" : appOverTime.getWorkTypeCode().v();
+				WorkType workType = workTypeRepository.findByPK(companyID, workTypeCD).orElse(null);
 				if(workType != null){
 					overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 				}
@@ -352,7 +353,8 @@ public class AppOvertimeFinder {
 				}
 				overTimeDto.setSiftTypes(siftCodes);
 				
-				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).isPresent() ? workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get() : null;
+				String workTimeCD = appOverTime.getSiftCode() == null ? "" : appOverTime.getSiftCode().v();
+				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, workTimeCD).orElse(null);
 				if(workTime != null){
 					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
 				}else{
@@ -711,7 +713,7 @@ public class AppOvertimeFinder {
 						
 						// 09_勤務種類就業時間帯の初期選択をセットする
 						WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
-								Strings.isBlank(appDate) ? appCommonSettingOutput.generalDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
+								Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
 								workTypeOvertimes, siftTypes);
 						result.setWorkType(workTypeAndSiftType.getWorkType());
 						result.setSiftType(workTypeAndSiftType.getSiftType());
@@ -810,7 +812,7 @@ public class AppOvertimeFinder {
 				
 				// 09_勤務種類就業時間帯の初期選択をセットする
 				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
-						Strings.isBlank(appDate) ? baseDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
+						Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
 				result.setWorkType(workTypeAndSiftType.getWorkType());
 				result.setSiftType(workTypeAndSiftType.getSiftType());
 				result.setTimezones(workTypeAndSiftType.getBreakTimes().stream().map(domain->{

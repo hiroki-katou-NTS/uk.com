@@ -14,12 +14,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
@@ -55,12 +50,13 @@ import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
+import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -85,9 +81,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
@@ -95,9 +88,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfS
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysOfSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -116,8 +107,12 @@ public class AggregateMonthlyRecordServiceProc {
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 月次処理用の暫定残数管理データを作成する */
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 残数作成元情報を作成する */
+	private RemainNumberCreateInformation remNumCreateInfo;
 	/** 指定期間の暫定残数管理データを作成する */
 	private InterimRemainOffPeriodCreateData periodCreateData;
+	/** 暫定年休管理データを作成する */
+	private CreateInterimAnnualMngData createInterimAnnual;
 	/** 期間中の年休積休残数を取得 */
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	/** 出勤率計算用日数を取得する */
@@ -179,7 +174,9 @@ public class AggregateMonthlyRecordServiceProc {
 	public AggregateMonthlyRecordServiceProc(
 			RepositoriesRequiredByMonthlyAggr repositories,
 			InterimRemainOffMonthProcess interimRemOffMonth,
+			RemainNumberCreateInformation remNumCreateInfo,
 			InterimRemainOffPeriodCreateData periodCreateData,
+			CreateInterimAnnualMngData createInterimAnnual,
 			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
 			AbsenceReruitmentMngInPeriodQuery absenceRecruitMng,
 			BreakDayOffMngInPeriodQuery breakDayoffMng,
@@ -191,7 +188,9 @@ public class AggregateMonthlyRecordServiceProc {
 
 		this.repositories = repositories;
 		this.interimRemOffMonth = interimRemOffMonth;
+		this.remNumCreateInfo = remNumCreateInfo;
 		this.periodCreateData = periodCreateData;
+		this.createInterimAnnual = createInterimAnnual;
 		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
 		this.absenceRecruitMng = absenceRecruitMng;
 		this.breakDayoffMng = breakDayoffMng;
@@ -953,15 +952,9 @@ public class AggregateMonthlyRecordServiceProc {
 		//		this.companyId, this.employeeId, period);
 		
 		// 残数作成元情報(実績)を作成する
-		List<RecordRemainCreateInfor> recordRemains = new ArrayList<>();
-		val workInfos = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap();
-		val attendanceTimeMap = this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap();
-		for (val workInfo : workInfos.values()){
-			GeneralDate ymd = workInfo.getYmd();
-			if (!period.contains(ymd)) continue;
-			if (!attendanceTimeMap.containsKey(ymd)) continue;
-			recordRemains.add(this.remainDataFromRecord(workInfo, attendanceTimeMap.get(ymd)));
-		}
+		List<RecordRemainCreateInfor> recordRemains = this.remNumCreateInfo.createRemainInfor(
+				new ArrayList<>(this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values()),
+				new ArrayList<>(this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().values()));
 		
 		// 指定期間の暫定残数管理データを作成する
 		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(
@@ -972,76 +965,6 @@ public class AggregateMonthlyRecordServiceProc {
 		this.dailyInterimRemainMngs = this.periodCreateData.createInterimRemainDataMng(inputPara, comHolidaySetting);
 		
 		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
-	}
-
-	/**
-	 * 残数作成元情報(実績)を作成する
-	 * @param workInfor 日別実績の勤務情報
-	 * @param attendanceInfor 日別実績の勤怠時間
-	 * @return 残数作成元情報(実績)
-	 * @see RemainCreateInforByRecordDataImpl
-	 */
-	private RecordRemainCreateInfor remainDataFromRecord(
-			WorkInfoOfDailyPerformance workInfor,
-			AttendanceTimeOfDailyPerformance attendanceInfor){
-		
-		RecordRemainCreateInfor outputInfor = new RecordRemainCreateInfor();
-		
-		// 残業振替時間の合計を算出する
-		Optional<OverTimeOfDaily> overTimeWork = attendanceInfor.getActualWorkingTimeOfDaily()
-				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
-		Integer overTimes = 0;
-		if(overTimeWork.isPresent()) {
-			List<OverTimeFrameTime> overTimeWorkFrameTime = overTimeWork.get().getOverTimeWorkFrameTime();
-			for (OverTimeFrameTime overTimeFrameTime : overTimeWorkFrameTime) {
-				overTimes += overTimeFrameTime.getTransferTime().getTime().v();
-			}
-		} 
-		outputInfor.setTransferOvertimesTotal(overTimes);
-		
-		// 休出振替時間の合計を算出する
-		Optional<HolidayWorkTimeOfDaily> workHolidayTime = attendanceInfor.getActualWorkingTimeOfDaily()
-				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
-		Integer transferTotal = 0;
-		if(workHolidayTime.isPresent()) {
-			List<HolidayWorkFrameTime> holidayWorkFrameTime = workHolidayTime.get().getHolidayWorkFrameTime();			
-			for (HolidayWorkFrameTime holidayWork : holidayWorkFrameTime) {
-				transferTotal += holidayWork.getTransferTime().isPresent() ? holidayWork.getTransferTime().get().getTime().v() : 0;
-			}
-		}
-		outputInfor.setTransferTotal(transferTotal);
-		
-		// 時間休暇使用情報を作成する
-		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
-		
-		outputInfor.setSid(workInfor.getEmployeeId());
-		outputInfor.setYmd(workInfor.getYmd());
-		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "000" 
-				: workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "000" 
-				: workInfor.getRecordInfo().getSiftCode().v()));
-		return outputInfor;
-	}
-	
-	/**
-	 * 時間休暇使用情報を作成する
-	 * @return 時間休暇使用情報
-	 */
-	private List<VacationTimeInfor> getLstVacationTimeInfor(){
-		List<VacationTimeInfor> lstOutput = new ArrayList<>();
-		VacationTimeInfor timeInfor = new VacationTimeInfor(0, AppTimeType.ATWORK, 0, 0);
-		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.ATWORK2, 0, 0);
-		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.OFFWORK, 0, 0);
-		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.OFFWORK2, 0, 0);
-		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.PRIVATE, 0, 0);
-		lstOutput.add(timeInfor);
-		timeInfor = new VacationTimeInfor(0, AppTimeType.UNION, 0, 0);
-		lstOutput.add(timeInfor);
-		return lstOutput;
 	}
 	
 	/**
@@ -1080,13 +1003,10 @@ public class AggregateMonthlyRecordServiceProc {
 		if (this.aggregateResult.getAttendanceTime().isPresent()){
 			
 			// 年休控除日数分の年休暫定残数データを作成する
-			val attendanceTime = this.aggregateResult.getAttendanceTime().get();
-			val flexTime = attendanceTime.getMonthlyCalculation().getFlexTime();
-			double deductDays = flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
-			if (deductDays > 0.0){
-				TmpAnnualLeaveMngWork compensData = TmpAnnualLeaveMngWork.of("compens",
-						period.end(), "000", new UseDay(deductDays), CreateAtr.FLEXCOMPEN, RemainAtr.SINGLE);
-				tmpAnnualLeaveMngs.add(compensData);
+			val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
+					this.aggregateResult.getAttendanceTime().get(), period.end());
+			if (compensFlexWorkOpt.isPresent()){
+				tmpAnnualLeaveMngs.add(compensFlexWorkOpt.get());
 				isOverWriteAnnual = true;
 			}
 		}

@@ -100,14 +100,23 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		};
 		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
 		/** end 並列処理、PARALLELSTREAM */
+//		
+//		if (stateHolder.isInterrupt()) {
+//			//ログを中断ステータスへ変更
+//			updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.INCOMPLETE);
+//			return ProcessState.INTERRUPTION;
+//		}
+		// 中断処理　（中断依頼が出されているかチェックする）
+		if (asyncContext.hasBeenRequestedToCancel()) {
+			asyncContext.finishedAsCancelled();
+			updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.INCOMPLETE);
+			return ProcessState.INTERRUPTION;
+		}
 		
-		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 完了処理
 		updatelog(empCalAndSumExecLogID,executionContent,ExecutionStatus.DONE);
-		//就業計算と集計ログ
-		//this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
-		//		ExecutionStatus.DONE.value);
+
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();

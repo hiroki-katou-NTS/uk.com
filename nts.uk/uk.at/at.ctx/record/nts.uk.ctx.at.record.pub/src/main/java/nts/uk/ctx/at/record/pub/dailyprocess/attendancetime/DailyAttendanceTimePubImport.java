@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -37,8 +38,8 @@ public class DailyAttendanceTimePubImport {
 	AttendanceTime workEndTime;
 	
 	//休憩開始時刻
-	List<AttendanceTime> breakStartTime;
+	List<AttendanceTime> breakStartTime = Collections.emptyList();
 	
 	//休憩終了時刻
-	List<AttendanceTime> breakEndTime;
+	List<AttendanceTime> breakEndTime = Collections.emptyList();
 }

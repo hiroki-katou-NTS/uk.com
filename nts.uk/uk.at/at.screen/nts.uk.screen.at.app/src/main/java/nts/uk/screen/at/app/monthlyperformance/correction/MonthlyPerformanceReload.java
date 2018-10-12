@@ -185,6 +185,7 @@ public class MonthlyPerformanceReload {
 				.getMonthlyItemControlByToUse(AppContexts.user().companyId(), AppContexts.user().roles().forAttendance(), itemIds, 1);
 		// 取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
 		// Filter param 「表示する項目一覧」 by domain 「権限別月次項目制御」
+		// set quyen chinh sua item theo user
 		screenDto.setAuthDto(monthlyItemAuthDto);
 		
 		// アルゴリズム「ロック状態をチェックする」を実行する - set lock
@@ -193,11 +194,13 @@ public class MonthlyPerformanceReload {
 				new DatePeriod(param.getActualTime().getStartDate(), param.getActualTime().getEndDate()), param.getInitScreenMode());		
 		param.setLstLockStatus(lstLockStatus);
 		
+		// lay lai lock status vi khong the gui tu client len duoc
 		screenDto.setParam(param);
 		screenDto.setLstEmployee(param.getLstEmployees());
 
 		// アルゴリズム「月別実績を表示する」を実行する(Hiển thị monthly actual result)
 		displayMonthlyResult(screenDto, param.getYearMonth(), param.getClosureId(), optApprovalProcessingUseSetting.get(), companyId);
+		// set trang thai disable theo quyen chinh sua item
 		screenDto.createAccessModifierCellState();
 		return screenDto;
 	}
@@ -293,7 +296,7 @@ public class MonthlyPerformanceReload {
 		List<ApproveRootStatusForEmpImport> approvalByListEmplAndListApprovalRecordDate = null;
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
 		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
-			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
+			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) { // lay trang thai approve mode normal hoac unlock
 				// *10 request list 533
 				List<EmpPerformMonthParamImport> params = new ArrayList<>();
 				for (MonthlyPerformanceEmployeeDto emp : screenDto.getLstEmployee()) {
@@ -302,7 +305,7 @@ public class MonthlyPerformanceReload {
 					params.add(p);
 				}
 				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(params);
-			} else if (param.getInitMenuMode() == 2) {
+			} else if (param.getInitMenuMode() == 2) { // lay trang thai approve mode approve
 				// *8 request list 534
 				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
 						AppContexts.user().employeeId(), new YearMonth(yearMonth), closureId,
@@ -351,7 +354,7 @@ public class MonthlyPerformanceReload {
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 
 			// set state approval
-			if (param.getInitMenuMode() == 2) {
+			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo ket qua no.534
 				if (approvalRootOfEmloyee != null && approvalRootOfEmloyee.getApprovalRootSituations() != null) {
 					for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee
 							.getApprovalRootSituations()) {
@@ -363,7 +366,7 @@ public class MonthlyPerformanceReload {
 						}
 					}
 				}
-			} else {
+			} else { // cac mode khac luon disable cot approve
 				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
 			}
 
@@ -395,7 +398,7 @@ public class MonthlyPerformanceReload {
 			// check true false approve
 			boolean approve = false;
 			if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
-				if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
+				if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) { //mode normal hoac unlock set checkbox theo ket qua no.533
 					// *10
 					if (approvalByListEmplAndListApprovalRecordDate != null) {
 						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
@@ -409,7 +412,7 @@ public class MonthlyPerformanceReload {
 							}
 						}
 					}
-				} else if (param.getInitMenuMode() == 2) {
+				} else if (param.getInitMenuMode() == 2) { //mode approve set checkbox theo ket qua no.533
 					// *8
 					if (approvalRootOfEmloyee != null && approvalRootOfEmloyee.getApprovalRootSituations() != null) {
 						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee
@@ -435,41 +438,40 @@ public class MonthlyPerformanceReload {
 				if (null != rowData.getItems()) {
 					rowData.getItems().forEach(item -> {
 						// Cell Data
+						// TODO item.getValueType().value
 						String attendanceAtrAsString = String.valueOf(item.getValueType());
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
 						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
 
-						if (pA.getAttendanceAtr() == 1) {
+						if (pA.getAttendanceAtr() == 1) { // neu item la thoi gian thi format lai theo dinh dang
 							int minute = 0;
 							if (item.getValue() != null) {
-								if (Integer.parseInt(item.getValue()) >= 0) {
-									minute = Integer.parseInt(item.getValue());
-								} else {
-									minute = (Integer.parseInt(item.getValue())
-											+ (1 + -Integer.parseInt(item.getValue()) / (24 * 60)) * (24 * 60));
-								}
+								minute = Integer.parseInt(item.getValue());
 							}
-							int hours = minute / 60;
+							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0 && hours == 0)
-									? "-" + String.format("%d:%02d", hours, minutes)
+							String valueConvert = (minute < 0) ? "-" + String.format("%d:%02d", hours, minutes)
 									: String.format("%d:%02d", hours, minutes);
 
 							mpdata.addCellData(
 									new MPCellDataDto(attendanceKey, valueConvert, attendanceAtrAsString, "label"));
-						}
-						mpdata.addCellData(new MPCellDataDto(attendanceKey,
-								item.getValue() != null ? item.getValue() : "", "String", ""));
-						if (!StringUtil.isNullOrEmpty(lockStatus, true)) {
-							cellStatus.add(STATE_DISABLE);
+						} else
+							mpdata.addCellData(new MPCellDataDto(attendanceKey,
+									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
+						if (param.getInitMenuMode() == 2) { // set state mode approve, bat cu lock nao ngoai lock monthly approve thi disable
+							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+								cellStatus.add(STATE_DISABLE);
+						} else { // set state cac mode khac, cu co lock la disable
+							if (!StringUtil.isNullOrEmpty(lockStatus, true))
+								cellStatus.add(STATE_DISABLE);
 						}
 						// Cell Data
 						lstCellState.add(new MPCellStateDto(employeeId, attendanceKey, cellStatus));
 
 						Optional<EditStateOfMonthlyPerformanceDto> dto = newList.stream()
 								.filter(item2 -> item2.getAttendanceItemId().equals(item.getItemId())).findFirst();
-						if (dto.isPresent()) {
+						if (dto.isPresent()) { // set mau sua tay cua cell
 							if (dto.get().getStateOfEdit() == 0) {
 								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_MYSELF);
 							} else {
@@ -526,6 +528,7 @@ public class MonthlyPerformanceReload {
 		}
 	}
 
+	// copy ben MonthlyPerformanceDisplay
 	public List<MonthlyPerformaceLockStatus> checkLockStatus(String cid, List<String> empIds, Integer processDateYM,
 			Integer closureId, DatePeriod closureTime, int intScreenMode) {
 		List<MonthlyPerformaceLockStatus> monthlyLockStatusLst = new ArrayList<MonthlyPerformaceLockStatus>();

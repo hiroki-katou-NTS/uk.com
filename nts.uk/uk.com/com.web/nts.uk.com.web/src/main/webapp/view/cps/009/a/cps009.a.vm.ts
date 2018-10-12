@@ -112,7 +112,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 i: number = 0,
                 currentCtg: any;
-            
             currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             
             if (currentCtg === undefined) { return; }
@@ -121,7 +120,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             
             block.invisible();
             
-            service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
+            service.getAllItemByCtgId(settingId, ctgId, error.hasError()== true? null : moment(self.baseDate()).format('YYYY-MM-DD')).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
                         primitiveConst(obj);
@@ -952,7 +951,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
 
-                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? text("CPS001_107") : objSel.optionText));
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? self.selectedCode() + " "+text("CPS001_107") : objSel.optionText));
 
                     break;
 
@@ -1211,6 +1210,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (self.ctgCode() == "CS00020" || self.ctgCode() == "CS00070") {
 
                 if (isKdl002) {
+                    setShared("KDL002_isShowNoSelectRow", true);
                     setShared("KDL002_Multiple", false, true);
                     setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                     setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
@@ -1224,7 +1224,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     });
                 } else {
-
                     if (['IS00130', 'IS00131', 'IS00139', 'IS00140'].indexOf(self.itemCode()) > - 1) {
                         let objShare: any = {};
                         if (isWorkType) {
@@ -1254,6 +1253,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     } else {
                         if (isWorkType) {
+                            setShared("KDL002_isShowNoSelectRow", true);
                             setShared("KDL002_Multiple", false, true);
                             setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                             setShared('kdl002isSelection', true, true);
@@ -1387,11 +1387,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
                 isMultiple: false,
                 selectedSystemType: 5,
-                isrestrictionOfReferenceRange: false
+                isrestrictionOfReferenceRange: false,
+                isShowBaseDate: false
             }, true);
 
             if(error.hasError()) return;
-            
+//            block.grayout();
             modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                 // Check is cancel.
                 if (getShared('CDL008Cancel')) {
@@ -1402,10 +1403,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 let output = getShared('outputCDL008');
                 if (output) {
                     let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
-                    self.selectionName(objSel == undefined ? " " : objSel.optionText);
+                    self.selectionName(objSel == undefined ? "" : objSel.optionText);
                     self.selectedCode(output);
                 }
+                
             });
+//            block.clear();
         }
 
 

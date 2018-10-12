@@ -229,7 +229,7 @@ public class ScheCreExeBasicScheduleHandler {
 		});
 
 		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
-				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
+				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null, startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
 		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
         
