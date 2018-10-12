@@ -75,7 +75,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER = 
 			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
@@ -83,7 +83,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String FIND_BY_EMP_DATE = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
