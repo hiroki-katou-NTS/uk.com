@@ -193,7 +193,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													 ) {
 		/*法定労働時間の算出*/
 		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet==null?Optional.empty():Optional.of(predetermineTimeSet), siftCode,conditionItem,Optional.of(holidayAddtionSet),predetermineTimeSetByPersonInfo);
-		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()
+		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime() && coreTimeSetting.isPresent() && coreTimeSetting.get().isUseTimeSheet()
 				?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
 				:commonSetting;
 		/*実働時間の算出*/

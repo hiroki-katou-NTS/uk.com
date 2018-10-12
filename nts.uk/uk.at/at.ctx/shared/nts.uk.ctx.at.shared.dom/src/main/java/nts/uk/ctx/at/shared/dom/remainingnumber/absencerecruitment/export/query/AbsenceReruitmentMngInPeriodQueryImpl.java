@@ -507,7 +507,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				
 				
 				if(recData.getExpirationDate().before(chkDate) //期限切れかをチェックする
-						|| (!recData.getStartDate().isPresent() || !recData.getStartDate().get().before(absDetailPara.getYmdData().getDayoffDate().get()))//使用可能かチェックする
+						|| (recData.getStartDate().isPresent() && !recData.getStartDate().get().beforeOrEquals(absDetailPara.getYmdData().getDayoffDate().get()))//使用可能かチェックする
 						|| recData.getUnUseDays() < 0 //ループ中の「振出未使用」．未使用日数をチェックする
 						) {
 					continue;
