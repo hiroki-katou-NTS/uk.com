@@ -14,10 +14,7 @@ import java.util.Optional;
 @Stateless
 public class PayrollUnitPriceHistoryService {
 
-    @Inject
-    private PayrollUnitPriceHistoryRepository mPayrollUnitPriceHistoryRepository;
-
-
+    
     @Inject
     private PayrollUnitPriceRepository mPayrollUnitPriceRepository;
 
@@ -39,9 +36,22 @@ public class PayrollUnitPriceHistoryService {
         return newHistID;
     }
 
+    public void addPayrollUnitPriceHistory(String code, String hisID, YearMonth start, YearMonth end, PayrollUnitPriceSetting payrollUnitPriceSetting ){
+        String cId = AppContexts.user().companyId();
+        YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(hisID, new YearMonthPeriod(start, end));
+        PayrollUnitPriceHistory itemtoBeAdded = new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code), cId, new ArrayList<>());
+        Optional<PayrollUnitPriceHistory> payrollUnitPriceHistory = payrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId, code);
+        if (payrollUnitPriceHistory.isPresent()) {
+            itemtoBeAdded = payrollUnitPriceHistory.get();
+        }
+        itemtoBeAdded.add(yearMonthItem);
+        payrollUnitPriceHistoryRepository.add(code, cId, yearMonthItem, payrollUnitPriceSetting);
+        this.updateItemBefore(itemtoBeAdded, yearMonthItem, cId, code);
+    }
+
     public void historyDeletionProcessing(String hisId, String cId,String code){
 
-        Optional<PayrollUnitPriceHistory> accInsurHis = mPayrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
+        Optional<PayrollUnitPriceHistory> accInsurHis = payrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
         if (!accInsurHis.isPresent()) {
             throw new RuntimeException("invalid employmentHistory");
         }
@@ -52,15 +62,15 @@ public class PayrollUnitPriceHistoryService {
             return;
         }
         accInsurHis.get().remove(itemToBeDelete.get());
-        mPayrollUnitPriceHistoryRepository.remove(cId,code, hisId);
+        payrollUnitPriceHistoryRepository.remove(cId,code, hisId);
         if (accInsurHis.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
             accInsurHis.get().exCorrectToRemove(lastestItem);
-            mPayrollUnitPriceHistoryRepository.update(code, cId, lastestItem);
+            payrollUnitPriceHistoryRepository.update(code, cId, lastestItem);
         }
     }
     public void historyCorrectionProcecessing(String cId, String hisId,String code, YearMonth start, YearMonth end){
-        Optional<PayrollUnitPriceHistory> accInsurHis = mPayrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
+        Optional<PayrollUnitPriceHistory> accInsurHis = payrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
         if (!accInsurHis.isPresent()) {
             return;
         }
@@ -79,10 +89,10 @@ public class PayrollUnitPriceHistoryService {
         if (!itemToBeUpdated.isPresent()){
             return;
         }
-        mPayrollUnitPriceHistoryRepository.update(code, cId, itemToBeUpdated.get());
+        payrollUnitPriceHistoryRepository.update(code, cId, itemToBeUpdated.get());
     }
     private void updatePayrollUnitPriceHis(YearMonthHistoryItem itemToBeUpdated, String cId,String code){
-        mPayrollUnitPriceHistoryRepository.update(code, cId, itemToBeUpdated);
+        payrollUnitPriceHistoryRepository.update(code, cId, itemToBeUpdated);
     }
 
 
