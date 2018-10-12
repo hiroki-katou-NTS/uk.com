@@ -17,9 +17,6 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
 
 
-
-
-
         constructor() {
             let self = this;
 
@@ -27,12 +24,12 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
             self.endDateString = ko.observable("");
             self.dateValue = ko.observable({});
 
-            self.startDateString.subscribe(function(value){
+            self.startDateString.subscribe(function (value) {
                 self.dateValue().startDate = value;
                 self.dateValue.valueHasMutated();
             });
 
-            self.endDateString.subscribe(function(value){
+            self.endDateString.subscribe(function (value) {
                 self.dateValue().endDate = value;
                 self.dateValue.valueHasMutated();
             });

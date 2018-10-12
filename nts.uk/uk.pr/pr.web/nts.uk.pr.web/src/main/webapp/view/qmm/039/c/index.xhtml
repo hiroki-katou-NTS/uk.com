@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 535,
-                height : 520
+                width: 535,
+                height: 300
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -22,31 +22,27 @@
     </ui:define>
     <ui:define name="content">
         <div id="contents-area">
+            <div class="label dialog-title">#{i18n.getText('QMM039_33')}</div>
             <div style="margin-top: 20px;">
                 <div style="width: 150px;"
-                     data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM008_205')}</div>
+                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM039_34')}</div>
                 <div style="width: 200px; display: inline-flex">
                     <div id="H1_6" tabindex="1"
                          data-bind="ntsRadioBoxGroup: {
 										value: modifyMethod,
-										enable: isLastestHistory,
+										enable: true,
 										options: modifyItem,
 										optionsValue: 'value',
 										optionsText: 'name'}"></div>
                 </div>
-                <div style="margin-top: 20px; margin-left: 150px;">
-                    <div style="width: 100px; display: inline-block"
-                         data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_196')}</div>
+                <div style="margin-top: 20px; margin-left: 150px;" class="flex valign-center">
+                    <div style="width: 50px;display: inline-block;margin-left: 35px;"
+                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>
                     <div id="H1_10" style="display: inline-block"
-                         data-bind="ntsDatePicker: {
-							name: '#[QMM008_197]',
-							value: startMonth,
-							dateFormat: 'yearmonth',
-							valueFormat: 'YYYYMM',
-							required: true,
-							enable: modifyMethod() == 1}"
-                         tabindex="2" />
-                    <div style= "width: 80px; display: inline-block" data-bind="text: displayEndMonth"></div>
+                         data-bind="ntsDateRangePicker: {
+							required: true, enable: true, name: '#[QMM039_23]',
+									showNextPrevious: false, value: dateValue, type: 'yearmonth',valueFormat: 'YYYYMM', enable: modifyMethod() == 1}"
+                         tabindex="2"/>
                 </div>
             </div>
         </div>
