@@ -16084,6 +16084,7 @@ var nts;
                                 //                    container.data("changed", true);
                                 value(result.parsedValue);
                                 value.valueWillMutate();
+                                value.valueHasMutated();
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -16222,6 +16223,11 @@ var nts;
                                 // Check equals to avoid multi datepicker with same value
                                 $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else if (dateFormatValue === "Invalid date") {
+                                $input.val(value());
+                                $label.text("");
+                                $input.trigger("validate");
                             }
                             else {
                                 $input.val("");
@@ -16781,7 +16787,9 @@ var nts;
                                     _self.updateMonthsView.call(_self);
                                 }, 0);
                             }
-                            self.$input.focus();
+                            if (!_.isNil(view) && view !== "") {
+                                self.$input.focus();
+                            }
                         });
                         return self;
                     };
@@ -29706,14 +29714,13 @@ var nts;
                             var resizeEvent = function () {
                                 $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
-                                    if (/Edge/.test(navigator.userAgent)) {
-                                        $headerScroll.width(11);
-                                        $bodyContainer.css("padding-right", "12px");
-                                    }
-                                    else {
-                                        $headerScroll.width(16);
-                                        $bodyContainer.css("padding-right", "17px");
-                                    }
+                                    //                        if(/Edge/.test(navigator.userAgent)){
+                                    //                            $headerScroll.width(11);
+                                    //                            $bodyContainer.css("padding-right", "12px");
+                                    //                        }else {
+                                    $headerScroll.width(16);
+                                    $bodyContainer.css("padding-right", "17px");
+                                    //                        }    
                                     $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });
                                 }
                                 else {
@@ -29852,18 +29859,18 @@ var nts;
                                         selected = oldSelected;
                                     }
                                     if ($grid.data('igGrid')) {
-                                        var $scrollContainer_1 = $grid.igGrid("scrollContainer");
-                                        _.defer(function () {
-                                            if ($scrollContainer_1.length > 0) {
-                                                var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                                                var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                                $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
-                                            }
-                                            else if (selected && oldSelected) {
-                                                var index = $(selected["element"]).attr("data-row-idx");
-                                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
-                                            }
-                                        });
+                                        var $scrollContainer = $grid.igGrid("scrollContainer");
+                                        //                            _.defer(() => {
+                                        if ($scrollContainer.length > 0) {
+                                            var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                            var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                            $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
+                                        }
+                                        else if (selected && oldSelected) {
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                        }
+                                        //                            });
                                     }
                                 });
                             }
@@ -36868,10 +36875,10 @@ var nts;
                                 }
                             }, rowsRendered: function (evt, ui) {
                                 $treegrid.data("autoExpanding", true);
-                                var holder = $treegrid.data("expand");
-                                _.forEach(holder.nodes, function (node) {
-                                    $treegrid.igTreeGrid("expandRow", node);
-                                });
+                                //                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
+                                //                    _.forEach(holder.nodes, function(node: any){
+                                //                        $treegrid.igTreeGrid("expandRow", node); 
+                                //                    });
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
