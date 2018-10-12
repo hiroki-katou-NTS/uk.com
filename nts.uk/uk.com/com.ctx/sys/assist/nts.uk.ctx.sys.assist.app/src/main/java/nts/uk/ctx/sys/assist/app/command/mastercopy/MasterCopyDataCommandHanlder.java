@@ -171,7 +171,6 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 			
 			if (AUTHORITY_CATEGORY == masterCopyData.getCategoryNo().v()) {
 				initValueAuth.initValueAuth(companyId);
-				System.out.println("Category 1");
 			}
 		}
 
