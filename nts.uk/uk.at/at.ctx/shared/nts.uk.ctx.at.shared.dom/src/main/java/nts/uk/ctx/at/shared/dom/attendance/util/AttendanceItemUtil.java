@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
@@ -395,6 +394,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					} else {
 						if(field.getType().isPrimitive() && itemValue.value() == null){
+							ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.valueOrDefault());
 							return;
 						}
 						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
