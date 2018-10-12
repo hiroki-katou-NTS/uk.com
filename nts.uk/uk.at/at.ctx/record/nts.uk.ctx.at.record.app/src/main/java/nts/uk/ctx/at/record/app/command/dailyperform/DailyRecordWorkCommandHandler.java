@@ -430,7 +430,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 							month.getClosureDate().getLastDayOfMonth()));
 		}
 //		});
-		updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
+		if(!lstMonthDomain.isEmpty() && month!= null && month.getDatePeriod() != null ) updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
 		
 		registerErrorWhenCalc(domainDailyNew);
 

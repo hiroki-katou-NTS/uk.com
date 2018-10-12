@@ -154,7 +154,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					breakMng, 
 					dayOffMng);
 			BreakDayOffRemainMngOfInPeriod remainMng = breakDayOffMngService.getBreakDayOffMngInPeriod(mngParam);
-			if(remainMng.getRemainDays() < 0) {
+			if(!remainMng.getLstError().isEmpty()) {
 				outputData.setChkSubHoliday(true);
 			}
 		}

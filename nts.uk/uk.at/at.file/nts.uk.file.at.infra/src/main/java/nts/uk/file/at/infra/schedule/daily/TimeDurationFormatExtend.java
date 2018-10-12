@@ -74,4 +74,8 @@ public class TimeDurationFormatExtend {
 	public int minute() {
 		return isNegative()? (60 + value % 60) % 60 : value % 60;
 	}
+	
+	public String getTimeText() {
+		return (isNegative()? "-" + (int) this.rawHour() : (int) this.rawHour()) + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+	}
 }

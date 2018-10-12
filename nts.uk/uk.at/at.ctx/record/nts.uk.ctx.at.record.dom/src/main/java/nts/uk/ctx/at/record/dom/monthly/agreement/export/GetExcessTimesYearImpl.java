@@ -46,7 +46,7 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 			}
 		}
 		
-		// 36協定釣果情報を返す
+		// 36協定超過情報を返す
 		return AgreementExcessInfo.of(excessCount, yearMonths);
 	}
 }

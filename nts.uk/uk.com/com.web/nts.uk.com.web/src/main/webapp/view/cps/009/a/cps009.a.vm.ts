@@ -112,7 +112,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 i: number = 0,
                 currentCtg: any;
-            
             currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             
             if (currentCtg === undefined) { return; }
@@ -121,7 +120,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             
             block.invisible();
             
-            service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
+            service.getAllItemByCtgId(settingId, ctgId, error.hasError()== true? null : moment(self.baseDate()).format('YYYY-MM-DD')).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
                         primitiveConst(obj);
@@ -1393,7 +1392,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }, true);
 
             if(error.hasError()) return;
-            
+//            block.grayout();
             modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                 // Check is cancel.
                 if (getShared('CDL008Cancel')) {
@@ -1407,7 +1406,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionName(objSel == undefined ? "" : objSel.optionText);
                     self.selectedCode(output);
                 }
+                
             });
+//            block.clear();
         }
 
 

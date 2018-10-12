@@ -86,7 +86,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		if(remainUnDigestedDays.getRemainDays() < 0) {
 			lstError.add(PauseError.PAUSEREMAINNUMBER);
 		}
-		if(!carryForwardDays.isErrors()) {
+		if(remainUnDigestedDays.isErrors()) {
 			lstError.add(PauseError.OFFSETNUMBER);
 		}
 		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
@@ -507,7 +507,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				
 				
 				if(recData.getExpirationDate().before(chkDate) //期限切れかをチェックする
-						|| (!recData.getStartDate().isPresent() || !recData.getStartDate().get().before(absDetailPara.getYmdData().getDayoffDate().get()))//使用可能かチェックする
+						|| (recData.getStartDate().isPresent() && !recData.getStartDate().get().beforeOrEquals(absDetailPara.getYmdData().getDayoffDate().get()))//使用可能かチェックする
 						|| recData.getUnUseDays() < 0 //ループ中の「振出未使用」．未使用日数をチェックする
 						) {
 					continue;
@@ -730,8 +730,12 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		}
 		List<AbsRecDetailPara> lstOutputOfAbs = new ArrayList<>();
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
-			InterimRemain remainData = lstInterimMngOfAbs.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
-					.collect(Collectors.toList()).get(0);
+			List<InterimRemain> lstRemainData = lstInterimMngOfAbs.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
+					.collect(Collectors.toList());
+			if(lstRemainData.isEmpty()) {
+				continue;
+			}
+			InterimRemain remainData = lstRemainData.get(0);
 			//アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
 			AbsRecDetailPara outputData = this.getNotTypeRec(interimAbsMng, remainData);
 			lstOutputOfAbs.add(outputData);
