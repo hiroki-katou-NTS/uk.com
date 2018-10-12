@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.infra.repository.application.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -256,13 +257,18 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(listReflecInfor.size()==0) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
-			.setParameter("companyID", companyID)
-			.setParameter("employeeID", employeeID)
-			.setParameter("startDate", startDate)
-			.setParameter("endDate", endDate)
-			.setParameter("listReflecInfor", listReflecInfor)
-			.getList(x -> x.toDomain());
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(listReflecInfor, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+					.setParameter("companyID", companyID)
+					.setParameter("employeeID", employeeID)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
+					.setParameter("listReflecInfor", subList)
+					.getList(x -> x.toDomain()));
+		});
+		resultList.sort(Comparator.comparing(Application_New::getPrePostAtr));
+		return resultList;
 	}
 	@Override
 	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
@@ -276,6 +282,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("companyID", companyID)
 				.getList(x -> x.toDomain()));
 		});
+		resultList.sort(Comparator.comparing(Application_New::getAppDate));
 		return resultList;
 	}
 	@Override
@@ -376,6 +383,11 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 								  .setParameter("appType", appType)
 								  .setParameter("lstRef", subList)
 								  .getList(c -> c.toDomain()));
+		});
+		resultList.sort((o1, o2) -> {
+			int tmp = o1.getAppType().value - o2.getAppType().value;
+			if (tmp != 0) return tmp;
+			return o2.getInputDate().compareTo(o1.getInputDate()); // DESC
 		});
 		return resultList;
 	}

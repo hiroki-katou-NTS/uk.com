@@ -79,16 +79,21 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<MonthlyDayoffRemainData> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
 				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
 						.setParameter("employeeIds", splitData)
 						.setParameter("yearMonths", lstYearMonth)
-						.getList(c -> c.toDomainMonthlyDayoffRemainData()));
+						.getList());
 			});
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainMonthlyDayoffRemainData()).collect(Collectors.toList());
 	}
 	
 	@Override

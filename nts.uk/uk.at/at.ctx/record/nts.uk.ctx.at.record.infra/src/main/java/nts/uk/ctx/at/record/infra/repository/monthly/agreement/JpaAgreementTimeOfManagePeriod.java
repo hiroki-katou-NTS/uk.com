@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.agreement;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,6 +85,7 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 					.setParameter("yearMonth", yearMonth.v())
 					.getList(c -> c.toDomain()));
 		});
+		results.sort(Comparator.comparing(AgreementTimeOfManagePeriod::getEmployeeId));
 		return results;
 	}
 	
@@ -102,6 +104,11 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 						.setParameter("yearMonths", lstYearMonth)
 						.getList(c -> c.toDomain()));
 			});
+		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getYearMonth().compareTo(o2.getYearMonth());
 		});
 		return results;
 	}

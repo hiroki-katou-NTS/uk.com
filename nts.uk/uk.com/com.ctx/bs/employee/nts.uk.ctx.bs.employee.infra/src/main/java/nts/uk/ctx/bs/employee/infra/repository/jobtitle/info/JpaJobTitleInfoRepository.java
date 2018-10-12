@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -417,6 +418,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtJobInfo::getJobCd));
 		
 		// Check exist
 		if (CollectionUtil.isEmpty(resultList)) {
@@ -482,6 +484,14 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 					criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 			
 			resultList.addAll( (List<Object[]>) em.createQuery(cq).getResultList() );
+		});
+		resultList.sort((o1, o2) -> {
+			// o1, o2 is Ojbect[]
+			// 	0: BsymtJobInfo
+			// 	1: BsymtJobHist
+			String jobCd1 = ((BsymtJobInfo) o1[0]).getJobCd();
+			String jobCd2 = ((BsymtJobInfo) o2[0]).getJobCd();
+			return jobCd1.compareTo(jobCd2);
 		});
 
 		Map<GeneralDate, List<JobTitleInfo>> mapItem = new HashMap<>();

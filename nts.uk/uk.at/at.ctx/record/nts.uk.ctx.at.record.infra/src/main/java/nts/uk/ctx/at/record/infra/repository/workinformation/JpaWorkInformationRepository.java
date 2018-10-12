@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -407,7 +408,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain()));
 		});
-		
+		resultList.sort(Comparator.comparing(WorkInfoOfDailyPerformance::getYmd));
 		return resultList;
 	}
 

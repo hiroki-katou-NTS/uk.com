@@ -501,6 +501,10 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		if (CollectionUtil.isEmpty(historyIds)) {
 			return Collections.emptyList();
 		}
+		
+		List<String> listHistories = new ArrayList<>(historyIds);
+		List<String> listWorkplaces = new ArrayList<>(workplaceIds);
+		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -511,17 +515,17 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		// select root
 		cq.select(root);
 		
-		boolean checkHistory = !CollectionUtil.isEmpty(historyIds);
-		boolean checkWorkplace = !CollectionUtil.isEmpty(workplaceIds);
+		boolean checkHistory = !CollectionUtil.isEmpty(listHistories);
+		boolean checkWorkplace = !CollectionUtil.isEmpty(listWorkplaces);
 		
 		// split will not work on empty collections
-		if (checkHistory) historyIds.add("");
-		if (checkWorkplace) workplaceIds.add("");
+		if (checkHistory) listHistories.add("");
+		if (checkWorkplace) listWorkplaces.add("");
 		
 		List<BsymtWkpConfigInfo> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
-			CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subWorkplaceIds -> {
+		CollectionUtil.split(listHistories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
+			CollectionUtil.split(listWorkplaces, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subWorkplaceIds -> {
 				// add where
 				List<Predicate> lstpredicateWhere = new ArrayList<>();
 				lstpredicateWhere.add(criteriaBuilder
@@ -541,7 +545,6 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 			});
 			
 		});
-		
 		
 		// check empty
 		if (resultList.isEmpty()) {

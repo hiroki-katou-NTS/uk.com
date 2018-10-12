@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
@@ -548,12 +552,15 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	public List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes) {
 		if(specialHolidayCodes.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(SELECT_SPHD_BY_LIST_CODE, Object[].class)
+		List<SpecialHoliday> resultList = new ArrayList<>();
+		CollectionUtil.split(specialHolidayCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_SPHD_BY_LIST_CODE, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("specialHolidayCodes", specialHolidayCodes)
-				.getList(c -> {
-					return createSphdDomainFromEntity(c);
-				});
+				.setParameter("specialHolidayCodes", subList)
+				.getList(c -> { return createSphdDomainFromEntity(c); }));
+		});
+		resultList.sort(Comparator.comparing(SpecialHoliday::getSpecialHolidayCode));
+		return resultList;
 	}
 
 	@Override
@@ -585,11 +592,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	@Override
 	public List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes) {
 		if(specialHolidayCodes.isEmpty()) return Collections.emptyList();
-		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_AND_NO, Object[].class)
+		List<SpecialHoliday> resultList = new ArrayList<>();
+		CollectionUtil.split(specialHolidayCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_SPHD_BY_COMPANY_AND_NO, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("specialHolidayCode", specialHolidayCodes)
-				.getList(c -> {
-					return createSphdDomainFromEntity(c);
-				});
+				.setParameter("specialHolidayCode", subList)
+				.getList(c -> { return createSphdDomainFromEntity(c); }));
+		});
+		return resultList;
 	}
 }

@@ -103,6 +103,11 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> c.toDomainMonCareHdRemain()));
 		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
 		return results;
 	}
 
@@ -119,6 +124,11 @@ public class JpaMonCareHdRemainRepository extends JpaRepository implements MonCa
 						.setParameter("yearMonths", lstYearMonth)
 						.getList(c -> c.toDomainMonCareHdRemain()));
 			});
+		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
 		});
 		return results;
 	}

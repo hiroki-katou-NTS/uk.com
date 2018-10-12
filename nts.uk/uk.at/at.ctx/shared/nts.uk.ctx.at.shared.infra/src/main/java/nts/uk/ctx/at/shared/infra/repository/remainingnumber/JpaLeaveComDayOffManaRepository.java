@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -104,13 +107,22 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	}
 	
 	public List<LeaveComDayOffManagement> getByListComLeaveID(List<String> listLeaveID) {
-		List<KrcmtLeaveDayOffMana> listLeaveD = this.queryProxy().query(QUERY_BY_LIST_LEAVEID,KrcmtLeaveDayOffMana.class)
-				.setParameter("leaveID", listLeaveID).getList();
+		List<KrcmtLeaveDayOffMana> listLeaveD = new ArrayList<>();
+		CollectionUtil.split(listLeaveID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listLeaveD.addAll(this.queryProxy()
+					.query(QUERY_BY_LIST_LEAVEID,KrcmtLeaveDayOffMana.class)
+					.setParameter("leaveID", subList)
+					.getList());
+		});
 		return listLeaveD.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 	public List<LeaveComDayOffManagement> getByListComId(List<String> listComID) {
-		List<KrcmtLeaveDayOffMana> listLeaveD = this.queryProxy().query(QUERY_BY_LIST_COMID,KrcmtLeaveDayOffMana.class)
-				.setParameter("comId", listComID).setParameter("comId", listComID).getList();
+		List<KrcmtLeaveDayOffMana> listLeaveD = new ArrayList<>();
+		CollectionUtil.split(listComID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listLeaveD.addAll(this.queryProxy().query(QUERY_BY_LIST_COMID,KrcmtLeaveDayOffMana.class)
+				.setParameter("comId", subList)
+				.getList());
+		});
 		return listLeaveD.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 

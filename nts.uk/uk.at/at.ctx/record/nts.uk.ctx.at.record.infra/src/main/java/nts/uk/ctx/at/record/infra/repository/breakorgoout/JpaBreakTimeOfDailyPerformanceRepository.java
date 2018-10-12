@@ -291,7 +291,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
 		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiBreakTimePK.ymd <= :end AND a.krcdtDaiBreakTimePK.ymd >= :start ");
-		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
+		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds)
 					.setParameter("end", ymd.end())
@@ -330,7 +330,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
 		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiBreakTimePK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
+		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))

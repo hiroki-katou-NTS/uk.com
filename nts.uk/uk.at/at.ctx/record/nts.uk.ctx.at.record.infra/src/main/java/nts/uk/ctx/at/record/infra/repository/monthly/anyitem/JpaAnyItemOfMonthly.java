@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.anyitem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -755,6 +756,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 
 			});
 		});
+		results.sort(Comparator.comparing(AnyItemOfMonthly::getEmployeeId));
 		return results;
 	}
 
@@ -783,18 +785,36 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 
-		List<AnyItemOfMonthly> results = new ArrayList<>();
+		// List<AnyItemOfMonthly> results = new ArrayList<>();
+		List<KrcdtMonAnyItemValueMerge> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
-				List<KrcdtMonAnyItemValueMerge> anyItemLst = this.queryProxy()
+				results.addAll(this.queryProxy()
 						.query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnyItemValueMerge.class)
-						.setParameter("employeeIds", splitData).setParameter("yearMonths", lstYearMonth).getList();
-				anyItemLst.stream().forEach(c -> {
-					results.addAll(c.toDomainAnyItemOfMonthly());
-				});
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
 			});
+			
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			KrcdtMonMergePk pk1 = o1.getKrcdtMonAnyItemValuePk();
+			KrcdtMonMergePk pk2 = o2.getKrcdtMonAnyItemValuePk();
+			
+			int tmp = pk1.getEmployeeId().compareTo(pk2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			tmp = pk1.getYearMonth() - pk2.getYearMonth();
+			if (tmp != 0) return tmp;
+			tmp = pk2.getIsLastDay() - pk1.getIsLastDay(); // DESC
+			if (tmp != 0) return tmp;
+			return pk1.getClosureDay() - pk2.getClosureDay();
+		});
+		
+		List<AnyItemOfMonthly> items = new ArrayList<>();
+		results.stream().forEach(c -> {
+			items.addAll(c.toDomainAnyItemOfMonthly());
+		});
+		return items;
 	}
 
 	/** 登録および更新 */

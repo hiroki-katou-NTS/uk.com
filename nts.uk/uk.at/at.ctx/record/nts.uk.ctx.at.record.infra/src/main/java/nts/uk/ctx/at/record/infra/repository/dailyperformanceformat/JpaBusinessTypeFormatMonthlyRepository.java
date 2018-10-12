@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -163,6 +164,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 					.setParameter("listBusinessTypeCode", subList)
 					.getList(f -> toDomain(f)));
 		});
+		resultList.sort(Comparator.comparing(BusinessTypeFormatMonthly::getOrder));
 		return resultList;
 	}
 

@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,6 +138,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 		
 		if (CollectionUtil.isEmpty(resultList)) {
 			return null;
@@ -323,6 +325,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 		
 		List<String> existWkpIds = resultList.stream()
 				.map(item -> item.getBsymtWorkplaceHistPK().getWkpid())
@@ -372,6 +375,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 
 		List<String> existWkpIds = resultList.stream()
 				.map(item -> item.getBsymtWorkplaceHistPK().getWkpid())

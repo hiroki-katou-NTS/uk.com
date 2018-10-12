@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -201,15 +202,25 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			return Collections.emptyList();
 		}
 		
-		List<StampItem> list = new ArrayList<>();
+		List<Object[]> list = new ArrayList<>();
 		CollectionUtil.split(stampCards, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			list.addAll(this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID_FIX, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.setParameter("lstCardNumber", subList)
-				.getList(c -> toDomain(c)));
+				.getList());
 		});
-		return list;
+		list.sort((o1, o2) -> {
+			KwkdtStamp stamp1 = (KwkdtStamp) o1[2]; // StampItem is at index 2, based on [toDomain] 
+			KwkdtStamp stamp2 = (KwkdtStamp) o2[2];
+			
+			int tmp = stamp1.kwkdtStampPK.cardNumber.compareTo(stamp2.kwkdtStampPK.cardNumber);
+			if (tmp != 0) return tmp;
+			tmp = stamp1.kwkdtStampPK.stampDate.compareTo(stamp2.kwkdtStampPK.stampDate);
+			if (tmp != 0) return tmp;
+			return stamp1.kwkdtStampPK.attendanceTime - stamp2.kwkdtStampPK.attendanceTime;
+		});
+		return list.stream().map(c -> toDomain(c)).collect(Collectors.toList());
 	}
 }

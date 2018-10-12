@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.multimonth;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -23,13 +25,14 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulMonAlarmsByListID(List<String> listErrorAlarmCheckID) {
-		List<MulMonthAlarmCheckCond> data = new ArrayList<>();
+		List<KrcmtMulMonAlarmCheck> data = new ArrayList<>();
 		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList ->{
 			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtMulMonAlarmCheck.class)
-					.setParameter("listErrorAlarmCheckID", subIdList).getList(c->c.toDomain())
+					.setParameter("listErrorAlarmCheckID", subIdList).getList()
 					);
 		});
-		return data;
+		data.sort(Comparator.comparing(KrcmtMulMonAlarmCheck::getInsDate));
+		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
 	
 	@Override
