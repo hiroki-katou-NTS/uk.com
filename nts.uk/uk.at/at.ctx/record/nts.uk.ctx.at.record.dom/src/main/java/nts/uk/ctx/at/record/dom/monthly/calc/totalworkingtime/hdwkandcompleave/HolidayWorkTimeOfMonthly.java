@@ -377,6 +377,19 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				
 			case STATUTORY_HOLIDAYS:
 				
+				// 取得した休出枠時間を集計休出時間に入れる
+				switch (holidayWorkAndTransferAtr){
+				case HOLIDAY_WORK:
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
+					break;
+				}
+				break;
+				
+			case NON_STATUTORY_HOLIDAYS:
+				
 				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
 				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
@@ -398,19 +411,6 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 						timeAfterCalc =
 								timeAfterCalc.minusMinutes(holidayWorkFrameTime.getTransferTime().get().getTime().v());
 					}
-					break;
-				}
-				break;
-				
-			case NON_STATUTORY_HOLIDAYS:
-				
-				// 取得した休出枠時間を集計休出時間に入れる
-				switch (holidayWorkAndTransferAtr){
-				case HOLIDAY_WORK:
-					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
-					break;
-				case TRANSFER:
-					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
 					break;
 				}
 				break;
