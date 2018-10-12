@@ -430,7 +430,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 							month.getClosureDate().getLastDayOfMonth()));
 		}
 //		});
-		updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
+		if(!lstMonthDomain.isEmpty() && month!= null && month.getDatePeriod() != null ) updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
 		
 		registerErrorWhenCalc(domainDailyNew);
 
@@ -537,7 +537,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		// remove data error
 		employeeErrorRepo.removeParam(param);
 		// insert error;
-		employeeErrorRepo.insert(errors.stream().filter(e -> e != null && e.getAttendanceItemList().get(0) != null)
+		employeeErrorRepo.insert(errors.stream().filter(e -> e != null)
 				.collect(Collectors.toList()));
 		// determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
 	}
@@ -549,7 +549,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	private void registerErrorWhenCalc(Collection<IntegrationOfDaily> domain) {
 		registerErrorWhenCalc(domain.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
-				.collect(Collectors.toList()).stream().filter(e -> e != null && e.getAttendanceItemList().get(0) != null)
+				.collect(Collectors.toList()).stream().filter(e -> e != null)
 				.collect(Collectors.toList()));
 	}
 

@@ -452,25 +452,25 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	
 	}
 
-	@Override
-	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
-			List<String> employmentCodes) {
-		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
+//	@Override
+//	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
+//			List<String> employmentCodes) {
+//		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
-					.setParameter("employmentCodes", subList)
-					.setParameter("startDate", dateperiod.start())
-					.setParameter("endDate", dateperiod.end())
-					.getList());
-		});
-		if(listHistItem.isEmpty()){
-			return Collections.emptyList();
-		}
-		return listHistItem.stream().map(e -> {
-			EmploymentHistoryItem domain = this.toDomain(e);
-			return domain;
-		}).collect(Collectors.toList());
-	}
+//			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
+//					.setParameter("employmentCodes", subList)
+//					.setParameter("startDate", dateperiod.start())
+//					.setParameter("endDate", dateperiod.end())
+//					.getList());
+//		});
+//		if(listHistItem.isEmpty()){
+//			return Collections.emptyList();
+//		}
+//		return listHistItem.stream().map(e -> {
+//			EmploymentHistoryItem domain = this.toDomain(e);
+//			return domain;
+//		}).collect(Collectors.toList());
+//	}
 
 	@Override
 	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {

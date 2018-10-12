@@ -98,7 +98,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		
 		// 36協定時間の取得
 		agreementTimeList = agreementTimeAdapter.getAgreementTime(companyId, Arrays.asList(employeeId),
-				closureSystem.getClosureMonth().getProcessingYm(), closureSystem.getClosureId());
+				closurePeriodOpt.get().getYearMonth(), closureSystem.getClosureId());
 		
 		if (agreementTimeList.isEmpty()) {
 			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));

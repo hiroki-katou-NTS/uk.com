@@ -116,8 +116,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(dailyAttenTimeParam.getWorkTimeCode());
 		dailyAttendanceTimePubImport.setWorkStartTime(dailyAttenTimeParam.getWorkStartTime());
 		dailyAttendanceTimePubImport.setWorkEndTime(dailyAttenTimeParam.getWorkEndTime());
-		dailyAttendanceTimePubImport.setBreakStartTime(Arrays.asList(dailyAttenTimeParam.getBreakStartTime()));
-		dailyAttendanceTimePubImport.setBreakEndTime(Arrays.asList(dailyAttenTimeParam.getBreakEndTime()));
+		dailyAttendanceTimePubImport.setBreakStartTime(dailyAttenTimeParam.getBreakStartTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakStartTime()));
+		dailyAttendanceTimePubImport.setBreakEndTime(dailyAttenTimeParam.getBreakEndTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakEndTime()));
 		DailyAttendanceTimePubLateLeaveExport result = dailyAttendanceTimePub.calcDailyLateLeave(dailyAttendanceTimePubImport);
 		return new DailyAttenTimeLateLeaveImport(result.getLateTime(), result.getLeaveEarlyTime());
 	}

@@ -101,6 +101,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     $('#absTimeBtn').ntsError("clear");
                 }
             });
+            
+            self.absWk().wkTypeCD.subscribe((newWkTypeCd)=>{
+                if (nts.uk.ui._viewModel) {
+                    $('.absWkingTime').ntsError("clear");
+                }
+            });
+            
             self.employeeList.subscribe((datas) => {
                 if (datas.length) {
                     self.totalEmployeeText(text('KAF011_79', [datas.length]));

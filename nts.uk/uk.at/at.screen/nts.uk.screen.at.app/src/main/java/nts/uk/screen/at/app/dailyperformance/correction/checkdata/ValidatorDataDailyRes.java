@@ -372,9 +372,13 @@ public class ValidatorDataDailyRes {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
 			for (EmployeeDailyPerError err : employeeError) {
 				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") && err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().equals(TextResource.localize("Msg_1298"))) {
-					divergenceErrors.addAll(err.getAttendanceItemList().stream()
-							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
-							.collect(Collectors.toList()));
+					if(err.getAttendanceItemList().isEmpty()){
+						divergenceErrors.add(new DPItemValue("", err.getEmployeeID(), err.getDate(), 0));
+					} else {
+						divergenceErrors.addAll(err.getAttendanceItemList().stream()
+								.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+								.collect(Collectors.toList()));
+					}
 				}
 			}
 		}

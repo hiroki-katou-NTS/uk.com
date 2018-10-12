@@ -5525,7 +5525,6 @@ var nts;
              */
             var block;
             (function (block) {
-                var counter = 0;
                 function invisible() {
                     var rect = calcRect();
                     $.blockUI({
@@ -5536,7 +5535,6 @@ var nts;
                             left: rect.left
                         }
                     });
-                    counter++;
                 }
                 block.invisible = invisible;
                 function grayout() {
@@ -5549,16 +5547,12 @@ var nts;
                             left: rect.left
                         }
                     });
-                    counter++;
                 }
                 block.grayout = grayout;
                 function clear() {
-                    counter--;
-                    if (counter <= 0) {
-                        $.unblockUI({
-                            fadeOut: 200
-                        });
-                    }
+                    $.unblockUI({
+                        fadeOut: 200
+                    });
                 }
                 block.clear = clear;
                 function calcRect() {
@@ -16090,6 +16084,7 @@ var nts;
                                 //                    container.data("changed", true);
                                 value(result.parsedValue);
                                 value.valueWillMutate();
+                                value.valueHasMutated();
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -16228,6 +16223,11 @@ var nts;
                                 // Check equals to avoid multi datepicker with same value
                                 $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else if (dateFormatValue === "Invalid date") {
+                                $input.val(value());
+                                $label.text("");
+                                $input.trigger("validate");
                             }
                             else {
                                 $input.val("");
@@ -16787,7 +16787,9 @@ var nts;
                                     _self.updateMonthsView.call(_self);
                                 }, 0);
                             }
-                            self.$input.focus();
+                            if (!_.isNil(view) && view !== "") {
+                                self.$input.focus();
+                            }
                         });
                         return self;
                     };
@@ -22099,7 +22101,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -22185,11 +22187,19 @@ var nts;
                                     _.forEach(s.columns, function (c) {
                                         var sc = _.find(self.columns, function (col) {
                                             if (col.group) {
+                                                _.forEach(col.group, function (gc) {
+                                                    if (_.isNil(_secColumn[gc.key])) {
+                                                        _secColumn[gc.key] = gc;
+                                                    }
+                                                });
                                                 return col.group[0].key === c;
                                             }
                                             else
                                                 return col.key === c;
                                         });
+                                        if (sc && !sc.group && !_secColumn[sc.key]) {
+                                            _secColumn[sc.key] = sc;
+                                        }
                                         if (sc)
                                             sheetCols.push(sc);
                                     });
@@ -22884,8 +22894,13 @@ var nts;
                             var td = document.createElement("td");
                             $.data(td, lo.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
-                            tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + ";"; // position: relative;";
+                            tdStyle += "; border-width: 1px; overflow: hidden; ";
+                            if (self.options.isHeader) {
+                                tdStyle += "word-break: break-all; vertical-align: top;";
+                            }
+                            else {
+                                tdStyle += "white-space: " + ws + ";"; // position: relative;";
+                            }
                             if (!self.visibleColumnsMap[key]) {
                                 tdStyle += "; display: none;";
                                 if (self.$container.classList.contains(FIXED))
@@ -22946,7 +22961,7 @@ var nts;
                             var self = this;
                             var $td = document.createElement("td");
                             $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                            var tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
+                            var tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
                             if (!_.isNil(cell.rowspan) && cell.rowspan > 1)
                                 $td.setAttribute("rowspan", cell.rowspan);
                             if (!_.isNil(cell.colspan) && cell.colspan > 1)
@@ -23107,7 +23122,7 @@ var nts;
                                 }
                                 $.data(td, v_1.DATA, data);
                             }
-                            else if (_zeroHidden && ti.isZero(data)) {
+                            else if (_zeroHidden && ti.isZero(data, key)) {
                                 td.textContent = "";
                                 dkn.textBox(key);
                                 var formatted = su.format(column, data);
@@ -23333,7 +23348,7 @@ var nts;
                                 }
                                 $.data(td, v_1.DATA, data);
                             }
-                            else if (_zeroHidden && ti.isZero(data)) {
+                            else if (_zeroHidden && ti.isZero(data, key)) {
                                 td.textContent = "";
                                 dkn.textBox(key);
                                 var formatted = su.format(column, data);
@@ -24919,6 +24934,7 @@ var nts;
                                     return;
                                 if (val) {
                                     check.setAttribute("checked", "checked");
+                                    check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
                                     evt.initEvent("change", false, true);
                                     evt.resetValue = reset;
@@ -24927,6 +24943,7 @@ var nts;
                                 }
                                 else if (!val) {
                                     check.removeAttribute("checked");
+                                    check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
                                     evt.initEvent("change", false, true);
                                     evt.resetValue = reset;
@@ -25134,6 +25151,7 @@ var nts;
                             _maxFreeWidth = null;
                             _columnsMap = {};
                             _dataSource = null;
+                            _secColumn = {};
                             _hasFixed = null;
                             _validators = {};
                             _mDesc = null;
@@ -25198,7 +25216,7 @@ var nts;
                                     if (control !== dkn.TEXTBOX)
                                         return;
                                     var content = $.data(c, v.DATA);
-                                    if (hide && ti.isZero(content)) {
+                                    if (hide && ti.isZero(content, key)) {
                                         c.textContent = "";
                                     }
                                     else if (!hide && c.textContent === "" && content !== "") {
@@ -25465,7 +25483,7 @@ var nts;
                                 var spl = {}, column_1 = _columnsMap[editor.columnKey];
                                 if (!column_1)
                                     return;
-                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : (_zeroHidden && ti.isZero(inputVal_1) ? "" : format(column_1[0], inputVal_1, spl));
+                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : (_zeroHidden && ti.isZero(inputVal_1, editor.columnKey) ? "" : format(column_1[0], inputVal_1, spl));
                                 $bCell.textContent = formatted;
                                 var disFormat_1 = inputVal_1 === "" || failed ? inputVal_1 : (spl.padded ? formatted : formatSave(column_1[0], inputVal_1));
                                 wedgeCell($grid, editor, disFormat_1);
@@ -25593,8 +25611,8 @@ var nts;
                                 }
                                 sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
-                            if (zeroHidden && ti.isZero(origVal)
-                                && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))) {
+                            if (zeroHidden && ti.isZero(origVal, coord.columnKey)
+                                && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))) {
                                 $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                                 if (!$cell) {
                                     if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
@@ -25701,8 +25719,8 @@ var nts;
                                     if (t.colour)
                                         t.c.classList.add(t.colour);
                                 }
-                                if (maf && maf.zeroHidden && ti.isZero(origVal)
-                                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))
+                                if (maf && maf.zeroHidden && ti.isZero(origVal, coord.columnKey)
+                                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))
                                     && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
                                     delete maf.dirties[id][coord.columnKey];
                                 }
@@ -25819,7 +25837,7 @@ var nts;
                                 sum[sht].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
                         }
-                        if (_zeroHidden && ti.isZero(origVal)
+                        if (_zeroHidden && ti.isZero(origVal, key)
                             && (value === "" || _.isNil(value) || parseFloat(value) === 0)) {
                             if (ohsht && !_.isNil(ohsht.dirties[id]) && !_.isNil(ohsht.dirties[id][key])) {
                                 delete dirties[id][coord.columnKey];
@@ -25977,6 +25995,12 @@ var nts;
                         }
                         else {
                             data = evt.clipboardData.getData("text/plain");
+                        }
+                        if (_mEditor && _mEditor.type === dkn.TEXTBOX) {
+                            var $editor = dkn.controlType[dkn.TEXTBOX].my;
+                            var $input = $editor.querySelector("input.medit");
+                            $input.value = data;
+                            return;
                         }
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
@@ -26231,7 +26255,7 @@ var nts;
                                 }
                             };
                             sess.o.forEach(function (c) {
-                                var failed, spl = {}, el = lch.cellAt(_$grid[0], c.coord.rowIdx, c.coord.columnKey), column = _columnsMap[c.coord.columnKey], formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value) ? "" : format(column[0], c.value, spl));
+                                var failed, spl = {}, el = lch.cellAt(_$grid[0], c.coord.rowIdx, c.coord.columnKey), column = _columnsMap[c.coord.columnKey], formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value, c.coord.columnKey) ? "" : format(column[0], c.value, spl));
                                 var validator = _validators[c.coord.columnKey];
                                 if (validator) {
                                     var result = validator.probe(c.value);
@@ -28311,7 +28335,10 @@ var nts;
                         return evt.keyCode === 88;
                     }
                     ti.isCutKey = isCutKey;
-                    function isZero(value) {
+                    function isZero(value, name) {
+                        var col = _secColumn[name];
+                        if (col && col.constraint && col.constraint.cDisplayType === "TimeWithDay")
+                            return false;
                         return value === "0" || value === "0:00" || value === "00:00";
                     }
                     ti.isZero = isZero;
@@ -29687,14 +29714,13 @@ var nts;
                             var resizeEvent = function () {
                                 $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
-                                    if (/Edge/.test(navigator.userAgent)) {
-                                        $headerScroll.width(11);
-                                        $bodyContainer.css("padding-right", "12px");
-                                    }
-                                    else {
-                                        $headerScroll.width(16);
-                                        $bodyContainer.css("padding-right", "17px");
-                                    }
+                                    //                        if(/Edge/.test(navigator.userAgent)){
+                                    //                            $headerScroll.width(11);
+                                    //                            $bodyContainer.css("padding-right", "12px");
+                                    //                        }else {
+                                    $headerScroll.width(16);
+                                    $bodyContainer.css("padding-right", "17px");
+                                    //                        }    
                                     $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });
                                 }
                                 else {
@@ -29833,18 +29859,18 @@ var nts;
                                         selected = oldSelected;
                                     }
                                     if ($grid.data('igGrid')) {
-                                        var $scrollContainer_1 = $grid.igGrid("scrollContainer");
-                                        _.defer(function () {
-                                            if ($scrollContainer_1.length > 0) {
-                                                var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                                                var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                                $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
-                                            }
-                                            else if (selected && oldSelected) {
-                                                var index = $(selected["element"]).attr("data-row-idx");
-                                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
-                                            }
-                                        });
+                                        var $scrollContainer = $grid.igGrid("scrollContainer");
+                                        //                            _.defer(() => {
+                                        if ($scrollContainer.length > 0) {
+                                            var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                            var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                            $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
+                                        }
+                                        else if (selected && oldSelected) {
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                        }
+                                        //                            });
                                     }
                                 });
                             }
@@ -36849,10 +36875,10 @@ var nts;
                                 }
                             }, rowsRendered: function (evt, ui) {
                                 $treegrid.data("autoExpanding", true);
-                                var holder = $treegrid.data("expand");
-                                _.forEach(holder.nodes, function (node) {
-                                    $treegrid.igTreeGrid("expandRow", node);
-                                });
+                                //                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
+                                //                    _.forEach(holder.nodes, function(node: any){
+                                //                        $treegrid.igTreeGrid("expandRow", node); 
+                                //                    });
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -37746,9 +37772,7 @@ var nts;
                      * Init. sssss
                      */
                     NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var construct = new DateRangeHelper($container);
+                        var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
                         return { 'controlsDescendantBindings': true };
@@ -37757,10 +37781,11 @@ var nts;
                      * Update
                      */
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = ko.unwrap(data.required), construct = $container.data("construct");
+                        var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
+                        if (!nts.uk.util.isNullOrUndefined(value)) {
+                            construct.startValue(value.startDate);
+                            construct.endValue(value.endDate);
+                        }
                         ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
                             return construct.createStartBinding(data);
                         }, allBindingsAccessor, viewModel, bindingContext);
@@ -37804,7 +37829,7 @@ var nts;
                         self.bindControl(parentBinding, allBindingsAccessor, viewModel, bindingContext);
                     };
                     DateRangeHelper.prototype.bindControl = function (data, allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
+                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
                         self.maxRange = maxRange;
                         self.$container.data("tabindex", tabIndex);
                         self.$container.removeAttr("tabindex");
@@ -38366,7 +38391,7 @@ var nts;
                         // Container
                         var $container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
-                        var $fileBrowserButton = $("<button class='browser-button'></button>");
+                        var $fileBrowserButton = $("<button class='browser-button' tabindex='1'></button>");
                         var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
                         var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly' tabindex='-1'/>");
                         var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
@@ -38377,7 +38402,7 @@ var nts;
                         $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
                         $fileuploadContainer.appendTo($container);
-                        $fileBrowserButton.attr("tabindex", -1).click(function () {
+                        $fileBrowserButton.click(function () {
                             $fileInput.click();
                         });
                         $fileInput.change(function () {
@@ -39056,37 +39081,33 @@ var nts;
                                 self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
-                            if (!self.validateFilesSize(this.files[0])) {
-                                // if file's size > maxSize, remove that file                    
+                            var firstImageFile = self.helper.getFirstFile(this.files);
+                            if (!self.validateFile(firstImageFile)) {
+                                // remove file
                                 $(this).val('');
                                 self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
-                            self.validateFile(this.files);
+                            self.assignImageToView(firstImageFile);
                         });
                     };
-                    ImageEditorConstructSite.prototype.validateFilesSize = function (file) {
+                    ImageEditorConstructSite.prototype.validateFile = function (firstImageFile) {
                         var self = this;
+                        if (nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(),
+                                messageParams: [self.helper.toStringExtension()] });
+                            return false;
+                        }
                         var MAX_SIZE = self.helper.maxSize;
                         // if MAX_SIZE == undefined => do not check size
                         if (!MAX_SIZE) {
                             return true;
                         }
-                        if (file.size > MAX_SIZE * 1048576) {
+                        if (firstImageFile.size > MAX_SIZE * 1048576) {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
                             return false;
                         }
                         return true;
-                    };
-                    ImageEditorConstructSite.prototype.validateFile = function (files) {
-                        var self = this;
-                        var firstImageFile = self.helper.getFirstFile(files);
-                        if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                            self.assignImageToView(firstImageFile);
-                        }
-                        else {
-                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });
-                        }
                     };
                     ImageEditorConstructSite.prototype.assignImageToView = function (file) {
                         var self = this;

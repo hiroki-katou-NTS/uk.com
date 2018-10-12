@@ -27,4 +27,6 @@ public class ComboBoxParam {
 	
 	private String workplaceId;
 	
+	private GeneralDate baseDate;
+	
 }

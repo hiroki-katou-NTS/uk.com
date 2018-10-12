@@ -209,8 +209,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				}
 			} else {
 				lstDate.add(appInfor.getAppDate());	
+			}	
+			if(outData.isRecordResult()) {
+				interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);	
 			}			
-			interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);
 			appRepo.updateWithVersion(appInfor);
 		}
 		
@@ -273,8 +275,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				}
 			});
 		}
-		HolidayWorktimeAppRequestPara appPara = new HolidayWorktimeAppRequestPara(holidayWorkData.getWorkTypeCode().v(), 
-				holidayWorkData.getWorkTimeCode().v(),
+		HolidayWorktimeAppRequestPara appPara = new HolidayWorktimeAppRequestPara(holidayWorkData.getWorkTypeCode() != null ? holidayWorkData.getWorkTypeCode().v() : null, 
+				holidayWorkData.getWorkTimeCode() != null ? holidayWorkData.getWorkTimeCode().v() : null,
 				mapOvertimeFrame,
 				holidayWorkData.getHolidayShiftNight(),
 				appInfor.getReflectionInformation().getStateReflectionReal(), 

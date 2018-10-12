@@ -62,11 +62,13 @@
 						<div data-bind="with: currentItem">
 							<div id="label-a3-001" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_10')}</div>
 							<div id="daterangepicker"
-								data-bind="ntsDateRangePicker: { 
-																	enable: true, 
-																	value: $parent.dateValue, 
-																	maxRange: 'none',
-																	required: true}" />
+								data-bind="ntsDateRangePicker: { startName: '#{i18n.getText('CMM044_10')}',
+																endName: '#{i18n.getText('CMM044_10')}',
+																name: '#{i18n.getText('CMM044_10')}',
+																enable: true, 
+																value: $parent.dateValue, 
+																maxRange: 'none',
+																required: true}" />
 
 						</div>
 						<div id="tab-panel"
