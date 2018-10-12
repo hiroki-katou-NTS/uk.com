@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     export class ScreenModel {
 
         newHisId: KnockoutObservable<string> = ko.observable('');
+        enableEditHistoryButton: KnockoutObservable<boolean> = ko.observable(true);
         enableNotes:KnockoutObservable<boolean> = ko.observable(true);
         enableSalary: KnockoutObservable<boolean> = ko.observable(true);
         enableButtonRegistration: KnockoutObservable<boolean> = ko.observable(true);
@@ -68,7 +69,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         payrollUnitPriceHistory:  KnockoutObservableArray<PayrollUnitPriceHistory> = ko.observableArray([]);
         constructor() {
             var self = this;
-
             self.createGridList().done(()=>{
                 if(self.mode() === null && self.dataSource().length > 0){
                     self.singleSelectedCode(self.dataSource()[0].childs[0].code);
@@ -76,6 +76,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             });
 
             self.singleSelectedCode.subscribe((o)=>{
+                nts.uk.ui.errors.clearAll();
                 let fistHistory = self.payrollUnitPriceHistory()[0];
                 let params = o.split('__');
                 let code = params[0];
@@ -93,7 +94,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     self.enableFixedWageClassList(false);
                     self.enableNotes(false);
                     self.enableButtonRegistration(false);
-
+                    self.enableEditHistoryButton(false);
 
                     self.code(null);
                     self.name(null);
@@ -128,15 +129,18 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     self.enableFixedWageClassList(true);
                     self.enableNotes(true);
                     self.enableButtonRegistration(true);
+                    self.enableEditHistoryButton(true);
+
                     service.getPayrollUnitPriceById(code).done((data) => {
                         self.code(data.code);
                         self.name(data.name);
                     });
                     if(self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY && self.mode() === MODE.ADD_HISTORY || self.mode() === MODE.UPDATE) {
                         service.getPayrollUnitPriceHisById(code, hisId).done((data) => {
-                            self.yearMonth(data ? data.startYearMonth : null);
+                            if(self.mode() === MODE.UPDATE){
+                                self.yearMonth(data ? data.startYearMonth : null);
+                            }
                             self.endYearMonth(data ? data.endYearMonth : null);
-
                             //
                             self.selectedId(data.targetClass);
                             self.amountOfMoney(data.amountOfMoney);
@@ -152,7 +156,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
                         //
                         self.selectedId(0);
-                        self.amountOfMoney(0);
+                        self.amountOfMoney(null);
                         self.selectedMonthlySalary(0);
                         self.selectedADayPayee(0);
                         self.selectedHourlyPay(0)
@@ -301,6 +305,15 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 isFirst: index === 0 ? true : false,
             });
             modal("/view/qmm/007/c/index.xhtml").onClosed(function () {
+                let param = getShared('QMM007_C_PARAMS_OUTPUT');
+                if(param){
+                    self.createGridList().done(()=>{
+                        if(param.methodEditing === EDIT_METHOD.DELETE){
+                            self.singleSelectedCode(self.dataSource()[0].childs[0].code);
+                        }
+
+                    });
+                }
 
             });
 
@@ -372,6 +385,11 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         }
         register(){
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $("input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             block.invisible();
             let data: any = {
                 payrollUnitPriceCommand: new PayrollUnitPrice(
@@ -570,6 +588,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         CREATE_NEW = 1,
         EXTENDS_LAST_HISTORY = 0
     }
+
+    export enum EDIT_METHOD {
+        DELETE = 0,
+        UPDATE = 1
+    }
+
     export function listSetting(): Array<model.ItemModel> {
         return [
             new model.ItemModel('0', getText('QMM007_20')),

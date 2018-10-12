@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog  = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import model = qmm007.share.model;
     export class ScreenModel {
@@ -39,6 +40,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                 dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
                     service.submitPayrollUnitPriceHis(data).done((data) => {
                         dialog.info({ messageId: "Msg_16" }).then(function () {
+                            setShared('QMM007_C_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing(),
+                            });
                             self.cancel();
                         });
                     }).fail(function (res: any) {

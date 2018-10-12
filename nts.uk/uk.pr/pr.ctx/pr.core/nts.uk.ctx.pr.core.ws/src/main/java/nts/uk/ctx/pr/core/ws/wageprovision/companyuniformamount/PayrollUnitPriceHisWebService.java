@@ -20,7 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Path("core/wageprovision/companyuniformamount")
