@@ -21,7 +21,6 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
         constructor() {
             block.invisible()
             let self = this;
-            self.monthlyCalendar(getText('QMM007_12', []));
             let params = getShared('QMM007_PARAMS_TO_SCREEN_B');
             self.startYearMonth.subscribe((data) => {
                 self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString().split(' ').join('')]));
