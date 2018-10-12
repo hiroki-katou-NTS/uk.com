@@ -5517,7 +5517,6 @@ var nts;
              */
             var block;
             (function (block) {
-                var counter = 0;
                 function invisible() {
                     var rect = calcRect();
                     $.blockUI({
@@ -5528,7 +5527,6 @@ var nts;
                             left: rect.left
                         }
                     });
-                    counter++;
                 }
                 block.invisible = invisible;
                 function grayout() {
@@ -5541,16 +5539,12 @@ var nts;
                             left: rect.left
                         }
                     });
-                    counter++;
                 }
                 block.grayout = grayout;
                 function clear() {
-                    counter--;
-                    if (counter <= 0) {
-                        $.unblockUI({
-                            fadeOut: 200
-                        });
-                    }
+                    $.unblockUI({
+                        fadeOut: 200
+                    });
                 }
                 block.clear = clear;
                 function calcRect() {
@@ -37731,9 +37725,7 @@ var nts;
                      * Init. sssss
                      */
                     NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var construct = new DateRangeHelper($container);
+                        var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
                         return { 'controlsDescendantBindings': true };
@@ -37742,10 +37734,11 @@ var nts;
                      * Update
                      */
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = ko.unwrap(data.required), construct = $container.data("construct");
+                        var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
+                        if (!nts.uk.util.isNullOrUndefined(value)) {
+                            construct.startValue(value.startDate);
+                            construct.endValue(value.endDate);
+                        }
                         ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
                             return construct.createStartBinding(data);
                         }, allBindingsAccessor, viewModel, bindingContext);
@@ -37789,7 +37782,7 @@ var nts;
                         self.bindControl(parentBinding, allBindingsAccessor, viewModel, bindingContext);
                     };
                     DateRangeHelper.prototype.bindControl = function (data, allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
+                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
                         self.maxRange = maxRange;
                         self.$container.data("tabindex", tabIndex);
                         self.$container.removeAttr("tabindex");
@@ -38351,7 +38344,7 @@ var nts;
                         // Container
                         var $container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
-                        var $fileBrowserButton = $("<button class='browser-button'></button>");
+                        var $fileBrowserButton = $("<button class='browser-button' tabindex='1'></button>");
                         var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
                         var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly' tabindex='-1'/>");
                         var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
@@ -38362,7 +38355,7 @@ var nts;
                         $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
                         $fileuploadContainer.appendTo($container);
-                        $fileBrowserButton.attr("tabindex", -1).click(function () {
+                        $fileBrowserButton.click(function () {
                             $fileInput.click();
                         });
                         $fileInput.change(function () {
@@ -39041,37 +39034,33 @@ var nts;
                                 self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
-                            if (!self.validateFilesSize(this.files[0])) {
-                                // if file's size > maxSize, remove that file                    
+                            var firstImageFile = self.helper.getFirstFile(this.files);
+                            if (!self.validateFile(firstImageFile)) {
+                                // remove file
                                 $(this).val('');
                                 self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
-                            self.validateFile(this.files);
+                            self.assignImageToView(firstImageFile);
                         });
                     };
-                    ImageEditorConstructSite.prototype.validateFilesSize = function (file) {
+                    ImageEditorConstructSite.prototype.validateFile = function (firstImageFile) {
                         var self = this;
+                        if (nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(),
+                                messageParams: [self.helper.toStringExtension()] });
+                            return false;
+                        }
                         var MAX_SIZE = self.helper.maxSize;
                         // if MAX_SIZE == undefined => do not check size
                         if (!MAX_SIZE) {
                             return true;
                         }
-                        if (file.size > MAX_SIZE * 1048576) {
+                        if (firstImageFile.size > MAX_SIZE * 1048576) {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
                             return false;
                         }
                         return true;
-                    };
-                    ImageEditorConstructSite.prototype.validateFile = function (files) {
-                        var self = this;
-                        var firstImageFile = self.helper.getFirstFile(files);
-                        if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                            self.assignImageToView(firstImageFile);
-                        }
-                        else {
-                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });
-                        }
                     };
                     ImageEditorConstructSite.prototype.assignImageToView = function (file) {
                         var self = this;
