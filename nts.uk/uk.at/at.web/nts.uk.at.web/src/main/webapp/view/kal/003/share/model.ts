@@ -1659,9 +1659,9 @@ module nts.uk.at.view.kal003.share.model {
                 // Compare with a range
                 let rawStartValue = self.compareStartValue();
                 let rawEndValue = self.compareEndValue();
-                if(modeX == 0){ //  daily
-                    let textDisplayLeftCompare = (conditionAtr !== 1 && conditionAtr!==2) ? rawStartValue : nts.uk.time.parseTime(rawStartValue, true).format();
-                    let textDisplayRightCompare = (conditionAtr !== 1 && conditionAtr!==2) ? rawEndValue : nts.uk.time.parseTime(rawEndValue, true).format();
+                if(modeX == 1){ //  daily
+                    let textDisplayLeftCompare = (conditionAtr !== 1) ? rawStartValue : nts.uk.time.parseTime(rawStartValue, true).format();
+                    let textDisplayRightCompare = (conditionAtr !== 1) ? rawEndValue : nts.uk.time.parseTime(rawEndValue, true).format();
                     if(self.compareOperator() > 7){
                         self.displayLeftCompare(textDisplayLeftCompare + ", " + textDisplayRightCompare);
                         self.displayRightCompare("");    
@@ -1670,8 +1670,8 @@ module nts.uk.at.view.kal003.share.model {
                         self.displayRightCompare(textDisplayRightCompare);    
                     }
                 }else{ // month
-                    let textDisplayLeftCompare = (conditionAtr !== 1) ? rawStartValue : nts.uk.time.parseTime(rawStartValue, true).format();
-                    let textDisplayRightCompare = (conditionAtr !== 1) ? rawEndValue : nts.uk.time.parseTime(rawEndValue, true).format();
+                    let textDisplayLeftCompare = (conditionAtr !== 1 && conditionAtr!==2) ? rawStartValue : nts.uk.time.parseTime(rawStartValue, true).format();
+                    let textDisplayRightCompare = (conditionAtr !== 1 && conditionAtr!==2) ? rawEndValue : nts.uk.time.parseTime(rawEndValue, true).format();
                     if(self.compareOperator() > 7){
                         self.displayLeftCompare(textDisplayLeftCompare + ", " + textDisplayRightCompare);
                         self.displayRightCompare("");    
@@ -1685,11 +1685,11 @@ module nts.uk.at.view.kal003.share.model {
                 if (self.conditionType() === 0) {
                     // If is compare with a fixed value
                     let rawValue = self.compareStartValue();
-                    if(modeX==0){
-                        let textDisplayLeftCompare = ( conditionAtr !== 1 && conditionAtr!==2) ? rawValue : nts.uk.time.parseTime(rawValue, true).format();
+                    if(modeX==1){
+                        let textDisplayLeftCompare = ( conditionAtr !== 1) ? rawValue : nts.uk.time.parseTime(rawValue, true).format();
                         self.displayLeftCompare(textDisplayLeftCompare);
                     }else{
-                        let textDisplayLeftCompare = ( conditionAtr !== 1) ? rawValue : nts.uk.time.parseTime(rawValue, true).format();
+                       let textDisplayLeftCompare = ( conditionAtr !== 1 && conditionAtr!==2) ? rawValue : nts.uk.time.parseTime(rawValue, true).format();
                         self.displayLeftCompare(textDisplayLeftCompare);
                     }
                     self.displayRightCompare("");
