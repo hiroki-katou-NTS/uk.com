@@ -178,7 +178,11 @@ module nts.uk.ui {
                     //                    var widget= this.$dialog.dialog("widget");
                     //                    widget.draggable("option","containment",false);
                     
-                    $(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
+					let autoResize = this.globalContext.autoResize == undefined ? true : this.globalContext.autoResize;
+					if (autoResize) {
+						$(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
+					}
+                    
                     
                 });
 
