@@ -301,6 +301,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
+                                self.currentCategory().itemList()[i].selectedRuleCode.valueHasMutated();
                             }
                         });
                     }
