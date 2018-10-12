@@ -37,6 +37,11 @@ public class AttendanceItemIdContainer implements ItemConst {
 		ENUM_CONTAINER.put(E_UNION, 1);
 		ENUM_CONTAINER.put(E_CHARGE, 2);
 		ENUM_CONTAINER.put(E_OFFICAL, 3);
+		ENUM_CONTAINER.put(E_OFF_BEFORE_BIRTH, 0);
+		ENUM_CONTAINER.put(E_OFF_AFTER_BIRTH, 1);
+		ENUM_CONTAINER.put(E_OFF_CHILD_CARE, 2);
+		ENUM_CONTAINER.put(E_OFF_CARE, 3);
+		ENUM_CONTAINER.put(E_OFF_INJURY, 4);
 
 		DAY_ITEM_ID_CONTAINER = new HashMap<>();
 		MONTHLY_ITEM_ID_CONTAINER = new HashMap<>();
@@ -59,9 +64,9 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(796, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGON, NUMBER_2)));
 		temp.put(797, join(DAILY_PC_LOG_INFO_NAME, INFO, joinNS(LOGOFF, NUMBER_2)));
 
-		temp.put(756, "日別実績の遅刻時間．インターバル免除時間.インターバル時間");
-		temp.put(757, "日別実績の遅刻時間．インターバル免除時間.免除時間");
-		temp.put(758, "日別実績の遅刻時間．インターバル免除時間.免除控除時間");
+//		temp.put(756, "日別実績の遅刻時間．インターバル免除時間.インターバル時間");
+//		temp.put(757, "日別実績の遅刻時間．インターバル免除時間.免除時間");
+//		temp.put(758, "日別実績の遅刻時間．インターバル免除時間.免除控除時間");
 
 		temp.put(623, join(DAILY_AFFILIATION_INFO_NAME, WORKPLACE));
 		temp.put(624, join(DAILY_AFFILIATION_INFO_NAME, CLASSIFICATION));
