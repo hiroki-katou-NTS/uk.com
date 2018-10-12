@@ -478,7 +478,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		if(downer == 0 || upper == 0){
 			return 0;
 		}
-		return BigDecimal.valueOf(upper).multiply(V100).divide(BigDecimal.valueOf(downer), RoundingMode.HALF_UP).round(new MathContext(1, RoundingMode.HALF_UP)).doubleValue();
+		return BigDecimal.valueOf(upper).divide(BigDecimal.valueOf(downer), new MathContext(5, RoundingMode.HALF_UP)).multiply(V100).setScale(0, RoundingMode.HALF_UP).doubleValue();
 	}
 	
 	private boolean isWeekday(WorkTypeUnit atr, WorkTypeClassification oneDay, WorkTypeClassification morning,

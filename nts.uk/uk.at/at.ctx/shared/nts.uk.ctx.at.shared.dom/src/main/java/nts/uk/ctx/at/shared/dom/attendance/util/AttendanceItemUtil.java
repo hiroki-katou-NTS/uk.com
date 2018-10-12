@@ -1010,7 +1010,8 @@ public class AttendanceItemUtil implements ItemConst {
 		}
 		
 		public <T> T getAndCache(String key, Supplier<T> value) {
-			return cache.getShared(key, value);
+//			return cache.getShared(key, value);
+			return value.get();
 		}
 	}
 

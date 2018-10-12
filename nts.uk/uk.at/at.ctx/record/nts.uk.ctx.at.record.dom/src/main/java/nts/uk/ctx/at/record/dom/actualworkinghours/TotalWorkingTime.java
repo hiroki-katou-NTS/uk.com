@@ -311,12 +311,14 @@ public class TotalWorkingTime {
 				
 		}
 		if(recordClass.getIntegrationOfDaily().getShortTime().isPresent()) {
-			val firstTimeSheet = recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
+			val firstTimeSheet =  recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
 			if(firstTimeSheet.isPresent()) {
 				careAtr = firstTimeSheet.get().getChildCareAttr();
 			}
 		}
-		
+		else if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()) {
+			careAtr = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
+		}
 	
 		
 		/*日別実績の所定内時間(就業時間)*/
