@@ -102,6 +102,7 @@ module nts.uk.ui {
                     
                     let width = options.width || this.globalContext.dialogSize.width;
                     let height = options.height || this.globalContext.dialogSize.height;
+					let autoResize = this.globalContext.autoResize == undefined ? true : this.globalContext.autoResize;
                     
                     this.$dialog.data('__size__', { width, height });
                     
@@ -178,7 +179,6 @@ module nts.uk.ui {
                     //                    var widget= this.$dialog.dialog("widget");
                     //                    widget.draggable("option","containment",false);
                     
-					let autoResize = this.globalContext.autoResize == undefined ? true : this.globalContext.autoResize;
 					if (autoResize) {
 						$(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
 					}
