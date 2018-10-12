@@ -683,48 +683,46 @@ public class AppOvertimeFinder {
 				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours,overtimeInputCaculations);
 				result.setAppOvertimeReference(appOvertimeReference);
 			}
-			if(appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value){
-				if(approvalFunctionSetting != null){
-					// 時刻計算利用チェック
-					if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-						result.setDisplayCaculationTime(true);
-						List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
-						// 07_勤務種類取得: lay loai di lam 
-						List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,approvalFunctionSetting,appEmploymentWorkType);
-						/*if(!CollectionUtil.isEmpty(workTypeOvertimes)){
-							result.setWorkType(workTypeOvertimes.get(0));
-						}*/
-						List<String> workTypeCodes = new ArrayList<>();
-						for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
-							workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
-						}
-						result.setWorkTypes(workTypeCodes);
-						// 08_就業時間帯取得(lay loai gio lam viec) 
-						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, approvalFunctionSetting,GeneralDate.fromString(appDate, "yyyy/MM/dd"));
-						List<String> siftCodes = new ArrayList<>();
-						for(SiftType siftType : siftTypes){
-							siftCodes.add(siftType.getSiftCode());
-						}
-						result.setSiftTypes(siftCodes);
-						/*if(!CollectionUtil.isEmpty(siftTypes)){
-							result.setSiftType(siftTypes.get(0));
-						}*/
-						
-						
-						// 09_勤務種類就業時間帯の初期選択をセットする
-						WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
-								Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
-								workTypeOvertimes, siftTypes);
-						result.setWorkType(workTypeAndSiftType.getWorkType());
-						result.setSiftType(workTypeAndSiftType.getSiftType());
-						result.setTimezones(workTypeAndSiftType.getBreakTimes().stream().map(domain->{
-							DeductionTimeDto dto = new DeductionTimeDto();
-							domain.saveToMemento(dto);
-							return dto;
-						}).collect(Collectors.toList()));
-					}else{
-						result.setDisplayCaculationTime(false);
+			if(approvalFunctionSetting != null){
+				// 時刻計算利用チェック
+				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+					result.setDisplayCaculationTime(true);
+					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
+					// 07_勤務種類取得: lay loai di lam 
+					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,approvalFunctionSetting,appEmploymentWorkType);
+					/*if(!CollectionUtil.isEmpty(workTypeOvertimes)){
+						result.setWorkType(workTypeOvertimes.get(0));
+					}*/
+					List<String> workTypeCodes = new ArrayList<>();
+					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
+						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 					}
+					result.setWorkTypes(workTypeCodes);
+					// 08_就業時間帯取得(lay loai gio lam viec) 
+					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, approvalFunctionSetting,GeneralDate.fromString(appDate, "yyyy/MM/dd"));
+					List<String> siftCodes = new ArrayList<>();
+					for(SiftType siftType : siftTypes){
+						siftCodes.add(siftType.getSiftCode());
+					}
+					result.setSiftTypes(siftCodes);
+					/*if(!CollectionUtil.isEmpty(siftTypes)){
+						result.setSiftType(siftTypes.get(0));
+					}*/
+					
+					
+					// 09_勤務種類就業時間帯の初期選択をセットする
+					WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
+							Strings.isBlank(appDate) ? null : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
+							workTypeOvertimes, siftTypes);
+					result.setWorkType(workTypeAndSiftType.getWorkType());
+					result.setSiftType(workTypeAndSiftType.getSiftType());
+					result.setTimezones(workTypeAndSiftType.getBreakTimes().stream().map(domain->{
+						DeductionTimeDto dto = new DeductionTimeDto();
+						domain.saveToMemento(dto);
+						return dto;
+					}).collect(Collectors.toList()));
+				}else{
+					result.setDisplayCaculationTime(false);
 				}
 			}
 			if(approvalFunctionSetting != null){
