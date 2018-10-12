@@ -85,12 +85,13 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
 
     @Override
     public void update(String code,String cId, YearMonthHistoryItem domain) {
-        Optional<QpbmtPayUnitPriceHis> payUnitPriceHis = this.queryProxy().find(new QpbmtPayUnitPriceHisPk(code, cId, domain.identifier()), QpbmtPayUnitPriceHis.class);
+        Optional<QpbmtPayUnitPriceHis> payUnitPriceHis = this.queryProxy().find(new QpbmtPayUnitPriceHisPk(cId,code, domain.identifier()), QpbmtPayUnitPriceHis.class);
         if (payUnitPriceHis.isPresent()){
             payUnitPriceHis.get().startYearMonth = domain.start().v();
             payUnitPriceHis.get().endYearMonth = domain.end().v();
+            this.commandProxy().update(payUnitPriceHis.get());
         }
-        this.commandProxy().update(payUnitPriceHis);
+
     }
 
     @Override

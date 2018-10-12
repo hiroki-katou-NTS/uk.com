@@ -44,7 +44,7 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
         PayrollUnitPriceSettingCommand   payrollUnitPriceSettingCommand = command.getPayrollUnitPriceSettingCommand();
 
         String hisId = payrollUnitPriceHistoryCommand.getHisId();
-        if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_ADD_HISTORY || payrollUnitPriceHistoryCommand.getIsMode() == MODE_NEW){
+        if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_NEW){
             hisId = IdentifierUtil.randomUniqueId();
         }
         YearMonth startYearMonth = new YearMonth(payrollUnitPriceHistoryCommand.getStartYearMonth());
@@ -65,8 +65,9 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
             payrollUnitPriceHistoryRepository.update(payrollUnitPriceHistoryCommand.getCode(), cid, history, payrollUnitPriceSetting);
         } else if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_ADD_HISTORY){
             payrollUnitPriceRepository.update(payrollUnitPrice);
-            mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid, hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
             payrollUnitPriceHistoryRepository.add(payrollUnitPriceHistoryCommand.getCode(), cid, history, payrollUnitPriceSetting);
+            mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid, hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
+
 
         }
     }

@@ -112,7 +112,10 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     if(fistHistory && self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY && self.newHisId() && self.newHisId() === hisId){
                         hisId = fistHistory.hisId;
                         self.mode(MODE.ADD_HISTORY);
-                    }else{
+                        self.yearMonth();
+                    }else if(self.historyTakeover() === HISTORYTAKEOVER.CREATE_NEW && self.newHisId() && self.newHisId() === hisId){
+                        self.mode(MODE.ADD_HISTORY);
+                    } else{
                         self.mode(MODE.UPDATE);
                     }
 
@@ -129,29 +132,32 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         self.code(data.code);
                         self.name(data.name);
                     });
-                    service.getPayrollUnitPriceHisById(code, hisId).done((data) => {
-                        self.yearMonth(data ? data.startYearMonth : null);
-                        self.endYearMonth(data ? data.endYearMonth : null);
+                    if(self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY && self.mode() === MODE.ADD_HISTORY || self.mode() === MODE.UPDATE) {
+                        service.getPayrollUnitPriceHisById(code, hisId).done((data) => {
+                            self.yearMonth(data ? data.startYearMonth : null);
+                            self.endYearMonth(data ? data.endYearMonth : null);
 
-                        //
-                        self.selectedId(data.targetClass);
-                        self.amountOfMoney(data.amountOfMoney);
-                        self.selectedMonthlySalary(data.monthlySalary);
-                        self.selectedADayPayee(data.adayPayee);
-                        self.selectedHourlyPay(data.hourlyPay)
-                        self.notes(data.notes);
-                    });
-                    /*service.getPayrollUnitPriceSettingById(hisId).done((data) => {
-                        if (data != undefined) {
+                            //
                             self.selectedId(data.targetClass);
                             self.amountOfMoney(data.amountOfMoney);
                             self.selectedMonthlySalary(data.monthlySalary);
                             self.selectedADayPayee(data.adayPayee);
                             self.selectedHourlyPay(data.hourlyPay)
                             self.notes(data.notes);
-                        }
-                    });*/
+                        });
+                    }
+                    else{
+                        self.yearMonth(null);
+                        self.endYearMonth(null);
 
+                        //
+                        self.selectedId(0);
+                        self.amountOfMoney(0);
+                        self.selectedMonthlySalary(0);
+                        self.selectedADayPayee(0);
+                        self.selectedHourlyPay(0)
+                        self.notes(null);
+                    }
                     service.getPayrollUnitPriceHistoryByCidCode(code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>) => {
                         self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
                     });
@@ -209,8 +215,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 readonly: ko.observable(false)
             };
             //
-            self.date = ko.observable('20000101');
-            self.yearMonth = ko.observable(201801);
+            self.date = ko.observable('0');
+            self.yearMonth = ko.observable(0);
             //
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
@@ -257,6 +263,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     hisId = params.hisId[0];
                     self.newHisId(hisId);
                     startYearMonth = params.startYearMonth;
+                    self.yearMonth(startYearMonth);
                     takeover = params.takeOver;
                     self.historyTakeover(takeover);
 
@@ -275,45 +282,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
 
                 }
-
-                if(self.mode() === MODE.ADD_HISTORY){
-                    if(takeover === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY){
-                        service.getPayrollUnitPriceById(self.code()).done((data)=>{
-                            self.code(data.code);
-                            self.name(data.name);
-                        });
-                        service.getPayrollUnitPriceHisById(self.code(),fistHistory.hisId).done((data)=>{
-                            self.yearMonth(Number(startYearMonth));
-                            self.endYearMonth(data.endYearMonth);
-                        });
-                        service.getPayrollUnitPriceSettingById(fistHistory.hisId).done((data) =>{
-                            if(data != undefined){
-                                self.amountOfMoney(data.amountOfMoney);
-                                self.selectedId(data.targetClass);
-                                self.selectedMonthlySalary(data.monthlySalary);
-                                self.selectedADayPayee(data.adayPayee);
-                                self.selectedHourlyPay(data.hourlyPay)
-                                self.notes(data.notes);
-                            }
-                        });
-                    }else{
-                        self.amountOfMoney(null);
-                        self.yearMonth(null);
-                        self.notes(null);
-                        self.selectedTargetClass(0);
-                        self.selectedClassification(0);
-                        self.selectedMonthSalaryPerDay(0);
-                        self.selectedADayPayee(0);
-                        self.selectedHourlyPay(0);
-                        self.selectedMonthlySalary(0);
-                    }
-                }
             });
         }
 
         openCscreen(){
             let self = this;
-            let params = self.singleSelectedCode().split('_');
+            let params = self.singleSelectedCode().split('__');
             let index;
             index = _.findIndex(self.payrollUnitPriceHistory(), (o) =>{
                 return o.hisId === params[1];
@@ -445,8 +419,9 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                                 if(self.mode() === MODE.NEW){
                                     self.singleSelectedCode(self.currentSelected());
                                 }else{
-                                    self.singleSelectedCode(self.currentSelected());
+                                    self.singleSelectedCode(select);
                                 }
+                                self.mode(MODE.UPDATE);
                             });
                         });
 
