@@ -952,7 +952,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
 
-                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? self.selectedCode() + " "+text("CPS001_107") : objSel.optionText));
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + " "+text("CPS001_107"))) : objSel.optionText));
 
                     break;
 
