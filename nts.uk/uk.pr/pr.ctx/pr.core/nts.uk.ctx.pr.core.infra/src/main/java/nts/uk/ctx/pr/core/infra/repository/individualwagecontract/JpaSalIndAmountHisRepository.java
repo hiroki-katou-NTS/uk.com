@@ -26,7 +26,6 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
 
     private Optional<SalIndAmountHis> toDomain(List<QpbmtSalIndAmountHis> entity) {
         if (entity.size() > 0) {
-            String historyId = entity.get(0).salIndAmountHisPk.historyId;
             String perValCode = entity.get(0).salIndAmountHisPk.perValCode;
             String empId = entity.get(0).salIndAmountHisPk.empId;
             int cateIndicator = entity.get(0).cateIndicator;
@@ -35,7 +34,7 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
                     .map(item -> new GenericHistYMPeriod(item.salIndAmountHisPk.historyId,
                             new YearMonthPeriod(new YearMonth(item.periodStartYm), new YearMonth(item.periodEndYm))))
                     .collect(Collectors.toList());
-            return Optional.of(new SalIndAmountHis(historyId,empId, cateIndicator,history, salBonusCate ));
+            return Optional.of(new SalIndAmountHis(perValCode,empId, cateIndicator,history, salBonusCate ));
         } else {
             return Optional.empty();
         }
