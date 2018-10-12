@@ -58,3 +58,29 @@
 #swap-list3 .ui-icon-triangle-1-e {
 	margin-top: 1px;
 }
+
+ #swap-list2-grid1_horizontalScrollContainer {
+	overflow: hidden !important; 
+}
+
+#swap-list2-grid1_displayContainer {
+	min-height: 310.6px !important;
+	
+} 
+
+#swap-list2-grid1_scrollContainer {
+	min-height: 310.6px !important;
+}
+
+ #swap-list3-grid1_horizontalScrollContainer {
+	overflow: hidden !important; 
+}
+
+#swap-list3-grid1_displayContainer {
+	min-height: 310.6px !important;
+	
+} 
+
+#swap-list3-grid1_scrollContainer {
+	min-height: 310.6px !important;
+}

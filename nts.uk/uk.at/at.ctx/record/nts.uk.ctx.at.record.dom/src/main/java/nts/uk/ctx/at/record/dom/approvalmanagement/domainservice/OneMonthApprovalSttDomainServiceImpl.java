@@ -296,7 +296,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		lstCondition.add(new SortingConditionOrderImport(1,RegularSortingTypeImport.WORKPLACE));
 		lstCondition.add(new SortingConditionOrderImport(2,RegularSortingTypeImport.CLASSIFICATION));
 		lstCondition.add(new SortingConditionOrderImport(3,RegularSortingTypeImport.POSITION));
-		lstCondition.add(new SortingConditionOrderImport(4,RegularSortingTypeImport.EMPLOYMENT));
+		//fix bug 101289
+		//lstCondition.add(new SortingConditionOrderImport(4,RegularSortingTypeImport.EMPLOYMENT));
 		return lstCondition;
 	}
 	

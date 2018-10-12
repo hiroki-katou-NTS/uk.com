@@ -4,7 +4,7 @@ module nts.uk.com.view.cps009.a.service {
     let paths = {
         getAll: "ctx/pereg/person/info/setting/init/findAll",
         getAllCtg: "ctx/pereg/person/info/setting/init/ctg/find/{0}",
-        getAllItemByCtgId: "ctx/pereg/person/info/setting/init/item/find/{0}/{1}",
+        getAllItemByCtgId: "ctx/pereg/person/info/setting/init/item/find/{0}/{1}/{2}",
         deleteInitVal: "ctx/pereg/person/info/setting/init/delete",
         update: "ctx/pereg/person/info/setting/init/ctg/update",
         filterHisSel: "ctx/pereg/person/info/setting/selection/findAllCombox",
@@ -28,8 +28,8 @@ module nts.uk.com.view.cps009.a.service {
     /**
    * Get all init value setting
    */
-    export function getAllItemByCtgId(settingId: string, perInfoCtgId: string) {
-        return ajax(format(paths.getAllItemByCtgId, settingId, perInfoCtgId));
+    export function getAllItemByCtgId(settingId: string, perInfoCtgId: string, baseDate: any) {
+        return ajax(format(paths.getAllItemByCtgId, settingId, perInfoCtgId, baseDate));
     }
 
     /**

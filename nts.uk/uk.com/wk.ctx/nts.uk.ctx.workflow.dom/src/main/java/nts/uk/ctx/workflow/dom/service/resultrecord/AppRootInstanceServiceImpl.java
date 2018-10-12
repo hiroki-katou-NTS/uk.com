@@ -167,7 +167,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// INPUT．承認ルート中間データ一覧の先頭から最後へループする
 		for(AppRootInstance appRootInstance : appRootInstanceLst){
 			// ループ中の「承認ルート中間データ」．履歴期間．開始日とINPUT．年月日を比較する
-			if(appRootInstance.getDatePeriod().start().beforeOrEquals(date)){
+			if(appRootInstance.getDatePeriod().start().beforeOrEquals(date)&&appRootInstance.getDatePeriod().end().afterOrEquals(date)){
 				// 承認ルートなしフラグ=false
 				noAppRootFlag = false;
 				result = appRootInstance;

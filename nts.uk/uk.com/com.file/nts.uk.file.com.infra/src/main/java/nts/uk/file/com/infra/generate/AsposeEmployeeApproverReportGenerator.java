@@ -164,16 +164,6 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 		// tăng rowIndex lên 1 theo template
 		firstRow = firstRow + 1;
-
-		// nếu tổng số dòng trên một trang bị vượt qua > 52*x
-		// thì sẽ ngắt trang
-		if (numberOfRowMerge >= 0) {
-			HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
-			hPageBreaks.add("P" + firstRow);
-			VerticalPageBreakCollection vPageBreaks = worksheets.get(0).getVerticalPageBreaks();
-			vPageBreaks.add("P" + firstRow);
-		}
-
 		// in ra các employee trong cùng một workplace
 		for (Map.Entry m : employee.entrySet()) {
 			EmployeeApproverAsApplicationOutput output = (EmployeeApproverAsApplicationOutput) m.getValue();
@@ -237,6 +227,10 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 
 		int rowMergered = (51 * pages) - firstRow + 1;
 		if (rowMergered > 0) {//TH sang co ngat trang
+			HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
+			hPageBreaks.add("P" + (51 * pages + 2));
+			VerticalPageBreakCollection vPageBreaks = worksheets.get(0).getVerticalPageBreaks();
+			vPageBreaks.add("P" + (51 * pages + 2));
 			// set employee code - CỘT 1
 			if (rowMergered > 1) {
 				//TH: sang trang
@@ -290,7 +284,6 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 				firstRow = printColumns3(cells, max, m1, firstRow, appLst, max > (pages * 52 - pages + 1 - firstRow) ? (pages * 52 - pages + 1 - firstRow) : 0);
 
 			}
-
 		} 
 		else {//TH khong ngat trang
 

@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface BreakDayOffMngInPeriodQuery {
@@ -53,7 +54,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	BreakDayOffDetail getConfirmBreakData(LeaveManagementData breakConfirm, String sid);
+	BreakDayOffDetail getConfirmBreakData(LeaveManagementData breakConfirm, String sid, GeneralDate aggStartDate);
 	/**
 	 * 繰越数を計算する
 	 * @param baseDate
@@ -93,7 +94,8 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param remainData
 	 * @return
 	 */
-	BreakDayOffDetail getNotTypeDayOff(InterimBreakMng breakMng, InterimRemain remainData);
+	BreakDayOffDetail getNotTypeDayOff(InterimBreakMng breakMng, InterimRemain remainData, GeneralDate aggStartDate,
+			GeneralDate baseDate, SubstitutionHolidayOutput subsHolidaySetting, String cid, String sid);
 	/**
 	 * 5.時系列順で相殺する
 	 * @param lstDataDetail
