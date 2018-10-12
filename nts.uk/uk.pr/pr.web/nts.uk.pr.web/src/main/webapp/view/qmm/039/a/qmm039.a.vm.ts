@@ -8,7 +8,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
     export class ScreenModel {
         itemList: KnockoutObservableArray<>;
-        isEnableHis: KnockoutObservable<boolean> = ko.observable(false);
+        onTab: KnockoutObservable<number> = ko.observable(0);
+        titleTab: KnockoutObservable<string> = ko.observable('');
+        isEnableHis: KnockoutObservable<boolean> = ko.observable(true);
+        SalBonusCate: KnockoutObservable<boolean> = ko.observable(0);
+        CategoryIndicator: KnockoutObservable<boolean> = ko.observable(0);
+        selectedTab: KnockoutObservable<string>;
         salHis: any;
         dataSource: any;
         singleSelectedCode: any;
@@ -33,19 +38,22 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         constructor() {
             let self = this;
+            self.selectedTab = ko.observable('tab-1');
             // initial ccg options
-            self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
-            let sal = new SalIndAmount({amountOfMoney: 2013});
-            self.itemList = ko.observableArray([
-                new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm().toString().substr(0,4) + '/' + self.salHis.periodStartYm().toString().substr(4,self.salHis.periodStartYm().length), self.salHis.periodEndYm().toString().substr(0,4) + '/' + self.salHis.periodEndYm().toString().substr(4,self.salHis.periodEndYm().length)), sal.amountOfMoney()),
-            ]);
+            self.itemList = ko.observableArray([]);
             self.itemList.subscribe(function (newValue) {
-                if(newValue.length > 0){
+                if (newValue.length > 0) {
                     self.isEnableHis(true);
-                }else {
+                } else {
                     self.isEnableHis(false);
                 }
             });
+            self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
+            let sal = new SalIndAmount({amountOfMoney: 2013});
+            self.itemList = ko.observableArray([
+                new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm().toString().substr(0, 4) + '/' + self.salHis.periodStartYm().toString().substr(4, self.salHis.periodStartYm().length), self.salHis.periodEndYm().toString().substr(0, 4) + '/' + self.salHis.periodEndYm().toString().substr(4, self.salHis.periodEndYm().length)), sal.amountOfMoney()),
+            ]);
+
             self.dataSource = ko.observableArray([new Node('code1', 'name1'), new Node('code2', 'name3')]);
             self.singleSelectedCode = ko.observable(null);
             self.currencyeditor = {
@@ -102,19 +110,59 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                  * Self-defined function: Return data from CCG001
                  * @param: data: the data return from CCG001
                  */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.selectedEmployee(data.listEmployee);
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
+
             }
-            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
+            $('#com-ccg0011').ntsGroupComponent(self.ccgcomponent);
+            self.onSelectTab(self.onTab);
+        }
+
+        onSelectTab(param) {
+
+            let self = this;
+
+            switch (param) {
+                case 0:
+                    //TODO
+                    self.onTab(0);
+                    self.titleTab(getText('QMM039_6'));
+                    $("#sidebar").ntsSideBar("active", param)
+                    break;
+                case 1:
+                    //TODO
+                    self.onTab(1);
+                    self.titleTab(getText('QMM039_7'));
+                    $("#sidebar").ntsSideBar("active", param)
+                    break;
+                case 2:
+                    //TODO
+                    self.onTab(2);
+                    self.titleTab(getText('QMM039_8'));
+                    $("#sidebar").ntsSideBar("active", param)
+                    break;
+                case 3:
+                    //TODO
+                    self.onTab(3);
+                    self.titleTab(getText('QMM039_9'));
+                    $("#sidebar").ntsSideBar("active", param)
+                    break;
+                default:
+                    //TODO
+                    self.onTab(0);
+                    self.titleTab(getText('QMM039_9'));
+                    $("#sidebar").ntsSideBar("active", 0)
+                    break;
+            }
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getInfoEmLogin().done(function(emp) {
-                service.getWpName().done(function(wp) {
+            service.getInfoEmLogin().done(function (emp) {
+                service.getWpName().done(function (wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
                     } else {
                         self.employeeInputList.push(new EmployeeKcp009(emp.sid,
@@ -122,10 +170,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.initKCP009();
                         dfd.resolve();
                     }
-                }).fail(function(result) {
+                }).fail(function (result) {
                     dfd.reject();
                 });
-            }).fail(function(result) {
+            }).fail(function (result) {
                 dfd.reject();
             });
             return dfd.promise();
@@ -143,27 +191,27 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: self.tabindex
             };
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+            $('#emp-component1').ntsLoadListComponent(self.listComponentOption);
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
-                let self = this;
-                self.employeeInputList([]);
-                _.each(dataList, function(item) {
-                    self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
-                });
-                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-                if (dataList.length == 0) {
-                    self.selectedItem('');
-                } else {
-                    let item = self.findIdSelected(dataList, self.selectedItem());
-                    let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
-                    if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
-                }
+            let self = this;
+            self.employeeInputList([]);
+            _.each(dataList, function (item) {
+                self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
+            });
+            $('#emp-component1').ntsLoadListComponent(self.listComponentOption);
+            if (dataList.length == 0) {
+                self.selectedItem('');
+            } else {
+                let item = self.findIdSelected(dataList, self.selectedItem());
+                let sortByEmployeeCode = _.orderBy(dataList, ["employeeCode"], ["asc"]);
+                if (item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
+            }
         }
 
         findIdSelected(dataList: Array<any>, selectedItem: string): any {
-            return _.find(dataList, function(obj) {
+            return _.find(dataList, function (obj) {
                 return obj.employeeId == selectedItem;
             })
         }
@@ -209,6 +257,28 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             });
         }
 
+        setTabSidebar(tab): void {
+            let self = this;
+            switch (tab) {
+                case 1:
+                    self.SalBonusCate();
+                    self.CategoryIndicator();
+                    break;
+                case 2:
+                    self.SalBonusCate();
+                    self.CategoryIndicator();
+                    break;
+                case 3:
+                    self.SalBonusCate();
+                    self.CategoryIndicator();
+                    break;
+                case 4:
+                    self.SalBonusCate();
+                    self.CategoryIndicator();
+                    break;
+            }
+        }
+
         public toScreenC(): void {
             let self = this;
             let params = {
@@ -222,6 +292,23 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
+
+            });
+        }
+
+        public toScreenD(): void {
+            let self = this;
+            let params = {
+                empId: '000001',
+                personalValcode: '000001',
+                period: {
+                    periodStartYm: self.salHis.periodStartYm(),
+                    periodEndYm: self.salHis.periodEndYm()
+                },
+                itemClass: 2,
+            }
+            setShared("QMM039_D_PARAMS", params);
+            modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {
 
             });
         }
@@ -341,6 +428,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         businessName: string;
         workplaceName: string;
         depName: string;
+
         constructor(id: string, code: string, businessName: string, workplaceName: string, depName: string) {
             this.id = id;
             this.code = code;
