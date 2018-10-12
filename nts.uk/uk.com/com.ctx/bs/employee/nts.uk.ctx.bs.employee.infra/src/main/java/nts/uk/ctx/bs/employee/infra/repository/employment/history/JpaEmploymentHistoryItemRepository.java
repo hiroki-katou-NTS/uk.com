@@ -456,7 +456,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 //	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
 //			List<String> employmentCodes) {
 //		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
-		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+//		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 //			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
 //					.setParameter("employmentCodes", subList)
 //					.setParameter("startDate", dateperiod.start())

@@ -143,9 +143,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 			});
 		});
 		results.sort((o1, o2) -> {
-			int tmp = o1.getRecordPK().employeeId.compareTo(o2.getRecordPK().employeeId);
-			if (tmp != 0) return tmp;
-			return o1.getStartYmd().compareTo(o2.getStartYmd());
+			return o1.getRecordPK().employeeId.compareTo(o2.getRecordPK().employeeId);
 		});
 		return results.stream().map(item -> item.toDomain()).collect(Collectors.toList());
 	}
