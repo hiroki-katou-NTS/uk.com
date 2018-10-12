@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -147,7 +145,7 @@ public class QpbmtLaborInsuOffice extends UkJpaEntity implements Serializable {
     }
 
     public static QpbmtLaborInsuOffice toEntity(LaborInsuranceOffice domain) {
-        return new QpbmtLaborInsuOffice(new QpbmtLaborInsuOfficePk(domain.getCompanyId(), domain.getLaborOfficeCode().v()), domain.getLaborOfficeName().v(), domain.getBasicInfomation().getNotes().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getRepresentativePosition().v(), domain.getBasicInfomation().getRepresentativeName().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddress1().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddress2().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddressKana1().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddressKana2().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getPostalCode().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber2().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber3().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse(null));
+        return new QpbmtLaborInsuOffice(new QpbmtLaborInsuOfficePk(domain.getCompanyId(), domain.getLaborOfficeCode().v()), domain.getLaborOfficeName().v(), domain.getBasicInformation().getNotes().map(i -> i.v()).orElse(null), domain.getBasicInformation().getRepresentativePosition().v(), domain.getBasicInformation().getRepresentativeName().map(i -> i.v()).orElse(null), domain.getBasicInformation().getStreetAddress().getAddress1().map(i -> i.v()).orElse(null), domain.getBasicInformation().getStreetAddress().getAddress2().map(i -> i.v()).orElse(null), domain.getBasicInformation().getStreetAddress().getAddressKana1().map(i -> i.v()).orElse(null), domain.getBasicInformation().getStreetAddress().getAddressKana2().map(i -> i.v()).orElse(null), domain.getBasicInformation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse(null), domain.getBasicInformation().getStreetAddress().getPostalCode().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber2().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber3().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse(null));
     }
 
 }

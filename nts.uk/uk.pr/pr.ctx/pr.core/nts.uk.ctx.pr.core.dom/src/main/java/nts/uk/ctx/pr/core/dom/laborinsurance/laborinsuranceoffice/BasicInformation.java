@@ -15,7 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 */
 @AllArgsConstructor
 @Getter
-public class BasicInfomation extends DomainObject
+public class BasicInformation extends DomainObject
 {
     
     /**
@@ -38,8 +38,8 @@ public class BasicInfomation extends DomainObject
     */
     private LaborInsuranceOfficeAddress streetAddress;
     
-    public BasicInfomation(String notes, String representativePosition, String representativeName, String phoneNumber, String postalCode, String address1, String addressKana1, String address2, String addressKana2) {
-        this.representativeName = notes == null ? Optional.empty() : Optional.of(new RepresentativeName(representativeName));
+    public BasicInformation(String notes, String representativePosition, String representativeName, String phoneNumber, String postalCode, String address1, String addressKana1, String address2, String addressKana2) {
+        this.representativeName = representativeName == null ? Optional.empty() : Optional.of(new RepresentativeName(representativeName));
         this.representativePosition = new RepresentativePosition(representativePosition);
         this.streetAddress = new LaborInsuranceOfficeAddress(address1, address2, addressKana1, addressKana2, phoneNumber, postalCode);
         this.notes = notes == null ? Optional.empty() : Optional.of(new Memo(notes));

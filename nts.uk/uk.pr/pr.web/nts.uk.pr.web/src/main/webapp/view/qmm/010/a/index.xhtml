@@ -44,10 +44,8 @@
                 <button id="A1_4" tabindex="4"
                         data-bind="click: readFromSocialInsuranceOffice">#{i18n.getText('QMM010_4')}</button>
                 <button id="A1_5" tabindex="5" data-bind="click: masterCorrection, enable: false">#{i18n.getText('QMM010_5')}</button>
-                <div style = "display: inline" data-bind="if: screenMode() == 1">
-                    <button id="A1_6" class="danger" tabindex="6"
+                <button id="A1_6" class="danger" tabindex="6"
                             data-bind="click: deleteOffice">#{i18n.getText('QMM010_6')}</button>
-                </div>
             </div>
 
 
@@ -58,7 +56,7 @@
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <div style="width: 330px" tabindex="7"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'laborOfficeCode', comId: 'A2_3',
-                        items: laborInsuranceOfficeList, selected: selectedLaborOfficeCode, selectedKey: 'laborOfficeCode', fields: ['laborOfficeCode', 'officeName'], mode: 'igGrid'}"/>
+                        items: laborInsuranceOfficeList, selected: selectedLaborOfficeCode, selectedKey: 'laborOfficeCode', fields: ['laborOfficeCode', 'laborOfficeName'], mode: 'igGrid'}"/>
                     <table id="A2_3" tabindex="8"
                            data-bind="ntsGridList: {
                             rows: 25,
@@ -81,10 +79,10 @@
                     <div class="column-1"
                          data-bind="ntsFormLabel: {required: true, constraint: ['LaborInsuranceOfficeCode', 'LaborInsuranceOfficeName']}">#{i18n.getText('QMM010_10')}</div>
                     <!--A3_2 コード-->
-                    <input tabindex="10" id = "A3_2"
+                    <input tabindex="9" id = "A3_2"
                            data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeCode', value: laborOfficeCode, name: '#[QMM010_8]', required: true , enable: $vm.screenMode() == 0}"/>
                     <!--A3_3 名称 -->
-                    <input style="margin-left: 5px;" tabindex="11" id = "A3_3"
+                    <input style="margin-left: 5px;" tabindex="10" id = "A3_3"
                            data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeName',value: laborOfficeName, name: '#[QMM010_9]', required: true}"/>
                 </div>
 
@@ -150,7 +148,7 @@
                     <!--A3_20 カナ2-->
                     <div class="column-1">#{i18n.getText('QMM010_19')}</div>
                     <!--A3_21 住所カナ2-->
-                    <input id="D4_21" tabindex="19"
+                    <input id="A3_21" tabindex="19"
                            data-bind="ntsTextEditor: {constraint: 'AddressKana2',value: addressKana2, name: '#[QMM010_19]'}"/>
                 </div>
 
@@ -192,7 +190,7 @@
                     <input style="margin-left: 5px;" tabindex="24"
                            data-bind="ntsTextEditor: {constraint: 'EmploymentInsuranceBusinessOfficeNumber2',value: employmentOfficeNumber2, name: '#[QMM010_27]'}"/>
                     <div style="margin-left: 5px;">#{i18n.getText('QMM010_28')}</div>
-                    <!--A4_11 雇用保険事業所整理番号2-->
+                    <!--A4_13 雇用保険事業所整理番号3-->
                     <input style="margin-left: 5px;" tabindex="25"
                            data-bind="ntsTextEditor: {constraint: 'EmploymentInsuranceBusinessOfficeNumber3',value: employmentOfficeNumber3, name: '#[QMM010_27]'}"/>
                 </div>

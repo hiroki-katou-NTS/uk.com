@@ -43,7 +43,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="3" class="x-large proceed "
-						data-bind="click: decideCloneData, enable: $root.errors.isEmpty">#{i18n.getText('QMM010_32')}</button>
+						data-bind="click: decideCloneData, enable: socialInsuranceOfficeList().length > 0">#{i18n.getText('QMM010_32')}</button>
 				<button tabindex="4" class="large" data-bind="click: cancelCloneData">#{i18n.getText('QMM010_33')}</button>
 			</div>
 		</ui:define>

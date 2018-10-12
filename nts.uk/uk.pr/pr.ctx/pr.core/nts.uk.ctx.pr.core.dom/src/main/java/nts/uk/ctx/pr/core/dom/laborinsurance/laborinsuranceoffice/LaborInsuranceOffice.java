@@ -1,13 +1,7 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice;
 
-import java.util.Optional;
-import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,7 +28,7 @@ public class LaborInsuranceOffice extends AggregateRoot {
     /**
     * 基本情報
     */
-    private BasicInfomation basicInfomation;
+    private BasicInformation basicInformation;
     
     /**
     * 雇用保険情報
@@ -45,7 +39,7 @@ public class LaborInsuranceOffice extends AggregateRoot {
         this.companyId = AppContexts.user().companyId();
         this.laborOfficeCode = new LaborInsuranceOfficeCode(laborOfficeCode);
         this.laborOfficeName = new LaborInsuranceOfficeName(laborOfficeName);
-        this.basicInfomation = new BasicInfomation(notes, representativePosition, representativeName, phoneNumber, postalCode, address1, addressKana1, address2, addressKana2);
+        this.basicInformation = new BasicInformation(notes, representativePosition, representativeName, phoneNumber, postalCode, address1, addressKana1, address2, addressKana2);
         this.employmentInsuranceInfomation = new EmploymentInsuranceInfomation(employmentOfficeCode, employmentOfficeNumber1, employmentOfficeNumber2, employmentOfficeNumber3, cityCode);
     }
     

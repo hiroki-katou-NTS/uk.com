@@ -16,7 +16,9 @@ module nts.uk.pr.view.qmm010.b.viewmodel {
             service.findAllSocialOffice().done(function(data) {
                 self.socialInsuranceOfficeList(data);
                 if (data.length == 0) {
-                    dialog.alertError({messageId: 'Msg_37'});
+                    dialog.alertError({messageId: 'Msg_37'}).then(function(){
+                        $('#B2_1_container').focus();
+                    });
                 } else {
                     self.selectedSocialInsuranceCode(data[0].code);
                 }
