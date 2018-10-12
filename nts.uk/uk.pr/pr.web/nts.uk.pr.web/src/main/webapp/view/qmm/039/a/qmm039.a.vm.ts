@@ -289,6 +289,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     itemClass: ITEM_CLASS.SALARY_SUPLY
                 },
                 period: {
+                    historyId: '111',
                     periodStartYm: self.salHis.periodStartYm(),
                     periodEndYm: self.salHis.periodEndYm()
                 },
