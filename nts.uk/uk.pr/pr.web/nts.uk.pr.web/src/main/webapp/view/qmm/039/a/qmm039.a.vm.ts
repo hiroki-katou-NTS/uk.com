@@ -7,16 +7,18 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
     import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
     import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
+    import PERVALUECATECLS = nts.uk.pr.view.qmm039.share.model.PERVALUECATECLS;
     export class ScreenModel {
         itemList: KnockoutObservableArray<>;
         onTab: KnockoutObservable<number> = ko.observable(0);
+        itemClas: KnockoutObservable<number> = ko.observable(0);
         titleTab: KnockoutObservable<string> = ko.observable('');
         isEnableHis: KnockoutObservable<boolean> = ko.observable(true);
         SalBonusCate: KnockoutObservable<boolean> = ko.observable(0);
         CategoryIndicator: KnockoutObservable<boolean> = ko.observable(0);
         selectedTab: KnockoutObservable<string>;
         salHis: any;
-        dataSource: any;
+        dataSource: KnockoutObservableArray = ko.observableArray([]);
         singleSelectedCode: any;
         listComponentOption: ComponentOption;
         tabindex: number;
@@ -55,7 +57,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm().toString().substr(0, 4) + '/' + self.salHis.periodStartYm().toString().substr(4, self.salHis.periodStartYm().length), self.salHis.periodEndYm().toString().substr(0, 4) + '/' + self.salHis.periodEndYm().toString().substr(4, self.salHis.periodEndYm().length)), sal.amountOfMoney()),
             ]);
 
-            self.dataSource = ko.observableArray([new Node('code1', 'name1'), new Node('code2', 'name3')]);
+
             self.singleSelectedCode = ko.observable(null);
             self.currencyeditor = {
                 value: ko.observable(1200),
@@ -118,45 +120,64 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
             }
             $('#com-ccg0011').ntsGroupComponent(self.ccgcomponent);
-            self.onSelectTab(self.onTab);
+
         }
 
         onSelectTab(param) {
-
             let self = this;
-
             switch (param) {
-                case 0:
+                case ITEM_CLASS.SALARY_SUPLY:
                     //TODO
-                    self.onTab(0);
+                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
                     self.titleTab(getText('QMM039_6'));
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    self.changeItemClass(PERVALUECATECLS.SUPPLY);
+                    self.itemClas(PERVALUECATECLS.SUPPLY);
                     break;
-                case 1:
+                case ITEM_CLASS.SALARY_DEDUCTION:
                     //TODO
-                    self.onTab(1);
+                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
                     self.titleTab(getText('QMM039_7'));
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    self.changeItemClass(PERVALUECATECLS.DEDUCTION);
+                    self.itemClas(PERVALUECATECLS.DEDUCTION);
                     break;
-                case 2:
+                case ITEM_CLASS.BONUS_SUPLY:
                     //TODO
-                    self.onTab(2);
+                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
                     self.titleTab(getText('QMM039_8'));
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    self.changeItemClass(PERVALUECATECLS.SUPPLY);
+                    self.itemClas(PERVALUECATECLS.SUPPLY);
                     break;
-                case 3:
+                case ITEM_CLASS.BONUS_DEDUCTION:
                     //TODO
-                    self.onTab(3);
+                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
                     self.titleTab(getText('QMM039_9'));
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    self.changeItemClass(PERVALUECATECLS.DEDUCTION);
+                    self.itemClas(PERVALUECATECLS.DEDUCTION);
                     break;
                 default:
                     //TODO
-                    self.onTab(0);
+                    self.onTab(ITEM_CLASS.SALARY_SUPLY);
                     self.titleTab(getText('QMM039_9'));
-                    $("#sidebar").ntsSideBar("active", 0)
+                    $("#sidebar").ntsSideBar("active", 1);
+                    self.changeItemClass(PERVALUECATECLS.SUPPLY);
+                    self.itemClas(PERVALUECATECLS.SUPPLY);
                     break;
             }
+        }
+
+        changeItemClass(item_class: number): void {
+            let self = this;
+            service.getPersonalMoneyName(item_class).done(function (data) {
+                let array = [];
+                _.forEach(data, function (salIndAmountName) {
+                    array.push(new Node(salIndAmountName.individualPriceCode, salIndAmountName.individualPriceName));
+                });
+                self.dataSource = ko.observableArray(array);
+            });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -171,6 +192,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.initKCP009();
                         dfd.resolve();
                     }
+                    self.onSelectTab(self.onTab);
                 }).fail(function (result) {
                     dfd.reject();
                 });
@@ -258,35 +280,13 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             });
         }
 
-        setTabSidebar(tab): void {
-            let self = this;
-            switch (tab) {
-                case 1:
-                    self.SalBonusCate();
-                    self.CategoryIndicator();
-                    break;
-                case 2:
-                    self.SalBonusCate();
-                    self.CategoryIndicator();
-                    break;
-                case 3:
-                    self.SalBonusCate();
-                    self.CategoryIndicator();
-                    break;
-                case 4:
-                    self.SalBonusCate();
-                    self.CategoryIndicator();
-                    break;
-            }
-        }
-
         public toScreenC(): void {
             let self = this;
             let params = {
                 employeeInfo: {
                     empId: '000001',
                     personalValcode: '000001',
-                    itemClass: ITEM_CLASS.SALARY_SUPLY
+                    itemClass: self.itemClas()
                 },
                 period: {
                     historyId: '111',
