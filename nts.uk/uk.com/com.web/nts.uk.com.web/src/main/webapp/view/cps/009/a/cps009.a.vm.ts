@@ -465,12 +465,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if(error.hasError()) return;
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
-                itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
+                vm = self.currentCategory().itemList(),
+                itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(vm,
                     function(item: PerInfoInitValueSettingItemDto) {
                         return item.selectedRuleCode() == 2 && ((item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1)) || item.itemCode() == "IS00084" || item.itemCode() == "IS00085");
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return {
+                        dataType: obj.dataType(),
                         selectionItemId: obj.selectionItemId,
                         selectionItemRefType: obj.selectionItemRefType,
                         baseDate: baseDate
@@ -480,7 +482,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (itemIdLst.length > 0) {
                 _.each(itemIdLst, function(item) {
 
-                    let itemList: Array<any> = ko.toJS(self.currentCategory().itemList()),
+                    let itemList: Array<any> = ko.toJS(vm),
                         indexList: Array<any> = [],
                         itemIndex: number = 0;
                     _.each(itemList, function(obj: PerInfoInitValueSettingItemDto) {
@@ -495,19 +497,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         service.getAllComboxByHistory(item).done(function(data: Array<any>) {
                             if (data) {
                                 _.each(indexList, function(index) {
-                                    self.currentCategory().itemList()[index].selection([]);
-                                    self.currentCategory().itemList()[index].selection(data);
-                                    self.currentCategory().itemList()[index].selection.valueHasMutated();
+                                    vm[index].selection([]);
+                                    vm[index].selection(data);
+                                    vm[index].selection.valueHasMutated();
+                                    if (item.dataType === ITEM_SINGLE_TYPE.SEL_BUTTON) {
+                                        let objSel: any = _.find(vm[index].selection(), function(c) { if (c.optionValue == vm[index].selectedCode()) { return c } });
+                                        vm[index].selectionName(objSel == undefined ? ((vm[index].ctgCode() === "CS00016" || vm[index].ctgCode() === "CS00017") ? text("CPS001_107") : (vm[index].selectedCode() + " " + text("CPS001_107"))) : objSel.optionText);
+                                        vm[index].selectionName.valueHasMutated();
+                                    }else{
+                                        let value: string = vm[index].stringValue();
+                                        vm[index].selectedCode(value);
+                                        vm[index].selectedCode.valueHasMutated();
+                                    }
                                 });
-
                             }
                         });
                     }
-
-
                 });
             }
-
         }
 
         /**
@@ -554,8 +561,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingName = ko.observable(params.settingName);
             self.ctgList = ko.observableArray(params.ctgList);
             self.itemList = ko.observableArray(params.itemList || []);
-
-
         }
 
         setData(params: IInitValueSettingDetail) {
@@ -563,7 +568,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingCode(params.settingCode);
             self.settingName(params.settingName);
             self.ctgList(params.ctgList);
-
         }
     }
 
@@ -855,6 +859,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.disableCombox(params.disableCombox == true ? false : true);
             self.enableControl(params.enableControl);
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
+            self.selectedCode = ko.observable();
             
             switch (params.dataType) {
                 case ITEM_SINGLE_TYPE.STRING:
@@ -934,12 +939,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
-
                     break;
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
+                
                     self.radioId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
-
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue || "1");
                     break;
@@ -949,13 +953,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
-
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
-
                     self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + " "+text("CPS001_107"))) : objSel.optionText));
-
                     break;
-
             }
             
             switch (params.dataType) {
