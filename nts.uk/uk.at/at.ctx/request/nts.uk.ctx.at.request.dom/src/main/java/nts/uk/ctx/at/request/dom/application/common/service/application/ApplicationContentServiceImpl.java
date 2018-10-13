@@ -291,6 +291,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			}
 			case POSTERIOR: {
 				// PRE
+				String contentPre = "";
 				List<Application_New> listPreApp = repoApp.getApp(app.getEmployeeID(), app.getAppDate(),
 						PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
 				Application_New preApp = (listPreApp.size() > 0 ? listPreApp.get(0) : null);
@@ -300,11 +301,11 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					String time1 = repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom1()) == "" ? "" : 
 						repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") 
 						+ repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo1());
-					content += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
+					contentPre += "\n" + I18NText.getText("CMM045_273") + " " + I18NText.getText("CMM045_268") + " "
 							+ time1;
-					content += (!Objects.isNull(preOverTime.getWorkClockFrom2())
+					contentPre += (!Objects.isNull(preOverTime.getWorkClockFrom2())
 							? " " + repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
-					content += (!Objects.isNull(preOverTime.getWorkClockTo2())
+					contentPre += (!Objects.isNull(preOverTime.getWorkClockTo2())
 							? repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo2()) : "");
 					String moreInf = "";
 					int count = 0;
@@ -375,16 +376,17 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						}
 					}
 					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
-					content += " " + frameInfo;
+					contentPre += " " + frameInfo;
 				}
 
 				// AFTER
-				content += "\n" + I18NText.getText("CMM045_274") + " " + I18NText.getText("CMM045_268") + " "
+				String contentPost = "";
+				contentPost += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
 						+ repoAppDetailInfo.convertTime(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100")
 						+ repoAppDetailInfo.convertTime(overTime.getWorkClockTo1());
-				content += (!Objects.isNull(overTime.getWorkClockFrom2())
+				contentPost += (!Objects.isNull(overTime.getWorkClockFrom2())
 						? overTime.getWorkClockFrom2() + I18NText.getText("CMM045_100") : "");
-				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? overTime.getWorkClockTo2() : "");
+				contentPost += (!Objects.isNull(overTime.getWorkClockTo2()) ? overTime.getWorkClockTo2() : "");
 				String moreInf = "";
 				int count = 0;
 				int totalWorkUnit = 0;
@@ -456,7 +458,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
-				content += " " + frameInfo;
+				contentPost += " " + frameInfo;
+				
+				content += contentPost + contentPre;
 			}
 			case NONE: {
 				
