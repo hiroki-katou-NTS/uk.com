@@ -27,7 +27,6 @@ module nts.uk.at.view.kdw001.c {
             enable: KnockoutObservable<boolean>;
             required: KnockoutObservable<boolean>;
             dateValue: KnockoutObservable<any>;
-            inputPeriod: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             // startDate for validate
@@ -96,9 +95,6 @@ module nts.uk.at.view.kdw001.c {
                 self.dateValue = ko.observable({});
                 self.dateValue().startDate = ko.observable("");
                 self.dateValue().endDate = ko.observable("");
-                self.inputPeriod = ko.observable({});
-                self.inputPeriod().startDate = ko.observable("");
-                self.inputPeriod().endDate = ko.observable("");
                 self.startDateValidate = ko.observable("");
 
 
@@ -110,10 +106,7 @@ module nts.uk.at.view.kdw001.c {
                     self.periodStartDate = data.startDate;
                     self.dateValue().startDate = data.startDate;
                     self.dateValue().endDate = data.endDate;
-                    self.inputPeriod().startDate(data.startDate);
-                    self.inputPeriod().endDate(data.endDate);
                     self.dateValue.valueHasMutated();
-                    self.inputPeriod.valueHasMutated();
                     self.reloadCcg001();
 //                    $('#ccgcomponent').focus();
 //                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);

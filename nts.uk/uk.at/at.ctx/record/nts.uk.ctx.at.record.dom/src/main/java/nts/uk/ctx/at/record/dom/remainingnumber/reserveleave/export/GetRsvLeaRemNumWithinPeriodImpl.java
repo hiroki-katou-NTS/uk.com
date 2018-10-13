@@ -478,10 +478,6 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			if (grantDate.beforeOrEquals(period.start())) continue;
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 			
-			if (dividedDayMap.containsKey(grantDate)){
-				dividedDayMap.get(grantDate).setGrantAtr(true);
-				continue;
-			}
 			dividedDayMap.putIfAbsent(grantDate, new RsvLeaDividedDay(grantDate));
 			dividedDayMap.get(grantDate).setGrantAtr(true);
 			dividedDayMap.get(grantDate).setNextReserveLeaveGrant(Optional.of(NextReserveLeaveGrant.of(

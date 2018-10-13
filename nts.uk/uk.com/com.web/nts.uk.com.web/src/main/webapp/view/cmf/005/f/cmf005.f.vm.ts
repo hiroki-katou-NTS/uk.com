@@ -42,7 +42,11 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         
         //button
         btnCloseDisplay: KnockoutObservable<boolean>;
-
+        
+        enableDate: KnockoutObservable<boolean>;
+        enableMonth: KnockoutObservable<boolean>;
+        enableYear: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;
             var params = nts.uk.ui.windows.getShared("CMF005_E_PARAMS");
@@ -111,8 +115,24 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.errorCount = ko.observable("0件");
             self.dialogMode = ko.observable("deleting"); 
              $("#F10_1").focus();
-
+            
+            self.enableDate = ko.observable(true);
+            self.enableMonth = ko.observable(true);
+            self.enableYear = ko.observable(true);
+            
+            if (self.dateStartValue == '' && self.dateEndValue == '') {
+                self.enableDate(false);
             }
+            
+             if (self.monthStartValue == '' && self.monthEndValue == '') {
+                self.enableMonth(false);
+            }
+            
+             if (self.yearStartValue == '' && self.yearEndValue == '') {
+                self.enableYear(false);
+            }
+
+        }
 
         start(): JQueryPromise<any> {
             let self = this,

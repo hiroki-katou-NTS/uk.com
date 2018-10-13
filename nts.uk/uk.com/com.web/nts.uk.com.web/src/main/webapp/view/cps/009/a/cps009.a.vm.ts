@@ -301,6 +301,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
+                                self.currentCategory().itemList()[i].selectedRuleCode.valueHasMutated();
                             }
                         });
                     }
@@ -951,7 +952,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
 
-                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? self.selectedCode() + " "+text("CPS001_107") : objSel.optionText));
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + " "+text("CPS001_107"))) : objSel.optionText));
 
                     break;
 

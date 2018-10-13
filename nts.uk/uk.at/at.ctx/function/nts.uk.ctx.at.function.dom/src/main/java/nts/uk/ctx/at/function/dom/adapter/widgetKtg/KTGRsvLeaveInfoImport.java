@@ -12,6 +12,8 @@ public class KTGRsvLeaveInfoImport {
 	private Double befRemainDay;
 	//付与後残数
 	private Double aftRemainDay;
+	/*積立年休残数*/
+	private Double remainingDays;
 	//付与日
 	private GeneralDate grantDay;
 }

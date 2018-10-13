@@ -275,8 +275,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				}
 			});
 		}
-		HolidayWorktimeAppRequestPara appPara = new HolidayWorktimeAppRequestPara(holidayWorkData.getWorkTypeCode().v(), 
-				holidayWorkData.getWorkTimeCode().v(),
+		HolidayWorktimeAppRequestPara appPara = new HolidayWorktimeAppRequestPara(holidayWorkData.getWorkTypeCode() != null ? holidayWorkData.getWorkTypeCode().v() : null, 
+				holidayWorkData.getWorkTimeCode() != null ? holidayWorkData.getWorkTimeCode().v() : null,
 				mapOvertimeFrame,
 				holidayWorkData.getHolidayShiftNight(),
 				appInfor.getReflectionInformation().getStateReflectionReal(), 
