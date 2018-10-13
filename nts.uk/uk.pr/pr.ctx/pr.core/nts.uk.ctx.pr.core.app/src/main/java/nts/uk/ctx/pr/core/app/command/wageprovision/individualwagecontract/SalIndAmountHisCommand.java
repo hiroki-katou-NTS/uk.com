@@ -1,11 +1,14 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 
-@Value
+@Data
+@AllArgsConstructor
 public class SalIndAmountHisCommand {
 
 

@@ -98,6 +98,25 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
 
         deleteHistory() {
             let self = this;
+            let newHistory = self.selectedHistory;
+            let newEmployee = self.selectedEmployee;
+            let command = {
+                //emp history
+                yearMonthHistoryItem: newHistory,
+                //emp info data
+                empId: newEmployee.empId,
+                perValCode: newEmployee.personalValcode
+            };
+
+            service.deleteSalIndividualAmountHistory(command).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                    setShared('QMM039_C_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    nts.uk.ui.windows.close();
+                });
+            }).fail(function(err) {
+                dialog.alertError(err.message);
+            });
+
         }
 
         cancel() {
