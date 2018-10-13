@@ -1211,7 +1211,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (self.ctgCode() == "CS00020" || self.ctgCode() == "CS00070") {
 
                 if (isKdl002) {
-                    setShared("KDL002_isShowNoSelectRow", true);
                     setShared("KDL002_Multiple", false, true);
                     setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                     setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
@@ -1254,7 +1253,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     } else {
                         if (isWorkType) {
-                            setShared("KDL002_isShowNoSelectRow", true);
                             setShared("KDL002_Multiple", false, true);
                             setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
                             setShared('kdl002isSelection', true, true);
