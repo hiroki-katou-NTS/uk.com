@@ -3,11 +3,10 @@ module nts.uk.pr.view.qmm039.c.service {
     import format = nts.uk.text.format;
 
     var paths = {
-        get: "#",
+        editSalIndividualAmountHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/editHistory"
     }
 
-    export function get (param: string): JQueryPromise<any> {
-        let _path = format(paths.get, param);
-        return ajax(_path);
+    export function editSalIndividualAmountHistory(command): JQueryPromise<any> {
+        return ajax(paths.editSalIndividualAmountHistory, command);
     }
 }

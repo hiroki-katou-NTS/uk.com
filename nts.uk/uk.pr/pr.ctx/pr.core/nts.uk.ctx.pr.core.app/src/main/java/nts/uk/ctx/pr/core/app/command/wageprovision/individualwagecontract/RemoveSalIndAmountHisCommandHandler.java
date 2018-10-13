@@ -20,7 +20,7 @@ public class RemoveSalIndAmountHisCommandHandler extends CommandHandler<SalIndAm
     
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountHisCommand> context) {
-        String historyId = context.getCommand().getHistoryId();
+        String historyId = context.getCommand().getPeriod().getHistoryID();
         String perValCode = context.getCommand().getPerValCode();
         String empId = context.getCommand().getEmpId();
         repository.remove(historyId, perValCode, empId);

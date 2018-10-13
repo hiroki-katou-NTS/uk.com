@@ -3,14 +3,11 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 
 @Value
 public class SalIndAmountHisCommand {
 
-    /**
-     * 履歴ID
-     */
-    private String historyId;
 
     /**
      * 個人金額コード
@@ -30,12 +27,7 @@ public class SalIndAmountHisCommand {
     /**
      * 期間
      */
-    private Integer periodStartYM;
-
-    /**
-     * 期間
-     */
-    private Integer periodEndYM;
+    private GenericHistYMPeriod period;
 
     /**
      * 給与賞与区分
