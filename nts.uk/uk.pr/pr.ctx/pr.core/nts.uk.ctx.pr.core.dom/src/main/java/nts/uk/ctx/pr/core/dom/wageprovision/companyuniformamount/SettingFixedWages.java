@@ -32,8 +32,11 @@ public class SettingFixedWages extends DomainObject
     
     public SettingFixedWages(int setClassification,Integer targetClass,Integer monthSalaryPerDay, Integer aDayPayee, Integer hourlyPay, Integer monthSalary) {
         this.setClassification = EnumAdaptor.valueOf(setClassification, SetFixedWageClass.class);
-        this.flatAllEmployees = Optional.of(new DesByAllMembers(targetClass));
-        this.perSalaryConType = Optional.of(new DesForEachSalaryConType(monthSalaryPerDay,aDayPayee,hourlyPay,monthSalary));
+        this.flatAllEmployees = targetClass == null ? Optional.empty() : Optional.of(new DesByAllMembers(targetClass));
+        this.perSalaryConType = monthSalaryPerDay == null
+                                && aDayPayee == null
+                                && hourlyPay == null
+                                && monthSalary == null ? Optional.empty() : Optional.of(new DesForEachSalaryConType(monthSalaryPerDay,aDayPayee,hourlyPay,monthSalary));
     }
     
 }

@@ -20,7 +20,7 @@ public class DesByAllMembers extends DomainObject
     private FixedWageClassification targetClass;
     
     public DesByAllMembers(Integer targetClass) {
-        this.targetClass = EnumAdaptor.valueOf(targetClass, FixedWageClassification.class);
+        this.targetClass = targetClass == null ? null : EnumAdaptor.valueOf(targetClass, FixedWageClassification.class);
     }
     
 }

@@ -36,10 +36,10 @@ public class DesForEachSalaryConType extends DomainObject
     private TargetClassBySalaryConType monthlySalary;
     
     public DesForEachSalaryConType(Integer monthSalaryPerDay, Integer aDayPayee, Integer hourlyPay, Integer monthSalary) {
-        this.monthlySalary = EnumAdaptor.valueOf(monthSalaryPerDay, TargetClassBySalaryConType.class);
-        this.monthSalaryPerDay = EnumAdaptor.valueOf(aDayPayee, TargetClassBySalaryConType.class);
-        this.aDayPayee = EnumAdaptor.valueOf(hourlyPay, TargetClassBySalaryConType.class);
-        this.hourlyPay = EnumAdaptor.valueOf(monthSalary, TargetClassBySalaryConType.class);
+        this.monthlySalary = monthSalary == null ? null : EnumAdaptor.valueOf(monthSalary, TargetClassBySalaryConType.class);
+        this.monthSalaryPerDay = monthSalaryPerDay == null ? null : EnumAdaptor.valueOf(monthSalaryPerDay, TargetClassBySalaryConType.class);
+        this.aDayPayee = aDayPayee == null ? null : EnumAdaptor.valueOf(aDayPayee, TargetClassBySalaryConType.class);
+        this.hourlyPay = hourlyPay == null ? null : EnumAdaptor.valueOf(hourlyPay, TargetClassBySalaryConType.class);
     }
     
 }

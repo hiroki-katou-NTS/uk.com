@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 460, height: 450 };</script>
+			<script>var dialogSize = { width: 460, height: 400 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm007.b.vm.js" />
@@ -71,7 +71,7 @@
 					</div>
 			</div>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" style="z-index: auto">
 				<!-- E2_1 登録 -->
 				<button id="B2_1" tabindex="3" class="proceed large"
 					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_36')}</button>

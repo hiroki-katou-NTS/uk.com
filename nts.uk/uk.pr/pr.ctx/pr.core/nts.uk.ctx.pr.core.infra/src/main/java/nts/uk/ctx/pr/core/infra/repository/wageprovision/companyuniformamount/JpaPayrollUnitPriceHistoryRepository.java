@@ -33,8 +33,10 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
                 .setParameter("code", code)
                 .setParameter("hisId", hisId)
                .getList();
-        return Optional.of(new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cid,toDomain(temp)));
-
+         if(temp != null && temp.size() > 0){
+             return Optional.of(new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cid,toDomain(temp)));
+         }
+         return Optional.empty();
     }
 
     @Override
@@ -55,7 +57,10 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
                 .setParameter("cid", cid)
                 .setParameter("code", code)
                 .getList();
-        return Optional.of(new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cid,toDomain(temp)));
+        if(temp != null && temp.size() > 0){
+            return Optional.of(new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cid,toDomain(temp)));
+        }
+        return Optional.empty();
     }
 
     private List<YearMonthHistoryItem> toDomain(List<QpbmtPayUnitPriceHis> entities) {

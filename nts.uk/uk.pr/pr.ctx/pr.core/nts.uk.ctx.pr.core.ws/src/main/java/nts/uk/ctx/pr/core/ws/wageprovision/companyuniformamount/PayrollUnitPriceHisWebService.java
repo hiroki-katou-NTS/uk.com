@@ -21,7 +21,6 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
 
-
 @Path("core/wageprovision/companyuniformamount")
 @Produces("application/json")
 public class PayrollUnitPriceHisWebService extends WebService {
@@ -32,14 +31,11 @@ public class PayrollUnitPriceHisWebService extends WebService {
     @Inject
     private AddPayrollUnitPriceHistoryCommandHandler addPayrollUnitPriceHistoryCommandHandler;
 
-
     @Inject
     private RegisterPayrollUnitPriceSettingCommandHandler registerPayrollUnitPriceSettingCommandHandler;
 
-
     @Inject
     private UpdatePayrollUnitPriceHistoryCommandHandler updatePayrollUnitPriceHistoryCommandHandler;
-
 
     @POST
     @Path("getPayrollUnitPriceHis")
@@ -70,17 +66,6 @@ public class PayrollUnitPriceHisWebService extends WebService {
         registerPayrollUnitPriceSettingCommandHandler.handle(command);
     }
 
-    /*@POST
-    @Path("getPayrollUnitPriceHisById/{code}/{hisId}")
-    public PayrollUnitPriceHistoryDto getPayrollUnitPriceHisById(@PathParam("code") String code, @PathParam("hisId") String hisId){
-        String cid = AppContexts.user().companyId();
-        Optional<PayrollUnitPriceHistoryDto> payrollUnitPriceHistoryDto = payrollUnitPriceHistoryFinder.getPayrollUnitPriceHistoryById(cid,code,hisId);
-        if(payrollUnitPriceHistoryDto.isPresent()){
-            return payrollUnitPriceHistoryDto.get();
-        }
-        return null;
-    }*/
-
     @POST
     @Path("getPayrollUnitPriceHisById/{code}/{hisId}")
     public PayrollUnitPriceHistorySettingDto getPayrollUnitPriceHisById(@PathParam("code") String code, @PathParam("hisId") String hisId){
@@ -94,11 +79,11 @@ public class PayrollUnitPriceHisWebService extends WebService {
                     code,hisId,item.start().v(),
                     item.end().v(),
                     payrollUnitPriceSet.getAmountOfMoney().v(),
-                    payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().isPresent() ? payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass().value : null,
-                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value : null,
-                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee().value : null,
-                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay().value : null,
-                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary().value : null,
+                    payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().isPresent() && payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass() != null ? payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay().value : null,
+                    payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee().value : null,
                     payrollUnitPriceSet.getFixedWage().getSetClassification().value,
                     payrollUnitPriceSet.getNotes().isPresent() ? payrollUnitPriceSet.getNotes().get().v() : null);
         }

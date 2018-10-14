@@ -36,12 +36,14 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                 endYearMonth: self.mPayrollUnitPriceHis().endYearMonth,
                 isMode:this.methodEditing()
             }
+
             if(this.methodEditing() == EDIT_METHOD.DELETE){
                 dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
                     service.submitPayrollUnitPriceHis(data).done((data) => {
                         dialog.info({ messageId: "Msg_16" }).then(function () {
                             setShared('QMM007_C_PARAMS_OUTPUT', {
                                 methodEditing: self.methodEditing(),
+                                startYearMonth: self.startYearMonth()
                             });
                             self.cancel();
                         });
@@ -57,6 +59,10 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             }
             else {
                 service.submitPayrollUnitPriceHis(data).done(() => {
+                    setShared('QMM007_C_PARAMS_OUTPUT', {
+                        methodEditing: self.methodEditing(),
+                        startYearMonth: self.startYearMonth()
+                    });
                     self.cancel();
                 }).fail(function (res: any) {
                     if (res)
@@ -81,7 +87,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             self.startYearMonth(params.startYearMonth);
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
             self.textResourceRadioFirt(getText('QMM007_42',[self.convertMonthYearToString(self.startYearMonth())]));
-            self.isFirst(params.isFirst);
+            self.isFirst(params.isFirst ? (params.notDelete ? false : true) : false);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
         }
        hasRequired(){

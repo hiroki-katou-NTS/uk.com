@@ -124,11 +124,11 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
                 item.start().v(),
                 item.end().v(),
                 payrollUnitPriceSet.getAmountOfMoney().v(),
-                payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().isPresent() ? payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass().value : null,
-                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value : null,
-                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee().value : null,
-                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay().value : null,
-                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary().value : null,
+                payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().isPresent() && payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass() != null ? payrollUnitPriceSet.getFixedWage().getFlatAllEmployees().get().getTargetClass().value : null,
+                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value : null,
+                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getADayPayee().value : null,
+                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getHourlyPay().value : null,
+                payrollUnitPriceSet.getFixedWage().getPerSalaryConType().isPresent() && payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary() != null ? payrollUnitPriceSet.getFixedWage().getPerSalaryConType().get().getMonthlySalary().value : null,
                 payrollUnitPriceSet.getFixedWage().getSetClassification().value,
                 payrollUnitPriceSet.getNotes().isPresent() ? payrollUnitPriceSet.getNotes().get().v() : null
                 );
