@@ -55,10 +55,17 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
         .getList());
     }
 
+    private static final String SELECT_BY_KEY_PEL_VAL = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
     @Override
-    public Optional<SalIndAmountHis> getSalIndAmountHisByPerVal( String perValCode) {
-        return Optional.empty();
+    public Optional<SalIndAmountHis> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate) {
+        return this.toDomain(this.queryProxy().query(SELECT_BY_KEY_PEL_VAL, QpbmtSalIndAmountHis.class)
+                .setParameter("perValCode", perValCode)
+                .setParameter("cateIndicator", cateIndicator)
+                .setParameter("salBonusCate", salBonusCate)
+                .getList()
+        );
     }
+
 
     @Override
     public void add(SalIndAmountHis domain){

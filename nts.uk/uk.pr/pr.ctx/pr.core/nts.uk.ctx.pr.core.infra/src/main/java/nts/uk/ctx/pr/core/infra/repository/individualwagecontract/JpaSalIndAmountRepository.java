@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.core.infra.repository.individualwagecontract;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -44,5 +46,11 @@ public class JpaSalIndAmountRepository extends JpaRepository implements SalIndAm
     @Override
     public void remove(String historyId){
         this.commandProxy().remove(QpbmtSalIndAmount.class, new QpbmtSalIndAmountPk(historyId));
+    }
+
+    @Override
+    public void updateAll(List<SalIndAmount> domains) {
+        List<QpbmtSalIndAmount> entities=domains.stream().map(v->QpbmtSalIndAmount.toEntity(v)).collect(Collectors.toList());
+        this.commandProxy().updateAll(entities);
     }
 }
