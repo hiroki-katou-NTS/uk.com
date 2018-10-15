@@ -353,6 +353,9 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 if(param){
                     self.createGridList().done(()=>{
                         if(param.methodEditing === EDIT_METHOD.DELETE){
+                            if(self.dataSource().length == 0) {
+                                self.create();
+                            }
                             self.singleSelectedCode(self.dataSource()[0].childs[0].code);
                         }else{
                             self.newYearMonth(param.startYearMonth);

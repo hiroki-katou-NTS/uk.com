@@ -11,8 +11,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtP
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPricePk;
 
 @Stateless
-public class JpaPayrollUnitPriceRepository extends JpaRepository implements PayrollUnitPriceRepository
-{
+public class JpaPayrollUnitPriceRepository extends JpaRepository implements PayrollUnitPriceRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPrice f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPricePk.code =:code AND  f.payUnitPricePk.cid =:cid ";
@@ -36,18 +35,16 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
 
     @Override
     public void add(PayrollUnitPrice domain){
-
         this.commandProxy().insert(QpbmtPayUnitPrice.toEntity(domain));
     }
 
     @Override
     public void update(PayrollUnitPrice domain){
-
         this.commandProxy().update(QpbmtPayUnitPrice.toEntity(domain));
     }
 
     @Override
     public void remove(String code, String cid){
-        this.commandProxy().remove(QpbmtPayUnitPrice.class, new QpbmtPayUnitPricePk(code, cid));
+        this.commandProxy().remove(QpbmtPayUnitPrice.class, new QpbmtPayUnitPricePk(cid, code));
     }
 }
