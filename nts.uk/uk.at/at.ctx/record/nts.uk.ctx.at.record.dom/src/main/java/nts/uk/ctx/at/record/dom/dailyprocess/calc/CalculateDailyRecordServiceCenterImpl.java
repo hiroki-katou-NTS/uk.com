@@ -221,7 +221,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
-				asyncContext.get().finishedAsCancelled();
+				//asyncContext.get().finishedAsCancelled();
 				return new ManageProcessAndCalcStateResult(ProcessState.INTERRUPTION,Collections.emptyList());
 			}
 			returnList.addAll(returnValue);
@@ -281,7 +281,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
-				asyncContext.get().finishedAsCancelled();
+				//asyncContext.get().finishedAsCancelled();
 				return Collections.emptyList();
 			}
 			

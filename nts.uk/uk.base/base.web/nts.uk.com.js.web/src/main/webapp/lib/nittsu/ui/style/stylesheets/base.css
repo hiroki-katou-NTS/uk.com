@@ -698,6 +698,31 @@ input[type=text]::-ms-clear {
   background-color: #ffc0cb !important;
 }
 
+/* line 63, ../sass/components/_color.scss */
+.bg-36contract-error {
+  background-color: #FD4D4D;
+}
+
+/* line 66, ../sass/components/_color.scss */
+.bg-36contract-alarm {
+  background-color: #F6F636;
+}
+
+/* line 69, ../sass/components/_color.scss */
+.bg-36contract-exception {
+  background-color: #EB9152;
+}
+
+/* line 72, ../sass/components/_color.scss */
+.color-36contract-error {
+  color: #FFFFFF;
+}
+
+/* line 75, ../sass/components/_color.scss */
+.color-36contract-alarm {
+  color: #FF0000;
+}
+
 /*****************************
   Overwrite JQueryUI
 *****************************/

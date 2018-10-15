@@ -122,8 +122,8 @@ module nts.uk.at.view.kaf007.b {
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
                             self.multilContent( self.appWorkChange().application().applicationReason() );
-                            self.workTypeCodes = detailData.workTypeCodes;
-                            self.workTimeCodes = detailData.workTimeCodes;
+                            self.workTypeCodes = detailData.dataWorkDto.workTypeCodes;
+                            self.workTimeCodes = detailData.dataWorkDto.workTimeCodes;
                             self.requiredCheckTime(self.isWorkChange() && detailData.timeRequired);
                             //画面モード(表示/編集)
                             //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
@@ -182,18 +182,19 @@ module nts.uk.at.view.kaf007.b {
                 return result;
             }
             
-            showReasonText(){
-            let self =this;
+            showReasonText() {
+                let self = this;
                 if (self.screenModeNew()) {
-                return self.displayAppReasonContentFlg();
-            } else {
-                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
-            }    
+                    return self.displayAppReasonContentFlg();
+                } else {
+                    return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+                }
             }
-            showRightContent(){
-        let self =this;
-         return   self.appChangeSetting().displayResultAtr()==1 && self.appWorkChange().application().prePostAtr() == 1   ; 
-        }
+            
+            showRightContent() {
+                let self = this;
+                return self.appChangeSetting().displayResultAtr() == 1 && self.appWorkChange().application().prePostAtr() == 1;
+            }
 
             /**
              * 「登録」ボタンをクリックする

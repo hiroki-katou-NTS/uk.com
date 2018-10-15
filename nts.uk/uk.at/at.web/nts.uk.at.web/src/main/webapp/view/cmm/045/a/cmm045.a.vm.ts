@@ -574,7 +574,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
-            let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
+            let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + self.convertFrameTimeHd(hdWork.lstFrame);
             //No.417
             let timeNo417 = self.displayTimeNo417(hdWork.timeNo417);
             let appCt010 = appContent010 + timeNo417 + reason;
@@ -744,7 +744,7 @@ module cmm045.a.viewmodel {
             _.each(lstSort, function(item, index) {
                 if (item.applicationTime != 0) {
                     if (count <= 1) {
-                        framName += item.name + self.convertTime_Short_HM(item.applicationTime);
+                        framName += '　' + item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
                     count += 1;
@@ -752,7 +752,7 @@ module cmm045.a.viewmodel {
             });
             let other = count > 2 ? count - 2 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = self.convertTime_Short_HM(time) + '(' + framName + otherInfo + ')';
+            let result = framName + otherInfo;
             return result;
         }
         /**
@@ -786,7 +786,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
-            let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
+            let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + self.convertFrameTimeHd(hdWork.lstFrame);
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             //No.417
             let timeNo417 = self.displayTimeNo417(hdWork.timeNo417);
@@ -884,7 +884,7 @@ module cmm045.a.viewmodel {
             if(groups.appPreHd != null){
                 let ca1 = groups.appPreHd.startTime1 == '' ? '' : groups.appPreHd.startTime1 + getText('CMM045_100') + groups.appPreHd.endTime1;
                 let ca2 = groups.appPreHd.startTime2 == '' ? '' : groups.appPreHd.startTime2 + getText('CMM045_100') + groups.appPreHd.endTime2;
-                appPre = getText('CMM045_275') + groups.appPreHd.workTypeName + groups.appPreHd.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(groups.appPreHd.lstFrame);
+                appPre = getText('CMM045_275') + groups.appPreHd.workTypeName + groups.appPreHd.workTimeName + ca1 + ca2 + self.convertFrameTimeHd(groups.appPreHd.lstFrame);
             }
             let appResContent = '';
             //thuc te

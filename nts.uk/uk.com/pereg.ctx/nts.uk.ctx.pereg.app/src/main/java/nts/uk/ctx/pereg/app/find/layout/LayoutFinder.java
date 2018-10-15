@@ -17,13 +17,8 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -114,13 +109,6 @@ public class LayoutFinder {
 	
 	@Inject
 	private LayoutControlComBoBox layoutControlComboBox;
-	
-	@Inject
-	private AffWorkplaceHistoryItemRepository affWrkplcHistItemRepo;
-
-	@Inject
-	private AffWorkplaceHistoryRepository affWrkplcHistRepo;
-	
 	
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
@@ -224,20 +212,6 @@ public class LayoutFinder {
 				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
 				.collect(Collectors.groupingBy(LayoutPersonInfoClsDto::getPersonInfoCategoryID));
 		
-		String workPlaceId = null;
-		if (classItemInCategoryMap.entrySet().stream().anyMatch(k->k.getKey().contains("CS00017"))) {
-			Optional<AffWorkplaceHistory> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(browsingEmpId,
-					standardDate);
-			if (affWrkplcHist.isPresent()) {
-
-				Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo
-						.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
-				if (affWrkplcHistItem.isPresent()) {
-					workPlaceId = affWrkplcHistItem.get().getWorkplaceId();
-				}
-			}
-		}
-		
 		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet()) {
 			String categoryId = classItemsOfCategory.getKey();
 			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue();
@@ -254,11 +228,11 @@ public class LayoutFinder {
 			case CONTINUOUS_HISTORY_FOR_ENDDATE:
 				// get data
 				getDataforSingleItem(perInfoCategory, classItemList, standardDate, browsingPeronId, browsingEmpId,
-						query, workPlaceId);
+						query);
 				break;
 			case MULTIINFO:
 				getDataforListItem(perInfoCategory, classItemList.get(0), standardDate, browsingPeronId, browsingEmpId,
-						query, workPlaceId);
+						query);
 				break;
 			default:
 				break;
@@ -383,7 +357,7 @@ public class LayoutFinder {
 	 * @param query
 	 */
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList,
-			GeneralDate standardDate, String personId, String employeeId, PeregQuery query, String workPlace) {
+			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 
 		cloneDefItemToValueItem(perInfoCategory, classItemList);
 
@@ -433,7 +407,7 @@ public class LayoutFinder {
 		}
 
 		// For each classification item to get combo box list
-		layoutControlComboBox.getComboBoxListForSelectionItems(employeeId, perInfoCategory, classItemList, comboBoxStandardDate, workPlace);
+		layoutControlComboBox.getComboBoxListForSelectionItems(employeeId, perInfoCategory, classItemList, comboBoxStandardDate);
 
 		// set default value
 		initDefaultValue.setDefaultValue(classItemList);
@@ -441,7 +415,7 @@ public class LayoutFinder {
 	}
 
 	private void getDataforListItem(PersonInfoCategory perInfoCategory, LayoutPersonInfoClsDto classItem,
-			GeneralDate standardDate, String personId, String employeeId, PeregQuery query, String workPlace) {
+			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 		
 		classItem.setItems(new ArrayList<>());
 		
@@ -473,7 +447,7 @@ public class LayoutFinder {
 		stampCardLength.updateLength(perInfoCategory, Arrays.asList(classItem));
 
 		layoutControlComboBox.getComboBoxListForSelectionItems(employeeId, perInfoCategory, Arrays.asList(classItem),
-				GeneralDate.today(), workPlace);
+				GeneralDate.today());
 
 	}
 
