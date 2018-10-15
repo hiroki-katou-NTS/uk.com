@@ -12,6 +12,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountH
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import java.util.List;
+
 @Stateless
 @Transactional
 public class UpdateSalIndAmountHisCommandHandler extends CommandHandler<SalIndAmountHisCommand> {
@@ -27,11 +29,9 @@ public class UpdateSalIndAmountHisCommandHandler extends CommandHandler<SalIndAm
         int cateIndicator = command.getCateIndicator();
         int salBonusCate = command.getSalBonusCate();
 
-        YearMonthPeriod period = command.getPeriod().getPeriodYearMonth();
-
-        //SalIndAmountHis salIndAmountHis = new SalIndAmountHis(perValCode, empId, cateIndicator, period,salBonusCate  );
-
-        //repository.update(salIndAmountHis);
+        List<GenericHistYMPeriod> period = (List<GenericHistYMPeriod>) command.getPeriod().getPeriodYearMonth();
+        SalIndAmountHis salIndAmountHis = new SalIndAmountHis(perValCode, empId, cateIndicator, period, salBonusCate);
+        repository.update(salIndAmountHis);
 
     }
 }
