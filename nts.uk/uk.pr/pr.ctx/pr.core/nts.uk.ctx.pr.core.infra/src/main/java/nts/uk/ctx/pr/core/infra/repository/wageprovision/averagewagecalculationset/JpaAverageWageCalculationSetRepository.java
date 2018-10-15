@@ -12,27 +12,30 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaAverageWageCalculationSetRepository extends JpaRepository implements AverageWageCalculationSetRepository
-{
+public class JpaAverageWageCalculationSetRepository extends JpaRepository implements AverageWageCalculationSetRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtAverageWage f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.averageWagePk.cid =:cid ";
 
 
-    private static final String SELECT_CUSTOM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
-            + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
-            + " ON a.statementItemPk.salaryItemId = b.paymentItemStPk.salaryItemId "
-            + " INNER JOIN QpbmtTimeItemSt c"
-            + " ON a.statementItemPk.salaryItemId = c.timeItemStPk.salaryItemId "
-            + " INNER JOIN QpbmtStatementItemName d"
-            + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
-            + " WHERE  a.statementItemPk.cid =:cid "
-            + " AND b.averageWageAtr = 1 AND c.averageWageAtr = 1";
-    private static final String SELECT_CUSTOM_BY_PAYMENT_ITEM = SELECT_CUSTOM
-            + " AND a.statementItemPk.categoryAtr = 0 ORDER BY a.statementItemPk.salaryItemId";
-    private static final String SELECT_CUSTOM_BY_ATTENDANCE_ITEM = SELECT_CUSTOM
-            + " AND a.statementItemPk.categoryAtr = 2 ORDER BY a.statementItemPk.salaryItemId";
-    private static final String  SELECT_ALL_CUSTOM_PAYMENT_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
+    private static final String SELECT_CUSTOM_BY_PAYMENT_ITEM =
+            "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
+                    + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
+                    + " ON a.statementItemPk.salaryItemId = b.paymentItemStPk.salaryItemId "
+                    + " INNER JOIN QpbmtStatementItemName d"
+                    + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
+                    + " WHERE  a.statementItemPk.cid =:cid "
+                    + " AND b.averageWageAtr = 1 AND c.averageWageAtr = 1" + " AND a.statementItemPk.categoryAtr = 0 ORDER BY a.statementItemPk.salaryItemId";
+    private static final String SELECT_CUSTOM_BY_ATTENDANCE_ITEM =
+            "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
+                    + " INNER JOIN QpbmtTimeItemSt c"
+                    + " ON a.statementItemPk.salaryItemId = c.timeItemStPk.salaryItemId "
+                    + " INNER JOIN QpbmtStatementItemName d"
+                    + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
+                    + " WHERE  a.statementItemPk.cid =:cid "
+                    + " AND b.averageWageAtr = 1 AND c.averageWageAtr = 1"
+                    + " AND a.statementItemPk.categoryAtr = 2 ORDER BY a.statementItemPk.salaryItemId";
+    private static final String SELECT_ALL_CUSTOM_PAYMENT_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
             + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
             + " ON a.statementItemPk.salaryItemId = b.paymentItemStPk.salaryItemId "
             + " INNER JOIN QpbmtStatementItemName d "
@@ -40,7 +43,7 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
             + " WHERE  a.statementItemPk.cid =:cid "
             + " AND a.statementItemPk.categoryAtr = 0 "
             + " ORDER BY a.statementItemPk.itemNameCd";
-    private static final String  SELECT_ALL_CUSTOM_ATTENDANCE_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
+    private static final String SELECT_ALL_CUSTOM_ATTENDANCE_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
             + " FROM QpbmtStatementItem a INNER JOIN QpbmtTimeItemSt c "
             + " ON a.statementItemPk.salaryItemId = c.timeItemStPk.salaryItemId "
             + " INNER JOIN QpbmtStatementItemName d "
@@ -51,7 +54,7 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
             + " ORDER BY a.statementItemPk.itemNameCd";
 
     @Override
-    public List<AverageWageCalculationSet> getAllAverageWageCalculationSet(){
+    public List<AverageWageCalculationSet> getAllAverageWageCalculationSet() {
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtAverageWage.class)
                 .getList(item -> item.toDomain());
     }
@@ -89,24 +92,24 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
     }
 
     @Override
-    public Optional<AverageWageCalculationSet> getAverageWageCalculationSetById(String cid){
+    public Optional<AverageWageCalculationSet> getAverageWageCalculationSetById(String cid) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtAverageWage.class)
-        .setParameter("cid", cid)
-        .getSingle(c->c.toDomain());
+                .setParameter("cid", cid)
+                .getSingle(c -> c.toDomain());
     }
 
     @Override
-    public void add(AverageWageCalculationSet domain){
+    public void add(AverageWageCalculationSet domain) {
         this.commandProxy().insert(QpbmtAverageWage.toEntity(domain));
     }
 
     @Override
-    public void update(AverageWageCalculationSet domain){
+    public void update(AverageWageCalculationSet domain) {
         this.commandProxy().update(QpbmtAverageWage.toEntity(domain));
     }
 
     @Override
-    public void remove(String cid){
+    public void remove(String cid) {
         this.commandProxy().remove(QpbmtAverageWage.class, new QpbmtAverageWagePk(cid));
     }
 }
