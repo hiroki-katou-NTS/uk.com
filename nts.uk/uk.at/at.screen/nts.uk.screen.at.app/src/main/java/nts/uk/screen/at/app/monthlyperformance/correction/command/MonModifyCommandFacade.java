@@ -37,6 +37,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
@@ -135,7 +136,8 @@ public class MonModifyCommandFacade {
 			selfConfirm.add(new SelfConfirm(x.getEmployeeId(), x.isValue()));
 		});
 		ParamRegisterConfirmMonth param = new ParamRegisterConfirmMonth(ym, selfConfirm,
-				mPItemParent.getClosureId(), closureDate.getLastDayOfMonth() ? ym.lastDateInMonth() : closureDate.getClosureDay(), GeneralDate.today());
+				mPItemParent.getClosureId(), new ClosureDate(closureDate.getClosureDay(),
+						closureDate.getLastDayOfMonth()), GeneralDate.today());
 		
 		registerConfirmationMonth.registerConfirmationMonth(param);
 	}
