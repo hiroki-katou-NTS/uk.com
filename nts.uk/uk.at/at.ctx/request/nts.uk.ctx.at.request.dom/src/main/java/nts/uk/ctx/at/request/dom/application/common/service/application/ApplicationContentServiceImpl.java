@@ -745,15 +745,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+										moreInf += "　" + type + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 									}
 									count++;
 								}
 							}
 							String frameInfo = moreInf
 									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-							content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
-									+ I18NText.getText("CMM045_230", frameInfo);
+							content += frameInfo;
 						}
 					}
 					break;
@@ -843,15 +842,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 												break;
 											}
 											}
-											moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+											moreInf += "　" + type + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 										}
 										count++;
 									}
 								}
 								String frameInfo = moreInf
 										+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-								content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
-										+ I18NText.getText("CMM045_230", frameInfo);
+								content += frameInfo;
 							}
 						}
 					}
@@ -932,15 +930,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+										moreInf += "　" + type + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 									}
 									count ++;
 								}
 							}
 							String frameInfo = moreInf
 									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-							content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
-									+ I18NText.getText("CMM045_230", frameInfo);
+							content += frameInfo;
 						}
 					}
 				}
