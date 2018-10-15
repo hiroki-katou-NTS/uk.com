@@ -989,7 +989,7 @@ module nts.layout {
                                         }
                                     });
                                 } else {
-                                    setShared("KDL002_isShowNoSelectRow", workType.data.required == true? fasle: true);
+                                    setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
                                     setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
