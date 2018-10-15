@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_CONFIRMATION_MONTH")
+@Table(name = "KRCDT_CONFIRMATION_MONTH_NEW")
 public class KrcdtConfirmationMonth extends UkJpaEntity implements Serializable {
 
 	/**
