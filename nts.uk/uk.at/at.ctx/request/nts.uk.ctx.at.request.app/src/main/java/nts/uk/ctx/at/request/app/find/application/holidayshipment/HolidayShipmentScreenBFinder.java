@@ -149,7 +149,7 @@ public class HolidayShipmentScreenBFinder {
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
 				//期間内の振出振休残数を取得する
 				AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyID,
-						companyID,
+						employeeID,
 						new DatePeriod(refDate, refDate.addYears(1)),
 						GeneralDate.today(),
 						false,
