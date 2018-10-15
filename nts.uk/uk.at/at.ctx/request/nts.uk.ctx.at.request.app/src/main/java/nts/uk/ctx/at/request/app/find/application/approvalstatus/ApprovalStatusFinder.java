@@ -463,14 +463,14 @@ public class ApprovalStatusFinder {
 		String contentOther = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				contentOther += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
+				contentOther += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 				countItem++;
 				if (countItem > 1) {
 					break;
 				}
 			}
 		}
-		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
+		appContent += contentOther;
 		return appContent;
 	}
 

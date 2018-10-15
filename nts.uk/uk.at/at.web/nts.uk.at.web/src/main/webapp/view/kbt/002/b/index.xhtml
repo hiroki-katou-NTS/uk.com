@@ -39,8 +39,8 @@
 									primaryKey: 'execItemCd',
 									showNumbering:false,
 									columns: [
-						                { headerText: '#{i18n.getText('KBT002_7')}', key: 'execItemCd', width: 50 },
-						                { headerText: '#{i18n.getText('KBT002_8')}', key: 'execItemName', width: 225 }
+						                { headerText: '#{i18n.getText('KBT002_7')}', key: 'execItemCd', width: 50,formatter: _.escape },
+						                { headerText: '#{i18n.getText('KBT002_8')}', key: 'execItemName', width: 225 ,formatter: _.escape}
 						            ],
 									multiple: false,
 									value: selectedExecCd}">

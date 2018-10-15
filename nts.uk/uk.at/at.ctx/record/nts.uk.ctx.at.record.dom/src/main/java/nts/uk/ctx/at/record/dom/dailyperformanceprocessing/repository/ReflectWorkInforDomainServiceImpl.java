@@ -1000,7 +1000,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						} else {
 							workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
 							workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(null);
+							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(new ArrayList<>());
 						}
 					}
 				}

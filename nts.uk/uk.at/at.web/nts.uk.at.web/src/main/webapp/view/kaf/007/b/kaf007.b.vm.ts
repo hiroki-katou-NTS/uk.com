@@ -182,18 +182,19 @@ module nts.uk.at.view.kaf007.b {
                 return result;
             }
             
-            showReasonText(){
-            let self =this;
+            showReasonText() {
+                let self = this;
                 if (self.screenModeNew()) {
-                return self.displayAppReasonContentFlg();
-            } else {
-                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
-            }    
+                    return self.displayAppReasonContentFlg();
+                } else {
+                    return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+                }
             }
-            showRightContent(){
-        let self =this;
-         return   self.appChangeSetting().displayResultAtr()==1 && self.appWorkChange().application().prePostAtr() == 1   ; 
-        }
+            
+            showRightContent() {
+                let self = this;
+                return self.appChangeSetting().displayResultAtr() == 1 && self.appWorkChange().application().prePostAtr() == 1;
+            }
 
             /**
              * 「登録」ボタンをクリックする

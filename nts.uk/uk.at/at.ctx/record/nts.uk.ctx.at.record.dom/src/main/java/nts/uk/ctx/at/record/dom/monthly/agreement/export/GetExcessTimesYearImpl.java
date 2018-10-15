@@ -35,6 +35,7 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 		int excessCount = 0;
 		for (val agreementTime : agreementTimeList){
 			switch (agreementTime.getAgreementTime().getStatus()){
+			case EXCESS_LIMIT_ERROR:
 			case EXCESS_LIMIT_ERROR_SP:
 			case EXCESS_EXCEPTION_LIMIT_ALARM:
 			case EXCESS_EXCEPTION_LIMIT_ERROR:
