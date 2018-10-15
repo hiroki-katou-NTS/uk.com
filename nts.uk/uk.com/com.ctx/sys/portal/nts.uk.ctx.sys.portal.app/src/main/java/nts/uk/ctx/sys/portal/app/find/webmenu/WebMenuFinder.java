@@ -230,6 +230,10 @@ public class WebMenuFinder {
 								&& sm.getClassification() == m.getMenuCls()).findFirst()
 						.orElseThrow(() -> new RuntimeException("Menu not found."));
 				link = getProgramPath(sMenu);
+				
+				if (sMenu.getQueryString() != null) {
+					link += "?" + sMenu.getQueryString();
+				}
 			}
 			
 			List<TitleBarDetailDto> titleBars = m.getTitleMenu().stream().map(t -> {
