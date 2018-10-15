@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * @author thanhnx 月の本人確認を登録する
@@ -26,14 +27,17 @@ public class RegisterConfirmationMonth {
 		param.getSelfConfirm().stream().forEach(data -> {
 			if (data.isSelfConfirm()) {
 				Optional<ConfirmationMonth> confirmMonthOpt = confirmationMonthRepository.findByKey(companyId,
-						data.getEmployeeID(), ClosureId.valueOf(param.getClosureId()), new Day(param.getClosureDay()), param.getYearMonth());
+						// fix bug 101936
+						data.getEmployeeID(), ClosureId.valueOf(param.getClosureId()), new ClosureDate(param.getClosureDate().getClosureDay().v(), param.getClosureDate().getLastDayOfMonth()), param.getYearMonth());
 				if (!confirmMonthOpt.isPresent()) {
 					confirmationMonthRepository.insert(new ConfirmationMonth(new CompanyId(companyId),
 							data.getEmployeeID(), ClosureId.valueOf(param.getClosureId()),
-							new Day(param.getClosureDay()), param.getYearMonth(), param.getIndentifyYmd()));
+							// fix bug 101936
+							new ClosureDate(param.getClosureDate().getClosureDay().v(),  param.getClosureDate().getLastDayOfMonth()), param.getYearMonth(), param.getIndentifyYmd()));
 				}
 			} else {
-				confirmationMonthRepository.delete(companyId, data.getEmployeeID(), param.getClosureId(), param.getClosureDay(), param.getYearMonth().v());
+				// fix bug 101936
+				confirmationMonthRepository.delete(companyId, data.getEmployeeID(), param.getClosureId(), param.getClosureDate().getClosureDay().v(),param.getClosureDate().getLastDayOfMonth(), param.getYearMonth().v());
 			}
 		});
 	}

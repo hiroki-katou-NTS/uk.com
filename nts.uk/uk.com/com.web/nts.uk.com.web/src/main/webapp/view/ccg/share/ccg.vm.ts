@@ -914,6 +914,8 @@ module nts.uk.com.view.ccg.share.ccg {
                                 self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
                             }
                         })
+                    }else {
+                        self.queryParam.baseDate = self.acquiredBaseDate();
                     }
                 })
                 

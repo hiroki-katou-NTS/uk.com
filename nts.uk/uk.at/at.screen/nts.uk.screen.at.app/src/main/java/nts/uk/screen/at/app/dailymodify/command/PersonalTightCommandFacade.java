@@ -18,6 +18,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class PersonalTightCommandFacade {
@@ -40,11 +41,15 @@ public class PersonalTightCommandFacade {
 		if (closureEmploymentOptional.isPresent()) {
 			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
 					closureEmploymentOptional.get().getClosureId(), date);
-			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date) && closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
-				registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
-						closingPeriod.get().getProcessingYm(), Arrays.asList(new SelfConfirm(employeeId, true)),
-						closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureEndDate().day(),
-						GeneralDate.today()));
+			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date)
+					&& closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
+				registerConfirmationMonth
+						.registerConfirmationMonth(new ParamRegisterConfirmMonth(closingPeriod.get().getProcessingYm(),
+								Arrays.asList(new SelfConfirm(employeeId, true)),
+								closureEmploymentOptional.get().getClosureId(),
+								new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+										closingPeriod.get().getClosureDate().getLastDayOfMonth()),
+								GeneralDate.today()));
 			}
 		}
 	}
