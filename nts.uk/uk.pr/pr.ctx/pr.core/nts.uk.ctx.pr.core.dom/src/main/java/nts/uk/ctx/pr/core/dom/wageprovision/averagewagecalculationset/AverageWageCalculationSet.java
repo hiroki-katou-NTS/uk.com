@@ -31,10 +31,10 @@ public class AverageWageCalculationSet extends AggregateRoot {
     private SettingOfAttendanceDays daysAttendance;
     
     public AverageWageCalculationSet(String cid, int exceptionFormula, int obtainAttendanceDays, Integer daysFractionProcessing, int decimalPointCutoffSegment) {
+        this.cId = cid;
         this.exceptionFormula = new ExceptionFormula(exceptionFormula);
         this.daysAttendance = new SettingOfAttendanceDays(obtainAttendanceDays, daysFractionProcessing);
         this.decimalPointCutoffSegment = EnumAdaptor.valueOf(decimalPointCutoffSegment, DecimalPointCutoffSegment.class);
-        this.cId = cid;
     }
     
 }
