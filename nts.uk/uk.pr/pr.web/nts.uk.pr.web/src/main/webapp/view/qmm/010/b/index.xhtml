@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 490, height: 620 };</script>
+			<script>var dialogSize = { width: 520, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm010.b.service.js" />
@@ -20,7 +20,7 @@
 				<div class="label dialog-title">#{i18n.getText('QMM010_30')}</div>
 				<div style="margin-top: 20px; min-width: 330px">
                     <i id = "B1_2"></i>
-					<div style="width: 330px; margin-left: 40px;" tabindex="1"
+					<div style="width: 360px; margin-left: 40px;" tabindex="1"
 						 data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'B2_1',
                         items: socialInsuranceOfficeList, selected: selectedSocialInsuranceCode, selectedKey: 'code', fields: ['code', 'name'], mode: 'igGrid'}"/>
 					<div style = "margin-left: 40px;">
@@ -32,7 +32,7 @@
                             optionsValue: 'code',
                             columns: [
 								{ headerText: '#{i18n.getText('QMM010_8')}', key: 'code', width: 120, formatter: _.escape},
-								{ headerText: '#{i18n.getText('QMM010_8')}', key: 'name', width: 200, formatter: _.escape }
+								{ headerText: '#{i18n.getText('QMM010_8')}', key: 'name', width: 230, formatter: _.escape }
 							],
                             multiple: false,
                             value: selectedSocialInsuranceCode
