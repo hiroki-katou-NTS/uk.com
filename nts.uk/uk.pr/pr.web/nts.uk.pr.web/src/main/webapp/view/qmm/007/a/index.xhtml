@@ -66,7 +66,7 @@
         </div>
 
         <div id="right"  class="fixed-flex-layout-right">
-            <div class="valign-center control-group table" style="display: flex">
+            <div class="valign-center control-group flex">
             <!-- A3_1 -->
             <div id="A3_1" class = "cell valign-center" data-bind="ntsFormLabel: { constraint: ['CompanyUnitPriceCode', 'SalaryUnitPriceName'], required: true }">#{i18n.getText('QMM007_5')}</div>
             <!-- A3_2 -->
@@ -93,8 +93,8 @@
                                                     }" />
 
             </div>
-            <div class="valign-center control-group table">
-                <div id="A3_4" class="cell valign-center" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_9')}</div>
+            <div class="valign-center control-group flex" style="min-width: 500px">
+                <div id="A3_4" class="valign-center" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_9')}</div>
                 <div id = "A3_5" tabindex="11"  data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM007_11')}',
 																value: yearMonth,
@@ -105,7 +105,7 @@
 																}" ></div>
                 <span id="A3_6" data-bind="text: monthlyCalendar"></span>
             </div>
-            <div class="valign-center control-group table">
+            <div class="valign-center control-group flex">
                 <div id="A3_7" class="cell valign-center" data-bind="ntsFormLabel: { constraint: 'SalaryUnitPrice', required: true }">#{i18n.getText('QMM007_13')}</div>
                 <div id="A3_8" data-bind="with: currencyeditor">
                     <input  tabindex="12" data-bind="ntsNumberEditor: {
@@ -119,7 +119,7 @@
                                         immediate: false}" />
                 </div>
             </div>
-            <div class="valign-center control-group flex">
+            <div class="valign-center control-group flex" style ="min-width: 750px">
                 <div id="A3_9"  data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_15')}</div>
                 <div id="A3_10"  tabindex="13" data-bind="ntsRadioBoxGroup: {
                                 options: fixedWageClassList,
@@ -129,7 +129,7 @@
                                 name: '#{i18n.getText('QMM007_16')}',
                                 enable: enableFixedWageClassList}"></div>
             </div>
-                <div class="valign-center control-group flex">
+                <div class="valign-center control-group flex" style ="min-width: 750px">
                     <div class="space1"></div>
                 <div id="A3_11" tabindex="14" class="cf" data-bind="ntsSwitchButton: {
                             name: '#{i18n.getText('QMM007_19')}',
@@ -150,7 +150,7 @@
                                 required: required,
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
                 </div>
-            <div class="valign-center control-group flex">
+            <div class="valign-center control-group flex" style ="min-width: 750px">
                 <div class="space2"></div>
                 <div id="A3_14">#{i18n.getText('QMM007_24')}</div>
 
@@ -163,7 +163,7 @@
                                 required: required,
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
             </div>
-            <div class="valign-center control-group flex">
+            <div class="valign-center control-group flex" style ="min-width: 750px">
                 <div class="space2"></div>
                 <div id="A3_16" >#{i18n.getText('QMM007_26')}</div>
 
@@ -177,7 +177,7 @@
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
             </div>
 
-            <div class="valign-center control-group flex">
+            <div class="valign-center control-group flex" style ="min-width: 750px">
                 <div class="space2"></div>
                 <div id="A3_18" >#{i18n.getText('QMM007_28')}</div>
 
