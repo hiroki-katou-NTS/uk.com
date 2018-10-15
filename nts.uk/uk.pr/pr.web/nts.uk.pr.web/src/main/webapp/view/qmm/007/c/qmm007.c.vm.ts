@@ -87,20 +87,12 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             self.startYearMonth(params.startYearMonth);
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
             self.textResourceRadioFirt(getText('QMM007_42',[self.convertMonthYearToString(self.startYearMonth())]));
-            self.isFirst(params.isFirst ? (params.notDelete ? false : true) : false);
+            self.isFirst(params.isFirst);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
         }
-       hasRequired(){
-            if(this.methodEditing() != EDIT_METHOD.UPDATE) {
-
-                return false;
-            }
-            return true;
-        }
-
-        validateYearMonth(){
-
-        }
+       hasRequired() {
+           return !(this.methodEditing() != EDIT_METHOD.UPDATE)
+       }
 
         cancel(){
             close();
@@ -115,14 +107,6 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             return year + "/" + month;
         }
 
-        convertStringToYearMonth(yearMonth: any){
-            let self = this;
-            let year: string, month: string;
-            yearMonth = yearMonth.substring(3);
-            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
-            return yearMonth;
-        }
-        // 「初期データ取得処理
     }
 
     export function getHistoryEditMethod(): Array<model.ItemModel> {

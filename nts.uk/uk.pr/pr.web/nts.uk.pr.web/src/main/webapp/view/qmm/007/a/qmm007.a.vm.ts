@@ -344,7 +344,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         startYearMonth: self.yearMonth(),
                         endYearMonth: self.endYearMonth(),
                         isFirst: index === 0 ? true : false,
-                        notDelete: data.length > 1 ? false : true,
+
                     });
                 });
             }
