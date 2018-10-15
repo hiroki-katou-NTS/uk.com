@@ -217,12 +217,19 @@ public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 		cq.select(root);
 
 		List<KrcstDrt> krcstDrts = new ArrayList<>();
+		
+		boolean checkdivTimeNosEmpty = CollectionUtil.isEmpty(divTimeNos);
+		
+		if (checkdivTimeNosEmpty) {
+			divTimeNos = new ArrayList<>();
+			divTimeNos.add(0);
+		}
 
 		CollectionUtil.split(divTimeNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
-			if (!divTimeNos.isEmpty()) {
+			if (!checkdivTimeNosEmpty) {
 				predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(splitData));
 			}
 

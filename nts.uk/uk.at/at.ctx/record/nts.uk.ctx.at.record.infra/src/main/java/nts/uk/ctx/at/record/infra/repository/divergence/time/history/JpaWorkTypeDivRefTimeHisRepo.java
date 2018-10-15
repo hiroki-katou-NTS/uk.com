@@ -253,6 +253,13 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 		cq.select(root);
 
 		List<KrcstWorktypeDrtHist> worktypeDrtHists = new ArrayList<>();
+		
+		boolean checkHistIdsEmpty = CollectionUtil.isEmpty(histIds);
+		
+		if (checkHistIdsEmpty) {
+			histIds = new ArrayList<>();
+			histIds.add("");
+		}
 
 		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
@@ -261,7 +268,7 @@ public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 			predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
 
 			// Find by history id
-			if (!histIds.isEmpty()) {
+			if (!checkHistIdsEmpty) {
 				predicates.add(root.get(KrcstWorktypeDrtHist_.histId).in(splitData));
 			}
 

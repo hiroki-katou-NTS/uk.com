@@ -103,27 +103,33 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		List<KshmtWorkingCondItem> result = new ArrayList<>();
 				
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			// add where
-			List<Predicate> lstpredicateWhere = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subEmployeeList -> {
+					CollectionUtil.split(monthlyPatternCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+							subPatternList -> {
+								// add where
+								List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-			// condition
-			lstpredicateWhere
-					.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
-			lstpredicateWhere
-					.add(root.get(KshmtWorkingCondItem_.monthlyPattern).in(monthlyPatternCodes));
-			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-					GeneralDate.max()));
+								// condition
+								lstpredicateWhere.add(
+										root.get(KshmtWorkingCondItem_.sid).in(subEmployeeList));
+								lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.monthlyPattern)
+										.in(subPatternList));
+								lstpredicateWhere
+										.add(criteriaBuilder.equal(
+												root.get(KshmtWorkingCondItem_.kshmtWorkingCond)
+														.get(KshmtWorkingCond_.endD),
+												GeneralDate.max()));
 
-			// set where to SQL
-			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-			
-			// create query
-			TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+								// set where to SQL
+								cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-			result.addAll(query.getResultList());
-		});
+								// create query
+								TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+								result.addAll(query.getResultList());
+							});
+				});
 		
 		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
