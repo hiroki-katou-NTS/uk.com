@@ -200,7 +200,7 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
+        get_cats: (isCps007: boolean) => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
@@ -933,7 +933,7 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
-                                setShared("KDL002_isShowNoSelectRow", true);
+                                setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false:true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -989,7 +989,7 @@ module nts.layout {
                                         }
                                     });
                                 } else {
-                                    setShared("KDL002_isShowNoSelectRow", true);
+                                    setShared("KDL002_isShowNoSelectRow", workType.data.required == true? fasle: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
                                     setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);

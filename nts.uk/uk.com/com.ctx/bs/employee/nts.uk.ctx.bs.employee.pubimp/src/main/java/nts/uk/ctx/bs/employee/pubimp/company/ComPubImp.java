@@ -27,7 +27,7 @@ public class ComPubImp implements SyCompanyPub {
 	public List<AffCompanyHistExport> GetAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
 
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
-			return null;
+			return Collections.emptyList();
 
 		List<AffCompanyHist> his = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sids, datePeriod);
 		return sids.stream().map(sid -> {
