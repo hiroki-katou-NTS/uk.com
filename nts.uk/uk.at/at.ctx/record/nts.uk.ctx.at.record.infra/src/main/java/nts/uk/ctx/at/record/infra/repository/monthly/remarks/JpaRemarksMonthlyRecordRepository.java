@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
@@ -20,7 +19,6 @@ import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyReco
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecordPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -32,14 +30,12 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.recordPK.yearMonth = :yearMonth "
-			+ "ORDER BY a.startYmd ";
+			+ "AND a.recordPK.yearMonth = :yearMonth ";
 
 	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
 			+ "AND a.recordPK.yearMonth = :yearMonth "
-			+ "AND a.recordPK.closureId = :closureId "
-			+ "ORDER BY a.startYmd ";
+			+ "AND a.recordPK.closureId = :closureId ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
@@ -52,18 +48,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
 			+ "AND a.recordPK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.recordPK.employeeId, a.startYmd ";
-	
-	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
-			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.startYmd <= :endDate "
-			+ "AND a.endYmd >= :startDate ";
-	
-	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
-			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.endYmd >= :startDate "
-			+ "AND a.endYmd <= :endDate "
-			+ "ORDER BY a.startYmd ";
+			+ "ORDER BY a.recordPK.employeeId";
 	
 	private static final String DELETE_BY_PK = "DELETE FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
@@ -154,24 +139,6 @@ val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toL
 					.getList(c -> c.toDomain()));
 		});
 		return results;
-	}
-
-	@Override
-	public List<RemarksMonthlyRecord> findByDate(String employeeId, GeneralDate criteriaDate) {
-		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtRemarksMonthlyRecord.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", criteriaDate)
-				.setParameter("endDate", criteriaDate)
-				.getList(c -> c.toDomain());
-	}
-
-	@Override
-	public List<RemarksMonthlyRecord> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
-		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtRemarksMonthlyRecord.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", period.start())
-				.setParameter("endDate", period.end())
-				.getList(c -> c.toDomain());
 	}
 
 	@Override

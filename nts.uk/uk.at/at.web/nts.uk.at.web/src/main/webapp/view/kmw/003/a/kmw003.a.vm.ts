@@ -1256,6 +1256,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             setTimeout(function() {
                 self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
                 self.receiveData(self.dataAll());
+                self.createSumColumn(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
                 nts.uk.ui.block.clear();
@@ -1268,6 +1269,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             setTimeout(function() {
                 self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
                 self.receiveData(self.dataAll());
+                self.createSumColumn(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
                 nts.uk.ui.block.clear();

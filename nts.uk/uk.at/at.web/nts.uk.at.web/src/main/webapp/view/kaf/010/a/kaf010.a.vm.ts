@@ -648,7 +648,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 return;    
             }
             $(".breakTimesCheck").ntsError('clear');
-            
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             //return if has error
