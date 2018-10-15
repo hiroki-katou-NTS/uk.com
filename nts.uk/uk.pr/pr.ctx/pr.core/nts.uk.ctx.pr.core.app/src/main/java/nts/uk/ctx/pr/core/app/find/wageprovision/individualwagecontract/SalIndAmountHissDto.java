@@ -5,6 +5,7 @@ import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +42,7 @@ public class SalIndAmountHissDto {
 
 
     public static SalIndAmountHissDto fromDomain(SalIndAmountHis domain) {
+        if(Objects.isNull(domain)) return null;
 
         SalIndAmountHissDto salIndAmountHissDto = new SalIndAmountHissDto(
                 domain.getPerValCode(),

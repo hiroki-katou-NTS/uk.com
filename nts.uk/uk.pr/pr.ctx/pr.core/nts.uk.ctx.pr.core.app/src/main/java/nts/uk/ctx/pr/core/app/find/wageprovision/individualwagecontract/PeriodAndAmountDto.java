@@ -4,6 +4,8 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import java.util.Objects;
+
 @AllArgsConstructor
 @Value
 public class PeriodAndAmountDto  {
@@ -29,6 +31,10 @@ public class PeriodAndAmountDto  {
 
 
     public static PeriodAndAmountDto fromDomain(PeriodDto periodDto,SalIndAmountDto salIndAmountDto){
+
+        if(Objects.isNull(periodDto) ||Objects.isNull(salIndAmountDto))
+            return null;
+
         return new PeriodAndAmountDto(
                 periodDto.getHistoryID(),
                 periodDto.getPeriodStartYm(),
