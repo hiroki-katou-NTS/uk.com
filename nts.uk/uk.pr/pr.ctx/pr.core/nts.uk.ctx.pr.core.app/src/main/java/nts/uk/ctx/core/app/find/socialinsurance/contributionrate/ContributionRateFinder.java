@@ -32,10 +32,10 @@ public class ContributionRateFinder {
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
-	public ContributionRateDto findContributionRateByHistoryID(String historyId) {
+	public ContributionRateDto findContributionRateByHistoryID(String historyId, String socialInsuranceCode) {
 
 		Optional<ContributionRate> contributionRate = contributionRateRepository
-				.getContributionRateByHistoryId(historyId);
+				.getContributionRateByHistoryId(historyId,socialInsuranceCode);
 
 		if (contributionRate.isPresent()) {
 			List<ContributionByGradeDto> contributionByGradeDto = new ArrayList<>();

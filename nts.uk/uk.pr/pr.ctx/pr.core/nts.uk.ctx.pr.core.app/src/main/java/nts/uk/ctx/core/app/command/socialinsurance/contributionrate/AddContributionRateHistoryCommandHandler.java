@@ -20,7 +20,7 @@ public class AddContributionRateHistoryCommandHandler extends CommandHandler<Add
 	protected void handle(CommandHandlerContext<AddContributionRateHistoryCommand> context) {
 		String officeCode = context.getCommand().getOfficeCode();
 		YearMonthHistoryItem yearMonthItem = context.getCommand().getYearMonthHistoryItem().fromCommandToDomain();
-		ContributionRate contributionRate = context.getCommand().getContributionRate().fromCommandToDomain();
+		ContributionRate contributionRate = context.getCommand().getContributionRate().fromCommandToDomain(officeCode);
 		// 新規登録処理
 		contributionService.registerContributionRate(officeCode, contributionRate, yearMonthItem);
 	}

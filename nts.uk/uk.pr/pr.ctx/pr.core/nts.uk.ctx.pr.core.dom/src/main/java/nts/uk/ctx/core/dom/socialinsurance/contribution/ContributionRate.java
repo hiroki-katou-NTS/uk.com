@@ -11,6 +11,8 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGra
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.InsurancePremiumFractionClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +23,32 @@ import java.util.Optional;
 @Getter
 public class ContributionRate extends AggregateRoot {
 
+
+    /**
+     * 会社ID
+     */
+    public String cid;
+
+    /**
+     * 社会保険事業所コード
+     */
+    public String socialInsuranceOfficeCd;
+
+
 	/**
 	 * 履歴ID
 	 */
 	private String historyId;
+
+	/**
+	 * 年月開始
+	 */
+	public int startYearMonth;
+
+	/**
+	 * 年月終了
+	 */
+	public int endYearMonth;
 
 	/**
 	 * 子ども・子育て拠出金事業主負担率
@@ -53,10 +77,16 @@ public class ContributionRate extends AggregateRoot {
 	 * @param contributionByGrade
 	 *            等級毎拠出金
 	 */
-	public ContributionRate(String historyId, BigDecimal childContributionRatio, int automaticCalculationCls,
+	public ContributionRate(String cid,String socialInsuranceOfficeCd,String historyId,
+							int startYearMonth, int endYearMonth,
+							BigDecimal childContributionRatio, int automaticCalculationCls,
 			List<ContributionByGrade> contributionByGrade) {
 		super();
+		this.cid = cid;
+		this.socialInsuranceOfficeCd = socialInsuranceOfficeCd;
 		this.historyId = historyId;
+		this.startYearMonth = startYearMonth;
+		this.endYearMonth = endYearMonth;
 		this.childContributionRatio = new InsuranceRate(childContributionRatio);
 		this.automaticCalculationCls = EnumAdaptor.valueOf(automaticCalculationCls, AutoCalculationExecutionCls.class);
 		this.contributionByGrade = contributionByGrade;

@@ -21,7 +21,7 @@ public class CheckContributionRateHistoryCommandHandler extends CommandHandlerWi
 	protected Boolean handle(CommandHandlerContext<CheckContributionRateHistoryCommand> context) {
 		String officeCode = context.getCommand().getOfficeCode();
 		YearMonthHistoryItem yearMonthItem = context.getCommand().getYearMonthHistoryItem().fromCommandToDomain();
-		ContributionRate contributionRate = context.getCommand().getContributionRate().fromCommandToDomain();
+		ContributionRate contributionRate = context.getCommand().getContributionRate().fromCommandToDomain(officeCode);
 		return contributionService.checkContributionRate(officeCode, contributionRate, yearMonthItem);
 	}
 }

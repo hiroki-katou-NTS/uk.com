@@ -1,24 +1,23 @@
 package nts.uk.ctx.core.infra.entity.socialinsurance.contribution;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.io.Serializable;
+
 /**
-* 等級毎拠出金: 主キー情報
-*/
+ * 拠出金率
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtContributionByGradePk implements Serializable
-{
+public class QpbmtContributionRatePk implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -36,17 +35,10 @@ public class QpbmtContributionByGradePk implements Serializable
     public String socialInsuranceOfficeCd;
 
     /**
-    * 履歴ID
-    */
+     * 履歴ID
+     */
     @Basic(optional = false)
     @Column(name = "HISTORY_ID")
     public String historyId;
-    
-    /**
-    * 厚生年金等級
-    */
-    @Basic(optional = false)
-    @Column(name = "WELFARE_PENSION_GRADE")
-    public int welfarePensionGrade;
-    
+
 }

@@ -23,7 +23,7 @@ module nts.uk.pr.view.qmm008.e {
                self.displayEnd(dataGetShare.selectedHistory.displayEnd);
                self.historyId(dataGetShare.selectedHistory.historyId);
                self.startMonth(dataGetShare.selectedHistory.startMonth);
-               let command = { historyId: self.historyId(), date: self.startMonth() };
+               let command = { historyId: self.historyId(), date: self.startMonth(),socialInsuranceCode: self.officeCode() };
                nts.uk.pr.view.qmm008.e.service.startScreen(command).done(function(response) {
                    for(var i = 0 ; i < response.cusDataDtos.length ; i++) {
                        self.dataList.push(new RowData(response.cusDataDtos[i]));
@@ -81,7 +81,8 @@ module nts.uk.pr.view.qmm008.e {
                block.invisible();
                let command = {
                 cusDataDtos :    ko.toJS(self.dataList()) ,
-                historyId : self.historyId()
+                historyId : self.historyId(),
+                   socialInsuranceCode   :self.officeCode()
                };
                nts.uk.pr.view.qmm008.e.service.update(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -113,7 +114,7 @@ module nts.uk.pr.view.qmm008.e {
                nts.uk.ui.errors.clearAll();
                let self = this;
                block.invisible();
-               let command = { historyId: self.historyId(), date: self.startMonth() };
+               let command = { historyId: self.historyId(), date: self.startMonth(), socialInsuranceCode: self.officeCode() };
                nts.uk.pr.view.qmm008.e.service.count(command).done(function(response) {
                    self.dataList([]);
                    for (var i = 0; i < response.cusDataDtos.length; i++) {

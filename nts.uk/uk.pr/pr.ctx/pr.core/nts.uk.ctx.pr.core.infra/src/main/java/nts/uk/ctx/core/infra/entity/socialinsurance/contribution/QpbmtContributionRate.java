@@ -20,12 +20,25 @@ public class QpbmtContributionRate extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 履歴ID
+     * ID
+     */
+    @EmbeddedId
+    public QpbmtContributionRatePk contributionRatePk;
+
+
+    /**
+     * 年月開始
      */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
-    @Id
-    public String historyId;
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 自動計算区分
@@ -43,11 +56,12 @@ public class QpbmtContributionRate extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return historyId;
+        return contributionRatePk;
     }
 
     public static QpbmtContributionRate toEntity(ContributionRate domain) {
-        return new QpbmtContributionRate(domain.getHistoryId(),
+        return new QpbmtContributionRate(new QpbmtContributionRatePk(domain.getCid(),domain.getSocialInsuranceOfficeCd(),domain.getHistoryId()),
+                domain.getEndYearMonth(),domain.getEndYearMonth(),
                 domain.getAutomaticCalculationCls().value,
                 domain.getChildContributionRatio().v());
     }

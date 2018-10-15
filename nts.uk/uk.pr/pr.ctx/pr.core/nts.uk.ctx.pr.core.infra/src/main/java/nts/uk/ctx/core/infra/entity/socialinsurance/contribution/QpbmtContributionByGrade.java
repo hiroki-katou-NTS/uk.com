@@ -33,6 +33,20 @@ public class QpbmtContributionByGrade extends UkJpaEntity implements Serializabl
     public QpbmtContributionByGradePk contributionByGradePk;
 
     /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
+
+    /**
      * 子ども・子育て拠出金
      */
     @Basic(optional = false)
@@ -52,8 +66,10 @@ public class QpbmtContributionByGrade extends UkJpaEntity implements Serializabl
      * @return QpbmtContributionByGrade
      */
     public static List<QpbmtContributionByGrade> toEntity(ContributionRate domain) {
-        return domain.getContributionByGrade().stream().map(x -> new QpbmtContributionByGrade(new QpbmtContributionByGradePk(domain.getHistoryId(),
+        return domain.getContributionByGrade().stream().map(x -> new QpbmtContributionByGrade(new QpbmtContributionByGradePk(domain.getCid(),domain.getSocialInsuranceOfficeCd(),domain.getHistoryId(),
                 x.getWelfarePensionGrade()),
+                domain.getStartYearMonth(),
+                domain.getEndYearMonth(),
                 x.getChildCareContribution().v())).collect(Collectors.toList());
     }
 }

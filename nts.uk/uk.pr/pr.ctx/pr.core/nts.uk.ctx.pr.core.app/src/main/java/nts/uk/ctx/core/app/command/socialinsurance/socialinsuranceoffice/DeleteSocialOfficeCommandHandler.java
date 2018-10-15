@@ -110,7 +110,7 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 			List<String> historyIds = dataContri.get().getHistory().stream().map(x -> x.identifier()).collect(Collectors.toList());
 			
 			// ドメインモデル「拠出金率」を削除する
-			contributionRateRepository.deleteByHistoryIds(historyIds);
+			contributionRateRepository.deleteByHistoryIds(historyIds,command.getCode());
 			
 			// ドメインモデル「拠出金率履歴」を削除する
 			contributionRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), command.getCode());

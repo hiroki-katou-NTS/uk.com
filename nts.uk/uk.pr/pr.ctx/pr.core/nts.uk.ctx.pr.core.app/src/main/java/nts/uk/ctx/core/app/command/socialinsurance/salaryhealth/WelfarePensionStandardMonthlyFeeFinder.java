@@ -180,7 +180,7 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		}
 		
 		// ドメインモデル「拠出金率」を取得する
-		Optional<ContributionRate> contributionRate = contributionRateRepository.getContributionRateByHistoryId(startCommand.getHistoryId());
+		Optional<ContributionRate> contributionRate = contributionRateRepository.getContributionRateByHistoryId(startCommand.getHistoryId(),startCommand.getSocialInsuranceCode());
 		if(contributionRate.isPresent()) {
 			if(check) {
 				contributionRate.get().algorithmWelfarePensionInsurancePremiumCal(welfarePensionStandardMonthlyFee, contributionRate.get());

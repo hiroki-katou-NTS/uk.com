@@ -28,7 +28,7 @@ public class ContributionRateHandler extends CommandHandlerWithResult<UpdateCont
 		UpdateContributionRateDto command = context.getCommand();
 		
 		// ドメインモデル「拠出金率」を更新する
-		Optional<ContributionRate> contributionRate = contributionRateRepository.getContributionRateByHistoryId(command.getHistoryId());
+		Optional<ContributionRate> contributionRate = contributionRateRepository.getContributionRateByHistoryId(command.getHistoryId(),command.getSocialInsuranceCode());
 		if(contributionRate.isPresent()) {
 			List<ContributionByGrade> dataUpate = command.getData().stream().map(x -> new ContributionByGrade(x.getWelfarePensionGrade(), new BigDecimal(x.getChildCareContribution()).setScale(2, BigDecimal.ROUND_HALF_EVEN))).collect(Collectors.toList());
 			contributionRate.get().updateContributionByGrade(dataUpate);

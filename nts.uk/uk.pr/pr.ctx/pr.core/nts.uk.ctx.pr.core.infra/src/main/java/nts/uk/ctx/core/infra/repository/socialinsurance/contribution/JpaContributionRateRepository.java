@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.contribution;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -7,12 +8,16 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import javafx.application.Application;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionByGrade;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGrade;
+import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGradePk;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRate;
+import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRatePk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {
@@ -23,7 +28,7 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 
 	private ContributionRate toDomain(QpbmtContributionRate contributionRate,
 			List<QpbmtContributionByGrade> contributionByGrade) {
-		return new ContributionRate(contributionRate.historyId, contributionRate.childCareContributionRatio,
+		return new ContributionRate(contributionRate.contributionRatePk.cid,contributionRate.contributionRatePk.socialInsuranceOfficeCd,contributionRate.contributionRatePk.historyId,contributionRate.startYearMonth,contributionRate.endYearMonth, contributionRate.childCareContributionRatio,
 				contributionRate.autoCalculationCls,
 				contributionByGrade.stream()
 						.map(x -> new ContributionByGrade(x.contributionByGradePk.welfarePensionGrade,
@@ -32,8 +37,8 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	}
 
 	@Override
-	public Optional<ContributionRate> getContributionRateByHistoryId(String historyId) {
-		Optional<QpbmtContributionRate> contributionRate = this.queryProxy().find(historyId,
+	public Optional<ContributionRate> getContributionRateByHistoryId(String historyId,String  socialInsuranceCode) {
+		Optional<QpbmtContributionRate> contributionRate = this.queryProxy().find( new QpbmtContributionRatePk(AppContexts.user().companyId(),socialInsuranceCode,historyId),
 				QpbmtContributionRate.class);
 		List<QpbmtContributionByGrade> qpbmtContributionByGrade = this.queryProxy()
 				.query(GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class)
@@ -42,8 +47,13 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	}
 
 	@Override
-	public void deleteByHistoryIds(List<String> historyIds) {
-		this.commandProxy().removeAll(QpbmtContributionRate.class, historyIds);
+	public void deleteByHistoryIds(List<String> historyIds, String officeCode) {
+		List<QpbmtContributionRatePk> en = new ArrayList<>();
+		for (int i = 0; i < historyIds.size(); i++) {
+			QpbmtContributionRatePk entity = new QpbmtContributionRatePk(AppContexts.user().companyId(),officeCode,historyIds.get(i));
+			en.add(entity);
+		}
+		this.commandProxy().removeAll(QpbmtContributionRate.class, en);
 	}
 
 	@Override

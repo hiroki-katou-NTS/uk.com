@@ -218,7 +218,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                         selectedHistoryPeriod.displayStartJM = "(" + nts.uk.time.yearmonthInJapanEmpire(selectedHistoryPeriod.displayStart).toString().split(' ').join('') + ")";
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         //アルゴリズム「選択処理」を実行する
-                        self.showContributionRateByHistoryId(self.selectedHistoryId);
+                        self.showContributionRateByHistoryId(self.selectedHistoryId,self.selectedOffice.socialInsuranceCode);
                     }
                 }else {
                     self.selectedHistoryPeriod({ displayStart: '', displayEnd: '', displayStartJM: '' });
@@ -226,10 +226,10 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             }
         }
 
-        showContributionRateByHistoryId(historyId) {
+        showContributionRateByHistoryId(historyId,socialInsuranceCode) {
             let self = this;
             block.invisible();
-            service.findContributionRateByHistoryId(historyId).done(function(data) {
+            service.findContributionRateByHistoryId(historyId,socialInsuranceCode).done(function(data) {
                 if (data) {
                     self.contributionRate(new model.ContributionRate(data));
                 }
