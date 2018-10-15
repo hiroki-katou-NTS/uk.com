@@ -25,15 +25,15 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
                     + " INNER JOIN QpbmtStatementItemName d"
                     + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
                     + " WHERE  a.statementItemPk.cid =:cid "
-                    + " AND b.averageWageAtr = 1 " + " AND a.statementItemPk.categoryAtr = 0 ORDER BY a.statementItemPk.salaryItemId";
+                    + " AND b.averageWageAtr = 1 AND c.averageWageAtr = 1" + " AND a.statementItemPk.categoryAtr = 0 ORDER BY a.statementItemPk.salaryItemId";
     private static final String SELECT_CUSTOM_BY_ATTENDANCE_ITEM =
             "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
-                    + " INNER JOIN QpbmtTimeItemSt c"
+                    + " FROM QpbmtStatementItem a INNER JOIN QpbmtTimeItemSt c"
                     + " ON a.statementItemPk.salaryItemId = c.timeItemStPk.salaryItemId "
                     + " INNER JOIN QpbmtStatementItemName d"
                     + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
                     + " WHERE  a.statementItemPk.cid =:cid "
-                    + " AND c.averageWageAtr = 1"
+                    + " AND b.averageWageAtr = 1 AND c.averageWageAtr = 1"
                     + " AND a.statementItemPk.categoryAtr = 2 ORDER BY a.statementItemPk.salaryItemId";
     private static final String SELECT_ALL_CUSTOM_PAYMENT_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
             + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
