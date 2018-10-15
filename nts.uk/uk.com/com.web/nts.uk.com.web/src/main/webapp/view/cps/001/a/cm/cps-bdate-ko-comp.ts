@@ -15,7 +15,7 @@ module nts.custom.component {
         viewModel: function(params: any) {
             $.extend(params, {
                 text: text,
-                enableBtn: ko.computed(() => moment.utc(params.standardDate(), _.indexOf(params.standardDate(), "Z") > -1 ? "YYYY-MM-DD" : "YYYY/MM/DD").isValid() && !!(ko.toJS(params.standardDate) || '').match(/((19|[2-9][0-9])\d{2})(-|\/)(\d{2}|\d{1})(-|\/)(\d{2}|\d{1})/))
+                enableBtn: params.standardDate.enableBtn || (params.standardDate.enableBtn = ko.computed(() => moment.utc(params.standardDate(), _.indexOf(params.standardDate(), "Z") > -1 ? "YYYY-MM-DD" : "YYYY/MM/DD").isValid() && !!(ko.toJS(params.standardDate) || '').match(/((19|[2-9][0-9])\d{2})(-|\/)(\d{2}|\d{1})(-|\/)(\d{2}|\d{1})/)))
             });
 
             return params;
