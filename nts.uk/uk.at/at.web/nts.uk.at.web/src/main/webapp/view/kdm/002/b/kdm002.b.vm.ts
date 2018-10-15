@@ -228,7 +228,6 @@ module nts.uk.at.view.kdm002.b {
                                     var windowSize = nts.uk.ui.windows.getSelf();
                                     windowSize.$dialog.dialog("option", "width", 670);
                                     windowSize.$dialog.dialog("option", "height", 570);
-                                    windowSize.$dialog.resizable(false);
 
                                     self.isError(true);
                                     self.isComplete(true);
