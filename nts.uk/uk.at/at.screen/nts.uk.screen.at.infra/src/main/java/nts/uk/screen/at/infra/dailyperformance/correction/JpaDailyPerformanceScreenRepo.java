@@ -340,8 +340,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_WORKPLACE_ALL = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT w.sid FROM BsymtAffiWorkplaceHistItem w");
-		builderString.append(" WHERE w.workPlaceId IN :workPlaceId ");
+		builderString.append("SELECT w.sid FROM BsymtAffiWorkplaceHistItem w JOIN ");
+		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
+		builderString.append("WHERE w.workPlaceId IN :workPlaceId ");
+		builderString.append("AND a.strDate <= :baseDate ");
+		builderString.append("AND a.endDate >= :baseDate ");
 		FIND_EMP_WORKPLACE = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -761,7 +764,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 		if(workPlaceIds.isEmpty()) return Collections.emptyList();
-		return this.queryProxy().query(FIND_EMP_WORKPLACE, String.class).setParameter("workPlaceId", workPlaceIds).getList();
+		return this.queryProxy().query(FIND_EMP_WORKPLACE, String.class).setParameter("workPlaceId", workPlaceIds).setParameter("baseDate", dateRange.getEndDate()).getList();
 	}
 
 	@Override
