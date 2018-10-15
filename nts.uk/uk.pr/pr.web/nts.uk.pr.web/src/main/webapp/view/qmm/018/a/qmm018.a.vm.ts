@@ -75,14 +75,14 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     let lstname = self.lstTargetWageItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
                     var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
-                    self.targetWorkingDaysItem(newStringTargetWageItem);
+                    self.targetWageItem(newStringTargetWageItem);
 
                     //lstAttendanceItem
                     self.lstTargetWorkingDaysItem(self.displayData().lstStatemetAttendanceItem());
                     let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
                     var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
-                    self.targetWageItem(newStringTargetWageItem);
+                    self.targetWorkingDaysItem(newStringTargetWageItem);
                 }
                 else {
                     self.displayData(null);
@@ -131,6 +131,11 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
                 if(setting.isSetting == true) {
                     self.lstTargetWageItem(setting.statementListSelected);
+
+                    let lstname = self.lstTargetWageItem().map(value => value.name);
+                    var stringTargetWageItem = lstname.toString();
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    self.targetWageItem(newStringTargetWageItem);
                 }
 
                 // $("").focus(); Tự làm nhé
@@ -151,6 +156,11 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
                 if(setting.isSetting == true) {
                     self.lstTargetWorkingDaysItem(setting.statementListSelected);
+
+                    let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
+                    var stringTargetWageItem = lstname.toString();
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    self.targetWorkingDaysItem(newStringTargetWageItem);
                 }
 
                 // $("").focus(); Tự làm nhé

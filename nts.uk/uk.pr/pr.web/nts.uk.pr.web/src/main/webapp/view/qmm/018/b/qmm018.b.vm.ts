@@ -57,7 +57,7 @@ module nts.uk.pr.view.qmm018.b {
             public register(): void {
                 let self = this;
 
-                setShared('QMM018_B_SETTING', {isSetting: true, statementListSelected: ko.toJS(self.statementListSelected)});
+                setShared('QMM018_B_SETTING', {isSetting: true, statementListSelected: self.statementListSelected()});
                 nts.uk.ui.windows.close();
             }
 

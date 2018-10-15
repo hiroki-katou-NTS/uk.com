@@ -51,7 +51,7 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
             + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
             + " WHERE  a.statementItemPk.cid =:cid "
             + " AND a.statementItemPk.categoryAtr = 2 "
-            + " AND c.timeCountAtr == 1 "
+            + " AND c.timeCountAtr = 1 "
             + " ORDER BY a.statementItemPk.itemNameCd";
 
     @Override
