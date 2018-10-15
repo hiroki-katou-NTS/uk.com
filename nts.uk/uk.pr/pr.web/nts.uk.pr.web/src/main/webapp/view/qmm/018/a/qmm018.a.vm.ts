@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
     import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
 
@@ -54,28 +55,33 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     self.displayData().averageWageCalculationSet().decimalPointCutoffSegment(0);
                 }
             });
+            self.getAllData();
 
-            service.getStatemetItemData().done(function (data: <IDisplayData>) {
-                if (data) {
-                    self.displayData(new DisplayData(data));
+        }
+        getAllData(): JQueryPromise<any>{
+            let self = this,
+            dfd = $.Deferred();
+            service.getStatemetItemData().done(function (dataDisplay: <IDisplayData>) {
+                if (dataDisplay) {
+                    self.displayData(new DisplayData(dataDisplay));
                     self.checkWage(self.displayData().averageWageCalculationSet().decimalPointCutoffSegment());
                     self.exceptionFormula(self.displayData().averageWageCalculationSet().exceptionFormula());
                     self.selectedAttendanceDays(self.displayData().averageWageCalculationSet().obtainAttendanceDays());
                     self.selectedFractionProcessingAtr(self.displayData().averageWageCalculationSet().daysFractionProcessing());
 
                     //lstPayment item
-                    self.lstTargetWorkingDaysItem(self.displayData().lstStatemetPaymentItem());
-                    let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
-                    var stringTargetWageItem = lstname.toString();
-                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
-                    self.targetWageItem(newStringTargetWageItem);
-
-                    //lstAttendanceItem
-                    self.lstTargetWageItem(self.displayData().lstStatemetAttendanceItem());
+                    self.lstTargetWageItem(self.displayData().lstStatemetPaymentItem());
                     let lstname = self.lstTargetWageItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
                     var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
                     self.targetWorkingDaysItem(newStringTargetWageItem);
+
+                    //lstAttendanceItem
+                    self.lstTargetWorkingDaysItem(self.displayData().lstStatemetAttendanceItem());
+                    let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
+                    var stringTargetWageItem = lstname.toString();
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    self.targetWageItem(newStringTargetWageItem);
                 }
                 else {
                     self.displayData(null);
@@ -85,28 +91,23 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             }).always(() => {
                 block.clear();
             });
+            return dfd.promise();
         }
 
         registration() {
             let self = this;
             let data = self.displayData();
-            /*$("#breakdownItemCode").trigger("validate");
-            $("#breakdownItemName").trigger("validate");*/
             if (errors.hasError() === false) {
                 block.invisible();
                 // create
                 service.registration(ko.toJS(data)).done(() => {
-                    /*self.getAllData().done(() => {
-                        dialog.info({messageId: "Msg_15"}).then(() => {
-                            $("#breakdownItemName").focus();
-                            self.isNewMode(false);
-                            self.currentCode(data.breakdownItemCode);
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.getAllData().done(function() {
+
                         });
-                    });*/
-                }).fail(function (error) {
-                    alertError(error).then(() => {
-                        $("#breakdownItemCode").focus();
                     });
+                }).fail(function (error) {
+                    alertError(error);
                 }).always(function () {
                     block.clear();
                 });
