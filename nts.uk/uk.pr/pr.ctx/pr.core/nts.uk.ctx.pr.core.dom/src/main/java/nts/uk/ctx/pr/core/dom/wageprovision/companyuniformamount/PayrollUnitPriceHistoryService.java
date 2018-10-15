@@ -61,6 +61,11 @@ public class PayrollUnitPriceHistoryService {
         if (!itemToBeDelete.isPresent()) {
             return;
         }
+        if (accInsurHis.get().getHistory().size() == 1) {
+            payrollUnitPriceHistoryRepository.remove(cId,code, hisId);
+            mPayrollUnitPriceRepository.remove(code, cId);
+            return;
+        }
         accInsurHis.get().remove(itemToBeDelete.get());
         payrollUnitPriceHistoryRepository.remove(cId,code, hisId);
         if (accInsurHis.get().getHistory().size() > 0 ){
