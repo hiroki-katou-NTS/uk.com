@@ -138,10 +138,13 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds, 
 			List<Integer> itemAtrs) {
 		
-		boolean checkAttItems = !CollectionUtil.isEmpty(attendanceItemIds);
-		boolean checkItemAtr = !CollectionUtil.isEmpty(itemAtrs);
-		if (!checkAttItems) attendanceItemIds.add(0);
-		if (!checkItemAtr) itemAtrs.add(0);
+		List<Integer> listItemIds = new ArrayList<>(Optional.ofNullable(attendanceItemIds).orElse(Collections.emptyList()));
+		List<Integer> listAttrs = new ArrayList<>(Optional.ofNullable(itemAtrs).orElse(Collections.emptyList()));
+		
+		boolean checkAttItems = !CollectionUtil.isEmpty(listItemIds);
+		boolean checkItemAtr = !CollectionUtil.isEmpty(listAttrs);
+		if (!checkAttItems) listItemIds.add(0);
+		if (!checkItemAtr) listAttrs.add(0);
 		
 		StringBuilder builderString = new StringBuilder();	
 		builderString.append("SELECT b");
@@ -156,8 +159,8 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		}
 		
 		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
-		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIds -> {
-			CollectionUtil.split(itemAtrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAtrs -> {
+		CollectionUtil.split(listItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIds -> {
+			CollectionUtil.split(listAttrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAtrs -> {
 				TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class);
 				query.setParameter("companyId", companyId);
 				if (checkAttItems) {
