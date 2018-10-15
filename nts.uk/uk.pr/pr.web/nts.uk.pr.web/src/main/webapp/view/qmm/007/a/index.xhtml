@@ -21,9 +21,8 @@
         <com:stylefile path="qmm007.a.style.css" />
     </ui:define>
 
-    <ui:define name="content">
-
-        <div id= "A" class="flex">
+    <ui:define name="content" >
+        <div id="functions-area">
             <!-- A1_1 登録 -->
             <button id="A1_1" tabindex="1"
                     data-bind="click: create,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_1')}</button>
@@ -38,12 +37,9 @@
                     data-bind=" enable: $root.errors.isEmpty">#{i18n.getText('QMM007_4')}</button>
 
         </div>
-
-        <div id="A1_5" class="set-row" style="width: 100%">
-            <hr/>
-        </div>
-        <div id="left">
-            <div id="A2_1" data-bind="ntsPanel:{width: '350px', height: '415px', direction: 'right', showIcon: true, visible: true}">
+        <div  class="fixed-flex-layout" style="margin-top: 10px">
+        <div id="left" class="fixed-flex-layout-left">
+            <div id="A2_1" data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
                 <div class="cf">
                     <div style="float:left">
                         <div id="A2_3" style="width: 350px" data-bind="ntsSearchBox: {label: '#{i18n.getText('QMM007_5')}', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
@@ -54,6 +50,7 @@
                                data-bind="ntsTreeGridView:{
                                                 width: 350,
                                                 height: 315,
+                                                name: '#{i18n.getText('QMM007_7')}',
                                                 options: dataSource,
                                                 value: singleSelectedCode,
                                                 optionsValue: 'code',
@@ -68,10 +65,10 @@
             </div>
         </div>
 
-        <div id="right">
-            <div class="div-line">
+        <div id="right"  class="fixed-flex-layout-right">
+            <div class="valign-center control-group table" style="display: flex">
             <!-- A3_1 -->
-            <div id="A3_1" data-bind="ntsFormLabel: { constraint: ['CompanyUnitPriceCode', 'SalaryUnitPriceName'], required: true }">#{i18n.getText('QMM007_5')}</div>
+            <div id="A3_1" class = "cell valign-center" data-bind="ntsFormLabel: { constraint: ['CompanyUnitPriceCode', 'SalaryUnitPriceName'], required: true }">#{i18n.getText('QMM007_5')}</div>
             <!-- A3_2 -->
                 <input id="A3_2" tabindex="9" data-bind="ntsTextEditor: {
                                                     value: code,
@@ -96,10 +93,8 @@
                                                     }" />
 
             </div>
-
-            <div style="clear:right"></div>
-            <div class="div-line">
-                <div id="A3_4" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_9')}</div>
+            <div class="valign-center control-group table">
+                <div id="A3_4" class="cell valign-center" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_9')}</div>
                 <div id = "A3_5" tabindex="11"  data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM007_11')}',
 																value: yearMonth,
@@ -110,14 +105,13 @@
 																}" ></div>
                 <span id="A3_6" data-bind="text: monthlyCalendar"></span>
             </div>
-            <div style="clear:right"></div>
-            <div class="div-line">
-                <div id="A3_7" data-bind="ntsFormLabel: { constraint: 'SalaryUnitPrice', required: true }">#{i18n.getText('QMM007_13')}</div>
+            <div class="valign-center control-group table">
+                <div id="A3_7" class="cell valign-center" data-bind="ntsFormLabel: { constraint: 'SalaryUnitPrice', required: true }">#{i18n.getText('QMM007_13')}</div>
                 <div id="A3_8" data-bind="with: currencyeditor">
                     <input  tabindex="12" data-bind="ntsNumberEditor: {
                                         value: $parent.amountOfMoney,
                                         name:'#{i18n.getText('QMM007_14')}',
-                                        constraint: 'SalaryUnitPrice',
+                                        constraint: constraint,
                                         option: option,
                                         required: $parent.enableAmountOfMoney,
                                         enable: $parent.enableAmountOfMoney,
@@ -125,9 +119,9 @@
                                         immediate: false}" />
                 </div>
             </div>
-            <div class="div-line">
-                <div id="A3_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_15')}</div>
-                <div id="A3_10" tabindex="13" data-bind="ntsRadioBoxGroup: {
+            <div class="valign-center control-group flex">
+                <div id="A3_9"  data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_15')}</div>
+                <div id="A3_10"  tabindex="13" data-bind="ntsRadioBoxGroup: {
                                 options: fixedWageClassList,
                                 optionsValue: 'id',
                                 optionsText: 'name',
@@ -135,8 +129,8 @@
                                 name: '#{i18n.getText('QMM007_16')}',
                                 enable: enableFixedWageClassList}"></div>
             </div>
-            <div>
-
+                <div class="valign-center control-group flex">
+                    <div class="space1"></div>
                 <div id="A3_11" tabindex="14" class="cf" data-bind="ntsSwitchButton: {
                             name: '#{i18n.getText('QMM007_19')}',
                             options: targetClassification,
@@ -145,10 +139,9 @@
                             value: selectedTargetClass,
                             required: required,
                             enable: selectedId() == 1  ? (enableTargetClassification() ? false : true)  : (enableTargetClassification() ? true : false)   }"></div>
-                <div style="display: inline-table;margin-left: 80px">
-                    <div  id="A3_12" class="label" style="margin-bottom: 15px;display:inline">#{i18n.getText('QMM007_22')}</div>
+                    <div  id="A3_12" class="space3" style="margin-left: 10px;width: 117px">#{i18n.getText('QMM007_22')}</div>
 
-                    <div id="A3_13" tabindex="15" style="margin-left:60px" class="cf" data-bind="ntsSwitchButton: {
+                    <div id="A3_13" tabindex="15" style="width: 158px" class="cf" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QMM007_23')}',
                                 options: targetClassification,
                                 optionsValue: 'code',
@@ -156,10 +149,12 @@
                                 value: selectedMonthlySalary,
                                 required: required,
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
-                    <br/>
-                    <div id="A3_14" class="label" style="margin-bottom: 15px;display:inline">#{i18n.getText('QMM007_24')}</div>
+                </div>
+            <div class="valign-center control-group flex">
+                <div class="space2"></div>
+                <div id="A3_14">#{i18n.getText('QMM007_24')}</div>
 
-                    <div id="A3_15" tabindex="16" style = "margin-top:10px;margin-left: 32px" class="cf" data-bind="ntsSwitchButton: {
+                <div id="A3_15" tabindex="16"  class="cf" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QMM007_25')}',
                                 options: targetClassification,
                                 optionsValue: 'code',
@@ -167,10 +162,12 @@
                                 value: selectedMonthSalaryPerDay,
                                 required: required,
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
-                    <br/>
-                    <div id="A3_16" class="label" style="margin-bottom: 15px;display:inline">#{i18n.getText('QMM007_26')}</div>
+            </div>
+            <div class="valign-center control-group flex">
+                <div class="space2"></div>
+                <div id="A3_16" >#{i18n.getText('QMM007_26')}</div>
 
-                    <div id="A3_17" tabindex="17" style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
+                <div id="A3_17" tabindex="17" class="cf" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QMM007_27')}',
                                 options: targetClassification,
                                 optionsValue: 'code',
@@ -178,10 +175,13 @@
                                 value: selectedADayPayee,
                                 required: required,
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
-                    <br/>
-                    <div id="A3_18" class="label" style="margin-bottom: 15px;display:inline">#{i18n.getText('QMM007_28')}</div>
+            </div>
 
-                    <div id="A3_19" tabindex="18" style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
+            <div class="valign-center control-group flex">
+                <div class="space2"></div>
+                <div id="A3_18" >#{i18n.getText('QMM007_28')}</div>
+
+                <div id="A3_19" tabindex="18" class="cf" data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('QMM007_29')}',
                                 options: targetClassification,
                                 optionsValue: 'code',
@@ -189,10 +189,8 @@
                                 value: selectedHourlyPay,
                                 required: required,
                                 enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
-                </div>
-
             </div>
-            <div id="A3_20" class="set-row" style="width: 100%">
+            <div id="A3_20" class="set-row" style="width: 88%">
                 <hr/>
             </div>
             <div>
@@ -211,7 +209,9 @@
                       </div>
 
             </div>
+            <div style="clear:both"></div>
             </div>
+        </div>
     </ui:define>
 </ui:composition>
 </body>

@@ -1,7 +1,13 @@
 .padding-item {
     padding: 10px 0 0 10px;
 }
-
+#functions-area{
+    height: 54px !important;
+    padding-top: 0px !important;
+}
+#A{
+    height: 45px;
+}
 #C1_8 {
     margin-left: 175px;
     margin-top:10px;
@@ -14,13 +20,9 @@
 .datepicker-container {
     z-index: 10010;
 }
-#A{
-    height: 45px;
-}
 #left{
     margin-top: 15px;
     margin-left: 25px;
-    float:left;
 }
 #A2_4{
     margin-bottom: 10px;
@@ -70,15 +72,42 @@
 #A3_8{
     display: inline-block;
 }
+#A3_9{
+    width: 205px;
+}
 #A3_11{
-    margin-left: 190px;
-    margin-top:5px;
-    display: inline-block;
+    width: 225px;
 }
 #A3_10{
-    margin-left: 55px;
+
+}
+#A3_10 label:nth-child(2){
+
+}
+#A3_10 .ntsRadioBox{
+    width: 230px;
+}
+#A3_14, #A3_16, #A3_18{
+    width: 116px;
 }
 #A3_21{
     margin-top: 10px;
     float: left;
+}
+#A3_22{
+    height: 90px;
+}
+.space1 {
+    width: 235px;
+}
+.space2 {
+    width: 470px
+}
+.space1,.space3{
+    display: inline-block;
+}
+
+.space3 {
+    margin-left: 24px;
+    width: 60px;
 }
