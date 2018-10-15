@@ -131,9 +131,10 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
-                    if(!validateMinMax(result.parsedValue)){
-                       return; 
-                    }
+                    //if(!validateMinMax(result.parsedValue)){
+                    //   return; 
+                    //}
+                    validateMinMax(result.parsedValue);
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -144,6 +145,7 @@ module nts.uk.ui.koExtentions {
 //                    container.data("changed", true);
                     value(result.parsedValue);
                     value.valueWillMutate();
+                    value.valueHasMutated();
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -289,6 +291,10 @@ module nts.uk.ui.koExtentions {
                     // Check equals to avoid multi datepicker with same value
                     $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                     $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                } else if (dateFormatValue === "Invalid date") {
+                    $input.val(value());
+                    $label.text("");
+                    $input.trigger("validate");
                 }
                 else {
                     $input.val("");
@@ -858,7 +864,9 @@ module nts.uk.ui.koExtentions {
                     }, 0);
                 }
                 
-                self.$input.focus();
+                if (!_.isNil(view) && view !== "") {
+                    self.$input.focus();
+                }
             });
             return self;
         }

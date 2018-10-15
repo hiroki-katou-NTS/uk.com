@@ -23,9 +23,13 @@ private Integer phaseOrder;
 	
 	private String approverName;
 	
+	private String approverMail;
+	
 	private String representerID;
 	
 	private String representerName;
+	
+	private String representerMail;
 	
 	private String approvalReason;
 	
@@ -40,12 +44,16 @@ private Integer phaseOrder;
 							x.getApproverID(), 
 							x.getApproverName(),
 							x.getRepresenterID(),
-							x.getRepresenterName()))
+							x.getRepresenterName(),
+							x.getApproverEmail(),
+							x.getRepresenterEmail()))
 					.collect(Collectors.toList()), 
 				approvalFrameImport.getApproverID(),
 				approvalFrameImport.getApproverName(),
+				approvalFrameImport.getApproverMail(),
 				approvalFrameImport.getRepresenterID(),
 				approvalFrameImport.getRepresenterName(),
+				approvalFrameImport.getRepresenterMail(),
 				approvalFrameImport.getApprovalReason());
 	}
 }

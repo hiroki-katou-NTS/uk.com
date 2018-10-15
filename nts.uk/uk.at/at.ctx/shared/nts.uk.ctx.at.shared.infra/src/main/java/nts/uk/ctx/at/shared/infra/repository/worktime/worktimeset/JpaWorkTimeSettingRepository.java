@@ -345,4 +345,5 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 				.setParameter("companyId", companyId).setParameter("listWorkTimeCode", listWorkTimeCode).getList();
 		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
 	}
+	
 }

@@ -272,12 +272,12 @@
 							<div>
 								<div class="div_line_col_2 working_hour"
 									data-bind='with: wkTime1 '>
-									<input
+									<input class="absWkingTime"
 										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType ,option: timeOption }" />
 									<div>#{i18n.getText('KAF011_37')}</div>
-									<input
-										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+									<input class="absWkingTime"
+										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_33')}', 
 							value: endTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType  ,option: timeOption}" />
 								</div>
 							</div>

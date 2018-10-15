@@ -187,7 +187,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.hasBeenRequestedToCancel()) {
-				asyncContext.finishedAsCancelled();
 				return;
 			}
 			

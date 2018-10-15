@@ -129,13 +129,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         let targetItems = [];
                         if(data.targetItemDto.absenceFrameNo != null && data.targetItemDto.absenceFrameNo.length > 0) {
                             _.forEach(data.targetItemDto.absenceFrameNo, function(item) {
-                                targetItems.push("a" + item);
+                                targetItems.push("b" + item);
                             });
                         }
                         
                         if(data.targetItemDto.frameNo != null && data.targetItemDto.frameNo.length > 0) {
                             _.forEach(data.targetItemDto.frameNo, function(item) {
-                                targetItems.push("b" + item);
+                                targetItems.push("a" + item);
                             });
                         }
                         
@@ -603,7 +603,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let absence = [];
             let frame = [];
             _.forEach(self.selectedTargetItems, function(code) {
-                if(code.indexOf("a") > -1) {
+                if(code.indexOf("b") > -1) {
                     absence.push(code.slice(1));
                 } else {
                     frame.push(code.slice(1));
