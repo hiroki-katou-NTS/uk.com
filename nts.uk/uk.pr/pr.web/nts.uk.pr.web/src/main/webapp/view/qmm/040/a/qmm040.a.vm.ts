@@ -54,6 +54,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.employeeList = ko.observableArray([]);
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
+                if(!data)
+                    return;
                 let temp = _.find(self.salIndAmountNames(), function (o) {
                     return o.individualPriceCode == data;
                 });
@@ -61,7 +63,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.individualPriceCode(temp.individualPriceCode);
                     self.individualPriceName(temp.individualPriceName);
                     self.onSelected(temp.individualPriceCode);
-                    $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmount()).igGrid("dataBind");
+
 
                 }
 
@@ -135,7 +137,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
                 if (data) {
                     self.salIndAmountNames(data);
-                    self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
+                    if(data.length>0){
+                        self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
+                        self.salIndAmountNamesSelectedCode.valueHasMutated();
+                    }
+
+
                 }
 
             });
@@ -146,7 +153,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             service.salIndAmountHisByPeValCode(pelValCode, self.cateIndicator(), self.salBonusCate()).done(function (data) {
                 self.personalAmount=new PersonalAmount();
                 self.personalAmount.setData(data)
-
+                $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmount()).igGrid("dataBind");
                 console.log(self.personalAmount);
 
             })
