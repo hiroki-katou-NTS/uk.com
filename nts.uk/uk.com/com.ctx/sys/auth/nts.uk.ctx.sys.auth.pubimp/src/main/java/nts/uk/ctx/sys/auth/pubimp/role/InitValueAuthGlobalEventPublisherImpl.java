@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.app.find.role.workplace;
+package nts.uk.ctx.sys.auth.pubimp.role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,18 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.dom.role.personrole.RoleByRoleTiesEvent;
+import nts.uk.ctx.sys.auth.pub.event.InitValueAuthGlobalEventPublisher;
+import nts.uk.ctx.sys.auth.pub.event.RoleByRoleTiesGlobalEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 //Event：権限管理の初期値登録 - Tuy la event nhưng thực tế đang viết dạng publish
 @Stateless
-public class InitValueAuthManagement {
+public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGlobalEventPublisher{
 
 	@Inject
 	private RoleRepository roleRepo;
 
+	@Override
 	public void initRole(String companyIDCopy) {
 		// ドメインモデル「ロール」を取得する
 		// (Lấy domain 「role」)
@@ -41,10 +43,11 @@ public class InitValueAuthManagement {
 				listRoleCopy.add(initRole);
 				listRoleTiesID.add(roleID);
 				this.roleRepo.insert(initRole);
-				RoleByRoleTiesEvent roleEvent = new RoleByRoleTiesEvent(roleID, role.getCompanyId());
+				RoleByRoleTiesGlobalEvent roleEvent = new RoleByRoleTiesGlobalEvent(roleID, role.getCompanyId());
 				roleEvent.toBePublished();
 			}
 		}
 	}
-
+	
+	
 }

@@ -178,12 +178,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                         $(".nts-input").ntsError("clear");
                         self.settingEnableComparisonMaxValueFieldExtra();
-                        if (self.comparisonRange().comparisonOperator() > 5) {
-                            
-                        } else {
-                            $(".nts-input").ntsError("clear");
-                        }
+                        
                     });
                     break;
                 }
@@ -251,82 +248,82 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 let mulMonCheckType = self.mulMonCheckCondSet().typeCheckItem();
             }
             //日数
-            self.comparisonRange().minTimesValueDay.subscribe((value) => {
-                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                    if (self.comparisonRange().minTimesValueDay() > self.comparisonRange().maxTimesValueDay()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                    if (self.comparisonRange().minTimesValueDay() >= self.comparisonRange().maxTimesValueDay()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                } 
-                  
-           });
-           // 金額
-            self.comparisonRange().minTimeValue.subscribe((value) => {
-                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                    if (self.comparisonRange().minTimeValue() > self.comparisonRange().maxTimeValue()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                    if (self.comparisonRange().minTimeValue() >= self.comparisonRange().maxTimeValue()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-            
-           });
-            //時間
-            self.comparisonRange().minTimesValue.subscribe((value) => {
-                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                    if (self.comparisonRange().minTimesValue() > self.comparisonRange().maxTimesValue()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                    if (self.comparisonRange().minTimesValue() >= self.comparisonRange().maxTimesValue()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-           });
-            self.comparisonRange().minAmountOfMoneyValue.subscribe((value) => {
-                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                    if (self.comparisonRange().minAmountOfMoneyValue() > self.comparisonRange().minAmountOfMoneyValue()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                    if (self.comparisonRange().minAmountOfMoneyValue() >= self.comparisonRange().minAmountOfMoneyValue()) {
-                        setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                        }, 25);
-                    }
-                }
-           });
+//            self.comparisonRange().minTimesValueDay.subscribe((value) => {
+//                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+//                    if (self.comparisonRange().minTimesValueDay() > self.comparisonRange().maxTimesValueDay()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+//                    if (self.comparisonRange().minTimesValueDay() >= self.comparisonRange().maxTimesValueDay()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                } 
+//                  
+//           });
+//           // 金額
+//            self.comparisonRange().minTimeValue.subscribe((value) => {
+//                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+//                    if (self.comparisonRange().minTimeValue() > self.comparisonRange().maxTimeValue()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+//                    if (self.comparisonRange().minTimeValue() >= self.comparisonRange().maxTimeValue()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//            
+//           });
+//            //時間
+//            self.comparisonRange().minTimesValue.subscribe((value) => {
+//                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+//                    if (self.comparisonRange().minTimesValue() > self.comparisonRange().maxTimesValue()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+//                    if (self.comparisonRange().minTimesValue() >= self.comparisonRange().maxTimesValue()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//           });
+//            self.comparisonRange().minAmountOfMoneyValue.subscribe((value) => {
+//                if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+//                    if (self.comparisonRange().minAmountOfMoneyValue() > self.comparisonRange().minAmountOfMoneyValue()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//                if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+//                    if (self.comparisonRange().minAmountOfMoneyValue() >= self.comparisonRange().minAmountOfMoneyValue()) {
+//                        setTimeout(() => {
+//                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                        }, 25);
+//                    }
+//                }
+//           });
 
         }
         private initComparisonValueRange(): model.ComparisonValueRange {
@@ -1165,6 +1162,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             if (errors.hasError() === true) {
                 return;
             }
+            
+
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY: {
                     let workRecordExtractingCondition = self.workRecordExtractingCondition();
@@ -1216,7 +1215,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 }
                 //MinhVV add
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS: {
-                    let isOk: boolean = true;
+                    let isOk: boolean = true;  
+
                     let mulMonCheckItem = self.mulMonCheckCondSet().typeCheckItem();
                     if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES

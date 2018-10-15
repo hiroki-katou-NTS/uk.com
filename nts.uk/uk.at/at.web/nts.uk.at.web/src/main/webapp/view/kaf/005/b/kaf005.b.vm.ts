@@ -752,8 +752,10 @@ module nts.uk.at.view.kaf005.b {
                         dialog.alertError({ messageId: "Msg_959" });
                         return;
                     }
+                    $(".overtimeHoursCheck").ntsError('clear');
                     $("#inpStartTime1").trigger("validate");
                     $("#inpEndTime1").trigger("validate");
+                    
                     //return if has error
                     if (nts.uk.ui.errors.hasError()) { return; }
                     if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {

@@ -107,7 +107,6 @@ module nts.uk.at.view.kdw001.c {
                     self.dateValue().startDate = data.startDate;
                     self.dateValue().endDate = data.endDate;
                     self.dateValue.valueHasMutated();
-                    self.inputPeriod.valueHasMutated();
                     self.reloadCcg001();
 //                    $('#ccgcomponent').focus();
 //                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);

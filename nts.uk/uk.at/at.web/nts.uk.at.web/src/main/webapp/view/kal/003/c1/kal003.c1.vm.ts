@@ -5,8 +5,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             { code: 0, name: "回数" },
             { code: 1, name: "時間" },
             { code: 2, name: "時刻" },
-            { code: 3, name: "金額" },
-            { code: 4, name: "日数" }
+            { code: 3, name: "金額" }
         ]);
 
         enumConditionType: KnockoutObservableArray<any> = ko.observableArray([
@@ -54,11 +53,6 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 caic = self.currentAtdItemCondition,
                 param = nts.uk.ui.windows.getShared("KAL003C1Params");
             self.mode = param.mode;
-            if (self.mode == 1) { // monthly
-                self.enumConditionAtr.remove((item) => { return item.code == 2; });
-            } else { //daily
-                self.enumConditionAtr.remove((item) => { return item.code == 4; });
-            }
 
             /*param.countableAddAtdItems = _.values(param.countableAddAtdItems || []);
             param.countableSubAtdItems = _.values(param.countableSubAtdItems || []);*/
@@ -92,18 +86,15 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             }
 
             self.currentAtdItemCondition.compareStartValue.subscribe(v => {
-                 console.log("5");
                 self.validateRange();
             });
 
             self.currentAtdItemCondition.compareEndValue.subscribe(v => {
-                 console.log("6");
                 self.validateRange();
             });
 
             self.currentAtdItemCondition.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
-                console.log("10");
                 self.currentAtdItemCondition.uncountableAtdItem(null);
                 self.currentAtdItemCondition.countableAddAtdItems([]);
                 self.currentAtdItemCondition.countableSubAtdItems([]);
@@ -135,15 +126,15 @@ module nts.uk.at.view.kal003.c1.viewmodel {
 
             self.currentAtdItemCondition.conditionType.subscribe((value) => {
                 if (value === 0) {
-                    console.log ("0");
+
                     $('#display-compare-item').ntsError('clear');
                     $(".value-input").trigger("validate");
                 } else if (value === 1) {
-                    console.log ("1");
+
                     $('.value-input').ntsError('clear');
                     $('#display-compare-item').trigger("validate");
                 } else {
-                    console.log ("2");
+  
                     $('#display-compare-item').ntsError('clear');
                     $('.value-input').ntsError('clear');
                 }
@@ -264,6 +255,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                             self.currentAtdItemCondition.uncountableAtdItem(parseInt(output));
                             self.fillTextDisplayTarget();
                         }
+                        else if (output === "") {
+                            self.currentAtdItemCondition.uncountableAtdItem(0);
+                            self.displayTargetAtdItems("");
+                        }
                     });
                 } else {
                     //Open dialog KDW007C
@@ -301,6 +296,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                     if (output) {
                         self.currentAtdItemCondition.singleAtdItem(parseInt(output));
                         self.fillTextDisplayComparison();
+                    }
+                    else if (output === "") {
+                        self.currentAtdItemCondition.singleAtdItem(0);
+                        self.displayCompareAtdItems("");
                     }
                 });
             });
