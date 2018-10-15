@@ -16,10 +16,8 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
-import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.DisplayAndInputMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -147,7 +145,7 @@ public class DPMonthFlexProcessor {
 		
 		AgreementInfomationDto agreeDto = displayAgreementInfo.displayAgreementInfo(companyId, param.getEmployeeId(),
 				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
-		setAgreeItem(itemMonthFlexResults, agreeDto);
+		//setAgreeItem(itemMonthFlexResults, agreeDto);
 		
 		return new DPMonthResult(flexShortageDto, itemMonthResults, !itemIds.isEmpty(),
 				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
@@ -201,20 +199,14 @@ public class DPMonthFlexProcessor {
 		return new ArrayList<>();
 	}
 
-	private void setAgreeItem(List<MonthlyModifyResult> itemMonthFlexResults, AgreementInfomationDto agreeDto){
-		if(itemMonthFlexResults.isEmpty()) return;
-		else{
-			List<ItemValue> values = itemMonthFlexResults.get(0).getItems().stream()
-					.filter(x -> (x.getItemId() == 202 || x.getItemId() == 204))
-					.sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
-			agreeDto.setAgreementTime36(values.get(0).getValue() != null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
-			agreeDto.setMaxTime(values.get(1).getValue() != null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
-		}
-	}
-	
-	private String convertTime(int minute){
-		int hours = minute / 60;
-		int minutes = Math.abs(minute) % 60;
-		return (minute < 0 && hours == 0) ?  "-"+String.format(FORMAT_HH_MM, hours, minutes) : String.format(FORMAT_HH_MM, hours, minutes);
-	}
+//	private void setAgreeItem(List<MonthlyModifyResult> itemMonthFlexResults, AgreementInfomationDto agreeDto){
+//		if(itemMonthFlexResults.isEmpty()) return;
+//		else{
+//			List<ItemValue> values = itemMonthFlexResults.get(0).getItems().stream()
+//					.filter(x -> (x.getItemId() == -1 || x.getItemId() == -3))
+//					.sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
+//			agreeDto.setAgreementTime36(values.get(0).getValue() != null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
+//			agreeDto.setMaxTime(values.get(1).getValue() != null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
+//		}
+//	}
 }

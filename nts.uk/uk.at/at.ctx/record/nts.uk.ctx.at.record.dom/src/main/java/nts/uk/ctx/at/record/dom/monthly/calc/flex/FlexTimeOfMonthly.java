@@ -1187,6 +1187,13 @@ public class FlexTimeOfMonthly {
 			int addMinutes = this.deductDaysAndTime.getAnnualLeaveDeductTime().v();
 			this.flexTime.getFlexTime().setTime(new AttendanceTimeMonthWithMinus(flexMinutes + addMinutes));
 		}
+		
+		int flexMinutes = this.flexTime.getFlexTime().getTime().v();
+		if (flexMinutes > 0){
+			
+			// フレックス時間をフレックス超過時間へ移送
+			this.flexExcessTime = new AttendanceTimeMonth(flexMinutes);
+		}
 	}
 	
 	/**

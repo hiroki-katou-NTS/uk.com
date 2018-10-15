@@ -1216,7 +1216,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 let cellDatas = row.cellDatas;
                                 let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
                                 _.forEach(cellDatas, cell => {
-                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625') {
+                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625' && !_.isEmpty(rrow)) {
                                         // cell chinh sua man hinh
                                         let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
                                         // cell sau tinh toan
@@ -4468,9 +4468,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataAgreement(data: any): void {
             this.showAgreement(data.showAgreement);
             if (!data.showAgreement) return;
-            this.agreementTime(getText("KDW003_74", [data.agreementTime36 == null ? "0" : data.agreementTime36, data.maxTime == null ? "0" : data.maxTime]));
+            this.agreementTime((data.agreementTime36 == null || data.maxTime == null) ? "" : getText("KDW003_74", [data.agreementTime36, data.maxTime]));
             this.cssAgree = data.cssAgree;
-            this.agreementExcess(getText("KDW003_76", [data.excessFrequency == null ? "" : data.excessFrequency, data.maxNumber == null ? "" : data.maxNumber]));
+            this.agreementExcess((data.excessFrequency == null || data.maxNumber == null ) ? "" : getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
             this.cssFrequency = data.cssFrequency;
 
             this.processState(data.cssAgree, data.cssFrequency);
