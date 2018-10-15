@@ -184,7 +184,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			return true;
 		}	
 		TimeActualStamp attendanceStamp = optTimeActual.get();
-		Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
+		Optional<WorkStamp> optActualStamp = attendanceStamp.getStamp();
 		if(!optActualStamp.isPresent()) {
 			return true;
 		}
