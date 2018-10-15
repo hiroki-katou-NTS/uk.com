@@ -498,12 +498,9 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 	@Override
 	public List<WorkplaceConfigInfo> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds,
 			List<String> workplaceIds) {
-		if (CollectionUtil.isEmpty(historyIds)) {
+		if (CollectionUtil.isEmpty(historyIds) || CollectionUtil.isEmpty(workplaceIds)) {
 			return Collections.emptyList();
 		}
-		
-		List<String> listHistories = new ArrayList<>(historyIds);
-		List<String> listWorkplaces = new ArrayList<>(workplaceIds);
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -515,29 +512,19 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		// select root
 		cq.select(root);
 		
-		boolean checkHistory = !CollectionUtil.isEmpty(listHistories);
-		boolean checkWorkplace = !CollectionUtil.isEmpty(listWorkplaces);
-		
-		// split will not work on empty collections
-		if (checkHistory) listHistories.add("");
-		if (checkWorkplace) listWorkplaces.add("");
-		
 		List<BsymtWkpConfigInfo> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(listHistories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
-			CollectionUtil.split(listWorkplaces, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subWorkplaceIds -> {
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
+			CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subWorkplaceIds -> {
 				// add where
 				List<Predicate> lstpredicateWhere = new ArrayList<>();
 				lstpredicateWhere.add(criteriaBuilder
 						.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
-				if (checkHistory) {
-					lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
-							.get(BsymtWkpConfigInfoPK_.historyId).in(subHistorieIds));
-				}
-				if (checkWorkplace) {
-					lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
-							.in(subWorkplaceIds));
-				}
+				
+				lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
+						.get(BsymtWkpConfigInfoPK_.historyId).in(subHistorieIds));
+				lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
+						.in(subWorkplaceIds));
 
 				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 				

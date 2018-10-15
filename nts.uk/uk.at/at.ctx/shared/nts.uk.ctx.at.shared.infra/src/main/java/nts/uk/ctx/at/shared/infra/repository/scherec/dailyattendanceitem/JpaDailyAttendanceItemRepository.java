@@ -161,8 +161,8 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	public List<DailyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds,
 			List<Integer> dailyAttendanceAtr) {
 		
-		List<Integer> listAttIds = new ArrayList<>(attendanceItemIds);
-		List<Integer> listAttAtrs = new ArrayList<>(dailyAttendanceAtr);
+		List<Integer> listAttIds = new ArrayList<>(Optional.ofNullable(attendanceItemIds).orElse(Collections.emptyList()));
+		List<Integer> listAttAtrs = new ArrayList<>(Optional.ofNullable(dailyAttendanceAtr).orElse(Collections.emptyList()));
 		
 		boolean checkAttId = !CollectionUtil.isEmpty(listAttIds);
 		boolean checkAttAtr = !CollectionUtil.isEmpty(listAttAtrs);
