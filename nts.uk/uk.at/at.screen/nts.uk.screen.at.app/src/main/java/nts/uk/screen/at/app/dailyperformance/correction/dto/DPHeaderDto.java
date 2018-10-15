@@ -56,6 +56,8 @@ public class DPHeaderDto {
 	private String headerCssClass;
 	
 	private String inputProcess;
+	
+	private Boolean grant;
 
 	private DPHeaderDto(String headerText, String key, String dataType, String width, String color, boolean hidden,
 			String ntsControl, Boolean changedByOther, Boolean changedByYou, String headerCss, String inputProcess) {
@@ -72,6 +74,7 @@ public class DPHeaderDto {
 		this.group = new ArrayList<>();
 		this.headerCssClass = headerCss;
 		this.inputProcess = inputProcess;
+		this.grant = false;
 	}
 
 	private DPHeaderDto(String headerText, String key, String dataType, String width, String color, boolean hidden,
@@ -146,6 +149,7 @@ public class DPHeaderDto {
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
+			dto.setGrant(true);
 			if (item.getPrimitive() != null && item.getPrimitive() == 54) {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999", "999999"));
 			} else if (item.getPrimitive() != null && item.getPrimitive() == 55) {
@@ -154,6 +158,7 @@ public class DPHeaderDto {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
 			}
 		} else if (attendanceAtr == DailyAttendanceAtr.Time.value) {
+			dto.setGrant(true);
 			if(item.getPrimitive() != null && item.getPrimitive() == 1){
 				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("00:00", "48:00"));
 			}else if(item.getPrimitive() != null && (item.getPrimitive() == 56 || item.getPrimitive() == 57)){
@@ -167,6 +172,7 @@ public class DPHeaderDto {
 			}
 			//dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.NumberOfTime.value) {
+			dto.setGrant(true);
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 			dto.setConstraint(new Constraint("TimeWithDay", false, ""));
