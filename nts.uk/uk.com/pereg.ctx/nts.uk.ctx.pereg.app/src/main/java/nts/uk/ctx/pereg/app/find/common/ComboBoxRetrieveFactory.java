@@ -295,7 +295,7 @@ public class ComboBoxRetrieveFactory {
 			// trường hợp cps009 lọc mã code theo công ty
 			// trường hợp cps002, cps001 mã code sẽ lấy theo workplace
 			if(workplaceId == null) {
-				return workTimeSettingRepo.getWorkTimeByCid(companyId).stream()
+				return workTimeSettingRepo.findActiveItems(companyId).stream()
 						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
 								workTimeSetting.getWorktimeCode() + JP_SPACE
 										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
