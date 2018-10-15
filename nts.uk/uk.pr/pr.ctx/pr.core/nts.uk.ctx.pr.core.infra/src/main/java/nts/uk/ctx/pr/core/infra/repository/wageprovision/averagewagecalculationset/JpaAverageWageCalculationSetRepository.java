@@ -32,6 +32,24 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
             + " AND a.statementItemPk.categoryAtr = 0 ORDER BY a.statementItemPk.salaryItemId";
     private static final String SELECT_CUSTOM_BY_ATTENDANCE_ITEM = SELECT_CUSTOM
             + " AND a.statementItemPk.categoryAtr = 2 ORDER BY a.statementItemPk.salaryItemId";
+    private static final String  SELECT_ALL_CUSTOM_PAYMENT_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
+            + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
+            + " ON a.statementItemPk.salaryItemId = b.paymentItemStPk.salaryItemId "
+            + " INNER JOIN QpbmtStatementItemName d "
+            + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
+            + " WHERE  a.statementItemPk.cid =:cid "
+            + " AND a.statementItemPk.categoryAtr = 0 "
+            + " ORDER BY a.statementItemPk.itemNameCd";
+    private static final String  SELECT_ALL_CUSTOM_ATTENDANCE_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
+            + " FROM QpbmtStatementItem a INNER JOIN QpbmtTimeItemSt c "
+            + " ON a.statementItemPk.salaryItemId = c.timeItemStPk.salaryItemId "
+            + " INNER JOIN QpbmtStatementItemName d "
+            + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
+            + " WHERE  a.statementItemPk.cid =:cid "
+            + " AND a.statementItemPk.categoryAtr = 2 "
+            + " AND c.timeCountAtr == 1 "
+            + " ORDER BY a.statementItemPk.itemNameCd";
+
     @Override
     public List<AverageWageCalculationSet> getAllAverageWageCalculationSet(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtAverageWage.class)
@@ -49,6 +67,22 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
     @Override
     public List<StatementCustom> getStatemetAttendanceItem(String cid) {
         return this.queryProxy().query(SELECT_CUSTOM_BY_ATTENDANCE_ITEM, Object[].class).setParameter("cid", cid).getList(
+                item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+                        item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "")
+        );
+    }
+
+    @Override
+    public List<StatementCustom> getAllStatemetPaymentItem(String cid) {
+        return this.queryProxy().query(SELECT_ALL_CUSTOM_PAYMENT_ITEM, Object[].class).setParameter("cid", cid).getList(
+                item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+                        item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "")
+        );
+    }
+
+    @Override
+    public List<StatementCustom> getAllStatemetAttendanceItem(String cid) {
+        return this.queryProxy().query(SELECT_ALL_CUSTOM_ATTENDANCE_ITEM, Object[].class).setParameter("cid", cid).getList(
                 item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
                         item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "")
         );
