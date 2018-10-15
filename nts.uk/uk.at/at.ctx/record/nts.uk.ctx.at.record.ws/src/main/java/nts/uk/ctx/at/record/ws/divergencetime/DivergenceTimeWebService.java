@@ -157,7 +157,9 @@ public class DivergenceTimeWebService extends WebService {
 	@POST
 	@Path("getMonthlyAttendanceDivergenceName")
 	public List<AttendanceNameDivergenceDto> getMonthlyAttendanceDivergenceName(List<Integer> monthlyAttendanceItemIds) {
-		return this.getItemSet.getMonthlyAtName(monthlyAttendanceItemIds);
+		return this.getItemSet.getMonthlyAtName(monthlyAttendanceItemIds).stream()
+				.sorted((o1, o2) -> o1.getAttendanceItemDisplayNumber() - o2.getAttendanceItemDisplayNumber())
+				.collect(Collectors.toList());
 	}
 
 }
