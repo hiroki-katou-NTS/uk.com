@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import hasError = nts.uk.ui.errors.hasError;
     import model = nts.uk.pr.view.qmm039.share.model;
-
+    import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
     export class ScreenModel {
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
@@ -18,6 +18,9 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         endDateString: KnockoutObservable<string>;
         selectedHistory: any = null;
         selectedEmployee: any = null;
+
+        cateIndicator: KnockoutObservable<number>;
+        salBonusCate: KnockoutObservable<number>;
 
 
 
@@ -47,6 +50,39 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 let period = params.period, displayLastestStartHistory = "";
                 self.selectedHistory = params.period;
                 self.selectedEmployee = params.employeeInfo;
+
+
+                //
+                switch (selectedEmployee.itemClass) {
+                    case ITEM_CLASS.SALARY_SUPLY:
+                        //TODO
+                        self.cateIndicator(0);
+                        self.salBonusCate(0);
+                        break;
+                    case ITEM_CLASS.SALARY_DEDUCTION:
+                        //TODO
+                        self.cateIndicator(1);
+                        self.salBonusCate(0);
+                        break;
+                    case ITEM_CLASS.BONUS_SUPLY:
+                        //TODO
+                        self.cateIndicator(0);
+                        self.salBonusCate(1);
+
+                        break;
+                    case ITEM_CLASS.BONUS_DEDUCTION:
+                        //TODO
+                        self.cateIndicator(1);
+                        self.salBonusCate(1);
+                        break;
+                    default:
+                        //TODO
+                        self.cateIndicator(0);
+                        self.salBonusCate(0);
+                        break;
+                }
+                //
+
                 if (period && Object.keys(period).length > 0) {
                     let startYM = period.periodStartYm;
                     let endYM = period.periodEndYm;
@@ -77,11 +113,16 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
             let newHistory = self.selectedHistory;
             newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
             newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
+
             let newEmployee = self.selectedEmployee;
+            newEmployee.cateIndicator = self.cateIndicator();
+            newEmployee.salBonusCate = self.salBonusCate();
             let command = {
                 //emp history
                 yearMonthHistoryItem: [newHistory],
                 //emp info data
+                cateIndicator: newEmployee.cateIndicator,
+                salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
                 perValCode: newEmployee.personalValcode
             };
