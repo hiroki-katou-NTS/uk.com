@@ -51,7 +51,7 @@
 					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM007_44')}</span>
 
 					<div id = "B1_10" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
-							<div  class="cell"
+							<div  class="cell"  tabIndex = "-1"
 							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[0],
@@ -60,7 +60,7 @@
 										group: 'periodOption'}" >
 							</div>
 							<br/>
-							<div  class="cell"
+							<div  class="cell" tabIndex = "-1"
 							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],
