@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -34,7 +35,11 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class HolidayShipmentScreenBFinder {
@@ -60,6 +65,8 @@ public class HolidayShipmentScreenBFinder {
 	private EmployeeRequestAdapter empAdaptor;
 	@Inject
 	private RequestSettingRepository reqSetRepo;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -140,7 +147,18 @@ public class HolidayShipmentScreenBFinder {
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
-
+				//期間内の振出振休残数を取得する
+				AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyID,
+						employeeID,
+						new DatePeriod(refDate, refDate.addYears(1)),
+						GeneralDate.today(),
+						false,
+						false, 
+						Collections.emptyList(),
+						Collections.emptyList(),
+						Collections.emptyList());
+				AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
+				screenInfo.setAbsRecMng(absRecMng);
 			}
 		}
 

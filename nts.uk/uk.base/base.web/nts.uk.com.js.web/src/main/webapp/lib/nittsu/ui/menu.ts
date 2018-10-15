@@ -242,11 +242,11 @@ module nts.uk.ui.menu {
             let $pgArea = $("#pg-area");
             $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-            $manualBtn.on(constants.CLICK, function() {
-                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                window.open(path);
-            });
+//            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+//            $manualBtn.on(constants.CLICK, function() {
+//                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+//                window.open(path);
+//            });
             
             let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
             $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));

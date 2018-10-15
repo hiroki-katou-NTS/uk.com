@@ -131,9 +131,10 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
-                    if(!validateMinMax(result.parsedValue)){
-                       return; 
-                    }
+                    //if(!validateMinMax(result.parsedValue)){
+                    //   return; 
+                    //}
+                    validateMinMax(result.parsedValue);
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))

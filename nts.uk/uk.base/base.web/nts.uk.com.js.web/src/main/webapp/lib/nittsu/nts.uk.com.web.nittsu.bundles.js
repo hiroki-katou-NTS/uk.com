@@ -4310,11 +4310,11 @@ var nts;
                         var $pgArea = $("#pg-area");
                         $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        $manualBtn.on(constants.CLICK, function () {
-                            var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                            window.open(path);
-                        });
+                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                        //            $manualBtn.on(constants.CLICK, function() {
+                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                        //                window.open(path);
+                        //            });
                         var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
                         $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
                         $tglBtn.on(constants.CLICK, function () {
@@ -5752,6 +5752,7 @@ var nts;
                             var showCloseButton = _this.globalContext.dialogCloseButton === true;
                             var width = options.width || _this.globalContext.dialogSize.width;
                             var height = options.height || _this.globalContext.dialogSize.height;
+                            var autoResize = _this.globalContext.autoResize == undefined ? true : _this.globalContext.autoResize;
                             _this.$dialog.data('__size__', { width: width, height: height });
                             width = (window.innerWidth <= width) ? window.innerWidth - 30 : width;
                             height = (window.innerHeight <= height) ? window.innerHeight - 30 : height;
@@ -5821,7 +5822,9 @@ var nts;
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                             //                    var widget= this.$dialog.dialog("widget");
                             //                    widget.draggable("option","containment",false);
-                            $(window.top).on('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                            if (autoResize) {
+                                $(window.top).on('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                            }
                         });
                         this.globalContext.location.href = path;
                     };
@@ -15519,7 +15522,7 @@ var nts;
                             // valueKey
                             optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
                             // columns
-                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
+                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : true, $show = $('<div>', {
                                 'class': 'nts-toggle-dropdown',
                                 'css': {
                                     'color': '#000',
@@ -15590,11 +15593,17 @@ var nts;
                                     $element
                                         .addClass('error')
                                         .ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+                                    if (accessor.value.addError) {
+                                        accessor.value.addError("FND_E_REQ_SELECT", { MsgId: "FND_E_REQ_SELECT" });
+                                    }
                                 }
                                 else {
                                     $element
                                         .removeClass('error')
                                         .ntsError("clear");
+                                    if (accessor.value.removeError) {
+                                        accessor.value.removeError("FND_E_REQ_SELECT");
+                                    }
                                 }
                             })
                                 .on(KEYDOWN, function (evt, ui) {
@@ -15863,14 +15872,14 @@ var nts;
                                 if (selectFirstIfNull) {
                                     vio = _.head(options);
                                     if (!vio) {
-                                        value = undefined;
+                                        value = null;
                                     }
                                     else {
                                         value = vio[optionsValue];
                                     }
                                 }
                                 else {
-                                    value = undefined;
+                                    value = null;
                                     //save old value
                                     if (!_.isNil(ko.toJS(accessor.value))) {
                                         $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
@@ -16071,9 +16080,10 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                if (!validateMinMax(result.parsedValue)) {
-                                    return;
-                                }
+                                //if(!validateMinMax(result.parsedValue)){
+                                //   return; 
+                                //}
+                                validateMinMax(result.parsedValue);
                                 // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
@@ -20410,12 +20420,18 @@ var nts;
                         this.swapParts[0].setDataSource(firstSource);
                         this.swapParts[1].setDataSource(secondSource);
                         value(secondSource);
-                        var searchResult;
-                        if (this.swapParts[forward ? 0 : 1].$listControl.data("filter")) {
-                            searchResult = this.swapParts[forward ? 0 : 1].proceedSearch();
+                        var searchResult, srcIndex = forward ? 0 : 1, destIndex = forward ? 1 : 0;
+                        if (this.swapParts[srcIndex].$searchBox.val() === "") {
+                            this.swapParts[srcIndex].$listControl.data("filter", false);
                         }
-                        if (this.swapParts[forward ? 1 : 0].$listControl.data("filter")) {
-                            this.swapParts[forward ? 1 : 0].proceedSearch();
+                        if (this.swapParts[destIndex].$searchBox.val() === "") {
+                            this.swapParts[destIndex].$listControl.data("filter", false);
+                        }
+                        if (this.swapParts[srcIndex].$listControl.data("filter")) {
+                            searchResult = this.swapParts[srcIndex].proceedSearch();
+                        }
+                        if (this.swapParts[destIndex].$listControl.data("filter")) {
+                            this.swapParts[destIndex].proceedSearch();
                         }
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
@@ -25304,7 +25320,8 @@ var nts;
                                 $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                                 cType.type = dkn.COMBOBOX;
                             }
-                            else if (control === dkn.FLEX_IMAGE || control === dkn.CHECKBOX) {
+                            else if (control === dkn.FLEX_IMAGE || control === dkn.CHECKBOX
+                                || control === dkn.LINK_LABEL || control === dkn.SWITCH_BUTTONS) {
                                 endEdit($grid);
                             }
                             _mEditor = _.assignIn(coord, cType);
@@ -28337,9 +28354,10 @@ var nts;
                     ti.isCutKey = isCutKey;
                     function isZero(value, name) {
                         var col = _secColumn[name];
-                        if (col && col.constraint && col.constraint.cDisplayType === "TimeWithDay")
+                        if (col && ((col.constraint && col.constraint.cDisplayType === "TimeWithDay")
+                            || !col.grant))
                             return false;
-                        return value === "0" || value === "0:00" || value === "00:00";
+                        return Number(value) === 0 || value === "0:00" || value === "00:00";
                     }
                     ti.isZero = isZero;
                     function isTableCell(obj) {
@@ -37783,8 +37801,8 @@ var nts;
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
                         if (!nts.uk.util.isNullOrUndefined(value)) {
-                            construct.startValue(value.startDate);
-                            construct.endValue(value.endDate);
+                            construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                            construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);
                         }
                         ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
                             return construct.createStartBinding(data);
@@ -37812,8 +37830,8 @@ var nts;
                     DateRangeHelper.prototype.bindInit = function (parentBinding, allBindingsAccessor, viewModel, bindingContext) {
                         var self = this;
                         self.value = parentBinding.value;
-                        self.startValue = ko.observable(self.value().startDate);
-                        self.endValue = ko.observable(self.value().endDate);
+                        self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+                        self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
                         self.startValue.subscribe(function (v) {
                             var oldValue = self.value();
                             oldValue.startDate = v;
