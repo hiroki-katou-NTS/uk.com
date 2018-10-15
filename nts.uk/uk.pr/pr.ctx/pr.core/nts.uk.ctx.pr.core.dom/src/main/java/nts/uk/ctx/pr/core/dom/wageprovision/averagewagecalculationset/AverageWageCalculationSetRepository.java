@@ -15,6 +15,10 @@ public interface AverageWageCalculationSetRepository
 
     List<StatementCustom> getStatemetAttendanceItem(String cid);
 
+    List<StatementCustom> getAllStatemetPaymentItem(String cd);
+
+    List<StatementCustom> getAllStatemetAttendanceItem(String cid);
+
     Optional<AverageWageCalculationSet> getAverageWageCalculationSetById(String cid);
 
     void add(AverageWageCalculationSet domain);
