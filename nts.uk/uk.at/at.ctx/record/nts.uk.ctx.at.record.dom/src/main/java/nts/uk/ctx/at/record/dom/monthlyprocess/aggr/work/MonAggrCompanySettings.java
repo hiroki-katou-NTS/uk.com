@@ -36,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -143,6 +144,9 @@ public class MonAggrCompanySettings {
 	/** 丸め設定 */
 	@Getter
 	private RoundingSetOfMonthly roundingSet;
+	/** 回数集計 */
+	@Getter
+	private CopyOnWriteArrayList<TotalTimes> totalTimesList;
 	/** 月別実績の給与項目カウント */
 	@Getter
 	private PayItemCountOfMonthly payItemCount;
@@ -215,6 +219,7 @@ public class MonAggrCompanySettings {
 		this.flexShortageLimitOpt = Optional.empty();
 		this.outsideOTBDItems = new CopyOnWriteArrayList<>();
 		this.outsideOTOverTimes = new CopyOnWriteArrayList<>();
+		this.totalTimesList = new CopyOnWriteArrayList<>();
 		this.agreementOperationSet = Optional.empty();
 		this.optionalItemMap = new ConcurrentHashMap<>();
 		this.empConditionMap = new ConcurrentHashMap<>();
@@ -478,6 +483,12 @@ public class MonAggrCompanySettings {
 		}
 		else {
 			this.errorInfos.put("013", new ErrMessageContent(TextResource.localize("Msg_1239")));
+		}
+		
+		// 回数集計
+		this.totalTimesList.addAll(repositories.getTotalTimes().getAllTotalTimes(companyId));
+		if (this.totalTimesList.size() <= 0){
+			this.errorInfos.put("020", new ErrMessageContent(TextResource.localize("Msg_1416")));
 		}
 		
 		// 36協定運用設定を取得
