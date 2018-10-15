@@ -18,7 +18,7 @@ module nts.uk.pr.view.qmm018.b {
             constructor() {
                 let self = this;
 
-                let params = getShared("QMM018_B_SETTING");
+                let params = getShared("QMM018_A_SETTING");
 
                 if(params) {
                     self.categoryAtr = params.categoryAtr;
@@ -38,7 +38,7 @@ module nts.uk.pr.view.qmm018.b {
                 let deferred = $.Deferred();
                 block.invisible();
 
-                service.getStatementItemDataByCategory(0).done(function (data: Array<IStatement>) {
+                service.getStatementItemDataByCategory(self.categoryAtr).done(function (data: Array<IStatement>) {
                     self.statementList(data);
 
                     block.clear();

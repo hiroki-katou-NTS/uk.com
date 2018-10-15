@@ -15,6 +15,19 @@ module nts.uk.pr.view.qmm018.share.model {
         }
     }
 
+    export enum CategoryAtr {
+
+        PAYMENT_ITEM = 0,
+
+        DEDUCTION_ITEM = 1,
+
+        ATTEND_ITEM = 2,
+
+        REPORT_ITEM = 3,
+
+        OTHER_ITEM = 4
+    }
+
     export enum AttendanceDays {
 
         FROM_STATEMENT_ITEM = 0,

@@ -1,4 +1,5 @@
 module nts.uk.pr.view.qmm018.a.viewmodel {
+    import model = nts.uk.pr.view.qmm018.share.model;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -55,7 +56,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                 }
             });
 
-            service.getStatemetItemData().done(function (data: <IDisplayData>) {
+            service.getStatemetItemData().done(function (data: IDisplayData) {
                 if (data) {
                     self.displayData(new DisplayData(data));
                     self.checkWage(self.displayData().averageWageCalculationSet().decimalPointCutoffSegment());
@@ -117,10 +118,42 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         };
 
         wageItemSet() {
+            let self = this;
+
+            setShared("QMM018_A_SETTING", {
+                categoryAtr: model.CategoryAtr.PAYMENT_ITEM,
+                statementListSelected: self.lstTargetWageItem()
+            });
+
+            nts.uk.ui.windows.sub.modal('../b/index.xhtml').onClosed(() => {
+                let setting = getShared("QMM018_B_SETTING");
+
+                if(setting.isSetting == true) {
+                    self.lstTargetWageItem(setting.statementListSelected);
+                }
+
+                // $("").focus(); Tự làm nhé
+            });
         };
 
 
         workingDaysItemSet() {
+            let self = this;
+
+            setShared("QMM018_A_SETTING", {
+                categoryAtr: model.CategoryAtr.ATTEND_ITEM,
+                statementListSelected: self.lstTargetWorkingDaysItem()
+            });
+
+            nts.uk.ui.windows.sub.modal('../b/index.xhtml').onClosed(() => {
+                let setting = getShared("QMM018_B_SETTING");
+
+                if(setting.isSetting == true) {
+                    self.lstTargetWorkingDaysItem(setting.statementListSelected);
+                }
+
+                // $("").focus(); Tự làm nhé
+            });
         };
     }
 
