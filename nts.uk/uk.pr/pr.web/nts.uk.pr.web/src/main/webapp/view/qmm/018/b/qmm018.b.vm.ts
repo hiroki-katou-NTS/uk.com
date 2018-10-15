@@ -1,6 +1,5 @@
 module nts.uk.pr.view.qmm018.b {
 
-    import model = qmm018.share.model;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
@@ -11,7 +10,7 @@ module nts.uk.pr.view.qmm018.b {
 
             statementList: KnockoutObservableArray<IStatement> = ko.observableArray([]);
             statementListSelected: KnockoutObservableArray<IStatement> = ko.observableArray([]);
-            categoryAtr: boolean;
+            categoryAtr: number;
 
             // define gridColumns
             gridColumns: KnockoutObservableArray<any>;
@@ -19,10 +18,17 @@ module nts.uk.pr.view.qmm018.b {
             constructor() {
                 let self = this;
 
+                let params = getShared("QMM018_B_SETTING");
+
+                if(params) {
+                    self.categoryAtr = params.categoryAtr;
+                    self.statementListSelected(params.statementListSelected);
+                }
+
                 self.gridColumns = ko.observableArray([
                     {headerText: '', key: 'salaryItemId', width: 0, formatter: _.escape, hidden: true},
-                    {headerText: getText('QMM012_32'), key: 'itemNameCd', width: 60, formatter: _.escape},
-                    {headerText: getText('QMM012_33'), key: 'name', width: 200, formatter: _.escape}
+                    {headerText: getText('QMM018_23'), key: 'itemNameCd', width: 60, formatter: _.escape},
+                    {headerText: getText('QMM018_24'), key: 'name', width: 200, formatter: _.escape}
                 ]);
 
             }//end constructor
@@ -39,12 +45,25 @@ module nts.uk.pr.view.qmm018.b {
                     deferred.resolve();
                 }).fail(error => {
                     //self.statementItemDataSelected(null);
+                    console.log(error);
 
                     block.clear();
                     deferred.resolve();
                 });
 
                 return deferred.promise();
+            }
+
+            public register(): void {
+                let self = this;
+
+                setShared('QMM018_B_SETTING', {isSetting: true, statementListSelected: ko.toJS(self.statementListSelected)});
+                nts.uk.ui.windows.close();
+            }
+
+            public cancel(): void {
+                setShared('QMM018_B_SETTING', {isSetting: false});
+                nts.uk.ui.windows.close();
             }
         }
 
@@ -54,5 +73,5 @@ module nts.uk.pr.view.qmm018.b {
             itemNameCd: string;
             name: string;
         }
-    }  
+    }
 }

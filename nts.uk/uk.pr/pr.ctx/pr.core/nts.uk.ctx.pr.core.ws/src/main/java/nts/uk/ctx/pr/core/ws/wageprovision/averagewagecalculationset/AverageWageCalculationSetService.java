@@ -32,7 +32,7 @@ public class AverageWageCalculationSetService extends WebService {
 
     @POST
     @Path("getStatementItemDataByCategory/{categoryAtr}")
-    public List<StatementDto> getStatemetItem(@PathParam("categoryAtr") Integer categoryAtr) {
+    public List<StatementDto> getStatementItem(@PathParam("categoryAtr") Integer categoryAtr) {
         return this.finder.getStatemetItemByCategory(categoryAtr);
     }
 }
