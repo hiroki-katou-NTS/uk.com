@@ -262,6 +262,13 @@ public class JpaComDivRefTimeHisRepo extends JpaRepository
 		cq.select(root);
 
 		List<KrcstComDrtHist> comDrtHists = new ArrayList<>();
+		
+		boolean checkHistIdsEmpty = CollectionUtil.isEmpty(histIds);
+		
+		if (checkHistIdsEmpty) {
+			histIds = new ArrayList<>();
+			histIds.add("");
+		}
 
 		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
@@ -269,7 +276,7 @@ public class JpaComDivRefTimeHisRepo extends JpaRepository
 			predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
 
 			// Find by history id
-			if (!histIds.isEmpty()) {
+			if (!checkHistIdsEmpty) {
 				predicates.add(root.get(KrcstComDrtHist_.histId).in(splitData));
 			}
 
