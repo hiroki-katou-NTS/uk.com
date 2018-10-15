@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.TargetPersonRequestImport;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -73,6 +72,22 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		int count = 0;
 		for (TargetPersonImport targetPersonImport : lstPerson) {
 			count += 1;
+			//データ更新
+			//状態確認
+			Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
+			if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
+				asyncContext.finishedAsCancelled();	
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.STOPPING.nameId);
+				return ProcessStateReflect.INTERRUPTION;
+			}
+			//処理した社員の実行状況を「完了」にする
+			execuLog.updateLogInfo(targetPersonImport.getEmployeeId(), workId, 2, 0);
+			execuLog.updateLogInfo(workId, 2, 0);
+			if(dataSetter != null) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
+			}	
+			
+			
 			dataSetter.updateData("reflectApprovalCount", count);
 			//社員に対応する締め開始日を取得する
 			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(targetPersonImport.getEmployeeId());
@@ -86,7 +101,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			}
 			//社員の申請を反映 (Phản ánh nhân viên)
 			if(!this.reflectAppOfEmployee(workId, targetPersonImport.getEmployeeId(), workDate, 
-					optRequesSetting.get(), aprResult, dataSetter)) {
+					optRequesSetting.get(), aprResult)) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.STOPPING.nameId);
 				return ProcessStateReflect.INTERRUPTION;
 			}
 			
@@ -96,19 +112,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	}
 	@Override
 	public boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
-			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult,TaskDataSetter dataSetter) {
-		//データ更新
-		//状態確認
-		Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
-		//処理した社員の実行状況を「完了」にする
-		execuLog.updateLogInfo(sid, workId, 2, 0);
-		execuLog.updateLogInfo(workId, 2, 0);
-		if(dataSetter != null) {
-			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
-		}		
-		if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
-			return false;
-		}
+			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult) {
+		
+		
 		//ドメインモデル「締め状態管理」を取得する
 		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
 		//「申請期間」を作成する
@@ -133,8 +139,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(lstApp.isEmpty()) {
 			return true;
 		}
-		boolean countError = false;
-		for (Application_New appData : lstApp) {
+		for (Application_New appData : lstApp) {			
 			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData);
 			
 			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
@@ -208,7 +213,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			aprResult = optRefAppResult.get().getExecutionType();
 		}
 		if(!this.reflectAppOfEmployee(workId, sid, datePeriod, 
-				optRequesSetting.get(), aprResult, null)) {
+				optRequesSetting.get(), aprResult)) {
 			return ProcessStateReflect.INTERRUPTION;
 		}
 		
