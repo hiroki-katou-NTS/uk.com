@@ -35,6 +35,7 @@ public class JpaAverageWageCalculationSetRepository extends JpaRepository implem
                     + " ON a.statementItemPk.salaryItemId = d.statementItemNamePk.salaryItemId "
                     + " WHERE  a.statementItemPk.cid =:cid "
                     + " AND c.averageWageAtr = 1"
+                    + " AND c.timeCountAtr = 1 "
                     + " AND a.statementItemPk.categoryAtr = 2 ORDER BY a.statementItemPk.salaryItemId";
     private static final String SELECT_ALL_CUSTOM_PAYMENT_ITEM = "SELECT a.statementItemPk.salaryItemId, a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, d.name "
             + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
