@@ -49,17 +49,17 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         currencyeditor: any;
         //
         fixedWageClassList:  KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number> = ko.observable(0);
+        selectedId: KnockoutObservable<number> = ko.observable(1);
 
         enable: KnockoutObservable<boolean> ;
         //
         targetClassification: KnockoutObservableArray<any>;
 
-        selectedTargetClass: KnockoutObservable<number> = ko.observable(0);
-        selectedMonthSalaryPerDay: KnockoutObservable<number> = ko.observable(0);
-        selectedADayPayee: KnockoutObservable<number> = ko.observable(0);
-        selectedHourlyPay: KnockoutObservable<number> = ko.observable(0);
-        selectedMonthlySalary: KnockoutObservable<number> = ko.observable(0);
+        selectedTargetClass: KnockoutObservable<number> = ko.observable(1);
+        selectedMonthSalaryPerDay: KnockoutObservable<number> = ko.observable(1);
+        selectedADayPayee: KnockoutObservable<number> = ko.observable(1);
+        selectedHourlyPay: KnockoutObservable<number> = ko.observable(1);
+        selectedMonthlySalary: KnockoutObservable<number> = ko.observable(1);
 
         selectedCurrentTargetClass: KnockoutObservable<number> = ko.observable();
         selectedCurrentMonthSalaryPerDay : KnockoutObservable<number> = ko.observable();
@@ -120,13 +120,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             };
             //
             self.targetClassification = ko.observableArray([
-                { code: '0', name: getText('QMM007_20')},
-                { code: '1', name: getText('QMM007_21')}
+                { code: TARRGETCLASSFICATION.OBJECT, name: getText('QMM007_20')},
+                { code: TARRGETCLASSFICATION.NOT_COVERED, name: getText('QMM007_21')}
             ]);
 
             self.fixedWageClassList = ko.observableArray([
-                new BoxModel(0, getText('QMM007_17')),
-                new BoxModel(1, getText('QMM007_18'))
+                new BoxModel(FIXEDWAGECLASS.DES_BY_ALL_MEMBERS, getText('QMM007_17')),
+                new BoxModel(FIXEDWAGECLASS.DES_FOR_EACH_SALARY_CON_TYPE, getText('QMM007_18'))
             ]);
 
             //
@@ -195,13 +195,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             self.yearMonth(null);
                             self.monthlyCalendar(null);
                             self.notes(null);
-                            self.selectedId(0);
+                            self.selectedId(FIXEDWAGECLASS.DES_BY_ALL_MEMBERS);
 
-                            self.selectedTargetClass(0);
-                            self.selectedMonthSalaryPerDay(0);
-                            self.selectedADayPayee(0);
-                            self.selectedHourlyPay(0);
-                            self.selectedMonthlySalary(0);
+                            self.selectedTargetClass(TARRGETCLASSFICATION.OBJECT);
+                            self.selectedMonthSalaryPerDay(TARRGETCLASSFICATION.OBJECT);
+                            self.selectedADayPayee(TARRGETCLASSFICATION.OBJECT);
+                            self.selectedHourlyPay(TARRGETCLASSFICATION.OBJECT);
+                            self.selectedMonthlySalary(TARRGETCLASSFICATION.OBJECT);
                         }else {
                             //
 
@@ -233,11 +233,11 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
                                     self.selectedId(data.setClassification);
 
-                                    self.selectedTargetClass(data.targetClass === null  ? 0 : data.targetClass);
-                                    self.selectedMonthlySalary(data.monthlySalary === null ? 0 : data.monthlySalary);
-                                    self.selectedMonthSalaryPerDay(data.monthSalaryPerDay === null ? 0 : data.monthSalaryPerDay);
-                                    self.selectedADayPayee(data.adayPayee === null ? 0 : data.adayPayee);
-                                    self.selectedHourlyPay(data.hourlyPay === null ? 0 : data.hourlyPay);
+                                    self.selectedTargetClass(data.targetClass === null  ? TARRGETCLASSFICATION.OBJECT : data.targetClass);
+                                    self.selectedMonthlySalary(data.monthlySalary === null ? TARRGETCLASSFICATION.OBJECT : data.monthlySalary);
+                                    self.selectedMonthSalaryPerDay(data.monthSalaryPerDay === null ? TARRGETCLASSFICATION.OBJECT : data.monthSalaryPerDay);
+                                    self.selectedADayPayee(data.adayPayee === null ? TARRGETCLASSFICATION.OBJECT : data.adayPayee);
+                                    self.selectedHourlyPay(data.hourlyPay === null ? TARRGETCLASSFICATION.OBJECT : data.hourlyPay);
                                     self.notes(data.notes);
 
                                     self.selectedCurrentTargetClass(data.targetClass);
@@ -254,12 +254,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
                                 self.amountOfMoney(null);
 
-                                self.selectedId(0);
-                                self.selectedTargetClass(0);
-                                self.selectedMonthSalaryPerDay(0);
-                                self.selectedMonthlySalary(0);
-                                self.selectedADayPayee(0);
-                                self.selectedHourlyPay(0)
+                                self.selectedId(FIXEDWAGECLASS.DES_BY_ALL_MEMBERS);
+                                self.selectedTargetClass(TARRGETCLASSFICATION.OBJECT);
+                                self.selectedMonthSalaryPerDay(TARRGETCLASSFICATION.OBJECT);
+                                self.selectedMonthlySalary(TARRGETCLASSFICATION.OBJECT);
+                                self.selectedADayPayee(TARRGETCLASSFICATION.OBJECT);
+                                self.selectedHourlyPay(TARRGETCLASSFICATION.OBJECT)
                                 self.notes(null);
 
                                 $("#A3_3").focus();
@@ -671,5 +671,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         DELETE = 0,
         UPDATE = 1
     }
+    export enum FIXEDWAGECLASS {
+        DES_FOR_EACH_SALARY_CON_TYPE = 0,
+        DES_BY_ALL_MEMBERS = 1
+    }
 
+    export enum TARRGETCLASSFICATION{
+        NOT_COVERED = 0,
+        OBJECT = 1
+    }
 }
