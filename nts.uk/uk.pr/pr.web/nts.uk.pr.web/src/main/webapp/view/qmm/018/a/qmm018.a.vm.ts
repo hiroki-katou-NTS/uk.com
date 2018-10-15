@@ -97,6 +97,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
         registration() {
             let self = this;
+            self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
             let data = self.displayData();
             if (errors.hasError() === false) {
                 block.invisible();
@@ -120,7 +121,6 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
         wageItemSet() {
             let self = this;
-
             setShared("QMM018_A_SETTING", {
                 categoryAtr: model.CategoryAtr.PAYMENT_ITEM,
                 statementListSelected: self.lstTargetWageItem()
