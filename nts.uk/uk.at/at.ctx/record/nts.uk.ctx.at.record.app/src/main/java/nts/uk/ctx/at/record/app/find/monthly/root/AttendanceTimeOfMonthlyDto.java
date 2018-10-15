@@ -96,7 +96,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			dto.setExcessOutsideWork(ExcessOutsideWorkOfMonthlyDto.from(domain.getExcessOutsideWork()));
 			dto.setAggregateDays(domain.getAggregateDays() == null ? 0 : domain.getAggregateDays().v());
 			dto.setVerticalTotal(VerticalTotalOfMonthlyDto.from(domain.getVerticalTotal()));
-			dto.totalCount = TotalCountByPeriodDto.from(domain.getTotalCount());
+			dto.setTotalCount(TotalCountByPeriodDto.from(domain.getTotalCount()));
 			dto.exsistData();
 		}
 		return dto;

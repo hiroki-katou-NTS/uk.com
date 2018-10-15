@@ -234,7 +234,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return true;
 			}
 			TimeActualStamp attendanceStamp = optAttendanceStamp.get();
-			Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
+			Optional<WorkStamp> optActualStamp = attendanceStamp.getStamp();
 			if(!optActualStamp.isPresent()) {
 				return true;		
 			} 

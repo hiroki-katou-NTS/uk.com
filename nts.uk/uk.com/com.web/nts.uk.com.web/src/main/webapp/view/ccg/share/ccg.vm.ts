@@ -902,6 +902,23 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.loadKcp005();
                 // init subscribers
                 self.initSubscribers();
+                self.setBaseDateAndPeriod().done(() => {
+                    // Comparing accquired base date to current system date.
+                    if (self.isFutureDate(moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT))) {
+                        // If base date is future date, check future reference permission
+                        self.getFuturePermit().done(hasPermission => {
+                            if (hasPermission) {
+                                self.queryParam.baseDate = self.acquiredBaseDate();
+                            } else {
+                                self.inputBaseDate(moment.utc().toISOString());
+                                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
+                            }
+                        })
+                    }else {
+                        self.queryParam.baseDate = self.acquiredBaseDate();
+                    }
+                })
+                
                 if (self.isFirstTime && self.isFocusAdvancedSearchTab()) {
                     // Apply data search & load Kcp components
                     self.synchronizeDate();
