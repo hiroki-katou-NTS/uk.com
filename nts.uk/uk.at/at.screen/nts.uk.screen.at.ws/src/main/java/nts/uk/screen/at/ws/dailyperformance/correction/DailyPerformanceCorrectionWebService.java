@@ -225,6 +225,12 @@ public class DailyPerformanceCorrectionWebService {
 		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
 	}
 	
+	@POST
+	@Path("releaseClosure")
+	public void releaseClosure(EmpAndDate empAndDate){
+		personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
+	}
+	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 	    final Set<Object> seen = new HashSet<>();
 	    return t -> seen.add(keyExtractor.apply(t));

@@ -169,6 +169,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         tighten: KnockoutObservable<any> = ko.observable(null);
         //button A2_6
         showTighProcess: KnockoutObservable<any> = ko.observable(true);
+        indentityMonth:  KnockoutObservable<IndentityMonth> = ko.observable(null);
         //get object share
         shareObject: KnockoutObservable<ShareObject> = ko.observable(new ShareObject());
 
@@ -639,6 +640,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (!self.hasEmployee) return;
             self.loadKcp009();
             self.showTighProcess(data.showTighProcess);
+            self.indentityMonth(data.indentityMonthResult);
             self.extractionData();
             console.log("khoi tao Object: " + (performance.now() - startTime));
             self.loadGrid();
@@ -1383,6 +1385,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return dfd.resolve();
                 }
                 self.showTighProcess(data.showTighProcess);
+                self.indentityMonth(data.indentityMonthResult);
                 //self.lstDomainEdit = data.domainOld;
                 //self.lstDomainOld = _.cloneDeep(data.domainOld);
                 self.processFlex(data, true);
@@ -1671,6 +1674,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.showPrincipal(data.showPrincipal);
                         self.showSupervisor(data.showSupervisor);
                         self.showTighProcess(data.showTighProcess);
+                        self.indentityMonth(data.indentityMonthResult);
                         self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
                         //self.showLock(self.showButton().available12());
                         //self.unLock(false);
@@ -2185,7 +2189,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
 
-        tighProcess() {
+        tighProcessShow() {
             let self = this;
             if (!self.hasEmployee) return;
             var dataSource = $("#dpGrid").mGrid("dataSource");
@@ -2195,6 +2199,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail }).done((data) => {
                 self.processLockButton(self.showLock());
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.block.clear();
+            });
+            nts.uk.ui.block.clear();
+        }
+        
+         tighProcessRelease() {
+            let self = this;
+            if (!self.hasEmployee) return;
+            var dataSource = $("#dpGrid").mGrid("dataSource");
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            let dataRowEnd = dataSource[dataSource.length - 1];
+            service.releaseClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail }).done((data) => {
+                self.processLockButton(self.showLock());
+                nts.uk.ui.dialog.info({ messageId: "Msg_1445" });
                 nts.uk.ui.block.clear();
             });
             nts.uk.ui.block.clear();
@@ -2258,6 +2277,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred();
             service.lock(param).done((data) => {
                 nts.uk.ui.block.clear();
+                self.indentityMonth(data.indentityMonthResult);
                 let dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
                 _.forEach(dataSourceRow, (valueUpdate) => {
                     $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true, true)
@@ -4533,5 +4553,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.rowId = rowId;
             this.columnKey = columnKey;
         }
+    }
+    
+    interface IndentityMonth{
+         show26: boolean;
+         enableButton: boolean;
+         hideAll: boolean;
     }
 }
