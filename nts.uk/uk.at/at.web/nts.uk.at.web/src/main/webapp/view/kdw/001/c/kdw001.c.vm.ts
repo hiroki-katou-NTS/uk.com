@@ -92,9 +92,10 @@ module nts.uk.at.view.kdw001.c {
                 self.required = ko.observable(true);
 
                 let today = new Date;
-                self.dateValue = ko.observable({});
-                self.dateValue().startDate = ko.observable("");
-                self.dateValue().endDate = ko.observable("");
+//                self.dateValue = ko.observable({});
+//                self.dateValue().startDate = ko.observable("");
+//                self.dateValue().endDate = ko.observable("");
+                self.dateValue = ko.observable({startDate : new Date() , endDate : new Date()});
                 self.startDateValidate = ko.observable("");
 
 
