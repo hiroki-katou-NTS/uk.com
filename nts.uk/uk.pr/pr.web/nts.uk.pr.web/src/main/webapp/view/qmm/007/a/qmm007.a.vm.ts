@@ -35,7 +35,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         enable: KnockoutObservable<boolean>;
         enableTargetClassification: KnockoutObservable<boolean>  = ko.observable(true);
         //
-        texteditor: any;
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         currentName: KnockoutObservable<string> = ko.observable('');
@@ -110,9 +109,9 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 value: self.notes,
                 constraint: 'Memo',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: true,
+                    resizeable: false,
                     placeholder: "",
-                    width: "",
+                    width: "455px",
                     textalign: "left"
                 })),
                 required: ko.observable(true),
@@ -133,12 +132,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             //
             self.currencyeditor = {
                 value: self.amountOfMoney,
-                constraint: '',
+                constraint: 'SalaryUnitPrice',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: "right",
+                    width: "125px",
                 }),
                 required: ko.observable(false),
                 enable: ko.observable(true),
@@ -344,7 +344,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         startYearMonth: self.yearMonth(),
                         endYearMonth: self.endYearMonth(),
                         isFirst: index === 0 ? true : false,
-
                     });
                 });
             }
@@ -657,15 +656,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         }
     }
 
-    export enum FixedWageClass {
-        DES_FOR_EACH_SALARY_CON_TYPE = 0,
-        DES_BY_ALL_MEMBERS = 1
-    }
-    //給与契約形態ごとの対象区分
-    export enum TargetClassification{
-        NOT_COVERED = 0,
-        OBJECT = 1
-    }
     export enum MODE {
         NEW = 0,
         UPDATE = 1,
@@ -682,10 +672,4 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         UPDATE = 1
     }
 
-    export function listSetting(): Array<model.ItemModel> {
-        return [
-            new model.ItemModel('0', getText('QMM007_20')),
-            new model.ItemModel('1', getText('QMM007_21')),
-        ];
-    }
 }
