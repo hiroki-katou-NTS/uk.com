@@ -111,6 +111,7 @@ public class RsdtTaxPayAmountService {
                 amount.setInputAtr(amountnInfo.getInputAtr());
                 amount.setMonthlyPaymentAmount(amountnInfo.getMonthlyPaymentAmount());
             }
+            result.add(amount);
         }
 
         return result;

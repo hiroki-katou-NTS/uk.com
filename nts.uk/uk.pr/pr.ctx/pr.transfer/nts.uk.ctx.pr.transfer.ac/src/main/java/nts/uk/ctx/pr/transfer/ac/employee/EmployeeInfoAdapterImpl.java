@@ -1,24 +1,26 @@
 package nts.uk.ctx.pr.transfer.ac.employee;
 
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationAdapter;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationImport;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationQueryDtoImport;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.transfer.dom.adapter.employee.*;
+import nts.uk.query.pub.employee.EmployeeInformationExport;
+import nts.uk.query.pub.employee.EmployeeInformationPub;
+import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmployeeInfoAdapterImpl implements EmployeeInformationAdapter {
 
-    //@Inject
-    //EmployeeInformationPub employeeInformationPub;
+    @Inject
+    EmployeeInformationPub employeeInformationPub;
 
     @Override
     public List<EmployeeInformationImport> getEmployeeInfo(EmployeeInformationQueryDtoImport param) {
-        return Collections.emptyList();
-        /*EmployeeInformationQueryDto employeeInformationQueryDto =
+        EmployeeInformationQueryDto employeeInformationQueryDto =
                 EmployeeInformationQueryDto.builder()
                         .employeeIds(param.getEmployeeIds())
                         .referenceDate(param.getReferenceDate())
@@ -39,13 +41,13 @@ public class EmployeeInfoAdapterImpl implements EmployeeInformationAdapter {
                         f.getEmployeeId(),
                         f.getEmployeeCode(),
                         f.getBusinessName(),
-                        f.getWorkplace() == null ? null : new WorkplaceImport(f.getWorkplace().getWorkplaceCode(), f.getWorkplace().getWorkplaceGenericName(), f.getWorkplace().getWorkplaceName()),
+                        f.getWorkplace() == null ? null : new WorkplaceImport(f.getWorkplace().getWorkplaceId(), f.getWorkplace().getWorkplaceCode(), f.getWorkplace().getWorkplaceGenericName(), f.getWorkplace().getWorkplaceName()),
                         f.getClassification() == null ? null : new ClassificationImport(f.getClassification().getClassificationCode(), f.getClassification().getClassificationName()),
                         f.getDepartment() == null ? null : new DepartmentImport(f.getDepartment().getDepartmentCode(), f.getDepartment().getDepartmentName(), f.getDepartment().getDepartmentGenericName()),
                         f.getPosition() == null ? null : new PositionImport(f.getPosition().getPositionId(), f.getPosition().getPositionCode(), f.getPosition().getPositionName()),
                         f.getEmployment() == null ? null : new EmploymentImport(f.getEmployment().getEmploymentCode(), f.getEmployment().getEmploymentName()),
                         f.getEmploymentCls()
                 ))
-                .collect(Collectors.toList());*/
+                .collect(Collectors.toList());
     }
 }
