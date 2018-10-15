@@ -3310,7 +3310,8 @@ module nts.uk.ui.mgrid {
                     dkn.openDD(control.dropdown, control.my);
                     $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                     cType.type = dkn.COMBOBOX;
-                } else if (control === dkn.FLEX_IMAGE || control === dkn.CHECKBOX) {
+                } else if (control === dkn.FLEX_IMAGE || control === dkn.CHECKBOX
+                        || control === dkn.LINK_LABEL || control === dkn.SWITCH_BUTTONS) {
                     endEdit($grid);
                 }
                 
@@ -6382,8 +6383,9 @@ module nts.uk.ui.mgrid {
          
         export function isZero(value: any, name: any) {
             let col = _secColumn[name];
-            if (col && col.constraint && col.constraint.cDisplayType === "TimeWithDay") return false;
-            return value === "0" || value === "0:00" || value === "00:00";
+            if (col && ((col.constraint && col.constraint.cDisplayType === "TimeWithDay")
+                || !col.grant)) return false;
+            return Number(value) === 0 || value === "0:00" || value === "00:00";
         }
          
         export function isTableCell(obj: any) {
