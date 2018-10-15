@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
@@ -66,6 +67,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -129,6 +131,8 @@ public class HolidayShipmentScreenAFinder {
 	private AtEmployeeAdapter atEmpAdaptor;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmp;
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
@@ -178,10 +182,14 @@ public class HolidayShipmentScreenAFinder {
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
+		
+		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
+				Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
+				GeneralDate closureDate = closure.get();
 		//期間内の振出振休残数を取得する
 		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyID,
-				companyID,
-				new DatePeriod(refDate, refDate.addYears(1)),
+				employeeID,
+				new DatePeriod(closureDate, closureDate.addYears(1)),
 				GeneralDate.today(),
 				false,
 				false, 

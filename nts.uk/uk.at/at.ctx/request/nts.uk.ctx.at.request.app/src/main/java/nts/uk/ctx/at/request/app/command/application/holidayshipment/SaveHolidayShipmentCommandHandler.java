@@ -205,6 +205,7 @@ public class SaveHolidayShipmentCommandHandler
 			boolean chkSpecial = true;
 			boolean chkPublicHoliday = false;
 			boolean chkSuperBreak = true;
+			String appName = "";
 			if (hdAppSetOpt.isPresent()) {
 				HdAppSet hdSet = hdAppSetOpt.get();
 				chkSubHoliday = hdSet.getRegisShortLostHd().value == 1 ? true : false;// 休暇申請設定．代休残数不足登録できる
@@ -212,7 +213,11 @@ public class SaveHolidayShipmentCommandHandler
 				chkAnnual = hdSet.getRegisNumYear().value == 1 ? true : false;// 休暇申請設定．年休残数不足登録できる
 				chkFundingAnnual = hdSet.getRegisShortReser().value == 1 ? true : false;// 休暇申請設定．積立年休残数不足登録できる
 				chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 ? true : false;// 休暇申請設定．公休残数不足登録できる
+				if (hdSet.getFurikyuName() != null) {
+					appName = hdSet.getFurikyuName().v();
+				}
 			}
+			
 			InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,
 					new DatePeriod(GeneralDate.today(), GeneralDate.today().addYears(1)), false,
 					command.getAbsCmd().getAppDate(),
@@ -223,7 +228,7 @@ public class SaveHolidayShipmentCommandHandler
 			EarchInterimRemainCheck check =  checkRegister.checkRegister(inputParam);
 			
 			if(check.isChkSubHoliday() ==true || check.isChkPause()==true || check.isChkAnnual() ==true || check.isChkFundingAnnual() ==true || check.isChkSpecial()==true){
-				throw new BusinessException("Msg_1409");
+				throw new BusinessException("Msg_1409", appName);
 			}
 		}
 		
