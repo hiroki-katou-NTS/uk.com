@@ -52,7 +52,7 @@
                     <!--A2_26-->
                     <div style="width: 100px;" class="label">#{i18n.getText('QMM018_28')}</div>
                     <!--A2_9-->
-                    <div style="width: 75px;" class="label" data-bind="text: exceptionFormula"></div>
+                    <div style="width: 20px;" class="label" data-bind="text: exceptionFormula"></div>
                     <!--A2_27-->
                     <div style="padding-left: 10px; width: 50px;" class="label">#{i18n.getText('QMM018_29')}</div>
                 </div>
@@ -92,8 +92,6 @@
                     <!--A2_16-->
                     <label>#{i18n.getText('QMM018_15')}</label>
                     <!-- A1_17 -->
-                    <!--<button style="margin-left: 20px;" data-bind="click: daysFractionProcessingAtr, enable: true"
-                            tabindex="6">#{i18n.getText('QMM018_16')}</button>-->
                     <div style="margin-left: 20px;" tabindex="6" data-bind="ntsComboBox: {name: '#[QMM018_16]',
 																	options: fractionProcessingAtr,
 																	optionsValue: 'code',
@@ -128,9 +126,9 @@
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_19')}</div>
                     <!--A2_24-->
                     <input id="A2_24" tabindex="9" data-bind="ntsNumberEditor: {
-																	name: '#[QMM018_8]',
 																	value: exceptionFormula,
 																	constraint: 'ExceptionFormula',
+																	name: '#[QMM018_19]',
 																	option: {
 													                    width: '30px',
 													                    textalign: 'center'

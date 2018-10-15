@@ -4,62 +4,41 @@ module nts.uk.pr.view.qmm018.share.model {
     import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
 
-    export interface IAverageWageCalculationSet {
-        cId: string;
-        exceptionFormula: number;
-        obtainAttendanceDays: number;
-        daysFractionProcessing: number;
-        decimalPointCutoffSegment: number;
-    }
-    export class AverageWageCalculationSet {
-        cId: KnockoutObservable<string> = ko.observable(null);
-        exceptionFormula: KnockoutObservable<number> = ko.observable(null);
-        obtainAttendanceDays: KnockoutObservable<number> = ko.observable(null);
-        daysFractionProcessing: KnockoutObservable<number> = ko.observable(null);
-        decimalPointCutoffSegment: KnockoutObservable<number> = ko.observable(null);
-        constructor(params: IAverageWageCalculationSet) {
-            this.cId(params ? params.cId : null);
-            this.exceptionFormula(params ? params.exceptionFormula : null);
-            this.obtainAttendanceDays(params ? params.obtainAttendanceDays : null);
-            this.daysFractionProcessing(params ? params.daysFractionProcessing : null);
-            this.decimalPointCutoffSegment(params ? params.decimalPointCutoffSegment : null);
-        }
-    }
 
-    export interface IStatement{
-        salaryItemId: string;
-        categoryAtr: number;
-        itemNameCd: string;
+    export class ItemModel {
+        code: number;
         name: string;
-    }
-    export class Statement{
-        salaryItemId: KnockoutObservable<string> = ko.observable(null);
-        categoryAtr: KnockoutObservable<number> = ko.observable(null);
-        itemNameCd: KnockoutObservable<string> = ko.observable(null);
-        name: KnockoutObservable<string> = ko.observable(null);
-        constructor(params: IStatement) {
-            this.salaryItemId(params ? params.salaryItemId : null);
-            this.categoryAtr(params ? params.categoryAtr : null);
-            this.itemNameCd(params ? params.itemNameCd : null);
-            this.name(params ? params.name : null);
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
 
-    export interface IDisplayData{
-        averageWageCalculationSet: IAverageWageCalculationSet;
-        lstStatemetPaymentItem: IStatement;
-        lstStatemetAttendanceItem: IStatement;
+    export enum AttendanceDays {
+
+        FROM_STATEMENT_ITEM = 0,
+
+        FROM_EMPLOYMENT = 1
+    }
+    export function getAttendanceDays(): Array<ItemModel> {
+        return [
+            new ItemModel(AttendanceDays.FROM_STATEMENT_ITEM, getText('FROM_STATEMENT_ITEM')),
+            new ItemModel(AttendanceDays.FROM_EMPLOYMENT, getText('FROM_EMPLOYMENT'))
+        ];
     }
 
-    export class DisplayData{
-        averageWageCalculationSet: KnockoutObservable<AverageWageCalculationSet>;
-        lstStatemetPaymentItem: KnockoutObservableArray<Statement>;
-        lstStatemetAttendanceItem: KnockoutObservableArray<Statement>;
-        constructor(params: IDisplayData){
-            let self = this;
-            self.averageWageCalculationSet = ko.observable(new AverageWageCalculationSet(params.averageWageCalculationSet));
-            self.lstStatemetPaymentItem = ko.observableArray(new Statement(params.lstStatemetPaymentItem));
-            self.lstStatemetAttendanceItem = ko.observableArray(new Statement(params.lstStatemetAttendanceItem));
-        }
+    export enum DaysFractionProcessing {
+
+        AFTER = 0,
+
+        BEFORE = 1
+    }
+
+    export function getDaysFractionProcessing(): Array<ItemModel> {
+        return [
+            new ItemModel(DaysFractionProcessing.AFTER, getText('DAYSFRACTIONPROCESSING_AFTER')),
+            new ItemModel(DaysFractionProcessing.BEFORE, getText('DAYSFRACTIONPROCESSING_BEFORE'))
+        ];
     }
 }

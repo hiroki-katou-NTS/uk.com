@@ -17,6 +17,8 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtTimeItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeItemStPk.salaryItemId =:salaryItemId ";
+	private static final String UPDATE_BY_LIST_STATEMENT = "UPDATE QpbmtTimeItemSt f SET f.averageWageAtr = 1" +
+			" WHERE f.timeItemStPk.salaryItemId IN :lstSalaryId";
 
 	@Override
 	public List<TimeItemSet> getAllTimeItemSt() {
@@ -37,6 +39,11 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 	@Override
 	public void update(TimeItemSet domain) {
 		this.commandProxy().update(QpbmtTimeItemSt.toEntity(domain));
+	}
+
+	@Override
+	public void updateAll(List<String> lstSalaryId) {
+		this.queryProxy().query(UPDATE_BY_LIST_STATEMENT, QpbmtTimeItemSt.class).setParameter("lstSalaryId", lstSalaryId);
 	}
 
 	@Override

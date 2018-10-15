@@ -4,26 +4,27 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
         //Checkboxs
-        checkWage: KnockoutObservable<boolean> = ko.observable(false);
-        exceptionFormula: KnockoutObservable<string> = ko.observable('');
+        checkWage: KnockoutObservable<boolean> = ko.observable(null);
+        exceptionFormula: KnockoutObservable<number> = ko.observable(null);
         targetWageItem: KnockoutObservable<string> = ko.observable('');
-        lstTargetWageItem: KnockoutObservableArray<IStatement> =  ko.observableArray(null);
+        lstTargetWageItem: KnockoutObservableArray<IStatement> = ko.observableArray(null);
         targetWorkingDaysItem: KnockoutObservable<string> = ko.observable('');
-        lstTargetWorkingDaysItem: KnockoutObservableArray<IStatement> =  ko.observableArray(null);
+        lstTargetWorkingDaysItem: KnockoutObservableArray<IStatement> = ko.observableArray(null);
 
         categoryAtr: KnockoutObservable<number> = ko.observable(0);
         salaryItemId: KnockoutObservable<string> = ko.observable('');
         displayData: KnockoutObservable<DisplayData> = ko.observable(new DisplayData(null));
 
-        fractionProcessingAtr: KnockoutObservableArray<ItemModel> =  ko.observable(new ItemModel(null));;
-        selectedFractionProcessingAtr:  KnockoutObservableArray<number> = ko.observable(0);
+        fractionProcessingAtr: KnockoutObservableArray<viewmodel.ItemModel> = ko.observableArray([]);
+        selectedFractionProcessingAtr: KnockoutObservableArray<number> = ko.observable(0);
 
         //Fix swapbutton
-        attendanceDays: KnockoutObservableArray<number> = ko.observable(0);
+        attendanceDays: KnockoutObservableArray<viewmodel.ItemModel> = ko.observableArray([]);
         selectedAttendanceDays: KnockoutObservableArray<number> = ko.observable(0);
 
         constructor() {
@@ -57,6 +58,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             service.getStatemetItemData().done(function (data: <IDisplayData>) {
                 if (data) {
                     self.displayData(new DisplayData(data));
+                    self.checkWage(self.displayData().averageWageCalculationSet().decimalPointCutoffSegment());
                     self.exceptionFormula(self.displayData().averageWageCalculationSet().exceptionFormula());
                     self.selectedAttendanceDays(self.displayData().averageWageCalculationSet().obtainAttendanceDays());
                     self.selectedFractionProcessingAtr(self.displayData().averageWageCalculationSet().daysFractionProcessing());
@@ -86,6 +88,29 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         }
 
         registration() {
+            let self = this;
+            let data = self.displayData();
+            /*$("#breakdownItemCode").trigger("validate");
+            $("#breakdownItemName").trigger("validate");*/
+            if (errors.hasError() === false) {
+                block.invisible();
+                // create
+                service.registration(ko.toJS(data)).done(() => {
+                    /*self.getAllData().done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            $("#breakdownItemName").focus();
+                            self.isNewMode(false);
+                            self.currentCode(data.breakdownItemCode);
+                        });
+                    });*/
+                }).fail(function (error) {
+                    alertError(error).then(() => {
+                        $("#breakdownItemCode").focus();
+                    });
+                }).always(function () {
+                    block.clear();
+                });
+            }
         };
 
         correctionLog() {
@@ -94,8 +119,6 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         wageItemSet() {
         };
 
-        daysFractionProcessingAtr() {
-        };
 
         workingDaysItemSet() {
         };
@@ -173,10 +196,10 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
     }
 
     export class ItemModel {
-        code: string;
+        code: number;
         name: string;
 
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }
@@ -188,6 +211,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
         FROM_EMPLOYMENT = 1
     }
+
     export function getAttendanceDays(): Array<ItemModel> {
         return [
             new ItemModel(AttendanceDays.FROM_STATEMENT_ITEM.toString(), getText('FROM_STATEMENT_ITEM')),
