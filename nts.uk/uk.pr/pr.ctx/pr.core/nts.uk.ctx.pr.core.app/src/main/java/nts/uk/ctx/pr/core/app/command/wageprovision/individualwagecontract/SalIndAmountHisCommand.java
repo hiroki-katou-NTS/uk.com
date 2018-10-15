@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class SalIndAmountHisCommand {
@@ -30,7 +32,7 @@ public class SalIndAmountHisCommand {
     /**
      * 期間
      */
-    private GenericHistYMPeriod period;
+    private List<GenericHistYMPeriodCommand> yearMonthHistoryItem;
 
     /**
      * 給与賞与区分

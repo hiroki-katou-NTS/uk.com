@@ -75,12 +75,12 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         updateHistory() {
             let self = this;
             let newHistory = self.selectedHistory;
-            newHistory.periodStartYM = parseInt(self.dateValue().startDate.replace('/', ''));
-            newHistory.periodEndYM = parseInt(self.dateValue().endDate.replace('/', ''));
+            newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
+            newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
             let newEmployee = self.selectedEmployee;
             let command = {
                 //emp history
-                yearMonthHistoryItem: newHistory,
+                yearMonthHistoryItem: [newHistory],
                 //emp info data
                 empId: newEmployee.empId,
                 perValCode: newEmployee.personalValcode

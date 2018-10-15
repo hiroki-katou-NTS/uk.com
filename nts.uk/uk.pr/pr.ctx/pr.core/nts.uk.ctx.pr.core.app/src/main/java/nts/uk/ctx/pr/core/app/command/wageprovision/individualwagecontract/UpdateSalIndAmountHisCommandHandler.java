@@ -13,13 +13,14 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
 public class UpdateSalIndAmountHisCommandHandler extends CommandHandler<SalIndAmountHisCommand> {
 
     @Inject
-    private SalIndAmountHisRepository repository;
+    private SalIndAmountHisRepository salIndAmountHisRepository;
 
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountHisCommand> context) {
@@ -29,9 +30,14 @@ public class UpdateSalIndAmountHisCommandHandler extends CommandHandler<SalIndAm
         int cateIndicator = command.getCateIndicator();
         int salBonusCate = command.getSalBonusCate();
 
-        List<GenericHistYMPeriod> period = (List<GenericHistYMPeriod>) command.getPeriod().getPeriodYearMonth();
+
+
+        List<GenericHistYMPeriod> period = command.getYearMonthHistoryItem().stream().map(item -> new GenericHistYMPeriod(item.historyId, item.startMonth, item.endMonth)).collect(Collectors.toList());
+
         SalIndAmountHis salIndAmountHis = new SalIndAmountHis(perValCode, empId, cateIndicator, period, salBonusCate);
-        repository.update(salIndAmountHis);
+
+        salIndAmountHisRepository.remove(period.get(0).getHistoryID(), perValCode, empId);
+        salIndAmountHisRepository.add(salIndAmountHis);
 
     }
 }
