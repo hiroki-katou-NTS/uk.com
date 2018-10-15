@@ -100,8 +100,8 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
             let self = this;
             block.invisible();
             service.addLaborOffice(command).done(function(){
-                self.showAllOffice();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
+                    self.showAllOffice();
                     self.selectedLaborOfficeCode(command.laborOfficeCode);
                 });
             }).fail(function(error){

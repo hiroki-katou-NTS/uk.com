@@ -45,7 +45,7 @@
                         data-bind="click: readFromSocialInsuranceOffice">#{i18n.getText('QMM010_4')}</button>
                 <button id="A1_5" tabindex="5" data-bind="click: masterCorrection, enable: false">#{i18n.getText('QMM010_5')}</button>
                 <button id="A1_6" class="danger" tabindex="6"
-                            data-bind="click: deleteOffice">#{i18n.getText('QMM010_6')}</button>
+                            data-bind="click: deleteOffice, enable: screenMode() == 1">#{i18n.getText('QMM010_6')}</button>
             </div>
 
 
