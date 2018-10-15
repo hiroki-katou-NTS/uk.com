@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <div id="right"  class="fixed-flex-layout-right">
+        <div id="right"  class="fixed-flex-layout-right" style="margin-top: 17px">
             <div class="valign-center control-group flex">
             <!-- A3_1 -->
             <div id="A3_1" class = "cell valign-center" data-bind="ntsFormLabel: { constraint: ['CompanyUnitPriceCode', 'SalaryUnitPriceName'], required: true }">#{i18n.getText('QMM007_5')}</div>
@@ -138,7 +138,7 @@
                             optionsText: 'name',
                             value: selectedTargetClass,
                             required: required,
-                            enable: selectedId() == 1  ? (enableTargetClassification() ? false : true)  : (enableTargetClassification() ? true : false)   }"></div>
+                            enable: selectedId() == 0  ? (enableTargetClassification() ? false : true)  : (enableTargetClassification() ? true : false)   }"></div>
                     <div  id="A3_12" class="space3" style="margin-left: 124px;width: 117px">#{i18n.getText('QMM007_22')}</div>
 
                     <div id="A3_13" tabindex="15" class="cf" data-bind="ntsSwitchButton: {
@@ -148,7 +148,7 @@
                                 optionsText: 'name',
                                 value: selectedMonthlySalary,
                                 required: required,
-                                enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
                 </div>
             <div class="valign-center control-group flex" style ="min-width: 750px">
                 <div class="space2"></div>
@@ -161,7 +161,7 @@
                                 optionsText: 'name',
                                 value: selectedMonthSalaryPerDay,
                                 required: required,
-                                enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
             </div>
             <div class="valign-center control-group flex" style ="min-width: 750px">
                 <div class="space2"></div>
@@ -174,7 +174,7 @@
                                 optionsText: 'name',
                                 value: selectedADayPayee,
                                 required: required,
-                                enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
             </div>
 
             <div class="valign-center control-group flex" style ="min-width: 750px">
@@ -188,7 +188,7 @@
                                 optionsText: 'name',
                                 value: selectedHourlyPay,
                                 required: required,
-                                enable: selectedId() == 0 &amp;&amp; enableSalary ? false : true  }"></div>
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
             </div>
             <div id="A3_20" class="set-row" style="width: 88%">
                 <hr/>

@@ -355,8 +355,16 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         if(param.methodEditing === EDIT_METHOD.DELETE){
                             if(self.dataSource().length == 0) {
                                 self.create();
+                            }else{
+                                let temp = _.find(self.dataSource(), function(o) { return o.code == self.code(); });
+                                if(temp){
+                                    self.singleSelectedCode(temp.childs[0].code);
+                                }else{
+                                    self.singleSelectedCode(self.dataSource()[0].childs[0].code)
+                                }
+
                             }
-                            self.singleSelectedCode(self.dataSource()[0].childs[0].code);
+
                         }else{
                             self.newYearMonth(param.startYearMonth);
                             self.yearMonth(self.newYearMonth());
@@ -387,12 +395,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             self.amountOfMoney(null);
             self.yearMonth(null);
             self.notes(null);
-            self.selectedId(0);
-            self.selectedTargetClass(0);
-            self.selectedMonthSalaryPerDay(0);
-            self.selectedADayPayee(0);
-            self.selectedHourlyPay(0);
-            self.selectedMonthlySalary(0);
+            self.selectedId(FIXEDWAGECLASS.DES_BY_ALL_MEMBERS);
+            self.selectedTargetClass(TARRGETCLASSFICATION.OBJECT);
+            self.selectedMonthSalaryPerDay(TARRGETCLASSFICATION.OBJECT);
+            self.selectedADayPayee(TARRGETCLASSFICATION.OBJECT);
+            self.selectedHourlyPay(TARRGETCLASSFICATION.OBJECT);
+            self.selectedMonthlySalary(TARRGETCLASSFICATION.OBJECT);
 
             self.mode(MODE.NEW);
 
