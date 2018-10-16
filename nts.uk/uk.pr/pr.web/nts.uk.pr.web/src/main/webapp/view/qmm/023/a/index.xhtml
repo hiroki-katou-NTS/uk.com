@@ -41,20 +41,19 @@
                     <!-- A2_1 -->
                     <div class="panel"
                          data-bind="ntsPanel:{width: '415px', height: '425px', direction: 'right',  visible: true, showIcon: true}">
-                        <div style="width: 100%; margin-top: 5px;">
-                            <!-- A2_2 -->
-                            <div style="float: left; width: 400px;" tabindex="6"
-                                 data-bind="ntsSearchBox: {
-							        searchMode: 'highlight',
-							        targetKey: 'taxFreeamountCode',
-							        comId: 'A2_3',
-							        items: lstTaxExemptLimit,
-							        selectedKey: 'taxFreeamountCode',
-							        fields: ['taxFreeamountCode','taxExemptionName'],
-							        mode: 'igGrid'}"/>
-                            <!-- A2_3 -->
-                            <table id="A2_3" tabindex="7"
-                                   data-bind="ntsGridList: {
+                        <!-- A2_2 -->
+                        <div style="width: 400px;" tabindex="6"
+                             data-bind="ntsSearchBox: {
+							    searchMode: 'highlight',
+							    targetKey: 'taxFreeamountCode',
+							    comId: 'A2_3',
+							    items: lstTaxExemptLimit,
+							    selectedKey: 'taxFreeamountCode',
+							    fields: ['taxFreeamountCode','taxExemptionName'],
+							    mode: 'igGrid'}"/>
+                        <!-- A2_3 -->
+                        <table id="A2_3" tabindex="7"
+                               data-bind="ntsGridList: {
                                     name: '#[QMM023_6]',
                                     multiple: false,
                                     options: lstTaxExemptLimit,
@@ -62,8 +61,7 @@
                                     rows: 15,
                                     columns: columns,
                                     value: currentCode
-					        }"></table>
-                        </div>
+					    }"></table>
                     </div>
                 </div>
                 <div id="qmm-right" class="cell valign-top">
