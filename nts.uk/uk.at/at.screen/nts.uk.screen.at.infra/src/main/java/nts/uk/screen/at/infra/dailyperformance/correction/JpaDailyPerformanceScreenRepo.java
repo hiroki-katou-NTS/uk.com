@@ -535,7 +535,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_ALL_WORKPLACE = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT WKPCD, WKP_NAME FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a ");
+		builderString.append("SELECT w.WKPCD, w.WKP_NAME, w.WKPID FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a ");
 		builderString.append("ON w.WKPID = a.WKPID AND w.CID = a.CID AND w.HIST_ID = a.HIST_ID ");
 		builderString.append("WHERE a.CID = ? AND a.START_DATE <= ? AND a.END_DATE >= ? ");
 		SEL_ALL_WORKPLACE_JDBC = builderString.toString();
@@ -1108,7 +1108,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setDate(3, Date.valueOf(date.localDate()));
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
-				return new CodeName(rs.getString("WKPCD"), rs.getString("WKP_NAME"), "");
+				return new CodeName(rs.getString("WKPCD"), rs.getString("WKP_NAME"), rs.getString("WKPID"));
 			});
 			
 		} catch (SQLException e) {
