@@ -23,11 +23,14 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         displayData: KnockoutObservable<DisplayData> = ko.observable(new DisplayData(null));
 
         fractionProcessingAtr: KnockoutObservableArray<viewmodel.ItemModel> = ko.observableArray([]);
-        selectedFractionProcessingAtr: KnockoutObservableArray<number> = ko.observable(0);
+        selectedFractionProcessingAtr: KnockoutObservableArray<number> = ko.observable(null);
 
         //Fix swapbutton
         attendanceDays: KnockoutObservableArray<viewmodel.ItemModel> = ko.observableArray([]);
-        selectedAttendanceDays: KnockoutObservableArray<number> = ko.observable(0);
+        selectedAttendanceDays: KnockoutObservableArray<number> = ko.observable(null);
+
+        enableFractionProcessingAtr: KnockoutObservable<boolean> = ko.observable(true);
+        enableTargetWorkingDaysItem: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -43,8 +46,12 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             self.attendanceDays(getAttendanceDays());
             self.selectedAttendanceDays.subscribe(x => {
                 if (x == 0) {
+                    self.enableFractionProcessingAtr(false);
+                    self.enableTargetWorkingDaysItem(true);
                     self.displayData().averageWageCalculationSet().obtainAttendanceDays(AttendanceDays.FROM_STATEMENT_ITEM);
                 } else {
+                    self.enableFractionProcessingAtr(true);
+                    self.enableTargetWorkingDaysItem(false);
                     self.displayData().averageWageCalculationSet().obtainAttendanceDays(AttendanceDays.FROM_EMPLOYMENT);
                 }
             });
@@ -98,6 +105,8 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         registration() {
             let self = this;
             self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
+            /*self.displayData().lstStatemetPaymentItem(self.lstTargetWageItem());
+            self.displayData().lstStatemetAttendanceItem(self.lstTargetWorkingDaysItem());*/
             let data = self.displayData();
             if (errors.hasError() === false) {
                 block.invisible();
@@ -258,8 +267,8 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
     export function getAttendanceDays(): Array<ItemModel> {
         return [
-            new ItemModel(AttendanceDays.FROM_STATEMENT_ITEM.toString(), getText('FROM_STATEMENT_ITEM')),
-            new ItemModel(AttendanceDays.FROM_EMPLOYMENT.toString(), getText('FROM_EMPLOYMENT'))
+            new ItemModel(AttendanceDays.FROM_STATEMENT_ITEM.toString(), getText('enum_SelectWorkDays_FROM_STATEMENT_ITEM')),
+            new ItemModel(AttendanceDays.FROM_EMPLOYMENT.toString(), getText('enum_SelectWorkDays_FROM_EMPLOYMENT'))
         ];
     }
 
@@ -272,8 +281,8 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
     export function getDaysFractionProcessing(): Array<ItemModel> {
         return [
-            new ItemModel(DaysFractionProcessing.AFTER.toString(), getText('DAYSFRACTIONPROCESSING_AFTER')),
-            new ItemModel(DaysFractionProcessing.BEFORE.toString(), getText('DAYSFRACTIONPROCESSING_BEFORE'))
+            new ItemModel(DaysFractionProcessing.AFTER.toString(), getText('enum_DaysFractionProcessing_AFTER')),
+            new ItemModel(DaysFractionProcessing.BEFORE.toString(), getText('enum_DaysFractionProcessing_BEFOR'))
         ];
     }
 
