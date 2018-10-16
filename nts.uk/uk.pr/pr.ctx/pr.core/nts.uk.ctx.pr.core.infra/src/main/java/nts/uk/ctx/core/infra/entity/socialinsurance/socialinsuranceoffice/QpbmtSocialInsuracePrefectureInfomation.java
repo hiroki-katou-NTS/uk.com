@@ -29,14 +29,14 @@ public class QpbmtSocialInsuracePrefectureInfomation extends UkJpaEntity impleme
      * 年月開始
      */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
+    @Column(name = "START_YM")
     public int startYearMonth;
 
     /**
      * 年月終了
      */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
+    @Column(name = "END_YM")
     public int endYearMonth;
 
     /**
