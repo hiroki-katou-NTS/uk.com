@@ -12,12 +12,6 @@
             nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionName
             nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemption
         </com:ValidatorScript>
-        <script type='text/javascript'>
-            var dialogSize = {
-                width: 1000,
-                height: 600
-            };
-        </script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="qmm023.a.service.js"/>
         <com:scriptfile path="qmm023.a.start.js"/>
@@ -38,86 +32,98 @@
             <!-- A1_4 -->
             <button data-bind="click: correctionLog, enable: false" tabindex="4">#{i18n.getText('QMM023_4')}</button>
             <!-- A1_5 -->
-            <button class="danger" data-bind="click: deleteTaxExe, enable: !isNewMode()" tabindex="5">#{i18n.getText('QMM023_5')}</button>
+            <button class="danger" data-bind="click: deleteTaxExe, enable: !isNewMode()"
+                    tabindex="5">#{i18n.getText('QMM023_5')}</button>
         </div>
-        <div id="contents-area" style="display: flex; margin-left: 20px;">
-            <div class="selectionItemSet" style="padding: 10px; min-width: 500px;">
-                <!-- A2_1 -->
-                <div class="panel"
-                     data-bind="ntsPanel:{width: '415px', height: '425px', direction: 'right',  visible: true, showIcon: true}">
-                    <div style="width: 100%; margin-top: 5px;">
-                        <!-- A2_2 -->
-                        <div style="float: left; width: 400px;" tabindex="6"
-                             data-bind="ntsSearchBox: {
-							searchMode: 'highlight',
-							targetKey: 'taxFreeamountCode',
-							comId: 'A2_3',
-							items: lstTaxExemptLimit,
-							selectedKey: 'taxFreeamountCode',
-							fields: ['taxFreeamountCode','taxExemptionName'],
-							mode: 'igGrid'}"/>
-                        <!-- A2_3 -->
-                        <table id="A2_3" tabindex="7"
-                               data-bind="ntsGridList: {
-								name: '#[QMM023_6]',
-							    multiple: false,
-								options: lstTaxExemptLimit,
-								optionsValue: 'taxFreeamountCode',
-								rows: 15,
-								columns: columns,
-                                value: currentCode
-					}"></table>
+        <div id="contents-area">
+            <div id="qmm-all" class="table">
+                <div class="cell valign-top">
+                    <!-- A2_1 -->
+                    <div class="panel"
+                         data-bind="ntsPanel:{width: '415px', height: '425px', direction: 'right',  visible: true, showIcon: true}">
+                        <div style="width: 100%; margin-top: 5px;">
+                            <!-- A2_2 -->
+                            <div style="float: left; width: 400px;" tabindex="6"
+                                 data-bind="ntsSearchBox: {
+							        searchMode: 'highlight',
+							        targetKey: 'taxFreeamountCode',
+							        comId: 'A2_3',
+							        items: lstTaxExemptLimit,
+							        selectedKey: 'taxFreeamountCode',
+							        fields: ['taxFreeamountCode','taxExemptionName'],
+							        mode: 'igGrid'}"/>
+                            <!-- A2_3 -->
+                            <table id="A2_3" tabindex="7"
+                                   data-bind="ntsGridList: {
+                                    name: '#[QMM023_6]',
+                                    multiple: false,
+                                    options: lstTaxExemptLimit,
+                                    optionsValue: 'taxFreeamountCode',
+                                    rows: 15,
+                                    columns: columns,
+                                    value: currentCode
+					        }"></table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="fixed-flex-layout-right padding-item"
-                 style="width: 650px; margin-left: 20px;">
-                <div style="display: flex; min-width: 550px;">
-                    <!-- A3_1 -->
-                    <div style="margin-top: 20px;"
-                         data-bind="ntsFormLabel: { constraint: ['TaxLimitAmountCode','TaxExemptionName'], required: true }">#{i18n.getText('QMM023_10')}</div>
-                    <!-- A3_2 -->
-                    <input id="taxFreeamountCode"
-                           style="margin-left: 20px; margin-top: 25px;"
-                           data-bind="ntsTextEditor: {
-													option: {width: '30px'},
-													value: taxFreeamountCode,
-													constraint: 'TaxLimitAmountCode',
-													name:'#[QMM023_11]',
-													required: true,
-													enable: !enableCode()
-												}"
-                           tabindex="8"/>
-                    <!-- A3_3 -->
-                    <input id="taxExemptionName"
-                           style="margin-left: 20px; margin-top: 25px;"
-                           data-bind="ntsTextEditor: {
-													option: {width: '200px'},
-													value: taxExemptionName,
-													constraint: 'TaxExemptionName',
-													name:'#[QMM023_12]',
-													required: true,
-													enable: true
-												}"
-                           tabindex="9"/>
-                </div>
-                <div style="min-width: 550px;">
-                    <!-- A3_4 -->
-                    <div style="margin-top: 20px;"
-                         data-bind="ntsFormLabel: {}">#{i18n.getText('QMM023_9')}</div>
-                    <!-- A3_5 -->
-                    <input style="margin-left: 69px;" id="taxExemption" class="check-validate" tabindex="10" data-bind="ntsNumberEditor: {
-																	name: '#[QMM023_9]',
-																	value: taxExemption,
-																	constraint: 'TaxExemption',
-																	required: true,
-																	option: {
-													                    grouplength: 3,
-													                    width: '150px',
-													                    textalign: 'right',
-													                    currencyformat: 'JPY'
-													                },
-																	enable: true}"/>
+                <div id="qmm-right" class="cell valign-top">
+                    <div class="table">
+                        <div class="cell valign-center">
+                            <!-- A3_1 -->
+                            <div data-bind="ntsFormLabel: {
+                                constraint: ['TaxLimitAmountCode','TaxExemptionName'],
+                                required: true }">#{i18n.getText('QMM023_10')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A3_2 -->
+                            <input id="taxFreeamountCode"
+                                   tabindex="8"
+                                   data-bind="ntsTextEditor: {
+									option: {width: '30px'},
+									value: taxFreeamountCode,
+									constraint: 'TaxLimitAmountCode',
+									name:'#[QMM023_11]',
+									required: true,
+									enable: !enableCode()
+							}"/>
+                            <!-- A3_3 -->
+                            <input id="taxExemptionName"
+                                   style="margin-left: 20px"
+                                   tabindex="9"
+                                   data-bind="ntsTextEditor: {
+                                    option: {width: '200px'},
+                                    value: taxExemptionName,
+                                    constraint: 'TaxExemptionName',
+                                    name:'#[QMM023_12]',
+                                    required: true,
+                                    enable: true
+                             }"/>
+                        </div>
+                    </div>
+                    <div class="table" style="margin-top: 20px;">
+                        <div class="cell">
+                            <!-- A3_4 -->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM023_9')}</div>
+                        </div>
+                        <div class="cell">
+                            <!-- A3_5 -->
+                            <input id="taxExemption" class="check-validate" tabindex="10"
+                                   data-bind="ntsNumberEditor: {
+                                    name: '#[QMM023_9]',
+                                    value: taxExemption,
+                                    constraint: 'TaxExemption',
+                                    required: true,
+                                    option: {
+                                        grouplength: 3,
+                                        width: '150px',
+                                        textalign: 'right',
+                                        currencyformat: 'JPY'
+                                    },
+                                    enable: true
+                            }"/>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
