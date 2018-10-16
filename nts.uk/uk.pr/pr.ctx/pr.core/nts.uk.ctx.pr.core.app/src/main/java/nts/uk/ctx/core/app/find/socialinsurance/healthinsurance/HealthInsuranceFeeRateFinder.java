@@ -24,9 +24,6 @@ import java.util.Optional;
 public class HealthInsuranceFeeRateFinder {
 
     @Inject
-    private HealthInsuranceFeeRateHistoryRepository healthInsuranceFeeRateHistoryRepository;
-
-    @Inject
     private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
     @Inject
@@ -59,10 +56,9 @@ public class HealthInsuranceFeeRateFinder {
         List<SocialInsuranceOffice> socialInsuranceOfficeList = this.socialInsuranceOfficeRepository.findByCid(companyId);
 
         socialInsuranceOfficeList.forEach(office -> {
-            Optional<HealthInsuranceFeeRateHistory> healthInsuranceFeeRateHistory = healthInsuranceFeeRateHistoryRepository.getHealthInsuranceFeeRateHistoryByCid(companyId, office.getCode().v());
+            Optional<HealthInsuranceFeeRateHistory> healthInsuranceFeeRateHistory = bonusHealthInsuranceRateRepository.getHealthInsuranceHistoryByOfficeCode(office.getCode().v());
             healthDtoList.add(new SocialInsuranceOfficeDto(office.getCode().v(), office.getName().v(), HealthInsuranceFeeRateHistoryDto.fromDomain(office.getCode().v(), healthInsuranceFeeRateHistory)));
         });
-
         return healthDtoList;
     }
 }

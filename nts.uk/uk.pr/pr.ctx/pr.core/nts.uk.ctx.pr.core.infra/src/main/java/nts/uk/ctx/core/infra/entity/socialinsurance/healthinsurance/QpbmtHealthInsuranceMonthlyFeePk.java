@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtHealthInsuranceFeeRateHistoryPk implements Serializable {
+public class QpbmtHealthInsuranceMonthlyFeePk implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**

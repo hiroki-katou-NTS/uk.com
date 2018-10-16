@@ -51,7 +51,7 @@ public class HealthInsuranceService {
 			welfarePensionHistory = new HealthInsuranceFeeRateHistory(AppContexts.user().companyId(), officeCode,
 					Arrays.asList(yearMonthItem));
 			healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
-			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
+			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 			return;
 		}
 		// delete old history
@@ -60,22 +60,22 @@ public class HealthInsuranceService {
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
 			// add history if not exist
 			welfarePensionHistory.add(yearMonthItem);
-			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
+			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 		} else {
-			this.updateHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
+			this.updateHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 		}
 		healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
 	}
 
 	public void addHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
-			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee) {
-		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate);
+			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate, officeCode, yearMonth);
 		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee);
 	}
 
 	public void updateHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
-			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee) {
-		bonusHealthInsuranceRateRepository.update(bonusHealthInsuranceRate);
+			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusHealthInsuranceRateRepository.update(bonusHealthInsuranceRate, officeCode, yearMonth);
 		healthInsuranceMonthlyFeeRepository.update(healthInsuranceMonthlyFee);
 	}
 	

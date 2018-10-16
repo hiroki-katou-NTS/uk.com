@@ -8,6 +8,7 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthl
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import javax.ejb.Stateless;
 
@@ -41,7 +42,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
      * @return HealthInsuranceMonthlyFee
      */
     private HealthInsuranceMonthlyFee toDomain(QpbmtHealthInsuranceMonthlyFee entity, List<QpbmtHealthInsurancePerGradeFee> details) {
-        return new HealthInsuranceMonthlyFee(entity.historyId, entity.employeeShareAmountMethod,
+        return new HealthInsuranceMonthlyFee(entity.bonusHealthInsurancePk.historyId, entity.employeeShareAmountMethod,
                 entity.individualLongCareInsuranceRate, entity.individualBasicInsuranceRate, entity.individualHealthInsuranceRate, entity.individualFractionCls, entity.individualSpecialInsuranceRate,
                 entity.employeeLongCareInsuranceRate, entity.employeeBasicInsuranceRate, entity.employeeHealthInsuranceRate, entity.employeeFractionCls, entity.employeeSpecialInsuranceRate,
                 entity.autoCalculationCls,
@@ -68,25 +69,25 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     }
 
     @Override
-	public void add(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-		this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+	public void add(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth) {
+		this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain, officeCode, yearMonth));
+		this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain, officeCode, yearMonth));
 	}
 
 	@Override
-	public void update(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+	public void update(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth) {
+		this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain, officeCode, yearMonth));
 		if (domain.getAutoCalculationCls() == AutoCalculationExecutionCls.AUTO){
 			this.deleteHealthInsurancePerGradeByHistoryId(Arrays.asList(domain.getHistoryId()));
-			this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+			this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain, officeCode, yearMonth));
 		}
 		
 	}
 
     @Override
-    public void delete(HealthInsuranceMonthlyFee domain) {
-        this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-        this.commandProxy().removeAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+    public void delete(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth) {
+        this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain, officeCode, yearMonth));
+        this.commandProxy().removeAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain, officeCode, yearMonth));
     }
 
 	@Override
