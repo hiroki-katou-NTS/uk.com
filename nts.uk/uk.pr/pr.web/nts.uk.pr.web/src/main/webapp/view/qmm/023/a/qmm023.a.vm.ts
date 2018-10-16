@@ -69,7 +69,7 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.taxFreeamountCode('');
             self.taxExemptionName('');
-            self.taxExemption(0);
+            self.taxExemption(null);
             self.currentCode('');
             self.isNewMode(true);
             self.enableCode(false);
