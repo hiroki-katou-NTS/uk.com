@@ -456,7 +456,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             }
             block.invisible();
             if(self.mode() === MODE.NEW || self.mode() === MODE.ADD_HISTORY){
-                if(self.selectedId() === 0){
+                if(self.selectedId() === FIXEDWAGECLASS.DES_BY_ALL_MEMBERS){
                     targetClass = self.selectedTargetClass();
                     monthSalaryPerDay = null;
                     monthlySalary = null;
@@ -471,7 +471,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     targetClass = null;
                 }
             }else{
-                if(self.selectedId() === 0){
+                if(self.selectedId() === FIXEDWAGECLASS.DES_BY_ALL_MEMBERS){
                     targetClass = self.selectedTargetClass();
                     monthSalaryPerDay = self.selectedCurrentMonthSalaryPerDay();
                     monthlySalary = self.selectedCurrentMonthlySalary();
