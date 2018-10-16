@@ -189,11 +189,24 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			lstScheStatus.add(ReflectedState_New.REFLECTED.value);
 		}
 		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
-		//申請日でソートする
-		lstApp = lstApp.stream().sorted(Comparator.comparing(Application_New :: getAppDate))
-				.collect(Collectors.toList());
-		return lstApp;
+		//申請日でソートする		
+		return this.sortData(lstApp);
 	}
+	private List<Application_New> sortData(List<Application_New> lstApp){
+		//申請日、入力日、事前事後区分　ASC
+		return lstApp.stream().sorted((a,b) ->{
+			Integer rs = a.getAppDate().compareTo(b.getAppDate());
+			if (rs == 0) {
+				Integer sortInputDate = a.getInputDate().toDate().compareTo(b.getInputDate().toDate());
+				if(sortInputDate == 0) {
+					return a.getPrePostAtr().compareTo(b.getPrePostAtr());
+				}
+				return sortInputDate;
+			}
+			return rs;			
+		}).collect(Collectors.toList());
+	}
+	
 	@Override
 	public ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
 		//ドメインモデル「申請承認設定」を取得する
