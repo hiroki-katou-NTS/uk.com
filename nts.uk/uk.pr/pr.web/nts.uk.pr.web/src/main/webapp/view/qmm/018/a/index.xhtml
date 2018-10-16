@@ -21,7 +21,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!-- A1_1 -->
-            <button data-bind="click: registration, enable: true"
+            <button data-bind="click: registration, enable: $root.errors.isEmpty"
                     tabindex="1" class="proceed">#{i18n.getText('QMM018_1')}</button>
             <!-- A1_2 -->
             <button data-bind="click: correctionLog, enable: true"
@@ -35,7 +35,7 @@
                 <div style="margin-top: 15px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM018_4')}</div>
                 <!--A2_3-->
-                <div tabindex="3" class="averagewage-checkbox"
+                <div id="A2_3" tabindex="3" class="averagewage-checkbox"
                      data-bind="ntsCheckBox: {checked: checkWage, enable: true}">#{i18n.getText('QMM018_5')}</div>
                 <!--A2_4-->
                 <hr/>
@@ -51,11 +51,7 @@
                     <!--A2_8-->
                     <img style="margin-left: 55px;" src="../a/QMM018_2.png"/>
                     <!--A2_26-->
-                    <div style="width: 100px;" class="label">#{i18n.getText('QMM018_28')}</div>
-                    <!--A2_9-->
-                    <div style="width: 20px;" class="label" data-bind="text: exceptionFormula"></div>
-                    <!--A2_27-->
-                    <div style="width: 50px;" class="label">#{i18n.getText('QMM018_29')}</div>
+                    <label id="A2_26" style="width: 100px;" data-bind="text: disExceptionFormula"></label>
                 </div>
                 <div class="valign-center control-group" style="margin-left: 155px;">
                     <!--A2_10-->
@@ -69,6 +65,7 @@
 													option: {width: '250px'},
 													value: targetWageItem,
 													readonly: true,
+													required: true
 												}"
                            tabindex="5" />
                 </div>
@@ -130,11 +127,12 @@
                     <input id="A2_24" tabindex="9" data-bind="ntsNumberEditor: {
 																	value: exceptionFormula,
 																	constraint: 'ExceptionFormula',
-																	name: '#[QMM018_9]',
+																	name: '#[QMM018_28]',
 																	option: {
 													                    width: '30px',
 													                    textalign: 'center'
 													                },
+													                required: true,
 																	enable: true}" />
                     <!--A2_25-->
                     <label>#{i18n.getText('QMM018_20')}</label>

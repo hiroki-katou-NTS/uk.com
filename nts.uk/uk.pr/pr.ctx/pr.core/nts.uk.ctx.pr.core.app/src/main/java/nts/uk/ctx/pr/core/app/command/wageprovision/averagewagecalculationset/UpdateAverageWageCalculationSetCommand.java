@@ -32,6 +32,7 @@ public class UpdateAverageWageCalculationSetCommand extends CommandHandler<DataD
     protected void handle(CommandHandlerContext<DataDisplayAverageCommand> commandHandlerContext) {
         String cid = AppContexts.user().companyId();
         DataDisplayAverageCommand command = commandHandlerContext.getCommand();
+
         List<String> lstPaymentItemSalaryItemId = command.getLstStatemetPaymentItem().stream().map(item -> item.getSalaryItemId()).collect(Collectors.toList());
         paymentItemSetRepository.updateAll(lstPaymentItemSalaryItemId);
         int selectWorkDays = command.getAverageWageCalculationSet().getObtainAttendanceDays();

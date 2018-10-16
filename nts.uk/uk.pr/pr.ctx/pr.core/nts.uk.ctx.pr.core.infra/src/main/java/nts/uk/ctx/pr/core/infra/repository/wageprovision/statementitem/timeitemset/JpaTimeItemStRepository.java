@@ -21,6 +21,8 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 			+ " WHERE f.timeCountAtr = 1 AND f.timeItemStPk.salaryItemId IN :lstSalaryId";
     private static final String UPDATE_NOT_IN_LIST = " UPDATE QpbmtTimeItemSt f SET f.averageWageAtr = 0 "
 			+ " WHERE f.timeCountAtr = 1 AND f.timeItemStPk.salaryItemId NOT IN :lstSalaryId ";
+    private static final String UPDATE_LIST_TIME = " UPDATE QpbmtTimeItemSt f SET f.averageWageAtr = 0 "
+            + " WHERE f.timeCountAtr = 1";
 
 	@Override
 	public List<TimeItemSet> getAllTimeItemSt() {
@@ -45,8 +47,13 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 
 	@Override
 	public void updateAll(List<String> lstSalaryId) {
-        this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
-        this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+		if(lstSalaryId.size() > 0){
+			this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+            this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+		}
+		else{
+            this.getEntityManager().createQuery(UPDATE_LIST_TIME).executeUpdate();
+        }
 	}
 
 	@Override

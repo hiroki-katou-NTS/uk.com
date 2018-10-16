@@ -32,8 +32,15 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         enableFractionProcessingAtr: KnockoutObservable<boolean> = ko.observable(true);
         enableTargetWorkingDaysItem: KnockoutObservable<boolean> = ko.observable(true);
 
+        disExceptionFormula: KnockoutObservable<string> = ko.observable('');
+
         constructor() {
             let self = this;
+
+            self.exceptionFormula.subscribe(x => {
+                self.disExceptionFormula(getText('QMM018_8',[x]));
+            });
+
             self.fractionProcessingAtr(getDaysFractionProcessing());
             self.selectedFractionProcessingAtr.subscribe(x => {
                 if (x == 0) {
@@ -104,17 +111,26 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
         registration() {
             let self = this;
+            if(self.selectedAttendanceDays() == 0 ){
+                self.displayData().averageWageCalculationSet().daysFractionProcessing(null);
+            }
             self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
             self.displayData().lstStatemetPaymentItem(self.lstTargetWageItem());
-            self.displayData().lstStatemetAttendanceItem(self.lstTargetWorkingDaysItem());
+            if(self.selectedAttendanceDays() ==  1){
+                self.displayData().lstStatemetAttendanceItem()[0];
+            }
+            else {
+                self.displayData().lstStatemetAttendanceItem(self.lstTargetWorkingDaysItem());
+            }
             let data = self.displayData();
+            $("#A2_4").trigger("validate");
             if (errors.hasError() === false) {
                 block.invisible();
                 // create
                 service.registration(ko.toJS(data)).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.getAllData().done(function() {
-
+                            $("#A2_3").focus();
                         });
                     });
                 }).fail(function (error) {
@@ -147,7 +163,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     self.targetWageItem(newStringTargetWageItem);
                 }
 
-                // $("").focus(); Tự làm nhé
+                $("#A2_3").focus();
             });
         };
 
@@ -172,7 +188,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     self.targetWorkingDaysItem(newStringTargetWageItem);
                 }
 
-                // $("").focus(); Tự làm nhé
+                $("#A2_3").focus();
             });
         };
     }

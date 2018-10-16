@@ -21,6 +21,7 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
             + " WHERE f.paymentItemStPk.salaryItemId IN :lstSalaryId";
     private static final String UPDATE_NOT_IN_LIST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 0"
             + " WHERE f.paymentItemStPk.salaryItemId NOT IN :lstSalaryId";
+    private static final String UPDATE_LIST_PAYMENTITEMST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 0";
 
     @Override
     public List<PaymentItemSet> getAllPaymentItemSt() {
@@ -46,8 +47,14 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
 
     @Override
     public void updateAll(List<String> lstSalaryId) {
-        this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
-        this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+        if (lstSalaryId.size() > 0) {
+            this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+            this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+        }else{
+            this.getEntityManager().createQuery(UPDATE_LIST_PAYMENTITEMST).executeUpdate();
+        }
+
+
     }
 
     @Override
