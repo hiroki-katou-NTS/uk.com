@@ -171,6 +171,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			dataSetter.updateData("reflectApprovalStartTime", GeneralDateTime.now().toString());
 			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
 			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.INTERRUPTION) {
+				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);				
+				asyncContext.finishedAsCancelled();
+			}
 			if(finalStatus == ProcessState.SUCCESS) {
 				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
 			}

@@ -37801,8 +37801,8 @@ var nts;
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
                         if (!nts.uk.util.isNullOrUndefined(value)) {
-                            construct.startValue(value.startDate);
-                            construct.endValue(value.endDate);
+                            construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                            construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);
                         }
                         ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
                             return construct.createStartBinding(data);
@@ -37830,8 +37830,8 @@ var nts;
                     DateRangeHelper.prototype.bindInit = function (parentBinding, allBindingsAccessor, viewModel, bindingContext) {
                         var self = this;
                         self.value = parentBinding.value;
-                        self.startValue = ko.observable(self.value().startDate);
-                        self.endValue = ko.observable(self.value().endDate);
+                        self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+                        self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
                         self.startValue.subscribe(function (v) {
                             var oldValue = self.value();
                             oldValue.startDate = v;

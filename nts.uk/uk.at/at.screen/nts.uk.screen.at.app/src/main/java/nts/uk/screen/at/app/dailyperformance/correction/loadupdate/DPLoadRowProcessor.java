@@ -49,6 +49,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -85,6 +87,9 @@ public class DPLoadRowProcessor {
     @Inject
 	private ClosureService closureService;
     
+    @Inject
+	private CheckIndentityMonth checkIndentityMonth;
+    
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
 		
@@ -114,8 +119,10 @@ public class DPLoadRowProcessor {
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
 				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
-				result.checkShowTighProcess(displayFormat, true,
-						checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+				//checkIndenityMonth
+				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+				//対象日の本人確認が済んでいるかチェックする
+				result.checkShowTighProcess(displayFormat, true);
 			}
 		}
 		if(param.getOnlyLoadMonth()){
@@ -274,10 +281,10 @@ public class DPLoadRowProcessor {
 		List<DPCellStateDto> lstCellCalcAll = new ArrayList<>();
 		mapDtoChange.forEach((key, dtoNew) -> {
 			val dtoOld = mapDtoOld.get(key);
-			DailyItemValue dailyItemNew = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoNew, itemHeaders.keySet()))
+			DailyItemValue dailyItemNew = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoNew, itemHeaders.keySet()).stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList()))
 							.createEmpAndDate(dtoNew.employeeId(), dtoNew.workingDate());
 			
-			DailyItemValue dailyItemOld = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoOld, itemHeaders.keySet()))
+			DailyItemValue dailyItemOld = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoOld, itemHeaders.keySet()).stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList()))
 					.createEmpAndDate(dtoOld.employeeId(), dtoOld.workingDate());
 			
 			Optional<DPDataDto> data = lstData.stream().filter(x -> x.getDate().equals(key.getRight()) && x.getEmployeeId().equals(key.getLeft())).findFirst();

@@ -48,6 +48,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	/** 集計休出時間 */
 	private Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> aggregateHolidayWorkTimeMap;
 
+	/** 事前申請時間を足したかどうか */
+	private boolean isAddedBeforeApp;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -249,6 +252,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				companyId, companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), false);
 		
 		// 休出・振替のループ
+		this.isAddedBeforeApp = false;
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
 		
 			// 休出枠時間のループ処理
@@ -351,6 +355,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 							legalHolidayWorkTime, new AttendanceTime(0)));
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							holidayWorkTime, holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime()));
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
@@ -381,6 +388,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
 					break;
 				case TRANSFER:
 					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
@@ -394,6 +404,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
 					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
 					if (timeAfterCalc.lessThanOrEqualTo(holidayWorkFrameTime.getHolidayWorkTime().get().getTime())){
 						timeAfterCalc = new AttendanceTime(0);
 					}
@@ -416,6 +429,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				break;
 			}
 		}
+		this.isAddedBeforeApp = true;
 		
 		return timeAfterCalc;
 	}

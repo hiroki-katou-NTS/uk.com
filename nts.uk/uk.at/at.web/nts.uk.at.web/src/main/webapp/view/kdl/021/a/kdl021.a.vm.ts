@@ -71,7 +71,7 @@ module kdl021.a.viewmodel {
         
         prepareData(lstItem) {
             let self = this;
-            let data = _.map(lstItem, item => { return new ItemModel(item.attendanceItemId.toString(), item.attendanceItemName.toString(), item.attendanceItemDisplayNumber.toString()) });
+            let data = _.map(lstItem, item => { return new ItemModel(item.attendanceItemId, item.attendanceItemName, item.attendanceItemDisplayNumber) });
             self.dataSoure = self.dataSoure.concat(_.sortBy(data, ['displayCode']));
             return self.dataSoure;
         }

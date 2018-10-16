@@ -64,6 +64,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
         transferDate: KnockoutObservable<string> = ko.observable(null);
         
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
+        
+        remainDays: KnockoutObservable<number> = ko.observable(null);
         constructor() {
             let self = this;
 
@@ -145,7 +147,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             service.start(startParam).done((data: common.IHolidayShipment) => {
                 self.setDataFromStart(data);
-
+                $("#fixed-table").ntsFixedTable({ width: 100 });
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
@@ -175,6 +177,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
+                if (data.absRecMng) {
+                    self.remainDays(data.absRecMng.remainDays);
+                }
                 self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
@@ -245,8 +250,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
                         employeeID: self.employeeList()[0] ? self.employeeList()[0].sid : null,
-                        appVersion: 0
-                        ,
+                        appVersion: 0,
+                        remainDays: self.remainDays()
                     }
                 }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             if (selectedReason) {
