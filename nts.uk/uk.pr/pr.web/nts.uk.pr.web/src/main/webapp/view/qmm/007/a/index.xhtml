@@ -43,7 +43,7 @@
                 <div class="cf">
                     <div style="float:left">
                         <div id="A2_3" style="width: 350px" data-bind="ntsSearchBox: {label: '#{i18n.getText('QMM007_5')}', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
-			searchText: '検索',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['searchCode', 'searchName']}" tabindex="5" />
+			searchText: '検索',placeHolder:'',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['searchCode', 'searchName']}" tabindex="5" />
                         <button id="A2_4" tabindex="6" data-bind="click: openBscreen,enable: $root.errors.isEmpty() &amp;&amp; enableAddHistoryButton()">#{i18n.getText('QMM007_6')}</button>
                         <button id="A2_5" tabindex="7" data-bind="click: openCscreen,enable: $root.errors.isEmpty() &amp;&amp; enableEditHistoryButton()">#{i18n.getText('QMM007_7')}</button>
                         <table id="treegrid1" tabindex="8"
@@ -56,7 +56,6 @@
                                                 optionsValue: 'code',
                                                 optionsChild: 'childs',
                                                 optionsText: 'nodeText',
-                                                placeHolder:'',
                                                 multiple: false,
                                                 enable: true,
                                                 showCheckBox: false}">

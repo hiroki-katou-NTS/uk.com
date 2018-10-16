@@ -83,6 +83,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     self.enableAddHistoryButton(false);
                     self.enableEditHistoryButton(false);
                     $("#A3_2").focus();
+                    nts.uk.ui.errors.clearAll();
                 }
             });
             //change value when select history
