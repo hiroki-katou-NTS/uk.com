@@ -41,13 +41,13 @@
 
                 <span class="title" data-bind="text : titleTab"></span>
                 <button class="proceed">#{i18n.getText('QMM040_2')}</button>
-                <a class="goout" style="margin-left: 200px"
+                <a class="goout" style="margin-left: 700px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
             </div>
             <div class="contents-area fixed-flex-layout">
                 <div id="com-ccg001"></div>
-                <div id="panel-left" class="fixed-flex-layout-left" style="margin-left: 100px;">
+                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px;">
                     <div style=" margin-top: 15px" data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">
 
                         <div style="width: 300px" data-bind="ntsSearchBox: {
@@ -80,13 +80,13 @@
 
                 </div>
 
-                <div id="panel-right" class="fixed-flex-layout-right">
+                <div id="panel-right" class="fixed-flex-layout-right margin-top" >
                     <div class="flex valign-center margin-top-item">
                         <!--A5_1 項目区分-->
 
                         <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
                         <!--A5_2 項目区分-->
-                        <div class="label margin-left-item">#{i18n.getText('QMM040_11')}</div>
+                        <div class="label margin-left-item" data-bind="text: itemClassification()"></div>
                     </div>
 
                     <div class="flex valign-center margin-top-item">
@@ -103,9 +103,9 @@
                         <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
                         <!--A5_7 基準年月-->
                         <div class="margin-left-item"
-                             data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+                             data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth'}"></div>
                         <!--A5_8 抽出-->
-                        <button class="caret-bottom"
+                        <button class="caret-bottom" data-bind="click: filterData"
                                 style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
 
                     </div>
