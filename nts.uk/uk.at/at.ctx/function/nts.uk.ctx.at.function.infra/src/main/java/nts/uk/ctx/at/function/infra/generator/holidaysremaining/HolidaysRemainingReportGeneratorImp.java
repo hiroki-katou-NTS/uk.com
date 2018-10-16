@@ -953,15 +953,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						}
 					}
 				}
-				
-				if (specialVacationImported != null) {
+
+                // Result RequestList273
+                val spVaCrurrentMonthImported = hdRemainingInfor.getMapSPVaCrurrentMonth().get(specialHolidayCode);
+
+				if (spVaCrurrentMonthImported != null) {
 					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
 					if (totalMonth >= 0) {
 						// M2_5 特別休暇１_使用日数
-						cells.get(firstRow, 10 + totalMonth).setValue(specialVacationImported.getUsedDate());
+						cells.get(firstRow, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getUsedDate());
 						// M2_7 特別休暇１_残数日数
-						cells.get(firstRow + 1, 10 + totalMonth).setValue(specialVacationImported.getRemainDate());
-						if (specialVacationImported.getRemainDate() < 0) {
+						cells.get(firstRow + 1, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getRemainDate());
+						if (spVaCrurrentMonthImported.getRemainDate() < 0) {
 							setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
 						}
 					}
