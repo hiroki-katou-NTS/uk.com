@@ -21,6 +21,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         name :KnockoutObservable<string> = ko.observable('項目移送');
         code :KnockoutObservable<string> = ko.observable('項目移送');
         textResourceRadioFirt :KnockoutObservable<string> = ko.observable('');
+
         constructor() {
             let self = this;
             self.initView();
@@ -85,6 +86,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
 
                 return false;
             }
+
             return true;
         }
 
@@ -116,9 +118,8 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
     }
 
     export function getHistoryEditMethod(): Array<model.ItemModel> {
-        return [
-            new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM007_40')),
-            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM007_41'))
+        return [ new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM001_40')),
+            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM001_41'))
         ];
     }
 
@@ -137,6 +138,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
          */
         cId:string;
 
+
         /**
          * 履歴ID
          */
@@ -146,12 +148,10 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
          * コード
          */
         code:string;
-
         /**
          * 開始年月
          */
         startYearMonth: number;
-
         /**
          * 終了年月
          */
@@ -163,6 +163,14 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             this.startYearMonth=startYearMonth;
             this.endYearMonth = endYearMonth;
         }
+          endYearMonth :number;
+          constructor(cId:string,hisId:string,code:string,startYearMonth: number,endYearMonth :number){
+                this.cId=cId;
+                this.code=code;
+                this.hisId=hisId;
+                this.startYearMonth=startYearMonth;
+                this.endYearMonth = endYearMonth;
+          }
     }
     class AcquiCondiPayrollHis{
         cId :string;
@@ -182,6 +190,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         }
     }
 
+
     class PayrollUnitPriceHistoryCommand {
         cId: string;
         hisId: string;
@@ -189,7 +198,6 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         startYearMonth: number;
         endYearMonth: number;
         isMode: number;
-
         constructor(cId: string, hisId: string, code: string, startYearMonth: number, endYearMonth: number, isMode: number) {
             this.cId = cId;
             this.hisId = hisId;
