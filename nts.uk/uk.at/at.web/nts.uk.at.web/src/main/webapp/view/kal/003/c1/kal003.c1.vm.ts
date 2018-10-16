@@ -255,6 +255,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                             self.currentAtdItemCondition.uncountableAtdItem(parseInt(output));
                             self.fillTextDisplayTarget();
                         }
+                        else if (output === "") {
+                            self.currentAtdItemCondition.uncountableAtdItem(0);
+                            self.displayTargetAtdItems("");
+                        }
                     });
                 } else {
                     //Open dialog KDW007C
@@ -292,6 +296,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                     if (output) {
                         self.currentAtdItemCondition.singleAtdItem(parseInt(output));
                         self.fillTextDisplayComparison();
+                    }
+                    else if (output === "") {
+                        self.currentAtdItemCondition.singleAtdItem(0);
+                        self.displayCompareAtdItems("");
                     }
                 });
             });

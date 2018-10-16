@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.K
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class JpaConfirmationMonthRepository  extends JpaRepository implements ConfirmationMonthRepository{
@@ -26,6 +27,7 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
 			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId "
 			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+			+ "AND a.krcdtConfirmationMonthPK.isLastDay = :isLastDayOfMonth "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
 	
 	private static final String FIND_BY_SID_YM = "SELECT a FROM KrcdtConfirmationMonth a "
@@ -39,25 +41,26 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
 			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId ";
 	@Override
-	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, Day closureDay, YearMonth processYM) {
+	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, ClosureDate closureDate, YearMonth processYM) {
 		return this.queryProxy().find(new KrcdtConfirmationMonthPK(companyID, employeeID,
-						closureId.value, closureDay.v(), processYM.v()) , KrcdtConfirmationMonth.class).map(x -> x.toDomain());
+						closureId.value, closureDate.getClosureDay().v(),(closureDate.getLastDayOfMonth() ? 1 : 0), processYM.v()) , KrcdtConfirmationMonth.class).map(x -> x.toDomain());
 	}
 
 	@Override
-	public void insert(ConfirmationMonth confirmationMonth) {
+	public void insert(ConfirmationMonth confirmationMonth) { 
 		this.commandProxy().insert(new KrcdtConfirmationMonth(
 				new KrcdtConfirmationMonthPK(confirmationMonth.getCompanyID().v(), confirmationMonth.getEmployeeId(),
-						confirmationMonth.getClosureId().value, confirmationMonth.getClosureDay().v(), confirmationMonth.getProcessYM().v()),
+						confirmationMonth.getClosureId().value, confirmationMonth.getClosureDate().getClosureDay().v(),(confirmationMonth.getClosureDate().getLastDayOfMonth() ? 1 : 0), confirmationMonth.getProcessYM().v()),
 				confirmationMonth.getIndentifyYmd()));
 	}
 
 	@Override
-	public void delete(String companyId, String employeeId, int closureId, int closureDay, int processYM) {
+	public void delete(String companyId, String employeeId, int closureId, int closureDate, boolean isLastDayOfMonth, int processYM) {
 		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK, KrcdtConfirmationMonth.class)
 				.setParameter("companyID", companyId).setParameter("employeeId", employeeId)
 				.setParameter("closureId", closureId)
-				.setParameter("closureDay", closureDay)
+				.setParameter("closureDay", closureDate)
+				.setParameter("isLastDay", isLastDayOfMonth)
 				.setParameter("processYM", processYM).executeUpdate();
 	}
 

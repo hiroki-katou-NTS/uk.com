@@ -966,7 +966,7 @@ public class MonthlyAggregateProcessService {
 
 		//RequestList No.203 期間内の休出代休残数を取得する
 		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, employee.getId(),
-				periodCurrentMonth, true, periodCurrentMonth.end(), false, Collections.emptyList(),
+				periodCurrentMonth, false, periodCurrentMonth.end(), false, Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList());
 		BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
 				.getBreakDayOffMngInPeriod(param);

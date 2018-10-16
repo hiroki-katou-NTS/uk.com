@@ -35,8 +35,8 @@ module nts.uk.ui.koExtentions {
                 value = ko.unwrap(data.value);
             
             if(!nts.uk.util.isNullOrUndefined(value)){
-                construct.startValue(value.startDate);
-                construct.endValue(value.endDate);    
+                construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);    
             }
             ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function() {
                 return construct.createStartBinding(data);
@@ -81,8 +81,8 @@ module nts.uk.ui.koExtentions {
         public bindInit(parentBinding: any, allBindingsAccessor, viewModel, bindingContext){
             let self = this;
             self.value = parentBinding.value;
-            self.startValue = ko.observable(self.value().startDate);
-            self.endValue = ko.observable(self.value().endDate);
+            self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+            self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
             
             self.startValue.subscribe((v) => {
                 let oldValue = self.value();

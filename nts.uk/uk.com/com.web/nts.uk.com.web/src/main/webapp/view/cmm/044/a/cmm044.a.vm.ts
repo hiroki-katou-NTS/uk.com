@@ -567,7 +567,12 @@ module cmm044.a.viewmodel {
                     businessName: item.employeeName,
                 }));
             });
-
+            let containResult = _.find(self.employeeInputList(), function(item) { return item.id == self.selectedItem(); });
+            if(nts.uk.util.isNullOrUndefined(containResult)){
+                if(!nts.uk.util.isNullOrEmpty(self.employeeInputList())){
+                    self.selectedItem(self.employeeInputList()[0].id);   
+                }     
+            }
             self.initKCP009();
         }
     }
