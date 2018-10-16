@@ -28,10 +28,13 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /** Event：出退勤時刻を補正する */
@@ -73,8 +76,9 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		}
 		
 		/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
-		if (wt.isWokingDay()) {
-			val wts = wt.getWorkTypeSetAvailable();
+		WorkAtr dayAtr = isWokingDay(wt);
+		if (dayAtr != null) {
+			val wts = wt.getWorkTypeSetByAtr(dayAtr).get();
 			if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK  || wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 				TimeLeavingOfDailyPerformance tlo = getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command));
 				TimeLeavingOfDailyPerformance tl = null;
@@ -92,6 +96,30 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 			return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
 		}
 		return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(false, command));
+	}
+	
+	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
+	private WorkAtr isWokingDay(WorkType wt) {
+		if(wt.getDailyWork() == null) { return null; }
+		if (wt.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			if(isWorkingType(wt.getDailyWork().getOneDay())){
+				return WorkAtr.OneDay;
+			} else {
+				return null;
+			}
+		}
+		
+		if(isWorkingType(wt.getDailyWork().getMorning())){
+			return WorkAtr.Monring;
+		}
+		
+		return isWorkingType(wt.getDailyWork().getAfternoon()) ? WorkAtr.Afternoon : null;
+	}
+	
+	/** 出勤系かチェックする　*/
+	private boolean isWorkingType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
+				|| wt == WorkTypeClassification.HolidayWork;
 	}
 
 	/** 取得したドメインモデル「編集状態」を見て、マージする */
