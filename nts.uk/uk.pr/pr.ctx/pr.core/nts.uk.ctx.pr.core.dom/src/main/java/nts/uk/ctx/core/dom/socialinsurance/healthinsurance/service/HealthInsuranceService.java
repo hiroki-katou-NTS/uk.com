@@ -70,13 +70,13 @@ public class HealthInsuranceService {
 	public void addHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, String officeCode, YearMonthHistoryItem yearMonth) {
 		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate, officeCode, yearMonth);
-		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee);
+		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee, officeCode, yearMonth);
 	}
 
 	public void updateHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, String officeCode, YearMonthHistoryItem yearMonth) {
 		bonusHealthInsuranceRateRepository.update(bonusHealthInsuranceRate, officeCode, yearMonth);
-		healthInsuranceMonthlyFeeRepository.update(healthInsuranceMonthlyFee);
+		healthInsuranceMonthlyFeeRepository.update(healthInsuranceMonthlyFee, officeCode, yearMonth);
 	}
 	
 	public HealthInsuranceMonthlyFee calculationGradeFee (BonusHealthInsuranceRate bonusHealthInsuranceRate, HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {

@@ -2,6 +2,7 @@ package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
@@ -9,6 +10,7 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGra
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 
@@ -92,16 +94,24 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 
 	@Override
 	public void updateGraFee(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+        Optional<QpbmtHealthInsuranceMonthlyFee> entity = this.queryProxy().find(domain.getHistoryId(), QpbmtHealthInsuranceMonthlyFee.class);
+		if (!entity.isPresent()) return;
+        this.commandProxy().updateAll(this.toDomainFromOldData(domain, entity.get()));
 	}
 	
 	@Override
 	public void insertGraFee(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+        Optional<QpbmtHealthInsuranceMonthlyFee> entity = this.queryProxy().find(domain.getHistoryId(), QpbmtHealthInsuranceMonthlyFee.class);
+        if (!entity.isPresent()) return;
+        this.commandProxy().updateAll(this.toDomainFromOldData(domain, entity.get()));
 	}
 
 	@Override
 	public void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds){
     	this.getEntityManager().createQuery(DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyIds).executeUpdate();
+    }
+
+    private List<QpbmtHealthInsurancePerGradeFee> toDomainFromOldData (HealthInsuranceMonthlyFee domain, QpbmtHealthInsuranceMonthlyFee entity) {
+        return QpbmtHealthInsurancePerGradeFee.toEntity(domain, entity.bonusHealthInsurancePk.socialInsuranceOfficeCd, new YearMonthHistoryItem(entity.bonusHealthInsurancePk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth))));
     }
 }
