@@ -294,11 +294,9 @@ public class AnnualWorkScheduleData {
 			// No56: #FD4D4D = 16600397
 			return 16600397;
 		case EXCESS_LIMIT_ALARM:
+		case EXCESS_LIMIT_ALARM_SP:
 			// No57: #F6F636 = 16184886
 			return 16184886;
-		case EXCESS_LIMIT_ALARM_SP:
-			// No58: #EB9152 = 15438162
-			return 15438162;
 		default:
 			return null;
 		}
