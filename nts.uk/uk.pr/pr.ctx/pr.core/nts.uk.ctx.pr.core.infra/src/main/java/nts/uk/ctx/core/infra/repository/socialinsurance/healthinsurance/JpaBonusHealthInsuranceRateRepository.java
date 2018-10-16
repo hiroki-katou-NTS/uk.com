@@ -26,7 +26,7 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 
 	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.cid =:cid AND a.bonusHealthInsurancePk.socialInsuranceOfficeCd =:socialInsuranceOfficeCd ORDER BY a.startYearMonth DESC";
     private static final String FIND_BY_HISTORY_ID = "SELECT a FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.historyId =:historyId";
-
+    private static final String DELETE_BY_HISTORY_ID = "DELETE FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.historyId IN :historyId";
 
 	@Override
 	public Optional<HealthInsuranceFeeRateHistory> getHealthInsuranceHistoryByOfficeCode(String officeCode) {
@@ -56,7 +56,7 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
-		this.commandProxy().removeAll(QpbmtBonusHealthInsuranceRate.class, historyIds);
+		this.getEntityManager().createQuery(DELETE_BY_HISTORY_ID, BonusHealthInsuranceRate.class).setParameter("historyId", historyIds).executeUpdate();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 	}
 
     @Override
-    public void updatePreviousHistory(String officeCode, YearMonthHistoryItem history) {
+    public void updatePreviousHistory (String officeCode, YearMonthHistoryItem history) {
         Optional<QpbmtBonusHealthInsuranceRate> opt_entity = this.queryProxy().find(new QpbmtBonusHealthInsuranceRatePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtBonusHealthInsuranceRate.class);
         if (!opt_entity.isPresent()) return;
         QpbmtBonusHealthInsuranceRate entity = opt_entity.get();

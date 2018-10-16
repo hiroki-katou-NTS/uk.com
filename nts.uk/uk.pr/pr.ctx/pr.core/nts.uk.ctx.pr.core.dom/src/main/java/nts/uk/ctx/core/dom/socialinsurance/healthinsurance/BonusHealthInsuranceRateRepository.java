@@ -12,7 +12,6 @@ public interface BonusHealthInsuranceRateRepository {
     /**
      * Get 賞与健康保険料率 by ID
      *
-     *
      * @return Optional<BonusHealthInsuranceRate>
      */
 

@@ -24,6 +24,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 
     private static final String GET_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsuranceMonthlyFee a WHERE a.bonusHealthInsurancePk.historyId=:historyId";
     private static final String GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId=:historyId";
+    private static final String DELETE_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsuranceMonthlyFee a WHERE a.bonusHealthInsurancePk.historyId=:historyId";
     private static final String DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId IN :historyId";
     
     @Override
@@ -65,7 +66,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 
     @Override
     public void deleteByHistoryIds(List<String> historyIds) {
-        this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
+        this.getEntityManager().createQuery(DELETE_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID, HealthInsuranceMonthlyFee.class).executeUpdate();
         if(!historyIds.isEmpty()) {
         	 this.deleteHealthInsurancePerGradeByHistoryId(historyIds);
         }
