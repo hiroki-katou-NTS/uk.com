@@ -17,8 +17,10 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtTimeItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeItemStPk.salaryItemId =:salaryItemId ";
-	private static final String UPDATE_BY_LIST_STATEMENT = "UPDATE QpbmtTimeItemSt f SET f.averageWageAtr = 1" +
-			" WHERE f.timeItemStPk.salaryItemId IN :lstSalaryId";
+	private static final String UPDATE_IN_LIST = "UPDATE QpbmtTimeItemSt f SET f.averageWageAtr = 1 "
+			+ " WHERE f.timeCountAtr = 1 AND f.timeItemStPk.salaryItemId IN :lstSalaryId";
+    private static final String UPDATE_NOT_IN_LIST = " UPDATE QpbmtTimeItemSt f SET f.averageWageAtr = 0 "
+			+ " WHERE f.timeCountAtr = 1 AND f.timeItemStPk.salaryItemId NOT IN :lstSalaryId ";
 
 	@Override
 	public List<TimeItemSet> getAllTimeItemSt() {
@@ -43,7 +45,8 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 
 	@Override
 	public void updateAll(List<String> lstSalaryId) {
-		this.queryProxy().query(UPDATE_BY_LIST_STATEMENT, QpbmtTimeItemSt.class).setParameter("lstSalaryId", lstSalaryId);
+        this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+        this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
 	}
 
 	@Override

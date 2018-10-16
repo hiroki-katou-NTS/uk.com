@@ -98,6 +98,9 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         registration() {
             let self = this;
             self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
+            self.displayData().lstStatemetPaymentItem(self.lstTargetWageItem());
+            self.displayData().lstStatemetAttendanceItem(self.lstTargetWorkingDaysItem());
+
             let data = self.displayData();
             if (errors.hasError() === false) {
                 block.invisible();

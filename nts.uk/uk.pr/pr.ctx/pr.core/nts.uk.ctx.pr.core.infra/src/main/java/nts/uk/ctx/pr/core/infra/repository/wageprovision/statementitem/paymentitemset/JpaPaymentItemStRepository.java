@@ -17,8 +17,10 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPaymentItemSt f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
             + " WHERE  f.paymentItemStPk.cid =:cid AND  f.paymentItemStPk.salaryItemId =:salaryItemId ";
-    private static final String UPDATE_BY_LIST_STATEMENT_ATTENDANCE_ITEM = "UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 1" +
-            " WHERE f.paymentItemStPk.salaryItemId IN :lstSalaryId";
+    private static final String UPDATE_IN_LIST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 1"
+            + " WHERE f.paymentItemStPk.salaryItemId IN :lstSalaryId";
+    private static final String UPDATE_NOT_IN_LIST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 0"
+            + " WHERE f.paymentItemStPk.salaryItemId NOT IN :lstSalaryId";
 
     @Override
     public List<PaymentItemSet> getAllPaymentItemSt() {
@@ -44,7 +46,8 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
 
     @Override
     public void updateAll(List<String> lstSalaryId) {
-         this.queryProxy().query(UPDATE_BY_LIST_STATEMENT_ATTENDANCE_ITEM, QpbmtPaymentItemSt.class).setParameter("lstSalaryId", lstSalaryId);
+        this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+        this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
     }
 
     @Override
