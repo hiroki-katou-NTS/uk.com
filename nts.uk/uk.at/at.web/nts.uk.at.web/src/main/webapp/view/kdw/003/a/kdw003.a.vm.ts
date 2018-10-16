@@ -3869,6 +3869,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         else {
                             if (returnWorkLocationCD == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             dfd3.resolve();
                         }
                     });
@@ -3906,6 +3907,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         else {
                             if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             nts.uk.ui.block.clear();
                             dfd4.resolve();
                         }
