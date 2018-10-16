@@ -359,15 +359,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		YearMonth currentMonth = employee.getCurrentMonth().get();
 		// Result RequestList255
 		val listAnnLeaveUsage = hdRemainingInfor.getListAnnualLeaveUsage();
-
-		int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
 		if (listAnnLeaveUsage != null) {
 			for (AnnualLeaveUsageImported item : listAnnLeaveUsage) {
 				if (currentMonth.compareTo(item.getYearMonth()) <= 0) {
 					continue;
 				}
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYearMonth());
-				if (maxRange < totalMonth || totalMonth < 0) {
+				if (totalMonth < 0) {
 					continue;
 				}
 				// E2_3 当月より前
@@ -388,7 +386,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					continue;
 				}
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYearMonth());
-				if (maxRange < totalMonth || totalMonth < 0) {
+				if (totalMonth < 0) {
 					continue;
 				}
 				// E2_3 当月以降
@@ -475,9 +473,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		val reservedYearHolidayImportedList = hdRemainingInfor.getListReservedYearHoliday();
 		// Result RequestList364
 		val rsvLeaUsedCurrentMonImported = hdRemainingInfor.getListRsvLeaUsedCurrentMon();
-
-		int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
-
 		if (reservedYearHolidayImportedList != null) {
 			for (ReservedYearHolidayImported reservedYearHolidayItem : reservedYearHolidayImportedList) {
 				// Before this month
@@ -486,7 +481,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				}
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),
 						reservedYearHolidayItem.getYearMonth());
-				if (maxRange < totalMonth || totalMonth < 0) {
+				if (totalMonth < 0) {
 					continue;
 				}
 				// H2_3 当月より前
@@ -507,7 +502,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				}
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(),
 						rsvLeaUsedCurrentMonItem.getYearMonth());
-				if (maxRange < totalMonth || totalMonth < 0) {
+				if (totalMonth < 0) {
 					continue;
 				}
 				// H2_3 当月以降
@@ -598,7 +593,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// Result RequestList259
 		val statusHolidayImported = hdRemainingInfor.getListStatusHoliday();
 
-		int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
 		if (statusHolidayImported != null) {
 			for (StatusHolidayImported statusHolidayItem : statusHolidayImported) {
 				// Before this month
@@ -607,7 +601,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				}
 				// Before this month
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusHolidayItem.getYm());
-				if (maxRange >= totalMonth && totalMonth >= 0) {
+				if (totalMonth >= 0) {
 					// I2_3 代休_発生_日数
 					cells.get(firstRow, 10 + totalMonth).setValue(statusHolidayItem.getOccurrenceDays());
 					// I3_3 代休_使用_日数
@@ -637,7 +631,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				// After this month
 				if (currentMonth.compareTo(currentHolidayItem.getYm()) <= 0) {
 					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentHolidayItem.getYm());
-					if (maxRange >= totalMonth && totalMonth >= 0) {
+					if (totalMonth >= 0) {
 						// I2_3 代休_発生_日数
 						cells.get(firstRow, 10 + totalMonth).setValue(currentHolidayItem.getMonthOccurrence());
 						// I3_3 代休_使用_日数
@@ -769,7 +763,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// Result RequestList260
 		val StatusOfHolidayList = hdRemainingInfor.getListStatusOfHoliday();
 
-		int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
 		if (StatusOfHolidayList != null) {
 			for (StatusOfHolidayImported statusOfHDItem : StatusOfHolidayList) {
 				// Before this month
@@ -777,7 +770,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					continue;
 				}
 				int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusOfHDItem.getYm());
-				if (maxRange < totalMonth || totalMonth < 0) {
+				if (totalMonth < 0) {
 					continue;
 				}
 				// J2_5 振休_発生
@@ -804,7 +797,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			for (CurrentHolidayRemainImported holidayRemainItem : currentHolidayList) {
 				if (currentMonth.compareTo(holidayRemainItem.getYm()) <= 0) {
 					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), holidayRemainItem.getYm());
-					if (maxRange >= totalMonth && totalMonth >= 0) {
+					if (totalMonth >= 0) {
 						// J2_5 振休_発生
 						cells.get(firstRow, 10 + totalMonth).setValue(holidayRemainItem.getMonthOccurrence());
 						// J2_6 振休_使用
@@ -893,8 +886,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		Collections.sort(listSphdCode);
 
 		List<SpecialHoliday> specialHolidays = dataSource.getVariousVacationControl().getListSpecialHoliday();
-		int maxRange = totalMonths(dataSource.getStartMonth().yearMonth(), dataSource.getEndMonth().yearMonth());
-
 		for (Integer specialHolidayCode : listSphdCode) {
 			Optional<SpecialHoliday> specialHolidayOpt = specialHolidays.stream()
 					.filter(c -> c.getSpecialHolidayCode().v() == specialHolidayCode).findFirst();
@@ -950,7 +941,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						// Before this month
 						if (currentMonth.compareTo(item.getYm()) > 0) {
 							int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYm());
-							if (maxRange >= totalMonth && totalMonth >= 0) {
+							if (totalMonth >= 0) {
 								// M2_5 特別休暇１_使用日数
 								cells.get(firstRow, 10 + totalMonth).setValue(item.getUseDays());
 								// M2_7 特別休暇１_残数日数
@@ -968,7 +959,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 				if (spVaCrurrentMonthImported != null) {
 					int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
-					if (totalMonth <= maxRange && totalMonth >= 0) {
+					if (totalMonth >= 0) {
 						// M2_5 特別休暇１_使用日数
 						cells.get(firstRow, 10 + totalMonth).setValue(spVaCrurrentMonthImported.getUsedDate());
 						// M2_7 特別休暇１_残数日数
