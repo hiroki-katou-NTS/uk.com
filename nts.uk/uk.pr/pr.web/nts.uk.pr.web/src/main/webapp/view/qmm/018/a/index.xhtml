@@ -43,21 +43,21 @@
                     <!--A2_5-->
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM018_6')}</div>
                     <!--A2_6-->
-                    <img src="../a/QMM018_1.png"/>
+                    <img style="margin-left: 46px;" src="../a/QMM018_1.png"/>
                 </div>
                 <div class="valign-center control-group">
                     <!--A2_7-->
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM018_7')}</div>
                     <!--A2_8-->
-                    <img src="../a/QMM018_2.png"/>
+                    <img style="margin-left: 55px;" src="../a/QMM018_2.png"/>
                     <!--A2_26-->
                     <div style="width: 100px;" class="label">#{i18n.getText('QMM018_28')}</div>
                     <!--A2_9-->
                     <div style="width: 20px;" class="label" data-bind="text: exceptionFormula"></div>
                     <!--A2_27-->
-                    <div style="padding-left: 10px; width: 50px;" class="label">#{i18n.getText('QMM018_29')}</div>
+                    <div style="width: 50px;" class="label">#{i18n.getText('QMM018_29')}</div>
                 </div>
-                <div class="valign-center control-group" style="margin-left: 120px;">
+                <div class="valign-center control-group" style="margin-left: 155px;">
                     <!--A2_10-->
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_9')}</div>
                     <!-- A2_11 -->
@@ -72,7 +72,7 @@
 												}"
                            tabindex="5" />
                 </div>
-                <div class="valign-center control-group" style="margin-left: 120px;">
+                <div class="valign-center control-group" style="margin-left: 155px;">
                     <!--A2_13-->
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_11')}</div>
                     <!--A2_14-->
@@ -89,7 +89,7 @@
                     <!--A2_15-->
                     <button data-bind="ntsHelpButton: {image: 'QMM018_1.png.png', position: 'right top', enable: true }">?</button>
                 </div>
-                <div class="valign-center control-group" style="margin-left: 150px;">
+                <div class="valign-center control-group" style="margin-left: 200px;">
                     <!--A2_16-->
                     <label>#{i18n.getText('QMM018_15')}</label>
                     <!-- A1_17 -->
@@ -99,7 +99,7 @@
 																	visibleItemsCount: 2,
 																	value: selectedFractionProcessingAtr,
 																	optionsText: 'name',
-																	enable: true,
+																	enable: enableFractionProcessingAtr,
 																	selectFirstIfNull: true,
 																	columns: [
 																		{ prop: 'name', length: 12 }
@@ -107,11 +107,11 @@
                     <!--A2_19-->
                     <label style="margin-left: 10px;">#{i18n.getText('QMM018_17')}</label>
                 </div>
-                <div class="valign-center control-group" style="margin-left: 150px;">
+                <div class="valign-center control-group" style="margin-left: 200px;">
                     <!--A2_20-->
                     <label>#{i18n.getText('QMM018_18')}</label>
                     <!-- A2_21 -->
-                    <button style="margin-left: 50px;" class="small" data-bind="click: workingDaysItemSet, enable: true"
+                    <button style="margin-left: 50px;" class="small" data-bind="click: workingDaysItemSet, enable: enableTargetWorkingDaysItem"
                             tabindex="7">#{i18n.getText('QMM018_10')}</button>
                     <!-- A2_22 -->
                     <input id="A2_22"
@@ -119,17 +119,18 @@
 													option: {width: '250px'},
 													value: targetWorkingDaysItem,
 													readonly: true,
+													enable: enableTargetWorkingDaysItem
 												}"
                            tabindex="5" />
                 </div>
-                <div class="valign-center control-group" style="margin-left: 120px;">
+                <div class="valign-center control-group" style="margin-left: 155px;">
                     <!--A2_23-->
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_19')}</div>
                     <!--A2_24-->
                     <input id="A2_24" tabindex="9" data-bind="ntsNumberEditor: {
 																	value: exceptionFormula,
 																	constraint: 'ExceptionFormula',
-																	name: '#[QMM018_19]',
+																	name: '#[QMM018_9]',
 																	option: {
 													                    width: '30px',
 													                    textalign: 'center'
