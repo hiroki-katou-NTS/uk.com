@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk013.e {
             saveExcOut: "shared/caculation/holiday/rounding/updateExcoutRound",
             getIdMonth:"ctx/at/shared/outsideot/setting/findAll/mothItem",
             getOTCalc:"ctx/at/shared/outsideot/setting/findById",
-            getMontItem: "at/record/divergencetime/AttendanceDivergenceName"
+            getMontItem: "at/record/divergencetime/getMonthlyAttendanceDivergenceName"
         }
         export function findByCompanyId(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByCId);
