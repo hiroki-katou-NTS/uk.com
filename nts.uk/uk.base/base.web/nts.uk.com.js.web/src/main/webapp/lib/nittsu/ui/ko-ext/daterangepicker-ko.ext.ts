@@ -293,8 +293,9 @@ module nts.uk.ui.koExtentions {
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled, 
-                     endDate: self.endValue };
+                     disabled: parentBinding.disabled 
+                     //,endDate: self.endValue 
+                   };
         }
         
         public createEndBinding(parentBinding: any, name: string): any {
@@ -305,8 +306,9 @@ module nts.uk.ui.koExtentions {
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled, 
-                     startDate: self.startValue };
+                     disabled: parentBinding.disabled 
+                     //,startDate: self.startValue 
+                   };
         }
     }
 }
