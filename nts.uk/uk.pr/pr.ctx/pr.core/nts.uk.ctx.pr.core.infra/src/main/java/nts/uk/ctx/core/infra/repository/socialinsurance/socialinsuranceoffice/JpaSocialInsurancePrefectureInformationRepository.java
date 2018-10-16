@@ -13,8 +13,7 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.socialinsuranceoffice.QpbmtS
 public class JpaSocialInsurancePrefectureInformationRepository extends JpaRepository
 		implements SocialInsurancePrefectureInformationRepository {
 
-	private static final String QUERY = "select a from QpbmtSocialInsuracePrefectureInfomation a where a.socialInsPreInfoPk.historyId  IN"
-			+ " (SELECT b.historyId FROM QpbmtSocialInsurancePrefectureHistory b )";
+	private static final String QUERY = "select a from QpbmtSocialInsuracePrefectureInfomation a ";
 
 
 	@Override

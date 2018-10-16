@@ -24,6 +24,21 @@ public class QpbmtSocialInsuracePrefectureInfomation extends UkJpaEntity impleme
     @EmbeddedId
     public QpbmtSocialInsPreInfoPk socialInsPreInfoPk;
 
+
+    /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
+
     /**
      * 都道府県コード
      */
@@ -50,7 +65,7 @@ public class QpbmtSocialInsuracePrefectureInfomation extends UkJpaEntity impleme
      * @return SocialInsuranceOffice
      */
     public SocialInsurancePrefectureInformation toDomain(QpbmtSocialInsuracePrefectureInfomation entity) {
-        return new SocialInsurancePrefectureInformation(entity.socialInsPreInfoPk.no, entity.prefectureCode, entity.prefectureName, entity.socialInsPreInfoPk.historyId);
+        return new SocialInsurancePrefectureInformation(entity.socialInsPreInfoPk.no, entity.socialInsPreInfoPk.historyId,entity.startYearMonth, entity.endYearMonth, entity.prefectureCode, entity.prefectureName);
     }
 
     /**
@@ -60,6 +75,6 @@ public class QpbmtSocialInsuracePrefectureInfomation extends UkJpaEntity impleme
      * @return QpbmtSocialInsuranceOffice
      */
     public static QpbmtSocialInsuracePrefectureInfomation toEntity(SocialInsurancePrefectureInformation domain) {
-        return new QpbmtSocialInsuracePrefectureInfomation(new QpbmtSocialInsPreInfoPk(domain.getHistoryID(), domain.getNo()), domain.getPrefectureCode().v(), domain.getPrefectureName().v());
+        return new QpbmtSocialInsuracePrefectureInfomation(new QpbmtSocialInsPreInfoPk(domain.getHistoryID(), domain.getNo()), domain.getStartYearMonth(), domain.getEndYearMonth(),domain.getPrefectureCode().v(), domain.getPrefectureName().v());
     }
 }
