@@ -91,10 +91,10 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                 if (self.isNewMode()) {
                     // create
                     service.addTaxExemptLimit(ko.toJS(data)).done(() => {
-                        self.getAllData().done(() => {
-                            dialog.info({messageId: "Msg_15"}).then(() => {
-                                $("#taxExemptionName").focus();
-                                self.isNewMode(false);
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            $("#taxExemptionName").focus();
+                            self.isNewMode(false);
+                            self.getAllData().done(() => {
                                 self.currentCode(data.taxFreeamountCode);
                             });
                         });
@@ -108,10 +108,10 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                 } else {
                     // update
                     service.updateTaxExemptLimit(ko.toJS(data)).done(() => {
-                        self.getAllData().done(() => {
-                            dialog.info({messageId: "Msg_15"}).then(() => {
-                                $("#taxExemptionName").focus();
-                                self.isNewMode(false);
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            $("#taxExemptionName").focus();
+                            self.isNewMode(false);
+                            self.getAllData().done(() => {
                                 self.currentCode(data.taxFreeamountCode);
                             });
                         });
@@ -145,8 +145,8 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                         return x.taxFreeamountCode == data.taxFreeamountCode
                     });
                     service.removeTaxExemptLimit(ko.toJS(data)).done(function () {
-                        self.getAllData().done(() => {
-                            dialog.info({messageId: "Msg_16"}).then(() => {
+                        dialog.info({messageId: "Msg_16"}).then(() => {
+                            self.getAllData().done(() => {
                                 if (self.lstTaxExemptLimit().length == 0) {
                                     self.createTaxExe();
                                 } else {
@@ -158,7 +158,6 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                                 }
                             });
                         });
-
                     }).fail(function (error) {
                         dialog.alertError({messageId: error.messageId});
                         block.clear();
@@ -185,14 +184,13 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                     let dataSort = _.sortBy(data, ["taxFreeamountCode"])
                     dataSort.forEach(x => x.taxExemptionDisp = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
                     self.lstTaxExemptLimit(dataSort);
-                    self.currentCode(self.lstTaxExemptLimit()[0].taxFreeamountCode);
                     self.isNewMode(false);
                 }
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.taxFreeamountCode('');
                     self.taxExemptionName('');
-                    self.taxExemption(0);
+                    self.taxExemption(null);
                     self.isNewMode(true);
                 }
                 block.clear();
