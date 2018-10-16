@@ -25,6 +25,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 public class JpaBonusHealthInsuranceRateRepository extends JpaRepository implements BonusHealthInsuranceRateRepository {
 
 	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.cid =:cid AND a.bonusHealthInsurancePk.socialInsuranceOfficeCd =:socialInsuranceOfficeCd ORDER BY a.startYearMonth DESC";
+    private static final String FIND_BY_HISTORY_ID = "SELECT a FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.historyId =:historyId";
 
 	@Override
 	public Optional<HealthInsuranceFeeRateHistory> getHealthInsuranceHistoryByOfficeCode(String officeCode) {
@@ -33,7 +34,7 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 
 	@Override
     public Optional<BonusHealthInsuranceRate> getBonusHealthInsuranceRateById(String historyId) {
-        return this.queryProxy().find(historyId, QpbmtBonusHealthInsuranceRate.class).map(this::toDomain);
+        return this.queryProxy().query(FIND_BY_HISTORY_ID, QpbmtBonusHealthInsuranceRate.class).setParameter("historyId", historyId).getSingle().map(this::toDomain);
     }
 
     private BonusHealthInsuranceRate toDomain(QpbmtBonusHealthInsuranceRate entity) {
