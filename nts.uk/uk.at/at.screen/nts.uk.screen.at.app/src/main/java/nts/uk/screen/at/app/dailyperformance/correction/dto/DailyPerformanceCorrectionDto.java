@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 
 /**
@@ -87,6 +88,8 @@ public class DailyPerformanceCorrectionDto {
 	
 	private boolean showTighProcess;
 	
+	private IndentityMonthResult indentityMonthResult;
+	
 	private boolean showErrorDialog;
 	
 	public DailyPerformanceCorrectionDto() {
@@ -102,6 +105,7 @@ public class DailyPerformanceCorrectionDto {
 		this.autBussCode = new HashSet<>();
 		this.showTighProcess = false;
 		this.lstCellStateCalc = new ArrayList<>();
+		this.indentityMonthResult = new IndentityMonthResult(false, false, true);
 	}
 
 	/** Check if employeeId is login user */
@@ -314,7 +318,9 @@ public class DailyPerformanceCorrectionDto {
 
 	}
 
-	public void checkShowTighProcess(int displayMode, boolean userLogin, boolean checkIndentityDay){
-		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && checkIndentityDay;
+	public void checkShowTighProcess(int displayMode, boolean userLogin){
+		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
+		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
+		indentityMonthResult.setHideAll(displayMode != 0 || !userLogin || !identityProcessDto.isUseIdentityOfMonth());
 	}
 }

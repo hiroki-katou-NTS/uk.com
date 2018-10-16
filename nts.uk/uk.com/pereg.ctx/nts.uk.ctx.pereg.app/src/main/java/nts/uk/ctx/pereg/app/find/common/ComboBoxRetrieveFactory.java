@@ -278,8 +278,16 @@ public class ComboBoxRetrieveFactory {
 
 			return lstReturn;
 		case "M00009":
-			// return new ArrayList<>();
-			if (employeeId != null) {
+			// 就業時間帯マスタ
+			if (workplaceId == null ) {
+				PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00017", employeeId, "", standardDate));
+				if (resultDto != null) {
+					AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+					workplaceId = workPlaceItem.getWorkplaceCode();
+				} else {
+					// this case shouldn't happen
+				}
+			} else if (employeeId != null) {
 				if (standardDate == null && realBaseDate != null) {
 					PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00020", employeeId, "", realBaseDate));
 					if (resultDto != null) {
@@ -292,16 +300,7 @@ public class ComboBoxRetrieveFactory {
 					workplaceId = null;
 				}
 			}
-			// trường hợp cps009 lọc mã code theo công ty
-			// trường hợp cps002, cps001 mã code sẽ lấy theo workplace
-			if(workplaceId == null) {
-				return workTimeSettingRepo.findActiveItems(companyId).stream()
-						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-								workTimeSetting.getWorktimeCode() + JP_SPACE
-										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
-						.collect(Collectors.toList());
-				
-			} 
+			
 			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
 			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),

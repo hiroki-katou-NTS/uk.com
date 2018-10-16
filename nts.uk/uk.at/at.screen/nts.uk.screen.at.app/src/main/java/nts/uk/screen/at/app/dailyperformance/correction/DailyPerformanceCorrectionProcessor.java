@@ -118,11 +118,12 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
@@ -195,6 +196,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Resource
 	private ManagedExecutorService executorService;
+	
+	@Inject
+	private CheckIndentityMonth checkIndentityMonth;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -428,8 +432,10 @@ public class DailyPerformanceCorrectionProcessor {
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
 								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								//checkIndenityMonth
+								screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
 								//対象日の本人確認が済んでいるかチェックする
-								screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+								screenDto.checkShowTighProcess(displayFormat, true);
 							}
 							// screenDto.setFlexShortage(null);
 						}
@@ -457,7 +463,7 @@ public class DailyPerformanceCorrectionProcessor {
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
+		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		

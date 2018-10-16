@@ -41,11 +41,28 @@ public class PersonalTightCommandFacade {
 		if (closureEmploymentOptional.isPresent()) {
 			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
 					closureEmploymentOptional.get().getClosureId(), date);
+			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date) && closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
+				registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
+						closingPeriod.get().getProcessingYm(), Arrays.asList(new SelfConfirm(employeeId, true)),
+						closureEmploymentOptional.get().getClosureId(), new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+								closingPeriod.get().getClosureDate().getLastDayOfMonth()),
+						GeneralDate.today()));
+			}
+		}
+	}
+	
+	public void releasePersonalTight(String employeeId, GeneralDate date) {
+		String companyId = AppContexts.user().companyId();
+		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+				.findByEmploymentCD(companyId, getEmploymentCode(companyId, date, employeeId));
+		if (closureEmploymentOptional.isPresent()) {
+			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
+					closureEmploymentOptional.get().getClosureId(), date);
 			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date)
 					&& closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
 				registerConfirmationMonth
 						.registerConfirmationMonth(new ParamRegisterConfirmMonth(closingPeriod.get().getProcessingYm(),
-								Arrays.asList(new SelfConfirm(employeeId, true)),
+								Arrays.asList(new SelfConfirm(employeeId, false)),
 								closureEmploymentOptional.get().getClosureId(),
 								new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
 										closingPeriod.get().getClosureDate().getLastDayOfMonth()),
