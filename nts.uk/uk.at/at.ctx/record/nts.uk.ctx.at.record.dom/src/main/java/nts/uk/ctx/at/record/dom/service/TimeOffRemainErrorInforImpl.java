@@ -83,11 +83,12 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				Collections.emptyList(),
 				param.isUseDayoff());
 		Map<GeneralDate, DailyInterimRemainMngData> interimRemainData = interimRemainService.createInterimRemainByScheRecordApp(createInterimDataParam);
-		//TODO 月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する
-		interimRemainData.forEach((x, y) -> {
+		Optional<DailyInterimRemainMngData> optDaily = Optional.empty();
+		//月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する
+		if(param.getOptMonthlyData().isPresent()) {
+			optDaily =  annualDataService.ofCompensFlex(param.getOptMonthlyData().get(), param.getObjDate().end());
 			
-		});
-		
+		}
 		InterimEachData eachData = checkRegisterService.interimInfor(interimRemainData);
 		List<InterimRemain> interimMngAbsRec = eachData.getInterimMngAbsRec();
 		List<InterimAbsMng> useAbsMng = eachData.getUseAbsMng();
@@ -99,6 +100,17 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
 		List<TmpAnnualHolidayMng> annualHolidayData = eachData.getAnnualHolidayData();
 		List<InterimRemain> annualMng = eachData.getAnnualMng();
+		if(optDaily.isPresent()
+				&& optDaily.get().getAnnualHolidayData().isPresent()) {
+			TmpAnnualHolidayMng flexAnnual = optDaily.get().getAnnualHolidayData().get();
+			List<InterimRemain> lstAnnualMng = optDaily.get().getRecAbsData().stream()
+					.filter(x -> x.getRemainManaID().equals(flexAnnual.getAnnualId()))
+					.collect(Collectors.toList());
+			if(!lstAnnualMng.isEmpty()) {
+				annualMng.add(lstAnnualMng.get(0));
+				annualHolidayData.add(flexAnnual);
+			}
+		}
 		List<TmpResereLeaveMng> resereLeaveData = eachData.getResereLeaveData();
 		List<InterimRemain> resereMng = eachData.getResereMng();
 		List<EmployeeMonthlyPerError> lstOuput = new ArrayList<>();
