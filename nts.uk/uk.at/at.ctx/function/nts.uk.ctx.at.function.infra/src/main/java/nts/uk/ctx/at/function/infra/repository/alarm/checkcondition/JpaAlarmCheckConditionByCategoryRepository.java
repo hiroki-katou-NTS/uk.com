@@ -76,15 +76,15 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 	@Override
 	public List<AlarmCheckConditionByCategory> findByCategoryAndCode(String companyId, int category, List<String> codes) {
 		String query = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId AND c.pk.category = :category AND c.pk.code IN :codes ";
-		List<AlarmCheckConditionByCategory> resultList = new ArrayList<>();
+		List<KfnmtAlarmCheckConditionCategory> resultList = new ArrayList<>();
 		
 		CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(query, KfnmtAlarmCheckConditionCategory.class)
 					.setParameter("companyId", companyId).setParameter("category", category).setParameter("codes", subList)
-					.getList(c -> KfnmtAlarmCheckConditionCategory.toDomain(c)));
+					.getList());
 		});
 		
-		return resultList;
+		return resultList.stream().map(c -> KfnmtAlarmCheckConditionCategory.toDomain(c)).collect(Collectors.toList());
 	}
 
 	@Override

@@ -58,8 +58,12 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	public List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds) {
 		if(attendanceItemIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds).getList(f -> toDomain(f));
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	private static AttendanceItemLinking toDomain(KfnmtAttendanceLink kfnmtAttendanceLink) {
@@ -89,17 +93,25 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		if(attendanceItemIds.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds)
-				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList)
+					.setParameter("typeOfItem", type.value).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<AttendanceItemLinking> getFullDataByListAttdaId(List<Integer> attendanceItemIds) {
 		if(attendanceItemIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds).getList(c->c.toDomain());
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -107,9 +119,13 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		if(attendanceItemIds.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds)
-				.setParameter("typeOfItem", type.value).getList(f -> f.toDomain());
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList)
+					.setParameter("typeOfItem", type.value).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	/*

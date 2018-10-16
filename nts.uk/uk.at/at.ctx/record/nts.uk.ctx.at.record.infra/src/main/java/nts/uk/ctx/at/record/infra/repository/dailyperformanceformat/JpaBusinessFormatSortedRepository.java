@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -73,14 +75,14 @@ public class JpaBusinessFormatSortedRepository extends JpaRepository implements 
 //			}
 //			return results;
 //		}
-		List<BusinessTypeSorted> resultList = new ArrayList<>();
+		List<KrcstBusinessTypeSorted> resultList = new ArrayList<>();
 		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(FIND, KrcstBusinessTypeSorted.class)
 					.setParameter("companyId", companyId)
 					.setParameter("attendanceItemId", subList)
-					.getList(f -> toDomain(f)));
+					.getList());
 		});
-		return resultList;
+		return resultList.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override

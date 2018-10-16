@@ -163,9 +163,13 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	@Override
 	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
 			Collection<String> listDailyPerformanceFormatCode) {
-		return this.queryProxy().query(FIND_BY_LIST_CODE, KfnmtAuthorityMonthlyItem.class)
+		List<KfnmtAuthorityMonthlyItem> results = new ArrayList<>();
+		CollectionUtil.split(new ArrayList<>(listDailyPerformanceFormatCode), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_BY_LIST_CODE, KfnmtAuthorityMonthlyItem.class)
 				.setParameter("companyId", companyId)
-				.setParameter("listDailyPerformanceFormatCode", listDailyPerformanceFormatCode).getList(f -> toDomain(f));
+				.setParameter("listDailyPerformanceFormatCode", subList).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override

@@ -53,13 +53,13 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 	@Override
 	public List<MonPfmCorrectionFormat> getMonPfmCorrectionFormat(String companyID,
 			List<String> monthlyPfmFormatCodes) {
-		List<MonPfmCorrectionFormat> resultList = new ArrayList<>();
+		List<KrcmtMonPfmCorrectionFormat> resultList = new ArrayList<>();
 		CollectionUtil.split(monthlyPfmFormatCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy()
 				.query(GET_MON_PRM_BY_CODE_LIST, KrcmtMonPfmCorrectionFormat.class).setParameter("companyID", companyID)
-				.setParameter("monthlyPfmFormatCodes", subList).getList(c -> c.toDomain()));
+				.setParameter("monthlyPfmFormatCodes", subList).getList());
 		});
-		return resultList;
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -196,10 +196,13 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 
 	@Override
 	public void updateWidthMonthly(Map<Integer, Integer> lstHeader, List<String> formatCodes) {
-		List<KfnmtDisplayTimeItemPfm> items = this.queryProxy()
+		List<KfnmtDisplayTimeItemPfm> items = new ArrayList<>();
+		CollectionUtil.split(formatCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			items.addAll(this.queryProxy()
 				.query(GET_AUT_MON_FORM_ITEM, KfnmtDisplayTimeItemPfm.class)
 				.setParameter("companyID", AppContexts.user().companyId())
-				.setParameter("monthlyPfmFormatCodes", formatCodes).getList();
+				.setParameter("monthlyPfmFormatCodes", subList).getList());
+		});
 		List<KfnmtDisplayTimeItemPfm> entitys = items.stream()
 				.map(item -> new KfnmtDisplayTimeItemPfm(
 						new KfnmtDisplayTimeItemPfmPK(AppContexts.user().companyId(),

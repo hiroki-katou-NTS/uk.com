@@ -42,14 +42,14 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 	@Override
 	public List<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByListCode(String companyID,
 			List<String> businessTypeCodes) {
-		List<MonthlyRecordWorkType> resultList = new ArrayList<>();
+		List<KrcmtMonthlyRecordWorkType> resultList = new ArrayList<>();
 		CollectionUtil.split(businessTypeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(GET_MON_BY_LIST_CODE, KrcmtMonthlyRecordWorkType.class)
 					.setParameter("companyID", companyID)
 					.setParameter("businessTypeCode", subList)
-					.getList(c -> c.toDomain()));
+					.getList());
 		});
-		return resultList;
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
