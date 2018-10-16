@@ -11,7 +11,7 @@ import java.util.List;
 public interface SalGenParaYMHistRepository
 {
 
-    List<SalGenParaYearMonthHistory> getAllSalGenParaYMHist();
+    Optional<SalGenParaYearMonthHistory> getAllSalGenParaYMHist(String cid,String paraNo);
 
     Optional<SalGenParaYearMonthHistory> getSalGenParaYMHistById(String paraNo, String cid, String hisId);
 

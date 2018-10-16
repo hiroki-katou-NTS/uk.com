@@ -12,7 +12,7 @@ import java.util.List;
 public interface SalGenParaDateHistRepository
 {
 
-    List<SalGenParaDateHistory> getAllSalGenParaDateHist();
+    Optional<SalGenParaDateHistory> getAllSalGenParaDateHist(String cid,String paraNo);
 
     Optional<SalGenParaDateHistory> getSalGenParaDateHistById(String paraNo, String cid, String hisId);
 

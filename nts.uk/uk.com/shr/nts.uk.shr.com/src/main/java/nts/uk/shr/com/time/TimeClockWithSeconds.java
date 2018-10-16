@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.TimeRange;
  */
 @TimeRange(min = "0:00:00", max = "23:59:59")
 public class TimeClockWithSeconds extends TimeClockWithSecondsPrimitiveValue<TimeClockWithSeconds> {
-	
+
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 

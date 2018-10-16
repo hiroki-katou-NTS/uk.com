@@ -9,7 +9,7 @@ import java.util.List;
 public interface SalGenParaIdentificationRepository
 {
 
-    List<SalGenParaIdentification> getAllSalGenParaIdentification();
+    List<SalGenParaIdentification> getAllSalGenParaIdentification(String cId);
 
     Optional<SalGenParaIdentification> getSalGenParaIdentificationById(String paraNo, String cid);
 
