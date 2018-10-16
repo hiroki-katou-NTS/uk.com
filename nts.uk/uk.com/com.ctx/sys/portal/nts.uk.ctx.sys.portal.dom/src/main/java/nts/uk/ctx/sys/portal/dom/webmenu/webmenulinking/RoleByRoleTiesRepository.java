@@ -6,6 +6,8 @@ public interface RoleByRoleTiesRepository {
 	
 	Optional<RoleByRoleTies> getRoleByRoleTiesById(String roleId);
 	
+	Optional<RoleByRoleTies> getByRoleIdAndCompanyId(String roleId, String companyId);
+	
 	void insertRoleByRoleTies(RoleByRoleTies roleByRoleTies);
 	
 	void updateRoleByRoleTies(RoleByRoleTies roleByRoleTies);
