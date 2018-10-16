@@ -179,8 +179,8 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	@Override
 	public List<AffWorkplaceExport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-
-		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(AppContexts.user().companyId());
+		//EA修正履歴2638 liên quan đến bug #100243, lọc ra những employee không bị xóa
+		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.getAllEmpNotDeleteByCid(AppContexts.user().companyId());
 
 		Map<String, String> mapSidPid = listEmpDomain.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));

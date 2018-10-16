@@ -501,8 +501,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                     vm[index].selection(data);
                                     vm[index].selection.valueHasMutated();
                                     if (item.dataType === ITEM_SINGLE_TYPE.SEL_BUTTON) {
-                                        let objSel: any = _.find(vm[index].selection(), function(c) { if (c.optionValue == vm[index].selectedCode()) { return c } });
-                                        vm[index].selectionName(objSel == undefined ? ((vm[index].ctgCode() === "CS00016" || vm[index].ctgCode() === "CS00017") ? text("CPS001_107") : (vm[index].selectedCode() + " " + text("CPS001_107"))) : objSel.optionText);
+                                        let objSel: any =  _.find(vm[index].selection(), function(c) { if (c.optionValue == vm[index].selectedCode()) { return c } });
+                                        vm[index].selectionName(objSel == undefined ? (vm[index].selectedCode()=="" || vm[index].selectedCode()== undefined? "":(vm[index].ctgCode() === "CS00016" || vm[index].ctgCode() === "CS00017") ? text("CPS001_107") : (vm[index].selectedCode() + " " + text("CPS001_107"))) : objSel.optionText);
                                         vm[index].selectionName.valueHasMutated();
                                     }else{
                                         let value: string = vm[index].stringValue();
@@ -1389,9 +1389,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 isrestrictionOfReferenceRange: false,
                 isShowBaseDate: false
             }, true);
-
-            if(error.hasError()) return;
-//            block.grayout();
+            
+            if($("#date1").ntsError('hasError')) return;
             modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                 // Check is cancel.
                 if (getShared('CDL008Cancel')) {
@@ -1407,7 +1406,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 }
                 
             });
-//            block.clear();
         }
 
 

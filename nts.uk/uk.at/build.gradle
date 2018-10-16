@@ -381,6 +381,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
 		compile(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 	}
 }
 

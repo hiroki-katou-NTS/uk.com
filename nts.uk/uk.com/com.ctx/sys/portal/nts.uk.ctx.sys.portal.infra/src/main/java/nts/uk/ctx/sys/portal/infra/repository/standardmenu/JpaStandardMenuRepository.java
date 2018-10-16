@@ -14,12 +14,13 @@ import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 
 /**
  * The Class JpaStandardMenuRepository.
  */
 @Stateless
-public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
+public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository, ShareStandardMenuAdapter {
 	private static final String SEL = "SELECT s FROM CcgstStandardMenu s ";
 	private static final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId and s.queryString NOT LIKE CONCAT('%',:toppagecode,'%')";
 	private static final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -293,5 +294,16 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		.setParameter("system",  system)
 		.setParameter("classification",  classification)
 		.executeUpdate();
+	}
+
+	@Override
+	public boolean isEsistMenuWith(String comId, String screenId, String programId, String queryString) {
+		String query = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId AND c.programId = :programID AND c.screenID = :screenID AND c.queryString =:queryString";
+		return !this.queryProxy().query(query, CcgstStandardMenu.class)
+				.setParameter("companyId", comId)
+				.setParameter("screenID", screenId)
+				.setParameter("programID", programId)
+				.setParameter("queryString", queryString)
+				.getList().isEmpty();
 	}
 }

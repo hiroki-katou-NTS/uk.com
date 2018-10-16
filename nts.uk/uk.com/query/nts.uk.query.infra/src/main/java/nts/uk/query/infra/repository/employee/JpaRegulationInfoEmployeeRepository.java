@@ -746,30 +746,58 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					SortingConditionOrder cond = iterator.next();
 					switch (cond.getType()) {
 					case EMPLOYMENT: // EMPLOYMENT
-						comparator = a.getEmpCd().compareTo(b.getEmpCd());
+						String empCda = a.getEmpCd();
+						String empCdb = b.getEmpCd();
+						if (empCda != null && empCdb != null) {
+							comparator = empCda.compareTo(empCdb);
+						}
 						break;
 					case DEPARTMENT: // DEPARTMENT
 						// TODO: not covered
 						break;
 					case WORKPLACE: // WORKPLACE
-						comparator = a.getWplHierarchyCode().compareTo(b.getWplHierarchyCode());
+						String wplCda = a.getWplHierarchyCode();
+						String wplCdb = b.getWplHierarchyCode();
+						if (wplCda != null && wplCdb != null) {
+							comparator = wplCda.compareTo(wplCdb);
+						}
 						break;
 					case CLASSIFICATION: // CLASSIFICATION
-						comparator = a.getClassificationCode().compareTo(b.getClassificationCode());
+						String clsCda = a.getClassificationCode();
+						String clsCdb = b.getClassificationCode();
+						if (clsCda != null && clsCdb != null) {
+							comparator = clsCda.compareTo(clsCdb);
+						}
 						break;
 					case POSITION: // POSITION
-						comparator = a.getJobSeqDisp().compareTo(b.getJobSeqDisp());
+						String seqCda = a.getJobSeqDisp();
+						String seqCdb = b.getJobSeqDisp();
+						if (seqCda != null && seqCdb != null) {
+							comparator = seqCda.compareTo(seqCdb);
+						}
 						if (comparator == 0) {
-							comparator = a.getJobCd().compareTo(b.getJobCd());
+							String jobCda = a.getJobCd();
+							String jobCdb = b.getJobCd();
+							if (jobCda != null && jobCdb != null) {
+								comparator = jobCda.compareTo(jobCdb);
+							}
 						}
 						break;
 					case HIRE_DATE: // HIRE_DATE
-						comparator = a.getComStrDate().compareTo(b.getComStrDate());
+						GeneralDateTime comStrDa = a.getComStrDate();
+						GeneralDateTime comStrDb = b.getComStrDate();
+						if (comStrDa != null && comStrDb != null) {
+							comparator = comStrDa.compareTo(comStrDb);
+						}
 						break;
 					case NAME: // NAME
 						// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
 						// => 「氏名カナ」 ＝ 「ビジネスネームカナ」
-						comparator = a.getBusinessNameKana().compareTo(b.getBusinessNameKana());
+						String businessNameA = a.getBusinessNameKana();
+						String businessNameB = b.getBusinessNameKana();
+						if (businessNameA != null && businessNameB != null) {
+							comparator = businessNameA.compareTo(businessNameB);
+						}
 						// TODO:
 						// orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
 						break;
