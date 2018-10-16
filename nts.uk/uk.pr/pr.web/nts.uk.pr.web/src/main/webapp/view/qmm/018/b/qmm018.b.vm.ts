@@ -22,7 +22,14 @@ module nts.uk.pr.view.qmm018.b {
 
                 if(params) {
                     self.categoryAtr = params.categoryAtr;
-                    self.statementListSelected(params.statementListSelected);
+
+                    let list = params.statementListSelected;
+                    list.sort(function(a, b){
+                        if (a.itemNameCd < b.itemNameCd) return -1;
+                        if (a.itemNameCd > b.itemNameCd) return 1;
+                        return 0;
+                    });
+                    self.statementListSelected(list);
                 }
 
                 self.gridColumns = ko.observableArray([
