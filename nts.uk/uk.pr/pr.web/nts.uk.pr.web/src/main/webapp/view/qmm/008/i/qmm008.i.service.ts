@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm008.i.service {
     import format = nts.uk.text.format;
     var paths = {
         findAllOfficeAndHistory: "ctx/core/socialinsurance/contributionrate/getAll",
-        findContributionRateByHistoryId: "ctx/core/socialinsurance/contributionrate/getByHistoryId/{0}/{1}",
+        findContributionRateByHistoryId: "ctx/core/socialinsurance/contributionrate/getByHistoryId/{0}",
         addContributionRateHis: "ctx/core/socialinsurance/contributionrate/addContributionRateHistory",
         checkContributionRateHis: "ctx/core/socialinsurance/contributionrate/checkContributionRateHistory"
     }
@@ -14,8 +14,8 @@ module nts.uk.pr.view.qmm008.i.service {
         return ajax(paths.findAllOfficeAndHistory);
     }
     
-    export function findContributionRateByHistoryId (historyId: string,socialInsuranceCode: string): JQueryPromise<any> {
-        return ajax(format(paths.findContributionRateByHistoryId, historyId, socialInsuranceCode));
+    export function findContributionRateByHistoryId (historyId: string): JQueryPromise<any> {
+        return ajax(format(paths.findContributionRateByHistoryId, historyId));
     }
     
     export function addContributionRateHis(command): JQueryPromise<any> {

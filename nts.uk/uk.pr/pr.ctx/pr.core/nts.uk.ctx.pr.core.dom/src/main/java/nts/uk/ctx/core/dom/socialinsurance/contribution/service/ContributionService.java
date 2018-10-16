@@ -61,13 +61,13 @@ public class ContributionService {
 		contributionRateHistoryRepository.add(contributionRateHistory);
 	}
 
-	public boolean checkContributionRate(String officeCode, ContributionRate contributionRate,
+	public boolean checkContributionRate(ContributionRate contributionRate,
 			YearMonthHistoryItem yearMonthItem) {
 		 //String cid = AppContexts.user().companyId();
 
 		// ドメインモデル「拠出金率」を取得する
 		Optional<ContributionRate> otpContributionRate = contributionRateRepository
-				.getContributionRateByHistoryId(contributionRate.getHistoryId(),officeCode);
+				.getContributionRateByHistoryId(contributionRate.getHistoryId());
 		// アルゴリズム「月額拠出金計算処理」を実行する
 		contributionRate = monthlyContributionCalProcess(contributionRate, yearMonthItem);
 		// 取得したドメインモデル「拠出金率.等級毎拠出金」と計算した値を比較する

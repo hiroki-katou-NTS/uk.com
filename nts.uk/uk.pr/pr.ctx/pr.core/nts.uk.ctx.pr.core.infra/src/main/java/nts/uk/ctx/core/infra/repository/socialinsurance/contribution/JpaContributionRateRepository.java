@@ -25,6 +25,7 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	private static final String GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "SELECT a from QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId =:historyId";
 	private static final String DELETE = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionHistPk.cid = :cid AND a.contributionByGradePk.socialInsuranceOfficeCd = :officeCode";
 	private static final String DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId IN :historyId";
+	private static final String GET_CONTRIBUTION_RATE_BY_HISTORY_ID = "SELECT a from QpbmtContributionRate a WHERE a.contributionRatePk.historyId =:historyId";
 
 	private ContributionRate toDomain(QpbmtContributionRate contributionRate,
 			List<QpbmtContributionByGrade> contributionByGrade) {
@@ -37,9 +38,10 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	}
 
 	@Override
-	public Optional<ContributionRate> getContributionRateByHistoryId(String historyId,String  socialInsuranceCode) {
-		Optional<QpbmtContributionRate> contributionRate = this.queryProxy().find( new QpbmtContributionRatePk(AppContexts.user().companyId(),socialInsuranceCode,historyId),
-				QpbmtContributionRate.class);
+	public Optional<ContributionRate> getContributionRateByHistoryId(String historyId) {
+		Optional<QpbmtContributionRate> contributionRate = this.queryProxy()
+				.query(GET_CONTRIBUTION_RATE_BY_HISTORY_ID, QpbmtContributionRate.class)
+				.setParameter("historyId", historyId).getSingle();
 		List<QpbmtContributionByGrade> qpbmtContributionByGrade = this.queryProxy()
 				.query(GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class)
 				.setParameter("historyId", historyId).getList();

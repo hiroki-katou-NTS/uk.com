@@ -30,9 +30,9 @@ public class ContributionRateWebservice {
 	private DeleteContributionRateCommandHandler deleteContributionRateCommnadHandler;
 
 	@POST
-	@Path("/getByHistoryId/{historyId}/{socialInsuranceCode}")
-	public ContributionRateDto getByHistoryId(@PathParam("historyId") String historyId,@PathParam("socialInsuranceCode") String socialInsuranceCode) {
-		return this.contributionRateFinder.findContributionRateByHistoryID(historyId,socialInsuranceCode);
+	@Path("/getByHistoryId/{historyId}")
+	public ContributionRateDto getByHistoryId(@PathParam("historyId") String historyId) {
+		return this.contributionRateFinder.findContributionRateByHistoryID(historyId);
 	}
 
 	@POST

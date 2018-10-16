@@ -11,7 +11,7 @@ public interface ContributionRateRepository {
 	 *            履歴ID
 	 * @return 拠出金率
 	 */
-	Optional<ContributionRate> getContributionRateByHistoryId(String historyId,String  socialInsuranceCode);
+	Optional<ContributionRate> getContributionRateByHistoryId(String historyId);
 
 	void deleteByHistoryIds(List<String> historyIds,String officeCode);
 

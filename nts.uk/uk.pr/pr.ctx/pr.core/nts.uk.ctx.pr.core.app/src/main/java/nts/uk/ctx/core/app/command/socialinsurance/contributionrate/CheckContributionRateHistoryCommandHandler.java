@@ -22,6 +22,6 @@ public class CheckContributionRateHistoryCommandHandler extends CommandHandlerWi
 		String officeCode = context.getCommand().getOfficeCode();
 		YearMonthHistoryItem yearMonthItem = context.getCommand().getYearMonthHistoryItem().fromCommandToDomain();
 		ContributionRate contributionRate = context.getCommand().getContributionRate().fromCommandToDomain(officeCode);
-		return contributionService.checkContributionRate(officeCode, contributionRate, yearMonthItem);
+		return contributionService.checkContributionRate(contributionRate, yearMonthItem);
 	}
 }
