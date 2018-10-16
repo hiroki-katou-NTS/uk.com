@@ -39,17 +39,17 @@
         </div>
         <div  class="fixed-flex-layout" style="margin-top: 10px">
         <div id="left" class="fixed-flex-layout-left">
-            <div id="A2_1" data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+            <div id="A2_1" data-bind="ntsPanel:{width: '350px', height: '490px', direction: 'right', showIcon: true, visible: true}">
                 <div class="cf">
                     <div style="float:left">
                         <div id="A2_3" style="width: 350px" data-bind="ntsSearchBox: {label: '#{i18n.getText('QMM007_5')}', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
-			searchText: '検索',placeHolder:'',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['searchCode', 'searchName']}" tabindex="5" />
+			searchText: '検索',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['searchCode', 'searchName']}" tabindex="5" />
                         <button id="A2_4" tabindex="6" data-bind="click: openBscreen,enable: $root.errors.isEmpty() &amp;&amp; enableAddHistoryButton()">#{i18n.getText('QMM007_6')}</button>
                         <button id="A2_5" tabindex="7" data-bind="click: openCscreen,enable: $root.errors.isEmpty() &amp;&amp; enableEditHistoryButton()">#{i18n.getText('QMM007_7')}</button>
                         <table id="treegrid1" tabindex="8"
                                data-bind="ntsTreeGridView:{
                                                 width: 350,
-                                                height: 315,
+                                                height: 390,
                                                 name: '#{i18n.getText('QMM007_7')}',
                                                 options: dataSource,
                                                 value: singleSelectedCode,
