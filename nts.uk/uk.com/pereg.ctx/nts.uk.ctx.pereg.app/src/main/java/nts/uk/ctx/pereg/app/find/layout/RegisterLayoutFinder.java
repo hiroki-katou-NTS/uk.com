@@ -224,7 +224,7 @@ public class RegisterLayoutFinder {
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				List<ComboBoxObject> comboValues = cbbfact.getComboBox(selectionItemDto, null, hireDate,
 						item.isRequired(), perInfoCategory.getPersonEmployeeType(), isDataType6,
-						perInfoCategory.getCategoryCode().v(), workPlaceId, false);
+						perInfoCategory.getCategoryCode().v(), workPlaceId);
 				item.setLstComboBoxValue(comboValues);
 
 				// value of item in comboBox is string

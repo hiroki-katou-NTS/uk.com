@@ -171,7 +171,7 @@ public class ComboBoxRetrieveFactory {
 	private static final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, String workplaceId, boolean isCps009) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, String workplaceId) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -193,14 +193,13 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, workplaceId, isRequired, perEmplType, isDataType6, categoryCode, null, isCps009);
+		return getComboBox(RefType, refCd, standardDate, employeeId, workplaceId, isRequired, perEmplType, isDataType6, categoryCode, null);
 	}
 
 	/**
 	 * @param comboBoxParam
 	 * @return
-	 * only run with CODE_NAME or DESIGNATED_MASTER case 
-	 * không dùng cho màn cps009 nên tham số isCps009 = false
+	 * only run with CODE_NAME or DESIGNATED_MASTER case
 	 */
 	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam) {
 		ReferenceTypes referenceType = comboBoxParam.getComboBoxType();
@@ -221,12 +220,12 @@ public class ComboBoxRetrieveFactory {
 			break;
 		}
 		return getComboBox(referenceType, referenceCode, comboBoxParam.getStandardDate(), comboBoxParam.getEmployeeId(),
-				comboBoxParam.getWorkplaceId(), comboBoxParam.isRequired(), perEmplType, true, null, comboBoxParam.getBaseDate(), false);
+				comboBoxParam.getWorkplaceId(), comboBoxParam.isRequired(), perEmplType, true, null, comboBoxParam.getBaseDate());
 
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			String workplaceId, String categoryCode, GeneralDate realBaseDate, boolean isCps009) {
+			String workplaceId, String categoryCode, GeneralDate realBaseDate) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -280,45 +279,34 @@ public class ComboBoxRetrieveFactory {
 			return lstReturn;
 		case "M00009":
 			// 就業時間帯マスタ
-			if(isCps009 == true) {
-				return workTimeSettingRepo.findActiveItems(companyId).stream()
-						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-								workTimeSetting.getWorktimeCode() + JP_SPACE
-										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
-						.collect(Collectors.toList());
-				
-			}else {
-				if (workplaceId == null ) {
-					PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00017", employeeId, "", standardDate));
-					if (resultDto != null) {
-						AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
-						workplaceId = workPlaceItem.getWorkplaceCode();
-					} else {
-						// this case shouldn't happen
-					}
-				} else if (employeeId != null) {
-					if (standardDate == null && realBaseDate != null) {
-						PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00020", employeeId, "", realBaseDate));
-						if (resultDto != null) {
-							WorkingConditionDto wrkCond = (WorkingConditionDto) resultDto.getDomainDto();
-							standardDate = wrkCond.getStartDate();
-						} 
-					}
-					Optional<AffWorkplaceHistory> affWorkplaceHist = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(employeeId, standardDate);
-					if (!affWorkplaceHist.isPresent()){
-						workplaceId = null;
-					}
+			if (workplaceId == null ) {
+				PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00017", employeeId, "", standardDate));
+				if (resultDto != null) {
+					AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+					workplaceId = workPlaceItem.getWorkplaceCode();
+				} else {
+					// this case shouldn't happen
 				}
-				
-				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
-				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-								workTimeSetting.getWorktimeCode() + JP_SPACE
-										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
-						.collect(Collectors.toList());
-				
+			} else if (employeeId != null) {
+				if (standardDate == null && realBaseDate != null) {
+					PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00020", employeeId, "", realBaseDate));
+					if (resultDto != null) {
+						WorkingConditionDto wrkCond = (WorkingConditionDto) resultDto.getDomainDto();
+						standardDate = wrkCond.getStartDate();
+					} 
+				}
+				Optional<AffWorkplaceHistory> affWorkplaceHist = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(employeeId, standardDate);
+				if (!affWorkplaceHist.isPresent()){
+					workplaceId = null;
+				}
 			}
-
+			
+			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
+			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+							workTimeSetting.getWorktimeCode() + JP_SPACE
+									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
+					.collect(Collectors.toList());
 		case "M00010":
 			// 出勤系の勤務種類を取得する
 			return workTypeRepo.getAcquiredAttendanceWorkTypes(companyId).stream()
@@ -462,7 +450,7 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired,
-			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, GeneralDate realBaseDate,  boolean isCps009) {
+			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, GeneralDate realBaseDate) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -474,7 +462,7 @@ public class ComboBoxRetrieveFactory {
 			resultList = getCodeNameComboBox(referenceCode, standardDate, perEmplType);
 			break;
 		case DESIGNATED_MASTER:
-			resultList = getMasterComboBox(referenceCode, employeeId, standardDate, workplaceId, categoryCode, realBaseDate, isCps009);
+			resultList = getMasterComboBox(referenceCode, employeeId, standardDate, workplaceId, categoryCode, realBaseDate);
 			break;
 
 		}
