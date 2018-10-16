@@ -418,7 +418,14 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
-		resultList.sort(Comparator.comparing(BsymtJobInfo::getJobCd));
+		resultList.sort((o1, o2) -> {
+			Integer order1 = o1.getBsymtJobSeqMaster().getDisporder();
+			Integer order2 = o2.getBsymtJobSeqMaster().getDisporder();
+			if (order1 != null && order2 != null) return order1.compareTo(order2);
+			if (order1 != null && order2 == null) return 1;
+			if (order1 == null && order2 != null) return -1;
+			return o1.getJobCd().compareTo(o2.getJobCd());
+		});
 		
 		// Check exist
 		if (CollectionUtil.isEmpty(resultList)) {
@@ -486,9 +493,11 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			resultList.addAll( (List<Object[]>) em.createQuery(cq).getResultList() );
 		});
 		resultList.sort((o1, o2) -> {
-			// o1, o2 is Ojbect[]
-			// 	0: BsymtJobInfo
-			// 	1: BsymtJobHist
+			Integer order1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster().getDisporder();
+			Integer order2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster().getDisporder();
+			if (order1 != null && order2 != null) return order1.compareTo(order2);
+			if (order1 != null && order2 == null) return 1;
+			if (order1 == null && order2 != null) return -1;
 			String jobCd1 = ((BsymtJobInfo) o1[0]).getJobCd();
 			String jobCd2 = ((BsymtJobInfo) o2[0]).getJobCd();
 			return jobCd1.compareTo(jobCd2);
