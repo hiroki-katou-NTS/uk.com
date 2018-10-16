@@ -22,6 +22,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
@@ -62,9 +63,15 @@ public class StartPageLogWriter implements Filter {
 			return;
 		}
 		
+		ShareStandardMenuAdapter menuAdapter = CDI.current().select(ShareStandardMenuAdapter.class).get();
+		String comId = getValue(context, c -> c.companyId());
+		if(!menuAdapter.isEsistMenuWith(comId, targetPg.getScreenId(), targetPg.getProgramId(), targetPg.getQueryString())){
+			return;
+		}
+		
 		LogBasicInformation basic = new LogBasicInformation(
 				IdentifierUtil.randomUniqueId(), 
-				getValue(context, c -> c.companyId()),
+				comId,
 				UserInfo.employee(
 						getValue(context, c -> c.userId()), 
 						getValue(context, c -> {
