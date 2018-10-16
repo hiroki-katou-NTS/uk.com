@@ -82,6 +82,8 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 					tl = mergeWithEditStates(command, tlo, wts);
 				}
 				return EventHandleResult.withResult(EventHandleAction.UPDATE, updateTimeLeave(companyId, wi, tl, command));
+			} else {
+				return EventHandleResult.withResult(EventHandleAction.ABORT, getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command)));
 			}
 		}
 		
