@@ -59,11 +59,13 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             }
             else {
                 service.submitPayrollUnitPriceHis(data).done(() => {
-                    setShared('QMM007_C_PARAMS_OUTPUT', {
-                        methodEditing: self.methodEditing(),
-                        startYearMonth: self.startYearMonth()
+                    dialog.info({ messageId: "Msg_15" }).then(()=>{
+                        setShared('QMM007_C_PARAMS_OUTPUT', {
+                            methodEditing: self.methodEditing(),
+                            startYearMonth: self.startYearMonth()
+                        });
+                        self.cancel();
                     });
-                    self.cancel();
                 }).fail(function (res: any) {
                     if (res)
                         dialog.alertError(res);
@@ -78,14 +80,13 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             let self = this;
             // start
             let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
-            let to = getText('QMM011_9');
             if (!params) {
                return;
             }
             self.name(params.name);
             self.code(params.code);
             self.startYearMonth(params.startYearMonth);
-            self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
+            self.endYearMonth(getText('QMM007_43',[params.endYearMonth]));
             self.textResourceRadioFirt(getText('QMM007_42',[self.convertMonthYearToString(self.startYearMonth())]));
             self.isFirst(params.isFirst);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));

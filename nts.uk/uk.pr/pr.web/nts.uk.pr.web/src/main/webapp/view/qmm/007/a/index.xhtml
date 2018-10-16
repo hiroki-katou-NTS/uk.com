@@ -34,7 +34,7 @@
                     data-bind="enable: false">#{i18n.getText('QMM007_3')}</button>
 
             <button id="A1_4" tabindex="4"
-                    data-bind=" enable: $root.errors.isEmpty">#{i18n.getText('QMM007_4')}</button>
+                    data-bind=" enable: false">#{i18n.getText('QMM007_4')}</button>
 
         </div>
         <div  class="fixed-flex-layout" style="margin-top: 10px">
@@ -56,6 +56,7 @@
                                                 optionsValue: 'code',
                                                 optionsChild: 'childs',
                                                 optionsText: 'nodeText',
+                                                placeHolder:'',
                                                 multiple: false,
                                                 enable: true,
                                                 showCheckBox: false}">
@@ -94,7 +95,7 @@
 
             </div>
             <div class="valign-center control-group flex" style="min-width: 500px">
-                <div id="A3_4" class="valign-center" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_9')}</div>
+                <div id="A3_4" class="valign-center" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_11')}</div>
                 <div id = "A3_5" tabindex="11"  data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM007_11')}',
 																value: yearMonth,

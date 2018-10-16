@@ -152,8 +152,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         checkSelectHistory(){
             let self = this;
             self.singleSelectedCode.subscribe((o)=>{
-                if(o){
                 nts.uk.ui.errors.clearAll();
+                if(o){
                 let fistHistory,code,hisId;
                 let params = o.split('__');
                 if(params){
@@ -220,6 +220,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                                 self.code(data.code);
                                 self.name(data.name);
                                 self.currentName(data.name);
+                                nts.uk.ui.errors.clearAll();
                             });
                             if(self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY && self.mode() === MODE.ADD_HISTORY || self.mode() === MODE.UPDATE) {
                                 service.getPayrollUnitPriceHisById(code, hisId).done((data) => {
@@ -246,13 +247,14 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                                     self.selectedCurrentHourlyPay(data.hourlyPay);
                                     self.selectedCurrentADayPayee(data.adayPayee);
                                     $("#A3_3").focus();
+                                    nts.uk.ui.errors.clearAll();
                                 });
                             }
                             else{
                                 self.yearMonth(self.newYearMonth());
                                 self.endYearMonth(null);
 
-                                self.amountOfMoney(null);
+                                self.amountOfMoney(0);
 
                                 self.selectedId(FIXEDWAGECLASS.DES_BY_ALL_MEMBERS);
                                 self.selectedTargetClass(TARRGETCLASSFICATION.OBJECT);
@@ -413,7 +415,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         createGridList(): JQueryPromise<any> {
                 let self = this, dfd = $.Deferred();
                 let displayGridList: Array<Node> = [];
-                return service.getAllHistoryById().done((data) => {
+                block.invisible();
+                service.getAllHistoryById().done((data) => {
                     if (data) {
                         _.each(data,(o)=>{
                             let node = new Node(o.code,o.code + ' ' + o.name,o.code,o.name,[]);
@@ -431,12 +434,16 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             displayGridList.push(node);
                         });
                         self.dataSource(displayGridList);
+                        dfd.resolve();
                     }
 
                 }).fail(function (err) {
+                    dfd.reject();
                     dialog.alertError(err.message);
                 }).always(function () {
+                    block.clear();
                 });
+            return dfd.promise();
         }
         register(){
             let self = this;
@@ -515,7 +522,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 }
 
                 if(self.isExist() && self.mode() === MODE.NEW){
-                    dialog.info({ messageId: "Msg_3" }).then(() => {
+                    dialog.alertError({ messageId: "Msg_3" }).then(() => {
                         close();
                         block.clear();
                     });
