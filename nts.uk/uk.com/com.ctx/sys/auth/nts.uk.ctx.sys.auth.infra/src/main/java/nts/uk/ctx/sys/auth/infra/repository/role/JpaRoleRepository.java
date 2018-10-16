@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.infra.repository.role;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,8 +47,9 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	public List<Role> findByListId(List<String> lstRoleId) {
 		//if is empty lstRoleId
 		if (lstRoleId.isEmpty()) {
-			return new ArrayList<Role>();
+			return Collections.emptyList();
 		}
+		
 		List<SacmtRole> sacmtRoles = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -68,9 +70,8 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			sacmtRoles.addAll(em.createQuery(cq).getResultList());
 		});
 		
-		return sacmtRoles.stream().map(sacmtRole -> {
-			return new Role(new JpaRoleGetMemento(sacmtRole));
-		}).collect(Collectors.toList());
+		return sacmtRoles.stream().map(sacmtRole -> new Role(new JpaRoleGetMemento(sacmtRole)))
+				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -78,6 +79,11 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	 */
 	@Override
 	public List<Role> findByListRoleId(String companyId, List<String> lstRoleId) {
+		// if is empty lstRoleId
+		if (lstRoleId.isEmpty()) {
+			return Collections.emptyList();
+		}
+				
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -88,6 +94,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		cq.select(root);
 		
 		List<SacmtRole> resultList = new ArrayList<>();
+		
 		CollectionUtil.split(lstRoleId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> predicateList = new ArrayList<>();
@@ -99,9 +106,8 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		
-		return resultList.stream().map(sacmtRole -> {
-			return new Role(new JpaRoleGetMemento(sacmtRole));
-		}).collect(Collectors.toList());
+		return resultList.stream().map(sacmtRole -> new Role(new JpaRoleGetMemento(sacmtRole)))
+				.collect(Collectors.toList());
 	}
 	
 	
@@ -122,6 +128,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		updateEntity.setAssignAtr(role.getAssignAtr().value);
 		this.commandProxy().update(updateEntity);		
 	}
+	
 	@Override
 	public void remove(String roleId) {		
 		this.commandProxy().remove(SacmtRole.class, roleId);

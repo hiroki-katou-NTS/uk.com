@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -141,7 +142,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 		
 		if (CollectionUtil.isEmpty(resultList)) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		return workplaceIds.stream().map(wkpId -> {

@@ -226,18 +226,16 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 			return Collections.emptyList();
 		}
 		
-		List<AffClassHistItem> results = new ArrayList<>();
+		List<BsymtAffClassHistItem> results = new ArrayList<>();
+		
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
-
-			List<AffClassHistItem> entities = this.queryProxy()
+			results.addAll(this.queryProxy()
 					.query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
 					.setParameter("historyIds", subIds)
-					.getList(ent -> toDomain(ent));
-			
-			results.addAll(entities);
+					.getList());
 		});
 
-		return results;
+		return results.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 }

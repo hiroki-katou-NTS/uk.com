@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,36 +110,6 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		return new MasterCopyData(memento);
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the sspmt mastercopy data
-	 */
-	private List<SspmtMastercopyData> toDataEntites(MasterCopyData domain) {
-		// query data entites
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SspmtMastercopyData> cq = criteriaBuilder.createQuery(SspmtMastercopyData.class);
-		Root<SspmtMastercopyData> root = cq.from(SspmtMastercopyData.class);
-		cq.select(root);
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.id).get(SspmtMastercopyDataPK_.categoryNo),
-				domain.getCategoryNo()));
-		cq.where(predicates.toArray(new Predicate[] {}));
-		List<SspmtMastercopyData> listDataEntites = em.createQuery(cq).getResultList();
-		// category entity
-		SspmtMastercopyCategory categoryEntity = this.queryProxy()
-				.find(domain.getCategoryNo(), SspmtMastercopyCategory.class).orElse(new SspmtMastercopyCategory());
-		// set memento
-		if (categoryEntity.getCategoryNo() == null)
-			categoryEntity.setCategoryNo(domain.getCategoryNo().v());
-		JpaMasterCopyDataSetMemento memento = new JpaMasterCopyDataSetMemento(categoryEntity, listDataEntites);
-		domain.saveToMemento(memento);
-		return listDataEntites;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,10 +118,16 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 */
 	@Override
 	public List<MasterCopyData> findByListCategoryNo(List<Integer> masterCopyIds) {
+		
+		if(CollectionUtil.isEmpty(masterCopyIds)) {
+			return Collections.emptyList();
+		}
+		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<SspmtMastercopyCategory> cq = criteriaBuilder.createQuery(SspmtMastercopyCategory.class);
 		Root<SspmtMastercopyCategory> root = cq.from(SspmtMastercopyCategory.class);
+		
 		// Build query
 		cq.select(root);
 		
@@ -166,6 +143,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		
 		return resultList.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
 	}
 
