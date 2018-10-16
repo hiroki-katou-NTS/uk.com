@@ -11,7 +11,7 @@ public interface SalIndAmountHisRepository
 
     List<SalIndAmountHis> getAllSalIndAmountHis();
 
-    Optional<SalIndAmountHis> getSalIndAmountHisById(String historyId, String perValCode, String empId);
+    Optional<SalIndAmountHis> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator);
 
     void add(SalIndAmountHis domain);
 

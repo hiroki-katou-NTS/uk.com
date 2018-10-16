@@ -8,17 +8,29 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
     import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
     import PERVALUECATECLS = nts.uk.pr.view.qmm039.share.model.PERVALUECATECLS;
+    import SALBONUSCATE = nts.uk.pr.view.qmm039.share.model.SALBONUSCATE;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
-        itemList: KnockoutObservableArray<>;
-        onTab: KnockoutObservable<number> = ko.observable(0);
+        historyAdditionMode: KnockoutObservable<boolean> = ko.observable(true);
+        itemList: KnockoutObservableArray<ItemModel>;
+        individualPriceCode: KnockoutObservable<any> = ko.observable('');
+        individualPriceName: KnockoutObservable<any> = ko.observable('');
+        periodStartYM: KnockoutObservable<any> = ko.observable('');
+        periodEndYM: KnockoutObservable<any> = ko.observable('');
+        individualPriceName: KnockoutObservable<any> = ko.observable('');
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
+        onTab: KnockoutObservable<number> = ko.observable(ITEM_CLASS.SALARY_SUPLY);
         itemClas: KnockoutObservable<number> = ko.observable(0);
         titleTab: KnockoutObservable<string> = ko.observable('');
         isEnableHis: KnockoutObservable<boolean> = ko.observable(true);
+        itemClassLabel: KnockoutObservable<string> = ko.observable('');
         SalBonusCate: KnockoutObservable<boolean> = ko.observable(0);
         CategoryIndicator: KnockoutObservable<boolean> = ko.observable(0);
         selectedTab: KnockoutObservable<string>;
         salHis: any;
-        dataSource: KnockoutObservableArray = ko.observableArray([]);
+        dataSource: any = ko.observableArray([]);
+        selectedHis: KnockoutObservable<ItemModel>;
+        selectedHisCode: any;
         singleSelectedCode: any;
         listComponentOption: ComponentOption;
         tabindex: number;
@@ -52,15 +64,27 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
             });
             self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
-            let sal = new SalIndAmount({amountOfMoney: 2013});
-            self.itemList = ko.observableArray([
-                new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm().toString().substr(0, 4) + '/' + self.salHis.periodStartYm().toString().substr(4, self.salHis.periodStartYm().length), self.salHis.periodEndYm().toString().substr(0, 4) + '/' + self.salHis.periodEndYm().toString().substr(4, self.salHis.periodEndYm().length)), sal.amountOfMoney()),
-            ]);
-
-
+            self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
+            // self.singleSelectedCode.subscribe(function (newValue) {
+            //     let dto = {
+            //         perValCode: self.dataSource[newValue - 1].individualPriceCode,
+            //         empId: self.selectedItem(),
+            //         cateIndicator: PERVALUECATECLS.SUPPLY,
+            //         salBonusCate: SALBONUSCATE.SALARY
+            //     }
+            //
+            //     self.historyProcess(dto);
+            // });
+            self.selectedHisCode = ko.observable(1);
+            self.selectedHisCode.subscribe(function (newValue) {
+                self.selectedHis(self.itemList()[newValue - 1]);
+                self.periodStartYM(self.formatYM(self.itemList()[newValue - 1].periodStartYm));
+                self.periodEndYM(self.formatYM(self.itemList()[newValue - 1].periodEndYm));
+                self.currencyeditor.value(self.itemList()[newValue - 1].amount);
+            });
             self.currencyeditor = {
-                value: ko.observable(1200),
+                value: ko.observable(0),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
@@ -128,27 +152,30 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             switch (param) {
                 case ITEM_CLASS.SALARY_SUPLY:
                     //TODO
-                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
+                    self.onTab(ITEM_CLASS.SALARY_SUPLY);
                     self.titleTab(getText('QMM039_6'));
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
-                    self.itemClas(PERVALUECATECLS.SUPPLY);
+                    self.itemClas(ITEM_CLASS.SALARY_SUPLY);
+                    self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
                     break;
                 case ITEM_CLASS.SALARY_DEDUCTION:
                     //TODO
-                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
+                    self.onTab(ITEM_CLASS.SALARY_DEDUCTION);
                     self.titleTab(getText('QMM039_7'));
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.DEDUCTION);
-                    self.itemClas(PERVALUECATECLS.DEDUCTION);
+                    self.itemClas(ITEM_CLASS.SALARY_DEDUCTION);
+                    self.itemClassLabel(format(getText('QMM039_21'), '給与控除'));
                     break;
                 case ITEM_CLASS.BONUS_SUPLY:
                     //TODO
-                    self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
+                    self.onTab(ITEM_CLASS.BONUS_SUPLY);
                     self.titleTab(getText('QMM039_8'));
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
-                    self.itemClas(PERVALUECATECLS.SUPPLY);
+                    self.itemClas(ITEM_CLASS.BONUS_SUPLY);
+                    self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
                     break;
                 case ITEM_CLASS.BONUS_DEDUCTION:
                     //TODO
@@ -156,7 +183,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.titleTab(getText('QMM039_9'));
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.DEDUCTION);
-                    self.itemClas(PERVALUECATECLS.DEDUCTION);
+                    self.itemClas(ITEM_CLASS.BONUS_DEDUCTION);
+                    self.itemClassLabel(format(getText('QMM039_21'), '賞与控除'));
                     break;
                 default:
                     //TODO
@@ -164,7 +192,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.titleTab(getText('QMM039_9'));
                     $("#sidebar").ntsSideBar("active", 1);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
-                    self.itemClas(PERVALUECATECLS.SUPPLY);
+                    self.itemClas(ITEM_CLASS.SALARY_SUPLY);
+                    self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
                     break;
             }
         }
@@ -172,12 +201,53 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         changeItemClass(item_class: number): void {
             let self = this;
             service.getPersonalMoneyName(item_class).done(function (data) {
+
                 let array = [];
                 _.forEach(data, function (salIndAmountName) {
                     array.push(new Node(salIndAmountName.individualPriceCode, salIndAmountName.individualPriceName));
                 });
-                self.dataSource = ko.observableArray(array);
+                self.dataSource(array);
+
+                let dto = {
+                    perValCode: data[0].individualPriceCode,
+                    empId: self.selectedItem(),
+                    cateIndicator: PERVALUECATECLS.SUPPLY,
+                    salBonusCate: SALBONUSCATE.SALARY
+                }
+                self.individualPriceName(data[0].individualPriceName);
+                self.individualPriceCode(data[0].individualPriceCode);
+                self.historyProcess(dto);
             });
+        }
+
+
+        historyProcess(dto): void {
+            let self = this;
+            service.getSalIndAmountHis(dto).done(function (data) {
+                if (data != null) {
+                    self.isUpdateMode(true);
+                    let array = [];
+                    for (let i = 0; i < data.period.length; i++) {
+                        array.push(
+                            new ItemModel(
+                                data.period[i].historyID,
+                                data.period[i].periodStartYm,
+                                data.period[i].periodEndYm,
+                                format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney))
+                    }
+                    self.itemList(array);
+                    self.selectedHis(array[0]);
+                    self.periodStartYM(self.formatYM(self.selectedHis().periodStartYm));
+                    self.periodEndYM(self.formatYM(self.selectedHis().periodEndYm));
+                    self.currencyeditor.value(self.selectedHis().amount);
+                } else {
+                    self.isUpdateMode(false);
+                }
+            });
+        }
+
+        formatYM(intYM) {
+            return intYM.toString().substr(0, 4) + '/' + intYM.toString().substr(4, intYM.length);
         }
 
         public startPage(): JQueryPromise<any> {
@@ -192,7 +262,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.initKCP009();
                         dfd.resolve();
                     }
-                    self.onSelectTab(self.onTab);
+                    self.onSelectTab(ITEM_CLASS.SALARY_SUPLY);
                 }).fail(function (result) {
                     dfd.reject();
                 });
@@ -268,15 +338,24 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         public toScreenB(): void {
             let self = this;
             let params = {
-                historyID: self.salHis.historyID(),
+                historyID: self.itemList()[0].historyID,
                 period: {
-                    periodStartYm: self.salHis.periodStartYm(),
-                    periodEndYm: self.salHis.periodEndYm()
+                    periodStartYm: self.itemList()[0].periodStartYm,
+                    periodEndYm: self.itemList()[0].periodEndYm
                 }
             }
             setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
-
+                let params = getShared("QMM039_B_RES_PARAMS");
+                if (params) {
+                    self.periodStartYM(params.periodStartYm);
+                    self.periodEndYM(params.periodEndYm);
+                    if(params.takeoverMethod == 1){
+                        self.currencyeditor.value(0);
+                    }else {
+                        self.currencyeditor.value(self.itemList()[0].amount);
+                    }
+                }
             });
         }
 
@@ -296,7 +375,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
-
+                self.isUpdateMode(true);
             });
         }
 
@@ -315,6 +394,22 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {
 
             });
+        }
+
+        registration(): void {
+            let self = this;
+            if (self.isUpdateMode()) {
+                let command = {
+                    historyId: 1,
+                    amountOfMoney: self.value()
+                }
+                service.updateHistory(command);
+            } else {
+                let command = {
+                    salIndAmountHisCommand: {}
+                }
+                service.addHistory(command);
+            }
         }
     }
     export interface GroupOption {

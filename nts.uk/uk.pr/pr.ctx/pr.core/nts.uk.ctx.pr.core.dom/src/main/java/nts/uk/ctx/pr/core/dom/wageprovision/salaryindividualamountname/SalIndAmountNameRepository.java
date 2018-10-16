@@ -13,6 +13,8 @@ public interface SalIndAmountNameRepository
 
     Optional<SalIndAmountName> getSalIndAmountNameById(String cid, String individualPriceCode);
 
+    List<SalIndAmountName> getAllSalIndAmountNameByCateIndi(String cid, int cateIndicator);
+
     void add(SalIndAmountName domain);
 
     void update(SalIndAmountName domain);

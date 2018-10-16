@@ -40,7 +40,7 @@
             <div class="sidebar-content-header">
                 <span class="title" data-bind="text : titleTab"></span>
                 <!--A1_1 登録-->
-                <button tabindex="1" class="proceed">#{i18n.getText('QMM039_5')}</button>
+                <button tabindex="1" data-bind="click: registration" class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
                 <a tabindex="11" class="goout" style="margin-left: 720px;"
                    data-bind="ntsLinkButton: { },enable: false">#{i18n.getText('QMM039_45')}</a>
@@ -62,7 +62,7 @@
                         <div class="panel" style="margin-left: 30px"
                              data-bind="ntsPanel:{width: '220px', height: '220px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
-                            <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid11', items: dataSource,
+                            <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'ListBox', comId:'treegrid11', items: dataSource,
 			                    searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
                             <!--A4_4 項目リスト-->
                             <!--A4_5 コード-->
@@ -70,17 +70,16 @@
                             <!--A4_7 コード-->
                             <!--A4_8 名称-->
                             <table tabindex="6" id="treegrid11"
-                                   data-bind="ntsTreeGridView:{
+                                   data-bind="ntsGridList:{
                                 width: 220,
                                 height: 150,
-                                options: dataSource,
+                                dataSource: dataSource,
                                 columns: [
                                     {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 3},
                                     {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 3}
                                 ],
                                 value: singleSelectedCode,
-                                optionsValue: 'code',
-                                optionsText: 'nodeText',
+                                primaryText: 'name',
                                 multiple: false,
                                 enable: true,
                                 showCheckBox: false}">
@@ -109,8 +108,8 @@
                                     optionsValue: 'historyID',
                                     optionsText: 'period',
                                     multiple: false,
-                                    value: singleSelectedCode,
-                                    enable: isEnableHis(),
+                                    value: selectedHisCode,
+                                    enable: true,
                                     rows: 4,
                                     columns: [
                                         { key: 'historyID', length: 0, hidden: true},
@@ -132,7 +131,7 @@
                             </div>
                             <div class="cell">
                                 <!--A7_2 項目区分-->
-                                <div class="label">#{i18n.getText('QMM039_21')}</div>
+                                <div class="label" data-bind="text: itemClassLabel"></div>
                             </div>
                         </div>
 
@@ -143,9 +142,9 @@
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_22')}</div>
                             </div>
                             <div class="cell">
-                                <div class="label"></div>
+                                <span class="label" data-bind="text: individualPriceCode"></span>
                                 <!--A7_4 コード-->
-                                <div class="label"></div>
+                                <span class="label" data-bind="text: individualPriceName"></span>
                                 <!--A7_5 名称-->
                             </div>
                         </div>
@@ -156,11 +155,11 @@
                             </div>
                             <div class="cell">
                                 <!--A7_7 履歴開始年月-->
-                                <span class="label"></span>
+                                <span class="label" data-bind="text: periodStartYM"></span>
                                 <!--A7_8 ～-->
                                 <span class="label">#{i18n.getText('QMM039_24')}</span>
                                 <!--A7_9 履歴開始年月-->
-                                <span class="label"></span>
+                                <span class="label" data-bind="text: periodEndYM"></span>
                             </div>
                         </div>
                         <div class="row">

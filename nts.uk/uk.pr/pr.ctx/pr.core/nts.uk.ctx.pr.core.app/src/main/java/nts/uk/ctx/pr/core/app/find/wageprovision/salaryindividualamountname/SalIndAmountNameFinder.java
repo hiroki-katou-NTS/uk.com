@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountName;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountNameRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,4 +25,8 @@ public class SalIndAmountNameFinder
                 .collect(Collectors.toList());
     }
 
+    public List<SalIndAmountNameDto> getAllSalIndAmountNameByCateIndi(int cateIndicator){
+        String cid = AppContexts.user().companyId();
+        return finder.getAllSalIndAmountNameByCateIndi(cid, cateIndicator).stream().map(item -> SalIndAmountNameDto.fromDomain(item)).collect(Collectors.toList());
+    }
 }

@@ -140,6 +140,7 @@ module nts.uk.pr.view.qmm039.share.model {
     export class EnumModel {
         value: number;
         name: string;
+
         constructor(value, name) {
             this.value = value;
             this.name = name;
@@ -156,9 +157,18 @@ module nts.uk.pr.view.qmm039.share.model {
         UPDATE = 1
     }
     export enum ITEM_CLASS {
-        SALARY_SUPLY = 1,
-        SALARY_DEDUCTION = 2,
-        BONUS_SUPLY = 3,
-        BONUS_DEDUCTION = 4,
+        SALARY_SUPLY = 0,
+        SALARY_DEDUCTION = 1,
+        BONUS_SUPLY = 2,
+        BONUS_DEDUCTION = 3,
+    }
+    export enum PERVALUECATECLS    {
+        SUPPLY = 0,
+        DEDUCTION = 1
+    }
+
+    export enum SALBONUSCATE {
+        SALARY = 0,
+        BONUSES = 1
     }
 }
