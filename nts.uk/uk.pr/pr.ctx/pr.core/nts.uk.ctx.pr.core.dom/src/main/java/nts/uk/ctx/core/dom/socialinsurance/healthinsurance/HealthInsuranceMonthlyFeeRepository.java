@@ -31,4 +31,6 @@ public interface HealthInsuranceMonthlyFeeRepository {
     void insertGraFee(HealthInsuranceMonthlyFee domain);
     
     void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds);
+
+    void updatePreviousHistory(String officeCode, YearMonthHistoryItem history);
 }

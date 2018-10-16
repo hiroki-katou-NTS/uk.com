@@ -7,8 +7,8 @@ import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
+import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.*;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -22,12 +22,13 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implements HealthInsuranceMonthlyFeeRepository {
 
+    private static final String GET_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsuranceMonthlyFee a WHERE a.bonusHealthInsurancePk.historyId=:historyId";
     private static final String GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId=:historyId";
     private static final String DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId IN :historyId";
     
     @Override
     public Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId) {
-        val entity = this.queryProxy().find(historyId, QpbmtHealthInsuranceMonthlyFee.class);
+        val entity = this.queryProxy().query(GET_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID, QpbmtHealthInsuranceMonthlyFee.class).setParameter("historyId", historyId).getSingle();
 
         if (!entity.isPresent())
             return Optional.empty();
@@ -113,5 +114,29 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 
     private List<QpbmtHealthInsurancePerGradeFee> toDomainFromOldData (HealthInsuranceMonthlyFee domain, QpbmtHealthInsuranceMonthlyFee entity) {
         return QpbmtHealthInsurancePerGradeFee.toEntity(domain, entity.bonusHealthInsurancePk.socialInsuranceOfficeCd, new YearMonthHistoryItem(entity.bonusHealthInsurancePk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth))));
+    }
+
+    @Override
+    public void updatePreviousHistory(String officeCode, YearMonthHistoryItem history) {
+       this.updateHealthInsuranceMonthly(officeCode, history);
+        this.updateHealthInsurancePerGrade(officeCode, history);
+    }
+
+    private void updateHealthInsuranceMonthly (String officeCode, YearMonthHistoryItem history) {
+        Optional<QpbmtHealthInsuranceMonthlyFee> opt_entity = this.queryProxy().find(new QpbmtHealthInsuranceMonthlyFeePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtHealthInsuranceMonthlyFee.class);
+        if (!opt_entity.isPresent()) return;
+        QpbmtHealthInsuranceMonthlyFee entity = opt_entity.get();
+        entity.startYearMonth = history.start().v();
+        entity.endYearMonth = history.end().v();
+        this.commandProxy().update(entity);
+    }
+
+    private void updateHealthInsurancePerGrade (String officeCode, YearMonthHistoryItem history) {
+        List<QpbmtHealthInsurancePerGradeFee> entities = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", history.identifier()).getList();
+        for(QpbmtHealthInsurancePerGradeFee entity: entities){
+            entity.startYearMonth = history.start().v();
+            entity.endYearMonth = history.end().v();
+        }
+        this.commandProxy().updateAll(entities);
     }
 }

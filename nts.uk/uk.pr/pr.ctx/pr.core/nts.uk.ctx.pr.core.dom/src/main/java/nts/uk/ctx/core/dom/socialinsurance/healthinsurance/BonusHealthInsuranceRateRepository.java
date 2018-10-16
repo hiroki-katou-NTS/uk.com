@@ -27,4 +27,6 @@ public interface BonusHealthInsuranceRateRepository {
     void update(BonusHealthInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth);
     
     void remove(BonusHealthInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth);
+
+    void updatePreviousHistory (String officeCode, YearMonthHistoryItem history);
 }

@@ -27,9 +27,10 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.cid =:cid AND a.bonusHealthInsurancePk.socialInsuranceOfficeCd =:socialInsuranceOfficeCd ORDER BY a.startYearMonth DESC";
     private static final String FIND_BY_HISTORY_ID = "SELECT a FROM QpbmtBonusHealthInsuranceRate a WHERE a.bonusHealthInsurancePk.historyId =:historyId";
 
+
 	@Override
 	public Optional<HealthInsuranceFeeRateHistory> getHealthInsuranceHistoryByOfficeCode(String officeCode) {
-		return this.fromHealthInsuranceToHistory(this.queryProxy().query(FIND_BY_OFFICE_CODE, QpbmtBonusHealthInsuranceRate.class).setParameter("cid", AppContexts.user().companyId()).setParameter("socialInsuranceOfficeCd", officeCode).getList());
+		return this.fromHealthInsuranceToHistory(this.getBonusHealthInsuranceEntityByOfficeCode(officeCode));
 	}
 
 	@Override
@@ -73,9 +74,23 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 		this.commandProxy().remove(toEntity(domain, officeCode, yearMonth));
 	}
 
-	public Optional<HealthInsuranceFeeRateHistory> fromHealthInsuranceToHistory (List<QpbmtBonusHealthInsuranceRate> healthInsurance) {
+    @Override
+    public void updatePreviousHistory(String officeCode, YearMonthHistoryItem history) {
+        Optional<QpbmtBonusHealthInsuranceRate> opt_entity = this.queryProxy().find(new QpbmtBonusHealthInsuranceRatePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtBonusHealthInsuranceRate.class);
+        if (!opt_entity.isPresent()) return;
+        QpbmtBonusHealthInsuranceRate entity = opt_entity.get();
+        entity.startYearMonth = history.start().v();
+        entity.endYearMonth = history.end().v();
+        this.commandProxy().update(entity);
+    }
+
+    public Optional<HealthInsuranceFeeRateHistory> fromHealthInsuranceToHistory (List<QpbmtBonusHealthInsuranceRate> healthInsurance) {
     	if (healthInsurance.isEmpty()) return Optional.empty();
 		return Optional.of(new HealthInsuranceFeeRateHistory(healthInsurance.get(0).bonusHealthInsurancePk.cid, healthInsurance.get(0).bonusHealthInsurancePk.socialInsuranceOfficeCd,
 				healthInsurance.stream().map(item -> new YearMonthHistoryItem(item.bonusHealthInsurancePk.historyId, new YearMonthPeriod(new YearMonth(item.startYearMonth), new YearMonth(item.endYearMonth)))).collect(Collectors.toList())));
 	}
+
+	private List<QpbmtBonusHealthInsuranceRate> getBonusHealthInsuranceEntityByOfficeCode(String officeCode) {
+        return this.queryProxy().query(FIND_BY_OFFICE_CODE, QpbmtBonusHealthInsuranceRate.class).setParameter("cid", AppContexts.user().companyId()).setParameter("socialInsuranceOfficeCd", officeCode).getList();
+    }
 }

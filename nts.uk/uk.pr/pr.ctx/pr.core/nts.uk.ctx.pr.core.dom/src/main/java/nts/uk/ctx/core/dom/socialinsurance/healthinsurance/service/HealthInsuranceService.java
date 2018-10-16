@@ -44,21 +44,21 @@ public class HealthInsuranceService {
 			// add new history if no history existed
 			welfarePensionHistory = new HealthInsuranceFeeRateHistory(AppContexts.user().companyId(), officeCode,
 					Arrays.asList(yearMonthItem));
-//			healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
 			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 			return;
 		}
 		// delete old history
-//		healthInsuranceFeeRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		welfarePensionHistory = opt_healthInsurance.get();
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
 			// add history if not exist
 			welfarePensionHistory.add(yearMonthItem);
 			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
+			if (welfarePensionHistory.getHistory().size() > 1) {
+			    this.updatePreviousHistory(officeCode, welfarePensionHistory.getHistory().get(0));
+            }
 		} else {
 			this.updateHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 		}
-//		healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
 	}
 
 	public void addHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
@@ -84,36 +84,39 @@ public class HealthInsuranceService {
 	}
 	
 	public void updateHistory (String officeCode, YearMonthHistoryItem yearMonth){
-//		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
-//				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
-//		if (!opt_healthInsurance.isPresent()) {
-//			return;
-//		}
-//		HealthInsuranceFeeRateHistory healthInsurance = opt_healthInsurance.get();
-//		Optional<YearMonthHistoryItem> currentSpan = healthInsurance.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
-//		if (!currentSpan.isPresent()) return;
-//		healthInsurance.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
-//		healthInsuranceFeeRateHistoryRepository.update(healthInsurance);
+		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = bonusHealthInsuranceRateRepository.getHealthInsuranceHistoryByOfficeCode(officeCode);
+		if (!opt_healthInsurance.isPresent()){
+			return;
+		}
+		HealthInsuranceFeeRateHistory healthInsurance = opt_healthInsurance.get();
+		Optional<YearMonthHistoryItem> currentSpan = healthInsurance.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
+		if (!currentSpan.isPresent()) return;
+		healthInsurance.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
+		this.updatePreviousHistory(officeCode, yearMonth);
 	}
 	
 	public void deleteHistory (String officeCode, YearMonthHistoryItem yearMonth){
-//		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
-//				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
-//		if (!opt_healthInsurance.isPresent()) {
-//			return;
-//		}
-//		HealthInsuranceFeeRateHistory healthInsurance = opt_healthInsurance.get();
-//		if (healthInsurance.getHistory().size() == 0) return;
-//		YearMonthHistoryItem lastestHistory = healthInsurance.getHistory().get(0);
-//		healthInsurance.remove(lastestHistory);
-//		if (healthInsurance.getHistory().size() > 0){
-//			lastestHistory = healthInsurance.getHistory().get(0);
-//			healthInsurance.changeSpan(healthInsurance.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
-//		}
-//		healthInsuranceFeeRateHistoryRepository.remove(healthInsurance);
-//		bonusHealthInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
-//		healthInsuranceMonthlyFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = bonusHealthInsuranceRateRepository.getHealthInsuranceHistoryByOfficeCode(officeCode);
+		if (!opt_healthInsurance.isPresent()) {
+			return;
+		}
+		HealthInsuranceFeeRateHistory healthInsurance = opt_healthInsurance.get();
+		if (healthInsurance.getHistory().size() == 0) return;
+		YearMonthHistoryItem lastestHistory = healthInsurance.getHistory().get(0);
+		healthInsurance.remove(lastestHistory);
+		if (healthInsurance.getHistory().size() > 0){
+			lastestHistory = healthInsurance.getHistory().get(0);
+			healthInsurance.changeSpan(healthInsurance.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
+		}
+		this.updatePreviousHistory(officeCode, lastestHistory);
+		bonusHealthInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+		healthInsuranceMonthlyFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 	}
+
+	private void updatePreviousHistory (String officeCode, YearMonthHistoryItem yearMonth) {
+        bonusHealthInsuranceRateRepository.updatePreviousHistory(officeCode, yearMonth);
+        healthInsuranceMonthlyFeeRepository.updatePreviousHistory(officeCode, yearMonth);
+    }
 	
 	public boolean checkHealthInsuranceGradeFeeChange (String officeCode, BonusHealthInsuranceRate bonusHealthInsuranceRate,
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem){
