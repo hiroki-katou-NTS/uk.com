@@ -48,6 +48,9 @@ public class OverTimeOfMonthly implements Cloneable {
 	private TimeMonthWithCalculation totalTransferOverTime;
 	/** 集計残業時間 */
 	private Map<OverTimeFrameNo, AggregateOverTime> aggregateOverTimeMap;
+
+	/** 事前申請時間を足したかどうか */
+	private boolean isAddedBeforeApp;
 	
 	/**
 	 * コンストラクタ
@@ -200,6 +203,7 @@ public class OverTimeOfMonthly implements Cloneable {
 				companyId, companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), false);
 		
 		// 残業・振替のループ
+		this.isAddedBeforeApp = false;
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
 		
 			// 残業枠時間のループ処理
@@ -318,6 +322,9 @@ public class OverTimeOfMonthly implements Cloneable {
 							legalOverTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							overTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
+					}
 					break;
 						
 				case TRANSFER:
@@ -349,6 +356,9 @@ public class OverTimeOfMonthly implements Cloneable {
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
 					timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameTime.getOverTimeWork());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
+					}
 					if (timeAfterCalc.lessThanOrEqualTo(overTimeFrameTime.getOverTimeWork().getTime())){
 						timeAfterCalc = new AttendanceTime(0);
 					}
@@ -376,6 +386,9 @@ public class OverTimeOfMonthly implements Cloneable {
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
 					timeSeriesWork.addOverTimeInOverTime(overTimeFrameTime.getOverTimeWork());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInOverTime(overTimeFrameTime.getBeforeApplicationTime());
+					}
 					break;
 				case TRANSFER:
 					timeSeriesWork.addTransferTimeInOverTime(overTimeFrameTime.getTransferTime());
@@ -384,6 +397,7 @@ public class OverTimeOfMonthly implements Cloneable {
 				break;
 			}
 		}
+		this.isAddedBeforeApp = true;
 	
 		return timeAfterCalc;
 	}

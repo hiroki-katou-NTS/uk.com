@@ -197,7 +197,11 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		return lstApp.stream().sorted((a,b) ->{
 			Integer rs = a.getAppDate().compareTo(b.getAppDate());
 			if (rs == 0) {
-				return  a.getInputDate().compareTo(b.getInputDate());
+				Integer sortInputDate = a.getInputDate().toDate().compareTo(b.getInputDate().toDate());
+				if(sortInputDate == 0) {
+					return a.getPrePostAtr().compareTo(b.getPrePostAtr());
+				}
+				return sortInputDate;
 			}
 			return rs;			
 		}).collect(Collectors.toList());

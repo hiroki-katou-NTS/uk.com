@@ -15,7 +15,7 @@ module nts.uk.at.view.kal003.share.model {
 //            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
             new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
 //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
-            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
+            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')), 
 //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
 //            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
@@ -195,7 +195,7 @@ module nts.uk.at.view.kal003.share.model {
             })
         }
 
-        // Open Dialog CDL024
+        // Open Dialog  CDL024
         private openCDL024Dialog() {
             let self = this;
             setShared("CDL024", { codeList: self.targetBusinessType() });
@@ -328,19 +328,32 @@ module nts.uk.at.view.kal003.share.model {
         rowId: KnockoutObservable<number>;//common
         conditions: KnockoutObservableArray<ExtractCondition>;     
         currentConditions: KnockoutObservableArray<ExtractCondition>;  
+        init: boolean;
         constructor(param: any) {
             let self = this;
             self.typeCheckItem=ko.observable(undefined);    
             self.currentConditions = ko.observableArray([]);    
             self.conditions = ko.observableArray([]);
+            self.init = true;
             self.typeCheckItem.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
                 let current = (_.filter(self.conditions(), (con: ExtractCondition) => {
                     con.haveInput(v);
                     return con.typeCheckItem() === v;
                 }));
+                if(!self.init){
+                    current[0].clearInput();
+                    current[0].group1().lstErAlAtdItemCon()[0].countableAddAtdItems([]); 
+                    current[0].group1().lstErAlAtdItemCon()[0].countableSubAtdItems([]);
+                    current[0].selectText("");
+                }else{
+                    if(current[0].inputs()[1].enable){
+                        current[0].inputs()[1].value(null);                        
+                    }
+                }
                 self.currentConditions(current);
-            });
+                self.init = false;
+            }); 
             if(!nts.uk.util.isNullOrUndefined(param)){
                 self.errorAlarmCheckID = ko.observable(param.errorAlarmCheckID || '');
                 self.sortBy = ko.observable(param.sortBy || 0);
@@ -481,6 +494,14 @@ module nts.uk.at.view.kal003.share.model {
             return x;
         }
         
+        clearInput(){
+            let self = this;
+            self.inputs(_.map(self.inputs(), (x) => {
+                let js = ko.mapping.toJS(x);
+                js.value = null;
+                return InputModel.clone(js); 
+            }));
+        }
         
         setupScrible(){
             let self = this;

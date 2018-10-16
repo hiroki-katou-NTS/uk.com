@@ -56,6 +56,8 @@ public class DailyPerformanceCorrectionDto {
 	private List<DailyPerformanceAuthorityDto> authorityDto;
 
 	private String employmentCode;
+	
+	private Integer closureId;
 
 	// A13_1 コメント
 	private String comment;
@@ -92,6 +94,8 @@ public class DailyPerformanceCorrectionDto {
 	
 	private boolean showErrorDialog;
 	
+	private List<DCMessageError> errors;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
@@ -106,6 +110,7 @@ public class DailyPerformanceCorrectionDto {
 		this.showTighProcess = false;
 		this.lstCellStateCalc = new ArrayList<>();
 		this.indentityMonthResult = new IndentityMonthResult(false, false, true);
+		this.errors = new ArrayList<>();
 	}
 
 	/** Check if employeeId is login user */
@@ -321,6 +326,6 @@ public class DailyPerformanceCorrectionDto {
 	public void checkShowTighProcess(int displayMode, boolean userLogin){
 		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
 		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
-		indentityMonthResult.setHideAll(displayMode != 0 || !userLogin || !identityProcessDto.isUseIdentityOfMonth());
+		indentityMonthResult.setHideAll(displayMode != 0);
 	}
 }

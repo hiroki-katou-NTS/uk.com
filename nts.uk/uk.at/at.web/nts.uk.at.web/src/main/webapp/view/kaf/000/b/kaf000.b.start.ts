@@ -31,6 +31,9 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
     __viewContext['viewModel'] = screenModel;
     screenModel.start(moment.utc().format("YYYY/MM/DD")).done(function() {
         __viewContext.bind(screenModel);
+        if (currentApp.appType == 10) {
+            setTimeout(function() { $("#fixed-table").ntsFixedTable({ width: 100 }); }, 500);
+        }
     });
 }
 

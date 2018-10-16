@@ -86,6 +86,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     $('.absWkingTime').ntsError("clear");
                 }
             });
+            
+            
         }
 
         genSaveCmd(): common.ISaveHolidayShipmentCommand {
@@ -239,7 +241,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     }
 
                 }
-                setTimeout(function(){ $("#fixed-table").ntsFixedTable({ width: 100 }); }, 500);
+                
                 
             }
             self.firstLoad(false);
