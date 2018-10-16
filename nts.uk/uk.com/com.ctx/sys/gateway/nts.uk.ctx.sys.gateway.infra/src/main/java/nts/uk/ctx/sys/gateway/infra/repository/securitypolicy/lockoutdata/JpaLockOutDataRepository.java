@@ -82,6 +82,11 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	@Override
 	public void remove(List<String> usersID) {
+		
+		if(CollectionUtil.isEmpty(usersID)) {
+			return;
+		}
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -94,7 +99,6 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			em.createQuery(cq).executeUpdate();
 		});
-
 	}
 
 	/* (non-Javadoc)

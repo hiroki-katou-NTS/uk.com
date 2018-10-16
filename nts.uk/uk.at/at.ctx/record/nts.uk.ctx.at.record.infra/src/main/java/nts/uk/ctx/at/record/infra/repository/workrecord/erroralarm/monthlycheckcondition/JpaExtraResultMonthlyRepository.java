@@ -24,12 +24,13 @@ public class JpaExtraResultMonthlyRepository extends JpaRepository implements Ex
 	@Override
 	public List<ExtraResultMonthly> getExtraResultMonthlyByListID(List<String> listErrorAlarmCheckID) {
 		List<ExtraResultMonthly> data = new ArrayList<>();
-		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList ->{
-			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtExtraResultMonthly.class)
-					.setParameter("listErrorAlarmCheckID", listErrorAlarmCheckID).getList(c->c.toDomain())
-					);
-			
-		});
+		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subIdList -> {
+					data.addAll(this.queryProxy()
+							.query(SELECT_BY_LIST_ID, KrcmtExtraResultMonthly.class)
+							.setParameter("listErrorAlarmCheckID", listErrorAlarmCheckID)
+							.getList(c -> c.toDomain()));
+				});
 		return data;
 	}
 

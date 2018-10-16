@@ -26,11 +26,12 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulMonAlarmsByListID(List<String> listErrorAlarmCheckID) {
 		List<KrcmtMulMonAlarmCheck> data = new ArrayList<>();
-		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList ->{
-			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtMulMonAlarmCheck.class)
-					.setParameter("listErrorAlarmCheckID", subIdList).getList()
-					);
-		});
+		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subIdList -> {
+					data.addAll(
+							this.queryProxy().query(SELECT_BY_LIST_ID, KrcmtMulMonAlarmCheck.class)
+									.setParameter("listErrorAlarmCheckID", subIdList).getList());
+				});
 		data.sort(Comparator.comparing(KrcmtMulMonAlarmCheck::getInsDate));
 		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}

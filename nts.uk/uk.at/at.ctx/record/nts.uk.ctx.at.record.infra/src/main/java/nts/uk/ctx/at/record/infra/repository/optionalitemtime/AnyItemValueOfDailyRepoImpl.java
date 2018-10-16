@@ -117,7 +117,8 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 			result.addAll(tQuery
 					.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
+					.getList().stream().filter(c -> p.get(c.getKrcdtDayTimePk().employeeID).contains(c.getKrcdtDayTimePk().generalDate))
+					.map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
 		});
 		return result;
 	}
