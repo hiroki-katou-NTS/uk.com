@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
+    import validation = nts.uk.ui.validation;
 
     export class ScreenModel {
 
@@ -34,11 +35,20 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
         disExceptionFormula: KnockoutObservable<string> = ko.observable('');
 
+        validateExceptionFormula = new validation.NumberValidator("", "ExceptionFormula", { required: true });
         constructor() {
             let self = this;
 
             self.exceptionFormula.subscribe(x => {
-                self.disExceptionFormula(getText('QMM018_8',[x]));
+                if(x != 0){
+                    let check = self.validateExceptionFormula.validate(x);
+                    if(check.isValid){
+                        self.disExceptionFormula(getText('QMM018_8', [x]));
+                    }
+                }
+                else{
+                    self.disExceptionFormula(getText('QMM018_8', [x]));
+                }
             });
 
             self.fractionProcessingAtr(getDaysFractionProcessing());
@@ -73,9 +83,9 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             self.getAllData();
         }
 
-        getAllData(): JQueryPromise<any>{
+        getAllData(): JQueryPromise<any> {
             let self = this,
-            dfd = $.Deferred();
+                dfd = $.Deferred();
             service.getStatemetItemData().done(function (dataDisplay: <IDisplayData>) {
                 if (dataDisplay) {
                     self.displayData(new DisplayData(dataDisplay));
@@ -111,12 +121,12 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
         registration() {
             let self = this;
-            if(self.selectedAttendanceDays() == 0 ){
+            if (self.selectedAttendanceDays() == 0) {
                 self.displayData().averageWageCalculationSet().daysFractionProcessing(null);
             }
             self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
             self.displayData().lstStatemetPaymentItem(self.lstTargetWageItem());
-            if(self.selectedAttendanceDays() ==  1){
+            if (self.selectedAttendanceDays() == 1) {
                 self.displayData().lstStatemetAttendanceItem()[0];
             }
             else {
@@ -128,8 +138,8 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                 block.invisible();
                 // create
                 service.registration(ko.toJS(data)).done(() => {
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        self.getAllData().done(function() {
+                    dialog.info({messageId: "Msg_15"}).then(() => {
+                        self.getAllData().done(function () {
                         });
                     });
                 }).fail(function (error) {
@@ -154,8 +164,14 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             nts.uk.ui.windows.sub.modal('../b/index.xhtml').onClosed(() => {
                 let setting = getShared("QMM018_B_SETTING");
 
-                if(setting.isSetting == true) {
-                    self.lstTargetWageItem(setting.statementListSelected);
+                if (setting.isSetting == true) {
+                    let list = setting.statementListSelected;
+                    list.sort(function (a, b) {
+                        if (a.itemNameCd < b.itemNameCd) return -1;
+                        if (a.itemNameCd > b.itemNameCd) return 1;
+                        return 0;
+                    });
+                    self.lstTargetWageItem(list);
 
                     let lstname = self.lstTargetWageItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
@@ -179,8 +195,14 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             nts.uk.ui.windows.sub.modal('../b/index.xhtml').onClosed(() => {
                 let setting = getShared("QMM018_B_SETTING");
 
-                if(setting.isSetting == true) {
-                    self.lstTargetWorkingDaysItem(setting.statementListSelected);
+                if (setting.isSetting == true) {
+                    let list = setting.statementListSelected;
+                    list.sort(function (a, b) {
+                        if (a.itemNameCd < b.itemNameCd) return -1;
+                        if (a.itemNameCd > b.itemNameCd) return 1;
+                        return 0;
+                    });
+                    self.lstTargetWorkingDaysItem(list);
 
                     let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
