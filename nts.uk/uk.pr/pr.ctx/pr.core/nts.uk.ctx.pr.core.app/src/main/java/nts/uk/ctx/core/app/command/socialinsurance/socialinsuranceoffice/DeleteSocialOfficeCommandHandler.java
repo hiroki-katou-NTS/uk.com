@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistory;
-import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
@@ -46,9 +45,6 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 	
 	@Inject
 	private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
-	
-	@Inject
-	private ContributionRateHistoryRepository contributionRateHistoryRepository;
 	
 	@Inject
 	private ContributionRateRepository contributionRateRepository;
@@ -94,15 +90,12 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 		}
 
 		// ドメインモデル「拠出金率履歴」を全て取得する
-		Optional<ContributionRateHistory> dataContri = contributionRateHistoryRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
+		Optional<ContributionRateHistory> dataContri = contributionRateRepository.getContributionRateHistoryByOfficeCode(command.getCode());
 		if(dataContri != null &&  dataContri.isPresent()) {
 			List<String> historyIds = dataContri.get().getHistory().stream().map(x -> x.identifier()).collect(Collectors.toList());
 
 			// ドメインモデル「拠出金率」を削除する
 			contributionRateRepository.deleteByHistoryIds(historyIds,command.getCode());
-
-			// ドメインモデル「拠出金率履歴」を削除する
-			contributionRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), command.getCode());
 
 		}
 
