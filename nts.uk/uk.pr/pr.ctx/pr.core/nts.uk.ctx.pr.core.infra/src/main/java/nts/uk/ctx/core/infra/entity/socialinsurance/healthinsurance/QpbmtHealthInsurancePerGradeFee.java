@@ -122,4 +122,6 @@ public class QpbmtHealthInsurancePerGradeFee extends UkJpaEntity implements Seri
                 x.getInsuredBurden().getHealthInsurancePremium().v(),
                 x.getInsuredBurden().getSpecInsurancePremium().v())).collect(Collectors.toList());
     }
+
+
 }

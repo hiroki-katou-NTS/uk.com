@@ -96,16 +96,20 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 
 	@Override
 	public void updateGraFee(HealthInsuranceMonthlyFee domain) {
-        Optional<QpbmtHealthInsuranceMonthlyFee> entity = this.queryProxy().find(domain.getHistoryId(), QpbmtHealthInsuranceMonthlyFee.class);
+        Optional<QpbmtHealthInsuranceMonthlyFee> entity = this.queryProxy().query(GET_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID,QpbmtHealthInsuranceMonthlyFee.class)
+                .setParameter("historyId",domain.getHistoryId())
+                .getSingle();
 		if (!entity.isPresent()) return;
         this.commandProxy().updateAll(this.toDomainFromOldData(domain, entity.get()));
 	}
 	
 	@Override
 	public void insertGraFee(HealthInsuranceMonthlyFee domain) {
-        Optional<QpbmtHealthInsuranceMonthlyFee> entity = this.queryProxy().find(domain.getHistoryId(), QpbmtHealthInsuranceMonthlyFee.class);
+        Optional<QpbmtHealthInsuranceMonthlyFee> entity = this.queryProxy().query(GET_HEALTH_INSURANCE_MONTHLY_BY_HISTORY_ID,QpbmtHealthInsuranceMonthlyFee.class)
+                .setParameter("historyId", domain.getHistoryId())
+                .getSingle();
         if (!entity.isPresent()) return;
-        this.commandProxy().updateAll(this.toDomainFromOldData(domain, entity.get()));
+        this.commandProxy().insertAll(this.toDomainFromOldData(domain, entity.get()));
 	}
 
 	@Override

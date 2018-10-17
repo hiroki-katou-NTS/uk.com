@@ -13,4 +13,5 @@ public interface HealthInsuranceStandardMonthlyRepository {
      * @return Optional<HealthInsuranceStandardMonthly>
      */
     Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyByStartYearMonth(int targetStartYm);
+    Optional<MonthlyHealthInsuranceCompensation> getHealthInsuranceStandardMonthlyByStartYearMonthCom(int targetStartYm);
 }

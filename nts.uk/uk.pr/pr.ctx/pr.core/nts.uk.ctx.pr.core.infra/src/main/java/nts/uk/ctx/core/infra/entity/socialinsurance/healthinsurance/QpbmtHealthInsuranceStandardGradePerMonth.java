@@ -12,7 +12,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardGradePerMonth;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.MonthlyHealthInsuranceCompensation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -32,20 +34,44 @@ public class QpbmtHealthInsuranceStandardGradePerMonth extends UkJpaEntity imple
     public QpbmtHealthInsuranceStandardGradePerMonthPk healthStdGraMonPk;
 
     /**
+     * 開始年月
+     */
+    @Basic(optional = false)
+    @Column(name = "TARGET_START_YM")
+    public int targetStartYm;
+
+    /**
+     * 終了年月
+     */
+    @Basic(optional = false)
+    @Column(name = "TARGET_END_YM")
+    public int targetEndYm;
+
+    /**
      * 標準月額
      */
     @Basic(optional = false)
     @Column(name = "STANDARD_MONTHLY_FEE")
-    public long standardMonthlyFee;
+    public int standardMonthlyFee;
+
+    /**
+     * 報酬月額下限
+     */
+    @Basic(optional = false)
+    @Column(name = "REWARD_MONTHLY_LOWER_LIMIT")
+    public int rewardMonthlyLowerLimit;
+
+    /**
+     * 報酬月額上限
+     */
+    @Basic(optional = false)
+    @Column(name = "REWARD_MONTHLY_UPPER_LIMIT")
+    public int rewardMonthlyUpperLimit;
 
     @Override
-    protected Object getKey() {
+    protected Object getKey()
+    {
         return healthStdGraMonPk;
     }
 
-    public static List<QpbmtHealthInsuranceStandardGradePerMonth> toEntity(HealthInsuranceStandardMonthly domain) {
-        return domain.getStandardGradePerMonth().stream().map(x -> new QpbmtHealthInsuranceStandardGradePerMonth(
-                new QpbmtHealthInsuranceStandardGradePerMonthPk(domain.getTargetPeriod().start().v(), domain.getTargetPeriod().end().v(), x.getHealthInsuranceGrade()),
-                x.getStandardMonthlyFee())).collect(Collectors.toList());
-    }
 }

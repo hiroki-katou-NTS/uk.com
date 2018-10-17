@@ -32,20 +32,43 @@ public class QpbmtWelfarePensionStandardGradePerMonth extends UkJpaEntity implem
     public QpbmtWelfarePensionStandardGradePerMonthPk penStdGraMonPk;
 
     /**
+     * 開始年月
+     */
+    @Basic(optional = false)
+    @Column(name = "TARGET_START_YM")
+    public int targetStartYm;
+
+    /**
+     * 終了年月
+     */
+    @Basic(optional = false)
+    @Column(name = "TARGET_END_YM")
+    public int targetEndYm;
+
+    /**
      * 標準月額
      */
     @Basic(optional = false)
     @Column(name = "STANDARD_MONTHLY_FEE")
-    public long standardMonthlyFee;
+    public int standardMonthlyFee;
+
+    /**
+     * 報酬月額下限
+     */
+    @Basic(optional = false)
+    @Column(name = "REWARD_MONTHLY_LOWER_LIMIT")
+    public int rewardMonthlyLowerLimit;
+
+    /**
+     * 報酬月額上限
+     */
+    @Basic(optional = false)
+    @Column(name = "REWARD_MONTHLY_UPPER_LIMIT")
+    public int rewardMonthlyUpperLimit;
 
     @Override
-    protected Object getKey() {
+    protected Object getKey()
+    {
         return penStdGraMonPk;
-    }
-
-    public static List<QpbmtWelfarePensionStandardGradePerMonth> toEntity(WelfarePensionStandardMonthlyFee domain) {
-        return domain.getStandardMonthlyPrice().stream().map(x -> new QpbmtWelfarePensionStandardGradePerMonth(
-                new QpbmtWelfarePensionStandardGradePerMonthPk(domain.getTargetPeriod().start().v(), domain.getTargetPeriod().end().v(), x.getWelfarePensionGrade()),
-                x.getStandardMonthlyFee())).collect(Collectors.toList());
     }
 }
