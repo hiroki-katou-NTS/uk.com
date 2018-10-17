@@ -190,9 +190,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 
 					/* 早退時間 */
-					try {
-						val statement = this.connection().prepareStatement(
-								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?");
+					try (val statement = this.connection().prepareStatement(
+								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?")) {
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();

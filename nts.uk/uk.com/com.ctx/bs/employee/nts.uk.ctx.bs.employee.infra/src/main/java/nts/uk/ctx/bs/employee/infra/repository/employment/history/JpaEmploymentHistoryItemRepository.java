@@ -75,8 +75,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		builder.append(" ON h.HIST_ID = i.HIST_ID AND h.SID = i.SID AND a.CODE = i.EMP_CD");
 		builder.append(" WHERE a.CID = ? AND h.SID = ? ");
 		builder.append(" AND h.START_DATE <= ? AND h.END_DATE >= ?");
-		try {
-			val statement = this.connection().prepareStatement(builder.toString());
+		try (val statement = this.connection().prepareStatement(builder.toString())) {
 			statement.setString(1, companyId);
 			statement.setString(2, sid);
 			statement.setDate(3, Date.valueOf(date.localDate()));

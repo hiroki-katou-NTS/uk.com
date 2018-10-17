@@ -83,19 +83,19 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		try {
-			val timeLeavingWorkStatement = this.connection().prepareStatement(
-					"delete from KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
+		try (val timeLeavingWorkStatement = this.connection().prepareStatement(
+					"delete from KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?")) {
 			timeLeavingWorkStatement.setString(1, employeeId);
 			timeLeavingWorkStatement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			timeLeavingWorkStatement.setInt(3, 0);
 			timeLeavingWorkStatement.execute();
 			
-			val statement = this.connection().prepareStatement(
-					"delete from KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?");
-			statement.setString(1, employeeId);
-			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
-			statement.execute();
+			try (val statement = this.connection().prepareStatement(
+					"delete from KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?")) {
+				statement.setString(1, employeeId);
+				statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
+				statement.execute();
+			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -221,9 +221,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	private KrcdtDaiLeavingWork getDailyLeaving(String employee, GeneralDate date) {
-		try {
-			val statement = this.connection().prepareStatement(
-					"select * FROM KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?");
+		try (val statement = this.connection().prepareStatement(
+					"select * FROM KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?")) {
 			statement.setString(1, employee);
 			statement.setDate(2, Date.valueOf(date.localDate()));
 			Optional<KrcdtDaiLeavingWork> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
@@ -252,9 +251,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	}
 	
 	private List<KrcdtTimeLeavingWork> getTimeLeavingWork(String employee, GeneralDate date) {
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(
-					"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
+		try (PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?")) {
 
 			statement.setString(1, employee);
 			statement.setDate(2, Date.valueOf(date.localDate()));

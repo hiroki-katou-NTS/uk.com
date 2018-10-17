@@ -320,29 +320,30 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	@SneakyThrows
 	public Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate) {
 
-		PreparedStatement statement = this.connection().prepareStatement(
+		try (PreparedStatement statement = this.connection().prepareStatement(
 				"select * from BSYMT_AFF_JOB_HIST h"
 				+ " inner join BSYMT_AFF_JOB_HIST_ITEM i"
 				+ " on h.HIST_ID = i.HIST_ID"
 				+ " where h.SID = ?"
 				+ " and h.START_DATE <= ?"
-				+ " and h.END_DATE >= ?");
-		
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(baseDate.localDate()));
-		statement.setDate(3, Date.valueOf(baseDate.localDate()));
-		
-		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			return new SingleHistoryItem(
-					rec.getString("SID"),
-					rec.getString("HIST_ID"),
-					new DatePeriod(
-							rec.getGeneralDate("START_DATE"),
-							rec.getGeneralDate("END_DATE")),
-					rec.getString("JOB_TITLE_ID"),
-					rec.getString("NOTE")
-					);
-		});
+				+ " and h.END_DATE >= ?")) {
+			
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(baseDate.localDate()));
+			statement.setDate(3, Date.valueOf(baseDate.localDate()));
+			
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				return new SingleHistoryItem(
+						rec.getString("SID"),
+						rec.getString("HIST_ID"),
+						new DatePeriod(
+								rec.getGeneralDate("START_DATE"),
+								rec.getGeneralDate("END_DATE")),
+						rec.getString("JOB_TITLE_ID"),
+						rec.getString("NOTE")
+						);
+			});
+		}
 	}
 
 	// request list 515

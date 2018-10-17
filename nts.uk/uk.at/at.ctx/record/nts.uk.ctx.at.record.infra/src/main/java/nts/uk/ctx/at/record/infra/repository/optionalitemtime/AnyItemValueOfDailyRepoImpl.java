@@ -173,12 +173,13 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	
 	@SneakyThrows
 	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
-		val statement = this.connection().prepareStatement(
+		try (val statement = this.connection().prepareStatement(
 				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
-				+ " WHERE SID = ? AND YMD = ?");
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(baseDate.localDate()));
-		statement.executeUpdate();
+				+ " WHERE SID = ? AND YMD = ?")) {
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(baseDate.localDate()));
+			statement.executeUpdate();
+		}
 	}
 	
 	@Override
