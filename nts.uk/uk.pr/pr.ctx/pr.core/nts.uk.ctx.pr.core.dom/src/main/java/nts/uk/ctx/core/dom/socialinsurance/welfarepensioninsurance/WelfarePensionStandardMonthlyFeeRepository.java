@@ -15,4 +15,6 @@ public interface WelfarePensionStandardMonthlyFeeRepository {
      * @return 厚生年金標準月額
      */
     Optional<WelfarePensionStandardMonthlyFee> getWelfarePensionStandardMonthlyFeeByStartYearMonth(int startYearMonth);
-}
+    Optional<MonthlyScopeOfWelfarePensionCompensation> getWelfarePensionStandardMonthlyFeeByStartYearMonthCom(int startYearMonth);
+
+    }

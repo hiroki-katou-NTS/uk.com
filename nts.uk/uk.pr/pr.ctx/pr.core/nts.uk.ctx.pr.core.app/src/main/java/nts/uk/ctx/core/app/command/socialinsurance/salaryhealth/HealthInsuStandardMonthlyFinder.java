@@ -49,8 +49,8 @@ public class HealthInsuStandardMonthlyFinder {
 					.collect(Collectors.toList());
 
 		// ドメインモデル「健康保険報酬月額範囲」を取得する
-		Optional<MonthlyHealthInsuranceCompensation> dataMonth = monthlyHealthInsuranceCompensationRepository
-				.findByDate(date);
+		Optional<MonthlyHealthInsuranceCompensation> dataMonth = healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonthCom(date);
+
 		if (dataMonth.isPresent())
 			healthInsuranceGradePerRewardMonthlyRangesDtos = dataMonth.get()
 					.getHealthInsuranceGradePerRewardMonthlyRange().stream()
