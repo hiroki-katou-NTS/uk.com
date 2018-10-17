@@ -184,7 +184,7 @@
                                                 <!-- BA2-2 -->
                                                 <button id="btnSettingBA2_2" tabindex="4" data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                 <!-- BA2-3 -->
-                                                <input  
+                                                <input  id="display-target-item_category5"
                                                 class="display-list-label" data-bind="ntsTextEditor: {
                                                 name:'#[KAL003_59]',
                                          value: $parent.displayAttendanceItemSelections_BA2_3,
@@ -670,14 +670,15 @@
                                                     <div tabindex ="3" style="margin-left: 15px;"  class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listSpecialholidayframe,
-                                                optionsValue: 'specialHdFrameNo',
+                                                optionsValue: 'specialHolidayCode',
                                                 visibleItemsCount: 5,
                                                 value: listItemID,
-                                                optionsText: 'specialHdFrameName',
+                                                optionsText: 'specialHolidayName',
                                                 editable: false,
                                                 enable: checkVacation() === 6,
                                                 columns: [
-                                                    { prop: 'specialHdFrameName', length: 16 }
+                                                	{ prop: 'specialHolidayCode', length: 3 },
+                                                    { prop: 'specialHolidayName', length: 16 }
                                                 ]}">
                                                 <!-- enable: checkVacation() === 2 &amp;&amp; checkVacation() !== 3 &amp;&amp; checkVacation() !== 5 &amp;&amp; checkVacation() !== 6 &amp;&amp; checkVacation() !== 7, -->
                                                     </div>
@@ -1046,7 +1047,11 @@
 									tcWM.AVERAGE_TIME, tcWM.AVERAGE_TIMES,
 									tcWM.AVERAGE_AMOUNT, tcWM.CONTINUOUS_TIME,
 									tcWM.CONTINUOUS_TIMES, tcWM.CONTINUOUS_AMOUNT,
-									tcWM.NUMBER_TIME, tcWM.NUMBER_TIMES, tcWM.NUMBER_AMOUNT
+									tcWM.NUMBER_TIME, tcWM.NUMBER_TIMES, tcWM.NUMBER_AMOUNT,
+									tcWM.DAYS,
+									tcWM.AVERAGE_DAYS,
+									tcWM.CONTINUOUS_DAYS,
+									tcWM.NUMBER_DAYS
 								].indexOf(typeCheckItem()) > -1"> 
 							<div id="div_check_conditions_ba2">
 								<table>
@@ -1081,7 +1086,8 @@
 											<!-- B1_58, B1_59 -->
 											<com:ko-if bind="[tcWM.TIME, tcWM.TIMES, tcWM.AMOUNT,
 														tcWM.AVERAGE_TIME, tcWM.AVERAGE_TIMES,
-														tcWM.AVERAGE_AMOUNT
+														tcWM.AVERAGE_AMOUNT,
+														tcWM.DAYS, tcWM.AVERAGE_DAYS
 														].indexOf(typeCheckItem()) > -1"> 
 										 		<div id="comBoxOperator" class="combo-box" style = "width: 280px !important; "
 										 			tabindex = "3"
@@ -1104,7 +1110,9 @@
 																tcWM.CONTINUOUS_AMOUNT,
 																tcWM.NUMBER_TIME,
 																tcWM.NUMBER_TIMES, 
-																tcWM.NUMBER_AMOUNT
+																tcWM.NUMBER_AMOUNT,
+																tcWM.CONTINUOUS_DAYS, 
+																tcWM.NUMBER_DAYS
 															].indexOf(typeCheckItem()) > -1"> 
 										 		<div id="comBoxOperator" class="combo-box" style = "width: 280px !important; "
 										 			tabindex = "3"
@@ -1242,6 +1250,22 @@
             												}),
                                                 		constraint: 'CheckedAmountValue'}" />
 											</com:ko-if>
+											<com:ko-if bind="[tcWM.DAYS, tcWM.CONTINUOUS_DAYS,
+													tcWM.AVERAGE_DAYS, tcWM.NUMBER_DAYS
+													].indexOf(typeCheckItem()) > -1"> 
+												<!--startValue 日数, 連続日数, 平均日数, 該当月数　日数 -->
+												<input id="startValue" class="value-input need-check"
+													data-bind="ntsNumberEditor: {name: '#[KAL003_64]', 
+															value: $vm.comparisonRange().minTimesValueDay, 
+															required: true, 
+															constraint: 'CheckedTimesValueDay',
+															option: new nts.uk.ui.option.NumberEditorOption({
+		                											grouplength: 0,
+		                											decimallength: 1,
+		                											placeholder: '',
+		                											width : '100'
+	            												})}" />
+											 </com:ko-if>
 										</td>
 										<!-- C1_61 -->
 										<td class="pad_left_5px">
@@ -1253,7 +1277,7 @@
 		                                               	name: '#[KAL003_65]',
 		                                               	value: $vm.comparisonRange().maxTimeValue,
 		                                                constraint: 'CheckedTimeDuration',
-		                                                required: $vm.enableComparisonMaxValue(),
+		                                                required: $vm.enableComparisonMaxValue,
 		                                                enable: $vm.enableComparisonMaxValue(),
 		                                                mode: 'time',
 		                                             	inputFormat: 'time'}" />
@@ -1266,7 +1290,7 @@
 		                                                name: '#[KAL003_65]',
 		                                                value: $vm.comparisonRange().maxTimesValue, 
 		                                                constraint: 'CheckedTimesValue',
-		                                                required: $vm.enableComparisonMaxValue(),
+		                                                required: $vm.enableComparisonMaxValue,
 		                                                enable: $vm.enableComparisonMaxValue()}" />
 											</com:ko-if> 
 											<com:ko-if bind="[tcWM.AMOUNT].indexOf(typeCheckItem()) > -1">
@@ -1283,7 +1307,7 @@
                 											placeholder: '',
                 											width : '100'
             												}),
-		                                                required: $vm.enableComparisonMaxValue(),
+		                                                required: $vm.enableComparisonMaxValue,
 		                                                enable: $vm.enableComparisonMaxValue()}" />
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_TIME].indexOf(typeCheckItem()) > -1">
@@ -1294,7 +1318,7 @@
 		                                               	name: '#[KAL003_65]',
 		                                               	value: $vm.comparisonRange().maxTimeValue,
 		                                                constraint: 'CheckedTimeDuration',
-		                                                required: $vm.enableComparisonMaxValue(),
+		                                                required: $vm.enableComparisonMaxValue,
 		                                                enable: $vm.enableComparisonMaxValue(),
 		                                                mode: 'time',
 		                                             	inputFormat: 'time'}" />
@@ -1306,12 +1330,13 @@
 													data-bind="ntsNumberEditor: { 
 				                                        name: '#[KAL003_65]', 
 				                                        value: $vm.comparisonRange().maxTimesValue, 
-		                                                required: $vm.enableComparisonMaxValue(),
+		                                                required: $vm.enableComparisonMaxValue,
 		                                                enable: $vm.enableComparisonMaxValue() }" />
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_AMOUNT].indexOf(typeCheckItem()) > -1">
 												<!--平均金額-->
-												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
+												<input id="endValue" class="value-input needcheck" 
+												style = "width : 100px ! important"
 												tabindex = "5"
 													data-bind="ntsNumberEditor: { 
 				                                        name: '#[KAL003_65]',
@@ -1322,8 +1347,25 @@
                 											placeholder: ''
             												}),
 				                                        value: $vm.comparisonRange().maxAmountOfMoneyValue, 
-		                                                required: $vm.enableComparisonMaxValue(),
+		                                                required: $vm.enableComparisonMaxValue,
 		                                                enable:$vm.enableComparisonMaxValue() }" />
+</com:ko-if> <com:ko-if
+												bind="[tcWM.AVERAGE_DAYS,tcWM.DAYS ].indexOf(typeCheckItem()) > -1">
+												<!--endValue 日数, 該当月数　日数-->
+												<input id="endValue" class="value-input need-check"
+													style="width: 100px ! important; margin-left: 5px"
+													data-bind="ntsNumberEditor: {
+								 						name: '#[KAL003_65]', 
+								 						value: $vm.comparisonRange().maxTimesValueDay, 
+														enable: $vm.enableComparisonMaxValue(),
+														required: $vm.enableComparisonMaxValue,
+														constraint: 'CheckedTimesValueDay',
+														option: new nts.uk.ui.option.NumberEditorOption({
+						                											grouplength: 0,
+						                											decimallength: 1,
+						                											placeholder: ''
+					            												})
+													}" />
 											</com:ko-if>
 										</td>
 									</tr>
@@ -1335,7 +1377,8 @@
 						<!-- 連続時間、連続回数、連続金額 6,7,8 -->
 						<com:ko-if bind="[tcWM.CONTINUOUS_TIME,
 								tcWM.CONTINUOUS_TIMES,
-								tcWM.CONTINUOUS_AMOUNT].indexOf(typeCheckItem()) > -1">
+								tcWM.CONTINUOUS_AMOUNT,
+								tcWM.CONTINUOUS_DAYS].indexOf(typeCheckItem()) > -1">
 			                <div id="div_continuous_period_ba3">
 								<table>
 									<colgroup>
@@ -1355,7 +1398,7 @@
 												tabindex = "6"
 													data-bind="ntsNumberEditor: {
 					                                     name: '#[KAL003_61]',
-					                                     value: continuonsMonths,
+					                                     value: continuousMonths,
 					                                     required: true,
 					                                     constraint: 'CheckedNumberMonthsValue',
 					                                     enable: true,
@@ -1372,7 +1415,8 @@
 			            </com:ko-if>
 					    <com:ko-if bind="[tcWM.NUMBER_TIME,
 								tcWM.NUMBER_TIMES,
-								tcWM.NUMBER_AMOUNT].indexOf(typeCheckItem()) > -1">
+								tcWM.NUMBER_AMOUNT,
+								tcWM.NUMBER_DAYS].indexOf(typeCheckItem()) > -1">
 							<div id="div_check_conditions_ba9">
 								<table>
 									<colgroup>

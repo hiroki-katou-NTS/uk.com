@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnnLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
@@ -33,7 +34,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 
@@ -70,6 +71,9 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	@Inject
 	private MonthlyChildCareRemainFinder childCareFinder;
 	
+	@Inject 
+	private AgreementTimeOfManagePeriodFinder agreementFinder; 
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public MonthlyRecordWorkDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
@@ -90,6 +94,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		dto.setRemarks(remarksFinder.finds(employeeId, yearMonth, closureId, closureDate));
 		dto.setCare(careFinder.find(employeeId, yearMonth, closureId, closureDate));
 		dto.setChildCare(childCareFinder.find(employeeId, yearMonth, closureId, closureDate));
+		dto.setAgreementTime(agreementFinder.find(employeeId, yearMonth, closureId, closureDate));
 		return dto;
 	}
 
@@ -107,7 +112,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		return find(employeeId, Arrays.asList(yearMonth));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId,
@@ -123,6 +128,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		List<MonthlyRemarksDto> remarks = remarksFinder.find(employeeId, yearMonth);
 		List<MonthlyCareHdRemainDto> care = careFinder.find(employeeId, yearMonth);
 		List<MonthlyChildCareHdRemainDto> childCare = childCareFinder.find(employeeId, yearMonth);
+		List<AgreementTimeOfManagePeriodDto> agreement = agreementFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());
@@ -140,8 +146,14 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 			dto.setRemarks(filterItems(remarks, a));
 			dto.setCare(filterItem(care, a));
 			dto.setChildCare(filterItem(childCare, a));
+			dto.setAgreementTime(filterItemX(agreement, a));
 			return dto;
 		}).collect(Collectors.toList());
+	}
+
+	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> T filterItemX(List<T> att, U a) {
+		return att.stream().filter(at ->  at.employeeId().equals(a.employeeId()) 
+											&& at.yearMonth().equals(a.yearMonth()) ).findFirst().orElse(null);
 	}
 
 	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> T filterItem(List<T> att, U a) {

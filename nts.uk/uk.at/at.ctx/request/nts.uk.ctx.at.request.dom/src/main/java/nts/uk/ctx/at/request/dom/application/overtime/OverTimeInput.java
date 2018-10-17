@@ -61,4 +61,9 @@ public class OverTimeInput{
 				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
 	}
 
+	public Integer getApplicationTimeValue() {
+		return applicationTime != null ? applicationTime.v() : null;
+	}
+	
+
 }

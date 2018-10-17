@@ -223,17 +223,20 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_270") + " " + repoAppDetailInfo.convertTime(overTime.getOverTimeShiftNight()) + " ";
+						moreInf += I18NText.getText("CMM045_270") + " " + this.clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_271") + " " + repoAppDetailInfo.convertTime(overTime.getFlexExessTime()) + " ";
+						moreInf += I18NText.getText("CMM045_271") + " " + this.clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
 				for (val x : overTime.getOverTimeInput()) {
 					if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+						continue;
+					}
+					if(x.getFrameNo() == 11 || x.getFrameNo() == 12){
 						continue;
 					}
 					if (x.getApplicationTime().v() > 0) {
@@ -264,8 +267,6 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							case NORMALOVERTIME: {
 								type = "残業時間";
 								List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
-								Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
 								if(!CollectionUtil.isEmpty(normalLst)){
 									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 									if (!lstFramOt.isEmpty()){
@@ -273,33 +274,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 										break;
 									}
 								}
-								if(plusNo11.isPresent()){
-									type = "時間外深夜時間";
-									break;
-								}
-								if(plusNo12.isPresent()){
-									type = "ﾌﾚｯｸｽ超過";
-									break;
-								}
 							}
 							case RESTTIME: {
 								type = "休憩時間";
 								break;
 							}
 							}
-							moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+							moreInf += type + " " + this.clockShorHm(x.getApplicationTime().v()) + " ";
 						}
 						count++;
 					}
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
-//				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-						+ I18NText.getText("CMM045_230", frameInfo);
+				content += " " + frameInfo;
 				break;
 			}
 			case POSTERIOR: {
 				// PRE
+				String contentPre = "";
 				List<Application_New> listPreApp = repoApp.getApp(app.getEmployeeID(), app.getAppDate(),
 						PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
 				Application_New preApp = (listPreApp.size() > 0 ? listPreApp.get(0) : null);
@@ -309,11 +301,11 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					String time1 = repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom1()) == "" ? "" : 
 						repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") 
 						+ repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo1());
-					content += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
+					contentPre += "\n" + I18NText.getText("CMM045_273") + " " + I18NText.getText("CMM045_268") + " "
 							+ time1;
-					content += (!Objects.isNull(preOverTime.getWorkClockFrom2())
+					contentPre += (!Objects.isNull(preOverTime.getWorkClockFrom2())
 							? " " + repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
-					content += (!Objects.isNull(preOverTime.getWorkClockTo2())
+					contentPre += (!Objects.isNull(preOverTime.getWorkClockTo2())
 							? repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo2()) : "");
 					String moreInf = "";
 					int count = 0;
@@ -321,16 +313,22 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					if (preOverTime.getOverTimeShiftNight() != null && preOverTime.getOverTimeShiftNight() > 0) {
 						totalWorkUnit += preOverTime.getOverTimeShiftNight();
 						if (count < 3)
-							moreInf += I18NText.getText("CMM045_270") + " " + repoAppDetailInfo.convertTime(preOverTime.getOverTimeShiftNight()) + " ";
+							moreInf += I18NText.getText("CMM045_270") + " " + this.clockShorHm(preOverTime.getOverTimeShiftNight()) + " ";
 						count++;
 					}
 					if (preOverTime.getFlexExessTime() != null && preOverTime.getFlexExessTime() > 0) {
 						totalWorkUnit += preOverTime.getFlexExessTime();
 						if (count < 3)
-							moreInf += I18NText.getText("CMM045_271") + " " + repoAppDetailInfo.convertTime(preOverTime.getFlexExessTime()) + " ";
+							moreInf += I18NText.getText("CMM045_271") + " " + this.clockShorHm(preOverTime.getFlexExessTime()) + " ";
 						count++;
 					}
 					for (val x : preOverTime.getOverTimeInput()) {
+						if(x.getApplicationTime()==null){
+							continue;
+						}
+						if(x.getFrameNo() == 11 || x.getFrameNo() == 12){
+							continue;
+						}
 						if (x.getApplicationTime().v() > 0) {
 							totalWorkUnit += x.getApplicationTime().v();
 							if (count < 3) {
@@ -359,8 +357,6 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								case NORMALOVERTIME: {
 									type = "残業時間";
 									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
-									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
 									if(!CollectionUtil.isEmpty(normalLst)){
 										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 										if (!lstFramOt.isEmpty()){
@@ -368,55 +364,49 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 									}
-									if(plusNo11.isPresent()){
-										type = "時間外深夜時間";
-										break;
-									}
-									if(plusNo12.isPresent()){
-										type = "ﾌﾚｯｸｽ超過";
-										break;
-									}
 								}
 								case RESTTIME: {
 									type = "休憩時間";
 									break;
 								}
 								}
-								moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+								moreInf += type + " " + this.clockShorHm(x.getApplicationTime().v()) + " ";
 							}
 							count++;
 						}
 					}
 					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
-//					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-					content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-							+ I18NText.getText("CMM045_230", frameInfo);
+					contentPre += " " + frameInfo;
 				}
 
 				// AFTER
-				content += "\n" + I18NText.getText("CMM045_274") + " " + I18NText.getText("CMM045_268") + " "
+				String contentPost = "";
+				contentPost += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
 						+ repoAppDetailInfo.convertTime(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100")
 						+ repoAppDetailInfo.convertTime(overTime.getWorkClockTo1());
-				content += (!Objects.isNull(overTime.getWorkClockFrom2())
+				contentPost += (!Objects.isNull(overTime.getWorkClockFrom2())
 						? overTime.getWorkClockFrom2() + I18NText.getText("CMM045_100") : "");
-				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? overTime.getWorkClockTo2() : "");
+				contentPost += (!Objects.isNull(overTime.getWorkClockTo2()) ? overTime.getWorkClockTo2() : "");
 				String moreInf = "";
 				int count = 0;
 				int totalWorkUnit = 0;
 				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_270") + " " + repoAppDetailInfo.convertTime(overTime.getOverTimeShiftNight()) + " ";
+						moreInf += I18NText.getText("CMM045_270") + " " + this.clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_271") + " " + repoAppDetailInfo.convertTime(overTime.getFlexExessTime()) + " ";
+						moreInf += I18NText.getText("CMM045_271") + " " + this.clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
 				for (val x : overTime.getOverTimeInput()) {
 					if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
+						continue;
+					}
+					if(x.getFrameNo() == 11 || x.getFrameNo() == 12){
 						continue;
 					}
 					if (x.getApplicationTime().v() > 0) {
@@ -448,8 +438,6 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								case NORMALOVERTIME: {
 									type = "残業時間";
 									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
-									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
 									if(!CollectionUtil.isEmpty(normalLst)){
 										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 										if (!lstFramOt.isEmpty()){
@@ -457,30 +445,22 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 									}
-									if(plusNo11.isPresent()){
-										type = "時間外深夜時間";
-										break;
-									}
-									if(plusNo12.isPresent()){
-										type = "ﾌﾚｯｸｽ超過";
-										break;
-									}
 								}
 								case RESTTIME: {
 									type = "休憩時間";
 									break;
 								}
 								}
-								moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+								moreInf += type + " " + this.clockShorHm(x.getApplicationTime().v()) + " ";
 							}
 							count++;
 						}
 					}
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
-//				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-						+ I18NText.getText("CMM045_230", frameInfo);
+				contentPost += " " + frameInfo;
+				
+				content += contentPost + contentPre;
 			}
 			case NONE: {
 				
@@ -659,13 +639,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if (!Objects.isNull(appWork.getApplication())) {
 				switch (appWork.getApplication().getPrePostAtr()) {
 				case PREDICT: {//don xin truoc
-					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
-					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
+					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
+					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.get().getName().v() : ""))
+					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									: (workTime.isPresent() ? " " + workTime.get()
-											.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+									: (workTime.isPresent() ? " " + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
@@ -736,15 +716,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+										moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v()) + " ";
 									}
 									count++;
 								}
 							}
 							String frameInfo = moreInf
 									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-							content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
-									+ I18NText.getText("CMM045_230", frameInfo);
+							content += frameInfo;
 						}
 					}
 					break;
@@ -757,13 +736,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					AppHolidayWork preAppWork = !Objects.isNull(preApp)
 							? holidayRepo.getAppHolidayWork(companyID, preApp.getAppID()).orElse(null) : null;
 					if (!Objects.isNull(preAppWork)) {
-						Optional<WorkType> workType =  repoWorkType.findByPK(companyID, preAppWork.getWorkTypeCode().v());
-						Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, preAppWork.getWorkTimeCode().v());
+						Optional<WorkType> workType =  repoWorkType.findByPK(companyID, preAppWork.getWorkTypeCode() == null ? "" : preAppWork.getWorkTypeCode().v());
+						Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, preAppWork.getWorkTimeCode() == null ? "" : preAppWork.getWorkTimeCode().v());
 						content += I18NText.getText("CMM045_272") + I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-						: (workType.isPresent() ? " " +  workType.get().getName().v() : ""))
+						: (workType.isPresent() ? " " +  workType.map(x -> x.getName().v()).orElse("") : ""))
 								+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-										: (workTime.isPresent() ? " " +  workTime.get()
-												.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+										: (workTime.isPresent() ? " " +  workTime.map(x -> 
+												x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 						if (!Objects.isNull(preAppWork.getWorkClock1())) {
 							if (!Objects.isNull(preAppWork.getWorkClock1().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock1().getEndTime())) {
@@ -834,25 +813,24 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 												break;
 											}
 											}
-											moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+											moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v()) + " ";
 										}
 										count++;
 									}
 								}
 								String frameInfo = moreInf
 										+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-								content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
-										+ I18NText.getText("CMM045_230", frameInfo);
+								content += frameInfo;
 							}
 						}
 					}
-					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
-					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
+					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
+					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.get().getName().v() : ""))
+					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									:  (workTime.isPresent() ? " " + workTime.get()
-											.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+									:  (workTime.isPresent() ? " " + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
@@ -923,15 +901,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
+										moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v()) + " ";
 									}
 									count ++;
 								}
 							}
 							String frameInfo = moreInf
 									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-							content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
-									+ I18NText.getText("CMM045_230", frameInfo);
+							content += frameInfo;
 						}
 					}
 				}
@@ -1233,4 +1210,11 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		// TODO
 		return appReason;
 	}
+    private String clockShorHm(Integer minute) {
+        if(minute == null){
+            return "";
+        }
+        return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
+    }
+
 }

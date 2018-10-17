@@ -3,9 +3,10 @@ package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -42,6 +43,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErAlWorkRecordCheckService {
+	
+	public final static String CONTINUOUS_CHECK_CODE = "OTK1";
 
 	@Inject
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
@@ -164,15 +167,7 @@ public class ErAlWorkRecordCheckService {
 	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
 			List<String> EACheckID) {
 		
-		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
-		if(checkConditions.isEmpty()){
-			EACheckID = workRecordExtraRepo.getAllWorkRecordExtraConByListID(EACheckID).stream()
-					.filter(c -> c.isUseAtr()).map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
-			if(EACheckID.isEmpty()){
-				return toEmptyResultList();
-			}
-			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
-		}
+		List<ErrorAlarmCondition> checkConditions = getCheckConditions(EACheckID);
 		
 		if(checkConditions.isEmpty()){
 			return toEmptyResultList();
@@ -190,21 +185,28 @@ public class ErAlWorkRecordCheckService {
 			return toEmptyResultList();
 		}
 		
-		GeneralDate start = workingDate.start();
-		List<ErrorRecord> result = new ArrayList<>();
-		while (start.beforeOrEquals(workingDate.end())) {
-			GeneralDate temp = start;
-			List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(temp)).collect(Collectors.toList());
-			if (cdRecors.isEmpty()) {
-				continue;
+		return workingDate.datesBetween().stream().map(current -> {
+			List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(current)).collect(Collectors.toList());
+			if (!cdRecors.isEmpty()) {
+				return checkConditions.stream().map(c -> {
+					return finalCheck(current, c, cdRecors, employeeIds);
+				}).flatMap(List::stream).collect(Collectors.toList());
 			}
-			result.addAll(checkConditions.stream().map(c -> {
-				return finalCheck(temp, c, cdRecors, employeeIds);
-			}).flatMap(List::stream).collect(Collectors.toList()));
-			start = start.addDays(1);
+			return new ArrayList<ErrorRecord>();
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+
+	private List<ErrorAlarmCondition> getCheckConditions(List<String> EACheckID) {
+		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		if(checkConditions.isEmpty()){
+			EACheckID = workRecordExtraRepo.getAllWorkRecordExtraConByListID(EACheckID).stream()
+					.filter(c -> c.isUseAtr()).map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
+			if(EACheckID.isEmpty()){
+				return toEmptyResultList();
+			}
+			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
 		}
-		return result;
-			
+		return checkConditions;
 	}
 	
 	
@@ -276,15 +278,22 @@ public class ErAlWorkRecordCheckService {
 
 	/** 大塚用連続休暇チェック */
 	public ContinuousHolidayCheckResult checkContinuousHolidays(String employeeId, DatePeriod range) {
+
+		return checkContinuousHolidays(employeeId, range, new ArrayList<>());
+	}
+	
+	/** 大塚用連続休暇チェック */
+	public ContinuousHolidayCheckResult checkContinuousHolidays(String employeeId, DatePeriod range, List<WorkInfoOfDailyPerformance> workInfos) {
 		ContinuousHolidayCheckResult r = new ContinuousHolidayCheckResult();
 		
 		checkSetting.findSpecial(AppContexts.user().companyId()).ifPresent(setting -> {
 			if(setting.isUseAtr()){
 				Map<GeneralDate, Integer> result = new HashMap<>();
 				
-				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true, new HashSet<>(workInfos));
 				
 				r.message(setting.getDisplayMessege().v());
+				
 				r.setErrorDate(result);
 			}
 		});
@@ -294,13 +303,13 @@ public class ErAlWorkRecordCheckService {
 
 	private void processCheckContinuous(GeneralDate endMark, DatePeriod range, Map<GeneralDate, Integer> result,
 			ContinuousHolCheckSet setting, String employeeId, GeneralDate markDate, int count,
-			boolean markPreviousDate) {
+			boolean markPreviousDate, Set<WorkInfoOfDailyPerformance> workInfos) {
 		boolean finishing = false;
-		List<WorkInfoOfDailyPerformance> workInfos = workInfo.findByPeriodOrderByYmdDesc(employeeId, range);
+		List<WorkInfoOfDailyPerformance> subWorkInfos = getWorkInfoInRange(range, employeeId, workInfos);
 
-		if (workInfos.isEmpty()) { return; }
+		if (subWorkInfos.isEmpty()) { return; }
 		
-		for (WorkInfoOfDailyPerformance info : workInfos) {
+		for (WorkInfoOfDailyPerformance info : subWorkInfos) {
 			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
 			if (setting.getTargetWorkType().contains(currentWTC)) {
 				if (markPreviousDate) {
@@ -322,8 +331,26 @@ public class ErAlWorkRecordCheckService {
 		}
 		if(finishing) { return; }
 
-		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-16), range.start().addDays(-1));
-		processCheckContinuous(endMark, perviousRange, result, setting, employeeId, markDate, count, markPreviousDate);
+		DatePeriod perviousRange = new DatePeriod(range.start().addDays(-4), range.start().addDays(-1));
+		
+		workInfos.removeAll(subWorkInfos);
+		
+		processCheckContinuous(endMark, perviousRange, result, setting, employeeId, markDate, count, markPreviousDate, workInfos);
+	}
+
+	private List<WorkInfoOfDailyPerformance> getWorkInfoInRange(DatePeriod range, String employeeId, Set<WorkInfoOfDailyPerformance> workInfos) {
+		List<GeneralDate> dateInRange = range.datesBetween();
+		
+		List<WorkInfoOfDailyPerformance> subWorkInfos = workInfos.stream()
+																.filter(c -> dateInRange.contains(c.getYmd()) && c.getEmployeeId().equals(employeeId))
+																.collect(Collectors.toList());
+		
+		if(dateInRange.size() > subWorkInfos.size()){
+			dateInRange.removeAll(subWorkInfos.stream().map(c -> c.getYmd()).collect(Collectors.toList()));
+			subWorkInfos.addAll(workInfo.findByListDate(employeeId, dateInRange));
+		}
+		
+		return subWorkInfos;
 	}
 
 	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {

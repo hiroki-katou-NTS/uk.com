@@ -131,16 +131,16 @@ public class ItemValue {
 		return this.type;
 	}
 	
-	public String valueAfter() {
-		return this.value;
-	}
-	
 	public String valueBefore() {
 		return this.defValue;
 	}
 	
 	public String contentBefore() {
 		return this.defText;
+	}
+	
+	public String valueAfter() {
+		return this.value;
 	}
 	
 	public String contentAfter() {
@@ -196,6 +196,17 @@ public class ItemValue {
 		|| (item.text == "" && item.value == "") 
 		|| (item.text == null && item.value == "")
 		|| (item.text == "" && item.value == null)) return null;
+		return item;
+	}
+	
+	public static ItemValue setContentForCPS001(ItemValue item) {
+		if(item.logType() == 2) {
+			item.setValueAfter((item.valueAfter() == "" || item.valueAfter() == null) ? null: item.valueAfter());
+			item.setContentAfter((item.contentAfter() == "" || item.contentAfter() == null) ? null: item.contentAfter());
+			item.setValueBefore((item.valueBefore() == "" || item.valueBefore() == null) ? null: item.valueBefore());
+			item.setContentBefore((item.contentBefore() == "" || item.contentBefore() == null) ? null: item.contentBefore());
+		}
+		
 		return item;
 	}
 	
@@ -277,7 +288,7 @@ public class ItemValue {
 		}
 	}
 	
-	private static String formatMinutesToTime(int valueAsMinutes) {
+	public static String formatMinutesToTime(int valueAsMinutes) {
 		
 		boolean isMinus = valueAsMinutes < 0;
 		int value = Math.abs(valueAsMinutes);

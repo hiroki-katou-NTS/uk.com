@@ -1,12 +1,12 @@
 package nts.uk.screen.at.app.dailyperformance.correction.checkdata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -24,7 +24,9 @@ import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
@@ -55,6 +57,9 @@ public class ValidatorDataDailyRes {
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
+	
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeErrorRepo;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -185,17 +190,31 @@ public class ValidatorDataDailyRes {
 	}
 
 	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date) {
+		
+		return checkContinuousHolidays(employeeId, date, new ArrayList<>());
+	}
+	
+	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date, List<WorkInfoOfDailyPerformance> workInfos) {
+		List<DPItemValue> r = new ArrayList<>();
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
-				new DatePeriod(date.getStartDate(), date.getEndDate()));
+				new DatePeriod(date.getStartDate(), date.getEndDate()), workInfos);
 		if (result == null)
-			return Collections.emptyList();
+			return r;
+		
 		Map<GeneralDate, Integer> resultMap = result.getCheckResult();
+		
 		if (!resultMap.isEmpty()) {
-			return resultMap.entrySet().stream().map(x -> new DPItemValue("勤務種類", employeeId, x.getKey(), 0,
-					String.valueOf(x.getValue()), result.message())).collect(Collectors.toList());
-		} else {
-			return Collections.emptyList();
-		}
+			
+			String compID = AppContexts.user().companyId();
+			
+			resultMap.entrySet().stream().forEach(x -> {
+				employeeErrorRepo.insert(new EmployeeDailyPerError(compID, employeeId, x.getKey(), 
+						ErAlWorkRecordCheckService.CONTINUOUS_CHECK_CODE, Arrays.asList(28), 0, result.message()));
+				r.add(new DPItemValue("勤務種類", employeeId, x.getKey(), 0, String.valueOf(x.getValue()), result.message()));
+			});
+		} 
+
+		return r;
 	}
 
 	// 乖離理由が選択、入力されているかチェックする
@@ -353,9 +372,13 @@ public class ValidatorDataDailyRes {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
 			for (EmployeeDailyPerError err : employeeError) {
 				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") && err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().equals(TextResource.localize("Msg_1298"))) {
-					divergenceErrors.addAll(err.getAttendanceItemList().stream()
-							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
-							.collect(Collectors.toList()));
+					if(err.getAttendanceItemList().isEmpty()){
+						divergenceErrors.add(new DPItemValue("", err.getEmployeeID(), err.getDate(), 0));
+					} else {
+						divergenceErrors.addAll(err.getAttendanceItemList().stream()
+								.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+								.collect(Collectors.toList()));
+					}
 				}
 			}
 		}

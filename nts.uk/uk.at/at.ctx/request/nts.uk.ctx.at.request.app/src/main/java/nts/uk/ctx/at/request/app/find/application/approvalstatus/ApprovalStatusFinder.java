@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
@@ -463,14 +465,14 @@ public class ApprovalStatusFinder {
 		String contentOther = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				contentOther += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
+				contentOther += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 				countItem++;
 				if (countItem > 1) {
 					break;
 				}
 			}
 		}
-		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
+		appContent += contentOther;
 		return appContent;
 	}
 
@@ -528,7 +530,6 @@ public class ApprovalStatusFinder {
 			appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
 			appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
 		}
-		appContent += I18NText.getText("CMM045_269");
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
@@ -542,7 +543,7 @@ public class ApprovalStatusFinder {
 				if (countItem > 2) {
 					time += overFrame.getApplicationTime();
 				} else {
-					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+					frameName += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 					time += overFrame.getApplicationTime();
 					countItem++;
 				}
@@ -551,15 +552,19 @@ public class ApprovalStatusFinder {
 		}
 		int countTemp = countRest -3;
 		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
-		String otherFull = (frameName != "" || other != "") ? "（" + frameName + other + "）" : "";
-		appContent += clockShorHm(time) + "　" + otherFull;
+		String otherFull = (frameName != "" || other != "") ? frameName + other : "";
+		appContent += otherFull;
 		return appContent;
 	}
 
 	private String getAbsenceApplication(HdAppSetDto hdAppSetDto, ApplicationDto_New applicaton_N, String companyID,
 			String appId) {
 		String appContent = "";
-		AppAbsenceFull appabsence = appDetailInfoRepo.getAppAbsenceInfo(companyID, appId, 0);
+		Integer dayNumber = 0;
+		if(!Strings.isBlank(applicaton_N.getStartDate()) && !Strings.isBlank(applicaton_N.getEndDate())){
+			dayNumber = GeneralDate.fromString(applicaton_N.getStartDate(), "yyyy/MM/dd").daysTo(GeneralDate.fromString(applicaton_N.getEndDate(), "yyyy/MM/dd")) + 1;
+		}
+		AppAbsenceFull appabsence = appDetailInfoRepo.getAppAbsenceInfo(companyID, appId, dayNumber);
 		HolidayAppType holidayAppType = EnumAdaptor.valueOf(appabsence.getHolidayAppType(), HolidayAppType.class);
 		String value = "";
 		switch (holidayAppType) {
@@ -593,16 +598,16 @@ public class ApprovalStatusFinder {
 		}
 		AllDayHalfDayLeaveAtr allDayHaflDay = EnumAdaptor.valueOf(appabsence.getAllDayHalfDayLeaveAtr(),
 				AllDayHalfDayLeaveAtr.class);
-		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)
-				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
+		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)//※休暇申請.終日半日休暇区分　＝　終日休暇
+				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {//休暇申請.休暇種類　≠ 特別休暇
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
 					+ I18NText.getText("CMM045_230", value);
-		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
-			//TODO
-			appContent += I18NText.getText("KAF018_279");
-			appContent += value + appabsence.getRelationshipName();
-			appContent += appabsence.getMournerFlag() == true ? I18NText.getText("CMM045_277") + appabsence.getDay() + I18NText.getText("CMM045_278") : "";
-		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {
+		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {//※休暇申請.休暇種類　＝ 特別休暇
+			String day = appabsence.getMournerFlag() == true ? I18NText.getText("KAF018_277") + appabsence.getDay() 
+					+ I18NText.getText("KAF018_278") : appabsence.getDay() + I18NText.getText("KAF018_278");
+			appContent += I18NText.getText("KAF018_279") + appabsence.getWorkTypeName() 
+					+ appabsence.getRelationshipName() + day;
+		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {//※休暇申請.終日半日休暇区分　＝　半日休暇
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_249");
 			// 休暇申請.就業時間帯コード
 			appContent += I18NText.getText("KAF018_230", appabsence.getWorkTimeName());

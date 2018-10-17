@@ -22,7 +22,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="closebtn" type="button" data-bind="click: close">#{i18n.getText('CPS001_51')}</button>
+				<button id="closebtn" tabindex = "3" type="button" data-bind="click: close">#{i18n.getText('CPS001_51')}</button>
 			</div>
 			<div id="contents-area">
 				<div>#{i18n.getText('CPS001_80')}</div>
@@ -36,7 +36,8 @@
 							enable: enable,
 							uploadFinished:  uploadFinished,
 							stereoType: stereoType,
-							immediateUpload: true
+							immediateUpload: true,
+							maxSize: 10
 					}"></div>
 				</div>
 				<table id="grid2"></table>

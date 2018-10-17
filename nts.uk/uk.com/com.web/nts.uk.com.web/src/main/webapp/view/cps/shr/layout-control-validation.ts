@@ -200,7 +200,7 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
+        get_cats: (isCps007: boolean) => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
@@ -933,7 +933,7 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
-
+                                setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false:true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -989,6 +989,7 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
                                     setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -1356,6 +1357,8 @@ module nts.layout {
                 CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                CS00020_IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00070_IS00781: IFindData = finder.find('CS00070', 'IS00781'),
                 workingCondInfo: Array<IWorkingConditionInfo> = [{
                     category: 'CS00020',
                     workTypeCode: 'IS00130',
@@ -1380,6 +1383,34 @@ module nts.layout {
                         category: 'CS00020',
                         workTypeCode: 'IS00148',
                         workTypeTime: 'IS00149'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00193',
+                        workTypeTime: 'IS00194'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00202',
+                        workTypeTime: 'IS00203'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00211',
+                        workTypeTime: 'IS00212'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00220',
+                        workTypeTime: 'IS00221'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00229',
+                        workTypeTime: 'IS00230'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00238',
+                        workTypeTime: 'IS00239'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00184',
+                        workTypeTime: 'IS00185'
                     }
                 ],
                 initCDL008Data = (data: IItemData) => {
@@ -1481,7 +1512,8 @@ module nts.layout {
                         masterType: comboData.item.masterType,
                         employeeId: empId,
                         cps002: false,
-                        workplaceId: undefined
+                        workplaceId: undefined,
+                        baseDate: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00016_IS00079.data.lstComboBoxValue(cbx);
                     });
@@ -1512,7 +1544,8 @@ module nts.layout {
                         masterType: comboData.item.masterType,
                         employeeId: empId,
                         cps002: false,
-                        workplaceId: undefined
+                        workplaceId: undefined,
+                        baseDate: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                         CS00017_IS00084.data.value.valueHasMutated();
@@ -1544,7 +1577,8 @@ module nts.layout {
                         masterType: comboData.item.masterType,
                         employeeId: empId,
                         cps002: false,
-                        workplaceId: undefined
+                        workplaceId: undefined,
+                        baseDate: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00085.data.lstComboBoxValue(cbx);
                         CS00017_IS00085.data.value.valueHasMutated();
@@ -1615,9 +1649,24 @@ module nts.layout {
                         }
                     });
             }
-
-            if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
-                CS00017_IS00084.data.value.subscribe(wc => {
+            let getComboData = () => {
+                
+                let startDate = CS00020_IS00119 ? CS00020_IS00119.data.value() : undefined,
+                    wokPlace = CS00017_IS00084 ? CS00017_IS00084.data.value() : undefined,
+                    empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                    realBaseDate = undefined;
+                
+                    if (!startDate){
+                        startDate = CS00070_IS00781 ? CS00070_IS00781.data.value() : undefined;
+                    }
+                
+                    if (!startDate && location.href.indexOf('/view/cps/002') > -1) {
+                        startDate = __viewContext.viewModel.currentEmployee().hireDate();
+                    }
+                    if (location.href.indexOf('/view/cps/001') > -1 && __viewContext.viewModel.layout.mode() == 'layout') {
+                        realBaseDate = __viewContext.viewModel.layout.standardDate()
+                    }
+                 
                     _(workingCondInfo).each(ctgInfo => {
                         
                         let workTypeCd: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeCode),
@@ -1630,35 +1679,52 @@ module nts.layout {
                                 comboBoxType: comboData.item.referenceType,
                                 categoryId: comboData.categoryId,
                                 required: comboData.required,
-                                standardDate: undefined,
+                                standardDate: startDate,
                                 typeCode: undefined,
                                 masterType: comboData.item.masterType,
-                                employeeId: undefined,
+                                employeeId: empId,
                                 cps002: true,
-                                workplaceId: CS00017_IS00084.data.value()
+                                workplaceId: wokPlace,
+                                baseDate: moment.utc(realBaseDate).toDate()
                             }).done(data => {
                                 workTypeCd.data.lstComboBoxValue(data);
                             });;
                         }
+                        
                         if (workTypeTime) {
                             let comboData = ko.toJS(workTypeTime.data);
-
                             fetch.get_cb_data({
                                 comboBoxType: comboData.item.referenceType,
                                 categoryId: comboData.categoryId,
                                 required: comboData.required,
-                                standardDate: undefined,
+                                standardDate: startDate,
                                 typeCode: undefined,
                                 masterType: comboData.item.masterType,
-                                employeeId: undefined,
+                                employeeId: empId,
                                 cps002: true,
-                                workplaceId: CS00017_IS00084.data.value()
+                                workplaceId: wokPlace,
+                                baseDate: moment.utc(realBaseDate).toDate()
                             }).done(data => {
                                 workTypeTime.data.lstComboBoxValue(data);
                             });;
                         }
                     });
+            }
+            if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
+                CS00017_IS00084.data.value.subscribe(wc => {
+                    getComboData();
 
+                });
+            }
+            
+            if (CS00020_IS00119) {
+                CS00020_IS00119.data.value.subscribe(x => {
+                    getComboData();
+                });
+            }
+            if (CS00070_IS00781) {
+                CS00070_IS00781.data.value.subscribe(x => {
+                    getComboData();
                 });
             }
         }
@@ -2501,6 +2567,7 @@ module nts.layout {
         employeeId: string;
         cps002?: boolean;
         workplaceId: string;
+        baseDate: Date;
     }
 
     interface INextTimeParam {

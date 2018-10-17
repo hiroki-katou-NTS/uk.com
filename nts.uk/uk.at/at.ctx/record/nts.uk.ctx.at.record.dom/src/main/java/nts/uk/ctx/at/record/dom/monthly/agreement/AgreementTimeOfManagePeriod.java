@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
@@ -28,6 +32,9 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	private AgreementTimeOfMonthly agreementTime;
 	/** 内訳 */
 	private AgreementTimeBreakdown breakdown;
+
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -42,6 +49,8 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		this.year = new Year(yearMonth.year());
 		this.agreementTime = new AgreementTimeOfMonthly();
 		this.breakdown = new AgreementTimeBreakdown();
+		
+		this.errorInfos = new ArrayList<>();
 	}
 	
 	/**
@@ -64,6 +73,23 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		domain.year = year;
 		domain.agreementTime = agreementTime;
 		domain.breakdown = breakdown;
+		return domain;
+	}
+	
+	/**
+	 * ファクトリー　（エラー出力用）
+	 * @param employeeId 社員ID
+	 * @param yearMonth 月度
+	 * @param errorInfos エラー情報　（月の計算の結果より）
+	 * @return 管理期間の36協定時間
+	 */
+	public static AgreementTimeOfManagePeriod of(
+			String employeeId,
+			YearMonth yearMonth,
+			List<MonthlyAggregationErrorInfo> errorInfos){
+	
+		AgreementTimeOfManagePeriod domain = new AgreementTimeOfManagePeriod(employeeId, yearMonth);
+		domain.errorInfos.addAll(errorInfos);
 		return domain;
 	}
 	
@@ -129,5 +155,14 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		
 		// エラーチェック
 		this.agreementTime.errorCheck();
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AgreementTimeOfManagePeriod target){
+		this.agreementTime.sum(target.agreementTime);
+		this.breakdown.sum(target.breakdown);
 	}
 }

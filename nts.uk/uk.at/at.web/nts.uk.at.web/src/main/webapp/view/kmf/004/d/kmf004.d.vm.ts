@@ -8,7 +8,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         grantDateCode: KnockoutObservable<string>;
         grantDateName: KnockoutObservable<string>;
         provisionCheck: KnockoutObservable<boolean>;
-        provisionDeactive: KnockoutObservable<boolean>;
         items: KnockoutObservableArray<Item>;
         editMode: KnockoutObservable<boolean>;
         fixedAssignCheck: KnockoutObservable<boolean>;
@@ -19,6 +18,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         daysReq: KnockoutObservable<boolean>;
         newModeEnable: KnockoutObservable<boolean>;
         isDelete: KnockoutObservable<boolean>;
+        
+        provisionActive: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -38,7 +39,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.grantDateName = ko.observable("");
 
             self.provisionCheck = ko.observable(false);
-            self.provisionDeactive = ko.observable(true);
             
             self.newModeEnable = ko.observable(true);
             self.isDelete = ko.observable(false);
@@ -67,7 +67,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.provisionCheck(selectedItem.specified);
                     self.fixedAssignCheck(selectedItem.fixedAssign);
                     self.numberOfDays(selectedItem.numberOfDays);
-                    
+                    if (self.provisionCheck() == true) {
+                        self.provisionActive(false);
+                    } else {
+                        self.provisionActive(true);
+                    }
                     self.codeEnable(false);
                     self.editMode(true);
                     self.newModeEnable(true);
@@ -196,7 +200,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         /** update or insert data when click button register **/
         register() {  
             let self = this; 
-            nts.uk.ui.block.invisible();
             let checkErr = false;
                         
             $("#inpCode").trigger("validate");
@@ -206,7 +209,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 return;       
             }
             
-            nts.uk.ui.block.invisible();
+            
             
             let elapseData = [];
             _.forEach(self.items(), function(item, index) {
@@ -229,7 +232,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             _.forEach(elapseData, function(item) {
                 if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
-                    nts.uk.ui.block.clear();
                     checkErr = true;
                     return;
                 }
@@ -238,7 +240,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             // 「経過年数に対する付与日数」は1件以上登録すること
             if(elapseData.length <= 0) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
-                nts.uk.ui.block.clear();
                 return;
             }
             
@@ -254,12 +255,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             
             if(self.daysReq() && dataItem.numberOfDays === "") {
                 $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "FND_E_REQ_INPUT");
-                nts.uk.ui.block.clear();
                 return;
             }
             
             if(!checkErr) {
                 if(!self.editMode()) {
+                    nts.uk.ui.block.invisible();
                     service.addGrantDate(dataItem).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
@@ -277,6 +278,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         nts.uk.ui.block.clear();
                     });
                 } else {
+                    nts.uk.ui.block.invisible();
                     service.updateGrantDate(dataItem).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
@@ -295,7 +297,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     });
                 }
             }
-        } 
+        }
+        
+        prescribedEnable() {
+            let self = this;
+            return !(self.editMode() == true && self.provisionCheck() == true);
+        }
         
         //  new mode 
         newMode() {
@@ -307,7 +314,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.selectedCode("");
             self.grantDateCode("");
             self.grantDateName("");
-            self.provisionCheck(false);
+            if (self.lstGrantDate().length) {
+                self.provisionCheck(false);
+            } else {
+                self.provisionCheck(true);
+            }
+            self.provisionActive(true);
             self.fixedAssignCheck(false);
             self.numberOfDays("");
             self.elapseBind([]);

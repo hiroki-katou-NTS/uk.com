@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutio
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogRepository extends JpaRepository
 		implements ProcessExecutionLogRepository {
@@ -71,7 +71,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	public void insert(ProcessExecutionLog domain) {
 		this.commandProxy().insert(KfnmtProcessExecutionLog.toEntity(domain));
 	}
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void update(ProcessExecutionLog domain) {
 		KfnmtProcessExecutionLog updateData = KfnmtProcessExecutionLog.toEntity(domain);
@@ -86,7 +86,8 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		oldData.reflectApprovalResultEnd = updateData.reflectApprovalResultEnd;
 		this.commandProxy().update(oldData);
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void remove(String companyId, String execItemCd, String execId) {
 		this.getEntityManager().createQuery(DELETE_BY_EXEC_CD, KfnmtProcessExecutionLog.class)

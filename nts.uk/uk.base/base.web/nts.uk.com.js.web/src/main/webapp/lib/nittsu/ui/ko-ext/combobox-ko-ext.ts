@@ -53,7 +53,7 @@ module nts.uk.ui.koExtentions {
                 // columns
                 columns: Array<any> = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }],
                 visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5,
-                dropDownAttachedToBody: boolean = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false,
+                dropDownAttachedToBody: boolean = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : true,
                 $show = $('<div>', {
                     'class': 'nts-toggle-dropdown',
                     'css': {
@@ -140,10 +140,18 @@ module nts.uk.ui.koExtentions {
                         $element
                             .addClass('error')
                             .ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+
+                        if (accessor.value.addError) {
+                            accessor.value.addError("FND_E_REQ_SELECT", { MsgId: "FND_E_REQ_SELECT" });
+                        }
                     } else {
                         $element
                             .removeClass('error')
                             .ntsError("clear");
+
+                        if (accessor.value.removeError) {
+                            accessor.value.removeError("FND_E_REQ_SELECT");
+                        }
                     }
                 })
                 // delegate open or close event on enter key
@@ -182,6 +190,14 @@ module nts.uk.ui.koExtentions {
                     visibleItemsCount: visibleItemsCount,
                     dropDownAttachedToBody: dropDownAttachedToBody,
                     rendered: function(evt, ui) {
+                        setTimeout(() => {
+                            $(ui.owner.dropDown()[0])
+                                .css({
+                                    top: '-99999px',
+                                    left: '-99999px'
+                                });
+                        }, 100);
+
                         $element
                             .find('.ui-igcombo')
                             .css('background', '#fff')
@@ -448,12 +464,12 @@ module nts.uk.ui.koExtentions {
                     vio = _.head(options);
 
                     if (!vio) {
-                        value = undefined;
+                        value = null;
                     } else {
                         value = vio[optionsValue];
                     }
                 } else {
-                    value = undefined;
+                    value = null;
 
                     //save old value
                     if (!_.isNil(ko.toJS(accessor.value))) {

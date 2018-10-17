@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,8 +11,12 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
@@ -33,6 +38,12 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 	/** ドメインサービス：36協定 */
 	@Inject
 	public AgreementDomainService agreementDomainService;
+	/** 36協定年度設定 */
+	@Inject
+	private AgreementYearSettingRepository agreementYearSetRepo;
+	/** 36協定年月設定 */
+	@Inject
+	private AgreementMonthSettingRepository agreementMonthSetRepo;
 	
 	/** 指定期間36協定時間の取得 */
 	@Override
@@ -59,6 +70,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			// 36協定時間を取得
 			val agreementTimeList =
 					this.agreementTimeOfMngPrdRepo.findBySidsAndYearMonths(employeeIds, periodYmList);
+			if (agreementTimeList.size() == 0) continue;
 			
 			// 期間をセット
 			AgreementTimeByPeriod result = new AgreementTimeByPeriod(
@@ -68,6 +80,11 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			for (val agreeemntTime : agreementTimeList){
 				result.addMinutesToAgreementTime(agreeemntTime.getAgreementTime().getAgreementTime().v());
 			}
+			
+			Optional<Year> checkYearOpt = Optional.empty();
+			Optional<YearMonth> checkYmOpt = Optional.empty();
+			if (periodAtr == PeriodAtrOfAgreement.ONE_YEAR) checkYearOpt = Optional.of(year);
+			if (periodAtr == PeriodAtrOfAgreement.ONE_MONTH) checkYmOpt = Optional.of(periodYmList.get(0));
 			
 			// 状態チェック
 			{
@@ -85,6 +102,22 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 				val basicAgreementSet = this.agreementDomainService.getBasicSet(
 						companyId, employeeId, criteria, workingSystem);
 				
+				// 「年度」を確認
+				Optional<AgreementYearSetting> yearSetOpt = Optional.empty();
+				if (checkYearOpt.isPresent()){
+					
+					// 36協定年度設定を取得する
+					yearSetOpt = this.agreementYearSetRepo.findByKey(employeeId, checkYearOpt.get().v());
+				}
+				
+				// 「年月」を確認
+				Optional<AgreementMonthSetting> monthSetOpt = Optional.empty();
+				if (checkYmOpt.isPresent()){
+					
+					// 36協定年月設定を取得する
+					monthSetOpt = this.agreementMonthSetRepo.findByKey(employeeId, checkYmOpt.get());
+				}
+				
 				// 取得した限度時間をセット
 				switch (periodAtr){
 				case TWO_MONTHS:
@@ -98,10 +131,24 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 				case ONE_YEAR:
 					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneYear().v()));
 					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneYear().v()));
+					if (yearSetOpt.isPresent()){
+						val yearSet = yearSetOpt.get();
+						result.setExceptionLimitAlarmTime(Optional.of(
+								new LimitOneYear(yearSet.getAlarmOneYear().v())));
+						result.setExceptionLimitErrorTime(Optional.of(
+								new LimitOneYear(yearSet.getErrorOneYear().v())));
+					}
 					break;
-				default:
+				default:	// ONE_MONTH
 					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneMonth().v()));
 					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneMonth().v()));
+					if (monthSetOpt.isPresent()){
+						val monthSet = monthSetOpt.get();
+						result.setExceptionLimitAlarmTime(Optional.of(
+								new LimitOneYear(monthSet.getAlarmOneMonth().v())));
+						result.setExceptionLimitErrorTime(Optional.of(
+								new LimitOneYear(monthSet.getErrorOneMonth().v())));
+					}
 					break;
 				}
 				

@@ -1,6 +1,11 @@
-module nts.custom.component {
+let $: any = window['$'],
+    _: any = window['_'],
+    ko: any = window["ko"],
+    moment: any = window['moment'],
+    text: any = window['nts'].uk.resource.getText;
 
-    window["ko"].components.register('base-date', {
+module nts.custom.component {
+    ko.components.register('base-date', {
         template: `
         <div class="form-group">
             <div data-bind="ntsFormLabel: {text: text('CPS001_35')}"></div>
@@ -9,8 +14,8 @@ module nts.custom.component {
         </div>`,
         viewModel: function(params: any) {
             $.extend(params, {
-                text: nts.uk.resource.getText,
-                enableBtn: ko.computed(() => !!(ko.toJS(params.standardDate) || '').match(/^(\d{4}(-|\/)\d{2}(-|\/)\d{2})/))
+                text: text,
+                enableBtn: params.standardDate.enableBtn || (params.standardDate.enableBtn = ko.computed(() => moment.utc(params.standardDate(), _.indexOf(params.standardDate(), "Z") > -1 ? "YYYY-MM-DD" : "YYYY/MM/DD").isValid() && !!(ko.toJS(params.standardDate) || '').match(/((19|[2-9][0-9])\d{2})(-|\/)(\d{2}|\d{1})(-|\/)(\d{2}|\d{1})/)))
             });
 
             return params;

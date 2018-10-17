@@ -2,13 +2,18 @@
 
 package nts.uk.ctx.at.request.ac.record.dailyattendancetime;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
@@ -30,9 +35,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 	@Inject
 	private DailyAttendanceTimePub dailyAttendanceTimePub;
 	@Override
-	public DailyAttendanceTimeCaculationImport getCalculation(String employeeID, GeneralDate ymd, String workTypeCode,
-			String workTimeCode, Integer workStartTime, Integer workEndTime, Integer breakStartTime,
-			Integer breakEndTime) {
+	public DailyAttendanceTimeCaculationImport getCalculation(String employeeID, GeneralDate ymd, String workTypeCode, String workTimeCode, Integer workStartTime, Integer workEndTime, List<Integer> breakStartTimes,
+			List<Integer> breakEndTime) {
 		DailyAttendanceTimePubImport dailyAttendanceTimePubImport = new DailyAttendanceTimePubImport();
 		dailyAttendanceTimePubImport.setEmployeeid(employeeID);
 		dailyAttendanceTimePubImport.setYmd(ymd);
@@ -40,9 +44,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
 		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
 		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
-		dailyAttendanceTimePubImport.setBreakStartTime( breakStartTime== null ? null : new AttendanceTime(breakStartTime));
-		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime == null ? null : new AttendanceTime( breakEndTime));
-		
+		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
+		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
 		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		
@@ -55,6 +58,13 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		return dailyAttendanceTimeCaculationImport;
 	}
 	
+	private List<AttendanceTime> getTimes(List<Integer> inputTimes) {
+		List<AttendanceTime> startTimes = !CollectionUtil.isEmpty(inputTimes)
+				? inputTimes.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList())
+				: Collections.emptyList();
+		return startTimes;
+	}
+
 	/**
 	 * @param timeCal
 	 * @return
@@ -106,8 +116,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(dailyAttenTimeParam.getWorkTimeCode());
 		dailyAttendanceTimePubImport.setWorkStartTime(dailyAttenTimeParam.getWorkStartTime());
 		dailyAttendanceTimePubImport.setWorkEndTime(dailyAttenTimeParam.getWorkEndTime());
-		dailyAttendanceTimePubImport.setBreakStartTime(dailyAttenTimeParam.getBreakStartTime());
-		dailyAttendanceTimePubImport.setBreakEndTime(dailyAttenTimeParam.getBreakEndTime());
+		dailyAttendanceTimePubImport.setBreakStartTime(dailyAttenTimeParam.getBreakStartTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakStartTime()));
+		dailyAttendanceTimePubImport.setBreakEndTime(dailyAttenTimeParam.getBreakEndTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakEndTime()));
 		DailyAttendanceTimePubLateLeaveExport result = dailyAttendanceTimePub.calcDailyLateLeave(dailyAttendanceTimePubImport);
 		return new DailyAttenTimeLateLeaveImport(result.getLateTime(), result.getLeaveEarlyTime());
 	}

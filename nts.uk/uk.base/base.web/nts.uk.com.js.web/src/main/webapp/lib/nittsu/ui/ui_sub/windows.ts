@@ -99,10 +99,19 @@ module nts.uk.ui {
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
                     let title = nts.uk.util.isNullOrEmpty(dialogName)　? "" : dialogName;
                     let showCloseButton = this.globalContext.dialogCloseButton === true;
-                
+                    
+                    let width = options.width || this.globalContext.dialogSize.width;
+                    let height = options.height || this.globalContext.dialogSize.height;
+					let autoResize = this.globalContext.autoResize == undefined ? true : this.globalContext.autoResize;
+                    
+                    this.$dialog.data('__size__', { width, height });
+                    
+                    width = (window.innerWidth <= width) ? window.innerWidth - 30 : width;
+                    height = (window.innerHeight <= height) ? window.innerHeight - 30 : height; 
+                    
                     this.$dialog.dialog('option', {
-                        width: options.width || this.globalContext.dialogSize.width,
-                        height: options.height || this.globalContext.dialogSize.height,
+                        width: width,
+                        height: height,
                         title: title,
                         resizable: options.resizable,
                         open: function() {
@@ -169,6 +178,12 @@ module nts.uk.ui {
                         this.parent.globalContext.nts.uk.ui.block.clear();
                     //                    var widget= this.$dialog.dialog("widget");
                     //                    widget.draggable("option","containment",false);
+                    
+					if (autoResize) {
+						$(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
+					}
+                    
+                    
                 });
 
                 this.globalContext.location.href = path;
@@ -231,6 +246,64 @@ module nts.uk.ui {
                     this.onClosedHandler = null;
 //                    this.id = null;
                 }, 2000);
+            }
+            
+            resizeDialog(target: any, $dialog) {
+                if (!$dialog) {
+                    return;    
+                }
+                
+                let data = $dialog.data('__size__');
+
+                // resize width
+                if (target.innerWidth <= data.width) {
+                    $dialog.dialog('option', 'width', target.innerWidth - 30);    
+                } else {
+                    $dialog.dialog('option', 'width', data.width);
+                }
+
+                // resize height   
+                if (target.innerHeight <= data.height) {
+                    $dialog.dialog('option', 'height', target.innerHeight - 30);
+                } else {
+                    $dialog.dialog('option', 'height', data.height);
+                } 
+                
+                // resize error's position
+                this.changePositionOfError($dialog);
+                
+                // resize combo-box-dropdown's positions
+                setTimeout(this.changePositionComboBoxDropDown.bind(this, $dialog), 500);
+                
+            }
+            
+            changePositionOfError($dialog) {
+                let $iframeDoc = $($dialog.find("iframe")[0].contentWindow.document);
+                var $functionsAreaBottom = $iframeDoc.find('#functions-area-bottom');
+                
+                if ($functionsAreaBottom.length > 0) {
+                    // Defer in case dialog not showing yet. Should fix by using CSS for position, JQuery position is unstable
+                    _.defer(() => {
+                        $iframeDoc.find('#func-notifier-errors')
+                                  .position({ my: 'left+5 top+48', at: 'left top', of: $functionsAreaBottom });
+                    });
+                }
+            }
+            
+            changePositionComboBoxDropDown($dialog) {
+                let $iframeDoc = $($dialog.find("iframe")[0].contentWindow.document);
+                var $dropDownElements = $iframeDoc.find('.ui-igcombo-dropdown.ui-igcombo-no-border');
+                
+                if ($dropDownElements.length <= 0 ) {
+                    return;
+                }
+                
+                $dropDownElements.each(function() {
+                    $(this).css({
+                        top: '-99999px',
+                        left: '-99999px'
+                    });     
+                });
             }
         }
 
@@ -351,59 +424,15 @@ module nts.uk.ui {
                 if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                let $dialog = dialog(webAppId, path, true, options);
-
-                setTimeout(() => {
-                    $(window.top).on('resize', evt => resizeDialog(evt, $dialog)).trigger('resize');
-                }, 1000);
-                
-                return $dialog;
+                return dialog(webAppId, path, true, options);
             }
             export function modeless(path: string, options?: any)
             export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
                  if (typeof arguments[1] !== 'string') {
                     return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                let $dialog = dialog(webAppId, path, false, options);
-
-                setTimeout(() => {
-                    $(window.top).on('resize', evt => resizeDialog(evt, $dialog)).trigger('resize');
-                }, 1000);
+                return dialog(webAppId, path, false, options);
                 
-                return $dialog;
-            }
-            
-            function resizeDialog(evt: any, $subWindow) {
-                
-                console.log('resize dialog');
-                let $dialog = $subWindow.$dialog;
-                if (!$dialog) {
-                    return;
-                }
-
-                let width = $dialog.width(),
-                    height = $dialog.parent().outerHeight(),
-                    // because the height() function don't includes title's height
-                    $data = $($dialog).data('__size__');
-                
-                if (!$data || !$data.width || !$data.height) {
-                    $data = { width, height };
-                    $($dialog).data('__size__', $data);
-                }
-                
-                // resize width
-                if (evt.target.innerWidth <= $data.width) {
-                    $dialog.dialog('option', 'width', evt.target.innerWidth - 30);
-                } else {
-                    $dialog.dialog('option', 'width', $data.width);
-                }
-
-                // resize height    
-                if (evt.target.innerHeight <= $data.height) {
-                    $dialog.dialog('option', 'height', evt.target.innerHeight - 30);
-                } else {
-                    $dialog.dialog('option', 'height', $data.height);
-                }
             }
             
             function dialog(webAppId: nts.uk.request.WebAppId, path: string, modal: boolean, options?: any){

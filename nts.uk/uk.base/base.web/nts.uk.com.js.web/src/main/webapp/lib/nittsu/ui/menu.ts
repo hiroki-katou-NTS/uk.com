@@ -156,7 +156,7 @@ module nts.uk.ui.menu {
                 $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
                 let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                let userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("ログアウト") ];
+                let userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト") ];
                 let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                 _.forEach(userOptions, function(option: any, i: number) {
                     let $li = $("<li class='menu-item'/>").text(option.name);
@@ -164,6 +164,14 @@ module nts.uk.ui.menu {
                     if (i === 0) {
                         $li.on(constants.CLICK, function() {
                             // TODO: Jump to personal information settings.
+                        });
+                        return;
+                    }
+                    if (i === 1) {
+                        $li.on(constants.CLICK, function() {
+                            // jump to index page of manual
+                            var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                            window.open(path);
                         });
                         return;
                     }
@@ -234,11 +242,11 @@ module nts.uk.ui.menu {
             let $pgArea = $("#pg-area");
             $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-            $manualBtn.on(constants.CLICK, function() {
-                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                window.open(path);
-            });
+//            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+//            $manualBtn.on(constants.CLICK, function() {
+//                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+//                window.open(path);
+//            });
             
             let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
             $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));

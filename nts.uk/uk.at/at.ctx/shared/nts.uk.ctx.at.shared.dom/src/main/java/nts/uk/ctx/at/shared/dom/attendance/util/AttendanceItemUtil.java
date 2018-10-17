@@ -16,14 +16,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 
 import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -32,6 +36,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 public class AttendanceItemUtil implements ItemConst {
+	
+	private static final AttendanceItemUtilCacheHolder CACHE_HOLDER = AttendanceItemUtilCacheHolder.cacheNow();
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
 
@@ -89,8 +95,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
 
-		return getItemValues(attendanceItems, layout, EMPTY_STRING, root.isContainer() ? EMPTY_STRING : root.rootName(), 
-					EMPTY_STRING, DEFAULT_IDX, getItemMap(type, itemIds, null, layout));
+		return getItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), getItemMap(type, itemIds, null, layout));
 	}
 	
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType, Collection<ItemValue> attendanceItems) {
@@ -124,18 +129,17 @@ public class AttendanceItemUtil implements ItemConst {
 
 		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
 
-		return fromItemValues(attendanceItems, layout, EMPTY_STRING,root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX, false,
+		return fromItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), DEFAULT_IDX, false,
 								getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
-	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String layoutCode, String path,
-			String extraCondition, int index, Map<String, List<ItemValue>> groups){
+	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String path, Map<String, List<ItemValue>> groups){
 		Map<Integer, T> atMap = attendanceItems.stream().collect(HashMap::new,
 																(m,v)->m.put(v == null ? 0 : v.hashCode(), v), 
 																HashMap::putAll);
 		Map<Integer, List<ItemValue>> result = atMap.entrySet().stream().collect(Collectors.toMap(t -> t.getKey(), t -> new ArrayList<>()));
 		
-		getItemValues(atMap, layoutIdx, layoutCode, path, extraCondition, index, groups, result);
+		getItemValues(atMap, layoutIdx, EMPTY_STRING, path, new HashMap<>(), DEFAULT_IDX, groups, result);
 		
 		return result.entrySet().stream().collect(HashMap::new,
 													(m,v)->m.put(atMap.get(v.getKey()), v.getValue()), 
@@ -144,7 +148,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 	@SuppressWarnings("unchecked")
 	private static <T> void getItemValues(Map<Integer, T> attendanceItems, int layoutIdx, String layoutCode, String path,
-														String extraCondition, int index, Map<String, List<ItemValue>> groups,
+														Map<Integer, String> extraCondition, int index, Map<String, List<ItemValue>> groups,
 														Map<Integer, List<ItemValue>> result) {
 		if(attendanceItems.isEmpty()){
 			return;
@@ -164,11 +168,13 @@ public class AttendanceItemUtil implements ItemConst {
 
 			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
 
-			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
+			Class<T> className = CACHE_HOLDER.getAndCache(StringUtils.join("CLASSTYPE_", field.hashCode()), 
+					() -> layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType());
 
 			String pathName = getPath(path, layout, getRootAnnotation(field)),
-					currentLayout = mergeLayout(layoutCode, layout.layout()),
-					exCon = getExCondition(extraCondition, oneV, layout);
+					currentLayout = mergeLayout(layoutCode, layout.layout());
+			
+			Map<Integer, String> exConMap = getExCondition(extraCondition, attendanceItems, layout);
 
 			if (isList) {
 				Map<Integer, List<T>> list = getListAndSort(attendanceItems, field, className, layout);
@@ -183,7 +189,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					getItemValues(fieldValue(className, idxValue, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX,
 										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
-										pathName, exCon, layout.listNoIndex() ? -1 : idx.getKey(),
+										pathName, exConMap, layout.listNoIndex() ? -1 : idx.getKey(),
 										mapByPath(idx.getValue(),
 												id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)), 
 										result);
@@ -195,35 +201,31 @@ public class AttendanceItemUtil implements ItemConst {
 			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 
 			if (valueAnno == null) {
-				getItemValues(fieldValue(className, value, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exCon, index,
+				getItemValues(fieldValue(className, value, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exConMap, index,
 							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)),
 							result);
 				return;
 			}
 
-			String currentPath = getKey(pathName, EMPTY_STRING, false, index);
+//			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
 
-			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
-
-			c.getValue().stream().filter(id -> getTextWithNoCondition(id.path()).equals(currentPath)).forEach(item -> {
+			c.getValue().stream().filter(id -> getTextWithNoCondition(id.path()).equals(pathName)).forEach(item -> {
 				String fLayout = currentLayout + getTextWithCondition(item.path());
-				if (item.path().equals(currentFullPath)) {
 					result.entrySet().stream().forEach(r -> {
-						r.getValue().add(ItemValue.build(item.path(), item.itemId())
+						String currentFullPath = getKey(pathName, exConMap.get(r.getKey()), index > DEFAULT_IDX, index);
+						if (item.path().equals(currentFullPath)) {
+							r.getValue().add(ItemValue.build(item.path(), item.itemId())
 													.value(value.get(r.getKey()))
 													.layout(fLayout)
 													.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
 													.completed());
+						} else {
+							r.getValue().add(ItemValue.build(item.path(), item.itemId())
+									.layout(fLayout)
+									.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
+									.completed());
+						}
 					});
-
-				} else {
-					result.entrySet().stream().forEach(r -> {
-						r.getValue().add(ItemValue.build(item.path(), item.itemId())
-													.layout(fLayout)
-													.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
-													.completed());
-					});
-				}
 			});
 		});
 	}
@@ -308,10 +310,10 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path, int index,
+	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String path, int index,
 										boolean needCheckWithIdx, Map<String, List<ItemValue>> groups) {
 		if (attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class) != null) {
-			ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, DEFAULT_MARK_DATA_FIELD);
+			markHaveData(attendanceItems);
 		}
 
 		Map<String, Field> fields = getFieldMap(attendanceItems.getClass(), groups);
@@ -327,10 +329,12 @@ public class AttendanceItemUtil implements ItemConst {
 
 			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
 
-			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
+			Class<T> className = CACHE_HOLDER.getAndCache(StringUtils.join("CLASSTYPE_", field.hashCode()), 
+					() -> layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType());
+//			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
 
-			String pathName = getPath(path, layout, getRootAnnotation(field)),
-					currentLayout = mergeLayout(layoutCode, layout.layout());
+			String pathName = getPath(path, layout, getRootAnnotation(field));
+//				,currentLayout = mergeLayout(layoutCode, layout.layout());
 
 			if (isList) {
 				boolean listNoIdx = layout.listNoIndex();
@@ -356,7 +360,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					if (subList != null) {
 						fromItemValues(eVal, layoutIdx + DEFAULT_NEXT_IDX,
-										listNoIdx ? currentLayout : currentLayout + (idx == null ? EMPTY_STRING : idx),
+//										listNoIdx ? currentLayout : currentLayout + (idx == null ? EMPTY_STRING : idx),
 										pathName, idx, needCheckWithIdx || (isList && !listNoIdx),
 										mapByPath(subList, id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
 						
@@ -377,8 +381,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 			if (valueAnno != null) {
 				String enumText = getEnumTextFromList(c.getValue()),
-													currentPath = getKey(pathName, enumText == null ? EMPTY_STRING : enumText, needCheckWithIdx,
-													index);
+					currentPath = getKey(pathName, enumText == null ? EMPTY_STRING : enumText, needCheckWithIdx, index);
 
 				ItemValue itemValue = c.getValue().stream()
 						.filter(id -> id.path().equals(currentPath))
@@ -391,6 +394,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					} else {
 						if(field.getType().isPrimitive() && itemValue.value() == null){
+							ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.valueOrDefault());
 							return;
 						}
 						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
@@ -400,7 +404,9 @@ public class AttendanceItemUtil implements ItemConst {
 			}
 
 			T nVal = fromItemValues(value == null ? ReflectionUtil.newInstance(className) : value,
-									layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, index, needCheckWithIdx,
+									layoutIdx + DEFAULT_NEXT_IDX, 
+//									currentLayout, 
+									pathName, index, needCheckWithIdx,
 									mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
 
 			setValueEnumField(layout, className, nVal, c.getValue());
@@ -409,6 +415,18 @@ public class AttendanceItemUtil implements ItemConst {
 		});
 
 		return attendanceItems;
+	}
+
+	private static <T> void markHaveData(T attendanceItems) {
+		Class<?> className = attendanceItems.getClass();
+		try {
+			
+			CACHE_HOLDER.getAndCache(StringUtils.join(className.getName(), DEFAULT_LAYOUT_SEPERATOR, DEFAULT_MARK_DATA_FIELD), 
+					() -> ReflectionUtil.getMethod(className, DEFAULT_MARK_DATA_FIELD)).invoke(attendanceItems);
+			
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static <T> T getItemWith(List<T> list, AttendanceItemLayout layout, int targetIdx, Class<T> className) {
@@ -430,11 +448,15 @@ public class AttendanceItemUtil implements ItemConst {
 												HashMap::putAll);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> Field getIdxField(AttendanceItemLayout layout, Class<T> className, boolean listNoIdx) {
+		
+		return CACHE_HOLDER.getAndCache(StringUtils.join("IDX2FIELD_", className.hashCode()), () -> {
+			String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
 
-		String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
-
-		return idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
+			return idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
+		});
+		
 	}
 
 	private static <T> List<T> getOriginalList(T attendanceItems, Field field) {
@@ -483,10 +505,20 @@ public class AttendanceItemUtil implements ItemConst {
 	private static <T> void callSetMethod(T attendanceItems, AttendanceItemValue valueAnno, ItemValue itemValue) {
 		try {
 
-			Method setMethod = attendanceItems.getClass().getMethod(valueAnno.setValueWith(), Object.class);
+			Method setMethod = CACHE_HOLDER.getAndCache(StringUtils.join(attendanceItems.getClass().getName(), DEFAULT_LAYOUT_SEPERATOR, valueAnno.setValueWith()), () -> {
+				try {
+					return attendanceItems.getClass().getMethod(valueAnno.setValueWith(), Object.class);
+					
+				} catch (NoSuchMethodException | SecurityException e) {
+					e.printStackTrace();
+					return null;
+				}
+			});
 			
-			setMethod.invoke(attendanceItems, itemValue.valueAsObjet());
-		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
+			if(setMethod != null){
+				setMethod.invoke(attendanceItems, itemValue.valueAsObjet());
+			}
+		} catch (IllegalAccessException | IllegalArgumentException
 				| SecurityException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
@@ -518,9 +550,11 @@ public class AttendanceItemUtil implements ItemConst {
 
 	private static Integer getEValAsIdxPlus(String path) {
 
-		Integer enumValue = AttendanceItemIdContainer.getEnumValue(getExConditionFromString(path));
+		return CACHE_HOLDER.getAndCache(path, () -> {
+			Integer enumValue = AttendanceItemIdContainer.getEnumValue(getExConditionFromString(path));
 
-		return enumValue == null ? DEFAULT_IDX : enumValue;
+			return enumValue == null ? DEFAULT_IDX : enumValue;
+		});
 	}
 
 	private static String getEnumTextFromList(List<ItemValue> c) {
@@ -537,11 +571,10 @@ public class AttendanceItemUtil implements ItemConst {
 			return;
 		}
 
-		String enumText = items.stream().filter(em -> em.path().indexOf(DEFAULT_ENUM_SEPERATOR) > DEFAULT_IDX)
-				.map(em -> getExConditionFromString(em.path())).findFirst().orElse(null);
+		String enumText = getEnumTextFromList(items);
 
 		ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
-				AttendanceItemIdContainer.getEnumValue(enumText));
+				CACHE_HOLDER.getAndCache(enumText, () -> AttendanceItemIdContainer.getEnumValue(enumText)));
 	}
 
 	private static <T> ValueType getItemValueType(T attendanceItems, AttendanceItemValue valueAnno) {
@@ -549,14 +582,21 @@ public class AttendanceItemUtil implements ItemConst {
 		ValueType valueType = valueAnno.type();
 
 		if (!valueAnno.getTypeWith().isEmpty()) {
-			valueType = ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, valueAnno.getTypeWith());
+			try {
+				valueType = (ValueType)  CACHE_HOLDER.getAndCache(StringUtils.join(attendanceItems.getClass().getName(), valueAnno.getTypeWith()), 
+											() -> ReflectionUtil.getMethod(attendanceItems.getClass(), valueAnno.getTypeWith()))
+														.invoke(attendanceItems);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+//			valueType = ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, valueAnno.getTypeWith());
 		}
 
 		return valueType;
 	}
 
 	private static String getPath(String path, AttendanceItemLayout layout, AttendanceItemRoot root) {
-
+		
 		if (root != null && !root.rootName().isEmpty()) {
 			return root.rootName();
 		}
@@ -622,23 +662,24 @@ public class AttendanceItemUtil implements ItemConst {
 
 	public static <T> Map<String, Field> getFieldMap(Class<T> attendanceItemClass, Map<String, List<ItemValue>> groups) {
 
-		return ReflectionUtil.getStreamOfFieldsAnnotated(attendanceItemClass, Condition.ALL, AttendanceItemLayout.class)
-							.filter(c -> groups.get(c.getAnnotation(AttendanceItemLayout.class).jpPropertyName()) != null)
-							.collect(Collectors.toMap(c -> c.getAnnotation(AttendanceItemLayout.class).jpPropertyName(), c -> c));
-
+		return CACHE_HOLDER.getAndCache(attendanceItemClass.getName(), () -> {
+			return ReflectionUtil.getStreamOfFieldsAnnotated(attendanceItemClass, Condition.ALL, AttendanceItemLayout.class)
+					.filter(c -> groups.get(c.getAnnotation(AttendanceItemLayout.class).jpPropertyName()) != null)
+					.collect(Collectors.toMap(c -> c.getAnnotation(AttendanceItemLayout.class).jpPropertyName(), c -> c));
+		});
 	}
 
 	private static <T> Field getField(String fieldName, Class<T> classType) {
 
-		try {
+		return CACHE_HOLDER.getAndCache(StringUtils.join("F", classType.getName(), DEFAULT_LAYOUT_SEPERATOR, fieldName), () -> {
+			try {
+				return classType.getDeclaredField(fieldName);
+			} catch (NoSuchFieldException | SecurityException e) {
 
-			return classType.getDeclaredField(fieldName);
-		} catch (NoSuchFieldException | SecurityException e) {
-
-			e.printStackTrace();
-			
-			return null;
-		}
+				e.printStackTrace();
+				return null;
+			}
+		});
 	}
 
 	private static String getKey(String pathName, String extraCondition, boolean needCheckWithIdx, int idx) {
@@ -716,9 +757,10 @@ public class AttendanceItemUtil implements ItemConst {
 				.collect(Collectors.toSet());
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> List<T> processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
 
-		Field idxField = getField(idxFieldName, targetClass);
+		Field idxField = CACHE_HOLDER.getAndCache(StringUtils.join("IDXFIELD_", targetClass.hashCode()), () -> getField(idxFieldName, targetClass));
 
 		List<T> returnList = new ArrayList<>(list.stream().filter(c -> c != null).collect(Collectors.toList()));
 
@@ -738,7 +780,7 @@ public class AttendanceItemUtil implements ItemConst {
 				}).findFirst();
 
 				if (!idxValue.isPresent()) {
-					returnList.add(createIdxFieldValue(targetClass, idxField, index + DEFAULT_NEXT_IDX));
+					returnList.add(createWithIdxFieldValue(targetClass, idxField, index + DEFAULT_NEXT_IDX));
 				}
 			}
 		}
@@ -771,7 +813,7 @@ public class AttendanceItemUtil implements ItemConst {
 		return returnList;
 	}
 
-	public static <T> T createIdxFieldValue(Class<T> targetClass, Field idxField, int index) {
+	public static <T> T createWithIdxFieldValue(Class<T> targetClass, Field idxField, int index) {
 
 		T newValue = ReflectionUtil.newInstance(targetClass);
 
@@ -780,23 +822,34 @@ public class AttendanceItemUtil implements ItemConst {
 		return newValue;
 	}
 
+	private static final Map<String, String> cacheForGetCurrentPath = new HashMap<>();
+	
 	private static String getCurrentPath(int layoutIdx, String text, boolean isList) {
 
+		String cacheKey = layoutIdx + text + isList;
+		if (cacheForGetCurrentPath.containsKey(cacheKey)) {
+			return cacheForGetCurrentPath.get(cacheKey);
+		}
+		
 		String[] layouts = text.split(Pattern.quote(DEFAULT_SEPERATOR));
-
+		String result;
+		
 		if (layouts.length <= layoutIdx) {
-			return EMPTY_STRING;
+			result = EMPTY_STRING;
+		} else {
+			String path = layouts[layoutIdx];
+			if (isList) {
+				result = getIdx(path);
+			} else {
+				result = getTextWithNoCondition(path);
+			}
 		}
-
-		String path = layouts[layoutIdx];
-
-		if (isList) {
-			return getIdx(path);
-		}
-
-		return getTextWithNoCondition(path);
+		
+		cacheForGetCurrentPath.put(cacheKey, result);
+		
+		return result;
 	}
-
+	
 	private static String getIdx(String path) {
 
 		String notIdx = getTextWithNoIdx(path);
@@ -806,36 +859,47 @@ public class AttendanceItemUtil implements ItemConst {
 
 	@SuppressWarnings("unchecked")
 	private static <T> Class<T> getGenericType(Field field) {
-
-		ParameterizedType type = (ParameterizedType) field.getGenericType();
-
-		return (Class<T>) type.getActualTypeArguments()[DEFAULT_IDX];
+		
+		return CACHE_HOLDER.getAndCache(StringUtils.join("GENERIC_TYPE_ANNOTATION_", field.hashCode()), () -> {
+			
+			ParameterizedType type = (ParameterizedType) field.getGenericType();
+			return (Class<T>) type.getActualTypeArguments()[DEFAULT_IDX];
+		});
+		
 	}
 
+	@SuppressWarnings("unchecked")
 	private static AttendanceItemLayout getLayoutAnnotation(Field field) {
 
-		return field.getAnnotation(AttendanceItemLayout.class);
+		return CACHE_HOLDER.getAndCache(StringUtils.join("LAYOUT_ANNOTATION_", field.hashCode()), 
+				() -> field.getAnnotation(AttendanceItemLayout.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	private static AttendanceItemValue getItemValueAnnotation(Field field) {
 
-		return field.getAnnotation(AttendanceItemValue.class);
+		return CACHE_HOLDER.getAndCache(StringUtils.join("VALUE_ANNOTATION_", field.hashCode()), 
+				() -> field.getAnnotation(AttendanceItemValue.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	private static AttendanceItemRoot getRootAnnotation(Field field) {
 
-		return field.getAnnotation(AttendanceItemRoot.class);
+		return CACHE_HOLDER.getAndCache(StringUtils.join("ROOT_ANNOTATION_", field.hashCode()), 
+				() -> field.getAnnotation(AttendanceItemRoot.class));
 	}
 
 	private static int getIdxInText(String text) {
 
-		String index = getIdx(text);
+		return CACHE_HOLDER.getAndCache(StringUtils.join("IDXT_", text), () -> {
+			String index = getIdx(text);
 
-		if (index.isEmpty()) {
-			return DEFAULT_IDX;
-		}
+			if (index.isEmpty()) {
+				return DEFAULT_IDX;
+			}
 
-		return Integer.valueOf(index);
+			return Integer.valueOf(index);
+		});
 	}
 
 	private static String getTextWithNoIdx(String text) {
@@ -845,30 +909,33 @@ public class AttendanceItemUtil implements ItemConst {
 
 	private static String getTextWithNoCondition(String text) {
 
-		return getTextWithNoIdx(text).split(DEFAULT_ENUM_SEPERATOR)[DEFAULT_IDX];
+		return CACHE_HOLDER.getAndCache(StringUtils.join("NOEX_", text), () -> getTextWithNoIdx(text).split(DEFAULT_ENUM_SEPERATOR)[DEFAULT_IDX]);
 	}
 
 	private static String getTextWithCondition(String text) {
+		return CACHE_HOLDER.getAndCache(StringUtils.join("FULL_", text), () -> {
 
-		String[] cons = text.split(DEFAULT_ENUM_SEPERATOR);
+			String[] cons = text.split(DEFAULT_ENUM_SEPERATOR);
 
-		return cons.length > DEFAULT_NEXT_IDX ? DEFAULT_ENUM_SEPERATOR + getTextWithNoIdx(cons[DEFAULT_NEXT_IDX])
-				: EMPTY_STRING;
+			return cons.length > DEFAULT_NEXT_IDX ? DEFAULT_ENUM_SEPERATOR + getTextWithNoIdx(cons[DEFAULT_NEXT_IDX])
+					: EMPTY_STRING;
+		});
 	}
 
 	private static String getExConditionFromString(String text) {
 
-		String[] notIdxText = text.replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING).split(DEFAULT_ENUM_SEPERATOR);
+		return CACHE_HOLDER.getAndCache(StringUtils.join("EX_", text), () -> {
+			String[] notIdxText = text.replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING).split(DEFAULT_ENUM_SEPERATOR);
 
-		if (notIdxText.length <= DEFAULT_NEXT_IDX) {
-			return EMPTY_STRING;
-		}
+			if (notIdxText.length <= DEFAULT_NEXT_IDX) {
+				return EMPTY_STRING;
+			}
 
-		return notIdxText[DEFAULT_NEXT_IDX];
+			return notIdxText[DEFAULT_NEXT_IDX];
+		});
 	}
 
 	private static String mergeLayout(String currentLayout, String fieldLayout) {
-
 		if (currentLayout.isEmpty()) {
 			return fieldLayout;
 		}
@@ -876,28 +943,41 @@ public class AttendanceItemUtil implements ItemConst {
 		return StringUtils.join(currentLayout, DEFAULT_LAYOUT_SEPERATOR, fieldLayout);
 	}
 
-	private static <T> String getExCondition(String exCondition, T object, AttendanceItemLayout layout) {
+	@SuppressWarnings("unchecked")
+	private static <T> String getExCondition(String exConditionParam, T object, AttendanceItemLayout layout) {
+		
+		String exCondition = exConditionParam == null ? EMPTY_STRING : exConditionParam;
+		
+		return CACHE_HOLDER.getAndCache(StringUtils.join("EX_", exCondition, "_", object.getClass().hashCode()), () -> {
+			String fieldExCondition = getExConditionField(object, layout);
 
-		String fieldExCondition = getExConditionField(object, layout);
+			if (!exCondition.isEmpty() && !fieldExCondition.isEmpty()) {
+				return StringUtils.join(exCondition, DEFAULT_ENUM_SEPERATOR, fieldExCondition);
+			}
 
-		if (!exCondition.isEmpty() && !fieldExCondition.isEmpty()) {
-			return StringUtils.join(exCondition, DEFAULT_ENUM_SEPERATOR, fieldExCondition);
-		}
+			if (fieldExCondition.isEmpty()) {
+				return exCondition;
+			}
 
-		if (fieldExCondition.isEmpty()) {
-			return exCondition;
-		}
+			return fieldExCondition;
+		});
+	}
+	
+	private static <T> Map<Integer, String> getExCondition(Map<Integer, String> exCondition, Map<Integer, T> object, AttendanceItemLayout layout) {
 
-		return fieldExCondition;
+		return object.entrySet().stream().collect(Collectors.toMap(c -> c.getKey(), c -> 
+		 								getExCondition(exCondition.get(c.getKey()), c.getValue(), layout)));
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> String getExConditionField(T object, AttendanceItemLayout layout) {
+		return CACHE_HOLDER.getAndCache(StringUtils.join("EXFIELD_", object.getClass().hashCode()), () -> {
+			if (!layout.needCheckIDWithMethod().isEmpty()) {
+				return ReflectionUtil.invoke(object.getClass(), object, layout.needCheckIDWithMethod());
+			}
 
-		if (!layout.needCheckIDWithMethod().isEmpty()) {
-			return ReflectionUtil.invoke(object.getClass(), object, layout.needCheckIDWithMethod());
-		}
-
-		return EMPTY_STRING;
+			return EMPTY_STRING;
+		});
 	}
 
 	public enum AttendanceItemType {
@@ -916,6 +996,23 @@ public class AttendanceItemUtil implements ItemConst {
 			this.descript = descript;
 		}
 
+	}
+	
+	private static class AttendanceItemUtilCacheHolder {
+		private final MasterShareContainer<String> cache;
+		
+		private AttendanceItemUtilCacheHolder(){
+			this.cache = MasterShareBus.open();
+		}
+		
+		public static AttendanceItemUtilCacheHolder cacheNow(){
+			return new AttendanceItemUtilCacheHolder();
+		}
+		
+		public <T> T getAndCache(String key, Supplier<T> value) {
+//			return cache.getShared(key, value);
+			return value.get();
+		}
 	}
 
 }

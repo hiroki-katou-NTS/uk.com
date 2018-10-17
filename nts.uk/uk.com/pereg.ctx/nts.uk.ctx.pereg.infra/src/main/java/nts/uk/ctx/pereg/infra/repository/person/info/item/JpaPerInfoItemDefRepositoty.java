@@ -261,6 +261,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"INNER JOIN PpemtPerInfoItemCm ic ON  i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
 			"WHERE  ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId ");
 	
+	private final static String GET_LIST_ITEM_FOR_CPS002B = String.join(" ",
+			"SELECT distinct i.itemCd",
+			"FROM PpemtPerInfoItem i",
+			"INNER JOIN PpemtPerInfoItemCm ic ON  i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
+			"WHERE  ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId and i.abolitionAtr = 0 ");
+	
 	private final static String SELECT_ITEM_CD_BY_ITEM_CD_QUERY = String.join(" ",
 			"SELECT distinct ic.ppemtPerInfoItemCmPK.itemCd",
 			"FROM PpemtPerInfoItem i INNER JOIN  PpemtPerInfoItemCm ic  ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
@@ -1130,6 +1136,36 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				}));
 
 		return result;
+	}
+
+	/**
+	 * Lấy ra danh sách item trong combobox của màn CPS002.B
+	 */
+	@Override
+	public List<PersonInfoItemDefinition> getItemLstByListIdForCPS002B(List<String> listItemDefId, String contractCd,
+			String companyId, List<String> categoryCodeLst) {
+		
+		List<PersonInfoItemDefinition> result = new ArrayList<>();
+		List<String> itemCodeAll = new ArrayList<>();
+		List<String> itemCodeChilds = this.queryProxy().query(GET_LIST_ITEM_FOR_CPS002B, String.class)
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList();
+		if(!itemCodeChilds.isEmpty()) {
+			List<String> itemCodeChildChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_CD_QUERY, String.class)
+					.setParameter("contractCd", contractCd).setParameter("itemCdLst", itemCodeChilds).getList();
+			itemCodeAll.addAll(itemCodeChilds);
+			if(!itemCodeChildChilds.isEmpty()) 
+				itemCodeAll.addAll(itemCodeChildChilds);
+		}
+		if(!itemCodeAll.isEmpty()) {
+			List<PersonInfoItemDefinition> lstItemDf=  this.queryProxy().query(SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
+					.setParameter("contractCd", contractCd)
+					.setParameter("itemCdLst", itemCodeAll)
+					.setParameter("cid", companyId)
+					.setParameter("ctgLst", categoryCodeLst)
+					.getList(c -> {return createDomainFromEntity1(c, null);});
+			return lstItemDf.stream().filter(i -> i.getIsAbolition().value == 0).collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 }
 

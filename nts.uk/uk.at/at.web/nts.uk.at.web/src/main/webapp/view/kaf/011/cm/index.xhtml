@@ -1,21 +1,27 @@
 <div id="container">
 	<div id="content_left">
-		<!-- 	<div class="div_line" id='number_Info'>
+		<div class="div_line" id='number_Info'>
 			<div class="div_line_col_1">
 				<label data-bind="text : '#{i18n.getText('KAF011_64')}'"></label>
 			</div>
 			<div class="div_line_col_2">
-				<table id="number_Info">
-					<tr>
-						<th class="bg-green">謖ｯ莨第ｮ区焚</th>
-					</tr>
-					<tr>
-						<td>CELL1</td>
-					</tr>
+				<table id="fixed-table">
+					<colgroup>
+						<col width="100px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAF006_71')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td data-bind="text:remainDays() +'日'"></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
-			<div></div>
-		</div> -->
+		</div>
 
 		<div class="div_line">
 			<div class="div_line_col_1">
@@ -272,12 +278,12 @@
 							<div>
 								<div class="div_line_col_2 working_hour"
 									data-bind='with: wkTime1 '>
-									<input
+									<input class="absWkingTime"
 										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType ,option: timeOption }" />
 									<div>#{i18n.getText('KAF011_37')}</div>
-									<input
-										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+									<input class="absWkingTime"
+										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_33')}', 
 							value: endTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType  ,option: timeOption}" />
 								</div>
 							</div>

@@ -314,7 +314,7 @@ module nts.uk.at.view.kdw002.c {
 
                     }//end else to*/
                     self.dailyServiceTypeControl(
-                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
+                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['displayNumber']))
                     );
                     console.log("convert object: " + (performance.now() - startTime));
                     dfd.resolve(self.dailyServiceTypeControl());
@@ -382,7 +382,7 @@ module nts.uk.at.view.kdw002.c {
 
                     }//end else to*/
                     self.dailyServiceTypeControl(
-                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
+                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['displayNumber']))
                     );
                     
                     dfd.resolve(self.dailyServiceTypeControl());

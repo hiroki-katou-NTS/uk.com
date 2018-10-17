@@ -186,7 +186,7 @@ public class LateTimeSheet{
 //		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
 		if(instance.isPresent()) {
-			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get()));
+			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get(),deductionTimeSheet));
 		}
 		return instance;
 	}
@@ -241,7 +241,7 @@ public class LateTimeSheet{
 					dpCopyRec.add(tc);
 				});
 				
-				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(dpCopyDed,dpCopyRec);
+				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(dpCopyDed,dpCopyRec,deductionTimeSheet.getBreakTimeOfDailyList(),deductionTimeSheet.getDailyGoOutSheet(),deductionTimeSheet.getShortTimeSheets());
 				//大塚モードか判断_現状は常に大塚モード
 				if(true) {
 					//区分が休憩の時間帯を一旦削除

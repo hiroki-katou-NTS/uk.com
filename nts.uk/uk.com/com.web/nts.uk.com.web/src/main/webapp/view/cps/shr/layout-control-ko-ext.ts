@@ -97,9 +97,6 @@ module nts.custombinding {
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
-                    html {
-                        -ms-overflow-y: hidden;
-                    }
                     .layout-control.dragable{
                         width: 1245px;
                     }
@@ -987,6 +984,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                 name: itemName,
                                 value: value,
+                                type: 'date',
                                 startDate: startDate,
                                 endDate: endDate,
                                 constraint: constraint || nameid,
@@ -1014,6 +1012,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
+                                    type: 'date',
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,
@@ -1037,6 +1036,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
+                                    type: 'date',
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,

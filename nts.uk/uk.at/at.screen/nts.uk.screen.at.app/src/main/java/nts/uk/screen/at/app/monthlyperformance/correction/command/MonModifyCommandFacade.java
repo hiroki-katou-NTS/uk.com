@@ -37,6 +37,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
@@ -77,7 +78,7 @@ public class MonModifyCommandFacade {
 			}).collect(Collectors.toList()), dataParent.getYearMonth(), item.getKey(), dataParent.getClosureId(),
 					dataParent.getClosureDate()));
 		});
-		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery);
+		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery); // lay data truoc khi update de so sanh voi data sau khi update
 		monthModifyCommandFacade.handleUpdate(listQuery);
 
 		// insert edit state
@@ -94,12 +95,12 @@ public class MonModifyCommandFacade {
 			this.monthlyPerformanceCorrectionUpdateCommand.handleAddOrUpdate(editStateOfMonthlyPerformanceDto);
 		});
 		
-		// insert sign
+		// dang ki xac nhan ban than
 		this.insertSign(dataParent);
 		
 		List<EmpPerformMonthParamImport> listRegister = new ArrayList<>();
 		List<EmpPerformMonthParamImport> listRemove = new ArrayList<>();
-		for(MPItemCheckBox mpi :dataParent.getDataCheckApproval()) {
+		for(MPItemCheckBox mpi :dataParent.getDataCheckApproval()) { //loc trang thai approve de dang ki
 			EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(new YearMonth(dataParent.getYearMonth()), dataParent.getClosureId(),
 					dataParent.getClosureDate().toDomain(), dataParent.getEndDate(), mpi.getEmployeeId());
 			if(mpi.isValue()) {
@@ -118,7 +119,7 @@ public class MonModifyCommandFacade {
 //		ExecutorService executorService = Executors.newFixedThreadPool(1);
 //		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 //				.build(() -> {
-					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery);
+					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery); // lay lai data sau khi update de so sanh voi data truoc khi update
 					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
 //				});
 //		executorService.submit(task);
@@ -135,7 +136,8 @@ public class MonModifyCommandFacade {
 			selfConfirm.add(new SelfConfirm(x.getEmployeeId(), x.isValue()));
 		});
 		ParamRegisterConfirmMonth param = new ParamRegisterConfirmMonth(ym, selfConfirm,
-				mPItemParent.getClosureId(), closureDate.getLastDayOfMonth() ? ym.lastDateInMonth() : closureDate.getClosureDay(), GeneralDate.today());
+				mPItemParent.getClosureId(), new ClosureDate(closureDate.getClosureDay(),
+						closureDate.getLastDayOfMonth()), GeneralDate.today());
 		
 		registerConfirmationMonth.registerConfirmationMonth(param);
 	}

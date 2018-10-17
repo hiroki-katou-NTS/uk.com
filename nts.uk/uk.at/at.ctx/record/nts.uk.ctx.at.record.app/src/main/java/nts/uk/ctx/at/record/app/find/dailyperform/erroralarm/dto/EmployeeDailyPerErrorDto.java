@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -47,6 +44,8 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 //	@AttendanceItemValue(type = ValueType.INTEGER)
 	private List<Integer> attendanceItemList;
 	
+	private String message;
+	
 	public static EmployeeDailyPerErrorDto getDto(EmployeeDailyPerError domain){
 		EmployeeDailyPerErrorDto dto = new EmployeeDailyPerErrorDto();
 		if(domain != null){
@@ -55,6 +54,7 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 			dto.setDate(domain.getDate());
 			dto.setEmployeeID(domain.getEmployeeID());
 			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode() == null ? null : domain.getErrorAlarmWorkRecordCode().v());
+			dto.setMessage(domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : null);
 			dto.exsistData();
 		}
 		return dto;
@@ -68,6 +68,7 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 		dto.setDate(workingDate());
 		dto.setEmployeeID(employeeId());
 		dto.setErrorCode(errorCode);
+		dto.setMessage(message);
 		if(isHaveData()){
 			dto.exsistData();
 		}
@@ -95,6 +96,6 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new EmployeeDailyPerError(companyID, employeeId, date, new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
+		return new EmployeeDailyPerError(companyID, employeeId, date, new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0, message);
 	}
 }

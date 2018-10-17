@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.TimeRange;
  * 勤怠月間時間（マイナス有り）
  * @author shuichi_ishida
  */
-@TimeRange(min = "-9999:59", max = "9999:59")
+@TimeRange(min = "-999:59", max = "999:59")
 public class AttendanceTimeMonthWithMinus extends TimeDurationPrimitiveValue<AttendanceTimeMonthWithMinus>  {
 
 	/** serialVersionUID */
@@ -20,5 +20,13 @@ public class AttendanceTimeMonthWithMinus extends TimeDurationPrimitiveValue<Att
 	public AttendanceTimeMonthWithMinus(int minutes){
 		
 		super(minutes);
+	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(0);
+		if (rawValue > 999 * 60 + 59) rawValue = 999 * 60 + 59;
+		if (rawValue < -(999 * 60 + 59)) rawValue = -(999 * 60 + 59);
+		return super.reviseRawValue(rawValue);
 	}
 }

@@ -24,7 +24,7 @@
 						<h1>Month Days Picker</h1>
 						<h2>Overview</h2>
 						<span tabindex="1" data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						<div id="monthdays" tabindex="2" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
+						<div id="monthdays" tabindex="2" data-bind="ntsMonthDays: {name: 'monthday', value: value, enable: enable, required: true}"/>
 						<input tabindex="3" data-bind="ntsNumberEditor: {value: value}"/>
 						<div>
 							<b>Localized:</b> <span data-bind="text: text"></span>

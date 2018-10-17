@@ -169,7 +169,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return;
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
-			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
+			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode() == null ? null : workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
 		boolean isStart1 = this.checkAttendenceReflect(para, 1, true);
@@ -234,7 +234,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return true;
 			}
 			TimeActualStamp attendanceStamp = optAttendanceStamp.get();
-			Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
+			Optional<WorkStamp> optActualStamp = attendanceStamp.getStamp();
 			if(!optActualStamp.isPresent()) {
 				return true;		
 			} 

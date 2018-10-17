@@ -17,7 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.GrantWork;
@@ -472,16 +472,12 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			dividedDayMap.get(nextDayOfDeadline).setLapsedAtr(true);
 		}
 		
-		// 「次回積立年休付与リスト」を「処理単位分割日リスト」に追加
+		// 「次回積立年休付与リスト」を全て「処理単位分割日リスト」に追加
 		for (val nextReserveLeaveGrant : nextReserveLeaveGrantList){
 			val grantDate = nextReserveLeaveGrant.getGrantYmd();
-			if (grantDate.beforeOrEquals(period.start().addDays(1))) continue;
+			if (grantDate.beforeOrEquals(period.start())) continue;
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 			
-			if (dividedDayMap.containsKey(grantDate)){
-				dividedDayMap.get(grantDate).setGrantAtr(true);
-				continue;
-			}
 			dividedDayMap.putIfAbsent(grantDate, new RsvLeaDividedDay(grantDate));
 			dividedDayMap.get(grantDate).setGrantAtr(true);
 			dividedDayMap.get(grantDate).setNextReserveLeaveGrant(Optional.of(NextReserveLeaveGrant.of(
@@ -564,7 +560,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		List<TmpReserveLeaveMngWork> results = new ArrayList<>();
 		
 		// 「モード」をチェック
-		if (param.getMode() == TempAnnualLeaveMngMode.MONTHLY){
+		if (param.getMode() == InterimRemainMngMode.MONTHLY){
 			// 月次モード
 			
 			// 「月次処理用の暫定残数管理データを作成する」を実行する
@@ -580,7 +576,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				results.add(TmpReserveLeaveMngWork.of(master, data));
 			}
 		}
-		if (param.getMode() == TempAnnualLeaveMngMode.OTHER){
+		if (param.getMode() == InterimRemainMngMode.OTHER){
 			// その他モード
 			
 			// 「暫定積立年休管理データ」を取得する

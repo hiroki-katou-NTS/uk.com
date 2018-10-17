@@ -99,8 +99,8 @@ public class OverTimeOfDaily {
 	
 	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, List<OverTimeFrameTime> frameTimeList
 							   ,Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime) {
-		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
-		this.overTimeWorkFrameTime = frameTimeList;
+		this.overTimeWorkFrameTimeSheet = new ArrayList<>(frameTimeSheetList);
+		this.overTimeWorkFrameTime = new ArrayList<>(frameTimeList);
 		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
 	}
 	
@@ -111,8 +111,8 @@ public class OverTimeOfDaily {
 						    FlexTime flexTime,
 						    AttendanceTime overTimeWork
 						    ) {
-		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
-		this.overTimeWorkFrameTime = frameTimeList;
+		this.overTimeWorkFrameTimeSheet = new ArrayList<>(frameTimeSheetList);
+		this.overTimeWorkFrameTime = new ArrayList<>(frameTimeList);
 		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
 		this.irregularWithinPrescribedOverTimeWork = irregularTime;
 		this.flexTime = flexTime;
