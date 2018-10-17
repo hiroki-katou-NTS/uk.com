@@ -447,8 +447,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		CollectionUtil.split(historyIds, 1000, subList -> {
 			try {
 				PreparedStatement statement = this.connection().prepareStatement(
-						"select * from BsymtEmploymentHistItem aw"
-						+ " where aw.hisId in (" 
+						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+						+ " where a.HIST_ID in (" 
 						+ NtsStatement.In.createParamsString(subList) 
 						+ ")");
 			
