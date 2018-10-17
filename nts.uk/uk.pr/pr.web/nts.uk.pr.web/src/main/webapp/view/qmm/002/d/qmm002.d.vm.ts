@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
             self.selectedCode = ko.observable(null);
             self.selectedBank = ko.observable(new Bank("", "", "", ""));
             self.selectedCode.subscribe(val => {
+                nts.uk.ui.errors.clearAll();
                 if (val == null) {
                     self.selectedBank(new Bank("", "", "", ""));
                 } else {
@@ -61,7 +62,10 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
 
         createNew() {
             let self = this;
-            self.selectedCode(null);
+            if (self.selectedCode() == null)
+                self.selectedCode.valueHasMutated();
+            else
+                self.selectedCode(null);
         }
         
         register() {
@@ -79,7 +83,12 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
                         });
                         self.dataSource(lstBank);
                         self.bankList(lstDisp);
-                        self.selectedCode(command.code);
+                        info({ messageId: "Msg_15" }).then(() => {
+                            if (self.selectedCode() == command.code)
+                                self.selectedCode.valueHasMutated();
+                            else
+                                self.selectedCode(command.code);
+                        });
                     }).fail(error => {
                         alertError(error);
                     }).always(() => {

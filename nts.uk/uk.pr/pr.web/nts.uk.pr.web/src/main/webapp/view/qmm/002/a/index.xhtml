@@ -23,13 +23,13 @@
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: createNew">#{i18n.getText('QMM002_1')}</button>
 				<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('QMM002_2')}</button>
-				<button tabindex="3">#{i18n.getText('QMM002_3')}</button>
+				<button tabindex="3" data-bind="enable: false">#{i18n.getText('QMM002_3')}</button>
 				<button tabindex="4" data-bind="click: openDialogQmm002d">#{i18n.getText('QMM002_4')}</button>
 				<button tabindex="5" data-bind="click: openDialogQmm002c">#{i18n.getText('QMM002_5')}</button>
-				<button tabindex="6">#{i18n.getText('QMM002_6')}</button>
-				<button tabindex="7" class="danger" >#{i18n.getText('QMM002_7')}</button>
+				<button tabindex="6" data-bind="enable: false">#{i18n.getText('QMM002_6')}</button>
+				<button tabindex="7" class="danger" data-bind="click: deleteBranch">#{i18n.getText('QMM002_7')}</button>
 				<button tabindex="8" class="danger" data-bind="click: openDialogQmm002b">#{i18n.getText('QMM002_8')}</button>
-				<a class="goout" tabindex="9" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('QMM002_9')}</a>
+				<a class="goout" tabindex="9" data-bind="ntsLinkButton: { jump: 'qmm/006/a/index.xhtml' }">#{i18n.getText('QMM002_9')}</a>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
@@ -40,6 +40,7 @@
 						<table id="treegridbankbranch" tabindex="11"
 							data-bind="ntsTreeGridView:{
 								width: 450,
+								name: '#[QMM002_10]',
 								dataSource: bankBranchList,
 								value: selectedCode,
 								headers: headers,
@@ -51,6 +52,7 @@
 								rows: 15,
 								initialExpandDepth: 0,
 								showCheckBox: false}"></table>
+						<span class="label" data-bind="text: totalBranches"></span>
 					</div>
 				</div>
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
@@ -112,6 +114,9 @@
 					</div>
 				</div>
 			</div>
+			<style>
+				.form-label{width: 182px}
+			</style>
 		</ui:define>
 	</ui:composition>
 </body>

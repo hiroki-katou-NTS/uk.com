@@ -11,40 +11,54 @@ public interface BankBranchRepository {
 	 * @param branchId
 	 * @return
 	 */
-	Optional<BankBranch> findBranch(String companyId, String branchId);
+	public Optional<BankBranch> findBranch(String companyId, String branchId);
 	
     /**
      * Get list of bank code
      * @param bankCode
      * @return
      */
-	List<BankBranch> findAllBranch(String companyId, BankCode bankCode);
+	public List<BankBranch> findAllBranch(String companyId, List<String> bankCodes);
+	
+	/**
+     * Get list of bank code
+     * @param bankCode
+     * @return
+     */
+	public List<BankBranch> findAllBranchByBank(String companyId, String bankCode);
 	
 	/**
 	 * Add new bank branch
 	 * @param bank branch
 	 */
     
-	void add(BankBranch bank);
+	public void addBranch(BankBranch bank);
 	
     /**
      * Update bank branch information	
      * @param branchId branch
      */
-	void update(BankBranch bank);
+	public void updateBranch(BankBranch bank);
 	
 	/**
 	 * Remove a bank branch
 	 * @param branchId branch
 	 */
-	void remove(String companyId, String branchId);
+	public void removeBranch(String companyId, String branchId);
 	
 	/**
 	 * Remove a list bank branch
-	 * @param companyCode
-	 * @param branchId
+	 * @param companyId
+	 * @param bankCode
 	 */
-	void removeAll(String companyId, List<String> branchIdList);
+	public void removeListBranch(String companyId, List<String> branchIds);
+	
+	/**
+	 * Remove a list bank branch
+	 * @param companyId
+	 * @param bankCode
+	 */
+	public void removeListBranchFromBank(String companyId, String bankCode);
 
 	/**
 	 * Check exist bank
@@ -53,6 +67,6 @@ public interface BankBranchRepository {
 	 * @param branchCode
 	 * @return
 	 */
-	boolean checkExists(String companyCode, String bankCode, String branchCode);
+	public boolean checkExistBranch(String companyCode, String bankCode, String branchCode);
 	
 }

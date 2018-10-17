@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.dom.desbank;
+package nts.uk.ctx.pr.transfer.dom.sourcebank;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import nts.uk.shr.com.primitive.Memo;
  */
 
 @Getter
-public class DestinationBank extends AggregateRoot {
+public class TransferSourceBank extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -25,12 +25,12 @@ public class DestinationBank extends AggregateRoot {
 	/**
 	 * コード
 	 */
-	private DesBankCode code;
+	private SourceBankCode code;
 
 	/**
 	 * 名称
 	 */
-	private DesBankName name;
+	private SourceBankName name;
 
 	/**
 	 * 支店ID
@@ -62,12 +62,12 @@ public class DestinationBank extends AggregateRoot {
 	 */
 	private Memo memo;
 
-	public DestinationBank(String companyId, String code, String name, String branchId, String accountNumber,
+	public TransferSourceBank(String companyId, String code, String name, String branchId, String accountNumber,
 			int accountAtr, List<EntrustorInfor> entrustorInfor, String transferRequesterName, String memo) {
 		super();
 		this.companyId = companyId;
-		this.code = new DesBankCode(code);
-		this.name = new DesBankName(name);
+		this.code = new SourceBankCode(code);
+		this.name = new SourceBankName(name);
 		this.branchId = branchId;
 		this.accountNumber = new AccountNumber(accountNumber);
 		this.accountAtr = AccountAtr.of(accountAtr);

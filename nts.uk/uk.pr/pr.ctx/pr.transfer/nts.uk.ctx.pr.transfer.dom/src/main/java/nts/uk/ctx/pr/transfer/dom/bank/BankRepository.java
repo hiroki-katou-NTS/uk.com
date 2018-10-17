@@ -11,7 +11,7 @@ public interface BankRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	List<Bank> findAllBank(String companyId);
+	public List<Bank> findAllBank(String companyId);
 
 	/**
 	 * Find bank
@@ -20,21 +20,21 @@ public interface BankRepository {
 	 * @param bankCode
 	 * @return
 	 */
-	Optional<Bank> findBank(String companyId, String bankCode);
+	public Optional<Bank> findBank(String companyId, String bankCode);
 
 	/**
 	 * Add new Bank
 	 * 
 	 * @param bank
 	 */
-	void add(Bank bank);
+	public void addBank(Bank bank);
 
 	/**
 	 * Update Bank information
 	 * 
 	 * @param bank
 	 */
-	void update(Bank bank);
+	public void updateBank(Bank bank);
 
 	/**
 	 * Remove a bank
@@ -42,6 +42,16 @@ public interface BankRepository {
 	 * @param companyCode
 	 * @param bankCode
 	 */
-	void remove(String companyId, List<String> bankCode);
+	public void removeBank(String companyId, String bankCode);
+	
+	/**
+	 * Remove list bank
+	 * 
+	 * @param companyCode
+	 * @param bankCode
+	 */
+	public void removeListBank(String companyId, List<String> bankCode);
+	
+	public boolean checkExistBank(String companyId, String bankCode);
 
 }

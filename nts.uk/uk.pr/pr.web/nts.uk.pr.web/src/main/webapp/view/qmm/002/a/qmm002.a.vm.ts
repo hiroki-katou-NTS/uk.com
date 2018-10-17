@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         bankBranchList: KnockoutObservableArray<Node>;
         selectedCode: KnockoutObservable<string>;
         headers: any;
+        totalBranches: KnockoutObservable<string> = ko.observable(getText("QMM002_12", [0]));
         
         listBank: KnockoutObservableArray<Bank> = ko.observableArray([]);
         selectedBankBranch: KnockoutObservable<BankBranch> = ko.observable(new BankBranch("", "", "", "", "", ""));
@@ -20,12 +21,12 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         updateMode: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
-            self.headers = ko.observableArray(["Item Value Header"]);
+            self.headers = ko.observableArray([getText("QMM002_11")]);
             self.bankBranchList = ko.observableArray([]);
             self.selectedCode = ko.observable(null);
             self.selectedCode.subscribe((val: string) => {
-                console.log(val);
-                if (val == null) {
+                nts.uk.ui.errors.clearAll();
+                if (_.isEmpty(val)) {
                     self.selectedBankBranch(new BankBranch("", self.selectedBank().code(), "", "", "", ""));
                     self.updateMode(false);
                 } else {
@@ -56,7 +57,7 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             block.invisible();
             service.getAllBank().done((data: Array<any>) => {
                 if (_.isEmpty(data)) {
-                    self.openDialogQmm002d();
+                    dfd.resolve();
                 } else {
                     block.invisible();
                     self.listBank(_.map(data, b => new Bank(b.code, b.name, b.kanaName, b.memo)));
@@ -75,7 +76,10 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
 
         createNew() {
             let self = this;
-            self.selectedCode(null);
+            if (self.selectedCode() == self.selectedBank().code())
+                self.selectedCode.valueHasMutated();
+            else
+                self.selectedCode(self.selectedBank().code());
         }
 
         register() {
@@ -91,7 +95,12 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                             return new Node(b.code(), b.code(), b.name(), lstBr);
                         });
                         self.bankBranchList(displayList);
-                        self.selectedCode(data);
+                        info({ messageId: "Msg_15" }).then(() => {
+                            if (self.selectedCode() == data)
+                                self.selectedCode.valueHasMutated();
+                            else
+                                self.selectedCode(data);
+                        });
                     }).fail(error => {
                         alertError(error);
                     }).always(() => {
@@ -105,12 +114,41 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             }
         }
 
-        deleteCondition() {
-            
+        deleteBranch() {
+            let self = this;
+            block.invisible();
+            let nextSelectNodeId = self.getIdToSelectAfterDelete();
+            service.checkBeforeDeleteBranch(self.selectedCode()).done(() => {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.deleteBranch(self.selectedCode()).done(() => {
+                        self.startPage().done(() => {
+                            info({ messageId: "Msg_16" }).then(() => {
+                                self.selectedCode(nextSelectNodeId);
+                            });
+                        });
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }).ifNo(() => {
+                });
+            }).fail(error => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
         }
         
         openDialogQmm002b() {
-            modal("/view/qmm/002/b/index.xhtml");
+            let self = this;
+            modal("/view/qmm/002/b/index.xhtml").onClosed(() => {
+                self.startPage().done(() => {
+                    if (self.listBank().length == 0) {
+                        self.openDialogQmm002d();
+                    }
+                });
+            });
         }
         
         openDialogQmm002c() {
@@ -120,7 +158,6 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         openDialogQmm002d() {
             let self = this;
             modal("/view/qmm/002/d/index.xhtml").onClosed(() => {
-                let self = this;
                 block.invisible();
                 service.getAllBank().done((data: Array<any>) => {
                     if (_.isEmpty(data)) {
@@ -149,6 +186,7 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                     self.bankBranchList(displayList);
                     self.selectedCode(data[0].code);
                 } else {
+                    self.totalBranches(getText("QMM002_12", [branchData.length]));
                     let displayList = _.map(data, b => {
                         let lstBr = _.filter(branchData, br => { return br.bankCode == b.code; }).map(br => { return new Node(br.id, br.code, br.name, [])});
                         return new Node(b.code, b.code, b.name, lstBr);
@@ -165,6 +203,44 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        getIdToSelectAfterDelete(): string {
+            let self = this, nextSelectNodeId = "";
+            let listNode = _.cloneDeep(self.bankBranchList());
+            listNode.forEach(n => {
+                if (!_.isEmpty(n.children)) {
+                    n.children.forEach(c => {
+                        listNode.push(c);
+                    })
+                }
+            })
+            let selectedNode: Node = _.find(listNode, n => {return n.id == self.selectedCode();});
+            if (selectedNode.id != selectedNode.code) {
+                // branch
+                let currBankNode: Node = _.find(listNode, n => {return n.id == self.selectedBank().code();});
+                if (currBankNode.children.length = 1) {
+                    nextSelectNodeId = currBankNode.id;
+                } else {
+                    let currBranchIndex = _.findIndex(currBankNode.children, b => { return b.id == selectedNode.id; });
+                    if (currBranchIndex == currBankNode.children.length - 1) { // last
+                        nextSelectNodeId = currBankNode.children[currBranchIndex - 1].id;
+                    } else {
+                        nextSelectNodeId = currBankNode.children[currBranchIndex + 1].id;
+                    }
+                }
+            } else {
+                // bank
+                if (self.listBank().length > 1) {
+                    let currBankIndex = _.findIndex(self.listBank(), b => { return b.code() == self.selectedBank().code()});
+                    if (currBankIndex == self.listBank().length - 1) { // last
+                        nextSelectNodeId = self.listBank()[currBankIndex - 1].code();
+                    } else {
+                        nextSelectNodeId = self.listBank()[currBankIndex + 1].code();
+                    }
+                }
+            }
+            return nextSelectNodeId;
+        }
     }
     
     class Node {
@@ -172,7 +248,7 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         code: string;
         name: string;
         nodeText: string;
-        children: any;
+        children: Array<Node>;
         constructor(id: string, code: string, name: string, children: Array<Node>) {
             var self = this;
             self.id = id;

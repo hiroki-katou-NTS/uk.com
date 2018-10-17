@@ -17,6 +17,7 @@ public class BankCommand {
 	private String name;
 	private String kanaName;
 	private String memo;
+	private boolean updateMode;
 
 	public Bank toDomain() {
 		return Bank.createFromJavaType(AppContexts.user().companyId(), this.code, this.name, this.kanaName, this.memo);

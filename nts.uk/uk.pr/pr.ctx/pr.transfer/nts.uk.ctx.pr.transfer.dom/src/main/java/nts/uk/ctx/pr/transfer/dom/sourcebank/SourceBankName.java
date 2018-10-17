@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.dom.desbank;
+package nts.uk.ctx.pr.transfer.dom.sourcebank;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -10,14 +10,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 
 @StringMaxLength(20)
-public class DesBankName extends StringPrimitiveValue<DesBankName> {
+public class SourceBankName extends StringPrimitiveValue<SourceBankName> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public DesBankName(String rawValue) {
+	public SourceBankName(String rawValue) {
 		super(rawValue);
 	}
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.dom.desbank;
+package nts.uk.ctx.pr.transfer.dom.sourcebank;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

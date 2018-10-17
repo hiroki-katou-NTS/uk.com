@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.dom.desbank;
+package nts.uk.ctx.pr.transfer.dom.sourcebank;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -12,17 +12,17 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  *
  */
 
-@StringMaxLength(4)
+@StringMaxLength(2)
 @StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
-public class DesBankCode extends CodePrimitiveValue<DesBankCode> {
+public class SourceBankCode extends CodePrimitiveValue<SourceBankCode> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public DesBankCode(String rawValue) {
+	public SourceBankCode(String rawValue) {
 		super(rawValue);
 	}
 

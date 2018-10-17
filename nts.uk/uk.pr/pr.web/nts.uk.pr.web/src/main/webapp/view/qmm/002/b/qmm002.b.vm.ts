@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm002.b.viewmodel {
         headers: any;
         constructor() {
             var self = this;
-            self.headers = ko.observableArray(["Item Value Header"]);
+            self.headers = ko.observableArray([getText("QMM002_11")]);
             self.bankBranchList = ko.observableArray([]);
             self.selectedBranchCodes = ko.observableArray([]);
         }
@@ -67,10 +67,15 @@ module nts.uk.pr.view.qmm002.b.viewmodel {
             let self = this;
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
-                info({ messageId: "Msg_16" }).then(() => {
-                    nts.uk.ui.windows.close();
+                service.deleteListBranch(self.selectedBranchCodes()).done(() => {
+                    info({ messageId: "Msg_16" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(error => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
                 });
-
             }).ifNo(() => {
             });
         }
