@@ -46,7 +46,7 @@ public class SalaryPerUnitPriceName extends AggregateRoot {
     /**
     * 統合コード
     */
-    private IntegrationItemCode integrationCode;
+    private Optional<IntegrationItemCode> integrationCode;
     
     /**
     * メモ
@@ -58,7 +58,7 @@ public class SalaryPerUnitPriceName extends AggregateRoot {
         this.code = new PerUnitPriceCode(code);
         this.name = new PerUnitPriceName(name);
         this.shortName = new PerUnitPriceShortName(shortName);
-        this.integrationCode = new IntegrationItemCode(integrationCode);
+        this.integrationCode = integrationCode == null ? Optional.empty() : Optional.of(new IntegrationItemCode(integrationCode));
         this.abolition = EnumAdaptor.valueOf(abolition, Abolition.class);
         this.note = note == null ? Optional.empty() : Optional.of(new Memo(note));
     }

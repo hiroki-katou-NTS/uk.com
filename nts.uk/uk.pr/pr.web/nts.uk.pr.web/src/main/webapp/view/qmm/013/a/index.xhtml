@@ -101,7 +101,7 @@
 						</div>
 						<div class="valign-center control-group">
 							<!-- 略名 -->
-							<div id="A3_6" data-bind="ntsFormLabel: {constraint: 'PerUnitPriceShortName'}">#{i18n.getText('QMM013_15')}</div>
+							<div id="A3_6" data-bind="ntsFormLabel: {required: true, constraint: 'PerUnitPriceShortName'}">#{i18n.getText('QMM013_15')}</div>
 							<!-- 単価略名 -->
 							<input id="A3_7" class="check-validate" tabindex="12"
 									data-bind="ntsTextEditor :{
@@ -109,7 +109,7 @@
 										value: shortName,
 										constraint: 'PerUnitPriceShortName',
 										option: {width: '200px'},
-										required: false,
+										required: true,
 										enable: true,
 										readonly: false}" />
 						</div>

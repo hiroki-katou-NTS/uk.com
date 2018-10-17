@@ -56,7 +56,7 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
     /**
     * 統合コード
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "INTEGRATION_CODE")
     public String integrationCode;
     
@@ -135,7 +135,7 @@ public class QpbmtPerUnitPrice extends UkJpaEntity implements Serializable
         this.name = name.getName().v();
         this.abolition = name.getAbolition().value;
         this.shortName = name.getShortName().v();
-        this.integrationCode = name.getIntegrationCode().v();
+        this.integrationCode = name.getIntegrationCode().map(i->i.v()).orElse(null);
         this.note = name.getNote().map(i->i.v()).orElse(null);
 
         this.unitPriceType = setting.getUnitPriceType().value;

@@ -50,7 +50,7 @@ public class SalaryPerUnitPriceNameDto
     
     public static SalaryPerUnitPriceNameDto fromDomain(SalaryPerUnitPriceName domain)
     {
-        return new SalaryPerUnitPriceNameDto(domain.getCid(), domain.getCode().v(), domain.getName().v(), domain.getAbolition().value, domain.getShortName().v(), domain.getIntegrationCode().v(), domain.getNote().map(i->i.v()).orElse(null));
+        return new SalaryPerUnitPriceNameDto(domain.getCid(), domain.getCode().v(), domain.getName().v(), domain.getAbolition().value, domain.getShortName().v(), domain.getIntegrationCode().map(i->i.v()).orElse(null), domain.getNote().map(i->i.v()).orElse(null));
     }
     
 }
