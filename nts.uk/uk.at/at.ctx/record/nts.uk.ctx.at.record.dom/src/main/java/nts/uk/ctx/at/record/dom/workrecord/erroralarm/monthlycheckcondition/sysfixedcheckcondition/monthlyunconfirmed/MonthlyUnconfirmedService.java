@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 /**
  * 1:月次未確認
  * @author tutk
@@ -14,5 +14,5 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 public interface MonthlyUnconfirmedService {
 	Optional<ValueExtractAlarmWR> checkMonthlyUnconfirmed(String employeeID,int yearMonth);
 	
-	List<ValueExtractAlarmWR> checkMonthlyUnconfirmeds(String employeeID,int yearMonth,Optional<IdentityProcess> identityProcess);
+	List<ValueExtractAlarmWR> checkMonthlyUnconfirmeds(String employeeID,int yearMonth,Optional<IdentityProcessUseSet> identityProcess);
 }

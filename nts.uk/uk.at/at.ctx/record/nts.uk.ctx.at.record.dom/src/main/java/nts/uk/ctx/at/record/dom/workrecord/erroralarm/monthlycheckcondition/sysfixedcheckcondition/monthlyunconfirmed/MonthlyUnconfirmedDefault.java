@@ -12,6 +12,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
@@ -70,7 +71,7 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 	
 	@Override
 	public List<ValueExtractAlarmWR> checkMonthlyUnconfirmeds(String employeeID, int yearMonth,
-			Optional<IdentityProcess> identityProcess) {
+			Optional<IdentityProcessUseSet> identityProcess) {
 		String companyID = AppContexts.user().companyId();
 		List<ValueExtractAlarmWR> lstDataReturn = new ArrayList<>();
 		// ドメインモデル「本人確認処理の利用設定」を取得する
@@ -82,7 +83,7 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 		attendanceTimeOfMonthlys = attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeID,
 				YearMonth.of(yearMonth));
 		// 「月の本人確認を利用する」をチェックする : 利用する場合
-		if (identityProcess.get().getUseMonthSelfCK() == 1) {
+		if (identityProcess.get().isUseIdentityOfMonth()) {
 			for (AttendanceTimeOfMonthly tmp : attendanceTimeOfMonthlys) {
 				// fix bug 101936 (thêm closureDate)
 				ClosureDate closureDate = new ClosureDate(tmp.getClosureDate().getClosureDay().v() + 1,
@@ -92,13 +93,13 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 				Optional<ConfirmationMonth> confirmationMonth = confirmationMonthRepo.findByKey(companyID, employeeID,
 						tmp.getClosureId(), closureDate, tmp.getYearMonth());
 				// 取得できた場合
-				if (confirmationMonth.isPresent()) {
+				if (!confirmationMonth.isPresent()) {
 					// 取得できなかった場合
 					GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth).substring(0, 4) + '-'
 							+ String.valueOf(yearMonth).substring(4, 6) + '-' + "01", "yyyy-MM-dd");
 					ValueExtractAlarmWR valueExtractAlarmWR = new ValueExtractAlarmWR(null, employeeID, date,
-							TextResource.localize("KAL010_100"), TextResource.localize("KAL010_271"),
-							TextResource.localize("KAL010_272"), null);
+							TextResource.localize("KAL010_100"), TextResource.localize("KAL010_102"),
+							TextResource.localize("KAL010_108"), null);
 					lstDataReturn.add(valueExtractAlarmWR);
 				}
 
