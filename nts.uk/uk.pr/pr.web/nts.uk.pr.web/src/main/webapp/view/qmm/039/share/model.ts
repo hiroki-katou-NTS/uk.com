@@ -174,6 +174,7 @@ module nts.uk.pr.view.qmm039.share.model {
 
     export enum MODE {
         NORMAL = 0,
-        HISTORY_UNREGISTERED = 1
+        HISTORY_UNREGISTERED = 1,
+        ADD_HISTORY = 2
     }
 }

@@ -26,8 +26,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         titleTab: KnockoutObservable<string> = ko.observable('');
         isEnableHis: KnockoutObservable<boolean> = ko.observable(true);
         itemClassLabel: KnockoutObservable<string> = ko.observable('');
-        SalBonusCate: KnockoutObservable<boolean> = ko.observable(0);
-        CategoryIndicator: KnockoutObservable<boolean> = ko.observable(0);
         selectedTab: KnockoutObservable<string>;
         salHis: any;
         dataSource: any = ko.observableArray([]);
@@ -69,19 +67,13 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode.subscribe(function (newValue) {
-                if (newValue != null) {
-                    let dto = {
-                        perValCode: newValue,
-                        empId: self.selectedItem(),
-                        cateIndicator: self.classificationCategory(),
-                        salBonusCate: self.salaryBonusCategory()
-                    }
-                    self.historyProcess(dto);
-                }
+                    self.individualPriceCode(self.dataSource()[newValue].code);
+                    self.individualPriceName(self.dataSource()[newValue].name);
+                    self.historyProcess(self.dataSource()[newValue].code);
             });
-            self.selectedHisCode = ko.observable(1);
+            self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
-                self.changeHistory(self.itemList()[newValue - 1]);
+                self.changeHistory(self.itemList()[newValue]);
             });
             self.currencyeditor = {
                 value: ko.observable(0),
@@ -202,38 +194,46 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     break;
             }
         }
+
         //TODO SELECT  ITEM CLASSFICATION
         changeItemClass(item_class: number): void {
             let self = this;
             service.getPersonalMoneyName(item_class).done(function (data) {
                 if (data.length > 0) {
                     let array = [];
+                    let index = 0;
                     _.forEach(data, function (salIndAmountName) {
-                        array.push(new Node(salIndAmountName.individualPriceCode, salIndAmountName.individualPriceName));
+                        array.push(new Node(index, salIndAmountName.individualPriceCode, salIndAmountName.individualPriceName));
+                        index++;
                     });
                     self.dataSource(array);
-
-                    let dto = {
-                        perValCode: data[0].individualPriceCode,
-                        empId: self.selectedItem(),
-                        cateIndicator: PERVALUECATECLS.SUPPLY,
-                        salBonusCate: SALBONUSCATE.SALARY
-                    }
                     self.individualPriceName(data[0].individualPriceName);
                     self.individualPriceCode(data[0].individualPriceCode);
-                    self.historyProcess(dto);
+                    self.historyProcess(data[0].individualPriceCode);
                 } else {
                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
                     self.itemList([]);
                     self.dataSource([]);
                     self.singleSelectedCode(null);
+                    self.individualPriceCode('');
+                    self.individualPriceName('');
+                    self.periodStartYM('');
+                    self.periodEndYM('');
+                    self.currencyeditor.value(null);
+
                 }
             });
         }
 
         //TODO CHANGE ITEM
-        historyProcess(dto): void {
+        historyProcess(perValCode): void {
             let self = this;
+            let dto = {
+                perValCode: perValCode,
+                empId: self.selectedItem(),
+                cateIndicator: self.classificationCategory(),
+                salBonusCate: self.salaryBonusCategory()
+            }
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
                     self.mode(MODE.NORMAL);
@@ -241,6 +241,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     for (let i = 0; i < data.period.length; i++) {
                         array.push(
                             new ItemModel(
+                                i,
                                 data.period[i].historyID,
                                 data.period[i].periodStartYm,
                                 data.period[i].periodEndYm,
@@ -355,7 +356,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.employeeList(employeeSearchs);
             return dfd.promise();
         }
-
+        //TODO TO SCREEN B
         public toScreenB(): void {
             let self = this;
             let params = {};
@@ -388,6 +389,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     } else {
                         self.currencyeditor.value(self.itemList()[0].amount);
                     }
+                    self.mode(MODE.ADD_HISTORY);
                 }
             });
         }
@@ -439,8 +441,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                    self.historyProcess(self.individualPriceCode());
                 });
-            } else {
+            } else if (self.mode() == MODE.ADD_HISTORY) {
                 let command = {
                     salIndAmountHisCommand: {
                         cateIndicator: self.classificationCategory(),
@@ -454,6 +457,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
                 service.addHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                    self.mode(MODE.NORMAL);
                 });
             }
         }
@@ -542,23 +546,27 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     }
 
     class Node {
+        index: number;
         code: string;
         name: string;
 
-        constructor(code: string, name: string) {
+        constructor(index: number, code: string, name: string) {
             var self = this;
+            self.index = index;
             self.code = code;
             self.name = name;
         }
     }
     class ItemModel {
+        index: number;
         historyID: string;
         periodStartYm: number;
         periodEndYm: number;
         period: string;
         amount: number;
 
-        constructor(historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: number) {
+        constructor(index: number, historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: number) {
+            this.index = index;
             this.historyID = historyID;
             this.periodStartYm = periodStartYm;
             this.periodEndYm = periodEndYm;

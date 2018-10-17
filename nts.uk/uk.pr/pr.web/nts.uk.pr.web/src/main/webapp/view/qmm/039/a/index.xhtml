@@ -79,7 +79,7 @@
                                 ],
                                 value: singleSelectedCode,
                                 primaryText: 'name',
-                                optionsValue: 'code',
+                                optionsValue: 'index',
                                 multiple: false,
                                 enable: true,
                                 showCheckBox: false}">
@@ -105,14 +105,14 @@
                             <!--A5_6 金額-->
                             <div id="list-box1" tabindex="9" data-bind="ntsListBox: {
                                     options: itemList,
-                                    optionsValue: 'historyID',
+                                    optionsValue: 'index',
                                     optionsText: 'period',
                                     multiple: false,
                                     value: selectedHisCode,
                                     enable: true,
                                     rows: 4,
                                     columns: [
-                                        { key: 'historyID', length: 0, hidden: true},
+                                        { key: 'index', length: 0, hidden: true},
                                         { key: 'period', length: 8 },
                                         { key: 'amount', length: 6 }
                                     ]}"></div>
