@@ -27,7 +27,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         isEnableHis: KnockoutObservable<boolean> = ko.observable(true);
         itemClassLabel: KnockoutObservable<string> = ko.observable('');
         selectedTab: KnockoutObservable<string>;
-        salHis: any;
         dataSource: any = ko.observableArray([]);
         selectedHis: KnockoutObservable<ItemModel>;
         selectedHisCode: any;
@@ -63,7 +62,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.isEnableHis(false);
                 }
             });
-            self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
             self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode.subscribe(function (newValue) {
@@ -394,18 +392,19 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             });
         }
 
+        //TODO TO SCREEN C
         public toScreenC(): void {
             let self = this;
             let params = {
                 employeeInfo: {
-                    empId: '000001',
-                    personalValcode: '000001',
+                    empId: self.selectedItem(),
+                    personalValcode: self.individualPriceCode(),
                     itemClass: self.itemClas()
                 },
                 period: {
-                    historyId: '111',
-                    periodStartYm: self.salHis.periodStartYm(),
-                    periodEndYm: self.salHis.periodEndYm()
+                    historyId: self.selectedHis().historyID,
+                    periodStartYm: self.selectedHis().periodStartYm,
+                    periodEndYm: self.selectedHis().periodEndYm
                 },
             }
             setShared("QMM039_C_PARAMS", params);
@@ -417,11 +416,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         public toScreenD(): void {
             let self = this;
             let params = {
-                empId: '000001',
-                personalValcode: '000001',
+                empId: self.selectedItem(),
+                personalValcode: self.individualPriceCode(),
                 period: {
-                    periodStartYm: self.salHis.periodStartYm(),
-                    periodEndYm: self.salHis.periodEndYm()
+                    periodStartYm: self.selectedHis().periodStartYm,
+                    periodEndYm: self.selectedHis().periodEndYm
                 },
                 itemClass: 2,
             }
