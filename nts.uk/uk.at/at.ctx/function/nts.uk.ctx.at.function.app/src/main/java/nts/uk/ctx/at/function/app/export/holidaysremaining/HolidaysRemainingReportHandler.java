@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
+import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -222,6 +223,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		List<StatusOfHolidayImported> listStatusOfHoliday = null;
 		// RequestList273
 		Map<Integer, SpecialVacationImported> mapSpecialVacation = new HashMap<>();
+        Map<Integer, SpecialVacationImported> mapSPVaCrurrentMonth = new HashMap<>();
+
 		// RequestList263
 		Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday = new HashMap<>();
 		// RequestList206
@@ -311,6 +314,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			} else {
 				mapListSpecialHoliday.put(sphdCode, new ArrayList<SpecialHolidayImported>());
 			}
+
+            // Call RequestList273
+            DatePeriod dateRange =  new DatePeriod(closureInforOpt.get().getPeriod().start(),endDate);
+            SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
+                    employeeId, dateRange, false, baseDate, sphdCode, false);
+            mapSPVaCrurrentMonth.put(sphdCode, spVaImported);
 		}
 
 		if (variousVacationControl.isChildNursingSetting()) {
@@ -326,7 +335,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
 				listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
 				listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday,
-				mapSpecialVacation, mapListSpecialHoliday, childNursingLeave, nursingLeave);
+				mapSpecialVacation, mapSPVaCrurrentMonth, mapListSpecialHoliday, childNursingLeave, nursingLeave);
 	}
 
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {

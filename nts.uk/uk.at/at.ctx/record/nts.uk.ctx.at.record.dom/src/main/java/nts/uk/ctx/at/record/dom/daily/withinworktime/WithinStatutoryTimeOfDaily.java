@@ -506,12 +506,13 @@ public class WithinStatutoryTimeOfDaily {
 	/**
 	 * 所定内休憩未取得時間を計算
 	 * @param unUseBreakTime 休憩未取得時間
+	 * @param withinBreakTime 就業時間帯に設定されている所定内の休憩時間
 	 * @param attendanceTime 
 	 * @return 休憩未取得時間
 	 */
-	public AttendanceTime calcUnUseWithinBreakTime(AttendanceTime unUseBreakTime, AttendanceTime predTime) {
+	public AttendanceTime calcUnUseWithinBreakTime(AttendanceTime unUseBreakTime, AttendanceTime predTime, AttendanceTime withinBreakTime) {
 		//所定内時間
-		AttendanceTime withinPredTime = predTime.minusMinutes(this.getActualWorkTime().valueAsMinutes());
+		AttendanceTime withinPredTime = predTime.addMinutes(withinBreakTime.valueAsMinutes()).minusMinutes(this.getActualWorkTime().valueAsMinutes());
 		if(withinPredTime.greaterThan(unUseBreakTime.valueAsMinutes())) {
 			return unUseBreakTime;
 		}

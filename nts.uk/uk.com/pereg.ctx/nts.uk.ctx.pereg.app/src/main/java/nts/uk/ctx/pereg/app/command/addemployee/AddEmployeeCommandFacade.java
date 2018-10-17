@@ -304,7 +304,7 @@ public class AddEmployeeCommandFacade {
 				break;
 			}
 			List<ComboBoxObject> comboboxs =  this.comboboxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
-					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode(),null);
+					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode(),null, false);
 			
 			if(!comboboxs.isEmpty()) {
 				Optional<ComboBoxObject> opt = comboboxs.stream().filter(i -> i.getOptionValue().equals(value)).findFirst();

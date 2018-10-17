@@ -19,11 +19,11 @@ public class InterimRemainCreateDataInputPara {
 	private String sid;
 	/**期間	 */
 	private DatePeriod dateData;
-	/**	実績(List)*/
+	/**	残数作成元情報(実績)(List)*/
 	private List<RecordRemainCreateInfor> recordData;
-	/**	予定(List)  */
+	/**	残数作成元の勤務予定(List)  */
 	private List<ScheRemainCreateInfor> scheData;
-	/**	申請(List) */
+	/**	残数作成元の申請(List) */
 	private List<AppRemainCreateInfor> appData;
 	/**	時間代休利用: True: 利用, False: 未利用 */
 	private boolean dayOffTimeIsUse;

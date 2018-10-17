@@ -29,7 +29,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid, GeneralDate startDate);
+	//List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid, GeneralDate startDate);
 	/**
 	 * 1-3.暫定休出と紐付けをしない確定代休を取得する
 	 * @param dayoffConfirmData
@@ -47,7 +47,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<LeaveManagementData> lstConfirmBreakData(String sid, GeneralDate startDate);
+	//List<LeaveManagementData> lstConfirmBreakData(String sid, GeneralDate startDate);
 	/**
 	 * 2-3.暫定代休と紐付けをしない確定休出を取得する
 	 * @param breakConfirm
