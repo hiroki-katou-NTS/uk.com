@@ -171,6 +171,14 @@ module nts.uk.ui.menu {
                             });
                             return;
                         }
+                        if (userOptions.length === 3 && i === 1) {
+                            $li.on(constants.CLICK, function () {
+                                // jump to index page of manual
+                                var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                                window.open(path);
+                            });
+                            return;
+                        }
                         $li.on(constants.CLICK, function() {
                             // TODO: Jump to login screen and request logout to server
                             nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function() {
