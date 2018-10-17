@@ -46,7 +46,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                     self.endDateString(endYM);
                 }
 
-                if (displayLastestStartHistory.length > 0) {
+                if (params.historyID) {
                     self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.WITH_HISTORY, getText('QMM039_29', [displayLastestStartHistory])));
                     self.takeoverMethod(0);
                 }
@@ -73,8 +73,9 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 }
 
             }
-
+            let historyID = getShared("QMM039_A_PARAMS").historyID;
             setShared('QMM039_B_RES_PARAMS', {
+                historyID: historyID,
                 periodStartYm: self.dateValue().startDate,
                 periodEndYm: self.dateValue().endDate,
                 takeoverMethod: self.takeoverMethod()

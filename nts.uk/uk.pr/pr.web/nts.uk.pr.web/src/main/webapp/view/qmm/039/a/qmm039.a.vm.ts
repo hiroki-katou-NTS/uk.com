@@ -366,6 +366,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         periodEndYm: self.itemList()[0].periodEndYm
                     }
                 }
+                self.openModalB(params);
             } else {
                 service.processYearFromEmp(self.individualPriceCode()).done(function (data) {
                     params = {
@@ -374,8 +375,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                             periodEndYm: 999912
                         }
                     }
+                    self.openModalB(params);
                 });
             }
+
+        }
+
+        openModalB(params){
+            let self = this;
             setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
                 let params = getShared("QMM039_B_RES_PARAMS");
