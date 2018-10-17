@@ -17,7 +17,7 @@ public interface PerTimeMonActualResultService {
 	boolean checkPerTimeMonActualResult(YearMonth yearMonth,int closureID, ClosureDate closureDate,String employeeID,AttendanceItemCondition attendanceItemCondition);
 
 	//HoiDD No.257
-	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemCondition attendanceItemCondition,
-			List<Integer> attendanceIds);
+	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemCondition attendanceItemCondition);
+			
 }
 	
