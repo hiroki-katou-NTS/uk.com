@@ -416,6 +416,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
+                self.historyProcess(self.individualPriceCode());
                 self.mode(MODE.NORMAL);
             });
         }
