@@ -56,7 +56,7 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
-		this.getEntityManager().createQuery(DELETE_BY_HISTORY_ID, BonusHealthInsuranceRate.class).setParameter("historyId", historyIds).executeUpdate();
+        if (!historyIds.isEmpty()) this.getEntityManager().createQuery(DELETE_BY_HISTORY_ID, BonusHealthInsuranceRate.class).setParameter("historyId", historyIds).executeUpdate();
 	}
 
 	@Override

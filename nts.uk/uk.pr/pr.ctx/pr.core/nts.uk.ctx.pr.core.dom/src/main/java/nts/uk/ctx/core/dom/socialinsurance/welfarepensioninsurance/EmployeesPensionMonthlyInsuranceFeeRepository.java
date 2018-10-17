@@ -1,5 +1,7 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,9 +11,10 @@ import java.util.Optional;
 public interface EmployeesPensionMonthlyInsuranceFeeRepository {
     Optional<EmployeesPensionMonthlyInsuranceFee> getEmployeesPensionMonthlyInsuranceFeeByHistoryId(String historyId);
     void deleteByHistoryIds(List<String> historyIds);
-    void add (EmployeesPensionMonthlyInsuranceFee domain);
-    void update (EmployeesPensionMonthlyInsuranceFee domain);
-    void remove (EmployeesPensionMonthlyInsuranceFee domain);
+    void add (EmployeesPensionMonthlyInsuranceFee domain, String officeCode, YearMonthHistoryItem yearMonth);
+    void update (EmployeesPensionMonthlyInsuranceFee domain, String officeCode, YearMonthHistoryItem yearMonth);
+    void remove (EmployeesPensionMonthlyInsuranceFee domain, String officeCode, YearMonthHistoryItem yearMonth);
     void updateWelfarePension(EmployeesPensionMonthlyInsuranceFee data);
     void insertWelfarePension(EmployeesPensionMonthlyInsuranceFee data);
+    void updatePreviousHistory (String officeCode, YearMonthHistoryItem yearMonth);
 }

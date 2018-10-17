@@ -17,7 +17,6 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.FundClassific
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassificationRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistory;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,9 +25,6 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class WelfareInsuranceService {
-
-	@Inject
-	private WelfarePensionInsuranceRateHistoryRepository welfarePensionInsuranceRateHistoryRepository;
 
 	@Inject
 	private BonusEmployeePensionInsuranceRateRepository bonusEmployeePensionInsuranceRateRepository;
@@ -44,8 +40,7 @@ public class WelfareInsuranceService {
 
 	public void registerWelfarePensionInsurance(String officeCode, YearMonthHistoryItem yearMonthItem, BonusEmployeePensionInsuranceRate bonusEmployeePension, EmployeesPensionMonthlyInsuranceFee employeePensonMonthly, WelfarePensionInsuranceClassification welfarePensionClassification) {
 		WelfarePensionInsuranceRateHistory welfarePensionHistory = null;
-		Optional<WelfarePensionInsuranceRateHistory> opt_welfarePensionHistory = welfarePensionInsuranceRateHistoryRepository
-				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
+		Optional<WelfarePensionInsuranceRateHistory> opt_welfarePensionHistory = welfarePensionInsuranceClassificationRepository.getWelfarePensionHistoryByOfficeCode(officeCode);
 		// Update exemption rate to null when not join fund
 		if (welfarePensionClassification.getFundClassification() == FundClassification.NOT_JOIN){
 			bonusEmployeePension.changeDataWhenNotJoinFund();
@@ -59,22 +54,21 @@ public class WelfareInsuranceService {
 			// add new history if there are no history
 			welfarePensionHistory = new WelfarePensionInsuranceRateHistory(AppContexts.user().companyId(), officeCode,
 					Arrays.asList(yearMonthItem));
-			welfarePensionInsuranceRateHistoryRepository.add(welfarePensionHistory);
-			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
+			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
 			return;
 		}
 		// delete old history 
 		welfarePensionHistory = opt_welfarePensionHistory.get();
-		welfarePensionInsuranceRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
 			// add new item to history 
 			welfarePensionHistory.add(yearMonthItem);
-			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
+			// TODO
+			// update previous history
+			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
 		} else {
 			// update if existed
-			updateWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
+			updateWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
 		}
-		welfarePensionInsuranceRateHistoryRepository.add(welfarePensionHistory);
 	}
 
 	private EmployeesPensionMonthlyInsuranceFee calculationWelfarePensionInsurance(
@@ -93,24 +87,23 @@ public class WelfareInsuranceService {
 	}
 
 	private void addWelfarePensionInsurance(BonusEmployeePensionInsuranceRate bonusEmployeePension,
-			EmployeesPensionMonthlyInsuranceFee employeePensonMonthly,
-			WelfarePensionInsuranceClassification welfarePensionClassification) {
-		bonusEmployeePensionInsuranceRateRepository.add(bonusEmployeePension);
-		employeesPensionMonthlyInsuranceFeeRepository.add(employeePensonMonthly);
-		welfarePensionInsuranceClassificationRepository.add(welfarePensionClassification);
+											EmployeesPensionMonthlyInsuranceFee employeePensonMonthly,
+											WelfarePensionInsuranceClassification welfarePensionClassification, String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusEmployeePensionInsuranceRateRepository.add(bonusEmployeePension, officeCode, yearMonth);
+		employeesPensionMonthlyInsuranceFeeRepository.add(employeePensonMonthly, officeCode, yearMonth);
+		welfarePensionInsuranceClassificationRepository.add(welfarePensionClassification, officeCode, yearMonth);
 	}
 
 	private void updateWelfarePensionInsurance(BonusEmployeePensionInsuranceRate bonusEmployeePension,
 			EmployeesPensionMonthlyInsuranceFee employeePensonMonthly,
-			WelfarePensionInsuranceClassification welfarePensionClassification) {
-		bonusEmployeePensionInsuranceRateRepository.update(bonusEmployeePension);
-		employeesPensionMonthlyInsuranceFeeRepository.update(employeePensonMonthly);
-		welfarePensionInsuranceClassificationRepository.update(welfarePensionClassification);
+			WelfarePensionInsuranceClassification welfarePensionClassification, String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusEmployeePensionInsuranceRateRepository.update(bonusEmployeePension, officeCode, yearMonth);
+		employeesPensionMonthlyInsuranceFeeRepository.update(employeePensonMonthly, officeCode, yearMonth);
+		welfarePensionInsuranceClassificationRepository.update(welfarePensionClassification, officeCode, yearMonth);
 	}
 	
 	public void updateHistory (String officeCode, YearMonthHistoryItem yearMonth) {
-		Optional<WelfarePensionInsuranceRateHistory> opt_WelfarePensionHist = welfarePensionInsuranceRateHistoryRepository
-				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
+		Optional<WelfarePensionInsuranceRateHistory> opt_WelfarePensionHist = welfarePensionInsuranceClassificationRepository.getWelfarePensionHistoryByOfficeCode(officeCode);
 		if (!opt_WelfarePensionHist.isPresent()) {
 			return;
 		}
@@ -119,12 +112,10 @@ public class WelfareInsuranceService {
 		Optional<YearMonthHistoryItem> currentSpan = welfarePensionHist.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
 		if (!currentSpan.isPresent()) return;
 		welfarePensionHist.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
-		welfarePensionInsuranceRateHistoryRepository.update(welfarePensionHist);
 	}
 	
 	public void deleteHistory (String officeCode, YearMonthHistoryItem yearMonth) {
-		Optional<WelfarePensionInsuranceRateHistory> opt_WelfarePensionHist = welfarePensionInsuranceRateHistoryRepository
-				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
+		Optional<WelfarePensionInsuranceRateHistory> opt_WelfarePensionHist = welfarePensionInsuranceClassificationRepository.getWelfarePensionHistoryByOfficeCode(officeCode);
 		if (!opt_WelfarePensionHist.isPresent()) {
 			return;
 		}
@@ -137,7 +128,6 @@ public class WelfareInsuranceService {
 			lastestHistory = welfarePensionHist.getHistory().get(0);
 			welfarePensionHist.changeSpan(welfarePensionHist.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
-		welfarePensionInsuranceRateHistoryRepository.remove(welfarePensionHist);
 		bonusEmployeePensionInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		employeesPensionMonthlyInsuranceFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		welfarePensionInsuranceClassificationRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));

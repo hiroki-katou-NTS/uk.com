@@ -11,6 +11,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployee
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionContributionRate;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 @Stateless
 public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepository implements BonusEmployeePensionInsuranceRateRepository {
@@ -31,7 +32,7 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
         EmployeesPensionContributionRate femaleContributionRate = new EmployeesPensionContributionRate(entity.femaleIndividualBurdenRatio, entity.femaleEmployeeContributionRatio, entity.femaleIndividualExemptionRate, entity.femaleEmployerExemptionRate);
         EmployeesPensionClassification fractionClassification   = new EmployeesPensionClassification(entity.personalFraction, entity.businessOwnerFraction);
         return new BonusEmployeePensionInsuranceRate(
-                entity.historyId,
+                entity.welfarePenBonusPk.historyId,
                 entity.employeeShareAmountMethod,
                 maleContributionRate,
                 femaleContributionRate,
@@ -44,17 +45,22 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
 	}
 	
 	@Override
-	public void add(BonusEmployeePensionInsuranceRate domain) {
-		this.commandProxy().insert(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	public void add(BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth) {
+		this.commandProxy().insert(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain, officeCode, yearMonth));
 	}
 	
 	@Override
-	public void update(BonusEmployeePensionInsuranceRate domain) {
-		this.commandProxy().update(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	public void update(BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth) {
+		this.commandProxy().update(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain, officeCode, yearMonth));
 	}
 	
 	@Override
-	public void remove(BonusEmployeePensionInsuranceRate domain) {
-		this.commandProxy().remove(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	public void remove(BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth) {
+		this.commandProxy().remove(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain, officeCode, yearMonth));
+	}
+
+	@Override
+	public void updatePreviousHistory(String officeCode, YearMonthHistoryItem yearMonth) {
+
 	}
 }
