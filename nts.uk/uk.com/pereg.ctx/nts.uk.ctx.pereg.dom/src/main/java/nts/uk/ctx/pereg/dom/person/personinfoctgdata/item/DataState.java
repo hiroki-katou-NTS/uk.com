@@ -47,12 +47,10 @@ public class DataState extends AggregateRoot {
 	}
 
 	public static DataState createFromStringValue(String value) {
-
 		return StringValue.createFromJavaType(value);
 	}
 
 	public static DataState createFromDateValue(GeneralDate value) {
-
 		return DateValue.createFromJavaType(value);
 	}
 

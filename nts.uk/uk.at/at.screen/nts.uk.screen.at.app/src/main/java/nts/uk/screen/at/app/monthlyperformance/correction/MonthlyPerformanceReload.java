@@ -287,8 +287,7 @@ public class MonthlyPerformanceReload {
 		if (screenDto.getIdentityProcess().getUseMonthSelfCK() == 1) {
 			// 月の本人確認を取得する
 			listConfirmationMonth = this.confirmationMonthRepository.findBySomeProperty(listEmployeeIds,
-					yearMonth, screenDto.getClosureDate().getLastDayOfMonth()
-							? new YearMonth(yearMonth).lastDateInMonth() : screenDto.getClosureDate().getClosureDay(),
+					yearMonth, screenDto.getClosureDate().getClosureDay(), screenDto.getClosureDate().getLastDayOfMonth(),
 					closureId);
 		}
 
