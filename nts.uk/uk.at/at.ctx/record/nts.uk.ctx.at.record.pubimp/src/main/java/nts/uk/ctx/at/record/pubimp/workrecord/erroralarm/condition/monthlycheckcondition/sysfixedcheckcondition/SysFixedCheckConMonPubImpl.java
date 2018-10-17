@@ -56,8 +56,8 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 	public List<ValueExtractAlarmWRPubExport> checkMonthlyUnconfirmeds(String employeeID, int yearMonth,IdentityConfirmProcessExport identityExport) {
 		Optional<IdentityProcess> identityProcess = Optional.empty();
 		if (identityExport != null) {
-			identityProcess = Optional.of(IdentityProcess.createFromJavaType(identityExport.getCid(), identityExport.getUseDailySelfCk(),
-					identityExport.getUseMonthSelfCK(), identityExport.getYourselfConfirmError()));
+//			identityProcess = Optional.of(IdentityProcess.createFromJavaType(identityExport.getCompanyId(), identityExport.isUseConfirmByYourself(),
+//					identityExport.getUseMonthSelfCK(), identityExport.getYourselfConfirmError()));
 		}
 		List<ValueExtractAlarmWR> datas = monthlyUnconfirmedService.checkMonthlyUnconfirmeds(employeeID, yearMonth,identityProcess);
 		List<ValueExtractAlarmWRPubExport> lstReturn = new ArrayList<>();
