@@ -26,7 +26,7 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             service.findForScreenJ(param).done(function(data) {
                 self.items(_.sortBy(_.map(data, (item) => {
                     return new ItemModel(item);
-                }), ['code']));
+                }), ['itemType','frameNo']));
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -56,10 +56,14 @@ module nts.uk.at.view.kmf004.j.viewmodel {
 
     class ItemModel {
         code: string;
+        frameNo: number;
+        itemType: string;
         name: string;
         constructor(data) {
             if (data) {
                 this.code = data.itemType+data.specialHdFrameNo;
+                this.itemType = data.itemType;
+                this.frameNo = data.specialHdFrameNo
                 this.name = data.specialHdFrameName;
             }
         }

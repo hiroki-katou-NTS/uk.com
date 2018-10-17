@@ -363,12 +363,12 @@ module nts.uk.at.view.kaf007.share {
                 self.workTypeName = ko.observable('');
                 self.workTimeCode = ko.observable('');
                 self.workTimeName = ko.observable('');
-                self.startTime1 = ko.observable(0);
-                self.endTime1 = ko.observable(0);
-                self.startTime2 = ko.observable(0);
-                self.endTime2 = ko.observable(0);
-                self.breakTimeStart = ko.observable(0);
-                self.breakTimeEnd = ko.observable(0);
+                self.startTime1 = ko.observable(null);
+                self.endTime1 = ko.observable(null);
+                self.startTime2 = ko.observable(null);
+                self.endTime2 = ko.observable(null);
+                self.breakTimeStart = ko.observable(null);
+                self.breakTimeEnd = ko.observable(null);
             }
         }
         /*export enum WorkChangeType{
