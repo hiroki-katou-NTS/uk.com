@@ -1246,8 +1246,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                             || updateAll) {
                                             let itemId = self.getItemIdFromColumnKey(cell.columnKey);
                                             let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
-                                            if (itemValue)
-                                                $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                            if (itemValue) {
+                                                let itemCalcTemp = _.find(data.lstCellStateCalc, itemCalc =>{
+                                                    return itemCalc.rowId ==  "_" +row.id && itemCalc.columnKey == cell.columnKey;
+                                                })
+                                                if (itemCalcTemp != undefined) {
+                                                    $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
+                                                } else {
+                                                    $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                }
+                                            }
                                                // $("#dpGrid").mGrid("setState", "_" + row.id, cell.columnKey, ["mgrid-calc"]);
                                         }
                                     }
