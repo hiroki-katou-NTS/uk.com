@@ -703,7 +703,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		FixedWorkSetting fixedWorkSetting = FixedWorkSettingOptional.get();
 		if (weekdayHolidayClassification == 0) {
 			fixedWorkSetting.getLstHalfDayWorkTimezone().stream().forEach(fhdwt -> {
-				if ((fhdwt.getDayAtr() == AmPmAtr.ONE_DAY) || 
+				if ((fhdwt.getDayAtr() == AmPmAtr.ONE_DAY && checkWorkDay == WorkStyle.ONE_DAY_WORK) || 
 						(fhdwt.getDayAtr() == AmPmAtr.AM && checkWorkDay == WorkStyle.MORNING_WORK)
 						|| (fhdwt.getDayAtr() == AmPmAtr.PM && checkWorkDay == WorkStyle.AFTERNOON_WORK)) {
 					List<DeductionTime> timezones = fhdwt.getRestTimezone().getLstTimezone();
@@ -713,8 +713,8 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			return true;
 		} 
 		
-		breakTimeZoneSettingOutPut.getLstTimezone().addAll(fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone());
-		return true;
+		//breakTimeZoneSettingOutPut.getLstTimezone().addAll(fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone());
+		return false;
 	}
 
 	// 休出かどうかの判断
