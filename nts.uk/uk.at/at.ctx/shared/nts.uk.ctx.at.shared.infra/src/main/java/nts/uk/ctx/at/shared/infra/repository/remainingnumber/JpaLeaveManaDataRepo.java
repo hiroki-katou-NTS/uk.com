@@ -57,7 +57,7 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	
 	private String QUERY_BYSIDYMD = "SELECT l FROM KrcmtLeaveManaData l"
 			+ " WHERE l.cID = :cid AND l.sID =:employeeId"
-			+ " AND (l.dayOff < :dayOff OR l.dayOff is null"
+			+ " AND (l.dayOff < :dayOff OR l.dayOff is null)"
 			+ " AND (l.unUsedDays > 0 OR l.unUsedTimes >0)"
 			+ " AND l.subHDAtr = :subHDAtr ";
  	@Override
