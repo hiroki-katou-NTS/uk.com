@@ -54,6 +54,12 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			+ "AND m.SUB_HD_ATR = ?subHDAtr"
 			+ " AND (((MONTH(m.DAYOFF_DATE) + ?deadlMonth) >= ?currentMonth AND  MONTH(m.DAYOFF_DATE) <= ?currentMonth AND YEAR(m.DAYOFF_DATE) = ?currentYear)"
 						+ " OR (12 - (MONTH(m.DAYOFF_DATE)) + ?currentMonth <= ?deadlMonth AND YEAR(m.DAYOFF_DATE) = (?currentYear - 1))) ";
+	
+	private String QUERY_BYSIDYMD = "SELECT l FROM KrcmtLeaveManaData l"
+			+ " WHERE l.cID = :cid AND l.sID =:employeeId"
+			+ " AND (l.dayOff < :dayOff OR l.dayOff is null"
+			+ " AND (l.unUsedDays > 0 OR l.unUsedTimes >0)"
+			+ " AND l.subHDAtr = :subHDAtr ";
  	@Override
 	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
 		return (Integer) this.getEntityManager()
@@ -297,6 +303,19 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	@Override
 	public void deleteById(List<String> leaveId) {
 		this.commandProxy().removeAll(KrcmtLeaveManaData.class, leaveId);
+	}
+
+
+
+	@Override
+	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYSIDYMD, KrcmtLeaveManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("dayOff", ymd)
+				.setParameter("subHDAtr", state.value)
+				.getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
 }
