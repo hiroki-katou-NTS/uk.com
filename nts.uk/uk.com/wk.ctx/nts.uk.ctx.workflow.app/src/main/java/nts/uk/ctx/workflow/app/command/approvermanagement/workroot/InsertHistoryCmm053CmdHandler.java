@@ -5,6 +5,8 @@ import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -29,6 +31,8 @@ public class InsertHistoryCmm053CmdHandler extends CommandHandler<HistoryCmm053C
 		if (!command.isHasAuthority()) {
 			dailyApproverId = departmentApproverId;
 		}
-		this.insertHistoryCmm053Service.insertHistoryByManagerSetting(companyId, historyId, employeeId, startDate, departmentApproverId, dailyApproverId);
+		this.insertHistoryCmm053Service.insertHistoryByManagerSetting(companyId, historyId, employeeId, startDate, 
+				departmentApproverId, 
+				Strings.isBlank(dailyApproverId) ? departmentApproverId : dailyApproverId);
 	}
 }

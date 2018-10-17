@@ -4,10 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.processbatch;
 
-import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateful;
@@ -19,10 +17,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeSetGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.DataRegisterBasicSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommandHandler;
@@ -32,25 +27,14 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
-import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -163,7 +147,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		
 		GeneralDate startDate = command.getStartDate();
 		GeneralDate endDate = command.getEndDate();
-		DatePeriod period = new DatePeriod(startDate, endDate);
 		
 		DataRegisterBasicSchedule dataRegisterBasicSchedule = new DataRegisterBasicSchedule();
 		dataRegisterBasicSchedule.setModeDisplay(1);
@@ -172,57 +155,74 @@ public class ScheBatchCorrectExecutionCommandHandler
 		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
-			 	
 			EmployeeDto employeeDto = scEmployeeAdapter.findByEmployeeId(employeeId);
-			
 			GeneralDate currentDateCheck = startDate;
-			// 開始日から終了日までループ
-			while (currentDateCheck.compareTo(endDate) <= 0) {
-				// check is client submit cancel ［中断］(Interrupt)
-				if (asyncTask.hasBeenRequestedToCancel()) {
-					asyncTask.finishedAsCancelled();
-					
-					return;
-				}
-				
-				Optional<String> optErrorMsg = getCheckScheduleUpdate(companyId, employeeId, currentDateCheck);
-				
-				if (optErrorMsg.isPresent()) {
-					
-					// Create and add error content to the errors list
-					ErrorContentDto errorContentDto = new ErrorContentDto();
-					errorContentDto.setMessage(optErrorMsg.get());
-					errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
-					errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
-					errorContentDto.setDateYMD(currentDateCheck);
-					
-					// Add to error list (save to DB every 5 error records)
-					if (errorList.size() >= MAX_ERROR_RECORD) {
-						errorRecordCount++;
-						setter.setData(DATA_PREFIX + errorRecordCount, dto);
+			try {
+				// 開始日から終了日までループ
+				while (currentDateCheck.compareTo(endDate) <= 0) {
+					// check is client submit cancel ［中断］(Interrupt)
+					if (asyncTask.hasBeenRequestedToCancel()) {
+						asyncTask.finishedAsCancelled();
 						
-						// Clear the list for the new batch of error record
-						errorList.clear();
+						return;
 					}
-					errorList.add(errorContentDto);
-					setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
-					if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
-				} else {
-					// Create a new basic schedule register command
-					RegisterBasicScheduleCommand registerBasicScheduleCommand = new RegisterBasicScheduleCommand();
-					registerBasicScheduleCommand.setConfirmedAtr(DEFAULT_VALUE);
-					registerBasicScheduleCommand.setDate(currentDateCheck);
-					registerBasicScheduleCommand.setEmployeeId(employeeId);
-					registerBasicScheduleCommand.setWorkTimeCode(command.getWorktimeCode());
-					registerBasicScheduleCommand.setWorkTypeCode(command.getWorktypeCode());
-					lstRegisterBasicScheduleCommand.add(registerBasicScheduleCommand);
 					
-					countSuccess++;
-					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+					Optional<String> optErrorMsg = getCheckScheduleUpdate(companyId, employeeId, currentDateCheck);
+					
+					if (optErrorMsg.isPresent()) {
+						
+						// Create and add error content to the errors list
+						ErrorContentDto errorContentDto = new ErrorContentDto();
+						errorContentDto.setMessage(optErrorMsg.get());
+						errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
+						errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
+						errorContentDto.setDateYMD(currentDateCheck);
+						
+						// Add to error list (save to DB every 5 error records)
+						if (errorList.size() >= MAX_ERROR_RECORD) {
+							errorRecordCount++;
+							setter.setData(DATA_PREFIX + errorRecordCount, dto);
+							
+							// Clear the list for the new batch of error record
+							errorList.clear();
+						}
+						errorList.add(errorContentDto);
+						setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
+						if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
+					} else {
+						// Create a new basic schedule register command
+						RegisterBasicScheduleCommand registerBasicScheduleCommand = new RegisterBasicScheduleCommand();
+						registerBasicScheduleCommand.setConfirmedAtr(DEFAULT_VALUE);
+						registerBasicScheduleCommand.setDate(currentDateCheck);
+						registerBasicScheduleCommand.setEmployeeId(employeeId);
+						registerBasicScheduleCommand.setWorkTimeCode(command.getWorktimeCode());
+						registerBasicScheduleCommand.setWorkTypeCode(command.getWorktypeCode());
+						lstRegisterBasicScheduleCommand.add(registerBasicScheduleCommand);
+						
+						countSuccess++;
+						setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+					}
+					
+					// Add 1 more day to current day
+					currentDateCheck = currentDateCheck.nextValue(true);
 				}
-				
-				// Add 1 more day to current day
-				currentDateCheck = currentDateCheck.nextValue(true);
+			} catch (Exception e) {
+				ErrorContentDto errorContentDto = new ErrorContentDto();
+				errorContentDto.setMessage(e.getMessage());
+				errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
+				errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
+				errorContentDto.setDateYMD(currentDateCheck);
+				// Add to error list (save to DB every 5 error records)
+				if (errorList.size() >= MAX_ERROR_RECORD) {
+					errorRecordCount++;
+					setter.setData(DATA_PREFIX + errorRecordCount, dto);
+					
+					// Clear the list for the new batch of error record
+					errorList.clear();
+				}
+				errorList.add(errorContentDto);
+				setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
+				if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
 			}
 		}
 		

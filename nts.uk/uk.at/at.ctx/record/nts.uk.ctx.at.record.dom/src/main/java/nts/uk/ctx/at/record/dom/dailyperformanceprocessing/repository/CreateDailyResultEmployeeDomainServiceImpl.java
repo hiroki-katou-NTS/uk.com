@@ -356,7 +356,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
 			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
@@ -366,7 +366,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 		List<ProcessState> process = new ArrayList<>();
 		
-		this.managedParallelWithContext.forEach(executeDate , day -> {
+		for(GeneralDate day: executeDate) {
 
 			// 締めIDを取得する
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
@@ -378,7 +378,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			if (day.afterOrEquals(employmentHisOptional.get().getPeriod().end())
 					&& day.beforeOrEquals(employmentHisOptional.get().getPeriod().start())) {
 				process.add(ProcessState.SUCCESS);
-				return;
+				break;
 			} else {
 				EmployeeAndClosureOutput employeeAndClosureDto = new EmployeeAndClosureOutput();
 				if (employmentHisOptional.get().getEmploymentCode()
@@ -418,10 +418,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
 //					asyncContext.finishedAsCancelled();
 					process.add(ProcessState.INTERRUPTION);
-					return;
+					break;
 				}
 			}
-		});
+		}
 		if(process.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0){
 			return ProcessState.INTERRUPTION;
 		}

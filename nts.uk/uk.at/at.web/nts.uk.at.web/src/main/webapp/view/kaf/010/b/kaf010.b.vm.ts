@@ -733,6 +733,24 @@ module nts.uk.at.view.kaf010.b {
             CaculationTime(){
                     let self = this;
                     let dfd = $.Deferred();
+                
+                    if (nts.uk.util.isNullOrEmpty(self.appDate())) {
+                        dialog.alertError({ messageId: "Msg_959" });
+                        return;
+                    }
+                    $(".breakTimesCheck").ntsError('clear');
+                    $("#inpStartTime1").trigger("validate");
+                    $("#inpEndTime1").trigger("validate");
+                    //return if has error
+                    if (nts.uk.ui.errors.hasError()) { return; }
+                    if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
+                        return;
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+                        if (!self.validateTime(self.timeStart2(), self.timeEnd2(), '#inpStartTime2')) {
+                            return;
+                        };
+                    }
                     let param : any ={
                         breakTimes: _.map(ko.toJS(self.breakTimes()), item => {return self.initCalculateData(item);}),
                         //bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
@@ -758,6 +776,7 @@ module nts.uk.at.view.kaf010.b {
                             workClockTo2: self.timeEnd2(),
                             breakTimes:  ko.toJS(self.breakTimes())
                         }
+                    
                     nts.uk.ui.block.invisible();
                     service.getCaculationResult(param).done(function(data){
                            

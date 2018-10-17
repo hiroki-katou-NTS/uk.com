@@ -75,9 +75,25 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER = 
+			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = 'companyID' " +
+			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+			"AND appRoot.ROOT_TYPE = rootType " +
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
+	
+	private final String DELETE_PHASE_APPROVER_FROM_DATE = 
+			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = 'companyID' " +
+			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+			"AND appRoot.ROOT_TYPE = rootType " +
+			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+	
+	private final String DELETE_FRAME_APPROVER_FROM_DATE = 
 			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
 			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
 			"WHERE appRoot.CID = 'companyID' " +
@@ -96,7 +112,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE CID = 'companyID' " +
 			"AND EMPLOYEE_ID = 'employeeID' " +
 			"AND ROOT_TYPE = rootType " +
-			"AND RECORD_DATE >= 'recordDate' ";
+			"AND RECORD_DATE = 'recordDate' ";
 	
 	private final String DELETE_PHASE_APPROVER_FOR_424 = 
 			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
@@ -104,7 +120,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER_FOR_424 = 
 			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
@@ -112,7 +128,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String FIND_BY_EMP_MONTH = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
@@ -486,5 +502,32 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 				rs.getString("REPRESENTER_ID"), 
 				rs.getGeneralDate("APPROVAL_DATE"));
 			
+	}
+
+	@Override
+	public void clearStatusFromDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType) {
+		String query1 = DELETE_PHASE_APPROVER_FROM_DATE.replaceAll("employeeID", employeeID);
+		query1 = query1.replaceAll("companyID", companyID);
+		query1 = query1.replaceAll("rootType", String.valueOf(rootType.value));
+		query1 = query1.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		String query2 = DELETE_FRAME_APPROVER_FROM_DATE.replaceAll("employeeID", employeeID);
+		query2 = query2.replaceAll("companyID", companyID);
+		query2 = query2.replaceAll("rootType", String.valueOf(rootType.value));
+		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			PreparedStatement pstatement1 = con.prepareStatement(query1);
+			pstatement1.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
+		try {
+			PreparedStatement pstatement2 = con.prepareStatement(query2);
+			pstatement2.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
 	}
 }

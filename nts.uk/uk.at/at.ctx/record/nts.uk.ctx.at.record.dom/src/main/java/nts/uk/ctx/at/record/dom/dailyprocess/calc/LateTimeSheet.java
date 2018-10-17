@@ -186,7 +186,7 @@ public class LateTimeSheet{
 //		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
 		if(instance.isPresent()) {
-			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get()));
+			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get(),deductionTimeSheet));
 		}
 		return instance;
 	}

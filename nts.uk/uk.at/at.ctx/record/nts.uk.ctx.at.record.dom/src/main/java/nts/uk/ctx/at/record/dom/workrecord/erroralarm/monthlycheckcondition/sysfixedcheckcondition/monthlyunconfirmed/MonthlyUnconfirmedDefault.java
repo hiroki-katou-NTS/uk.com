@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepos
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
@@ -50,9 +51,12 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 		if(identityProcess.get().getUseMonthSelfCK() == 1) {
 			for (AttendanceTimeOfMonthly tmp : attendanceTimeOfMonthlys) {
 				Day dayClousre = new Day(tmp.getClosureDate().getClosureDay().v() + 1);
+				// fix bug 101936 (thêm closureDate)
+				ClosureDate closureDate = new ClosureDate(tmp.getClosureDate().getClosureDay().v() + 1, tmp.getClosureDate().getLastDayOfMonth());
 				// ドメインモデル「月の本人確認」を取得する
+				// fix bug 101936
 				Optional<ConfirmationMonth> confirmationMonth = confirmationMonthRepo.findByKey(companyID, employeeID,
-						tmp.getClosureId(), dayClousre, tmp.getYearMonth());
+						tmp.getClosureId(), closureDate, tmp.getYearMonth());
 				// 取得できた場合
 				if (!confirmationMonth.isPresent()) {
 					return Optional.empty();

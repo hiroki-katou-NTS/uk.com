@@ -73,6 +73,10 @@ public class RegisterLayoutFinder {
 	
 	private static final String END_DATE_NAME = "終了日";
 	
+	// biến này dùng để tính baseDate là ngày nào, 
+	// là ngày vào công ty hay là ngày start date của category, ko cần dùng static
+	private GeneralDate baseDate = null;
+	
 	/**
 	 * get Layout Dto by create type
 	 * 
@@ -161,7 +165,7 @@ public class RegisterLayoutFinder {
 			if (!perInfoCategory.isPresent()) {
 				throw new RuntimeException("invalid PersonInfoCategory");
 			}
-			if(createType == 2) {
+			if(createType == 2 || createType == 1) {
 				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(perInfoCategory.get().getCategoryCode().toString())).findFirst();
 				if(dateRangeOp.isPresent()) {
 					DateRangeDto period = dateRangeOp.get();
@@ -172,16 +176,17 @@ public class RegisterLayoutFinder {
 					}
 				}
 			}
+			baseDate = hireDate;
 			for (LayoutPersonInfoClsDto classItem : entry.getValue()) {
-				List<LayoutPersonInfoValueDto> items = new ArrayList<>();
-				for(PerInfoItemDefDto itemDef :classItem.getListItemDf()) {
+				List<LayoutPersonInfoValueDto> items = classItem.getListItemDf().stream().map(itemDef -> {
 					Optional<SettingItemDto> dataServerItemOpt = dataServer.stream()
 							.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
-					items.add(createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, hireDate, perInfoCategory.get(),workPlaceId));
-					
-				}	
+					return createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, baseDate, perInfoCategory.get(),workPlaceId);
+				}).collect(Collectors.toList());
+				
 				// clear definitionItem's list
 				classItem.getListItemDf().clear();
+
 				classItem.setItems(items);
 			}
 			hireDate = hireDateOld;
@@ -219,7 +224,7 @@ public class RegisterLayoutFinder {
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				List<ComboBoxObject> comboValues = cbbfact.getComboBox(selectionItemDto, null, hireDate,
 						item.isRequired(), perInfoCategory.getPersonEmployeeType(), isDataType6,
-						perInfoCategory.getCategoryCode().v(), workPlaceId);
+						perInfoCategory.getCategoryCode().v(), workPlaceId, false);
 				item.setLstComboBoxValue(comboValues);
 
 				// value of item in comboBox is string

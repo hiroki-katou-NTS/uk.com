@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 680, height: 730 };</script>
+				<script>var dialogSize = { width: 680, height: 750 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kdl005.a.start.js" />
 				<com:scriptfile path="kdl005.a.vm.js" />
@@ -83,27 +83,28 @@
 								</com:ko-foreach>
 							</tbody>
 						</table>
-						
-						<table class="summary-table">
+					<div>
+						<div style="display: inline-block; margin-top: 5px">#{i18n.getText('KDL005_31')}</div>
+						<div data-bind="text:expirationDateText"
+							style="display: inline-block;"></div>
+					</div>
+					<div>#{i18n.getText('KDL005_32')}</div>
+					<table class="summary-table">
 							<tr>
 								<td width="100px">#{i18n.getText('KDL005_13')}</td>
-								<td width="60px"><label><span data-bind="text: value01"></span></label></td>
-								<td width="80px"></td>
+								<td width="100px"><label><span data-bind="text: value01"></span></label></td>
 							</tr>
 							<tr>
 								<td>#{i18n.getText('KDL005_14')}</td>
 								<td><label><span data-bind="text: value02"></span></label></td>
-								<td><label><span data-bind="text: hint02"></span></label></td>
 							</tr>
 							<tr>
 								<td>#{i18n.getText('KDL005_15')}</td>
 								<td><label><span data-bind="text: value03"></span></label></td>
-								<td><label><span data-bind="text: hint03"></span></label></td>
 							</tr>
 							<tr>
 								<td>#{i18n.getText('KDL005_16')}</td>
 								<td><label><span data-bind="text: value04"></span></label></td>
-								<td><label><span data-bind="text: hint04"></span></label></td>
 							</tr>
 						</table>
 					</div>
