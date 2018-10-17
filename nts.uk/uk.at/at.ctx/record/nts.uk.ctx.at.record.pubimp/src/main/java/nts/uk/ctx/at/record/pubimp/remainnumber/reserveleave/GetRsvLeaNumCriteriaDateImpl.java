@@ -98,7 +98,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 		// 「暫定積立年休管理データ」を取得する
 		List<TmpReserveLeaveMngExport> tmpManageList = new ArrayList<>();
 		val interimRemains = this.interimRemainRepo.getRemainBySidPriod(
-				employeeId, new DatePeriod(GeneralDate.min(), criteria), RemainType.FUNDINGANNUAL);
+				employeeId, new DatePeriod(GeneralDate.min(), GeneralDate.max()), RemainType.FUNDINGANNUAL);
 		interimRemains.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		for (val interimRemain : interimRemains){
 			val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());

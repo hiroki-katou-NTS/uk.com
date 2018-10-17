@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import javax.persistence.criteria.Root;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
@@ -443,14 +445,39 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		}
 		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 		CollectionUtil.split(historyIds, 1000, subList -> {
-			listHistItem.addAll(this.queryProxy().query(SELECT_BY_HISTIDS, BsymtEmploymentHistItem.class)
-					.setParameter("historyId", subList).getList());
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"select * from BsymtEmploymentHistItem aw"
+						+ " where aw.hisId in (" 
+						+ NtsStatement.In.createParamsString(subList) 
+						+ ")");
+			
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 1, subList.get(i));
+				}
+				
+				List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
+					entity.hisId = rec.getString("HIST_ID");
+					entity.sid = rec.getString("SID");
+					entity.empCode = rec.getString("EMP_CD");
+					entity.salarySegment  = rec.getInt("SALARY_SEGMENT");
+					return entity;
+				});
+				
+				listHistItem.addAll(results);
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
+			
 		});
 		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	
 	}
-
+//
+//	"SELECT aw FROM BsymtEmploymentHistItem aw"
+//	+ " WHERE aw.hisId IN :historyId"
 //	@Override
 //	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
 //			List<String> employmentCodes) {
