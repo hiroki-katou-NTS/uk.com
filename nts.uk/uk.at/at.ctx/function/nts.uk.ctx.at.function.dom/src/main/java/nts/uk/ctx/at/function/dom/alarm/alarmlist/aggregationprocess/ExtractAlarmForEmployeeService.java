@@ -62,6 +62,11 @@ public class ExtractAlarmForEmployeeService {
 		ApprovalProcessImport appovalProcess = approvalProcessAdapter.getApprovalProcess(comId);
 		IdentityConfirmProcessImport identConfrimProcess= identityConfirmProcessAdapter.getIdentityConfirmProcess(comId);
 		
+		for (CheckCondition checkCondition : checkConList) {
+			if(checkCondition.isAgrrement()){
+				
+			}
+		}
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
 			// get Period by category

@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement;
 
+import java.util.List;
+
 import lombok.Value;
+
 
 /**
  * 
@@ -9,29 +12,15 @@ import lombok.Value;
  */
 @Value
 public class ApprovalProcessImport {
+	
+	private String companyId;
 
-	/**
-	 * 会社ID
-	 */
-	private String cid;
+	private Boolean useDayApproverConfirm;
 
-	/**
-	 * 職位ID
-	 */
-	private String jobTitleId;
+	private Boolean useMonthApproverConfirm;
 
-	/**
-	 * 日の承認者確認を利用する
-	 */
-	private int useDailyBossChk;
+	private List<String> lstJobTitleNotUse;
 
-	/**
-	 * 月の承認者確認を利用する
-	 */
-	private int useMonthBossChk;
+	private ConfirmationOfManagerOrYouselfImport supervisorConfirmErrorAtr;
 
-	/**
-	 * エラーがある場合の上司確認
-	 */
-	private Integer supervisorConfirmError;
 }

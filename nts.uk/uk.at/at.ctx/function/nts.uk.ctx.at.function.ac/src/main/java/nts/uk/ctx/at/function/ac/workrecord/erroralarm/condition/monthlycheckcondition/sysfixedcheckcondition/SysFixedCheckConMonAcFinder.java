@@ -7,10 +7,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.sysfixedcheckcondition.SysFixedCheckConMonAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
 import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessExport;
@@ -67,11 +69,15 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 	}
 	
 	private IdentityConfirmProcessExport convertIdentityToExport(IdentityConfirmProcessImport imp) {
+		Optional<SelfConfirmError> yourSelfConfirmError = Optional.empty();
+		if(imp.getYourSelfConfirmError().isPresent()){
+			yourSelfConfirmError = Optional.of(EnumAdaptor.valueOf(imp.getYourSelfConfirmError().get().value, SelfConfirmError.class));
+		}
 		return new IdentityConfirmProcessExport(
-				imp.getCid(),
-				imp.getUseDailySelfCk(),
-				imp.getUseMonthSelfCK(),
-				imp.getYourselfConfirmError()
+				imp.getCompanyId(),
+				imp.isUseConfirmByYourself(),
+				imp.isUseIdentityOfMonth(),
+				yourSelfConfirmError
 				);
 	}
 	@Override
