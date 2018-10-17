@@ -2506,10 +2506,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	// Column 4, 6, 8,...
 			            	ActualValue actualValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
-			            	Style style = cell.getStyle();
 			            	writeDetailValue(actualValue, cell);
-			            	setFontStyle(style);
-			            	cell.setStyle(style);
 			            }
 			            
 			            curRow++;
