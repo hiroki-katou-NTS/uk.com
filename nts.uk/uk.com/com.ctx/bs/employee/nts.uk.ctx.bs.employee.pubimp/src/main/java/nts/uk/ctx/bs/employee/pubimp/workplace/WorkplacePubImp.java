@@ -198,25 +198,26 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<AffWorkplaceExport> result = new ArrayList<>();
 
 		listSid.forEach(sid -> {
-
 			AffCompanyHist affCompanyHist = mapPidAndAffCompanyHist.get(mapSidPid.get(sid));
-
-			AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
-
-			List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
-
-			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
-				listAffComHisItem.forEach(m -> {
-					/* EA修正履歴2059 update RequestList120
-					 * 【Codition】
-					 *	param．period．startDate　＜＝　retirementDate AND
-					 *	entrialDate　＜＝　param．period．endDate
-					 */
-					if (startDate.beforeOrEquals(m.end()) && endDate.afterOrEquals(m.start())) {
-						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
-						result.add(aff);
+			// check null
+			if (affCompanyHist != null) {
+				AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+				// check null
+				if (affCompanyHistByEmp != null) {
+					List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem() == null? new ArrayList<>(): affCompanyHistByEmp.getLstAffCompanyHistoryItem();
+					if (!CollectionUtil.isEmpty(listAffComHisItem)) {
+						listAffComHisItem.forEach(m -> {
+							/*
+							 * EA修正履歴2059 update RequestList120 【Codition】 param．period．startDate ＜＝
+							 * retirementDate AND entrialDate ＜＝ param．period．endDate
+							 */
+							if (startDate.beforeOrEquals(m.end()) && endDate.afterOrEquals(m.start())) {
+								AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
+								result.add(aff);
+							}
+						});
 					}
-				});
+				}
 			}
 		});
 
