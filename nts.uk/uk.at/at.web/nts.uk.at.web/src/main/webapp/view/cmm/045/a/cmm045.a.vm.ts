@@ -662,7 +662,7 @@ module cmm045.a.viewmodel {
             });
             let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = framName + otherInfo;
+            let result = framName + '　' + otherInfo;
             return result;
         }
         sortFrameTime(lstFrame: Array<vmbase.OverTimeFrame>, appType: number): any {
