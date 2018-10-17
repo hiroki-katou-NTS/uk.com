@@ -130,13 +130,13 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                 service.registration(ko.toJS(data)).done(() => {
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.getAllData().done(function() {
-                            $("#A2_3").focus();
                         });
                     });
                 }).fail(function (error) {
                     alertError(error);
                 }).always(function () {
                     block.clear();
+                    $("#A2_3").focus();
                 });
             }
         };
@@ -283,8 +283,8 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
     export function getAttendanceDays(): Array<ItemModel> {
         return [
-            new ItemModel(AttendanceDays.FROM_STATEMENT_ITEM.toString(), getText('enum_SelectWorkDays_FROM_STATEMENT_ITEM')),
-            new ItemModel(AttendanceDays.FROM_EMPLOYMENT.toString(), getText('enum_SelectWorkDays_FROM_EMPLOYMENT'))
+            new ItemModel(AttendanceDays.FROM_EMPLOYMENT.toString(), getText('enum_SelectWorkDays_FROM_EMPLOYMENT')),
+            new ItemModel(AttendanceDays.FROM_STATEMENT_ITEM.toString(), getText('enum_SelectWorkDays_FROM_STATEMENT_ITEM'))
         ];
     }
 
