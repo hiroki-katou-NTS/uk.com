@@ -19,8 +19,8 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         selectedHistory: any = null;
         selectedEmployee: any = null;
 
-        cateIndicator: KnockoutObservable<number>;
-        salBonusCate: KnockoutObservable<number>;
+        cateIndicator: KnockoutObservable<number> = ko.observable(0);
+        salBonusCate: KnockoutObservable<number> = ko.observable(0);
 
 
 
@@ -140,11 +140,18 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         deleteHistory() {
             let self = this;
             let newHistory = self.selectedHistory;
+            newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
+            newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
+
             let newEmployee = self.selectedEmployee;
+            newEmployee.cateIndicator = self.cateIndicator();
+            newEmployee.salBonusCate = self.salBonusCate();
             let command = {
                 //emp history
-                yearMonthHistoryItem: newHistory,
+                yearMonthHistoryItem: [newHistory],
                 //emp info data
+                cateIndicator: newEmployee.cateIndicator,
+                salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
                 perValCode: newEmployee.personalValcode
             };
