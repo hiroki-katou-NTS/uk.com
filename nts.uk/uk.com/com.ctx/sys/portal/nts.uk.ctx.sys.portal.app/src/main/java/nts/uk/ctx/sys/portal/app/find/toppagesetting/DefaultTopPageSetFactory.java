@@ -443,7 +443,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 * get info of top page or standard menu
 	 */
 	private LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean isLoginScreen) {
-		if (isLoginScreen && classification == MenuClassification.TopPage.value) {// topPage
+		if (classification == MenuClassification.TopPage.value) {// topPage
 			TopPageDto topPage = toppageFinder.findByCode(companyId, code, "0");
 			if(topPage==null){
 				return null;
