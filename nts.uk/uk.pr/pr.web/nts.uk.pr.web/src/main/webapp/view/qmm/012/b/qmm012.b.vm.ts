@@ -836,7 +836,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxExemptionName = ko.observable(data.taxExemptionName);
                     self.note = ko.observable(data.note);
                 } else {
-                    self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
                     self.laborInsuranceCategory = ko.observable(model.CoveredAtr.COVERED);
                     self.settingAtr = ko.observable(model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS);
                     self.everyoneEqualSet = ko.observable(model.CoveredAtr.COVERED);
