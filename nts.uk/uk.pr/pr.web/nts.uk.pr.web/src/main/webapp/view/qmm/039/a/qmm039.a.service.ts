@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm039.a.service {
         getWpName: "screen/com/kcp010/getLoginWorkPlace",
         getPersonalMoneyName: "ctx/pr/core/ws/wageprovision/individualwagecontract/getPersonalMoneyName/{0}",
         getSalIndAmountHis: "ctx/pr/core/ws/wageprovision/individualwagecontract/getSalIndAmountHis",
+        processYearFromEmp: "ctx/pr/core/ws/wageprovision/individualwagecontract/processYearFromEmp/{0}",
         updateHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/updateHistory",
         addHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/addHistory",
     }
@@ -19,6 +20,10 @@ module nts.uk.pr.view.qmm039.a.service {
     }
     export function getPersonalMoneyName(cateIndicator: number): JQueryPromise<any> {
         return ajax("pr", format(paths.getPersonalMoneyName, cateIndicator));
+    }
+
+    export function processYearFromEmp(employmentCode: string): JQueryPromise<any> {
+        return ajax("pr", format(paths.processYearFromEmp, employmentCode));
     }
 
     export function getSalIndAmountHis(dto): JQueryPromise<any> {

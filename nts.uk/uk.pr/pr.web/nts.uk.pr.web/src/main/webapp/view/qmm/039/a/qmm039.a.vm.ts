@@ -10,15 +10,17 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import PERVALUECATECLS = nts.uk.pr.view.qmm039.share.model.PERVALUECATECLS;
     import SALBONUSCATE = nts.uk.pr.view.qmm039.share.model.SALBONUSCATE;
     import getShared = nts.uk.ui.windows.getShared;
+    import MODE = nts.uk.pr.view.qmm039.share.model.MODE;
     export class ScreenModel {
-        historyAdditionMode: KnockoutObservable<boolean> = ko.observable(true);
+        mode: KnockoutObservable<number> = ko.observable(0);
+        classificationCategory: KnockoutObservable<number> = ko.observable(PERVALUECATECLS.SUPPLY);
+        salaryBonusCategory: KnockoutObservable<number> = ko.observable(SALBONUSCATE.SALARY);
         itemList: KnockoutObservableArray<ItemModel>;
         individualPriceCode: KnockoutObservable<any> = ko.observable('');
         individualPriceName: KnockoutObservable<any> = ko.observable('');
         periodStartYM: KnockoutObservable<any> = ko.observable('');
         periodEndYM: KnockoutObservable<any> = ko.observable('');
         individualPriceName: KnockoutObservable<any> = ko.observable('');
-        isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
         onTab: KnockoutObservable<number> = ko.observable(ITEM_CLASS.SALARY_SUPLY);
         itemClas: KnockoutObservable<number> = ko.observable(0);
         titleTab: KnockoutObservable<string> = ko.observable('');
@@ -66,22 +68,20 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
             self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
-            // self.singleSelectedCode.subscribe(function (newValue) {
-            //     let dto = {
-            //         perValCode: self.dataSource[newValue - 1].individualPriceCode,
-            //         empId: self.selectedItem(),
-            //         cateIndicator: PERVALUECATECLS.SUPPLY,
-            //         salBonusCate: SALBONUSCATE.SALARY
-            //     }
-            //
-            //     self.historyProcess(dto);
-            // });
+            self.singleSelectedCode.subscribe(function (newValue) {
+                if (newValue != null) {
+                    let dto = {
+                        perValCode: newValue,
+                        empId: self.selectedItem(),
+                        cateIndicator: self.classificationCategory(),
+                        salBonusCate: self.salaryBonusCategory()
+                    }
+                    self.historyProcess(dto);
+                }
+            });
             self.selectedHisCode = ko.observable(1);
             self.selectedHisCode.subscribe(function (newValue) {
-                self.selectedHis(self.itemList()[newValue - 1]);
-                self.periodStartYM(self.formatYM(self.itemList()[newValue - 1].periodStartYm));
-                self.periodEndYM(self.formatYM(self.itemList()[newValue - 1].periodEndYm));
-                self.currencyeditor.value(self.itemList()[newValue - 1].amount);
+                self.changeHistory(self.itemList()[newValue - 1]);
             });
             self.currencyeditor = {
                 value: ko.observable(0),
@@ -151,7 +151,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             let self = this;
             switch (param) {
                 case ITEM_CLASS.SALARY_SUPLY:
-                    //TODO
+                    self.classificationCategory(PERVALUECATECLS.SUPPLY);
+                    self.salaryBonusCategory(SALBONUSCATE.SALARY);
                     self.onTab(ITEM_CLASS.SALARY_SUPLY);
                     self.titleTab(getText('QMM039_6'));
                     $("#sidebar").ntsSideBar("active", param);
@@ -160,7 +161,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
                     break;
                 case ITEM_CLASS.SALARY_DEDUCTION:
-                    //TODO
+                    self.classificationCategory(PERVALUECATECLS.DEDUCTION);
+                    self.salaryBonusCategory(SALBONUSCATE.SALARY);
                     self.onTab(ITEM_CLASS.SALARY_DEDUCTION);
                     self.titleTab(getText('QMM039_7'));
                     $("#sidebar").ntsSideBar("active", param);
@@ -169,7 +171,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.itemClassLabel(format(getText('QMM039_21'), '給与控除'));
                     break;
                 case ITEM_CLASS.BONUS_SUPLY:
-                    //TODO
+                    self.classificationCategory(PERVALUECATECLS.SUPPLY);
+                    self.salaryBonusCategory(SALBONUSCATE.BONUSES);
                     self.onTab(ITEM_CLASS.BONUS_SUPLY);
                     self.titleTab(getText('QMM039_8'));
                     $("#sidebar").ntsSideBar("active", param);
@@ -178,7 +181,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
                     break;
                 case ITEM_CLASS.BONUS_DEDUCTION:
-                    //TODO
+                    self.classificationCategory(PERVALUECATECLS.DEDUCTION);
+                    self.salaryBonusCategory(SALBONUSCATE.BONUSES);
                     self.onTab(ITEM_CLASS.BONUS_DEDUCTION);
                     self.titleTab(getText('QMM039_9'));
                     $("#sidebar").ntsSideBar("active", param);
@@ -187,7 +191,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.itemClassLabel(format(getText('QMM039_21'), '賞与控除'));
                     break;
                 default:
-                    //TODO
+                    self.classificationCategory(PERVALUECATECLS.SUPPLY);
+                    self.salaryBonusCategory(SALBONUSCATE.SALARY);
                     self.onTab(ITEM_CLASS.SALARY_SUPLY);
                     self.titleTab(getText('QMM039_9'));
                     $("#sidebar").ntsSideBar("active", 1);
@@ -197,35 +202,41 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     break;
             }
         }
-
+        //TODO SELECT  ITEM CLASSFICATION
         changeItemClass(item_class: number): void {
             let self = this;
             service.getPersonalMoneyName(item_class).done(function (data) {
+                if (data.length > 0) {
+                    let array = [];
+                    _.forEach(data, function (salIndAmountName) {
+                        array.push(new Node(salIndAmountName.individualPriceCode, salIndAmountName.individualPriceName));
+                    });
+                    self.dataSource(array);
 
-                let array = [];
-                _.forEach(data, function (salIndAmountName) {
-                    array.push(new Node(salIndAmountName.individualPriceCode, salIndAmountName.individualPriceName));
-                });
-                self.dataSource(array);
-
-                let dto = {
-                    perValCode: data[0].individualPriceCode,
-                    empId: self.selectedItem(),
-                    cateIndicator: PERVALUECATECLS.SUPPLY,
-                    salBonusCate: SALBONUSCATE.SALARY
+                    let dto = {
+                        perValCode: data[0].individualPriceCode,
+                        empId: self.selectedItem(),
+                        cateIndicator: PERVALUECATECLS.SUPPLY,
+                        salBonusCate: SALBONUSCATE.SALARY
+                    }
+                    self.individualPriceName(data[0].individualPriceName);
+                    self.individualPriceCode(data[0].individualPriceCode);
+                    self.historyProcess(dto);
+                } else {
+                    nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
+                    self.itemList([]);
+                    self.dataSource([]);
+                    self.singleSelectedCode(null);
                 }
-                self.individualPriceName(data[0].individualPriceName);
-                self.individualPriceCode(data[0].individualPriceCode);
-                self.historyProcess(dto);
             });
         }
 
-
+        //TODO CHANGE ITEM
         historyProcess(dto): void {
             let self = this;
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
-                    self.isUpdateMode(true);
+                    self.mode(MODE.NORMAL);
                     let array = [];
                     for (let i = 0; i < data.period.length; i++) {
                         array.push(
@@ -236,14 +247,24 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                                 format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney))
                     }
                     self.itemList(array);
-                    self.selectedHis(array[0]);
-                    self.periodStartYM(self.formatYM(self.selectedHis().periodStartYm));
-                    self.periodEndYM(self.formatYM(self.selectedHis().periodEndYm));
-                    self.currencyeditor.value(self.selectedHis().amount);
+                    self.changeHistory(array[0]);
                 } else {
-                    self.isUpdateMode(false);
+                    self.itemList([]);
+                    self.periodStartYM(null);
+                    self.periodEndYM(null);
+                    self.currencyeditor.value(null);
+                    self.mode(MODE.HISTORY_UNREGISTERED);
                 }
             });
+        }
+
+        //TODO CHANGE HISTORY
+        changeHistory(selectedHis) {
+            let self = this;
+            self.selectedHis(selectedHis);
+            self.periodStartYM(self.formatYM(self.selectedHis().periodStartYm));
+            self.periodEndYM(self.formatYM(self.selectedHis().periodEndYm));
+            self.currencyeditor.value(self.selectedHis().amount);
         }
 
         formatYM(intYM) {
@@ -337,12 +358,24 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         public toScreenB(): void {
             let self = this;
-            let params = {
-                historyID: self.itemList()[0].historyID,
-                period: {
-                    periodStartYm: self.itemList()[0].periodStartYm,
-                    periodEndYm: self.itemList()[0].periodEndYm
+            let params = {};
+            if (self.mode() == MODE.NORMAL) {
+                params = {
+                    historyID: self.itemList()[0].historyID,
+                    period: {
+                        periodStartYm: self.itemList()[0].periodStartYm,
+                        periodEndYm: self.itemList()[0].periodEndYm
+                    }
                 }
+            } else {
+                service.processYearFromEmp(self.individualPriceCode()).done(function (data) {
+                    params = {
+                        period: {
+                            periodStartYm: data,
+                            periodEndYm: 999912
+                        }
+                    }
+                });
             }
             setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
@@ -350,9 +383,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 if (params) {
                     self.periodStartYM(params.periodStartYm);
                     self.periodEndYM(params.periodEndYm);
-                    if(params.takeoverMethod == 1){
+                    if (params.takeoverMethod == 1) {
                         self.currencyeditor.value(0);
-                    }else {
+                    } else {
                         self.currencyeditor.value(self.itemList()[0].amount);
                     }
                 }
@@ -375,7 +408,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
-                self.isUpdateMode(true);
+                self.mode(MODE.NORMAL);
             });
         }
 
@@ -397,18 +430,31 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         }
 
         registration(): void {
+            //TODO REGISTRATION
             let self = this;
-            if (self.isUpdateMode()) {
+            if (self.mode() == MODE.NORMAL) {
                 let command = {
-                    historyId: 1,
-                    amountOfMoney: self.value()
+                    historyId: self.selectedHis().historyID,
+                    amountOfMoney: self.currencyeditor.value()
                 }
-                service.updateHistory(command);
+                service.updateHistory(command).done(function (data) {
+                    nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                });
             } else {
                 let command = {
-                    salIndAmountHisCommand: {}
+                    salIndAmountHisCommand: {
+                        cateIndicator: self.classificationCategory(),
+                        salBonusCate: self.salaryBonusCategory(),
+                        perValCode: self.individualPriceCode(),
+                        empId: self.selectedItem()
+                    },
+                    salIndAmountCommand: {
+                        amountOfMoney: self.currencyeditor.value()
+                    }
                 }
-                service.addHistory(command);
+                service.addHistory(command).done(function (data) {
+                    nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                });
             }
         }
     }

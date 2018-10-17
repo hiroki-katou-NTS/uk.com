@@ -17,6 +17,7 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpTiedProYear f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empTiedProYearPk.cid =:cid AND  f.empTiedProYearPk.processCateNo =:processCateNo ";
+    private static final String SELECT_BY_EMPLOYMENT = SELECT_ALL_QUERY_STRING + " WHERE f.empTiedProYearPk.cid =:cid AND f.empTiedProYearPk.employmentCode =:employmentCode";
 
     private static final String DELETE_BY_PROCESSCATENO = "DELETE FROM QpbmtEmpTiedProYear f WHERE f.empTiedProYearPk.cid =:cid AND  f.empTiedProYearPk.processCateNo =:processCateNo ";
 
@@ -29,6 +30,17 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
         if (item.isEmpty()) return Optional.empty();
         return Optional.of(QpbmtEmpTiedProYear.toDomain(item));
     }
+
+    @Override
+    public Optional<EmpTiedProYear> getEmpTiedProYearByEmployment(String cid, String employmentCode) {
+        List<QpbmtEmpTiedProYear> item = this.queryProxy().query(SELECT_BY_EMPLOYMENT, QpbmtEmpTiedProYear.class)
+                .setParameter("cid", cid)
+                .setParameter("employmentCode", employmentCode)
+                .getList();
+        if (item.isEmpty()) return Optional.empty();
+        return Optional.of(QpbmtEmpTiedProYear.toDomain(item));
+    }
+
 
     @Override
     public void add(EmpTiedProYear domain) {

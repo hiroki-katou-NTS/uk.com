@@ -62,14 +62,13 @@
                         <div class="panel" style="margin-left: 30px"
                              data-bind="ntsPanel:{width: '220px', height: '220px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
-                            <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'ListBox', comId:'treegrid11', items: dataSource,
-			                    searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
+                            <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',          items: dataSource, searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
                             <!--A4_4 項目リスト-->
                             <!--A4_5 コード-->
                             <!--A4_6 名称-->
                             <!--A4_7 コード-->
                             <!--A4_8 名称-->
-                            <table tabindex="6" id="treegrid11"
+                            <table tabindex="6" id="treegrid"
                                    data-bind="ntsGridList:{
                                 width: 220,
                                 height: 150,
@@ -80,6 +79,7 @@
                                 ],
                                 value: singleSelectedCode,
                                 primaryText: 'name',
+                                optionsValue: 'code',
                                 multiple: false,
                                 enable: true,
                                 showCheckBox: false}">

@@ -1,13 +1,12 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.*;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 /**
@@ -30,8 +29,8 @@ public class SalIndAmountHisFinder {
             SalIndAmountHis salIndAmount = salIndAmountHis.get();
             SalIndAmountHisPackDto salIndAmountHisPackDto = SalIndAmountHisPackDto.fromSalIndAmountHisDomain(salIndAmount);
             List<GenericHistYMPeriod> list = salIndAmount.getPeriod();
-            if (!list.isEmpty()){
-                for (GenericHistYMPeriod item: list){
+            if (!list.isEmpty()) {
+                for (GenericHistYMPeriod item : list) {
                     SalIndAmount amount = salIndAmountRepository.getSalIndAmountById(item.getHistoryID()).get();
                     salIndAmountHisPackDto.getSalIndAmountList().add(SalIndAmountDto.fromDomain(amount));
                 }
@@ -42,7 +41,7 @@ public class SalIndAmountHisFinder {
         }
     }
 
-    public void processYearFromEmp(){
-        algorithmProcessYearFromEmp.getProcessYear();
+    public YearMonth processYearFromEmp(String employmentCode) {
+        return algorithmProcessYearFromEmp.getProcessYear(employmentCode);
     }
 }

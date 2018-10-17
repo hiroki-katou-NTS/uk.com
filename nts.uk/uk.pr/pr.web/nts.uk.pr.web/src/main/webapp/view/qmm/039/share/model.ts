@@ -171,4 +171,9 @@ module nts.uk.pr.view.qmm039.share.model {
         SALARY = 0,
         BONUSES = 1
     }
+
+    export enum MODE {
+        NORMAL = 0,
+        HISTORY_UNREGISTERED = 1
+    }
 }

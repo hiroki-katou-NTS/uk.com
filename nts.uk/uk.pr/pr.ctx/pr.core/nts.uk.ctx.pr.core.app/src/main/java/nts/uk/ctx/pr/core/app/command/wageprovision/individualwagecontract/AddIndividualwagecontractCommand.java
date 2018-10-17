@@ -9,4 +9,6 @@ public class AddIndividualwagecontractCommand {
 
     SalIndAmountHisCommand salIndAmountHisCommand;
 
+    SalIndAmountCommand salIndAmountCommand;
+
 }

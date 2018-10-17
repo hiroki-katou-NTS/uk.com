@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.individualwagecontract;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisFinder;
@@ -48,9 +49,9 @@ public class IndividualWageContract {
     }
 
     @POST
-    @Path("processYearFromEmp")
-    public void processYearFromEmp(SalIndAmountHisDto dto) {
-        salIndAmountHisFinder.processYearFromEmp();
+    @Path("processYearFromEmp/{employmentCode}")
+    public YearMonth processYearFromEmp(@PathParam("employmentCode") String employmentCode) {
+        return salIndAmountHisFinder.processYearFromEmp(employmentCode);
     }
 
     @POST
@@ -59,6 +60,8 @@ public class IndividualWageContract {
         updateSalIndAmountCommandHandler.handle(command);
     }
 
+
+    //TODO ADD HISTORY
     @POST
     @Path("addHistory")
     public void addHistory(AddIndividualwagecontractCommand command) {
