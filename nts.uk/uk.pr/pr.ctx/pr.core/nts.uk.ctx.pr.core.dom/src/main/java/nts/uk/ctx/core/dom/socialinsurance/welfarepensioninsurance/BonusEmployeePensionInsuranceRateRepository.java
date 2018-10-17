@@ -14,5 +14,5 @@ public interface BonusEmployeePensionInsuranceRateRepository {
     void add (BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth);
     void update (BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth);
     void remove (BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth);
-    void updatePreviousHistory (String officeCode, YearMonthHistoryItem yearMonth);
+    void updateHistory(String officeCode, YearMonthHistoryItem yearMonth);
 }

@@ -32,5 +32,5 @@ public interface HealthInsuranceMonthlyFeeRepository {
     
     void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds);
 
-    void updatePreviousHistory(String officeCode, YearMonthHistoryItem history);
+    void updateHistory(String officeCode, YearMonthHistoryItem history);
 }

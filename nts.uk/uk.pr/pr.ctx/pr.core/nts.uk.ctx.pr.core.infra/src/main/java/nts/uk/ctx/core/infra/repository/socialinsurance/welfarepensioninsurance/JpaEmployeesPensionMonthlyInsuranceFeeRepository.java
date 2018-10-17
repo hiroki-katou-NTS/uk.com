@@ -17,8 +17,13 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPens
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.GradeWelfarePensionInsurancePremium;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.SalaryEmployeesPensionInsuranceRate;
+import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
+import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFeePk;
+import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtEmployeesPensionMonthlyInsuranceFee;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtEmployeesPensionMonthlyInsuranceFeePk;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtGradeWelfarePensionInsurancePremium;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -29,6 +34,7 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	private static final String GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID = "SELECT a FROM QpbmtEmployeesPensionMonthlyInsuranceFee a WHERE a.welfarePenMonthlyPk.historyId =:historyId";
 	private static final String GET_GRADE_WELFARE_PENSION_INSURANCE_PREMIUM_BY_HISTORY_ID = "SELECT a from QpbmtGradeWelfarePensionInsurancePremium a WHERE a.gradeWelfarePremiPk.historyId =:historyId";
 	private static final String DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID = "DELETE from QpbmtGradeWelfarePensionInsurancePremium a WHERE a.gradeWelfarePremiPk.historyId IN :historyId";
+	private static final String DELETE_GRADE_WELFARE_PENSION_PER_GRADE_BY_HISTORY_ID = "DELETE from QpbmtEmployeesPensionMonthlyInsuranceFee a WHERE a.welfarePenMonthlyPk.historyId IN :historyId";
 
 	@Override
 	public Optional<EmployeesPensionMonthlyInsuranceFee> getEmployeesPensionMonthlyInsuranceFeeByHistoryId(
@@ -54,7 +60,7 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	 * @return EmployeesPensionMonthlyInsuranceFee
 	 */
 	private EmployeesPensionMonthlyInsuranceFee toDomain(QpbmtEmployeesPensionMonthlyInsuranceFee entity,
-			List<QpbmtGradeWelfarePensionInsurancePremium> details) {
+														 List<QpbmtGradeWelfarePensionInsurancePremium> details) {
 		EmployeesPensionContributionRate maleContributionRate = new EmployeesPensionContributionRate(
 				entity.maleIndividualBurdenRatio, entity.maleEmployeeContributionRatio,
 				entity.maleIndividualExemptionRate, entity.maleEmployerExemptionRate);
@@ -80,8 +86,16 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
-		this.commandProxy().removeAll(QpbmtEmployeesPensionMonthlyInsuranceFee.class, historyIds);
+		if (historyIds.isEmpty()) return;
+		this.getEntityManager().createQuery(DELETE_GRADE_WELFARE_PENSION_PER_GRADE_BY_HISTORY_ID, QpbmtEmployeesPensionMonthlyInsuranceFee.class).setParameter("historyId", historyIds).executeUpdate();
 		this.deleteGradeWelfareByHistoryIds(historyIds);
+	}
+
+	public void deleteGradeWelfareByHistoryIds(List<String> historyIds) {
+		this.getEntityManager()
+				.createQuery(DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID,
+						QpbmtGradeWelfarePensionInsurancePremium.class)
+				.setParameter("historyId", historyIds).executeUpdate();
 	}
 
 	@Override
@@ -107,35 +121,52 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 		this.commandProxy().removeAll(listEntity);
 	}
 
-	public void deleteGradeWelfareByHistoryIds(List<String> historyIds) {
-		this.getEntityManager()
-				.createQuery(DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID,
-						QpbmtGradeWelfarePensionInsurancePremium.class)
-				.setParameter("historyId", historyIds).executeUpdate();
-	}
-
 	@Override
 	public void updateWelfarePension(EmployeesPensionMonthlyInsuranceFee data) {
-        Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity = this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
+		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity = this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
 				QpbmtEmployeesPensionMonthlyInsuranceFee.class).setParameter("historyId", data.getHistoryId()).getSingle();
-        if (!opt_entity.isPresent()) return;
-        QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
-        YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.welfarePenMonthlyPk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
+		if (!opt_entity.isPresent()) return;
+		if (!opt_entity.isPresent()) return;
+		QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
+		YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.welfarePenMonthlyPk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
 		this.commandProxy().updateAll(QpbmtGradeWelfarePensionInsurancePremium.toEntity(data, entity.welfarePenMonthlyPk.socialInsuranceOfficeCd , yearMonth));
 	}
 
 	@Override
 	public void insertWelfarePension(EmployeesPensionMonthlyInsuranceFee data) {
-        Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity =this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
+		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity = this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
 				QpbmtEmployeesPensionMonthlyInsuranceFee.class).setParameter("historyId", data.getHistoryId()).getSingle();
-        if (!opt_entity.isPresent()) return;
-        QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
-        YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.welfarePenMonthlyPk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
-	    this.commandProxy().insertAll(QpbmtGradeWelfarePensionInsurancePremium.toEntity(data, entity.welfarePenMonthlyPk.socialInsuranceOfficeCd, yearMonth));
+		if (!opt_entity.isPresent()) return;
+		if (!opt_entity.isPresent()) return;
+		QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
+		YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.welfarePenMonthlyPk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
+		this.commandProxy().insertAll(QpbmtGradeWelfarePensionInsurancePremium.toEntity(data, entity.welfarePenMonthlyPk.socialInsuranceOfficeCd, yearMonth));
 	}
 
 	@Override
-	public void updatePreviousHistory(String officeCode, YearMonthHistoryItem yearMonth) {
+	public void updateHistory(String officeCode, YearMonthHistoryItem yearMonth) {
+		this.updateEmployeePensionMonthlyHistory(officeCode, yearMonth);
+		this.updateWelfarePensionPerGradeHistory(officeCode, yearMonth);
+	}
 
+	private void updateEmployeePensionMonthlyHistory (String officeCode, YearMonthHistoryItem history) {
+		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity = this.queryProxy().find(new QpbmtEmployeesPensionMonthlyInsuranceFeePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtEmployeesPensionMonthlyInsuranceFee.class);
+		if (!opt_entity.isPresent()) return;
+		QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
+		entity.startYearMonth = history.start().v();
+		entity.endYearMonth = history.end().v();
+		this.commandProxy().update(entity);
+	}
+
+	private void updateWelfarePensionPerGradeHistory (String officeCode, YearMonthHistoryItem history) {
+		List<QpbmtGradeWelfarePensionInsurancePremium> entities = this.queryProxy()
+				.query(GET_GRADE_WELFARE_PENSION_INSURANCE_PREMIUM_BY_HISTORY_ID,
+						QpbmtGradeWelfarePensionInsurancePremium.class)
+				.setParameter("historyId", history.identifier()).getList();
+		for(QpbmtGradeWelfarePensionInsurancePremium entity: entities){
+			entity.startYearMonth = history.start().v();
+			entity.endYearMonth = history.end().v();
+		}
+		this.commandProxy().updateAll(entities);
 	}
 }

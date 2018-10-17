@@ -12,7 +12,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassificationRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistory;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRatePk;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtWelfarePensionInsuranceClassification;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtWelfarePensionInsuranceClassificationPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -21,7 +24,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepository
 		implements WelfarePensionInsuranceClassificationRepository {
 	private static final String FIND_WELFARE_PENSION_CLS_BY_HISTORY_ID = "SELECT a FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.historyId  =:historyId";
-	private static final String FIND_HISTORY_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.cid =:cid AND a.welfarePenClsPk.socialInsuranceOfficeCd =:officeCode";
+	private static final String FIND_HISTORY_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.cid =:cid AND a.welfarePenClsPk.socialInsuranceOfficeCd =:officeCode ORDER BY a.startYearMonth DESC";
     private static final String DELETE_BY_HISTORY_IDS = "DELETE FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.historyId IN :historyId";
 
 	@Override
@@ -55,8 +58,13 @@ public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepos
 	}
 
 	@Override
-	public void updatePreviousHistory(String officeCode, YearMonthHistoryItem yearMonth) {
-
+	public void updateHistory(String officeCode, YearMonthHistoryItem yearMonth) {
+		Optional<QpbmtWelfarePensionInsuranceClassification> opt_entity = this.queryProxy().find(new QpbmtWelfarePensionInsuranceClassificationPk(AppContexts.user().companyId(), officeCode, yearMonth.identifier()), QpbmtWelfarePensionInsuranceClassification.class);
+		if (!opt_entity.isPresent()) return;
+		QpbmtWelfarePensionInsuranceClassification entity = opt_entity.get();
+		entity.startYearMonth = yearMonth.start().v();
+		entity.endYearMonth = yearMonth.end().v();
+		this.commandProxy().update(entity);
 	}
 
 	private List<QpbmtWelfarePensionInsuranceClassification> findWelfarePensionClassficationByOfficeCode(String officeCode){

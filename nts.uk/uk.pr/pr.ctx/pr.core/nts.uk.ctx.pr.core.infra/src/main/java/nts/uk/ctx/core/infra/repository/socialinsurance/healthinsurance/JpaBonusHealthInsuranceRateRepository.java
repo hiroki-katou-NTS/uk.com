@@ -75,7 +75,7 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 	}
 
     @Override
-    public void updatePreviousHistory (String officeCode, YearMonthHistoryItem history) {
+    public void updateHistory(String officeCode, YearMonthHistoryItem history) {
         Optional<QpbmtBonusHealthInsuranceRate> opt_entity = this.queryProxy().find(new QpbmtBonusHealthInsuranceRatePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtBonusHealthInsuranceRate.class);
         if (!opt_entity.isPresent()) return;
         QpbmtBonusHealthInsuranceRate entity = opt_entity.get();

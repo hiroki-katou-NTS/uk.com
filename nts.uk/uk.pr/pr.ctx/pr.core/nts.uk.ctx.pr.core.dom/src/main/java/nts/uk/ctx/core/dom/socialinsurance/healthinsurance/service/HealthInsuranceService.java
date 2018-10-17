@@ -53,8 +53,9 @@ public class HealthInsuranceService {
 			// add history if not exist
 			welfarePensionHistory.add(yearMonthItem);
 			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
+			// if have previous history
 			if (welfarePensionHistory.getHistory().size() > 1) {
-			    this.updatePreviousHistory(officeCode, welfarePensionHistory.getHistory().get(0));
+			    this.updateHistoryItem(officeCode, welfarePensionHistory.getHistory().get(0));
             }
 		} else {
 			this.updateHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
@@ -88,11 +89,17 @@ public class HealthInsuranceService {
 		if (!opt_healthInsurance.isPresent()){
 			return;
 		}
+		this.updateHistoryItem(officeCode, yearMonth);
 		HealthInsuranceFeeRateHistory healthInsurance = opt_healthInsurance.get();
-		Optional<YearMonthHistoryItem> currentSpan = healthInsurance.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
-		if (!currentSpan.isPresent()) return;
-		healthInsurance.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
-		this.updatePreviousHistory(officeCode, yearMonth);
+		int currentIndex = healthInsurance.getHistory().indexOf(yearMonth);
+		try {
+			YearMonthHistoryItem previousHistory = healthInsurance.getHistory().get(currentIndex + 1);
+			healthInsurance.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
+			this.updateHistoryItem(officeCode, healthInsurance.getHistory().get(currentIndex + 1));
+		} catch (ArrayIndexOutOfBoundsException e){
+			return;
+		}
+
 	}
 	
 	public void deleteHistory (String officeCode, YearMonthHistoryItem yearMonth){
@@ -108,14 +115,14 @@ public class HealthInsuranceService {
 			lastestHistory = healthInsurance.getHistory().get(0);
 			healthInsurance.changeSpan(healthInsurance.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
-		this.updatePreviousHistory(officeCode, lastestHistory);
+		this.updateHistoryItem(officeCode, lastestHistory);
 		bonusHealthInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		healthInsuranceMonthlyFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 	}
 
-	private void updatePreviousHistory (String officeCode, YearMonthHistoryItem yearMonth) {
-        bonusHealthInsuranceRateRepository.updatePreviousHistory(officeCode, yearMonth);
-        healthInsuranceMonthlyFeeRepository.updatePreviousHistory(officeCode, yearMonth);
+	private void updateHistoryItem (String officeCode, YearMonthHistoryItem yearMonth) {
+        bonusHealthInsuranceRateRepository.updateHistory(officeCode, yearMonth);
+        healthInsuranceMonthlyFeeRepository.updateHistory(officeCode, yearMonth);
     }
 	
 	public boolean checkHealthInsuranceGradeFeeChange (String officeCode, BonusHealthInsuranceRate bonusHealthInsuranceRate,

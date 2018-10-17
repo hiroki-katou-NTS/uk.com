@@ -11,16 +11,20 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployee
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionContributionRate;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRatePk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import sun.awt.AppContext;
 
 @Stateless
 public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepository implements BonusEmployeePensionInsuranceRateRepository {
 
-	private static final String FINE_BY_HISTORY_ID = "SELECT a FROM QpbmtBonusEmployeePensionInsuranceRate a WHERE a.welfarePenBonusPk.historyId =:historyId";
+	private static final String FIND_BY_HISTORY_ID = "SELECT a FROM QpbmtBonusEmployeePensionInsuranceRate a WHERE a.welfarePenBonusPk.historyId =:historyId";
+	private static final String DELETE_BY_HISTORY_ID = "DELETE FROM QpbmtBonusEmployeePensionInsuranceRate a WHERE a.welfarePenBonusPk.historyId IN :historyId";
 
     @Override
     public Optional<BonusEmployeePensionInsuranceRate> getBonusEmployeePensionInsuranceRateById(String historyId) {
-        return this.queryProxy().query(FINE_BY_HISTORY_ID, QpbmtBonusEmployeePensionInsuranceRate.class).setParameter("historyId", historyId).getSingle().map(this::toDomain);
+        return this.queryProxy().query(FIND_BY_HISTORY_ID, QpbmtBonusEmployeePensionInsuranceRate.class).setParameter("historyId", historyId).getSingle().map(this::toDomain);
     }
 
     /**
@@ -43,7 +47,7 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
 
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
-		this.commandProxy().removeAll(QpbmtBonusEmployeePensionInsuranceRate.class, historyIds);
+    	this.getEntityManager().createQuery(DELETE_BY_HISTORY_ID, QpbmtBonusEmployeePensionInsuranceRate.class).setParameter("historyId", historyIds).executeUpdate();
 	}
 	
 	@Override
@@ -62,7 +66,12 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
 	}
 
 	@Override
-	public void updatePreviousHistory(String officeCode, YearMonthHistoryItem yearMonth) {
-
+	public void updateHistory(String officeCode, YearMonthHistoryItem yearMonth) {
+        Optional<QpbmtBonusEmployeePensionInsuranceRate> opt_entity = this.queryProxy().find(new QpbmtBonusEmployeePensionInsuranceRatePk(AppContexts.user().companyId(), officeCode, yearMonth.identifier()), QpbmtBonusEmployeePensionInsuranceRate.class);
+        if (!opt_entity.isPresent()) return;
+        QpbmtBonusEmployeePensionInsuranceRate entity = opt_entity.get();
+        entity.startYearMonth = yearMonth.start().v();
+        entity.endYearMonth = yearMonth.end().v();
+        this.commandProxy().update(entity);
 	}
 }

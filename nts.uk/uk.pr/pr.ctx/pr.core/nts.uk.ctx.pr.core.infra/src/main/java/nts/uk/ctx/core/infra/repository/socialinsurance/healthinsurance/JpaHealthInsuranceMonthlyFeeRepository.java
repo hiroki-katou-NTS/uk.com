@@ -122,12 +122,12 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     }
 
     @Override
-    public void updatePreviousHistory(String officeCode, YearMonthHistoryItem history) {
-       this.updateHealthInsuranceMonthly(officeCode, history);
-        this.updateHealthInsurancePerGrade(officeCode, history);
+    public void updateHistory(String officeCode, YearMonthHistoryItem history) {
+       this.updateHealthInsuranceMonthlyHistory(officeCode, history);
+        this.updateHealthInsurancePerGradeHistory(officeCode, history);
     }
 
-    private void updateHealthInsuranceMonthly (String officeCode, YearMonthHistoryItem history) {
+    private void updateHealthInsuranceMonthlyHistory (String officeCode, YearMonthHistoryItem history) {
         Optional<QpbmtHealthInsuranceMonthlyFee> opt_entity = this.queryProxy().find(new QpbmtHealthInsuranceMonthlyFeePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtHealthInsuranceMonthlyFee.class);
         if (!opt_entity.isPresent()) return;
         QpbmtHealthInsuranceMonthlyFee entity = opt_entity.get();
@@ -136,7 +136,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         this.commandProxy().update(entity);
     }
 
-    private void updateHealthInsurancePerGrade (String officeCode, YearMonthHistoryItem history) {
+    private void updateHealthInsurancePerGradeHistory (String officeCode, YearMonthHistoryItem history) {
         List<QpbmtHealthInsurancePerGradeFee> entities = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", history.identifier()).getList();
         for(QpbmtHealthInsurancePerGradeFee entity: entities){
             entity.startYearMonth = history.start().v();

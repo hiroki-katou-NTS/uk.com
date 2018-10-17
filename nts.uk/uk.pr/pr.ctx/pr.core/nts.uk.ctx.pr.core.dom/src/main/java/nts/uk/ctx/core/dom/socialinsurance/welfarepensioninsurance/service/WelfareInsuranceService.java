@@ -60,11 +60,15 @@ public class WelfareInsuranceService {
 		// delete old history 
 		welfarePensionHistory = opt_welfarePensionHistory.get();
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
-			// add new item to history 
-			welfarePensionHistory.add(yearMonthItem);
-			// TODO
-			// update previous history
-			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
+
+            // add new item to history
+            welfarePensionHistory.add(yearMonthItem);
+            this.addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
+            // if have previous history
+            if (welfarePensionHistory.getHistory().size() > 1) {
+                this.updateHistorySpan(officeCode, welfarePensionHistory.getHistory().get(0));
+            }
+
 		} else {
 			// update if existed
 			updateWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
@@ -107,11 +111,17 @@ public class WelfareInsuranceService {
 		if (!opt_WelfarePensionHist.isPresent()) {
 			return;
 		}
-		// get history and change span
+		this.updateHistorySpan(officeCode, yearMonth);
+		// get history and change span\
 		WelfarePensionInsuranceRateHistory welfarePensionHist = opt_WelfarePensionHist.get();
-		Optional<YearMonthHistoryItem> currentSpan = welfarePensionHist.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
-		if (!currentSpan.isPresent()) return;
-		welfarePensionHist.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
+		int currentIndex = welfarePensionHist.getHistory().indexOf(yearMonth);
+		try {
+            YearMonthHistoryItem previousHistory =  welfarePensionHist.getHistory().get(currentIndex + 1);
+            welfarePensionHist.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
+            this.updateHistorySpan(officeCode, welfarePensionHist.getHistory().get(currentIndex + 1));
+        } catch (ArrayIndexOutOfBoundsException e){
+            return;
+        }
 	}
 	
 	public void deleteHistory (String officeCode, YearMonthHistoryItem yearMonth) {
@@ -128,6 +138,7 @@ public class WelfareInsuranceService {
 			lastestHistory = welfarePensionHist.getHistory().get(0);
 			welfarePensionHist.changeSpan(welfarePensionHist.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
+		this.updateHistorySpan(officeCode, lastestHistory);
 		bonusEmployeePensionInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		employeesPensionMonthlyInsuranceFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		welfarePensionInsuranceClassificationRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
@@ -147,5 +158,11 @@ public class WelfareInsuranceService {
 			return false;
 		}
 		return !employeePensonMonthly.getPensionInsurancePremium().containsAll(opt_oldEmployePension.get().getPensionInsurancePremium());	
+	}
+
+	private void updateHistorySpan (String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusEmployeePensionInsuranceRateRepository.updateHistory(officeCode, yearMonth);
+		employeesPensionMonthlyInsuranceFeeRepository.updateHistory(officeCode, yearMonth);
+		welfarePensionInsuranceClassificationRepository.updateHistory(officeCode, yearMonth);
 	}
 }

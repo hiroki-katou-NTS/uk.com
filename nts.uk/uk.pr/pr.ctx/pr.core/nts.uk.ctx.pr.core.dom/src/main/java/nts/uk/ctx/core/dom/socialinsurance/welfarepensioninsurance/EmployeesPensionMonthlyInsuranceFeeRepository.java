@@ -16,5 +16,5 @@ public interface EmployeesPensionMonthlyInsuranceFeeRepository {
     void remove (EmployeesPensionMonthlyInsuranceFee domain, String officeCode, YearMonthHistoryItem yearMonth);
     void updateWelfarePension(EmployeesPensionMonthlyInsuranceFee data);
     void insertWelfarePension(EmployeesPensionMonthlyInsuranceFee data);
-    void updatePreviousHistory (String officeCode, YearMonthHistoryItem yearMonth);
+    void updateHistory(String officeCode, YearMonthHistoryItem yearMonth);
 }

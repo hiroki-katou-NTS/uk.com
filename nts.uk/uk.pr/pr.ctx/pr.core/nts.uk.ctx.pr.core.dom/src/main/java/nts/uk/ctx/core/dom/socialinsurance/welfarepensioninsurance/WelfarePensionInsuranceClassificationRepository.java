@@ -15,5 +15,5 @@ public interface WelfarePensionInsuranceClassificationRepository {
 	void add (WelfarePensionInsuranceClassification domain, String officeCode, YearMonthHistoryItem yearMonth);
 	void update (WelfarePensionInsuranceClassification domain, String officeCode, YearMonthHistoryItem yearMonth);
 	void remove (WelfarePensionInsuranceClassification domain, String officeCode, YearMonthHistoryItem yearMonth);
-	void updatePreviousHistory (String officeCode, YearMonthHistoryItem yearMonth);
+	void updateHistory(String officeCode, YearMonthHistoryItem yearMonth);
 }
