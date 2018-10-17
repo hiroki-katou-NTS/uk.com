@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.individualwagecontract;
 
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisFinder;
@@ -14,7 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
-import java.util.Optional;
 
 @Path("ctx/pr/core/ws/wageprovision/individualwagecontract")
 @Produces("application/json")
@@ -50,7 +48,7 @@ public class IndividualWageContract {
 
     @POST
     @Path("processYearFromEmp/{employmentCode}")
-    public YearMonth processYearFromEmp(@PathParam("employmentCode") String employmentCode) {
+    public Integer processYearFromEmp(@PathParam("employmentCode") String employmentCode) {
         return salIndAmountHisFinder.processYearFromEmp(employmentCode);
     }
 

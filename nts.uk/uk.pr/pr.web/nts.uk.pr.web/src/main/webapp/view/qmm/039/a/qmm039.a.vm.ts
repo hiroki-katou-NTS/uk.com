@@ -18,8 +18,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         itemList: KnockoutObservableArray<ItemModel>;
         individualPriceCode: KnockoutObservable<any> = ko.observable('');
         individualPriceName: KnockoutObservable<any> = ko.observable('');
-        periodStartYM: KnockoutObservable<any> = ko.observable('');
-        periodEndYM: KnockoutObservable<any> = ko.observable('');
+        periodStartYM: KnockoutObservable<string> = ko.observable('');
+        periodEndYM: KnockoutObservable<string> = ko.observable('');
         individualPriceName: KnockoutObservable<any> = ko.observable('');
         onTab: KnockoutObservable<number> = ko.observable(ITEM_CLASS.SALARY_SUPLY);
         itemClas: KnockoutObservable<number> = ko.observable(0);
@@ -65,9 +65,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode.subscribe(function (newValue) {
+                if (self.dataSource()[newValue] != undefined) {
                     self.individualPriceCode(self.dataSource()[newValue].code);
                     self.individualPriceName(self.dataSource()[newValue].name);
                     self.historyProcess(self.dataSource()[newValue].code);
+                }
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
@@ -270,6 +272,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             return intYM.toString().substr(0, 4) + '/' + intYM.toString().substr(4, intYM.length);
         }
 
+        formatYMToInt(stringYM: string) {
+            let arr = stringYM.split('/');
+            return parseInt(arr[0]) * 100 + parseInt(arr[1]);
+        }
+
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -354,6 +361,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.employeeList(employeeSearchs);
             return dfd.promise();
         }
+
         //TODO TO SCREEN B
         public toScreenB(): void {
             let self = this;
@@ -381,7 +389,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         }
 
-        openModalB(params){
+        openModalB(params) {
             let self = this;
             setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
@@ -451,19 +459,27 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.historyProcess(self.individualPriceCode());
                 });
             } else if (self.mode() == MODE.ADD_HISTORY) {
+                let historyId = nts.uk.util.randomId();
                 let command = {
                     salIndAmountHisCommand: {
-                        cateIndicator: self.classificationCategory(),
-                        salBonusCate: self.salaryBonusCategory(),
                         perValCode: self.individualPriceCode(),
-                        empId: self.selectedItem()
+                        empId: self.selectedItem(),
+                        cateIndicator: self.classificationCategory(),
+                        yearMonthHistoryItem: [{
+                            historyId: historyId,
+                            startMonth: self.formatYMToInt(self.periodStartYM()),
+                            endMonth: self.formatYMToInt(self.periodEndYM()),
+                        }],
+                        salBonusCate: self.salaryBonusCategory()
                     },
                     salIndAmountCommand: {
+                        historyId: historyId,
                         amountOfMoney: self.currencyeditor.value()
                     }
                 }
                 service.addHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                    self.historyProcess(self.individualPriceCode());
                     self.mode(MODE.NORMAL);
                 });
             }

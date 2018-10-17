@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.*;
 
 import javax.ejb.Stateless;
@@ -41,7 +40,7 @@ public class SalIndAmountHisFinder {
         }
     }
 
-    public YearMonth processYearFromEmp(String employmentCode) {
-        return algorithmProcessYearFromEmp.getProcessYear(employmentCode);
+    public Integer processYearFromEmp(String employmentCode) {
+        return algorithmProcessYearFromEmp.getProcessYear(employmentCode).v();
     }
 }

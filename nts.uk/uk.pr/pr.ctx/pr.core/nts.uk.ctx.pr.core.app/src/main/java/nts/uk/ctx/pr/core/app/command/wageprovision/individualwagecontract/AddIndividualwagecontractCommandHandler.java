@@ -10,7 +10,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountR
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -27,32 +26,15 @@ public class AddIndividualwagecontractCommandHandler extends CommandHandler<AddI
         AddIndividualwagecontractCommand contractCommand = commandHandlerContext.getCommand();
         SalIndAmountHisCommand salIndAmountHisCommand = contractCommand.getSalIndAmountHisCommand();
         SalIndAmountCommand salIndAmountCommand = contractCommand.getSalIndAmountCommand();
-        Optional<SalIndAmountHis> salIndAmountHisDB = salIndAmountHisRepository.getSalIndAmountHis(
+        SalIndAmountHis salIndAmountHis = new SalIndAmountHis(
                 salIndAmountHisCommand.getPerValCode(),
                 salIndAmountHisCommand.getEmpId(),
-                salIndAmountHisCommand.getSalBonusCate(),
-                salIndAmountHisCommand.getCateIndicator()
+                salIndAmountHisCommand.getCateIndicator(),
+                salIndAmountHisCommand.getYearMonthHistoryItem().stream().map(item -> GenericHistYMPeriodCommand.fromCommandToDomain(item)).collect(Collectors.toList()),
+                salIndAmountHisCommand.getSalBonusCate()
         );
-        if (salIndAmountHisDB.isPresent()) {
-            SalIndAmountHis bo = salIndAmountHisDB.get();
-            salIndAmountHisRepository.update(bo);
-        } else {
-            SalIndAmountHis salIndAmountHis = new SalIndAmountHis(
-                    salIndAmountHisCommand.getPerValCode(),
-                    salIndAmountHisCommand.getEmpId(),
-                    salIndAmountHisCommand.getCateIndicator(),
-                    salIndAmountHisCommand.getYearMonthHistoryItem().stream().map(item -> GenericHistYMPeriodCommand.fromCommandToDomain(item)).collect(Collectors.toList()),
-                    salIndAmountHisCommand.getSalBonusCate()
-            );
-            salIndAmountHisRepository.add(salIndAmountHis);
-
-        }
-        String historyID = "01";
-        SalIndAmount salIndAmount = new SalIndAmount(
-                historyID,
-                salIndAmountCommand.getAmountOfMoney()
-        );
+        SalIndAmount salIndAmount = new SalIndAmount(salIndAmountCommand.getHistoryId(), salIndAmountCommand.getAmountOfMoney());
+        salIndAmountHisRepository.add(salIndAmountHis);
         salIndAmountRepository.add(salIndAmount);
-        return;
     }
 }
