@@ -924,7 +924,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.zeroDisplayAtr = ko.observable(data.zeroDisplayAtr);
                     self.itemNameDisplay = ko.observable(data.itemNameDisplay);
                 } else {
-                    self.zeroDisplayAtr = ko.observable(model.Display.NOT_SHOW);
+                    self.zeroDisplayAtr = ko.observable(model.Display.SHOW);
                     self.itemNameDisplay = ko.observable(model.Display.NOT_SHOW);
                 }
                 
