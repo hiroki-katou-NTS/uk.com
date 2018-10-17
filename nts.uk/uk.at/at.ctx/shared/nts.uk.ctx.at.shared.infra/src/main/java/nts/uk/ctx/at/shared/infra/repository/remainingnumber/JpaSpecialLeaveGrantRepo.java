@@ -26,10 +26,10 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	
 	private static final String GET_BY_PERIOD_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a"
 			+ " WHERE a.employeeId = :employeeId"
-			+ " AND a.specialLeaCode = :specialLeaCode"
-			+ " AND a.expStatus = :expStatus"
+			+ " AND a.specialLeaCode = :specialLeaCode"			
 			+ " AND a.grantDate <= :grantDate"
 			+ " AND a.deadlineDate >= :deadlineDate"
+			+ " AND a.expStatus = :expStatus"
 			+ " ORDER BY a.grantDate ASC";
 
 	@Override
