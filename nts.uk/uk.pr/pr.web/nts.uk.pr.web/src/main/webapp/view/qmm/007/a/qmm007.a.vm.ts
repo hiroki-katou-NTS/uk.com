@@ -4,12 +4,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import model = qmm007.share.model;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
 
         newHisId: KnockoutObservable<string> = ko.observable('');
+        enableButtonNew: KnockoutObservable<boolean> = ko.observable(true);
         enableEditHistoryButton: KnockoutObservable<boolean> = ko.observable(true);
         enableAddHistoryButton: KnockoutObservable<boolean> = ko.observable(true);
         enableNotes:KnockoutObservable<boolean> = ko.observable(true);
@@ -80,6 +80,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
                 }else{
                     self.mode(MODE.NEW);
+                    self.enableButtonNew(false);
                     self.enableAddHistoryButton(false);
                     self.enableEditHistoryButton(false);
                     $("#A3_2").focus();
@@ -154,6 +155,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let self = this;
             self.singleSelectedCode.subscribe((o)=>{
                 nts.uk.ui.errors.clearAll();
+                self.enableButtonNew(true);
                 if(o){
                 let fistHistory,code,hisId;
                 let params = o.split('__');
@@ -206,7 +208,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             nts.uk.ui.errors.clearAll();
                         }else {
                             //
-
                             self.enableCode(false);
                             self.enableName(true);
                             self.enableYearMonth(true);
@@ -216,7 +217,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             self.enableFixedWageClassList(true);
                             self.enableNotes(true);
                             self.enableButtonRegistration(true);
-
 
                             service.getPayrollUnitPriceById(code).done((data) => {
                                 self.code(data.code);
@@ -390,6 +390,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             self.enableAmountOfMoney(true);
             self.enableFixedWageClassList(true);
             self.enableNotes(true);
+            self.enableButtonNew(false);
             self.enableButtonRegistration(true);
             self.enableAddHistoryButton(false);
             self.enableEditHistoryButton(false);
@@ -422,7 +423,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 service.getAllHistoryById().done((data) => {
                     if (data) {
                         _.each(data,(o)=>{
-                            let node = new Node(o.code,o.code + ' ' + o.name,o.code,o.name,[]);
+                            let node = new Node(o.code,o.code + ' ' + _.escape(o.name),o.code,o.name,[]);
                             if(o.payrollUnitPriceHistoryDto){
                                 let displayStart, displayEnd = "";
                                 _.each(o.payrollUnitPriceHistoryDto,(dto)=>{
