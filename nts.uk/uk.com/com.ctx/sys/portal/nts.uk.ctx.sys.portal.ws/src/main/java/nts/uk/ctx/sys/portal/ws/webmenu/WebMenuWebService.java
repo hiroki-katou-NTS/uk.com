@@ -180,6 +180,12 @@ public class WebMenuWebService extends WebService {
 	}
 	
 	@POST
+	@Path("showmanual")
+	public boolean showManual() {
+		return userFinder.showManual();
+	}
+	
+	@POST
 	@Path("logout")
 	public void logout() {
 		sessionLowLayer.loggedOut();
