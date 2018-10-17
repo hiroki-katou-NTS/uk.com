@@ -485,18 +485,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             });
         }
         public convertIntToTime(data: any): string {
-            let hourMinute: string = "";
-            if (data == -1 || data === "") {
-                return null;
-            } else if (data == 0) {
-                //hourMinute = "00:00";
-                hourMinute = "";
-            } else if (data != null) {
-                let hour = Math.floor(data / 60);
-                let minutes = Math.floor(data % 60);
-                hourMinute = (hour < 10 ? ("0" + hour) : hour) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+            if(nts.uk.util.isNullOrUndefined(data)||nts.uk.util.isNullOrEmpty(data)){
+                return null;   
             }
-            return hourMinute;
+            return nts.uk.time.format.byId("ClockDay_Short_HM", data);
         }
         private changeUnregisterValue() {
             let self = this,

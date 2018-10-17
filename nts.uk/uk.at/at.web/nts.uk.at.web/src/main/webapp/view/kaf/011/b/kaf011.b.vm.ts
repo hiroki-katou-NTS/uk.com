@@ -213,9 +213,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                if (data.absRecMng) {
-                    self.remainDays(data.absRecMng.remainDays);
-                }
+                self.remainDays(data.absRecMng);
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);
                 self.employeeID(data.employeeID || null);
