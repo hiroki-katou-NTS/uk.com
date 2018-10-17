@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetCommandHandler;
@@ -78,8 +79,8 @@ public class ImplementationResultWebService extends WebService {
 	
 	@POST
 	@Path("updateLogState")
-	public void updateLogState(String empCalAndSumExecLogID) {
-		this.updateDailyLogStateCommandHandler.handle(empCalAndSumExecLogID);
+	public JavaTypeResult<String> updateLogState(String empCalAndSumExecLogID) {
+		return new JavaTypeResult<String>(this.updateDailyLogStateCommandHandler.handle(empCalAndSumExecLogID));
 	}
 
 }
