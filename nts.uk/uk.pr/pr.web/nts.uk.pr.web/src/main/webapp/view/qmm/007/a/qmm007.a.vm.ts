@@ -203,6 +203,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             self.selectedADayPayee(TARRGETCLASSFICATION.OBJECT);
                             self.selectedHourlyPay(TARRGETCLASSFICATION.OBJECT);
                             self.selectedMonthlySalary(TARRGETCLASSFICATION.OBJECT);
+                            nts.uk.ui.errors.clearAll();
                         }else {
                             //
 
@@ -408,6 +409,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             self.mode(MODE.NEW);
 
             $("#A3_2").focus();
+            nts.uk.ui.errors.clearAll();
         }
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return nts.uk.time.formatYearMonth(yearMonth);
