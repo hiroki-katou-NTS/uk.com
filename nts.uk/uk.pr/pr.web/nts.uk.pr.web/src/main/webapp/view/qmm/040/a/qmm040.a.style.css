@@ -8,6 +8,19 @@
 }
 
 .margin-top{
-    margin-top: 55px;
+    margin-top: 30px;
+}
+
+.caret-background.caret-right:after{
+    display: none !important;
+}
+
+#custom-caret:after{
+    font-size: 2em !important;
+    border-left: 1em solid !important;
+    border-top: 5em solid transparent !important;
+    border-bottom: 5em solid transparent !important;
+    color: #e0f59e !important;
+
 }
 

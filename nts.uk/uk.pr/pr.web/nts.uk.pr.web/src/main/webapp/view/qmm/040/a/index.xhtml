@@ -47,10 +47,12 @@
             </div>
             <div class="contents-area fixed-flex-layout">
                 <div id="com-ccg001"></div>
-                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px;">
-                    <div style=" margin-top: 15px" data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">
+                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
+                    <div style="float: left;width: 375px;">
+                        <div style=" margin-top: 15px"
+                             data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">
 
-                        <div style="width: 300px" data-bind="ntsSearchBox: {
+                            <div style="width: 300px" data-bind="ntsSearchBox: {
                     searchMode: 'filter',
                     targetKey: 'individualPriceCode',
                     comId: 'A4_4',
@@ -58,8 +60,8 @@
 	                    selected: salIndAmountNamesSelectedCode,
 	                    selectedKey: 'individualPriceCode',
 	                     fields: ['individualPriceName', 'individualPriceCode'],
-	                      mode: 'igGrid'}" />
-                        <table id="A4_4" data-bind="ntsGridList: {
+	                      mode: 'igGrid'}"/>
+                            <table id="A4_4" data-bind="ntsGridList: {
                         height: 400,
                         options: salIndAmountNames,
                         optionsValue: 'individualPriceCode',
@@ -69,18 +71,16 @@
                     }"></table>
 
 
-
-
-
-
-
-
+                        </div>
+                    </div>
+                    <div style="float: left;height: 400px;width: 50px;margin-top: 130px;">
+                        <span  id="custom-caret" class="caret-right"></span>
                     </div>
 
 
                 </div>
 
-                <div id="panel-right" class="fixed-flex-layout-right margin-top" >
+                <div id="panel-right" class="fixed-flex-layout-right margin-top">
                     <div class="flex valign-center margin-top-item">
                         <!--A5_1 項目区分-->
 
@@ -111,30 +111,30 @@
                     </div>
                     <table id="substituteDataGrid"></table>
                     <!--<table id="A5_9">-->
-                        <!--<colgroup>-->
-                            <!--<col width="130px"/>-->
-                            <!--<col width="100px"/>-->
-                            <!--<col width="170px"/>-->
-                            <!--<col width="120px"/>-->
+                    <!--<colgroup>-->
+                    <!--<col width="130px"/>-->
+                    <!--<col width="100px"/>-->
+                    <!--<col width="170px"/>-->
+                    <!--<col width="120px"/>-->
 
-                        <!--</colgroup>-->
-                        <!--<thead>-->
-                        <!--<tr>-->
-                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>-->
-                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>-->
-                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>-->
-                            <!--<th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>-->
+                    <!--</colgroup>-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>-->
+                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>-->
+                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>-->
+                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>-->
 
-                        <!--</tr>-->
-                        <!--</thead>-->
-                        <!--<tbody>-->
-                        <!--<tr>-->
-                            <!--<td></td>-->
-                            <!--<td></td>-->
-                            <!--<td></td>-->
-                            <!--<td></td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                    <!--<tr>-->
+                    <!--<td></td>-->
+                    <!--<td></td>-->
+                    <!--<td></td>-->
+                    <!--<td></td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
                     <!--</table>-->
                 </div>
 

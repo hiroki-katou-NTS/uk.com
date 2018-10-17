@@ -1,7 +1,5 @@
 module nts.uk.pr.view.qmm040.a.viewmodel {
     import getText = nts.uk.resource.getText;
-    import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
-    import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
 
     export class ScreenModel {
 
@@ -27,7 +25,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         yearMonthFilter: KnockoutObservable<number> = ko.observable(201804);
         onTab: KnockoutObservable<number> = ko.observable(0);
         titleTab: KnockoutObservable<string> = ko.observable('');
-        itemClassification:KnockoutObservable<string>=ko.observable('');
+        itemClassification: KnockoutObservable<string> = ko.observable('');
         individualPriceCode: KnockoutObservable<string>;
         individualPriceName: KnockoutObservable<string>;
 
@@ -57,7 +55,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.employeeList = ko.observableArray([]);
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
-                if(!data)
+
+                if (!data)
                     return;
                 let temp = _.find(self.salIndAmountNames(), function (o) {
                     return o.individualPriceCode == data;
@@ -143,11 +142,15 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
+
                 if (data) {
                     self.salIndAmountNames(data);
-                    if(data.length>0){
+                    if (data.length > 0) {
                         self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
                         self.salIndAmountNamesSelectedCode.valueHasMutated();
+                    }
+                    else {
+                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
                     }
 
 
@@ -158,28 +161,31 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         public onSelected(pelValCode: string) {
             let self = this;
+            self.personalAmount.periodAndAmountDisplay.removeAll();
+            $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmountDisplay()).igGrid("dataBind");
             service.salIndAmountHisByPeValCode(pelValCode, self.cateIndicator(), self.salBonusCate()).done(function (data) {
-                self.personalAmount=new PersonalAmount();
+
+                self.personalAmount = new PersonalAmount();
                 self.personalAmount.setData(data)
                 console.log(self.personalAmount);
 
             })
+
         }
 
 
-        filterData():void{
-            let self=this;
+        filterData(): void {
+            let self = this;
             self.yearMonthFilter();
-            let temp =new Array();
-            for(let i=0;i<self.personalAmount.periodAndAmount().length;i++){
-                if(self.personalAmount.periodAndAmount()[i].periodStartYm <= this.yearMonthFilter() && self.personalAmount.periodAndAmount()[i].periodEndYm >= this.yearMonthFilter() )
+            let temp = new Array();
+            for (let i = 0; i < self.personalAmount.periodAndAmount().length; i++) {
+                if (self.personalAmount.periodAndAmount()[i].periodStartYm <= this.yearMonthFilter() && self.personalAmount.periodAndAmount()[i].periodEndYm >= this.yearMonthFilter())
                     temp.push(self.personalAmount.periodAndAmount()[i])
             }
             self.personalAmount.periodAndAmountDisplay(temp);
 
             $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmountDisplay()).igGrid("dataBind");
         }
-
 
 
         public reloadCcg001(): void {
@@ -239,36 +245,67 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 name: 'Grid name',
                 dataSource: self.personalAmount.periodAndAmountDisplay(),
                 primaryKey: 'id',
-                virtualization: true,
-                hidePrimaryKey: true,
-                rowVirtualization: true,
-                virtualizationMode: 'continuous',
+                autoCommit: true,
+                autoGenerateColumns: false,
                 columns: [
                     {headerText: getText('QMM040_16'), key: 'employeeCode', dataType: 'string', width: '130px'},
                     {headerText: getText('QMM040_17'), key: 'employeeName', dataType: 'string', width: '102px'},
                     {headerText: getText('QMM040_18'), key: 'period', dataType: 'string', width: '170px'},
-                    {headerText: getText('QMM040_19'), key: 'amountOfMoney()', dataType: 'string', width: '120px'},
+                    {headerText: getText('QMM040_19'), key: 'amountOfMoney', dataType: 'string', width: '120px'}
+
                 ],
                 features: [
                     {
+                        name: 'Updating',
+                        editMode: 'cell',
+                        enableDeleteRow: false,
+                        enableAddRow: false,
+                        editCellStarting: function (evt, ui) {
+
+                            return true;
+                        },
+                    },
+                    {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 20
+                        pageSize: 20,
                     },
                     {
                         name: 'Resizing',
                         columnSettings: [
-                            {columnKey: "employeeId", allowResizing: false},
-                            {columnKey: "individualPriceName", allowResizing: false},
-                            {columnKey: "workplaceID", allowResizing: false},
-                            {columnKey: "workplaceCode", allowResizing: false},
-
+                            {columnKey: "employeeCode", allowResizing: false},
+                            {columnKey: "employeeName", allowResizing: false},
+                            {columnKey: "period", allowResizing: false},
+                            {columnKey: "amountOfMoney", allowResizing: false},
                         ],
                     }
+                ],
+                ntsControls: [
                 ]
             });
         }
+
+
+
+        items: KnockoutObservableArray<any>;
+        first: any;
+        initgrid2(){
+            let self=this;
+            var array = [];
+            for (let i = 0; i < 100; i++) {
+                array.push({code: i, name: "text" + i, combo: "1"});
+            }
+            self.items = ko.observableArray(array);
+
+            self.first = self.items()[0];
+
+        }
+
+
+
     }
+
+
 
 
     export interface GroupOption {
@@ -435,19 +472,19 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
     export class Amount {
         historyID: string;
-        employeeCode: string='';
-        employeeName: string='';
+        employeeCode: string = '';
+        employeeName: string = '';
         periodStartYm: number;
         periodEndYm: number;
-        amountOfMoney: KnockoutObservable<number>;
-        period:string;
+        amountOfMoney: number;
+        period: string;
 
         constructor(param: IAmount) {
             this.historyID = param.historyID;
             this.periodStartYm = param.periodStartYm;
             this.periodEndYm = param.periodEndYm;
-            this.amountOfMoney = ko.observable(param.amountOfMoney);
-            this.period=param.periodStartYm + ' ~ ' + param.periodEndYm;
+            this.amountOfMoney = param.amountOfMoney;
+            this.period = param.periodStartYm + ' ~ ' + param.periodEndYm;
         }
     }
 
