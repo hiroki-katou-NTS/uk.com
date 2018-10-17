@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -74,14 +79,36 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			this.commandProxy().remove(entity);
 		}
 	}
-
+	@SneakyThrows
 	@Override
 	public Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId) {
-
-		Optional<SpecialLeaveGrantRemainingData> entity = this.queryProxy()
-				.query(QUERY_WITH_SPECIALID, KrcmtSpecialLeaveReam.class).setParameter("specialLeaId", specialId)
-				.getSingle(c -> toDomain(c));
-		return entity;
+		PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+				+ " WHERE SPECIAL_LEAVE_ID = ?");
+		sql.setString(1, specialId);
+		Optional<SpecialLeaveGrantRemainingData> entities = new NtsResultSet(sql.executeQuery())
+				.getSingle(x -> {
+					return SpecialLeaveGrantRemainingData.createFromJavaType(x.getString("SPECIAL_LEAVE_ID"),
+							x.getString("CID"),
+							x.getString("SID"),
+							x.getInt("SPECIAL_LEAVE_CD"),
+							x.getGeneralDate("GRANT_DATE"),
+							x.getGeneralDate("DEADLINE_DATE"),
+							x.getInt("EXPIRED_STATE"),
+							x.getInt("REGISTRATION_TYPE"),
+							x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
+							x.getInt("TIME_GRANT"),
+							x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+							x.getInt("TIME_USE"),
+							x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
+							x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
+							x.getInt("TIME_OVER"),
+							x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+							x.getInt("TIME_REMAIN"));
+				});
+		if(!entities.isPresent()) {
+			return Optional.empty();
+		}
+		return entities;		
 	}
 
 	private void updateDetail(KrcmtSpecialLeaveReam entity, SpecialLeaveGrantRemainingData data) {
@@ -203,22 +230,47 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayRemain, x.timeRemain))
 				.collect(Collectors.toList());
 	}
-
+	@SneakyThrows
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
 			LeaveExpirationStatus expirationStatus, GeneralDate ymd) {
-		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
-				.query(GET_BY_PERIOD_STATUS, KrcmtSpecialLeaveReam.class)
-				.setParameter("employeeId", sid)
-				.setParameter("specialLeaCode", specialLeaveCode)
-				.setParameter("expStatus", expirationStatus.value)
-				.setParameter("grantDate", ymd)
-				.setParameter("deadlineDate", ymd)
-				.getList();
-
-		return entities.stream()
-				.map(x -> toDomainSpe(x))
-				.collect(Collectors.toList());
+			
+		PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+				+ " WHERE SID = ?"
+				+ " AND SPECIAL_LEAVE_CD = ?"
+				+ " AND GRANT_DATE <= ?"
+				+ " AND DEADLINE_DATE >= ?"
+				+ " AND EXPIRED_STATE = ?"
+				+ " ORDER BY GRANT_DATE ASC");
+		sql.setString(1, sid);
+		sql.setInt(2, specialLeaveCode);
+		sql.setDate(3, Date.valueOf(ymd.toLocalDate()));
+		sql.setDate(4, Date.valueOf(ymd.toLocalDate()));
+		sql.setInt(5, expirationStatus.value);
+		List<SpecialLeaveGrantRemainingData> entities = new NtsResultSet(sql.executeQuery())
+				.getList(x -> {
+					return SpecialLeaveGrantRemainingData.createFromJavaType(x.getString("SPECIAL_LEAVE_ID"),
+							x.getString("CID"),
+							x.getString("SID"),
+							x.getInt("SPECIAL_LEAVE_CD"),
+							x.getGeneralDate("GRANT_DATE"),
+							x.getGeneralDate("DEADLINE_DATE"),
+							x.getInt("EXPIRED_STATE"),
+							x.getInt("REGISTRATION_TYPE"),
+							x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
+							x.getInt("TIME_GRANT"),
+							x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+							x.getInt("TIME_USE"),
+							x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
+							x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
+							x.getInt("TIME_OVER"),
+							x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+							x.getInt("TIME_REMAIN"));
+				});
+		if(entities.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return entities;
 	}
 	private SpecialLeaveGrantRemainingData toDomainSpe(KrcmtSpecialLeaveReam x) {
 		return SpecialLeaveGrantRemainingData.createFromJavaType(x.specialLeaID, x.cId, x.employeeId,
