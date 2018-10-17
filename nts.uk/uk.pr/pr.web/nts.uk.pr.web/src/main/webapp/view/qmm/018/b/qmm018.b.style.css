@@ -7,10 +7,6 @@
     padding-right: 20px;
 }
 
-.nts-searchbbox-wrapper {
-    /*margin-bottom: 10px;*/
-}
-
 #B1_1 {
     padding-bottom: 15px;
 }
@@ -18,4 +14,12 @@
 #B6_1 {
     margin-top: 20px;
     margin-bottom: 15px;
+}
+
+.edgeList {
+    height: 245px !important;
+}
+
+.ieList {
+    height: 245px !important;
 }
