@@ -9,6 +9,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.ApprovalProcessAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.ApprovalProcessImport;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
@@ -31,15 +35,21 @@ public class ExtractAlarmForEmployeeService {
 		
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
-	
+
 	@Inject
 	private AgreementProcessService agreementProcessService;
-	
+
 	@Inject
 	private MonthlyAggregateProcessService monthlyAggregateProcessService;
-	
+
 	@Inject
 	private MultipleMonthAggregateProcessService multipleMonthAggregateProcessService;
+
+	@Inject
+	private ApprovalProcessAdapter approvalProcessAdapter;
+
+	@Inject
+	private IdentityConfirmProcessAdapter identityConfirmProcessAdapter;
 	
 	public List<ValueExtractAlarm> process(String comId, List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees){
 		
@@ -48,6 +58,10 @@ public class ExtractAlarmForEmployeeService {
 		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value));
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
 		List<WorkplaceImport>  optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
+		//#101960 「本人確認処理の利用設定」取得処理を追加（アルゴリズム移動） and 「承認処理の利用設定」取得処理を追加
+		ApprovalProcessImport appovalProcess = approvalProcessAdapter.getApprovalProcess(comId);
+		IdentityConfirmProcessImport identConfrimProcess= identityConfirmProcessAdapter.getIdentityConfirmProcess(comId);
+		
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
 			// get Period by category
@@ -93,7 +107,7 @@ public class ExtractAlarmForEmployeeService {
 					
 					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
 						// アルゴリズム「日次の集計処理」を実行する
-						List<ValueExtractAlarm> monthlyAlarmList = monthlyAggregateProcessService.monthlyAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
+						List<ValueExtractAlarm> monthlyAlarmList = monthlyAggregateProcessService.monthlyAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees, appovalProcess, identConfrimProcess);
 						result.addAll(monthlyAlarmList);
 					}
 				}

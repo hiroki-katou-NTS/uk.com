@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.function.ac.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.sysfixedcheckcondition.SysFixedCheckConMonAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
+import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessExport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -35,6 +40,19 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 		}
 		return Optional.empty();
 	}
+	
+	@Override
+	public List<ValueExtractAlarm> checkMonthlyUnconfirmeds(String employeeID, int yearMonth,IdentityConfirmProcessImport identityConfirmProcessImport) {
+		IdentityConfirmProcessExport export= convertIdentityToExport(identityConfirmProcessImport);
+		List<ValueExtractAlarmWRPubExport> datas = sysFixedCheckConMonPub.checkMonthlyUnconfirmeds(employeeID, yearMonth,export);
+		List<ValueExtractAlarm> lstReturn = new ArrayList<>();
+		if(!CollectionUtil.isEmpty(datas)) {
+			for (ValueExtractAlarmWRPubExport obj : datas) {
+				lstReturn.add(convertToExport(obj));
+			}
+		}
+		return lstReturn;
+	}
 
 	private ValueExtractAlarm convertToExport(ValueExtractAlarmWRPubExport export) {
 		return new ValueExtractAlarm(
@@ -45,6 +63,15 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 				export.getAlarmItem(),
 				export.getAlarmValueMessage(),
 				export.getComment().orElse(null)
+				);
+	}
+	
+	private IdentityConfirmProcessExport convertIdentityToExport(IdentityConfirmProcessImport imp) {
+		return new IdentityConfirmProcessExport(
+				imp.getCid(),
+				imp.getUseDailySelfCk(),
+				imp.getUseMonthSelfCK(),
+				imp.getYourselfConfirmError()
 				);
 	}
 	@Override
