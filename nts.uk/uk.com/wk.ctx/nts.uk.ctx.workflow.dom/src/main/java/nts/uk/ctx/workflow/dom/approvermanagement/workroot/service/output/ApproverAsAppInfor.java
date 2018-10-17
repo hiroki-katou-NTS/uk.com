@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
-public class ApproverAsApplicationInforOutput {
+public class ApproverAsAppInfor {
 	/**
 	 * フェーズ
 	 */
@@ -19,5 +20,5 @@ public class ApproverAsApplicationInforOutput {
 	 */
 	String approvalForm = "";
 	
-	List<EmployeeOrderApproverAsAppOutput> lstEmpInfo = new ArrayList<>();
+	List<EmpOrderApproverAsApp> lstEmpInfo = new ArrayList<>();
 }

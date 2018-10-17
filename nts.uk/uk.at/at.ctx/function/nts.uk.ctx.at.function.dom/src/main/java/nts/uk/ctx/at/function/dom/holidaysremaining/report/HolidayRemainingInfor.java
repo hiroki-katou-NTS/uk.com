@@ -53,6 +53,8 @@ public class HolidayRemainingInfor {
 	private List<StatusOfHolidayImported> listStatusOfHoliday;
 	// RequestList273
 	private Map<Integer, SpecialVacationImported> mapSpecialVacation;
+    private Map<Integer, SpecialVacationImported> mapSPVaCrurrentMonth;
+
 	// RequestList263
 	private Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday;
 	// RequestList206
@@ -67,7 +69,8 @@ public class HolidayRemainingInfor {
 			List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon,
 			List<CurrentHolidayImported> listCurrentHoliday, List<StatusHolidayImported> listStatusHoliday,
 			List<CurrentHolidayRemainImported> listCurrentHolidayRemain,
-			List<StatusOfHolidayImported> listStatusOfHoliday, Map<Integer, SpecialVacationImported> mapSpecialVacation,
+			List<StatusOfHolidayImported> listStatusOfHoliday, Map<Integer, SpecialVacationImported> mapSpecialVacation,Map<Integer,
+            SpecialVacationImported> mapSPVaCrurrentMonth,
 			Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday,
 			ChildNursingLeaveCurrentSituationImported childNursingLeave,
 			NursingLeaveCurrentSituationImported nursingLeave) {
@@ -85,6 +88,7 @@ public class HolidayRemainingInfor {
 		this.listCurrentHolidayRemain = listCurrentHolidayRemain;
 		this.listStatusOfHoliday = listStatusOfHoliday;
 		this.mapSpecialVacation = mapSpecialVacation;
+		this.mapSPVaCrurrentMonth = mapSPVaCrurrentMonth;
 		this.mapListSpecialHoliday = mapListSpecialHoliday;
 		this.childNursingLeave = childNursingLeave;
 		this.nursingLeave = nursingLeave;
