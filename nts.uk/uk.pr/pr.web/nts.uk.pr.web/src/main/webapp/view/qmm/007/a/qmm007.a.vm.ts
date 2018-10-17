@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
     export class ScreenModel {
 
+        newNode: KnockoutObservable<Node> = ko.observable(null);
         newHisId: KnockoutObservable<string> = ko.observable('');
         enableButtonNew: KnockoutObservable<boolean> = ko.observable(true);
         enableEditHistoryButton: KnockoutObservable<boolean> = ko.observable(true);
@@ -66,9 +67,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         selectedCurrentMonthlySalary: KnockoutObservable<number> = ko.observable();
         selectedCurrentHourlyPay: KnockoutObservable<number> = ko.observable();
         selectedCurrentADayPayee: KnockoutObservable<number> = ko.observable();
-        //
         multilineeditor: any;
-        //
         payrollUnitPriceHistory:  KnockoutObservableArray<PayrollUnitPriceHistory> = ko.observableArray([]);
         constructor() {
             let  self = this;
@@ -177,8 +176,14 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             self.enableAddHistoryButton(true);
                             self.mode(MODE.UPDATE);
                         }
-                        if(self.newHisId()){
+                        if(self.newHisId() && self.newNode() && code === self.newNode().code.split('__')[0]){
                             self.enableAddHistoryButton(false);
+                        }else if(self.newHisId() && self.newNode() && code != self.newNode().code.split('__')[0]){
+                            _.forEach(self.dataSource(),(o)=>{
+                                _.remove(o.childs,(d)=>{ return d.code === self.newNode().code});
+                            });
+                            self.dataSource(self.dataSource());
+                            self.newHisId(null);
                         }
                         if(hisId === undefined){
                             self.enableCode(false);
@@ -293,13 +298,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
             modal("/view/qmm/007/b/index.xhtml").onClosed( ()=> {
                 let params = getShared('QMM007_B_PARAMS_OUTPUT');
-                let hisId ;
-                let startYearMonth ;
-                let endYearMonth;
-                let takeover
-                let node;
-                let tempNode;
-                let temp;
+                let hisId,startYearMonth, endYearMonth, takeover,node,tempNode,temp;
 
                 if(params){
                     self.enableAddHistoryButton(false);
@@ -313,12 +312,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
                     endYearMonth = Number(startYearMonth.toString().slice(4, 6)) == 1 ? (startYearMonth - 89) : (startYearMonth - 1);
                     node = new Node(code + '__' + hisId, '' + self.convertYearMonthToDisplayYearMonth(startYearMonth) + ' ～ ' + self.convertYearMonthToDisplayYearMonth('999912') , code,name,[]);
+
                     tempNode = _.find(self.dataSource(), function(o) { return o.code.split('__')[0] === code; });
                     temp = tempNode.childs[0].name.split(' ～ ');
                     tempNode.childs[0].name = temp[0] + ' ～ ' + self.convertYearMonthToDisplayYearMonth(endYearMonth);
                     tempNode.childs[0].nodeText = tempNode.childs[0].name;
                     tempNode.childs.unshift(node);
-
+                    self.newNode(node);
                     self.dataSource(self.dataSource());
 
                     self.mode(MODE.ADD_HISTORY);
