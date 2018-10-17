@@ -95,14 +95,26 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     self.selectedFractionProcessingAtr(self.displayData().averageWageCalculationSet().daysFractionProcessing());
 
                     //lstPayment item
-                    self.lstTargetWageItem(self.displayData().lstStatemetPaymentItem());
+                    let list = self.displayData().lstStatemetPaymentItem();
+                    list.sort(function (a, b) {
+                        if (a.itemNameCd < b.itemNameCd) return -1;
+                        if (a.itemNameCd > b.itemNameCd) return 1;
+                        return 0;
+                    });
+                    self.lstTargetWageItem(list);
                     let lstname = self.lstTargetWageItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
                     var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
                     self.targetWageItem(newStringTargetWageItem);
 
                     //lstAttendanceItem
-                    self.lstTargetWorkingDaysItem(self.displayData().lstStatemetAttendanceItem());
+                    let list = self.displayData().lstStatemetAttendanceItem();
+                    list.sort(function (a, b) {
+                        if (a.itemNameCd < b.itemNameCd) return -1;
+                        if (a.itemNameCd > b.itemNameCd) return 1;
+                        return 0;
+                    });
+                    self.lstTargetWorkingDaysItem(list);
                     let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
                     var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
@@ -116,6 +128,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             }).always(() => {
                 block.clear();
             });
+            $("#A2_3").focus();
             return dfd.promise();
         }
 
