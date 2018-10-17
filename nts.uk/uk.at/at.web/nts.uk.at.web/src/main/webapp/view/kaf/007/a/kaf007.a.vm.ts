@@ -410,7 +410,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 tmpStartDate = moment(tmpStartDate).add(1, 'day').format(self.dateFormat);
             }
             //実績の内容
-            service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
+            service.getRecordWorkInfoByDate({appDate : moment(endDate === null ? startDate : endDate).format(self.dateFormat), employeeID : null}).done((recordWorkInfo) => {
                 //Binding data
                 ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
                 if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
