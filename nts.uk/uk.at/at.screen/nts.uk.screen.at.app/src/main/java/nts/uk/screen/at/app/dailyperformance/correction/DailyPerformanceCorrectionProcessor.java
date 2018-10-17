@@ -436,11 +436,13 @@ public class DailyPerformanceCorrectionProcessor {
 												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
-								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								//DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
 								//checkIndenityMonth
 								screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
 								//対象日の本人確認が済んでいるかチェックする
 								screenDto.checkShowTighProcess(displayFormat, true);
+							}else {
+								screenDto.getIndentityMonthResult().setHideAll(false);
 							}
 							// screenDto.setFlexShortage(null);
 						}
