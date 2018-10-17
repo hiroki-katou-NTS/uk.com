@@ -113,8 +113,9 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 		List<ValueExtractAlarm> valueExtractAlarms = new ArrayList<ValueExtractAlarm>();
 		GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth).substring(0, 4) + '-'
 				+ String.valueOf(yearMonth).substring(4, 6) + '-' + "01", "yyyy-MM-dd");
+		Integer approved = 2;// 2:承認済 ; 1:承認中 ; 0:未承認
 		//INPUT.承認処理の利用設定.月の承認者確認を利用する＝true
-		if(approvalProcessImport.getUseMonthApproverConfirm()!=true){
+		if (approvalProcessImport.getUseMonthApproverConfirm() != true) {
 			return Collections.emptyList();
 		}
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlys = new ArrayList<>();
@@ -130,20 +131,19 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 			//No.533
 			List<AppRootStateStatusSprExport> appRootStateStatusSprExports = intermediateDataPub
 					.getAppRootStatusByEmpsMonth(empPerformMonthParams);
-			if (CollectionUtil.isEmpty(empPerformMonthParams)) {
-				// tạo alarm
+			String classification=TextResource.localize("KAL010_100");
+			String alarmItem=TextResource.localize("KAL010_128");
+			String alarmValueMessage=TextResource.localize("KAL010_129");
+			if (CollectionUtil.isEmpty(appRootStateStatusSprExports)) {
+				// Create Alarm message
 				valueExtractAlarms.add(new ValueExtractAlarm(null, employeeId.toString(), date.toString(),
-						TextResource.localize("KAL010_100"), TextResource.localize("KAL010_271"),
-						TextResource.localize("KAL010_272"), null));
+						classification, alarmItem, alarmValueMessage, null));
 			} else {
-				// UNAPPROVED(0,"未承認"),
-				// ON_APPROVED(1,"承認中 "),
-				// ALREADY_APPROVED(2,"承認済");
-				// 承認ルート状況.承認状況!＝承認済
-				if (appRootStateStatusSprExports.get(0).getDailyConfirmAtr() != 2) {
+				
+				// 承認ルート状況.承認状況!＝承認済 
+				if (appRootStateStatusSprExports.get(0).getDailyConfirmAtr() != approved) {
 					valueExtractAlarms.add(new ValueExtractAlarm(null, employeeId.toString(), date.toString(),
-							TextResource.localize("KAL010_100"), TextResource.localize("KAL010_128"),
-							TextResource.localize("KAL010_129"), null));
+							classification, alarmItem, alarmValueMessage, null));
 				}
 
 			}
