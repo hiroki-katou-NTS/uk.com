@@ -20,9 +20,9 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepository
 		implements WelfarePensionInsuranceClassificationRepository {
-
-	private static final String FIND_HISTORY_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceClassification WHERE a.welfarePenClsPk.cid = :cid AND a.welfarePenClsPk.officeCode = :officeCode";
-    private static final String DELETE_BY_HISTORY_IDS = "DELETE FROM QpbmtWelfarePensionInsuranceClassification WHERE a.welfarePenClsPk.historyId IN :historyId";
+	private static final String FIND_WELFARE_PENSION_CLS_BY_HISTORY_ID = "SELECT a FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.historyId  =:historyId";
+	private static final String FIND_HISTORY_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.cid =:cid AND a.welfarePenClsPk.socialInsuranceOfficeCd =:officeCode";
+    private static final String DELETE_BY_HISTORY_IDS = "DELETE FROM QpbmtWelfarePensionInsuranceClassification a WHERE a.welfarePenClsPk.historyId IN :historyId";
 
 	@Override
 	public Optional<WelfarePensionInsuranceRateHistory> getWelfarePensionHistoryByOfficeCode(String officeCode) {
@@ -31,7 +31,7 @@ public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepos
 
 	@Override
 	public Optional<WelfarePensionInsuranceClassification> getWelfarePensionInsuranceClassificationById( String historyId) {
-		return this.queryProxy().find(historyId, QpbmtWelfarePensionInsuranceClassification.class).map(QpbmtWelfarePensionInsuranceClassification::toDomain);
+		return this.queryProxy().query(FIND_WELFARE_PENSION_CLS_BY_HISTORY_ID, QpbmtWelfarePensionInsuranceClassification.class).setParameter("historyId", historyId).getSingle().map(QpbmtWelfarePensionInsuranceClassification::toDomain);
 	}
 
 	@Override

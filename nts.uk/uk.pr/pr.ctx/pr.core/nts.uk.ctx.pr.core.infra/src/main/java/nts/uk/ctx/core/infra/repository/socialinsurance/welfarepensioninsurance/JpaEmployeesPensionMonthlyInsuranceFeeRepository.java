@@ -26,14 +26,15 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaRepository
 		implements EmployeesPensionMonthlyInsuranceFeeRepository {
 
+	private static final String GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID = "SELECT a FROM QpbmtEmployeesPensionMonthlyInsuranceFee a WHERE a.welfarePenMonthlyPk.historyId =:historyId";
 	private static final String GET_GRADE_WELFARE_PENSION_INSURANCE_PREMIUM_BY_HISTORY_ID = "SELECT a from QpbmtGradeWelfarePensionInsurancePremium a WHERE a.gradeWelfarePremiPk.historyId =:historyId";
 	private static final String DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID = "DELETE from QpbmtGradeWelfarePensionInsurancePremium a WHERE a.gradeWelfarePremiPk.historyId IN :historyId";
 
 	@Override
 	public Optional<EmployeesPensionMonthlyInsuranceFee> getEmployeesPensionMonthlyInsuranceFeeByHistoryId(
 			String historyId) {
-		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> entity = this.queryProxy().find(historyId,
-				QpbmtEmployeesPensionMonthlyInsuranceFee.class);
+		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> entity = this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
+				QpbmtEmployeesPensionMonthlyInsuranceFee.class).setParameter("historyId", historyId).getSingle();
 		if (!entity.isPresent())
 			return Optional.empty();
 		List<QpbmtGradeWelfarePensionInsurancePremium> details = this.queryProxy()

@@ -16,9 +16,11 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 @Stateless
 public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepository implements BonusEmployeePensionInsuranceRateRepository {
 
+	private static final String FINE_BY_HISTORY_ID = "SELECT a FROM QpbmtBonusEmployeePensionInsuranceRate a WHERE a.welfarePenBonusPk.historyId =:historyId";
+
     @Override
     public Optional<BonusEmployeePensionInsuranceRate> getBonusEmployeePensionInsuranceRateById(String historyId) {
-        return queryProxy().find(historyId, QpbmtBonusEmployeePensionInsuranceRate.class).map(this::toDomain);
+        return this.queryProxy().query(FINE_BY_HISTORY_ID, QpbmtBonusEmployeePensionInsuranceRate.class).setParameter("historyId", historyId).getSingle().map(this::toDomain);
     }
 
     /**
