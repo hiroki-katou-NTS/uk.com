@@ -531,30 +531,9 @@ public class MonthlyAggregateProcessService {
 					case 3 :
 						break;
 					default:
-						//get AttendanceIds
-						List<Integer> attendanceIds = new ArrayList<>();
-						if (!CollectionUtil.isEmpty(extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon())) {
-							List<ErAlAtdItemConAdapterDto> listErAlAtdItemConGroup1 = extra.getCheckConMonthly()
-									.getGroup1().getLstErAlAtdItemCon();
-							for (ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemConGroup1) {
-								attendanceIds.addAll(erAlAtdItemCon.getCountableAddAtdItems());
-							}
-						}
-						if ((extra.getCheckConMonthly().getGroup2())!=null&&
-								!CollectionUtil.isEmpty(extra.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon())) {
-							List<ErAlAtdItemConAdapterDto> listErAlAtdItemConGroup2 = extra.getCheckConMonthly()
-									.getGroup2().getLstErAlAtdItemCon();
-							for (ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemConGroup2) {
-								attendanceIds.addAll(erAlAtdItemCon.getCountableAddAtdItems());
-							}
-						}
-						if (!CollectionUtil.isEmpty(attendanceIds)) {
-							Set<Integer> set = new HashSet<Integer>(attendanceIds);
-							attendanceIds = new ArrayList<Integer>(set);
-						}
-						//
+					//No 257
 						Map<String, Integer> checkPerTimeMonActualResults = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
-								yearMonth, employee.getId(), extra.getCheckConMonthly(),attendanceIds);
+								yearMonth, employee.getId(), extra.getCheckConMonthly());
 						// Key of MAP : employeeID+yearMonth.toString()+closureID.toString()
 						//ValueMap 0 = false, 1= true
 //						String key =employee.getId().toString()+yearMonth.toString()+closureID.toString();
