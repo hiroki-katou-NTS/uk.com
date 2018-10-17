@@ -41,7 +41,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
             self.exceptionFormula.subscribe(x => {
                 if(x != 0){
-                    let check = self.validateExceptionFormula.validate(x);
+                    let check = self.validateExceptionFormula.validate(x.toString());
                     if(check.isValid){
                         self.disExceptionFormula(getText('QMM018_8', [x]));
                     }
