@@ -80,7 +80,7 @@ public class HolidayWorkTimeOfTimeSeries {
 	
 	/**
 	 * 休出時間：振替時間を加算する
-	 * @param transferTime 休出時間　（計算付き時間）
+	 * @param transferTime 振替時間　（計算付き時間）
 	 */
 	public void addTransferTimeInHolidayWorkTime(TimeDivergenceWithCalculation transferTime){
 		this.holidayWorkTime = this.addTransferTimeOnly(this.holidayWorkTime, transferTime);
@@ -88,10 +88,18 @@ public class HolidayWorkTimeOfTimeSeries {
 	
 	/**
 	 * 法定内休出時間：振替時間を加算する
-	 * @param transferTime 休出時間　（計算付き時間）
+	 * @param transferTime 振替時間　（計算付き時間）
 	 */
 	public void addTransferTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation transferTime){
 		this.legalHolidayWorkTime = this.addTransferTimeOnly(this.legalHolidayWorkTime, transferTime);
+	}
+	
+	/**
+	 * 休出時間：事前申請時間を加算する
+	 * @param beforeAppTime 事前申請時間
+	 */
+	public void addBeforeAppTimeInHolidayWorkTime(AttendanceTime beforeAppTime){
+		this.holidayWorkTime = this.addBeforeAppTimeOnly(this.holidayWorkTime, beforeAppTime);
 	}
 	
 	/**
@@ -145,6 +153,22 @@ public class HolidayWorkTimeOfTimeSeries {
 						transferTime.getTime(),
 						transferTime.getCalcTime())),
 				Finally.of(target.getBeforeApplicationTime().get())
+			);
+	}
+	
+	/**
+	 * 休出枠時間の事前申請時間のみ加算する
+	 * @param target 休出枠時間　（加算先）
+	 * @param beforeAppTime 加算する時間
+	 * @return 休出枠時間　（加算後）
+	 */
+	private HolidayWorkFrameTime addBeforeAppTimeOnly(HolidayWorkFrameTime target, AttendanceTime beforeAppTime){
+		if (beforeAppTime == null) return target;
+		return new HolidayWorkFrameTime(
+				target.getHolidayFrameNo(),
+				Finally.of(target.getHolidayWorkTime().get()),
+				Finally.of(target.getTransferTime().get()),
+				Finally.of(target.getBeforeApplicationTime().get().addMinutes(beforeAppTime.v()))
 			);
 	}
 }

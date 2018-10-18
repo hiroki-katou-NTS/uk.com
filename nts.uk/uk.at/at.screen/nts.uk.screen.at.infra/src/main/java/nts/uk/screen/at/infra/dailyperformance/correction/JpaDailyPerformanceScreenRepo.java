@@ -537,7 +537,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_ALL_WORKPLACE = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT WKPCD, WKP_NAME FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a ");
+		builderString.append("SELECT w.WKPCD, w.WKP_NAME, w.WKPID FROM BSYMT_WORKPLACE_INFO w JOIN BSYMT_WORKPLACE_HIST a ");
 		builderString.append("ON w.WKPID = a.WKPID AND w.CID = a.CID AND w.HIST_ID = a.HIST_ID ");
 		builderString.append("WHERE a.CID = ? AND a.START_DATE <= ? AND a.END_DATE >= ? ");
 		SEL_ALL_WORKPLACE_JDBC = builderString.toString();
@@ -1150,7 +1150,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setDate(3, Date.valueOf(date.localDate()));
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
-				return new CodeName(rs.getString("WKPCD"), rs.getString("WKP_NAME"), "");
+				return new CodeName(rs.getString("WKPCD"), rs.getString("WKP_NAME"), rs.getString("WKPID"));
 			});
 			
 		} catch (SQLException e) {
@@ -1742,7 +1742,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			}
 			try {
 				Connection con = this.getEntityManager().unwrap(Connection.class);
-				String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1  AND s.OPTIONAL_ITEM_NO IN ("
+			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.OPTIONAL_ITEM_NO IN ("
 						+ textIn + ")";
 				PreparedStatement pstatement = con.prepareStatement(query);
 				pstatement.setString(1, companyId);

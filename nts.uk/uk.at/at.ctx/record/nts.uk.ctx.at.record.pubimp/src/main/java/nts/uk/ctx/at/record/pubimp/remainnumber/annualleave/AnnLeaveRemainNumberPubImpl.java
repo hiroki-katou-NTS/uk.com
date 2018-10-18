@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -39,8 +40,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -72,7 +74,10 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	private GetClosurePeriod getClosurePeriod;
 	
 	@Inject
-	private TempAnnualLeaveMngRepository tempAnnualLeaveMngRepository;
+	private InterimRemainRepository interimRemainRepo;
+	
+	@Inject
+	private TmpAnnualHolidayMngRepository tmpAnnualLeaveMngRepo;
 	
 	/** 年休付与テーブル設定 */
 //	@Inject
@@ -326,8 +331,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						annualLeaveGrantTime,
 						numberOfRemainGrant,
 						timeAnnualLeaveWithMinusGrant,
-						1.00,
-						2.00);
+						0.00,
+						0.00);
 				result.setAnnualLeaveRemainNumberExport(annualLeaveRemainingNumberExport);
 				// add 年休付与情報(仮)
 				if(!CollectionUtil.isEmpty(asOfPeriodEnd.getGrantRemainingList())){
@@ -372,30 +377,37 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				}
 			}
 		}
-		List<TempAnnualLeaveManagement> tempAnnualLeaveManagements = this.tempAnnualLeaveMngRepository.findByEmployeeID(employeeID);
 		// add 年休管理情報(仮)
-		if(!CollectionUtil.isEmpty(tempAnnualLeaveManagements)){
-			for(TempAnnualLeaveManagement temp : tempAnnualLeaveManagements){
-				Double daysUsedNo = 0.00;
-				if(temp.getAnnualLeaveUse() != null){
-					daysUsedNo = temp.getAnnualLeaveUse().v();
-				}
-				Integer usedMinutes = 0;
-				if(temp.getTimeAnnualLeaveUse() != null){
-					usedMinutes = temp.getTimeAnnualLeaveUse().v();
-				}
-				AnnualLeaveManageInforExport annualLeaveManageInforExport = new AnnualLeaveManageInforExport(temp.getYmd(),
-						daysUsedNo,
-						usedMinutes, 
-						temp.getScheduleRecordAtr().value);
-				annualLeaveManageInforExports.add(annualLeaveManageInforExport);
-			}
+		val interimRemains = this.interimRemainRepo.getRemainBySidPriod(
+				employeeID, new DatePeriod(GeneralDate.min(), GeneralDate.max()), RemainType.ANNUAL);
+		interimRemains.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
+		for (val interimRemain : interimRemains){
+			val tmpAnnualLeaveMngOpt = this.tmpAnnualLeaveMngRepo.getById(interimRemain.getRemainManaID());
+			if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
+			val tmpAnnualLeaveMng = tmpAnnualLeaveMngOpt.get();
 			
+			Double usedDays = 0.00;
+			if(tmpAnnualLeaveMng.getUseDays() != null){
+				usedDays = tmpAnnualLeaveMng.getUseDays().v();
+			}
+			Integer usedMinutes = 0;
+			AnnualLeaveManageInforExport annualLeaveManageInforExport = new AnnualLeaveManageInforExport(
+					interimRemain.getYmd(),
+					usedDays,
+					usedMinutes, 
+					interimRemain.getCreatorAtr().value);
+			annualLeaveManageInforExports.add(annualLeaveManageInforExport);
 		}
-		// 年休出勤率を計算する:TODO: Trong EA ghi chưa làm được
-		if(result.getAnnualLeaveRemainNumberExport() != null){
-			result.getAnnualLeaveRemainNumberExport().setAttendanceRate(1.00);
-			result.getAnnualLeaveRemainNumberExport().setWorkingDays(2.0);
+		// 年休出勤率を計算する
+		if (aggrResult.isPresent()){
+			val asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
+			if (asOfPeriodEnd.getGrantInfo().isPresent()){
+				val grantInfo = asOfPeriodEnd.getGrantInfo().get();
+				result.getAnnualLeaveRemainNumberExport().setAttendanceRate(
+						grantInfo.getAttendanceRate().v().doubleValue());
+				result.getAnnualLeaveRemainNumberExport().setWorkingDays(
+						grantInfo.getGrantWorkingDays().v());
+			}
 		}
 		// 基準日時点年休残数．年休残日数　←　0
 		Double annualLeaveGrantDay = 0.00;

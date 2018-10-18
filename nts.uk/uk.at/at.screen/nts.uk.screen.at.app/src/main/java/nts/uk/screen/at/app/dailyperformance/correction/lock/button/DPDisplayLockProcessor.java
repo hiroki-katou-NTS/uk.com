@@ -114,6 +114,8 @@ public class DPDisplayLockProcessor {
 				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
 				//対象日の本人確認が済んでいるかチェックする
 				result.checkShowTighProcess(displayFormat, true);
+			}else {
+				result.getIndentityMonthResult().setHideAll(false);
 			}
 			// screenDto.setFlexShortage(null);
 		}

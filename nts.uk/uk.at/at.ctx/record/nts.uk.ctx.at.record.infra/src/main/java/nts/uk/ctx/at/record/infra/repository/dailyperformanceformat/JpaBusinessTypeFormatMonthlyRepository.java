@@ -149,11 +149,6 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	public List<BusinessTypeFormatMonthly> getMonthlyDetailByCompanyId(String companyId) {
 		return this.queryProxy().query(FIND_BY_COMPANYID, KrcmtBusinessTypeMonthly.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
 	}
-
-	@Override
-	public List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, List<String> listBusinessTypeCode) {
-		return getListBusinessTypeFormat(companyId, listBusinessTypeCode);
-	}
 	
 	@Override
 	public List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, Collection<String> listBusinessTypeCode) {

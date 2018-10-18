@@ -190,7 +190,8 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
 		SubstVacationSetting subSetting = null;
 		ExpirationTime expriTime = ExpirationTime.THIS_MONTH;
-		if(employmentHolidaySetting != null && employmentHolidaySetting.getAbsSetting().isPresent()) {
+		if(employmentHolidaySetting != null
+				&& (employmentHolidaySetting.getDayOffSetting() != null || employmentHolidaySetting.getAbsSetting().isPresent())) {
 			if(isAbs && employmentHolidaySetting.getAbsSetting().isPresent()) {
 				subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
 			} else if (!isAbs && employmentHolidaySetting.getDayOffSetting() != null) {
@@ -219,7 +220,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		} else {
 			//期限指定のある使用期限日を作成する
 			if(expriTime != null) {
-				return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(),subSetting.getExpirationDate(), inforData.getYmd());
+				return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(), expriTime, inforData.getYmd());
 			}
 		}
 		return GeneralDate.max();

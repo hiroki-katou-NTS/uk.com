@@ -19,6 +19,6 @@ public interface ConfirmationMonthRepository {
 	
 	List<ConfirmationMonth> findBySidAndYM(String employeeId, int processYM);
 	
-	List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDate, int closureId);
+	List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDate, boolean isLastDayOfMonth, int closureId);
 	
 }

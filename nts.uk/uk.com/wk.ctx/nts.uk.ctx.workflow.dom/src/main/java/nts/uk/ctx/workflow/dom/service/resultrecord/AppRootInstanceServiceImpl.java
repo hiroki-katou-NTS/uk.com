@@ -286,7 +286,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		ApproverToApprove approverToApprove = new ApproverToApprove(
 				approvalRootState.getApprovalRecordDate(),
 				approvalRootState.getEmployeeID(),
-				Collections.emptyList());
+				new ArrayList<>());
 		List<String> approverIDLst = new ArrayList<>();
 		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
 		List<ApprovalPhaseState> approvalPhaseStateLst = approvalRootState.getListApprovalPhaseState().stream()

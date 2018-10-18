@@ -45,9 +45,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
-
-	private static final String GET_LIST_BY_CID_SCD = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 	
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
@@ -128,6 +125,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	
 	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
 			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
+	
+	
+	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
 	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -538,5 +538,16 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		return resultList;
 	}
 
+	/**
+	 * getAllEmpNotDeleteByCid
+	 * @param companyId
+	 * 
+	 * @author lanlt
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId) {
+		return this.queryProxy().query(SELECT_EMPL_NOT_DELETE_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", companyId)
+				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
+	}
 	// laitv code end
 }

@@ -89,6 +89,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ChangeSPR;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DCMessageError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPBusinessTypeControl;
@@ -293,7 +294,7 @@ public class DailyPerformanceCorrectionProcessor {
 					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 					: objectShare.getLstEmployeeShare();
 			if(employeeIds.isEmpty()) needSortEmp = true;
-			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null);
+			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null, screenDto.getClosureId());
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
@@ -409,6 +410,10 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		//get itemId
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
+		if(!disItem.getErrors().isEmpty()) {
+			screenDto.setErrors(disItem.getErrors());
+			return screenDto;
+		}
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
@@ -431,11 +436,13 @@ public class DailyPerformanceCorrectionProcessor {
 												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
-								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								//DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
 								//checkIndenityMonth
 								screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
 								//対象日の本人確認が済んでいるかチェックする
 								screenDto.checkShowTighProcess(displayFormat, true);
+							}else {
+								screenDto.getIndentityMonthResult().setHideAll(false);
 							}
 							// screenDto.setFlexShortage(null);
 						}
@@ -1339,12 +1346,18 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-				if(lstBusinessTypeCode.isEmpty()){
-					BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
-					screenDto.getLstData().stream().filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x ->{
-						bundleExeption.addMessage(new BusinessException("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
-					});
-					throw bundleExeption;
+				if (lstBusinessTypeCode.isEmpty()) {
+					List<DCMessageError> errors = new ArrayList<>();
+					DCMessageError bundleExeption = new DCMessageError();
+					bundleExeption.setMessageId("Msg_1403");
+					screenDto.getLstData().stream()
+							.filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x -> {
+								bundleExeption.setMessage(TextResource.localize("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
+								errors.add(bundleExeption);
+							});
+					// throw bundleExeption;
+					result.setErrors(errors);
+					return result;
 				}
 				
 				result.setAutBussCode(new HashSet<>(lstBusinessTypeCode));
@@ -1544,17 +1557,28 @@ public class DailyPerformanceCorrectionProcessor {
 ////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer) {
+	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId) {
 		// 社員一覧を変更する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
 		if (mode == ScreenMode.NORMAL.value) {
-			if(employeeIds.isEmpty()){
-				 //List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
-				 List<String> listEmp =  repo.getListEmpInDepartment(employeeIdLogin, new DateRange(range.getStartDate(), range.getEndDate()));
-				 lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
-			}else{
+			if (employeeIds.isEmpty()) {
+				// List<RegulationInfoEmployeeQueryR> regulationRs=
+				// regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(),
+				// range.getStartDate(), range.getEndDate()));
+				List<String> listEmp = repo.getListEmpInDepartment(employeeIdLogin,
+						new DateRange(range.getStartDate(), range.getEndDate()));
+				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
+				if (closureId != null) {
+					Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
+							new DateRange(range.getEndDate(), range.getEndDate()));
+					List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, range.getEndDate());
+					lstEmployeeId = closureDtos.stream()
+							.filter(x -> x.getClosureId().intValue() == closureId.intValue()).map(x -> x.getSid())
+							.collect(Collectors.toSet()).stream().collect(Collectors.toList());
+				}
+			} else {
 				// No 338
 				// RoleType 3:就業 EMPLOYMENT
 				if(!isTranfer)lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
@@ -1706,6 +1730,7 @@ public class DailyPerformanceCorrectionProcessor {
 					.findByEmploymentCD(companyId, screenDto.getEmploymentCode());
 
 			if (closureEmploymentOptional.isPresent()) {
+				screenDto.setClosureId(closureEmploymentOptional.get().getClosureId());
 				Optional<PresentClosingPeriodExport> closingPeriod = (isObjectShare
 						&& objectShare.getInitClock() != null)
 								? shClosurePub.find(companyId, closureEmploymentOptional.get().getClosureId(),

@@ -39,6 +39,7 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "WHERE a.krcdtConfirmationMonthPK.employeeId IN :employeeIds "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM "
 			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+			+ "AND a.krcdtConfirmationMonthPK.isLastDay = :isLastDayOfMonth "
 			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId ";
 	@Override
 	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, ClosureDate closureDate, YearMonth processYM) {
@@ -60,31 +61,28 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 				.setParameter("companyID", companyId).setParameter("employeeId", employeeId)
 				.setParameter("closureId", closureId)
 				.setParameter("closureDay", closureDate)
-				.setParameter("isLastDay", isLastDayOfMonth)
+				.setParameter("isLastDayOfMonth", isLastDayOfMonth ? 1 : 0)
 				.setParameter("processYM", processYM).executeUpdate();
 	}
 
 	@Override
 	public List<ConfirmationMonth> findBySidAndYM(String employeeId, int processYM) {
 		return this.queryProxy().query(FIND_BY_SID_YM, KrcdtConfirmationMonth.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("employeeId", employeeId)
+				.setParameter("companyId", AppContexts.user().companyId())
+				.setParameter("employeeId", employeeId)
 				.setParameter("processYM", processYM).getList(x -> x.toDomain());
 	}
 
 	@Override
-	public List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDay,
+	public List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDate, boolean isLastDayOfMonth,
 			int closureId) {
-		List<ConfirmationMonth> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
-				.setParameter("employeeIds", subList)
+		return this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
+				.setParameter("employeeIds", employeeIds)
 				.setParameter("processYM", processYM)
-				.setParameter("closureDay", closureDay)
+				.setParameter("closureDay", closureDate)
+				.setParameter("isLastDayOfMonth", isLastDayOfMonth ? 1 : 0)
 				.setParameter("closureId", closureId)
-				.getList(x -> x.toDomain()));
-		});
-		
-		return resultList;
+				.getList(x -> x.toDomain());
 	}
 
 }
