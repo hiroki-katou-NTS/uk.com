@@ -127,3 +127,10 @@ hr {
 #nts-component-list {
 	outline: none;
 }
+#cumulativeWorkplace{
+	width:120px;
+	
+}
+#cumulativeWorkplace>label{
+	width:100px;
+}

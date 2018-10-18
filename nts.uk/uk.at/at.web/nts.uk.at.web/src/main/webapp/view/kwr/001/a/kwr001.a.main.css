@@ -127,3 +127,9 @@ hr {
 #nts-component-list {
 	outline: none;
 }
+#checkedA10_7{
+	width:120px;
+}
+#checkedA10_7>label{
+	width:100px;
+}
