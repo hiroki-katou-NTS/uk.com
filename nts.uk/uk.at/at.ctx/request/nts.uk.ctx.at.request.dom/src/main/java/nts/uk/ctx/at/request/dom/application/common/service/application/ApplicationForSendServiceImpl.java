@@ -88,14 +88,17 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
 			String loginMail = outMails.isEmpty() || outMails.get(0).getEmailAddress() == null ? "" : outMails.get(0).getEmailAddress();
 			String appContent = appContentService.getApplicationContent(application_New.get());
+			//ver7
+			String date = app.getStartDate().get().equals(app.getEndDate().get()) ? app.getStartDate().get().toString() : 
+				app.getStartDate().get().toString() + "～" + app.getEndDate().get().toString();
 			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName,//{0}　←　ログイン者の氏名
 					appTempAsStr,//{1}　←　申請承認メールテンプレート．本文
-					app.getAppDate().toLocalDate().toString(),//{2}　←　申請．申請日付
+					app.getStartDate().get().toString(),//{2}　←　申請．申請日付
 					app.getAppType().nameId,//{3}　←　申請．申請種類（名称）
 					empName,//{4}　←　申請．申請者の氏名
-					app.getAppDate().toLocalDate().toString(),//{5}　←　申請．申請日付
+					date,//{5}　←　申請．申請日付
 					appContent,//{6}　←　申請．申請内容()
 					loginName,//{7}　←　ログイン者．氏名
 					loginMail//{8}　←　ログイン者．メールアドレス

@@ -355,33 +355,4 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		}
 		return returnList;
 	}
-	
-	/**
-	 * List→Mapへの変換クラス
-	 * @param integrationOfDaily 日別実績(Work)
-	 * @return integrationOfDailyのMap
-	 */
-	private Map<GeneralDate, IntegrationOfDaily> convertMap(List<IntegrationOfDaily> integrationOfDaily) {
-		Map<GeneralDate, IntegrationOfDaily> map = new HashMap<>();
-		integrationOfDaily.forEach(tc ->{
-			map.put(tc.getAffiliationInfor().getYmd(), tc);
-		});
-		return map;
-	}
-	
-	/**
-	 * 前日翌日(parameterによってどっちにするか決める)の勤務情報を取得する
-	 * @param empId
-	 * @param mapIntegration
-	 * @param addDays　取得したい日(-1or+1した日を渡す)
-	 * @return addDaysの勤務情報
-	 */
-	private Optional<WorkInfoOfDailyPerformance> findAndGetWorkInfo(String empId, Map<GeneralDate, IntegrationOfDaily> mapIntegration, GeneralDate addDays) {
-		if(mapIntegration.containsKey(addDays)) {
-			return Optional.of(mapIntegration.get(addDays).getWorkInformation());
-		}
-		else {
-			return workInformationRepository.find(empId, addDays);
-		}
-	}
 }

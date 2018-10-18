@@ -83,8 +83,8 @@
                                 data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
                         <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
                         <!-- visible: showButton().available7 -->
-                        <button data-bind="click : proceedUnLock, visible: showLock">#{i18n.getText('KDW003_84')}</button>
-                        <button data-bind="click : proceedLock, visible: unLock">#{i18n.getText('KDW003_85')}</button>
+                        <button data-bind="click : proceedUnLock, visible: showLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_84')}</button>
+                        <button data-bind="click : proceedLock, visible: unLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_85')}</button>
                     </div>
                 </div>
                 <div id="contents-area">

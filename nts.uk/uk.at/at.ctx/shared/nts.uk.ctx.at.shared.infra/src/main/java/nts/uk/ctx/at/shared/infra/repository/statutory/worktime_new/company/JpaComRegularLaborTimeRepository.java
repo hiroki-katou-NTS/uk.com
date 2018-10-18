@@ -4,22 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.company;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.PreparedStatement;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComTransLabTime;
 
 /**
@@ -60,30 +55,32 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.companyNew.ComRegularLaborTimeRepository#find(java.lang.String)
 	 */
+	@SneakyThrows
 	@Override
 	public Optional<ComRegularLaborTime> find(String companyId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstComRegLaborTime> cq = cb.createQuery(KshstComRegLaborTime.class);
-		Root<KshstComRegLaborTime> root = cq.from(KshstComRegLaborTime.class);
+		String sqlJdbc = "SELECT * FROM KSHST_COM_REG_LABOR_TIME WHERE CID = ?";
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstComRegLaborTime_.cid), companyId));
+		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
+			stmt.setString(1, companyId);
+
+			Optional<KshstComRegLaborTime> result = new NtsResultSet(stmt.executeQuery())
+					.getSingle(rec -> {
+						KshstComRegLaborTime entity = new KshstComRegLaborTime();
+						entity.setCid(rec.getString("CID"));
+						entity.setWeeklyTime(rec.getInt("WEEKLY_TIME"));
+						entity.setWeekStr(rec.getInt("WEEK_STR"));
+						entity.setDailyTime(rec.getInt("DAILY_TIME"));
+						return entity;
+					});
+
+			if (!result.isPresent()) {
+				return null;
+			}
+
+			return Optional.of(
+					new ComRegularLaborTime(new JpaComRegularLaborTimeGetMemento(result.get())));
+		}
 	}
 	
-	/**
-	 * To domain.
-	 *
-	 * @param entities the entities
-	 * @return the com regular labor time
-	 */
-	private ComRegularLaborTime toDomain(List<KshstComRegLaborTime> entities) {
-		if (entities.isEmpty()) {
-			return null;
-		}
-		return new ComRegularLaborTime(new JpaComRegularLaborTimeGetMemento(entities.get(0)));
-	}
 }

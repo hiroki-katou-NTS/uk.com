@@ -21,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -50,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -120,7 +123,10 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	
 	@Inject
 	private AppDetailInfoRepository repoAppDetailInfo;
-	
+	@Inject
+	private RelationshipRepository repoRelationship;
+	@Inject
+	private AppForSpecLeaveRepository repoAppLeaveSpec;
 	@Override
 	public String getApplicationContent(Application_New app) {
 		String appReason = app.getAppReason().toString();
@@ -471,40 +477,41 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	}
 
 	private String getAbsenAppContent(Application_New app, String companyID, String appID, String appReason) {
-		// DONE
-		String content = I18NText.getText("CMM045_279");
+		String companyId = AppContexts.user().companyId();
+		//get absence
 		Optional<AppAbsence> op_appAbsen = absenRepo.getAbsenceByAppId(companyID, appID);
-		if (op_appAbsen.isPresent()) {
+		String ctent = "";
+		if (op_appAbsen.isPresent()) {//TH co data
 			AppAbsence appAbsen = op_appAbsen.get();
-			if (appAbsen.getAllDayHalfDayLeaveAtr() == AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE) {
-				String holidayType = "";
-				if (Objects.isNull(appAbsen.getAppForSpecLeave())) {
-					//Bug #98194
-					holidayType = this.findHdName(appAbsen.getHolidayAppType());
-					content += I18NText.getText("CMM045_248") + I18NText.getText("CMM045_230", holidayType);
-				} else {
-					holidayType = "特別休暇";
-					content += holidayType + appAbsen.getAppForSpecLeave().getRelationshipCD().v();
-					if (appAbsen.getAppForSpecLeave().isMournerFlag()) {
-						content += I18NText.getText("CMM045_277") + (app.getStartDate().isPresent() && app.getEndDate().isPresent()
-								? app.getEndDate().get().compareTo(app.getStartDate().get())
-										+ I18NText.getText("CMM045_278")
-								: "");
-					}
+			String hdTypeName = this.findHdName(appAbsen.getHolidayAppType());
+			if (appAbsen.getAllDayHalfDayLeaveAtr().equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)//※休暇申請.終日半日休暇区分　＝　終日休暇
+					&& !appAbsen.getHolidayAppType().equals(HolidayAppType.SPECIAL_HOLIDAY)) {//休暇申請.休暇種類　≠ 特別休暇
+				ctent = I18NText.getText("CMM045_279") + I18NText.getText("CMM045_248")
+						+ I18NText.getText("CMM045_230", hdTypeName);
+			} else if (appAbsen.getHolidayAppType().equals(HolidayAppType.SPECIAL_HOLIDAY)) {//※休暇申請.休暇種類　＝ 特別休暇
+				AppForSpecLeave appForSpec = appAbsen.getAppForSpecLeave();
+				String relaCode = appForSpec == null ? "" : appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
+				String relaName = relaCode.equals("") ? "" : repoRelationship.findByCode(companyId, relaCode).get().getRelationshipName().v();
+				Integer day1 = 0;
+				if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
+					day1 = app.getStartDate().get().daysTo(app.getEndDate().get()) + 1;
 				}
-
-			} else {
-				content += I18NText.getText("CMM045_249")
-						+ (appAbsen.getWorkTimeCode() == null ? "" : I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v()))
-						+ (!Objects.isNull(appAbsen.getStartTime1())
-								? appAbsen.getStartTime1().v() + I18NText.getText("CMM045_100") : "")
-						+ (!Objects.isNull(appAbsen.getEndTime1()) ? appAbsen.getEndTime1().v() : "")
-						+ (!Objects.isNull(appAbsen.getStartTime2())
-								? appAbsen.getStartTime2().v() + I18NText.getText("CMM045_100") : "")
-						+ (!Objects.isNull(appAbsen.getEndTime2()) ? appAbsen.getEndTime2().v() : "");
+				//get 特別休暇申請
+				Optional<AppForSpecLeave> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appID);
+				String day = appSpec.isPresent() && appSpec.get().isMournerFlag() == true ? I18NText.getText("CMM045_277") 
+						+ day1 + I18NText.getText("CMM045_278") : day1 + I18NText.getText("CMM045_278");
+				Optional<WorkType> workType = repoWorkType.findByPK(companyID, appAbsen.getWorkTypeCode().v());
+				String wtypeN = !workType.isPresent() ? "" : workType.get().getName().v();
+				ctent = I18NText.getText("CMM045_279") + wtypeN + relaName + day;
+			} else if (appAbsen.getAllDayHalfDayLeaveAtr().equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {//※休暇申請.終日半日休暇区分　＝　半日休暇
+				String time1 = appAbsen.getStartTime1() == null ? "" : repoAppDetailInfo.convertTime(appAbsen.getStartTime1().v()) 
+						+ I18NText.getText("CMM045_100") + repoAppDetailInfo.convertTime(appAbsen.getEndTime1().v());
+				String time2 = appAbsen.getStartTime2() == null ? "" : repoAppDetailInfo.convertTime(appAbsen.getStartTime2().v()) 
+						+ I18NText.getText("CMM045_100") + repoAppDetailInfo.convertTime(appAbsen.getEndTime2().v());
+				ctent = I18NText.getText("CMM045_279") + I18NText.getText("CMM045_249") + I18NText.getText("CMM045_230", hdTypeName) + time1 + time2;
 			}
 		}
-		return content + "\n" + appReason;
+		return ctent + "\n" + appReason;
 	}
 	//Bug #98194
 	private String findHdName(HolidayAppType hdApp){
@@ -642,10 +649,10 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
 					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
+					:  (workType.isPresent() ? "" + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									: (workTime.isPresent() ? " " + workTime.map(x ->
-											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
+									: (workTime.isPresent() ? "" + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + "";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
@@ -716,13 +723,12 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v()) + " ";
+										moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v());
 									}
 									count++;
 								}
 							}
-							String frameInfo = moreInf
-									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+							String frameInfo = moreInf + "　" + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 							content += frameInfo;
 						}
 					}
@@ -813,24 +819,23 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 												break;
 											}
 											}
-											moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v()) + " ";
+											moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v());
 										}
 										count++;
 									}
 								}
-								String frameInfo = moreInf
-										+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+								String frameInfo = moreInf + "　" + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 								content += frameInfo;
 							}
 						}
 					}
 					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
 					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
-					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
+					content += I18NText.getText("CMM045_275") + "" + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
+					:  (workType.isPresent() ? "" + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									:  (workTime.isPresent() ? " " + workTime.map(x ->
-											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
+									:  (workTime.isPresent() ? "" + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + "";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
@@ -901,13 +906,12 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v()) + " ";
+										moreInf += "　" + type + this.clockShorHm(x.getApplicationTime().v());
 									}
 									count ++;
 								}
 							}
-							String frameInfo = moreInf
-									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+							String frameInfo = moreInf + "　" + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 							content += frameInfo;
 						}
 					}

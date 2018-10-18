@@ -1,14 +1,15 @@
 package nts.uk.screen.at.infra.worktype;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.screen.at.app.worktype.WorkTypeDto;
 import nts.uk.screen.at.app.worktype.WorkTypeQueryRepository;
 
@@ -195,17 +196,29 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		if(afternoon2.isEmpty() || morningAtr3.isEmpty() || afternoon4.isEmpty() || morningAtr5.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_HDSHIP_KAF022, WorkTypeDto.class).setParameter("companyId", companyId)
-				.setParameter("oneDayAtr", oneDayAtr)
-				.setParameter("morningAtr2", morningAtr2)
-				.setParameter("afternoon2", afternoon2)
-				.setParameter("morningAtr3", morningAtr3)
-				.setParameter("afternoon3", afternoon3)
-				.setParameter("morningAtr4", morningAtr4)
-				.setParameter("afternoon4", afternoon4)
-				.setParameter("morningAtr5", morningAtr5)
-			    .setParameter("afternoon5", afternoon5)
-				.getList();
+		List<WorkTypeDto> resultList = new ArrayList<>();
+		CollectionUtil.split(afternoon2, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subAfternoon2 -> {
+			CollectionUtil.split(morningAtr3, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subMorning3 -> {
+				CollectionUtil.split(afternoon4, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subAfternoon4 -> {
+					CollectionUtil.split(morningAtr5, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subMorning5 -> {
+						resultList.addAll(this.queryProxy().query(SELECT_HDSHIP_KAF022, WorkTypeDto.class)
+											.setParameter("companyId", companyId)
+											.setParameter("oneDayAtr", oneDayAtr)
+											.setParameter("morningAtr2", morningAtr2)
+											.setParameter("afternoon2", subAfternoon2)
+											.setParameter("morningAtr3", subMorning3)
+											.setParameter("afternoon3", afternoon3)
+											.setParameter("morningAtr4", morningAtr4)
+											.setParameter("afternoon4", subAfternoon4)
+											.setParameter("morningAtr5", subMorning5)
+										    .setParameter("afternoon5", afternoon5)
+											.getList());
+					});
+				});
+			});
+		});
+		resultList.sort(Comparator.comparing(WorkTypeDto::getWorkTypeCode));
+		return resultList;
 	}
 	
 	@Override
@@ -219,10 +232,15 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		if(halfDay.isEmpty()){
 			return Collections.emptyList();
 		}else{
-			List<WorkTypeDto> a = this.queryProxy().query(SELECT_BOUNCE_KAF022, WorkTypeDto.class).setParameter("companyId", companyId)
-					.setParameter("halfDay", halfDay)
-					.getList();
-			return a;
+			List<WorkTypeDto> resultList = new ArrayList<>();
+			CollectionUtil.split(halfDay, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				resultList.addAll(this.queryProxy().query(SELECT_BOUNCE_KAF022, WorkTypeDto.class)
+						.setParameter("companyId", companyId)
+						.setParameter("halfDay", subList)
+						.getList());
+			});
+			resultList.sort(Comparator.comparing(WorkTypeDto::getWorkTypeCode));
+			return resultList;
 		}
 	}
 	
@@ -271,9 +289,18 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 
 	@Override
 	public List<WorkTypeDto> findAllWorkType(String companyId, List<Integer> workTypeAtrList) {
-		
-		return this.queryProxy().query(SELECT_BY_WORKTYPE_ATR, WorkTypeDto.class).setParameter("companyId", companyId)
-				.setParameter("workTypeAtr", workTypeAtrList).getList();
+		List<WorkTypeDto> resultList = new ArrayList<>();
+		CollectionUtil.split(workTypeAtrList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_WORKTYPE_ATR, WorkTypeDto.class)
+					.setParameter("companyId", companyId)
+					.setParameter("workTypeAtr", subList)
+					.getList());
+		});
+		resultList.sort((o1, o2) -> {
+			if (o1.getDispOrder() == null || o2.getDispOrder() == null) return -1;
+			return o1.getDispOrder().compareTo(o2.getDispOrder());
+		});
+		return resultList;
 	}
 	
 	@Override

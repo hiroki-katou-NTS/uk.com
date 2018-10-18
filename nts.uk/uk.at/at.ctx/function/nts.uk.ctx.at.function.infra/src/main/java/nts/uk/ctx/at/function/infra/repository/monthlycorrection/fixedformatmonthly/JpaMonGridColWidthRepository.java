@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthlyRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidthOfDisplayItem;
@@ -49,10 +51,15 @@ public class JpaMonGridColWidthRepository extends JpaRepository implements Colum
 	@Override
 	public void updateColumnWidtgByMonthly(Map<Integer, Integer> lstHeader) {
 		if (!lstHeader.keySet().isEmpty()) {
-			List<KrcmtMonGridColWidth> entity = this.queryProxy()
+			List<KrcmtMonGridColWidth> entity = new ArrayList<>();
+			
+			CollectionUtil.split(lstHeader, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subMap -> {
+				entity.addAll(this.queryProxy()
 					.query(Get_COL_WIDTH_BY_CID_AND_ATTDID, KrcmtMonGridColWidth.class)
 					.setParameter("companyID", AppContexts.user().companyId())
-					.setParameter("attendanceItemIds", lstHeader.keySet()).getList();
+					.setParameter("attendanceItemIds", subMap.keySet())
+					.getList());
+			});
 
 			lstHeader.keySet().stream().forEach(id -> {
 				Optional<KrcmtMonGridColWidth> flag = entity.stream()

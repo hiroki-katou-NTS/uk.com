@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.stamp.stampcard;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
@@ -159,8 +162,11 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	@Override
 	public List<StampCard> getLstStampCardByLstSid(List<String> sids) {
-		List<KwkdtStampCard> entities = this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID, KwkdtStampCard.class)
-				.setParameter("sids", sids).getList();
+		List<KwkdtStampCard> entities = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID, KwkdtStampCard.class)
+				.setParameter("sids", subList).getList());
+		});
 		if (entities.isEmpty())
 			return Collections.emptyList();
 
@@ -171,9 +177,12 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	@Override
 	public List<StampCard> getLstStampCardByLstSidAndContractCd(List<String> sids, String contractCode) {
-		List<KwkdtStampCard> entities = this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE, KwkdtStampCard.class)
-				.setParameter("sids", sids)
-				.setParameter("contractCode", contractCode).getList();
+		List<KwkdtStampCard> entities = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE, KwkdtStampCard.class)
+				.setParameter("sids", subList)
+				.setParameter("contractCode", contractCode).getList());
+		});
 		if (entities.isEmpty())
 			return Collections.emptyList();
 

@@ -146,50 +146,6 @@ public class OutsideWorkTimeSheet {
 				   );
 	}
 
-	/**
-	 * 法定外深夜時間の計算
-	 */
-	// public ExcessOfStatutoryTimeOfDaily
-	// calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeWorkSheet>
-	// overTimeWorkSheet,Optional<HolidayWorkTimeSheet> holidayWorkSheet
-	// ,AutoCalculationOfOverTimeWork
-	// autoCalculationOfOverTimeWork,AutoCalcSetOfHolidayWorkTime
-	// autoCalcSetOfHolidayWorkTime) {
-	public void calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeSheet> overTimeWorkSheet,
-			Optional<HolidayWorkTimeSheet> holidayWorkSheet,
-			AutoCalOvertimeSetting autoCalculationOfOverTimeWork,
-			AutoCalRestTimeSetting autoCalcSetOfHolidayWorkTime) {
-		Optional<OverTimeSheet> overTimeWork = Optional.empty();
-		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
-		if (overTimeWorkSheet.isPresent()) {
-//			overTimeWork = Optional.of(overTimeWorkSheet.get().calcMidNightTime(overTimeWorkSheet.get(),
-//					autoCalculationOfOverTimeWork));
-
-		}
-		if (holidayWorkSheet.isPresent()) {
-			// holidayWorkSheet =
-			// Optional.of(holidayWorkSheet.get().reCreateToCalcExcessWork(holidayWorkSheet.get(),autoCalcSetOfHolidayWorkTime));
-		}
-
-		// ExcessOfStatutoryMidNightTime totalExcessTime = new
-		// ExcessOfStatutoryMidNightTime(midNightExcessTime.getTime().addMinutes(holidayWorkExcessTime.getTiem().getTime(),
-		// holidayWorkExcessTime.getTiem().getCalcTime()));
-
-		// return new
-		// ExcessOfStatutoryTimeOfDaily(totalExcessTime,Optional.empty(),Optional.empty());
-	}
-
-//	public void addtimesheet(OutsideWorkTimeSheet outsideSheet) {
-//		if(this.overTimeWorkSheet.isPresent()) {
-//			
-//		}
-//		else {
-//			this.overTimeWorkSheet = outsideSheet.getOverTimeWorkSheet();
-//		}
-//			
-//	}
-//	
-//	private void addoverTimesheet(OverTime)
 	
 	/**
 	 * 残業時間の中にある控除時間を算出する

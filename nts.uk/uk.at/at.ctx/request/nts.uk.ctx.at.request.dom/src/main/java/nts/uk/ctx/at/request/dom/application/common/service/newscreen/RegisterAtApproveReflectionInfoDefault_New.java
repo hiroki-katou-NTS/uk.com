@@ -10,6 +10,8 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfAppForReflect;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
 
 /**
  * 2-2.新規画面登録時承認反映情報の整理
@@ -27,6 +29,8 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 	private ApplicationRepository_New applicationRepository;
 	@Inject
 	private AppReflectManager appReflectManager;
+	@Inject
+	private InformationSettingOfAppForReflect appSetting;
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application_New application) {
 		// アルゴリズム「承認情報の整理」を実行する
@@ -60,7 +64,8 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
 				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
 				Application_New application_New1 = applicationRepository.findByID(application.getCompanyID(), application.getAppID()).get();
-				appReflectManager.reflectEmployeeOfApp(application_New1);
+				InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
+				appReflectManager.reflectEmployeeOfApp(application_New1, reflectSetting);
 			}
 		}
 	}

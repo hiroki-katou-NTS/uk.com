@@ -13,8 +13,8 @@ public class GetCalcAtr {
 	 * 加給時間の計算をするか判定する
 	 * @param calcAtr 加給の自動計算区分
 	 * @param calcSet 
-	 * @param bonusPayAutoCalcSet
-	 * @param actualAtr
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param actualAtr 実働時間帯区分
 	 * @return
 	 */
 	public static boolean isCalc(boolean calcAtr,CalAttrOfDailyPerformance calcSet, BonusPayAutoCalcSet bonusPayAutoCalcSet, ActualWorkTimeSheetAtr actualAtr) {
