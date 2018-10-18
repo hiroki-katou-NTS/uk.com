@@ -50,7 +50,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
 		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
-				|| para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
+				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
 			return new AppReflectRecordWork(ischeck, dailyInfo);
 		}
