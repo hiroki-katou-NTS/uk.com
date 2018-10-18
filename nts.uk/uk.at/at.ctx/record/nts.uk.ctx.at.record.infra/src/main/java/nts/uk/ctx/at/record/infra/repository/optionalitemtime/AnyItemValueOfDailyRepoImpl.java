@@ -62,13 +62,17 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
 		query.append(" WHERE op.krcdtDayTimePk.employeeID = :empId");
 		query.append(" AND op.krcdtDayTimePk.generalDate IN :date");
-		List<KrcdtDayAnyItemValueMerge> result = queryProxy()
+		
+		List<KrcdtDayAnyItemValueMerge> resultList = new ArrayList<>();
+		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
+			resultList.addAll(queryProxy()
 				.query(query.toString(), KrcdtDayAnyItemValueMerge.class)
 				.setParameter("empId", employeeId)
-				.setParameter("date", baseDate)
-				.getList();
-		if(!result.isEmpty()) {
-			return result.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList());
+				.setParameter("date", lstDate)
+				.getList());
+		});
+		if(!resultList.isEmpty()) {
+			return resultList.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
@@ -139,7 +143,8 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 			result.addAll(tQuery
 					.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
+					.getList().stream().filter(c -> p.get(c.getKrcdtDayTimePk().employeeID).contains(c.getKrcdtDayTimePk().generalDate))
+					.map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
 		});
 		return result;
 	}

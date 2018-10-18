@@ -6,7 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstLengthServiceTbl;
@@ -105,11 +107,14 @@ public class JpaLengthServiceRepository extends JpaRepository implements LengthS
 	 */
 	@Override
 	public void remove(String companyId, String yearHolidayCode, List<Integer> grantNums) {
-		this.getEntityManager().createQuery(DELETE_BY_KEY)
-								.setParameter("companyId", companyId)
-								.setParameter("yearHolidayCode", yearHolidayCode)
-								.setParameter("grantNums", grantNums)
-								.executeUpdate();
+		CollectionUtil.split(grantNums, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(DELETE_BY_KEY)
+				.setParameter("companyId", companyId)
+				.setParameter("yearHolidayCode", yearHolidayCode)
+				.setParameter("grantNums", subList)
+				.executeUpdate();			
+		});
+		this.getEntityManager().flush();
 	}
 
 }

@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
@@ -71,10 +72,13 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 
 		// select root
 		cq.select(root);
+		
 		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
-		CollectionUtil.split(codes, 1000, subListCodes -> {
+		
+		CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListCodes -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			
 			lstpredicateWhere
 					.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(subListCodes));
 			lstpredicateWhere.add(criteriaBuilder
@@ -85,10 +89,10 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 
 			lstKwtstWorkTimeSet.addAll(em.createQuery(cq).getResultList());
 		});
-		return lstKwtstWorkTimeSet.stream().map(item -> {
-			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
-			return worktimeSetting;
-		}).collect(Collectors.toList());
+		
+		return lstKwtstWorkTimeSet.stream()
+				.map(item -> new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -215,20 +219,28 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		// select root
 		cq.select(root);
 		
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
-		lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(workTimeCodes));
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<KshmtWorkTimeSet> resultList = new ArrayList<>();
 
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid),
+					companyId));
+			lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK)
+					.get(KshmtWorkTimeSetPK_.worktimeCd).in(splitData));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr),
+					AbolishAtr.NOT_ABOLISH.value));
+			
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 		
-		return lstKwtstWorkTimeSet.stream().map(item -> {
-			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
-			return worktimeSetting;
-		}).collect(Collectors.toList());
+		return resultList.stream()
+				.map(item -> new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -342,8 +354,17 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 
 	@Override
 	public Map<String, String> getCodeNameByListWorkTimeCd(String companyId, List<String> listWorkTimeCode) {
-		List<Object[]> listObject = this.queryProxy().query(SELECT_CODE_AND_NAME_BY_WORKTIME_CODE, Object[].class)
-				.setParameter("companyId", companyId).setParameter("listWorkTimeCode", listWorkTimeCode).getList();
+		
+		List<Object[]> listObject = new ArrayList<>();
+		
+		// split list listWorkTimeCode
+		CollectionUtil.split(listWorkTimeCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listObject.addAll(this.queryProxy()
+					.query(SELECT_CODE_AND_NAME_BY_WORKTIME_CODE, Object[].class)
+					.setParameter("companyId", companyId)
+					.setParameter("listWorkTimeCode", subList).getList());
+		});
+		
 		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
 	}
 	

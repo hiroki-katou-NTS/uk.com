@@ -213,9 +213,15 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		if(hids.isEmpty() || sids.isEmpty())
 			return Collections.emptyList();
 		
-		List<BsymtAffJobTitleHist> optHist = this.queryProxy()
-				.query(GET_BY_LIST_HID_SID, BsymtAffJobTitleHist.class)
-				.setParameter("hisIds", hids).setParameter("sids", sids).getList();
+		List<BsymtAffJobTitleHist> optHist = new ArrayList<>();
+		CollectionUtil.split(hids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstH -> {
+			CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, listS -> {
+				optHist.addAll(this.queryProxy().query(GET_BY_LIST_HID_SID, BsymtAffJobTitleHist.class)
+						.setParameter("hisIds", lstH)
+						.setParameter("sids", listS)
+						.getList());
+			});
+		});
 		List<AffJobTitleHistory> listAffJobTitleHistory = new ArrayList<>();
 		for(String sid :sids ) {
 			List<BsymtAffJobTitleHist> listBsymtAffJobTitleHist = new ArrayList<>();
@@ -248,8 +254,8 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		// Split employee id list.
 		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(employeeIds, 1000, subList -> {
-			CollectionUtil.split(jobTitleIds, 1000, jobSubList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			CollectionUtil.split(jobTitleIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, jobSubList -> {
 				resultList.addAll(this.queryProxy()
 						.query(GET_BY_LISTSIDS_JOBIDS_DATE, BsymtAffJobTitleHist.class)
 						.setParameter("lstSid", subList).setParameter("lstJobTitleId", jobSubList)
@@ -276,7 +282,7 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		
 		// Split employee id list.
 		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
 					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
 		});
@@ -293,6 +299,12 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
 			
 			entities.addAll(subEntities);
+		});
+		
+		entities.sort((o1, o2) -> {
+			int tmp = o1.hisId.compareTo(o2.hisId);
+			if (tmp != 0) return tmp;
+			return o1.strDate.compareTo(o2.strDate);
 		});
 		
 		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = entities.stream()

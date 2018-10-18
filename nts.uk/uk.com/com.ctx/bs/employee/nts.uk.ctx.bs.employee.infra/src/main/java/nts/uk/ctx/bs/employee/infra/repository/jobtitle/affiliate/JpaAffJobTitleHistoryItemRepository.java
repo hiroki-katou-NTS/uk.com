@@ -173,10 +173,13 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 
 	@Override
 	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
-		List<BsymtAffJobTitleHistItem> data = this.queryProxy()
-				.query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
-				.setParameter("lstSid", lstSid)
-				.setParameter("referDate", referDate).getList();
+		List<BsymtAffJobTitleHistItem> data = new ArrayList<>();
+		CollectionUtil.split(lstSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			data.addAll(this.queryProxy().query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
+				.setParameter("lstSid", subList)
+				.setParameter("referDate", referDate)
+				.getList());
+		});
 		
 		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();
 		
@@ -213,9 +216,14 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	// request list 515
 	@Override
 	public List<AffJobTitleHistoryItem> findHistJob(String historyId, List<String> jobIds) {
-		return this.queryProxy().query(GET_BY_LIST_JOB, BsymtAffJobTitleHistItem.class)
+		List<AffJobTitleHistoryItem> resultList = new ArrayList<>();
+		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LIST_JOB, BsymtAffJobTitleHistItem.class)
 				.setParameter("histId", historyId)
-				.setParameter("jobTitleIds", jobIds).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
+				.setParameter("jobTitleIds", subList)
+				.getList().stream().map(x -> toDomain(x)).collect(Collectors.toList()));
+		});
+		return resultList;
 	}
 
 }

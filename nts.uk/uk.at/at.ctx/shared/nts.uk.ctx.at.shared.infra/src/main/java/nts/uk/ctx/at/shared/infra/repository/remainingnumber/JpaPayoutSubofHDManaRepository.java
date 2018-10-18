@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutSubOfHDMana;
@@ -93,15 +96,23 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 
 	@Override
 	public List<PayoutSubofHDManagement> getByListPayoutID(List<String> listPayoutID) {
-		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_LIST_PAYOUT_ID,KrcmtPayoutSubOfHDMana.class)
-				.setParameter("listPayoutID", listPayoutID).getList();
+		List<KrcmtPayoutSubOfHDMana> listpayoutSub = new ArrayList<>();
+		CollectionUtil.split(listPayoutID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listpayoutSub.addAll(this.queryProxy().query(QUERY_BY_LIST_PAYOUT_ID,KrcmtPayoutSubOfHDMana.class)
+									.setParameter("listPayoutID", subList)
+									.getList());
+		});
 		return listpayoutSub.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<PayoutSubofHDManagement> getByListSubID(List<String> listSubID) {
-		List<KrcmtPayoutSubOfHDMana> listpayoutSub = this.queryProxy().query(QUERY_BY_LIST_SUB_ID,KrcmtPayoutSubOfHDMana.class)
-				.setParameter("listSubID", listSubID).getList();
+		List<KrcmtPayoutSubOfHDMana> listpayoutSub = new ArrayList<>();
+		CollectionUtil.split(listSubID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listpayoutSub.addAll(this.queryProxy().query(QUERY_BY_LIST_SUB_ID,KrcmtPayoutSubOfHDMana.class)
+									 .setParameter("listSubID", subList)
+									 .getList());
+		});
 		return listpayoutSub.stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 

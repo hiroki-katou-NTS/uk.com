@@ -122,21 +122,21 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate) {
-		List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
+		List<KrcdtDaiWorkType> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
 		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiWorkTypePK.ymd <= :end AND af.krcdtDaiWorkTypePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiWorkType> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", baseDate.start())
-					.setParameter("end", baseDate.end()).getList(af -> af.toDomain()));
+					.setParameter("end", baseDate.end()).getList());
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
+		List<KrcdtDaiWorkType> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
 		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiWorkTypePK.ymd IN :date");
@@ -146,9 +146,9 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
 					.filter(c -> p.get(c.krcdtDaiWorkTypePK.employeeId).contains(c.krcdtDaiWorkTypePK.ymd))
-					.map(af -> af.toDomain()).collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 
 }

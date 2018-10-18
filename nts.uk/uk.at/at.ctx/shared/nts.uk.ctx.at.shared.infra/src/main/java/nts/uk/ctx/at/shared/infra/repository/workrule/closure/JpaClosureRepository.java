@@ -217,28 +217,29 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 		// select root
 		cq.select(root);
-
+		
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal company id
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
 
 		// in closure id
-		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId).in(closureIds));
+		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)
+				.in(closureIds));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by closure id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
 
-		// create query
-		TypedQuery<KclmtClosure> query = em.createQuery(cq);
+		List<KclmtClosure> resultList = em.createQuery(cq).getResultList();
 
 		// exclude select
-		return query.getResultList().stream()
+		return resultList.stream()
 				.map(entity -> this.toDomain(entity,
 						this.findHistoryByClosureId(companyId, entity.getKclmtClosurePK().getClosureId())))
 				.collect(Collectors.toList());
@@ -813,10 +814,9 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		
-		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid)
-				.in(companyId));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid),companyId));
 		
-		lstpredicateWhere.add(root.get(KclmtClosure_.useClass).in(UseClassification.UseClass_Use.value));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosure_.useClass),UseClassification.UseClass_Use.value));
 		
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

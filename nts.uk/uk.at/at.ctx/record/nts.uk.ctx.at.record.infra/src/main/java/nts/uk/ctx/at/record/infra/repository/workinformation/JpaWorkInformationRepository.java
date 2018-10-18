@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -451,27 +452,45 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds,
 			DatePeriod datePeriod) {
-		if (employeeIds.isEmpty())
+		if(employeeIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeIds", employeeIds).setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+		List<WorkInfoOfDailyPerformance> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeIds", subList)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain()));
+		});
+		resultList.sort(Comparator.comparing(WorkInfoOfDailyPerformance::getYmd));
+		return resultList;
 	}
 
 	@Override
 	public List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period) {
-		List<GeneralDate> lstOutput = this.queryProxy().query(FIND_BY_WORKTYPE_PERIOD, GeneralDate.class)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end())
-				.setParameter("workTypeCode", workTypeCode).setParameter("employeeId", employeeId).getList();
+		List<GeneralDate> lstOutput = this.queryProxy()
+				.query(FIND_BY_WORKTYPE_PERIOD, GeneralDate.class)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.setParameter("workTypeCode", workTypeCode)
+				.setParameter("employeeId", employeeId)
+				.getList();
 		return lstOutput;
 	}
 
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates) {
-		if (dates.isEmpty())
+		if(dates.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeId", employeeId).setParameter("dates", dates).getList(f -> f.toDomain());
+		
+		List<WorkInfoOfDailyPerformance> resultList = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", subList)
+				.setParameter("dates", dates)
+				.getList(f -> f.toDomain()));
+		});
+		
+		return resultList;
 	}
 
 }
