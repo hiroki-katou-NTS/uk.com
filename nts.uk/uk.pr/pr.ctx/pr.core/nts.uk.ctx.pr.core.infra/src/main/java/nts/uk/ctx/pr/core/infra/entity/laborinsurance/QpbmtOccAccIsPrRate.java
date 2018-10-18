@@ -71,7 +71,7 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     
     public static List<QpbmtOccAccIsPrRate> toEntity(List<OccAccInsurBusiBurdenRatio> domain, String cId, YearMonthHistoryItem yearMonthHistory){
         List<QpbmtOccAccIsPrRate> listEmpInsurBusBurRatio = domain.stream().map(item -> {return new QpbmtOccAccIsPrRate(
-                new QpbmtOccAccIsPrRatePk(yearMonthHistory.identifier(), cId, item.getOccAccInsurBusNo()),
+                new QpbmtOccAccIsPrRatePk(cId, yearMonthHistory.identifier(), item.getOccAccInsurBusNo()),
                 yearMonthHistory.start().v(),
                 yearMonthHistory.end().v(),
                 item.getEmpConRatio().v(),
@@ -81,7 +81,8 @@ public class QpbmtOccAccIsPrRate extends UkJpaEntity implements Serializable
     
     public static List<YearMonthHistoryItem> toDomainHis(List<QpbmtOccAccIsPrRate> entity){
         return entity.stream().map(item -> { return new YearMonthHistoryItem(
-        		item.occAccIsPrRatePk.historyId, 
-        		new YearMonthPeriod(new YearMonth(item.startYearMonth), new YearMonth(item.endYearMonth)));}).collect(Collectors.toList());
+                item.occAccIsPrRatePk.historyId,
+        		new YearMonthPeriod(new YearMonth(item.startYearMonth), new YearMonth(item.endYearMonth)));}).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+
     }
 }

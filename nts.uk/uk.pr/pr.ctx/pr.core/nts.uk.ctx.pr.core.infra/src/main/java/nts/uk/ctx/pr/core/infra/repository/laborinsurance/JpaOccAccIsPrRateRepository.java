@@ -20,21 +20,20 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAccIsPrRateRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsPrRate f";
-    private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.hisId =:hisId AND f.occAccIsPrRatePk.cid = :cid";
+    private static final String SELECT_BY_HIS_ID_AND_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.historyId =:historyId AND f.occAccIsPrRatePk.cid = :cid";
     private static final String DELETE_BY_HIS_ID = "DELETE FROM QpbmtOccAccIsPrRate f"
-            + " WHERE f.occAccIsPrRatePk.cid =:cid AND f.occAccIsPrRatePk.hisId =:hisId";
-    private static final String UPDATE_BY_HIS_ID_AND_CID = "UPDATE FROM QpbmtOccAccIsPrRate f "
+            + " WHERE f.occAccIsPrRatePk.cid =:cid AND f.occAccIsPrRatePk.historyId =:historyId";
+    private static final String UPDATE_BY_HIS_ID_AND_CID = "UPDATE QpbmtOccAccIsPrRate f "
     		+ " SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth"
-    		+ " WHERE f.occAccIsPrRatePk.hisId =:hisId AND f.occAccIsPrRatePk.cid =:cid";
-    private static final String SELECT_BY_CID =  "SELECT f.occAccIsPrRatePk.hisId, f.startYearMonth, f.endYearMonth FROM QpbmtOccAccIsPrRate f "
-   		+ " WHERE  f.occAccIsPrRatePk.cid =:cid"
-    		+ " GROUP BY f.occAccIsPrRatePk.hisId, f.startYearMonth, f.endYearMonth"
-    		+ " ORDER BY f.startYearMonth";
+    		+ " WHERE f.occAccIsPrRatePk.historyId =:hisId AND f.occAccIsPrRatePk.cid =:cid";
+    private static final String SELECT_BY_CID =  SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.cid =:cid"
+    		+ " ORDER BY f.startYearMonth DESC";
    
     @Override
     public OccAccIsPrRate getOccAccIsPrRateByHisId(String cid, String hisId) {
-        List<QpbmtOccAccIsPrRate> occAccIsPrRateList = this.queryProxy().query(SELECT_BY_HIS_ID, QpbmtOccAccIsPrRate.class)
-                .setParameter("hisId", hisId)
+        List<QpbmtOccAccIsPrRate> occAccIsPrRateList = this.queryProxy().query(SELECT_BY_HIS_ID_AND_CID, QpbmtOccAccIsPrRate.class)
+                .setParameter("historyId", hisId)
+                .setParameter("cid", cid)
                 .getList();
 
         return new OccAccIsPrRate(hisId,toDomain(occAccIsPrRateList));
@@ -64,7 +63,7 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
 
 	@Override
 	public void remove(String cid, String hisId) {
-		this.getEntityManager().createQuery(DELETE_BY_HIS_ID, QpbmtOccAccIsPrRate.class).setParameter("cid", cid).setParameter("hisId", hisId).executeUpdate();	
+		this.getEntityManager().createQuery(DELETE_BY_HIS_ID, QpbmtOccAccIsPrRate.class).setParameter("cid", cid).setParameter("historyId", hisId).executeUpdate();
 	}
 
     @Override
@@ -82,7 +81,7 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
 		this.getEntityManager().createQuery(UPDATE_BY_HIS_ID_AND_CID, QpbmtOccAccIsPrRate.class)
 		.setParameter("startYearMonth", item.start().v())
 		.setParameter("endYearMonth", item.end().v())
-		.setParameter("hisId", item.identifier()).setParameter("cid", cid).executeUpdate();	
+		.setParameter("hisId", item.identifier()).setParameter("cid", cid).executeUpdate();
 	}
 
 }

@@ -20,9 +20,9 @@ public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpIn
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurPreRate f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurPreRatePk.cid =:cid AND  f.empInsurPreRatePk.historyId =:historyId ";
-    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING  + " WHERE  f.empInsurPreRatePk.cid =:cid ORDER BY f.startYearMonth";
-    private static final String DELETE_BY_HIS_ID = "DELETE FROM QpbmtEmpInsurBusBurRatio f "
-            + "WHERE f.empInsurBusBurRatioPk.cid =:cid AND f.empInsurBusBurRatioPk.hisId =:hisId";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING  + " WHERE  f.empInsurPreRatePk.cid =:cid ORDER BY f.startYearMonth DESC";
+    private static final String DELETE_BY_HIS_ID = "DELETE FROM QpbmtEmpInsurPreRate f "
+            + "WHERE f.empInsurPreRatePk.cid =:cid AND f.empInsurPreRatePk.historyId =:hisId";
     
     @Override
     public List<EmpInsurBusBurRatio> getEmpInsurPreRateById(String cid, String historyId){
@@ -61,7 +61,7 @@ public class JpaEmpInsurPreRateRepository extends JpaRepository implements EmpIn
 		if (empInsurPreRate.isPresent()) {
 			empInsurPreRate.get().startYearMonth = item.start().v();
 			empInsurPreRate.get().endYearMonth = item.end().v();
-			this.commandProxy().update(empInsurPreRate);
+			this.commandProxy().update(empInsurPreRate.get());
 		}
 	}
 

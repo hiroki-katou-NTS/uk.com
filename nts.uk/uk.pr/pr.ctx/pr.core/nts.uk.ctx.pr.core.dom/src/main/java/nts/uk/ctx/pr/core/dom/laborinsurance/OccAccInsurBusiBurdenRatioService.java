@@ -24,16 +24,14 @@ public class OccAccInsurBusiBurdenRatioService {
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
         OccAccIsHis itemtoBeAdded = occAccIsPrRateRepository.getOccAccIsHisByCid(cId);
         itemtoBeAdded.add(yearMonthItem);
-        this.updateItemBefore(itemtoBeAdded, yearMonthItem, cId);
         this.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatioList,cId, yearMonthItem);
+        this.updateItemBefore(itemtoBeAdded, yearMonthItem, cId);
     }
     
     public void updateOccAccInsurBusiBurdenRatio(List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatioList, YearMonthHistoryItem item){
     	String cId = AppContexts.user().companyId();
         occAccIsPrRateRepository.update(occAccInsurBusiBurdenRatioList, cId,item);
     }
-    
-  
     
     private void updateItemBefore(OccAccIsHis occAccIsHis, YearMonthHistoryItem item, String cId){
         Optional<YearMonthHistoryItem> itemToBeUpdated = occAccIsHis.immediatelyBefore(item);
