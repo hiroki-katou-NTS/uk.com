@@ -62,6 +62,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
             self.attendanceDays(getAttendanceDays());
             self.selectedAttendanceDays.subscribe(x => {
+                nts.uk.ui.errors.clearAll();
                 if (x == 0) {
                     self.enableFractionProcessingAtr(false);
                     self.enableTargetWorkingDaysItem(true);
@@ -104,7 +105,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     self.lstTargetWageItem(list);
                     let lstname = self.lstTargetWageItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
-                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, " + ");
                     self.targetWageItem(newStringTargetWageItem);
 
                     //lstAttendanceItem
@@ -117,7 +118,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     self.lstTargetWorkingDaysItem(list);
                     let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
-                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, " + ");
                     self.targetWorkingDaysItem(newStringTargetWageItem);
                 }
                 else {
@@ -136,8 +137,13 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             let self = this;
             if (self.selectedAttendanceDays() == 0) {
                 self.displayData().averageWageCalculationSet().daysFractionProcessing(null);
+                $("#A2_22").trigger("validate");
             }
-            self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
+
+            let inputExceptionFormula = String(self.exceptionFormula());
+            inputExceptionFormula =  inputExceptionFormula.substring(0, inputExceptionFormula.indexOf('.'));
+
+            self.displayData().averageWageCalculationSet().exceptionFormula(inputExceptionFormula);
             self.displayData().lstStatemetPaymentItem(self.lstTargetWageItem());
             if (self.selectedAttendanceDays() == 1) {
                 self.displayData().lstStatemetAttendanceItem()[0];
@@ -147,6 +153,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
             }
             let data = self.displayData();
             $("#A2_4").trigger("validate");
+            $("#A2_12").trigger("validate");
             if (errors.hasError() === false) {
                 block.invisible();
                 // create
@@ -188,11 +195,11 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
                     let lstname = self.lstTargetWageItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
-                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, " + ");
                     self.targetWageItem(newStringTargetWageItem);
                 }
-
                 $("#A2_3").focus();
+                nts.uk.ui.errors.clearAll();
             });
         };
 
@@ -219,11 +226,12 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
 
                     let lstname = self.lstTargetWorkingDaysItem().map(value => value.name);
                     var stringTargetWageItem = lstname.toString();
-                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, "+");
+                    var newStringTargetWageItem = stringTargetWageItem.replace(/,/g, " + ");
                     self.targetWorkingDaysItem(newStringTargetWageItem);
                 }
 
                 $("#A2_3").focus();
+                nts.uk.ui.errors.clearAll();
             });
         };
     }

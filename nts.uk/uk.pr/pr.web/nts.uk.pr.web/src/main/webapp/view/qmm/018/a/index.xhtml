@@ -60,18 +60,19 @@
                     <button style="margin-left: 50px;" class="small" data-bind="click: wageItemSet, enable: true"
                             tabindex="4">#{i18n.getText('QMM018_10')}</button>
                     <!-- I2_12 -->
-                    <input id="I2_12" tabindex="5"
+                    <input id="A2_12"
                            data-bind="ntsTextEditor: {
 													option: {width: '250px'},
 													value: targetWageItem,
-													readonly: true
+													readonly: true,
+													required: true
 												}"/>
                 </div>
                 <div class="valign-center control-group" style="margin-left: 155px;">
                     <!--A2_13-->
                     <div style="width: 180px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_11')}</div>
                     <!--A2_14-->
-                    <div id="A2_13"
+                    <div id="A2_13" tabindex="5"
                          style="margin-left: 39px"
                          data-bind="ntsSwitchButton: {
 													options:  attendanceDays,
@@ -82,7 +83,7 @@
 													required: true,
 													enable: true }"></div>
                     <!--A2_15-->
-                    <button data-bind="ntsHelpButton: {image: 'QMM018_1.png.png', position: 'right top', enable: true }">?</button>
+                    <button data-bind="ntsHelpButton: {image: 'QMM018_3.png', position: 'right top', enable: true }">?</button>
                 </div>
                 <div class="valign-center control-group" style="margin-left: 200px;">
                     <!--A2_16-->
@@ -115,9 +116,9 @@
 													option: {width: '250px'},
 													value: targetWorkingDaysItem,
 													readonly: true,
+													required: true,
 													enable: enableTargetWorkingDaysItem
-												}"
-                           tabindex="5"/>
+												}" />
                 </div>
                 <div class="valign-center control-group" style="margin-left: 155px;">
                     <!--A2_23-->
@@ -128,8 +129,7 @@
 																	constraint: 'ExceptionFormula',
 																	name: '#[QMM018_28]',
 																	option: {
-													                    width: '30px',
-													                    textalign: 'center'
+													                    width: '30px'
 													                },
 													                required: true,
 																	enable: true}"/>
