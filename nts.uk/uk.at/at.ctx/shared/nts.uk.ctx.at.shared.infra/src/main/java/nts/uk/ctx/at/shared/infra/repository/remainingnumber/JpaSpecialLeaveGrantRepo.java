@@ -100,14 +100,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 								x.getGeneralDate("DEADLINE_DATE"),
 								x.getInt("EXPIRED_STATE"),
 								x.getInt("REGISTRATION_TYPE"),
-								x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
+								x.getBigDecimal("NUMBER_DAYS_GRANT") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
 								x.getInt("TIME_GRANT"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
 								x.getInt("TIME_USE"),
-								x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
-								x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
+								x.getBigDecimal("USED_SAVING_DAYS") == null ? 0.0 : x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
+								x.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
 								x.getInt("TIME_OVER"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
 								x.getInt("TIME_REMAIN"));
 					});
 			if(!entities.isPresent()) {
@@ -267,14 +267,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 								x.getGeneralDate("DEADLINE_DATE"),
 								x.getInt("EXPIRED_STATE"),
 								x.getInt("REGISTRATION_TYPE"),
-								x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
+								x.getBigDecimal("NUMBER_DAYS_GRANT") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
 								x.getInt("TIME_GRANT"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
 								x.getInt("TIME_USE"),
-								x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
-								x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
+								x.getBigDecimal("USED_SAVING_DAYS") == null ? 0.0 : x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
+								x.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
 								x.getInt("TIME_OVER"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
 								x.getInt("TIME_REMAIN"));
 					});
 			if(entities.isEmpty()) {
