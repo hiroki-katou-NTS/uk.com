@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -29,11 +32,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecruitmentHistoryOutPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffHistoryData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -71,6 +80,10 @@ public class EmploymentSystemFinder {
 	private ComSubstVacationRepository comSubrepo;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	@Inject
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
 	
 	/** 
 	 * KDL005
@@ -180,19 +193,44 @@ public class EmploymentSystemFinder {
 		// imported（就業）「所属雇用履歴」を取得する RequestList31
 		Optional<EmploymentHistoryImported> empImpOpt = this.wpAdapter.getEmpHistBySid(companyId, employeeId,
 				inputDate);
-		// アルゴリズム「振休管理設定の取得」を実行する
-		SubstVacationSetting setting = getLeaveManagementSetting(companyId, employeeId, empImpOpt);
-		result.setSetting(SubstVacationSettingDto.fromDomain(setting));
-		// アルゴリズム「期間内の振出振休残数を取得する」を実行する
-		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId,
-				new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1)), GeneralDate.today(), false,
-				false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
-		result.setAbsRecMng(absRecMng);
+		
+		//アルゴリズム「代休確認ダイア使用期限詳細」を実行する
+		DeadlineDetails deadLine = getDeadlineDetails(companyId, empImpOpt);
+		
+		result.setDeadLineDetails(deadLine);
+		//アルゴリズム「期間内の休出代休残数を取得する」を実行する
+		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyId, employeeId, new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(2)), 
+				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		BreakDayOffRemainMngOfInPeriod breakDay = this.breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
+		
+		result.setBreakDay(breakDay);
+		
 		
 		return result;
 	}
 	
+	private DeadlineDetails getDeadlineDetails(String companyId, Optional<EmploymentHistoryImported> empImpOpt) {
+		DeadlineDetails  result  = null;
+		
+		if (empImpOpt.isPresent()) {
+			CompensatoryLeaveEmSetting emSet = this.compensLeaveEmSetRepository.find(companyId,
+					empImpOpt.get().getEmploymentCode());
+
+			if (emSet == null) {
+				CompensatoryLeaveComSetting comSet = this.compensLeaveComSetRepository.find(companyId);
+				if(comSet == null){
+					throw new BusinessException("代休管理設定 && 雇用の代休管理設定 = null");
+				}
+				result = new DeadlineDetails(comSet.getIsManaged().value, comSet.getCompensatoryAcquisitionUse().getExpirationTime().value );
+			}else{
+				result = new DeadlineDetails(emSet.getIsManaged().value, emSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+			}
+		}
+		
+		return result;
+		
+	}
+
 	/**
 	 * KDL009
 	 * アルゴリズム「振休確認ダイアログ開始」を実行する
@@ -332,5 +370,14 @@ public class EmploymentSystemFinder {
 		}
 		return setting;
 
+	}
+
+	@Data
+	@AllArgsConstructor
+	class DeadlineDetails {
+		// 管理区分
+		private Integer isManaged;
+		// 使用期限
+		private Integer expirationTime;
 	}
 }

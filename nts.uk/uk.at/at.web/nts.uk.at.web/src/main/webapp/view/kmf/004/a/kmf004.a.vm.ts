@@ -148,7 +148,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                         
                         let text = "";
-                        _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
+                        _.forEach(_.orderBy(temp, ['itemType','frameNo'], ['asc']), function(item) {
                             text += item.name + " + " ;                    
                         });
                         
@@ -483,7 +483,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
                 
                 let text = "";
-                _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
+                _.forEach(_.orderBy(temp, ['itemType','frameNo'], ['asc']), function(item) {
                     text += item.name + " + " ;                    
                 });
                 
@@ -870,11 +870,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
     }
     
      class ItemFrame {
-        code: string;
-        name: string;
+         code: string;
+         itemType: string;
+         frameNo: number;
+         name: string;
         constructor(data) {
             if (data) {
                 this.code = data.itemType+data.specialHdFrameNo;
+                this.itemType = data.itemType;
+                this.frameNo = data.specialHdFrameNo;
                 this.name = data.specialHdFrameName;
             }
         }

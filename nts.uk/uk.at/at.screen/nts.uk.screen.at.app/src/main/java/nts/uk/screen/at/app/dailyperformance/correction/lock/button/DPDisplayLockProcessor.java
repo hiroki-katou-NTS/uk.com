@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -28,10 +29,14 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DPDisplayLockProcessor {
@@ -44,6 +49,9 @@ public class DPDisplayLockProcessor {
 
 	@Inject
 	private DPLock findLock;
+	
+	@Inject
+	private CheckIndentityMonth checkIndentityMonth;
 
 	public DailyPerformanceCorrectionDto processDisplayLock(DPDisplayLockParam param) {
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -98,6 +106,19 @@ public class DPDisplayLockProcessor {
 		process.getApplication(listEmployeeId, dateRange, disableSignMap);
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
+		
+		if (displayFormat == 0) {
+			// フレックス情報を表示する
+			if (listEmployeeId.get(0).equals(sId)) {
+				//checkIndenityMonth
+				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+				//対象日の本人確認が済んでいるかチェックする
+				result.checkShowTighProcess(displayFormat, true);
+			}else {
+				result.getIndentityMonthResult().setHideAll(false);
+			}
+			// screenDto.setFlexShortage(null);
+		}
 		
 		for (DPDataDto data : result.getLstData()) {
 			data.resetData();

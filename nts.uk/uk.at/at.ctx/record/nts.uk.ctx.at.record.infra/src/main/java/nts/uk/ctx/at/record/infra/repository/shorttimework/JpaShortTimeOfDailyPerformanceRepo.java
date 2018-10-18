@@ -70,8 +70,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 					.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
 			List<KrcdtDaiShortWorkTime> krcdtShortTimes = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
 			List<KrcdtDaiShortWorkTime> toRemove = krcdtShortTimes.stream()
-					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo
-																&& tu.childCareAtr == c.childCareAtr)
+					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo)
 										.findFirst().isPresent())
 					.collect(Collectors.toList());
 			

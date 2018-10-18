@@ -23,6 +23,8 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituat
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
@@ -238,5 +240,20 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 						i.getBaseDate(), i.getEmployeeID()))
 				.collect(Collectors.toList());
 		return intermediateDataPub.cancelMonth(approverID, listParam);
+	}
+
+	@Override
+	public List<ApproverApproveImport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst,
+			Integer rootType) {
+		return intermediateDataPub.getApproverByDateLst(employeeIDLst, dateLst, rootType)
+				.stream().map(x -> new ApproverApproveImport(
+						x.getDate(), 
+						x.getEmployeeID(), 
+						x.getAuthorList().stream().map(y -> new ApproverEmpImport(
+								y.getEmployeeID(), 
+								y.getEmployeeCD(), 
+								y.getEmployeeName()))
+						.collect(Collectors.toList())))
+				.collect(Collectors.toList());
 	}
 }

@@ -53,7 +53,7 @@ public class SaveChangeAbsDateCommandHandler
 		cancelOldAbsApp(command, absCmd);
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		Application_New commonApp = createNewCommonApp(command, absCmd, appReason);
-
+		command.getAbsCmd().setAppID(commonApp.getAppID());
 		saveHanler.CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振休申請」を1件登録する
 		createNewAbsApp(commonApp, command);
@@ -84,7 +84,7 @@ public class SaveChangeAbsDateCommandHandler
 
 	private void createNewAbsApp(Application_New commonApp, SaveHolidayShipmentCommand command) {
 
-		AbsenceLeaveApp absApp = saveHanler.createNewAbsDomainFromCmd(commonApp.getAppID(), command.getAbsCmd());
+		AbsenceLeaveApp absApp = saveHanler.createNewAbsDomainFromCmd(command.getAbsCmd());
 
 		absRepo.insert(absApp);
 	}

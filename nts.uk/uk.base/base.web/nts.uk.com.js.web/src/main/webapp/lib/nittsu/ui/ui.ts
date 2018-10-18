@@ -192,12 +192,16 @@ module nts.uk.ui {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();
                     });
+                    
+                    $label.on('remove', function() {
+                        $view.remove();
+                    });
                 }
             });
         });
         
         function isOverflow($label) {
-            if ($label[0].nodeName === "INPUT" 
+            if ( ($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")  
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
                 || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));

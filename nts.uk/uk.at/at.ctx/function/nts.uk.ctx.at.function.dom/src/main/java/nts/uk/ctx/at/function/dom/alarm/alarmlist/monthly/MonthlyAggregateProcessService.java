@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,6 +38,8 @@ import nts.uk.ctx.at.function.dom.adapter.monthlyremain.TypeCheckVacationImport;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.sysfixedcheckcondition.SysFixedCheckConMonAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.ApprovalProcessImport;
+import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
@@ -113,7 +113,7 @@ public class MonthlyAggregateProcessService {
 	@Inject 
 	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 	
-	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
+	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees, ApprovalProcessImport approvalProcessImport, IdentityConfirmProcessImport identityConfirmProcessImport){
 		
 		List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
 		
@@ -140,7 +140,7 @@ public class MonthlyAggregateProcessService {
 		}
 		List<EmployeeSearchDto> employeesDto = employees.stream().filter(c-> listEmployeeID.contains(c.getId())).collect(Collectors.toList());
 		//tab 2
-		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto, companyID));
+		listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto, companyID, approvalProcessImport, identityConfirmProcessImport));
 		//tab 3
 		
 		listValueExtractAlarm.addAll(this.extraResultMonthly(companyID, listExtra, period, employeesDto));
@@ -149,7 +149,8 @@ public class MonthlyAggregateProcessService {
 	}
 	//tab 2
 	private List<ValueExtractAlarm> extractMonthlyFixed(List<FixedExtraMonFunImport> listFixed,
-			DatePeriod period, List<EmployeeSearchDto> employees, String companyID) {
+			DatePeriod period, List<EmployeeSearchDto> employees, String companyID ,ApprovalProcessImport approvalProcessImport ,
+			IdentityConfirmProcessImport identityConfirmProcessImport) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		for(EmployeeSearchDto employee : employees) {
@@ -167,16 +168,32 @@ public class MonthlyAggregateProcessService {
 //						FixedExtraMonFunImport fixedExtraMon = listFixed.get(i);
 						switch(i) {
 							case 0 :
-								Optional<ValueExtractAlarm> unconfirmed = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmed(employee.getId(), yearMonth.v().intValue());
-								if(unconfirmed.isPresent()) {
-									unconfirmed.get().setAlarmValueMessage(listFixed.get(i).getMessage());
-									unconfirmed.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
-									String dateString = unconfirmed.get().getAlarmValueDate().substring(0, 7);
-									unconfirmed.get().setAlarmValueDate(dateString);
-									listValueExtractAlarm.add(unconfirmed.get());
+								List<ValueExtractAlarm> unconfirmeds = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmeds(employee.getId(), yearMonth.v().intValue(), identityConfirmProcessImport);
+								if(!CollectionUtil.isEmpty(unconfirmeds)) {
+									for (ValueExtractAlarm valueExtractAlarm : unconfirmeds) {
+										if(valueExtractAlarm!=null){
+											valueExtractAlarm.setComment(Optional.ofNullable(listFixed.get(i).getMessage()));
+											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
+											valueExtractAlarm.setAlarmValueDate(dateString);
+											listValueExtractAlarm.add(valueExtractAlarm);
+										}
+									}
 								}
 							break;
-							case 1 :// tuong ung vs 6
+							case 2 :
+								List<ValueExtractAlarm> unconfirmedsAdmin = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmedsAdmin(employee.getId(), yearMonth, approvalProcessImport);
+								if(!CollectionUtil.isEmpty(unconfirmedsAdmin)) {
+									for (ValueExtractAlarm valueExtractAlarm : unconfirmedsAdmin) {
+										if(valueExtractAlarm!=null){
+											valueExtractAlarm.setAlarmValueMessage(listFixed.get(i).getMessage());
+											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
+											valueExtractAlarm.setAlarmValueDate(dateString);
+											listValueExtractAlarm.add(valueExtractAlarm);
+										}
+									}
+								}
 								break;
 							//case 2 :break;//chua co
 							//case 3 :break;//chua co
@@ -531,30 +548,9 @@ public class MonthlyAggregateProcessService {
 					case 3 :
 						break;
 					default:
-						//get AttendanceIds
-						List<Integer> attendanceIds = new ArrayList<>();
-						if (!CollectionUtil.isEmpty(extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon())) {
-							List<ErAlAtdItemConAdapterDto> listErAlAtdItemConGroup1 = extra.getCheckConMonthly()
-									.getGroup1().getLstErAlAtdItemCon();
-							for (ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemConGroup1) {
-								attendanceIds.addAll(erAlAtdItemCon.getCountableAddAtdItems());
-							}
-						}
-						if ((extra.getCheckConMonthly().getGroup2())!=null&&
-								!CollectionUtil.isEmpty(extra.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon())) {
-							List<ErAlAtdItemConAdapterDto> listErAlAtdItemConGroup2 = extra.getCheckConMonthly()
-									.getGroup2().getLstErAlAtdItemCon();
-							for (ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemConGroup2) {
-								attendanceIds.addAll(erAlAtdItemCon.getCountableAddAtdItems());
-							}
-						}
-						if (!CollectionUtil.isEmpty(attendanceIds)) {
-							Set<Integer> set = new HashSet<Integer>(attendanceIds);
-							attendanceIds = new ArrayList<Integer>(set);
-						}
-						//
+					//No 257
 						Map<String, Integer> checkPerTimeMonActualResults = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
-								yearMonth, employee.getId(), extra.getCheckConMonthly(),attendanceIds);
+								yearMonth, employee.getId(), extra.getCheckConMonthly());
 						// Key of MAP : employeeID+yearMonth.toString()+closureID.toString()
 						//ValueMap 0 = false, 1= true
 //						String key =employee.getId().toString()+yearMonth.toString()+closureID.toString();
@@ -966,7 +962,7 @@ public class MonthlyAggregateProcessService {
 
 		//RequestList No.203 期間内の休出代休残数を取得する
 		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, employee.getId(),
-				periodCurrentMonth, true, periodCurrentMonth.end(), false, Collections.emptyList(),
+				periodCurrentMonth, false, periodCurrentMonth.end(), false, Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList());
 		BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
 				.getBreakDayOffMngInPeriod(param);
