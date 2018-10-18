@@ -10,8 +10,6 @@ public interface BusinessTypeFormatMonthlyRepository {
 
 	List<BusinessTypeFormatMonthly> getMonthlyDetail(String companyId, String workTypeCode);
 
-	List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, List<String> listBusinessTypeCode);
-	
 	List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, Collection<String> listBusinessTypeCode);
 
 	void update(BusinessTypeFormatMonthly businessTypeFormatMonthly);

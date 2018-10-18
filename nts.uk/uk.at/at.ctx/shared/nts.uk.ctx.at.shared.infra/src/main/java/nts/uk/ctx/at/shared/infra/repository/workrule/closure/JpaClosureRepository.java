@@ -370,22 +370,23 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	@SneakyThrows
 	private List<KclmtClosureHist> findHistoryByClosureId(String companyId, int closureId) {
 		
-		val statement = this.connection().prepareStatement(
-				"select * from KCLMT_CLOSURE_HIST where CID = ? and CLOSURE_ID = ?");
-		statement.setString(1, companyId);
-		statement.setInt(2, closureId);
-		return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			KclmtClosureHist entity = new KclmtClosureHist();
-			entity.setKclmtClosureHistPK(new KclmtClosureHistPK(
-					rec.getString("CID"),
-					rec.getInt("CLOSURE_ID"),
-					rec.getInt("STR_YM")));
-			entity.setName(rec.getString("CLOSURE_NAME"));
-			entity.setEndYM(rec.getInt("END_YM"));
-			entity.setCloseDay(rec.getInt("CLOSURE_DAY"));
-			entity.setIsLastDay(rec.getInt("IS_LAST_DAY"));
-			return entity;
-		});
+		try (val statement = this.connection().prepareStatement(
+				"select * from KCLMT_CLOSURE_HIST where CID = ? and CLOSURE_ID = ?")) {
+			statement.setString(1, companyId);
+			statement.setInt(2, closureId);
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				KclmtClosureHist entity = new KclmtClosureHist();
+				entity.setKclmtClosureHistPK(new KclmtClosureHistPK(
+						rec.getString("CID"),
+						rec.getInt("CLOSURE_ID"),
+						rec.getInt("STR_YM")));
+				entity.setName(rec.getString("CLOSURE_NAME"));
+				entity.setEndYM(rec.getInt("END_YM"));
+				entity.setCloseDay(rec.getInt("CLOSURE_DAY"));
+				entity.setIsLastDay(rec.getInt("IS_LAST_DAY"));
+				return entity;
+			});
+		}
 	}
 
 	/*
