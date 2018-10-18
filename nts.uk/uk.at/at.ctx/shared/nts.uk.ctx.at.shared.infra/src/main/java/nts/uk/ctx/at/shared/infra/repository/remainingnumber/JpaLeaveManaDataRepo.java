@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
@@ -54,6 +56,12 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			+ "AND m.SUB_HD_ATR = ?subHDAtr"
 			+ " AND (((MONTH(m.DAYOFF_DATE) + ?deadlMonth) >= ?currentMonth AND  MONTH(m.DAYOFF_DATE) <= ?currentMonth AND YEAR(m.DAYOFF_DATE) = ?currentYear)"
 						+ " OR (12 - (MONTH(m.DAYOFF_DATE)) + ?currentMonth <= ?deadlMonth AND YEAR(m.DAYOFF_DATE) = (?currentYear - 1))) ";
+	
+	private String QUERY_BYSIDYMD = "SELECT l FROM KrcmtLeaveManaData l"
+			+ " WHERE l.cID = :cid AND l.sID =:employeeId"
+			+ " AND (l.dayOff < :dayOff OR l.dayOff is null)"
+			+ " AND (l.unUsedDays > 0 OR l.unUsedTimes >0)"
+			+ " AND l.subHDAtr = :subHDAtr ";
  	@Override
 	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
 		return (Integer) this.getEntityManager()
@@ -202,8 +210,12 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 
 	@Override
 	public void updateByLeaveIds(List<String> leaveIds) {
-		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYID, KrcmtLeaveManaData.class)
-				.setParameter("leaveIDs", leaveIds).getList();
+		List<KrcmtLeaveManaData> listListMana = new ArrayList<>();
+		CollectionUtil.split(leaveIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listListMana.addAll(this.queryProxy().query(QUERY_BYID, KrcmtLeaveManaData.class)
+									.setParameter("leaveIDs", subList)
+									.getList());
+		});
 		for (KrcmtLeaveManaData busItem : listListMana) {
 			busItem.subHDAtr = DigestionAtr.USED.value;
 			busItem.unUsedDays = 0.0;
@@ -297,6 +309,19 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	@Override
 	public void deleteById(List<String> leaveId) {
 		this.commandProxy().removeAll(KrcmtLeaveManaData.class, leaveId);
+	}
+
+
+
+	@Override
+	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BYSIDYMD, KrcmtLeaveManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("dayOff", ymd)
+				.setParameter("subHDAtr", state.value)
+				.getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
 }

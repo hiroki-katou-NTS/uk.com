@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
@@ -16,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 //Event：権限管理の初期値登録 - Tuy la event nhưng thực tế đang viết dạng publish
 @Stateless
-public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGlobalEventPublisher{
+public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGlobalEventPublisher {
 
 	@Inject
 	private RoleRepository roleRepo;
@@ -39,15 +40,17 @@ public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGloba
 				String roleID = IdentifierUtil.randomUniqueId();
 				Role initRole = new Role(roleID, role.getRoleCode(), role.getRoleType(),
 						role.getEmployeeReferenceRange(), role.getName(), role.getContractCode(), role.getAssignAtr(),
-						role.getCompanyId());
+						companyIDCopy);
 				listRoleCopy.add(initRole);
 				listRoleTiesID.add(roleID);
 				this.roleRepo.insert(initRole);
-				RoleByRoleTiesGlobalEvent roleEvent = new RoleByRoleTiesGlobalEvent(roleID, role.getCompanyId());
+				RoleByRoleTiesGlobalEvent roleEvent = new RoleByRoleTiesGlobalEvent(roleID, companyIDCopy);
 				roleEvent.toBePublished();
 			}
 		}
 	}
+
+	
 	
 	
 }

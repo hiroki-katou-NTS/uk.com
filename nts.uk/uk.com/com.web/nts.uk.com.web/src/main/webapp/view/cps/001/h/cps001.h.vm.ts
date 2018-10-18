@@ -288,6 +288,7 @@ module cps001.h.vm {
                                 unblock();
 
                             }).fail((_data) => {
+                                nts.uk.ui.dialog.alertError({ messageId: _data.messageId });
                                 unblock();
                             });
 
@@ -315,6 +316,7 @@ module cps001.h.vm {
                             });
 
                         }).fail((mes) => {
+                            nts.uk.ui.dialog.alertError({ messageId: mes.messageId });
                             unblock();
                         });
                 }

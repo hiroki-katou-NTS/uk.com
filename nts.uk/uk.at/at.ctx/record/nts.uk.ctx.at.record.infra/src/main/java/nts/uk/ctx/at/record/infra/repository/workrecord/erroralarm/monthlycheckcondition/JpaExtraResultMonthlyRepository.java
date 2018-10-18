@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
@@ -23,12 +24,13 @@ public class JpaExtraResultMonthlyRepository extends JpaRepository implements Ex
 	@Override
 	public List<ExtraResultMonthly> getExtraResultMonthlyByListID(List<String> listErrorAlarmCheckID) {
 		List<ExtraResultMonthly> data = new ArrayList<>();
-		CollectionUtil.split(listErrorAlarmCheckID, 1000, subIdList ->{
-			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtExtraResultMonthly.class)
-					.setParameter("listErrorAlarmCheckID", listErrorAlarmCheckID).getList(c->c.toDomain())
-					);
-			
-		});
+		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subIdList -> {
+					data.addAll(this.queryProxy()
+							.query(SELECT_BY_LIST_ID, KrcmtExtraResultMonthly.class)
+							.setParameter("listErrorAlarmCheckID", listErrorAlarmCheckID)
+							.getList(c -> c.toDomain()));
+				});
 		return data;
 	}
 

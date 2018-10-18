@@ -65,14 +65,14 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 
 		WorkInfoOfDailyPerformance wi = getWithDefaul(command.cachedWorkInfo, () -> getDefaultWorkInfo(command));
 		if(wi == null) {
-			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
+			return EventHandleResult.onFail();
 		};
 		
 		String companyId = getWithDefaul(command.companyId, () -> AppContexts.user().companyId());
 		
 		WorkType wt = getWithDefaul(command.cachedWorkType, () -> getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
 		if(wt == null) {
-			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
+			return EventHandleResult.onFail();
 		}
 		
 		/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
@@ -87,7 +87,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				}
 				return EventHandleResult.withResult(EventHandleAction.UPDATE, updateTimeLeave(companyId, wi, tl, command));
 			} else {
-				return EventHandleResult.withResult(EventHandleAction.ABORT, getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command)));
+				return EventHandleResult.onFail();
 			}
 		}
 		
@@ -215,38 +215,23 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 	private TimeLeavingOfDailyPerformance deleteTimeLeave(boolean isSPR, TimeLeaveUpdateByWorkInfoChangeCommand command) {
 		TimeLeavingOfDailyPerformance tl = getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command));
 		if(tl != null) {
-			if (isSPR) {
-				tl.getTimeLeavingWorks().stream().forEach(tlw -> {
-					tlw.getAttendanceStamp().ifPresent(as -> {
-						if (as.getStamp().isPresent() && !as.getStamp().get().isFromSPR()) {
-							as.removeStamp();
-						}
-					});
-					tlw.getLeaveStamp().ifPresent(as -> {
-						if (as.getStamp().isPresent() && !as.getStamp().get().isFromSPR()) {
+			tl.getTimeLeavingWorks().stream().forEach(tlw -> {
+				tlw.getAttendanceStamp().ifPresent(as -> {
+					as.getStamp().ifPresent(ass -> {
+						if(isRemoveStamp(ass, isSPR)){
 							as.removeStamp();
 						}
 					});
 				});
-			} else {
-				tl.getTimeLeavingWorks().stream().forEach(tlw -> {
-					tlw.getAttendanceStamp().ifPresent(as -> {
-						as.getStamp().ifPresent(ass -> {
-							if(isRemoveStamp(ass)){
-								as.removeStamp();
-							}
-						});
-					});
 
-					tlw.getLeaveStamp().ifPresent(as -> {
-						as.getStamp().ifPresent(ass -> {
-							if(isRemoveStamp(ass)){
-								as.removeStamp();
-							}
-						});
+				tlw.getLeaveStamp().ifPresent(as -> {
+					as.getStamp().ifPresent(ass -> {
+						if(isRemoveStamp(ass, isSPR)){
+							as.removeStamp();
+						}
 					});
 				});
-			}
+			});
 
 			if(!command.actionOnCache){
 				this.timeLeaveRepo.update(tl);
@@ -260,7 +245,11 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		return tl;
 	}
 
-	private boolean isRemoveStamp(WorkStamp ass) {
+	private boolean isRemoveStamp(WorkStamp ass, boolean isSPR) {
+		if(!isSPR && ass.getStampSourceInfo() == StampSourceInfo.SPR){
+			return true;
+		}
+		
 		return ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT ||
 				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION ||
 				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON || 

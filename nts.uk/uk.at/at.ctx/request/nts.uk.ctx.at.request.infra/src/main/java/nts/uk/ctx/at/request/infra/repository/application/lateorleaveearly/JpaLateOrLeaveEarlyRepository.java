@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.infra.repository.application.lateorleaveearly;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
@@ -69,9 +72,14 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 
 	@Override
 	public List<LateOrLeaveEarly> findByActualCancelAtr(List<String> listAppID, Integer actualCancelAtr) {
-		return this.queryProxy().query(SELECT_LIST_CANCEL_ATR, KrqdtAppLateOrLeave.class)
-				.setParameter("listAppID", listAppID).setParameter("actualCancelAtr", actualCancelAtr)
-				.getList(c -> c.toDomain());
+		List<LateOrLeaveEarly> resultList = new ArrayList<>();
+		CollectionUtil.split(listAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_LIST_CANCEL_ATR, KrqdtAppLateOrLeave.class)
+								  .setParameter("listAppID", subList)
+								  .setParameter("actualCancelAtr", actualCancelAtr)
+								  .getList(c -> c.toDomain()));
+		});
+		return resultList;
 	};
 
 }

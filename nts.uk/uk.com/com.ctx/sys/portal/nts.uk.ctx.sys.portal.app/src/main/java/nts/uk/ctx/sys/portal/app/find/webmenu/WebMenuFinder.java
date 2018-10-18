@@ -171,7 +171,7 @@ public class WebMenuFinder {
 		List<String> roleIds = roleAdapter.getRoleId(userId);
 		List<MenuCodeDto> roleMenuCodes = new ArrayList<>();
 		roleIds.stream().forEach(r -> {
-			roleTiesRepository.getRoleByRoleTiesById(r)
+			roleTiesRepository.getByRoleIdAndCompanyId(r, companyId)
 							.ifPresent(t -> roleMenuCodes.add(new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v())));
 		});
 		

@@ -172,21 +172,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return formatById("Clock_Short_HM", data);
         }
         genScheduleRecordText(scheduleRecordAtr) {
-            if (scheduleRecordAtr == null) {
-                return '';
-            }
-            if (scheduleRecordAtr == 0) {
-                return '未反映状態'
-            }
-
-            if (scheduleRecordAtr == 1) {
-                return '実績'
-            }
-            if (scheduleRecordAtr == 2) {
-                return 'スケジュール'
-            }
-
-            return '';
+           
+            return CreateAtr[scheduleRecordAtr];
         }
         genAttendanceRate(attendanceRate) {
             if (attendanceRate == null) {
@@ -476,6 +463,19 @@ module nts.uk.at.view.kdl020.a.screenModel {
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+    
+    export enum CreateAtr {
+        /** 予定 */
+        "予定",
+        /** 実績 */
+        "実績",
+        /** 申請(事前) */
+        "申請(事前)",
+        /** 申請(事後) */
+        "申請(事後)",
+        /**フレックス補填   */
+        "フレックス補填"
     }
 
     export interface UnitModel {

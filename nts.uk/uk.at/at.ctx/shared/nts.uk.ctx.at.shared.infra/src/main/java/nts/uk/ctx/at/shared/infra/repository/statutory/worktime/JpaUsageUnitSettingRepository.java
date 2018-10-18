@@ -56,8 +56,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	@Override
 	public Optional<UsageUnitSetting> findByCompany(String companyId) {
 //		return this.queryProxy().find(companyId, KuwstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
-		try {
-			val statement = this.connection().prepareStatement("select * FROM KUWST_USAGE_UNIT_WT_SET where CID = ?");
+		try (val statement = this.connection().prepareStatement("select * FROM KUWST_USAGE_UNIT_WT_SET where CID = ?")) {
 			statement.setString(1, companyId);
 			Optional<KuwstUsageUnitWtSet> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
 				val entity = new KuwstUsageUnitWtSet();

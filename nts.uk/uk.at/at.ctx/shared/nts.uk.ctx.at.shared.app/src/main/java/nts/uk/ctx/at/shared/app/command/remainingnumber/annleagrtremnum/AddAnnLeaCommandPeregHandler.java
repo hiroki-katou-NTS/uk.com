@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -38,6 +35,16 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		
 		String cid = AppContexts.user().companyId();
 		String annLeavId = IdentifierUtil.randomUniqueId();
+		/**
+		 * update tài liệu 
+		 * #設計修正　2018/10/17　渡邉
+		 * ユニーク制約を追加
+         * EA修正履歴NO.2840
+		 */
+		if (!annLeaRepo.checkConditionUniqueForAdd(command.getEmployeeId(), command.getGrantDate()).isEmpty()) {
+			throw new BusinessException("Msg_1456");
+		}
+		
 		boolean check = AnnualLeaveGrantRemainingData.validate(command.getGrantDate(), command.getDeadline(), command.getGrantDays(), command.getUsedDays(),
 				command.getRemainingDays(), command.grantDateItemName , command.deadlineDateItemName);
 		if (check) {
