@@ -151,7 +151,8 @@ public class DailyAggregationProcessService {
 		List<Integer> listAttdID = dailyAttendanceItemAdapter.getDailyAttendanceItemList(companyID).stream()
 				.map(c->c.getAttendanceItemId()).collect(Collectors.toList());
 		List<DailyAttendanceItem> listAttenDanceItem = attendanceNameService.getNameOfDailyAttendanceItem(listAttdID);
-		
+		// Get map all name Attd Name
+		Map<Integer,DailyAttendanceItem> mapAttdName = listAttenDanceItem.stream().collect(Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, x -> x));
 		for(ErrorRecordImport errorRecord : listErrorRecord) {
 			if(errorRecord.isError()) {
 				EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(errorRecord.getEmployeeId())).findFirst().get();
@@ -163,7 +164,7 @@ public class DailyAggregationProcessService {
 						break;
 					}
 				}
-				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID,alarmItem,listAttenDanceItem));				
+				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID,alarmItem,listAttenDanceItem,mapAttdName));				
 			}			
 		}
 		
@@ -183,7 +184,7 @@ public class DailyAggregationProcessService {
 		return listAlarmItemName;
 	}
 	
-	private ValueExtractAlarm checkConditionGenerateValue(EmployeeSearchDto employee, GeneralDate date, WorkRecordExtraConAdapterDto workRecordExtraCon,  String companyID,String alarmItem,List<DailyAttendanceItem> listAttenDanceItem) {
+	private ValueExtractAlarm checkConditionGenerateValue(EmployeeSearchDto employee, GeneralDate date, WorkRecordExtraConAdapterDto workRecordExtraCon,  String companyID,String alarmItem,List<DailyAttendanceItem> listAttenDanceItem ,Map<Integer,DailyAttendanceItem> mapAtdItemName) {
 		String alarmContent = "";
 		TypeCheckWorkRecord checkItem = EnumAdaptor.valueOf(workRecordExtraCon.getCheckItem(), TypeCheckWorkRecord.class);
 //		switch (checkItem) {
@@ -215,7 +216,7 @@ public class DailyAggregationProcessService {
 //				break;
 //		}
 		
-		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID,listAttenDanceItem);		
+		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID, listAttenDanceItem, mapAtdItemName);		
 		if(alarmContent.length()>100) {
 			alarmContent = alarmContent.substring(0, 100);
 		}
@@ -224,7 +225,7 @@ public class DailyAggregationProcessService {
 		return result;
 	}
 	
-	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,  WorkRecordExtraConAdapterDto workRecordExtraCon, String companyID,List<DailyAttendanceItem> listAttenDanceItem) {
+	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,  WorkRecordExtraConAdapterDto workRecordExtraCon, String companyID,List<DailyAttendanceItem> listAttenDanceItem, Map<Integer,DailyAttendanceItem> mapAtdItemName) {
 		
 		if(workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().isEmpty()) return "";			
 		
@@ -259,7 +260,7 @@ public class DailyAggregationProcessService {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
 					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),this.formatHourData( atdItemCon.getCompareStartValue().toString(), checkItem));
 				} else {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + "", checkItem));
+					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),mapAtdItemName.containsKey(atdItemCon.getSingleAtdItem()) ? mapAtdItemName.get(atdItemCon.getSingleAtdItem()).getAttendanceItemName() : "");
 				}
 			}
 			break;
@@ -282,7 +283,7 @@ public class DailyAggregationProcessService {
 					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString(), checkItem),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				} else {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + "", checkItem),
+					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), mapAtdItemName.containsKey(atdItemCon.getSingleAtdItem()) ? mapAtdItemName.get(atdItemCon.getSingleAtdItem()).getAttendanceItemName() : "",
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
 				}
 			} 
@@ -302,9 +303,9 @@ public class DailyAggregationProcessService {
 			String alarmGroup1= "";
 			String alarmGroup2 ="";
 			ErAlConAttendanceItemAdapterDto group1 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem,checkItem);
+			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem,checkItem,mapAtdItemName);
 			ErAlConAttendanceItemAdapterDto group2 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup2();
-			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem,checkItem);
+			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem,checkItem,mapAtdItemName);
 			if(alarmGroup1.length()!=0 && alarmGroup2.length() !=0 ) {
 				alarmContent =   alarmGroup1 + logicalOperator( workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups()) +  alarmGroup2 ;
 			}else {
@@ -362,7 +363,7 @@ public class DailyAggregationProcessService {
 
 	}
 	
-	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem,TypeCheckWorkRecord checkItem ) {
+	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem,TypeCheckWorkRecord checkItem , Map<Integer,DailyAttendanceItem> mapAtdItemName) {
 		String alarmGroup= "";		
 		
 		if (!group.getLstErAlAtdItemCon().isEmpty()) {
@@ -376,9 +377,10 @@ public class DailyAggregationProcessService {
 						+ coupleOperator.getOperatorStart() 
 						+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr()) + ")";
 					} else {
+						String attendenceItemName = mapAtdItemName.containsKey(itemCon.getSingleAtdItem()) ? mapAtdItemName.get(itemCon.getSingleAtdItem()).getAttendanceItemName() :"";
 						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 						+ coupleOperator.getOperatorStart()
-						+ this.formatHourDataByGroup(String.valueOf(itemCon.getSingleAtdItem()), itemCon.getConditionAtr())+ ")";
+						+ attendenceItemName+ ")";
 					}
 
 				} else {

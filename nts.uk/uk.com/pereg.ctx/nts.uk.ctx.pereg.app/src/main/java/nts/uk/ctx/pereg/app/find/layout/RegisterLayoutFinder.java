@@ -73,7 +73,9 @@ public class RegisterLayoutFinder {
 	
 	private static final String END_DATE_NAME = "終了日";
 	
-	private static GeneralDate baseDate;
+	// biến này dùng để tính baseDate là ngày nào, 
+	// là ngày vào công ty hay là ngày start date của category, ko cần dùng static
+	private GeneralDate baseDate = null;
 	
 	/**
 	 * get Layout Dto by create type
@@ -222,7 +224,7 @@ public class RegisterLayoutFinder {
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				List<ComboBoxObject> comboValues = cbbfact.getComboBox(selectionItemDto, null, hireDate,
 						item.isRequired(), perInfoCategory.getPersonEmployeeType(), isDataType6,
-						perInfoCategory.getCategoryCode().v(), workPlaceId);
+						perInfoCategory.getCategoryCode().v(), workPlaceId, false);
 				item.setLstComboBoxValue(comboValues);
 
 				// value of item in comboBox is string

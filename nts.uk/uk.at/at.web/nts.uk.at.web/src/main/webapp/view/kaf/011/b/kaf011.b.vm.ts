@@ -53,13 +53,15 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
 
         firstLoad: KnockoutObservable<boolean> = ko.observable(true);
+        
+        remainDays: KnockoutObservable<number> = ko.observable(null);
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
-
+            
             self.startPage(self.appID());
-
+            
             self.prePostSelectedCode.subscribe((newCd) => {
                 let prePostItem = _.find(self.prePostTypes(), { 'code': newCd });
                 if (prePostItem) {
@@ -84,6 +86,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     $('.absWkingTime').ntsError("clear");
                 }
             });
+            
+            
         }
 
         genSaveCmd(): common.ISaveHolidayShipmentCommand {
@@ -98,6 +102,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     prePostAtr: self.prePostSelectedCode(),
                     employeeID: self.employeeID(),
                     appVersion: self.version,
+                    remainDays: self.remainDays()
                 }
             }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             returnCmd.absCmd.changeWorkHoursType = returnCmd.absCmd.changeWorkHoursType ? 1 : 0;
@@ -208,6 +213,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
+                if (data.absRecMng) {
+                    self.remainDays(data.absRecMng.remainDays);
+                }
                 self.drawalReqSet(new common.DrawalReqSet(data.drawalReqSet || null));
                 self.employeeName(data.employeeName || null);
                 self.employeeID(data.employeeID || null);
@@ -233,6 +241,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                     }
 
                 }
+                
+                
             }
             self.firstLoad(false);
         }

@@ -92,9 +92,10 @@ module nts.uk.at.view.kdw001.c {
                 self.required = ko.observable(true);
 
                 let today = new Date;
-                self.dateValue = ko.observable({});
-                self.dateValue().startDate = ko.observable("");
-                self.dateValue().endDate = ko.observable("");
+//                self.dateValue = ko.observable({});
+//                self.dateValue().startDate = ko.observable("");
+//                self.dateValue().endDate = ko.observable("");
+                self.dateValue = ko.observable({startDate : new Date() , endDate : new Date()});
                 self.startDateValidate = ko.observable("");
 
 
@@ -259,7 +260,7 @@ module nts.uk.at.view.kdw001.c {
             opendScreenBorJ() {
                 let self = this;
                 var closureID = '1';
-                if (self.dateValue().startDate < self.startDateValidate) {
+                if (moment.utc(self.dateValue().startDate).format("YYYY/MM/DD") < self.startDateValidate) {
                     //                    $('#daterangepicker  input[id$=-startInput],#daterangepicker  input[id$=-endInput]'').ntsError('clear');
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1349" });
                     return;
@@ -309,8 +310,8 @@ module nts.uk.at.view.kdw001.c {
                                     __viewContext["viewmodel"].params.setParamsScreenC({
                                         closureID: self.closureId(),
                                         lstEmployeeID: listEmpSelectedId,
-                                        periodStartDate: self.dateValue().startDate,
-                                        periodEndDate: self.dateValue().endDate,
+                                        periodStartDate: moment.utc(self.dateValue().startDate).format("YYYY/MM/DD"),
+                                        periodEndDate: moment.utc(self.dateValue().endDate).format("YYYY/MM/DD"),
                                         processingMonth : self.startDateValidate.toString().split("/")[0]+self.startDateValidate.toString().split("/")[1]
                                     });
                                     $("#wizard").ntsWizard("next").done(function() {
@@ -337,8 +338,8 @@ module nts.uk.at.view.kdw001.c {
                                 __viewContext["viewmodel"].params.setParamsScreenC({
                                     closureID: self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
-                                    periodStartDate: self.dateValue().startDate,
-                                    periodEndDate: self.dateValue().endDate,
+                                    periodStartDate: moment.utc(self.dateValue().startDate).format("YYYY/MM/DD"),
+                                        periodEndDate: moment.utc(self.dateValue().endDate).format("YYYY/MM/DD"),
                                     processingMonth : self.startDateValidate.toString().split("/")[0]+self.startDateValidate.toString().split("/")[1]
                                 });
                                 $("#wizard").ntsWizard("next").done(function() {
