@@ -1,41 +1,28 @@
 package nts.uk.ctx.at.record.pub.workrecord.approvalmanagement;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.enums.ConfirmationOfManagerOrYouself;
 
 @AllArgsConstructor
 @Getter
 public class ApprovalProcessExport {
 
-	/**
-	 * 会社ID
-	 */
-	private String cid;
+	private String companyId;
 
-	/**
-	 * 職位ID
-	 */
-	private String jobTitleId;
+	private Boolean useDayApproverConfirm;
 
-	/**
-	 * 日の承認者確認を利用する
-	 */
-	private int useDailyBossChk;
+	private Boolean useMonthApproverConfirm;
 
-	/**
-	 * 月の承認者確認を利用する
-	 */
-	private int useMonthBossChk;
+	private List<String> lstJobTitleNotUse;
 
-	/**
-	 * エラーがある場合の上司確認
-	 */
-	private Integer supervisorConfirmError;
+	private ConfirmationOfManagerOrYouself supervisorConfirmErrorAtr;
 	
-	public static ApprovalProcessExport fromDomain(ApprovalProcess domain){
-        return new ApprovalProcessExport(domain.getCid(), domain.getJobTitleId(), 
-						        		domain.getUseDailyBossChk(), domain.getUseMonthBossChk(), 
-						        		domain.getSupervisorConfirmError() == null ? null : domain.getSupervisorConfirmError().value);
+	public static ApprovalProcessExport fromDomain(ApprovalProcessingUseSetting domain){
+		
+        return new ApprovalProcessExport(domain.getCompanyId(), domain.getUseDayApproverConfirm(), domain.getUseMonthApproverConfirm(), domain.getLstJobTitleNotUse(), domain.getSupervisorConfirmErrorAtr());
     }
 }
