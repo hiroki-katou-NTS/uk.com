@@ -30,6 +30,9 @@ module nts.uk.ui.koExtentions {
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let required = _.isNil(data.required) ? false : ko.unwrap(data.required);
 
+            if (dataName) {
+                dataName = nts.uk.resource.getControlName(dataName);
+            }
             $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
 
             $container.addClass("ntsControl ntsMonthDays_Container");
