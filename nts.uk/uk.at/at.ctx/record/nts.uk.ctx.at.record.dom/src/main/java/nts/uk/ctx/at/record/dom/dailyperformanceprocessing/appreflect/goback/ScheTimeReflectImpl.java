@@ -296,11 +296,11 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//INPUT．予定反映区分をチェックする
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		if(scheReflectAtr
-				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAY) {
+				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//INPUT．予定と実績を同じに変更する区分が「流動勤務のみ自動変更する」
-		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
 			return workTimeisFluidWork.checkWorkTimeIsFluidWork(worktimeCode);
 		}

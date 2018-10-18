@@ -39,7 +39,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
-				para.getOvertimePara().getWorkTypeCode()); 
+				para.getOvertimePara().getWorkTypeCode(),
+				false); 
 		return workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfo);	
 	}
 	
@@ -68,7 +69,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
-				para.getOvertimePara().getWorkTypeCode()); 
+				para.getOvertimePara().getWorkTypeCode(),
+				false); 
 		dailyInfo = workUpdate.updateWorkTimeType(reflectInfo, false, dailyInfo);
 		return new AppReflectRecordWork(ischeck, dailyInfo);
 		
@@ -104,7 +106,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return false;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY) {
+		if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//流動勤務かどうかの判断処理
