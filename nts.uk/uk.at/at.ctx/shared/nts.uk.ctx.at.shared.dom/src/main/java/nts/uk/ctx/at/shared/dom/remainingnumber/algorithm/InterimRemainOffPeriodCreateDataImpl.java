@@ -17,6 +17,9 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -26,16 +29,25 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 @Stateless
-public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPeriodCreateData{
+public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPeriodCreateData {
 	@Inject
 	private InterimRemainOffDateCreateData createDataService;
-
 	@Inject
 	private EmpSubstVacationRepository empSubsRepos;
 	@Inject
 	private CompensLeaveEmSetRepository empLeaveSetRepos;
 	@Inject
 	private ShareEmploymentAdapter employmentService;
+	@Inject
+	private RemainCreateInforByScheData remainScheData;
+	@Inject
+	private RemainCreateInforByRecordData remainRecordData;
+	@Inject
+	private RemainCreateInforByApplicationData remainAppData;
+	@Inject
+	private ComSubstVacationRepository subRepos;
+	@Inject
+	private CompensLeaveComSetRepository leaveSetRepos;
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(
 			InterimRemainCreateDataInputPara inputParam, CompanyHolidayMngSetting comHolidaySetting) {
@@ -149,6 +161,38 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 			lstEmplSetting.add(employmentSetting);
 		}
 		return lstEmplSetting;
+	}
+
+	@Override
+	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainByScheRecordApp(
+			InterimRemainCreateDataInputPara param) {
+		//Input「予定」がNULLかどうかチェック
+		if(param.getScheData().isEmpty()) {
+			//(Imported)「残数作成元の勤務予定を取得する」
+			param.setScheData(remainScheData.createRemainInfor(param.getCid(), param.getSid(), param.getDateData()));
+		}
+		//Input「実績」がNULLかどうかチェック
+		if(param.getRecordData().isEmpty()) {
+			param.setRecordData(remainRecordData.lstRecordRemainData(param.getCid(), param.getSid(), param.getDateData()));
+		}
+		//(Imported)「残数作成元の申請を取得する」
+		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(param.getCid(), param.getSid(), param.getDateData());
+		//Input「申請」がNULLかどうかチェック
+		if(!lstAppData.isEmpty()) {
+			lstAppData.addAll(param.getAppData());
+			param.setAppData(lstAppData);
+		}
+		Optional<ComSubstVacation> comSetting = subRepos.findById(param.getCid());
+		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(param.getCid());
+		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(param.getCid(), comSetting, leaveComSetting);
+		InterimRemainCreateDataInputPara createDataParam = new InterimRemainCreateDataInputPara(param.getCid(),
+				param.getSid(),
+				param.getDateData(),
+				param.getRecordData(),
+				param.getScheData(),
+				param.getAppData(),
+				param.isDayOffTimeIsUse());
+		return this.createInterimRemainDataMng(createDataParam, comHolidaySetting);
 	}
 
 	

@@ -182,22 +182,10 @@ public class HolidayShipmentScreenAFinder {
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
-		
-		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-				Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
-				GeneralDate closureDate = closure.get();
-		//期間内の振出振休残数を取得する
-		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyID,
-				employeeID,
-				new DatePeriod(closureDate, closureDate.addYears(1)),
-				GeneralDate.today(),
-				false,
-				false, 
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList());
-		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
+		//[No.506]振休残数を取得する
+		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
 		result.setAbsRecMng(absRecMng);
+		
 		return result;
 	}
 

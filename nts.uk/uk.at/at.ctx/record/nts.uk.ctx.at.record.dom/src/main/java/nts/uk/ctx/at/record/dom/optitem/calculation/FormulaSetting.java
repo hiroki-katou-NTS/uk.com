@@ -122,7 +122,7 @@ public class FormulaSetting extends DomainObject {
 	 * 計算式による計算
 	 * @return
 	 */
-	public Integer calculationBycalculationFormula(List<ResultOfCalcFormula> resultOfCalcFormulaList,OptionalItemAtr optionalItemAtr) {
+	public BigDecimal calculationBycalculationFormula(List<ResultOfCalcFormula> resultOfCalcFormulaList,OptionalItemAtr optionalItemAtr) {
 		//計算項目の作成
 		CalcItem calcItem = new CalcItem();
 		//順番1の処理
@@ -130,10 +130,10 @@ public class FormulaSetting extends DomainObject {
 		//順番2の処理
 		calcItem = createCalcItem(getFormulaSettingItem(SettingItemOrder.RIGHT),calcItem,resultOfCalcFormulaList,optionalItemAtr);
 		//計算項目から値を算出
-		Integer result = calc(calcItem);
-		if(result<0) {
+		BigDecimal result = calc(calcItem);
+		if(result.compareTo(BigDecimal.ZERO) < 0) {
 			if(this.minusSegment.isTreatedAsZero()) {
-				return 0;
+				return BigDecimal.valueOf(0);
 			}
 		}
 		return result;
@@ -149,7 +149,7 @@ public class FormulaSetting extends DomainObject {
 			if(formulaSettingItem.getFormulaItemId().isPresent()) {
 				Optional<ResultOfCalcFormula> resultOfCalcFormula = getResultOfCalcFormula(resultOfCalcFormulaList,formulaSettingItem.getFormulaItemId().get());
 				if(resultOfCalcFormula.isPresent()) {//計算式の結果が取得できた場合
-					Optional<Integer> result = resultOfCalcFormula.get().getResult(optionalItemAtr);
+					Optional<BigDecimal> result = resultOfCalcFormula.get().getResult(optionalItemAtr);
 					if(result.isPresent()) {
 						calcItem.setValueByOrder(formulaSettingItem.getDispOrder(),result.get());
 						return calcItem;
@@ -157,16 +157,16 @@ public class FormulaSetting extends DomainObject {
 				}
 			}
 			//結果が取得できない場合0を入れる　←　これで良い？
-			calcItem.setValueByOrder(formulaSettingItem.getDispOrder(),0);
+			calcItem.setValueByOrder(formulaSettingItem.getDispOrder(),BigDecimal.valueOf(0));
 			return calcItem;
 		}
 		if(formulaSettingItem.getInputValue().isPresent()) {
 			//数値入力の場合
-			calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), formulaSettingItem.getInputValue().get().v().intValue());
+			calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), formulaSettingItem.getInputValue().get().v());
 			return calcItem;
 		}
 		//入力値が取得できない場合は0　←　これで良い？
-		calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), 0);
+		calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), BigDecimal.valueOf(0));
 		return calcItem;
 	}
 	
@@ -201,17 +201,17 @@ public class FormulaSetting extends DomainObject {
 	 * @param calcItem
 	 * @return
 	 */
-	public Integer calc(CalcItem calcItem) {
+	public BigDecimal calc(CalcItem calcItem) {
 		switch(this.operator) {
 		case ADD:
-			return calcItem.getLeftItemValue()+calcItem.getRightItemValue();
+			return calcItem.getLeftItemValue().add(calcItem.getRightItemValue());
 		case SUBTRACT:
-			return calcItem.getLeftItemValue()-calcItem.getRightItemValue();
+			return calcItem.getLeftItemValue().subtract(calcItem.getRightItemValue());
 		case MULTIPLY:
-			return calcItem.getLeftItemValue()*calcItem.getRightItemValue();
+			return calcItem.getLeftItemValue().multiply(calcItem.getRightItemValue());
 		case DIVIDE:
-			if (calcItem.getRightItemValue() == 0) return 0;
-			return calcItem.getLeftItemValue()/calcItem.getRightItemValue();
+			if (calcItem.getRightItemValue().signum() == 0) return BigDecimal.valueOf(0);
+			return calcItem.getLeftItemValue().divide(calcItem.getRightItemValue());
 		default:
 			throw new RuntimeException("unknown operator:"+operator);
 		}

@@ -31,8 +31,6 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHis
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -449,8 +447,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		CollectionUtil.split(historyIds, 1000, subList -> {
 			try {
 				PreparedStatement statement = this.connection().prepareStatement(
-						"select * from BsymtEmploymentHistItem aw"
-						+ " where aw.hisId in (" 
+						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+						+ " where a.HIST_ID in (" 
 						+ NtsStatement.In.createParamsString(subList) 
 						+ ")");
 			

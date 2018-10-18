@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -26,7 +28,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 日別実績から回数集計結果を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public class TotalTimesFromDailyRecord {
 
@@ -42,6 +44,8 @@ public class TotalTimesFromDailyRecord {
 	private Map<String, WorkType> workTypeMap;
 	/** 勤務種類リポジトリ */
 	private WorkTypeRepository workTypeRepo;
+	/** 任意項目リスト */
+	private Map<Integer, OptionalItem> optionalItemMap;
 
 	/**
 	 * コンストラクタ
@@ -52,6 +56,7 @@ public class TotalTimesFromDailyRecord {
 	 * @param timeLeavingOfDailyRepo 日別実績の出退勤リポジトリ
 	 * @param workInfoOfDailyRepo 日別実績の勤務情報リポジトリ
 	 * @param workTypeRepo 勤務種類リポジトリ
+	 * @param optionalItemRepo 任意項目リポジトリ
 	 */
 	public TotalTimesFromDailyRecord(
 			String companyId,
@@ -60,13 +65,19 @@ public class TotalTimesFromDailyRecord {
 			AttendanceTimeRepository attendanceTimeOfDailyRepo,
 			TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepo,
 			WorkInformationRepository workInfoOfDailyRepo,
-			WorkTypeRepository workTypeRepo){
+			WorkTypeRepository workTypeRepo,
+			OptionalItemRepository optionalItemRepo){
 
 		this.companyId = companyId;
 		this.attendanceStatusList = new AttendanceStatusList(
 				employeeId, dailysPeriod, attendanceTimeOfDailyRepo, timeLeavingOfDailyRepo);
 		this.workInfoList = new WorkInfoList(employeeId, dailysPeriod, workInfoOfDailyRepo);
 		this.workTypeMap = new HashMap<>();
+		this.optionalItemMap = new HashMap<>();
+		val optionalItemList = optionalItemRepo.findAll(companyId);
+		for (val optionalItem : optionalItemList){
+			this.optionalItemMap.putIfAbsent(optionalItem.getOptionalItemNo().v(), optionalItem);
+		}
 		this.setData(
 				attendanceTimeOfDailyRepo.findByPeriodOrderByYmd(employeeId, dailysPeriod),
 				workTypeRepo);
@@ -81,6 +92,7 @@ public class TotalTimesFromDailyRecord {
 	 * @param workInfoOfDailys 日別実績の勤務情報リスト
 	 * @param workTypeMap 勤務種類リスト
 	 * @param workTypeRepo 勤務種類リポジトリ
+	 * @param optionalItemMap 任意項目リスト
 	 */
 	public TotalTimesFromDailyRecord(
 			String companyId,
@@ -89,12 +101,14 @@ public class TotalTimesFromDailyRecord {
 			List<TimeLeavingOfDailyPerformance> timeLeavingOfDailys,
 			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
 			Map<String, WorkType> workTypeMap,
-			WorkTypeRepository workTypeRepo){
+			WorkTypeRepository workTypeRepo,
+			Map<Integer, OptionalItem> optionalItemMap){
 		
 		this.companyId = companyId;
 		this.attendanceStatusList = new AttendanceStatusList(attendanceTimeOfDailys, timeLeavingOfDailys);
 		this.workInfoList = new WorkInfoList(workInfoOfDailys);
 		this.workTypeMap = workTypeMap;
+		this.optionalItemMap = optionalItemMap;
 		this.setData(attendanceTimeOfDailys, workTypeRepo);
 	}
 	
@@ -172,7 +186,7 @@ public class TotalTimesFromDailyRecord {
 			results.put(totalCountNo, new TotalTimesResult());
 		}
 		
-		val dailyConverter = attendanceItemConverter.createDailyConverter();
+		val dailyConverter = attendanceItemConverter.createDailyConverter(this.optionalItemMap);
 		
 		// 「期間」を取得
 		GeneralDate procDate = period.start();
