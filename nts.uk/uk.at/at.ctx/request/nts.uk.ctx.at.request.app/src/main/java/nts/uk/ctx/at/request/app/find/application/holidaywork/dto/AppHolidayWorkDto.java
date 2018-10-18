@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 
 @Data
 @AllArgsConstructor
@@ -235,6 +236,8 @@ public class AppHolidayWorkDto {
 	
 	private Integer appOvertimeDetailStatus;
 	
+	private List<DeductionTimeDto> timeZones;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -285,7 +288,8 @@ public class AppHolidayWorkDto {
 				null,false, false, false,
 				null,
 				null, 
-				null);
+				null,
+				Collections.emptyList());
 	}
 	
 }

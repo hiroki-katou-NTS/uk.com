@@ -129,7 +129,10 @@ module nts.uk.at.view.kaf007.b {
                             //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
                             
                             //実績の内容
-                            service.getRecordWorkInfoByDate(moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat)).done((recordWorkInfo) => {
+                            service.getRecordWorkInfoByDate({
+                                appDate : moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat),
+                                employeeID : self.appWorkChange().application().applicantSID()
+                            }).done((recordWorkInfo) => {
                                 //Binding data
                                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
                                  //Focus process
