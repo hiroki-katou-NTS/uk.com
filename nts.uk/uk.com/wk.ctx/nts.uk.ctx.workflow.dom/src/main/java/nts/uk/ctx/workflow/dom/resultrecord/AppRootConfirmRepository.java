@@ -48,4 +48,6 @@ public interface AppRootConfirmRepository {
 	
 	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth);
 	
+	public void clearStatusFromDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
+	
 }

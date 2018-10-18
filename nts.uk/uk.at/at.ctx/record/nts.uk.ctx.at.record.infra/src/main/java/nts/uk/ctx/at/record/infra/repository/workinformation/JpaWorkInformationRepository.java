@@ -281,7 +281,9 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			data.goStraightAttribute = domain.getGoStraightAtr().value;
 			data.dayOfWeek = domain.getDayOfWeek().value;
 			if(domain.getScheduleTimeSheets().isEmpty()){
-				this.commandProxy().removeAll(data.scheduleTimes);
+				data.scheduleTimes.forEach(c -> {
+					this.commandProxy().remove(getEntityManager().merge(c));
+				});
 //				this.getEntityManager().flush();
 			} else {
 				if(data.scheduleTimes == null || data.scheduleTimes.isEmpty()){
@@ -300,11 +302,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 									st.leaveWork = dst.getLeaveWork().valueAsMinutes();
 								});
 					});
+					this.commandProxy().updateAll(data.scheduleTimes);
 				}
 			}
 			
 			this.commandProxy().update(data);
-			this.commandProxy().updateAll(data.scheduleTimes);
 		}
 	}
 	

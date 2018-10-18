@@ -12,10 +12,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes.TotalTimes
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -96,15 +94,11 @@ public class TotalCountByPeriod implements Cloneable {
 				new ArrayList<>(monthlyCalcDailys.getTimeLeaveOfDailyMap().values()),
 				new ArrayList<>(monthlyCalcDailys.getWorkInfoOfDailyMap().values()),
 				companySets.getAllWorkTypeMap(),
-				repositories.getWorkType());
+				repositories.getWorkType(),
+				companySets.getOptionalItemMap());
 		
 		// 回数集計マスタを取得
-		val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
-		if (totalTimesList.size() <= 0){
-			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"020", new ErrMessageContent(TextResource.localize("Msg_1416"))));
-			return;
-		}
+		val totalTimesList = companySets.getTotalTimesList();
 		
 		// 回数集計処理
 		val results = algorithm.getResults(

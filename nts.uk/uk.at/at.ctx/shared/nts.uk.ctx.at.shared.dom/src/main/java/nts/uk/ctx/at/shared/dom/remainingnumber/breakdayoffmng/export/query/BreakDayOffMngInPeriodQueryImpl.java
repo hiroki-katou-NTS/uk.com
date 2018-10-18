@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.jpa.jpql.utility.CollectionTools;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
@@ -114,7 +112,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	public List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid, GeneralDate startDate) {
 		List<BreakDayOffDetail> lstOutputData = new ArrayList<>();
 		//アルゴリズム「確定代休から未相殺の代休を取得する」を実行する
-		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(cid, sid, startDate);
+		List<CompensatoryDayOffManaData> lstDayOffConfirmData = dayOffConfirmRepo.getBySidYmd(cid, sid, startDate);
 		if(lstDayOffConfirmData.isEmpty()) {
 			return lstOutputData;
 		}
@@ -128,33 +126,32 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		return lstOutputData;
 	}
 
-	@Override
+	/*@Override
 	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid, GeneralDate startDate) {
 		//ドメインモデル「代休管理データ」
 		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySid(cid, sid);
 		List<CompensatoryDayOffManaData> output = new ArrayList<>();
 		for (CompensatoryDayOffManaData x : lstDayOffConfirm) {
-			if((x.getRemainDays().v() <= 0 && x.getRemainTimes().v() <= 0)
-					|| (x.getDayOffDate().getDayoffDate().isPresent() && x.getDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+			if(x.getDayOffDate().getDayoffDate().isPresent() && x.getDayOffDate().getDayoffDate().get().afterOrEquals(startDate)) {
 				continue;
 			}
 			output.add(x);
 		}
 		return output;
-	}
+	}*/
 
 	@Override
 	public BreakDayOffDetail getConfirmDayOffData(CompensatoryDayOffManaData dayoffConfirmData, String sid) {
 		BreakDayOffDetail detail = new BreakDayOffDetail();
-		//ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> interimTyingData = breakDayOffInterimRepo.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM, dayoffConfirmData.getComDayOffID());
+		//ドメインモデル「暫定休出代休紐付け管理」を取得する REPONSE 対応
+		//List<InterimBreakDayOffMng> interimTyingData = breakDayOffInterimRepo.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM, dayoffConfirmData.getComDayOffID());
 		//未相殺日数と未相殺時間を設定する
 		double unOffsetDays = dayoffConfirmData.getRemainDays().v();
 		int unOffsetTimes = dayoffConfirmData.getRemainTimes().v();
-		for (InterimBreakDayOffMng tyingData : interimTyingData) {
+		/*for (InterimBreakDayOffMng tyingData : interimTyingData) {
 			unOffsetDays -= tyingData.getUseDays().v();
 			unOffsetTimes -= tyingData.getUseTimes().v();
-		}
+		}*/
 		//未相殺日数と未相殺時間をチェックする
 		if(unOffsetDays <= 0 && unOffsetTimes <= 0) {
 			return null;
@@ -175,9 +172,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 
 	@Override
 	public List<BreakDayOffDetail> getConfirmBreakDetail(String sid, GeneralDate startDate) {
+		String cid = AppContexts.user().companyId();
 		List<BreakDayOffDetail> lstData = new ArrayList<>();
 		//アルゴリズム「確定休出から未使用の休出を取得する」を実行する
-		List<LeaveManagementData> lstConfirmBreakData = this.lstConfirmBreakData(sid, startDate);
+		List<LeaveManagementData> lstConfirmBreakData = breakConfrimRepo.getBySidYmd(cid, sid, startDate, DigestionAtr.UNUSED);
 		if(lstConfirmBreakData.isEmpty()) {
 			return lstData;
 		}
@@ -191,34 +189,33 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		return lstData;
 	}
 
-	@Override
+	/*@Override
 	public List<LeaveManagementData> lstConfirmBreakData(String sid, GeneralDate startDate) {
 		//ドメインモデル「休出管理データ」
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySid(cid, sid);
 		List<LeaveManagementData> lstOutput = new ArrayList<>();
 		for (LeaveManagementData x : lstBreackConfirm) {
-			if((x.getUnUsedDays().v() <= 0 && x.getUnUsedTimes().v() <= 0)
-					|| (x.getComDayOffDate().getDayoffDate().isPresent() && x.getComDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+			if(x.getComDayOffDate().getDayoffDate().isPresent() && x.getComDayOffDate().getDayoffDate().get().afterOrEquals(startDate)) {
 				continue;
 			}
 			lstOutput.add(x);
 		}
 		return lstOutput;
-	}
+	}*/
 
 	@Override
 	public BreakDayOffDetail getConfirmBreakData(LeaveManagementData breakConfirm, String sid, GeneralDate aggStartDate) {
-		//ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> interimTyingData = breakDayOffInterimRepo.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, breakConfirm.getID());
+		//ドメインモデル「暫定休出代休紐付け管理」を取得する　REPONSE 対応
+		//List<InterimBreakDayOffMng> interimTyingData = breakDayOffInterimRepo.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, breakConfirm.getID());
 		//未使用日数：INPUT.未使用日数 
 		double unUseDays = breakConfirm.getUnUsedDays().v();
 		Integer unUseTimes = breakConfirm.getUnUsedTimes().v();
-		for (InterimBreakDayOffMng breakData : interimTyingData) {
+		/*for (InterimBreakDayOffMng breakData : interimTyingData) {
 			//未使用日数と未使用時間を設定する
 			unUseDays -= breakData.getUseDays().v();
 			unUseTimes -= breakData.getUseTimes().v();
-		}
+		}*/
 		//未使用日数と未使用時間をチェックする
 		if(unUseDays <= 0 && unUseTimes <= 0) {
 			return null;
@@ -713,31 +710,31 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//INPUT．モードをチェックする
 		if(inputParam.isMode()) {
 			//暫定残数管理データを作成する
-			Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemainData(inputParam.getCid(), inputParam.getSid(), inputParam.getDateData());
-			//メモリ上からドメインモデル「暫定振休管理データ」を取得する
-			if(!interimData.isEmpty()) {				
-				List<DailyInterimRemainMngData> lstRemainMngData = interimData.values().stream().collect(Collectors.toList());
-				for (DailyInterimRemainMngData x : lstRemainMngData) {
-					//代休
-					Optional<InterimDayOffMng> optAbsMng = x.getDayOffData();
-					optAbsMng.ifPresent(y -> {
-						lstDayoffMng.add(y);
-					});
-					List<InterimRemain> lstInterimMngDayoff = x.getRecAbsData();
-					if(!lstInterimMngDayoff.isEmpty()) {
-						lstInterimDayoff.addAll(lstInterimMngDayoff);
-					}
-					//休出
-					Optional<InterimBreakMng> optBreakMng = x.getBreakData();
-					optBreakMng.ifPresent(y -> {
-						lstBreakMng.add(y);
-					});
-					List<InterimRemain> lstInterimCreate = x.getRecAbsData();
-					if(!lstInterimCreate.isEmpty()) {
-						lstInterimBreak.addAll(lstInterimCreate);
-					}
-				}				
-			}
+			//代休
+			lstInterimDayoff = inputParam.getInterimMng().stream()
+					.filter(x -> x.getYmd().afterOrEquals(inputParam.getDateData().start())
+							&& x.getYmd().beforeOrEquals(inputParam.getDateData().end())
+							&& x.getRemainType() == RemainType.SUBHOLIDAY)
+					.collect(Collectors.toList());
+			lstInterimDayoff.stream().forEach(a -> {
+				List<InterimDayOffMng> temp = inputParam.getDayOffMng().stream()
+						.filter(y -> y.getDayOffManaId().equals(a.getRemainManaID()))
+						.collect(Collectors.toList());
+				lstDayoffMng.addAll(temp);
+			});
+			
+			//休出
+			lstInterimBreak = inputParam.getInterimMng().stream()
+					.filter(x -> x.getYmd().afterOrEquals(inputParam.getDateData().start())
+							&& x.getYmd().beforeOrEquals(inputParam.getDateData().end())
+							&& x.getRemainType() == RemainType.BREAK)
+					.collect(Collectors.toList());
+			lstInterimBreak.stream().forEach(b -> {
+				List<InterimBreakMng> temp = inputParam.getBreakMng().stream()
+						.filter(c -> c.getBreakMngId().equals(b.getRemainManaID()))
+						.collect(Collectors.toList());
+				lstBreakMng.addAll(temp);
+			});
 		} else {
 			//ドメインモデル「暫定代休管理データ」を取得する
 			lstInterimDayoff = interimRemainRepo.getRemainBySidPriod(inputParam.getSid(), inputParam.getDateData(), RemainType.SUBHOLIDAY);

@@ -346,38 +346,5 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 				.setParameter("companyId", companyId).setParameter("listWorkTimeCode", listWorkTimeCode).getList();
 		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#getWorkTimeByCid(java.lang.String)
-	 */
-	@Override
-	public List<WorkTimeSetting> getWorkTimeByCid(String companyId) {
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
-
-		// select root
-		cq.select(root);
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
-		
-			// add where
-			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid),
-					companyId));
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr),
-					AbolishAtr.ABOLISH.value));
-			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-			lstKwtstWorkTimeSet.addAll(em.createQuery(cq).getResultList());
-
-			return lstKwtstWorkTimeSet.stream().map(item -> {
-			WorkTimeSetting worktimeSetting = new WorkTimeSetting(
-					new JpaWorkTimeSettingGetMemento(item));
-			return worktimeSetting;
-		}).collect(Collectors.toList());
-	}
+	
 }

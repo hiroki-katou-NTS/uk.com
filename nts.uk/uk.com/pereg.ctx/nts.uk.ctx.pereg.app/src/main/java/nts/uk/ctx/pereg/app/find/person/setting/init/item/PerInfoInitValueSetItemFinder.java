@@ -222,7 +222,7 @@ public class PerInfoInitValueSetItemFinder {
 			break;
 		}
 		return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDate,
-				true, personEmployeeType, isDataType6, categoryCode, null);
+				true, personEmployeeType, isDataType6, categoryCode, null, true);
 	}
 
 	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItemDetail> items,
