@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 535,
-                height : 520
+                width: 535,
+                height: 520
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -21,10 +21,78 @@
         <com:scriptfile path="qmm039.d.vm.js"/>
     </ui:define>
     <ui:define name="content">
-        <div id="contents-area">
+        <div id="functions-area">
+            <!--D1_1 閉じる-->
+            <button tabindex="1" id="D1_1"
+                    data-bind="click: cancel">#{i18n.getText('QMM039_39')}</button>
         </div>
-        <div id="functions-area-bottom">
+        <div id="contents-area">
+            <div>
+                <div class="row">
+                    <div class="cell label-space">
+                        <!--D2_1 社員コード-->
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_40')}</div>
+                    </div>
+                    <div class="cell">
+                        <!--D2_2 社員コード-->
+                        <div class="label" data-bind="text: empCode"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell label-space">
+                        <!--D2_3 社員名-->
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_41')}</div>
+                    </div>
+                    <div class="cell">
+                        <!--D2_4 社員名-->
+                        <span class="label" data-bind="text: empName"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell label-space">
+                        <!--D2_5 項目区分-->
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_20')}</div>
+                    </div>
+                    <div class="cell">
 
+                        <span class="label" data-bind="text: itemClassification"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell label-space">
+                        <!--D2_7 基準年月-->
+                        <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_42')}</div>
+                    </div>
+                    <div class="cell">
+                        <!--D2_8 基準年月-->
+                        <div id="D2_8" tabindex="2"
+                             data-bind="ntsDatePicker: {name: '#[QMM039_42]', value: referenceYear, dateFormat: 'yearmonth'}"></div>
+                        <!--D2_9 抽出-->
+                        <button tabindex="3" id="D2_9" class="caret-bottom"
+                                data-bind="click: extract">#{i18n.getText('QMM039_43')}</button>
+                    </div>
+                </div>
+
+            </div>
+            <div style="margin: 0px 6px">
+            <!--D3_1 金額一覧-->
+            <table tabindex="4" id="gridlist" data-bind="ntsGridList: {
+                name: '#[QMM039_44]',
+                height: 150,
+                dataSource: items,
+                primaryKey: 'code',
+                columns: [
+                            {headerText: '#{i18n.getText('QMM039_13')}', key: 'code', width: 70},
+                            {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', width: 120},
+                            {headerText: '#{i18n.getText('QMM039_23')}', key: 'period', width: 160},
+                            {headerText: '#{i18n.getText('QMM039_25')}', key: 'amount', width: 130}
+				],
+                optionsValue: 'code',
+                optionsText: 'name',
+                multiple: false,
+                value: currentCode
+            }"></table>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

@@ -1,0 +1,13 @@
+.row {
+    display: inline-block;
+    width: 100%;
+}
+
+.cell {
+    display: table-cell;
+}
+
+.label-space {
+    padding: 6px;
+    width: 100px;
+}

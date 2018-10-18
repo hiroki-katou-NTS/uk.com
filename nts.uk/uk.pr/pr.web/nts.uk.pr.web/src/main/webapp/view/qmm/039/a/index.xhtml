@@ -40,7 +40,7 @@
             <div class="sidebar-content-header">
                 <span class="title" data-bind="text : titleTab"></span>
                 <!--A1_1 登録-->
-                <button tabindex="1" data-bind="click: registration" class="proceed">#{i18n.getText('QMM039_5')}</button>
+                <button tabindex="1" data-bind="click: registration, enable: isRegistrationable" class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
                 <a tabindex="11" class="goout" style="margin-left: 720px;"
                    data-bind="ntsLinkButton: { },enable: false">#{i18n.getText('QMM039_45')}</a>
@@ -53,7 +53,7 @@
                     <div tabindex="2" id="emp-component1" style="float: left;"></div>
                     <!--A3_2 金額の一覧を表示する-->
                     <div tabindex="3" style="float: left; margin: auto 0">
-                        <button>#{i18n.getText('QMM039_11')}</button>
+                        <button data-bind="click: toScreenD">#{i18n.getText('QMM039_11')}</button>
                     </div>
                 </div>
                 <div class="row">
@@ -70,6 +70,7 @@
                             <!--A4_8 名称-->
                             <table tabindex="6" id="treegrid"
                                    data-bind="ntsGridList:{
+                                   name: '#[QMM039_12]',
                                 width: 220,
                                 height: 150,
                                 dataSource: dataSource,
@@ -98,7 +99,7 @@
                                 <div class="cell right">
                                     <!--A5_3 履歴編集-->
                                     <button tabindex="8"
-                                            data-bind="click: toScreenC, enable: isEnableHis()">#{i18n.getText('QMM039_16')}</button>
+                                            data-bind="click: toScreenC, enable: isEditableHis()">#{i18n.getText('QMM039_16')}</button>
                                 </div>
                             </div>
                             <!--A5_4 履歴リスト-->
