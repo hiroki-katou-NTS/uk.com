@@ -301,7 +301,7 @@
 				<!-- A18 -->
 				<table class="widget-table" data-bind="with:dataRecord(),visible: displayYearRemainNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_24')}<span data-bind="visible:reservedYearsRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
+						<td>#{i18n.getText('KTG029_24')}<!-- <span data-bind="visible:reservedYearsRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span> --></td>
 						<td>
 							<table class="detail">
 								<tr>
@@ -315,7 +315,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr data-bind="visible: reservedYearsRemainNo.showAfter">
+					<!-- <tr data-bind="visible: reservedYearsRemainNo.showAfter">
 						<td>#{i18n.getText('KTG029_67')}</td>
 						<td>
 							<span data-bind="text: reservedYearsRemainNo.after"></span>#{i18n.getText('KTG029_60')}
@@ -324,7 +324,7 @@
 					<tr data-bind="visible: reservedYearsRemainNo.showAfter">
 						<td class="tab">#{i18n.getText('KTG029_64')}</td>
 						<td data-bind="text: reservedYearsRemainNo.grantDate"></td>
-					</tr>
+					</tr> -->
 				</table>
 				<table class="widget-table">
 					<!-- A20 -->
@@ -402,7 +402,7 @@
 				<table class="widget-table" data-bind="with:dataRecord()">
 					<tbody data-bind="foreach: sPHDRamainNo">
 						<tr>
-							<td class="tab limited-label"><span data-bind="text: name"></span><span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span></td>
+							<td class="tab limited-label"><span data-bind="text: name"></span><!-- <span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span> --></td>
 							<td class="tab"><span data-bind="text: before"></span>#{i18n.getText('KTG029_60')}</td>
 						</tr>	
 						<!-- <tr data-bind="visible: showAfter">

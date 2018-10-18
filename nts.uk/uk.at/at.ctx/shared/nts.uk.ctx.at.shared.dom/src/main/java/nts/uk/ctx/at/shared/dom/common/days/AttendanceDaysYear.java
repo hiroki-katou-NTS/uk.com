@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
  * 勤怠年間日数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @HalfIntegerRange(min = 0, max = 9999.5)
 public class AttendanceDaysYear extends HalfIntegerPrimitiveValue<AttendanceDaysYear> {
@@ -27,5 +27,13 @@ public class AttendanceDaysYear extends HalfIntegerPrimitiveValue<AttendanceDays
 	 */
 	public AttendanceDaysYear addDays(Double days){
 		return new AttendanceDaysYear(this.v() + days);
+	}
+	
+	@Override
+	protected Double reviseRawValue(Double rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 9999.5) rawValue = 9999.5;
+		if (rawValue < 0.0) rawValue = 0.0;
+		return super.reviseRawValue(rawValue);
 	}
 }

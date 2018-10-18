@@ -1824,7 +1824,7 @@ var nts;
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
                 var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-                return moment.utc(date, inputFormats).format(outputFormat);
+                return moment(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
@@ -4225,257 +4225,267 @@ var nts;
                                 // TODO: Jump to personal profile.
                             });
                             $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
-                            var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
-                            $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト")];
-                            var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
-                            _.forEach(userOptions, function (option, i) {
-                                var $li = $("<li class='menu-item'/>").text(option.name);
-                                $userOptions.append($li);
-                                if (i === 0) {
+                            nts.uk.request.ajax(constants.APP_ID, constants.ShowManual).done(function (show) {
+                                var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
+                                $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
+                                var userOptions;
+                                if (show)
+                                    userOptions = [new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト")];
+                                else
+                                    userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
+                                var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
+                                _.forEach(userOptions, function (option, i) {
+                                    var $li = $("<li class='menu-item'/>").text(option.name);
+                                    $userOptions.append($li);
+                                    if (i === 0) {
+                                        $li.on(constants.CLICK, function () {
+                                            // TODO: Jump to personal information settings.
+                                        });
+                                        return;
+                                    }
+                                    if (userOptions.length === 3 && i === 1) {
+                                        $li.on(constants.CLICK, function () {
+                                            // jump to index page of manual
+                                            var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                                            window.open(path);
+                                        });
+                                        return;
+                                    }
                                     $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to personal information settings.
+                                        // TODO: Jump to login screen and request logout to server
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                            nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
+                                            nts.uk.request.login.jumpToUsedLoginPage();
+                                        });
                                     });
                                     return;
-                                }
-                                if (i === 1) {
-                                    $li.on(constants.CLICK, function () {
-                                        // jump to index page of manual
-                                        var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
-                                        window.open(path);
-                                    });
-                                    return;
-                                }
-                                $li.on(constants.CLICK, function () {
-                                    // TODO: Jump to login screen and request logout to server
-                                    nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                        nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                        nts.uk.request.login.jumpToUsedLoginPage();
-                                    });
                                 });
                             });
-                            $companyList.css("right", $user.outerWidth() + 30);
-                            $userSettings.on(constants.CLICK, function () {
-                                if ($userOptions.css("display") === "none") {
-                                    $userOptions.fadeIn(100);
-                                    return;
-                                }
+                        });
+                        $companyList.css("right", $user.outerWidth() + 30);
+                        $userSettings.on(constants.CLICK, function () {
+                            if ($userOptions.css("display") === "none") {
+                                $userOptions.fadeIn(100);
+                                return;
+                            }
+                            $userOptions.fadeOut(100);
+                        });
+                        $(document).on(constants.CLICK, function (evt) {
+                            notThen($companySelect, evt.target, function () {
+                                $companyList.fadeOut(100);
+                            });
+                            notThen($userSettings, evt.target, function () {
                                 $userOptions.fadeOut(100);
-                            });
-                            $(document).on(constants.CLICK, function (evt) {
-                                notThen($companySelect, evt.target, function () {
-                                    $companyList.fadeOut(100);
-                                });
-                                notThen($userSettings, evt.target, function () {
-                                    $userOptions.fadeOut(100);
-                                });
                             });
                         });
                     });
                 }
                 menu.displayUserInfo = displayUserInfo;
-                /**
-                 * Get program.
-                 */
-                function getProgram() {
-                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
-                        var programName = "";
-                        var queryString = __viewContext.program.queryString;
-                        if (queryString) {
-                            var program = _.find(pg, function (p) {
-                                return p.param === queryString;
-                            });
-                            if (program) {
-                                programName = program.name;
-                            }
-                        }
-                        else if (programName === "" && pg && pg.length > 1) {
-                            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
-                            if (pgParam_1.isPresent()) {
-                                var program = _.find(pg, function (p) {
-                                    return p.param === pgParam_1.get();
-                                });
-                                if (program)
-                                    programName = program.name;
-                                uk.localStorage.removeItem("UKProgramParam");
-                            }
-                        }
-                        else if (pg && pg.length === 1) {
-                            programName = pg[0].name;
-                        }
-                        // show program name on title of browser
-                        ui.viewModelBuilt.add(function () {
-                            ui._viewModel.kiban.programName(programName);
-                        });
-                        var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        //            $manualBtn.on(constants.CLICK, function() {
-                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                        //                window.open(path);
-                        //            });
-                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-                        $tglBtn.on(constants.CLICK, function () {
-                            // TODO
-                        });
-                    });
-                }
-                /**
-                 * Init.
-                 */
-                function init() {
-                    var $navArea = $("#nav-area");
-                    var $menuItems = $("#menu-nav li.category:not(.direct)");
-                    /**
-                     * Close item.
-                     */
-                    function closeItem() {
-                        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
-                        $item.find(".category-name").removeClass("opening");
-                        $item.find("ul, div.title-menu").fadeOut(100);
-                    }
-                    /**
-                     * Open item.
-                     */
-                    function openItem($item) {
-                        $item.find(".category-name").addClass("opening");
-                        $item.find("ul, div.title-menu").fadeIn(100);
-                    }
-                    $(document).on(constants.CLICK, function (evt) {
-                        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
-                            && !uk.util.isNullOrUndefined(showingItem)) {
-                            closeItem();
-                            showingItem = undefined;
-                        }
-                    });
-                    $menuItems.hover(function () {
-                        var $item = $(this);
-                        var ith = $item.index();
-                        if (uk.util.isNullOrUndefined(showingItem) || showingItem === ith)
-                            return;
-                        closeItem();
-                        setTimeout(function () {
-                            openItem($item);
-                        }, 14);
-                        showingItem = ith;
-                    });
-                    $menuItems.on(constants.CLICK, function (event) {
-                        var $item = $(this);
-                        showingItem = $item.index();
-                        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
-                            closeItem();
-                            return;
-                        }
-                        openItem($item);
-                    });
-                    $(".menu-item").on(constants.CLICK, function () {
-                        var path = $(this).data('path');
-                        if (path)
-                            nts.uk.request.jump(path);
-                    });
-                }
-                var titleMenu;
-                (function (titleMenu) {
-                    titleMenu.WIDTH = 192;
-                    titleMenu.FR = 20;
-                    /**
-                     * Create titles.
-                     */
-                    function createTitles($category, titles) {
-                        var $title = $("<div/>").addClass("title-menu").appendTo($category);
-                        var width = 0, height, maxHeight = 0;
-                        _.forEach(titles, function (t, i) {
-                            height = 60;
-                            var left = titleMenu.WIDTH * i + 3;
-                            if (i > 0) {
-                                left += titleMenu.FR * i;
-                            }
-                            if (i === titles.length - 1) {
-                                width = left + titleMenu.WIDTH + 7;
-                            }
-                            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
-                            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
-                                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
-                            var $titleImage = $("<img/>").addClass("title-image").hide();
-                            $titleDiv.append($titleImage);
-                            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
-                                var fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
-                                // TODO: Show image
-                                $titleImage.attr("src", fqpImage).show();
-                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
-                                height += 80;
-                            }
-                            if (t.treeMenu && t.treeMenu.length > 0) {
-                                _.forEach(t.treeMenu, function (item, i) {
-                                    if (item.menuAttr === 1) {
-                                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
-                                        height += 30;
-                                        return;
-                                    }
-                                    var nameToShow = item.displayName || item.defaultName;
-                                    var $item = $("<li class='title-item'/>")
-                                        .data("path", !uk.util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
-                                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
-                                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
-                                        .text(nameToShow);
-                                    $item.on(constants.CLICK, function () {
-                                        var path = $(this).data("path");
-                                        if (path && path.indexOf("http") !== 0) {
-                                            uk.request.jumpToMenu(path);
-                                            return;
-                                        }
-                                        window.location.href = path;
-                                    });
-                                    $titleDiv.append($item);
-                                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
-                                });
-                            }
-                            maxHeight = Math.max(maxHeight, height);
-                        });
-                        maxHeight += 20;
-                        $title.css({ height: maxHeight + "px", width: width + "px" });
-                    }
-                    titleMenu.createTitles = createTitles;
-                })(titleMenu || (titleMenu = {}));
-                $(function () {
-                    var showsName = true;
-                    $(window)
-                        .onkey("down", uk.KeyCodes.Ctrl, function () {
-                        if (!showsName || $(".category-name.opening").length === 0)
-                            return;
-                        $(".title-item").each(function () {
-                            $(this).text($(this).data(DATA_TITLEITEM_PGID));
-                        });
-                        showsName = false;
-                    })
-                        .onkey("up", uk.KeyCodes.Ctrl, function () {
-                        if (showsName)
-                            return;
-                        $(".title-item").each(function () {
-                            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
-                        });
-                        showsName = true;
-                    });
-                });
-                var constants;
-                (function (constants) {
-                    constants.APP_ID = "com";
-                    constants.MENU = "UK-Menu";
-                    constants.CLICK = "click";
-                    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
-                    constants.Company = "/sys/portal/webmenu/currentCompany";
-                    constants.Companies = "sys/portal/webmenu/companies";
-                    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
-                    constants.UserName = "sys/portal/webmenu/username";
-                    constants.Logout = "sys/portal/webmenu/logout";
-                    constants.PG = "sys/portal/webmenu/program";
-                })(constants || (constants = {}));
+                ;
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+;
+/**
+ * Get program.
+ */
+function getProgram() {
+    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+        var programName = "";
+        var queryString = __viewContext.program.queryString;
+        if (queryString) {
+            var program = _.find(pg, function (p) {
+                return p.param === queryString;
+            });
+            if (program) {
+                programName = program.name;
+            }
+        }
+        else if (programName === "" && pg && pg.length > 1) {
+            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
+            if (pgParam_1.isPresent()) {
+                var program = _.find(pg, function (p) {
+                    return p.param === pgParam_1.get();
+                });
+                if (program)
+                    programName = program.name;
+                uk.localStorage.removeItem("UKProgramParam");
+            }
+        }
+        else if (pg && pg.length === 1) {
+            programName = pg[0].name;
+        }
+        // show program name on title of browser
+        ui.viewModelBuilt.add(function () {
+            ui._viewModel.kiban.programName(programName);
+        });
+        var $pgArea = $("#pg-area");
+        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
+        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+        //            $manualBtn.on(constants.CLICK, function() {
+        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+        //                window.open(path);
+        //            });
+        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+        $tglBtn.on(constants.CLICK, function () {
+            // TODO
+        });
+    });
+}
+/**
+ * Init.
+ */
+function init() {
+    var $navArea = $("#nav-area");
+    var $menuItems = $("#menu-nav li.category:not(.direct)");
+    /**
+     * Close item.
+     */
+    function closeItem() {
+        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
+        $item.find(".category-name").removeClass("opening");
+        $item.find("ul, div.title-menu").fadeOut(100);
+    }
+    /**
+     * Open item.
+     */
+    function openItem($item) {
+        $item.find(".category-name").addClass("opening");
+        $item.find("ul, div.title-menu").fadeIn(100);
+    }
+    $(document).on(constants.CLICK, function (evt) {
+        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
+            && !util.isNullOrUndefined(showingItem)) {
+            closeItem();
+            showingItem = undefined;
+        }
+    });
+    $menuItems.hover(function () {
+        var $item = $(this);
+        var ith = $item.index();
+        if (util.isNullOrUndefined(showingItem) || showingItem === ith)
+            return;
+        closeItem();
+        setTimeout(function () {
+            openItem($item);
+        }, 14);
+        showingItem = ith;
+    });
+    $menuItems.on(constants.CLICK, function (event) {
+        var $item = $(this);
+        showingItem = $item.index();
+        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
+            closeItem();
+            return;
+        }
+        openItem($item);
+    });
+    $(".menu-item").on(constants.CLICK, function () {
+        var path = $(this).data('path');
+        if (path)
+            nts.uk.request.jump(path);
+    });
+}
+var titleMenu;
+(function (titleMenu) {
+    titleMenu.WIDTH = 192;
+    titleMenu.FR = 20;
+    /**
+     * Create titles.
+     */
+    function createTitles($category, titles) {
+        var $title = $("<div/>").addClass("title-menu").appendTo($category);
+        var width = 0, height, maxHeight = 0;
+        _.forEach(titles, function (t, i) {
+            height = 60;
+            var left = titleMenu.WIDTH * i + 3;
+            if (i > 0) {
+                left += titleMenu.FR * i;
+            }
+            if (i === titles.length - 1) {
+                width = left + titleMenu.WIDTH + 7;
+            }
+            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
+            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
+                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
+            var $titleImage = $("<img/>").addClass("title-image").hide();
+            $titleDiv.append($titleImage);
+            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
+                var fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
+                // TODO: Show image
+                $titleImage.attr("src", fqpImage).show();
+                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
+                height += 80;
+            }
+            if (t.treeMenu && t.treeMenu.length > 0) {
+                _.forEach(t.treeMenu, function (item, i) {
+                    if (item.menuAttr === 1) {
+                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
+                        height += 30;
+                        return;
+                    }
+                    var nameToShow = item.displayName || item.defaultName;
+                    var $item = $("<li class='title-item'/>")
+                        .data("path", !util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
+                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
+                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
+                        .text(nameToShow);
+                    $item.on(constants.CLICK, function () {
+                        var path = $(this).data("path");
+                        if (path && path.indexOf("http") !== 0) {
+                            uk.request.jumpToMenu(path);
+                            return;
+                        }
+                        window.location.href = path;
+                    });
+                    $titleDiv.append($item);
+                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
+                });
+            }
+            maxHeight = Math.max(maxHeight, height);
+        });
+        maxHeight += 20;
+        $title.css({ height: maxHeight + "px", width: width + "px" });
+    }
+    titleMenu.createTitles = createTitles;
+})(titleMenu || (titleMenu = {}));
+$(function () {
+    var showsName = true;
+    $(window)
+        .onkey("down", KeyCodes.Ctrl, function () {
+        if (!showsName || $(".category-name.opening").length === 0)
+            return;
+        $(".title-item").each(function () {
+            $(this).text($(this).data(DATA_TITLEITEM_PGID));
+        });
+        showsName = false;
+    })
+        .onkey("up", KeyCodes.Ctrl, function () {
+        if (showsName)
+            return;
+        $(".title-item").each(function () {
+            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
+        });
+        showsName = true;
+    });
+});
+var constants;
+(function (constants) {
+    constants.APP_ID = "com";
+    constants.MENU = "UK-Menu";
+    constants.CLICK = "click";
+    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
+    constants.Company = "/sys/portal/webmenu/currentCompany";
+    constants.Companies = "sys/portal/webmenu/companies";
+    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
+    constants.UserName = "sys/portal/webmenu/username";
+    constants.ShowManual = "sys/portal/webmenu/showmanual";
+    constants.Logout = "sys/portal/webmenu/logout";
+    constants.PG = "sys/portal/webmenu/program";
+})(constants || (constants = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -5609,11 +5619,14 @@ var nts;
                                 $label.unbind('mouseleave.limitedlabel');
                                 $view_1.remove();
                             });
+                            $label.on('remove', function () {
+                                $view_1.remove();
+                            });
                         }
                     });
                 });
                 function isOverflow($label) {
-                    if ($label[0].nodeName === "INPUT"
+                    if (($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")
                         && (window.navigator.userAgent.indexOf("MSIE") > -1
                             || !!window.navigator.userAgent.match(/trident/i))) {
                         var $div = $("<div/>").appendTo($(document.body));
@@ -16072,6 +16085,10 @@ var nts;
                             //                if(onChanging === true){
                             //                    return;
                             //                }
+                            if ($input.data("change")) {
+                                $input.data("change", false);
+                                return;
+                            }
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
@@ -16092,9 +16109,23 @@ var nts;
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
                                 //                    container.data("changed", true);
-                                value(result.parsedValue);
+                                if (typeof result.parsedValue === "string") {
+                                    if (_.has(data, "type") && ko.toJS(data.type) === "date") {
+                                        value(new Date(result.parsedValue));
+                                    }
+                                    else {
+                                        value(result.parsedValue);
+                                    }
+                                    var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                                    if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                        $input.data("change", true);
+                                        $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
+                                    }
+                                }
+                                else {
+                                    value(result.parsedValue);
+                                }
                                 value.valueWillMutate();
-                                value.valueHasMutated();
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -16234,7 +16265,7 @@ var nts;
                                 $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
-                            else if (dateFormatValue === "Invalid date") {
+                            else if (dateFormatValue === "Invalid date" && (typeof value() === "string" || value() instanceof String)) {
                                 $input.val(value());
                                 $label.text("");
                                 $input.trigger("validate");
@@ -25184,6 +25215,7 @@ var nts;
                             _summaries = null;
                             _objId = null;
                             _getObjId = null;
+                            dkn.allCheck = {};
                             _hasSum = null;
                             _pageSize = null;
                             _currentPage = null;
@@ -38010,8 +38042,9 @@ var nts;
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            endDate: self.endValue };
+                            disabled: parentBinding.disabled
+                            //,endDate: self.endValue 
+                        };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
@@ -38021,8 +38054,9 @@ var nts;
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            startDate: self.startValue };
+                            disabled: parentBinding.disabled
+                            //,startDate: self.startValue 
+                        };
                     };
                     return DateRangeHelper;
                 }());

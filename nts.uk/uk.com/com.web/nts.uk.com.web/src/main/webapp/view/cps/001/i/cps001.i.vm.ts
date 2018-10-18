@@ -459,7 +459,8 @@ module nts.uk.com.view.cps001.i.vm {
             service.getItemDef(ctgCode.ctgCodeChirld).done((data: Array<IItem>) => {
                 if (!data[6].display && !data[9].display && !data[11].display && !data[14].display) {
                     var currentDialog = nts.uk.ui.windows.getSelf();
-                    currentDialog.setWidth(628);
+                    //currentDialog.setWidth(628);
+                    currentDialog.$dialog.dialog('option','width',628);
                 }
                 self.setItemDefValue(data).done(() => {
                     self.setGridList();
