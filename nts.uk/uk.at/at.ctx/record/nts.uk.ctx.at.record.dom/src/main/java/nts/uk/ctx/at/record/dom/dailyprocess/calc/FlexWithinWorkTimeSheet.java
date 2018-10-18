@@ -66,16 +66,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		this.coreTimeSheet = coreTimeSheet;
 	}	
 	
-	
-//	/**
-//	 * 休日控除時間の計算
-//	 */
-//	public AttendanceTime calcHolidayDeductionTime(WorkType workType) {
-//		int useTime = VacationClass.vacationTimeOfcalcDaily(workType,VacationCategory.Holiday).valueAsMinutes();
-//		useTime += VacationClass.vacationTimeOfcalcDaily(workType,VacationCategory.SubstituteHoliday).valueAsMinutes();
-//		return new AttendanceTime(useTime);
-//	}
-	
 	/**
 	 * 代休使用時間の計算
 	 * @return
@@ -111,8 +101,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	public FlexTime createWithinWorkTimeSheetAsFlex(CalcMethodOfNoWorkingDay calcMethod,HolidayCalcMethodSet holidayCalcMethodSet,AutoCalAtrOvertime autoCalcAtr,WorkType workType,SettingOfFlexWork flexCalcMethod,PredetermineTimeSetForCalc predetermineTimeSet,
 			   										VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   										StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-//			   										LateTimeSheet lateTimeSheet,LeaveEarlyTimeSheet leaveEarlyTimeSheet,LateTimeOfDaily lateTimeOfDaily,
-//			   										LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
 			   										boolean late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			   										boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   										WorkingSystem workingSystem,WorkDeformedLaborAdditionSet illegularAddSetting,
@@ -133,8 +121,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		/*フレックス時間の計算*/
 		AttendanceTimeOfExistMinus calcflexTime = calcFlexTime(holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,predetermineTimeSet,
 														  vacationClass,timevacationUseTimeOfDaily,statutoryDivision,siftCode,
-//				   										  lateTimeSheet, leaveEarlyTimeSheet, lateTimeOfDaily,
-//				   										  leaveEarlyTimeOfDaily,
 				   										  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 				   										  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 				   										  workingSystem, illegularAddSetting, flexAddSetting, regularAddSetting,
@@ -198,9 +184,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				:commonSetting;
 		/*実働時間の算出*/
 		WorkHour zitudou = super.calcWorkTime(PremiumAtr.RegularWork, 
-																							   //flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
 																							   flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
-																							   //CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
 																							   vacationClass, 
 																							   timevacationUseTimeOfDaily,
 																							   statutoryDivision,
@@ -236,7 +220,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		/*実働時間の算出(割増時間含む)*/
 		WorkHour zitudouIncludePremium = super.calcWorkTime(PremiumAtr.Premium,
 																											 flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
-																											 //CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME,
 																											 vacationClass, 
 																											 timevacationUseTimeOfDaily,
 																											 statutoryDivision,

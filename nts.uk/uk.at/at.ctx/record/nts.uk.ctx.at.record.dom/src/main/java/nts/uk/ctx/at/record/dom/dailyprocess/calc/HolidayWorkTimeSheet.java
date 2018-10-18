@@ -246,15 +246,7 @@ public class HolidayWorkTimeSheet{
 	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
 		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
 	}
-//	
-//	/**
-//	 * 全ての休日出勤時間帯から休日出勤時間を算出する(休日出勤時間帯の合計の時間を取得し1日の範囲に返す)
-//	 */
-//	public HolidayWorkTimeOfDaily calcHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
-//		ControlHolidayWorkTime returnClass = new ControlHolidayWorkTime(workHolidayTime.collectHolidayWorkTime(autoCalcSet));
-//		workHolidayTime.addToList(returnClass);
-//		return workHolidayTime;
-//	}
+
 	
 	/**
 	 * 事前申請上限制御処理
@@ -286,7 +278,6 @@ public class HolidayWorkTimeSheet{
 			return attendanceTime;
 		//指示時間を上限とする
 		case INDICATEDYIMEUPPERLIMIT:
-			//return loopHolidayTimeFrame.get;
 		//事前申請を上限とする
 		case LIMITNUMBERAPPLICATION:
 			return loopHolidayTimeFrame.getBeforeApplicationTime().get();
@@ -480,24 +471,6 @@ public class HolidayWorkTimeSheet{
 			}
 		}
 	}
-	
-	
-	/**
-	 * 深夜時間計算後の時間帯再作成
-	 * @param HolidayWorkTimeSheet 休日出勤時間帯
-	 * @param autoCalcSet 休出時間の自動計算設定
-	 * @return
-	 */
-	//public HolidayWorkTimeSheet reCreateToCalcExcessWork(HolidayWorkTimeSheet holidayWorkSheet,AutoCalcSetOfHolidayWorkTime autoCalcSet) {
-	public void reCreateToCalcExcessWork(HolidayWorkTimeSheet holidayWorkSheet,AutoCalRestTimeSetting autoCalcSet) {
-//		HolidayMidnightWork holidayWorkMidNightTime = holidayWorkSheet.getWorkHolidayTime().calcMidNightTimeIncludeHolidayWorkTime(autoCalcSet);
-//		↓コード値を変えつつ作り直すというおかしなことが起きてしまっている。値の変更(Entity)になるように全体的に修正をする
-//		HolidayWorkTimeOfDaily  holidayWorkTimeOfDaily  = new HolidayWorkTimeOfDaily(holidayWorkMidNightTime);
-//		
-//		return new HolidayWorkTimeSheet(holidayWorkTimeOfDaily);
-	}
-
-
 
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
