@@ -27,7 +27,7 @@ import sun.awt.AppContext;
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {
 
-	private static final String GET_CONTRIBUTION_HISTORY_BY_OFFICE_CODE = "SELECT a FROM QpbmtContributionRate a WHERE a.contributionHistPk.cid = :cid AND a.contributionByGradePk.socialInsuranceOfficeCd = :officeCode ORDER BY a.startYearMonth DESC";
+	private static final String GET_CONTRIBUTION_HISTORY_BY_OFFICE_CODE = "SELECT a FROM QpbmtContributionRate a WHERE a.contributionRatePk.cid = :cid AND a.contributionRatePk.socialInsuranceOfficeCd = :officeCode ORDER BY a.startYearMonth DESC";
 	private static final String GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "SELECT a from QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId =:historyId";
 	private static final String DELETE = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionHistPk.cid = :cid AND a.contributionByGradePk.socialInsuranceOfficeCd = :officeCode";
 	private static final String DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId IN :historyId";
