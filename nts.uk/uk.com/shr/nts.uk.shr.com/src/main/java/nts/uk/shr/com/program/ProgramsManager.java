@@ -2205,6 +2205,18 @@ public class ProgramsManager {
 	 public static final Program QMM005F = new Program(WebAppId.PR, ProgramIdConsts.QMM005F, "QMM005_127",
 	 "/view/qmm/005/f/index.xhtml");
 
+	 /**
+	 * QMM039
+	 */
+	public static final Program QMM039A = new Program(WebAppId.PR, ProgramIdConsts.QMM039A, "QMM039_1",
+			"/view/qmm/039/a/index.xhtml");
+	public static final Program QMM039B = new Program(WebAppId.PR, ProgramIdConsts.QMM039B, "QMM039_2",
+			"/view/qmm/039/b/index.xhtml");
+	public static final Program QMM039C = new Program(WebAppId.PR, ProgramIdConsts.QMM039C, "QMM039_3",
+			"/view/qmm/039/c/index.xhtml");
+	public static final Program QMM039D = new Program(WebAppId.PR, ProgramIdConsts.QMM039D, "QMM039_4",
+			"/view/qmm/039/d/index.xhtml");
+
 	/**
 	 * All programs map.
 	 */

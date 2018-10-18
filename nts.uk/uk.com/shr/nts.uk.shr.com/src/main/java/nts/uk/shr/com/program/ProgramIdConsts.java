@@ -978,4 +978,10 @@ public class ProgramIdConsts {
 	public static final String QMM005E = "QMM005E";
 	public static final String QMM005F = "QMM005F";
 
+	/* QMM039 */
+	public static final String QMM039A = "QMM039A";
+	public static final String QMM039B = "QMM039B";
+	public static final String QMM039C = "QMM039C";
+	public static final String QMM039D = "QMM039D";
+
 }
