@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -91,9 +92,8 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		try {
-			val statement = this.connection().prepareStatement(
-					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
+		try (val statement = this.connection().prepareStatement(
+					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			statement.execute();
@@ -104,8 +104,14 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("ymds", ymds).executeUpdate();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistEmployeeIds -> {
+			CollectionUtil.split(ymds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistYMDs -> {
+				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
+					.setParameter("employeeIds", sublistEmployeeIds)
+					.setParameter("ymds", sublistYMDs)
+					.executeUpdate();
+			});
+		});
 		this.getEntityManager().flush();
 	}
 
@@ -119,11 +125,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return group(krcdtDaiBreakTimes);
 	}
 
+	@SneakyThrows
 	private List<KrcdtDaiBreakTime> findEntities(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = null; 
 
-		try {
-			val statement = this.connection().prepareStatement("select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
+		try (val statement = this.connection().prepareStatement("select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getList(rec -> {
@@ -137,8 +143,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				entity.endStampTime = rec.getInt("END_STAMP_TIME");
 				return entity;
 			});
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 
 		if (krcdtDaiBreakTimes == null || krcdtDaiBreakTimes.isEmpty()) {
@@ -285,7 +289,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
 		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiBreakTimePK.ymd <= :end AND a.krcdtDaiBreakTimePK.ymd >= :start ");
-		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
+		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds)
 					.setParameter("end", ymd.end())
@@ -324,7 +328,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaiBreakTime a ");
 		query.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeId ");
 		query.append("AND a.krcdtDaiBreakTimePK.ymd IN :date");
-		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
+		TypedQueryWrapper<KrcdtDaiBreakTime> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiBreakTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))

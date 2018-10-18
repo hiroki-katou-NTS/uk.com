@@ -1,16 +1,20 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public enum ScheAndRecordSameChangePubFlg {
-	/**常に自動変更する */
-	ALWAY(0, "常に自動変更する"),
-	/**	流動勤務のみ自動変更する */
-	FLUIDWORK(1, "流動勤務のみ自動変更する"),
-	/**自動変更しない	 */
-	NOTAUTO(3, "自動変更しない");
+	/**
+	 * 自動変更しない
+	 */
+	DO_NOT_CHANGE_AUTO(0),
+	/**
+	 * 常に自動変更する
+	 */
+	ALWAYS_CHANGE_AUTO(1),
+	/**
+	 * 流動勤務のみ自動変更する
+	 */
+	AUTO_CHANGE_ONLY_WORK(2);
 	public final Integer value;
-	
-	public final String name;
+	ScheAndRecordSameChangePubFlg (Integer value){
+		this.value = value;
+	}
 }

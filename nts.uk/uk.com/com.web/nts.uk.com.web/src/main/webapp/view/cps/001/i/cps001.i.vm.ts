@@ -335,6 +335,7 @@ module nts.uk.com.view.cps001.i.vm {
                 unblock();
 
             }).fail((error: any) => {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 unblock();
             });
             self.activeBtn();

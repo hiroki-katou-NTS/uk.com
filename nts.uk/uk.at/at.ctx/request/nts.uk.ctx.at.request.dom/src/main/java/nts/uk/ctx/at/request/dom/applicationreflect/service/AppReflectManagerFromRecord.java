@@ -28,7 +28,7 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
-			ExecutionTypeExImport refAppResult);
+			ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting );
 	/**
 	 * 申請の取得
 	 * @param sid 社員ID

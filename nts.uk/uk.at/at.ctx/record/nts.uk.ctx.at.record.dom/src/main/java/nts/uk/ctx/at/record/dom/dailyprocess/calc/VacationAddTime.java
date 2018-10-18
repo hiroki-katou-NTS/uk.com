@@ -22,7 +22,7 @@ public class VacationAddTime {
 	
 	/**
 	 * 引数として渡した休暇加算時間を加算した休暇加算時間を返す
-	 * @author ken_takasu
+	 * @param vacationAddTime 合算したい休暇加算時間
 	 * @return
 	 */
 	public VacationAddTime addVacationAddTime(VacationAddTime vacationAddTime) {
@@ -34,7 +34,7 @@ public class VacationAddTime {
 	
 	/**
 	 * 休暇加算時間の合計時間を返す処理
-	 * @return
+	 * @return 年休＋積休＋特別休暇
 	 */
 	public int calcTotaladdVacationAddTime() {
 		return this.AnnualLeave.valueAsMinutes() + this.AccumulationVacation.valueAsMinutes() + this.SpecialHoliday.valueAsMinutes();

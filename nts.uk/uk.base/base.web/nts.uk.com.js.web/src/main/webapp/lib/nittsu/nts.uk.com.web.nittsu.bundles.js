@@ -4258,234 +4258,231 @@ var nts;
                                             nts.uk.request.login.jumpToUsedLoginPage();
                                         });
                                     });
-                                    return;
                                 });
-                            });
-                        });
-                        $companyList.css("right", $user.outerWidth() + 30);
-                        $userSettings.on(constants.CLICK, function () {
-                            if ($userOptions.css("display") === "none") {
-                                $userOptions.fadeIn(100);
-                                return;
-                            }
-                            $userOptions.fadeOut(100);
-                        });
-                        $(document).on(constants.CLICK, function (evt) {
-                            notThen($companySelect, evt.target, function () {
-                                $companyList.fadeOut(100);
-                            });
-                            notThen($userSettings, evt.target, function () {
-                                $userOptions.fadeOut(100);
+                                $companyList.css("right", $user.outerWidth() + 30);
+                                $userSettings.on(constants.CLICK, function () {
+                                    if ($userOptions.css("display") === "none") {
+                                        $userOptions.fadeIn(100);
+                                        return;
+                                    }
+                                    $userOptions.fadeOut(100);
+                                });
+                                $(document).on(constants.CLICK, function (evt) {
+                                    notThen($companySelect, evt.target, function () {
+                                        $companyList.fadeOut(100);
+                                    });
+                                    notThen($userSettings, evt.target, function () {
+                                        $userOptions.fadeOut(100);
+                                    });
+                                });
                             });
                         });
                     });
                 }
                 menu.displayUserInfo = displayUserInfo;
-                ;
+                /**
+                 * Get program.
+                 */
+                function getProgram() {
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        var programName = "";
+                        var queryString = __viewContext.program.queryString;
+                        if (queryString) {
+                            var program = _.find(pg, function (p) {
+                                return p.param === queryString;
+                            });
+                            if (program) {
+                                programName = program.name;
+                            }
+                        }
+                        else if (programName === "" && pg && pg.length > 1) {
+                            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
+                            if (pgParam_1.isPresent()) {
+                                var program = _.find(pg, function (p) {
+                                    return p.param === pgParam_1.get();
+                                });
+                                if (program)
+                                    programName = program.name;
+                                uk.localStorage.removeItem("UKProgramParam");
+                            }
+                        }
+                        else if (pg && pg.length === 1) {
+                            programName = pg[0].name;
+                        }
+                        // show program name on title of browser
+                        ui.viewModelBuilt.add(function () {
+                            ui._viewModel.kiban.programName(programName);
+                        });
+                        var $pgArea = $("#pg-area");
+                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
+                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                        //            $manualBtn.on(constants.CLICK, function() {
+                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                        //                window.open(path);
+                        //            });
+                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+                        $tglBtn.on(constants.CLICK, function () {
+                            // TODO
+                        });
+                    });
+                }
+                /**
+                 * Init.
+                 */
+                function init() {
+                    var $navArea = $("#nav-area");
+                    var $menuItems = $("#menu-nav li.category:not(.direct)");
+                    /**
+                     * Close item.
+                     */
+                    function closeItem() {
+                        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
+                        $item.find(".category-name").removeClass("opening");
+                        $item.find("ul, div.title-menu").fadeOut(100);
+                    }
+                    /**
+                     * Open item.
+                     */
+                    function openItem($item) {
+                        $item.find(".category-name").addClass("opening");
+                        $item.find("ul, div.title-menu").fadeIn(100);
+                    }
+                    $(document).on(constants.CLICK, function (evt) {
+                        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
+                            && !uk.util.isNullOrUndefined(showingItem)) {
+                            closeItem();
+                            showingItem = undefined;
+                        }
+                    });
+                    $menuItems.hover(function () {
+                        var $item = $(this);
+                        var ith = $item.index();
+                        if (uk.util.isNullOrUndefined(showingItem) || showingItem === ith)
+                            return;
+                        closeItem();
+                        setTimeout(function () {
+                            openItem($item);
+                        }, 14);
+                        showingItem = ith;
+                    });
+                    $menuItems.on(constants.CLICK, function (event) {
+                        var $item = $(this);
+                        showingItem = $item.index();
+                        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
+                            closeItem();
+                            return;
+                        }
+                        openItem($item);
+                    });
+                    $(".menu-item").on(constants.CLICK, function () {
+                        var path = $(this).data('path');
+                        if (path)
+                            nts.uk.request.jump(path);
+                    });
+                }
+                var titleMenu;
+                (function (titleMenu) {
+                    titleMenu.WIDTH = 192;
+                    titleMenu.FR = 20;
+                    /**
+                     * Create titles.
+                     */
+                    function createTitles($category, titles) {
+                        var $title = $("<div/>").addClass("title-menu").appendTo($category);
+                        var width = 0, height, maxHeight = 0;
+                        _.forEach(titles, function (t, i) {
+                            height = 60;
+                            var left = titleMenu.WIDTH * i + 3;
+                            if (i > 0) {
+                                left += titleMenu.FR * i;
+                            }
+                            if (i === titles.length - 1) {
+                                width = left + titleMenu.WIDTH + 7;
+                            }
+                            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
+                            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
+                                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
+                            var $titleImage = $("<img/>").addClass("title-image").hide();
+                            $titleDiv.append($titleImage);
+                            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
+                                var fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
+                                // TODO: Show image
+                                $titleImage.attr("src", fqpImage).show();
+                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
+                                height += 80;
+                            }
+                            if (t.treeMenu && t.treeMenu.length > 0) {
+                                _.forEach(t.treeMenu, function (item, i) {
+                                    if (item.menuAttr === 1) {
+                                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
+                                        height += 30;
+                                        return;
+                                    }
+                                    var nameToShow = item.displayName || item.defaultName;
+                                    var $item = $("<li class='title-item'/>")
+                                        .data("path", !uk.util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
+                                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
+                                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
+                                        .text(nameToShow);
+                                    $item.on(constants.CLICK, function () {
+                                        var path = $(this).data("path");
+                                        if (path && path.indexOf("http") !== 0) {
+                                            uk.request.jumpToMenu(path);
+                                            return;
+                                        }
+                                        window.location.href = path;
+                                    });
+                                    $titleDiv.append($item);
+                                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
+                                });
+                            }
+                            maxHeight = Math.max(maxHeight, height);
+                        });
+                        maxHeight += 20;
+                        $title.css({ height: maxHeight + "px", width: width + "px" });
+                    }
+                    titleMenu.createTitles = createTitles;
+                })(titleMenu || (titleMenu = {}));
+                $(function () {
+                    var showsName = true;
+                    $(window)
+                        .onkey("down", uk.KeyCodes.Ctrl, function () {
+                        if (!showsName || $(".category-name.opening").length === 0)
+                            return;
+                        $(".title-item").each(function () {
+                            $(this).text($(this).data(DATA_TITLEITEM_PGID));
+                        });
+                        showsName = false;
+                    })
+                        .onkey("up", uk.KeyCodes.Ctrl, function () {
+                        if (showsName)
+                            return;
+                        $(".title-item").each(function () {
+                            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
+                        });
+                        showsName = true;
+                    });
+                });
+                var constants;
+                (function (constants) {
+                    constants.APP_ID = "com";
+                    constants.MENU = "UK-Menu";
+                    constants.CLICK = "click";
+                    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
+                    constants.Company = "/sys/portal/webmenu/currentCompany";
+                    constants.Companies = "sys/portal/webmenu/companies";
+                    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
+                    constants.UserName = "sys/portal/webmenu/username";
+                    constants.ShowManual = "sys/portal/webmenu/showmanual";
+                    constants.Logout = "sys/portal/webmenu/logout";
+                    constants.PG = "sys/portal/webmenu/program";
+                })(constants || (constants = {}));
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-;
-/**
- * Get program.
- */
-function getProgram() {
-    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
-        var programName = "";
-        var queryString = __viewContext.program.queryString;
-        if (queryString) {
-            var program = _.find(pg, function (p) {
-                return p.param === queryString;
-            });
-            if (program) {
-                programName = program.name;
-            }
-        }
-        else if (programName === "" && pg && pg.length > 1) {
-            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
-            if (pgParam_1.isPresent()) {
-                var program = _.find(pg, function (p) {
-                    return p.param === pgParam_1.get();
-                });
-                if (program)
-                    programName = program.name;
-                uk.localStorage.removeItem("UKProgramParam");
-            }
-        }
-        else if (pg && pg.length === 1) {
-            programName = pg[0].name;
-        }
-        // show program name on title of browser
-        ui.viewModelBuilt.add(function () {
-            ui._viewModel.kiban.programName(programName);
-        });
-        var $pgArea = $("#pg-area");
-        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-        //            $manualBtn.on(constants.CLICK, function() {
-        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-        //                window.open(path);
-        //            });
-        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-        $tglBtn.on(constants.CLICK, function () {
-            // TODO
-        });
-    });
-}
-/**
- * Init.
- */
-function init() {
-    var $navArea = $("#nav-area");
-    var $menuItems = $("#menu-nav li.category:not(.direct)");
-    /**
-     * Close item.
-     */
-    function closeItem() {
-        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
-        $item.find(".category-name").removeClass("opening");
-        $item.find("ul, div.title-menu").fadeOut(100);
-    }
-    /**
-     * Open item.
-     */
-    function openItem($item) {
-        $item.find(".category-name").addClass("opening");
-        $item.find("ul, div.title-menu").fadeIn(100);
-    }
-    $(document).on(constants.CLICK, function (evt) {
-        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
-            && !util.isNullOrUndefined(showingItem)) {
-            closeItem();
-            showingItem = undefined;
-        }
-    });
-    $menuItems.hover(function () {
-        var $item = $(this);
-        var ith = $item.index();
-        if (util.isNullOrUndefined(showingItem) || showingItem === ith)
-            return;
-        closeItem();
-        setTimeout(function () {
-            openItem($item);
-        }, 14);
-        showingItem = ith;
-    });
-    $menuItems.on(constants.CLICK, function (event) {
-        var $item = $(this);
-        showingItem = $item.index();
-        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
-            closeItem();
-            return;
-        }
-        openItem($item);
-    });
-    $(".menu-item").on(constants.CLICK, function () {
-        var path = $(this).data('path');
-        if (path)
-            nts.uk.request.jump(path);
-    });
-}
-var titleMenu;
-(function (titleMenu) {
-    titleMenu.WIDTH = 192;
-    titleMenu.FR = 20;
-    /**
-     * Create titles.
-     */
-    function createTitles($category, titles) {
-        var $title = $("<div/>").addClass("title-menu").appendTo($category);
-        var width = 0, height, maxHeight = 0;
-        _.forEach(titles, function (t, i) {
-            height = 60;
-            var left = titleMenu.WIDTH * i + 3;
-            if (i > 0) {
-                left += titleMenu.FR * i;
-            }
-            if (i === titles.length - 1) {
-                width = left + titleMenu.WIDTH + 7;
-            }
-            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
-            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
-                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
-            var $titleImage = $("<img/>").addClass("title-image").hide();
-            $titleDiv.append($titleImage);
-            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
-                var fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
-                // TODO: Show image
-                $titleImage.attr("src", fqpImage).show();
-                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
-                height += 80;
-            }
-            if (t.treeMenu && t.treeMenu.length > 0) {
-                _.forEach(t.treeMenu, function (item, i) {
-                    if (item.menuAttr === 1) {
-                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
-                        height += 30;
-                        return;
-                    }
-                    var nameToShow = item.displayName || item.defaultName;
-                    var $item = $("<li class='title-item'/>")
-                        .data("path", !util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
-                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
-                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
-                        .text(nameToShow);
-                    $item.on(constants.CLICK, function () {
-                        var path = $(this).data("path");
-                        if (path && path.indexOf("http") !== 0) {
-                            uk.request.jumpToMenu(path);
-                            return;
-                        }
-                        window.location.href = path;
-                    });
-                    $titleDiv.append($item);
-                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
-                });
-            }
-            maxHeight = Math.max(maxHeight, height);
-        });
-        maxHeight += 20;
-        $title.css({ height: maxHeight + "px", width: width + "px" });
-    }
-    titleMenu.createTitles = createTitles;
-})(titleMenu || (titleMenu = {}));
-$(function () {
-    var showsName = true;
-    $(window)
-        .onkey("down", KeyCodes.Ctrl, function () {
-        if (!showsName || $(".category-name.opening").length === 0)
-            return;
-        $(".title-item").each(function () {
-            $(this).text($(this).data(DATA_TITLEITEM_PGID));
-        });
-        showsName = false;
-    })
-        .onkey("up", KeyCodes.Ctrl, function () {
-        if (showsName)
-            return;
-        $(".title-item").each(function () {
-            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
-        });
-        showsName = true;
-    });
-});
-var constants;
-(function (constants) {
-    constants.APP_ID = "com";
-    constants.MENU = "UK-Menu";
-    constants.CLICK = "click";
-    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
-    constants.Company = "/sys/portal/webmenu/currentCompany";
-    constants.Companies = "sys/portal/webmenu/companies";
-    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
-    constants.UserName = "sys/portal/webmenu/username";
-    constants.ShowManual = "sys/portal/webmenu/showmanual";
-    constants.Logout = "sys/portal/webmenu/logout";
-    constants.PG = "sys/portal/webmenu/program";
-})(constants || (constants = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {

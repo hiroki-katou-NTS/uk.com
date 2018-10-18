@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
@@ -64,19 +66,27 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		// Delete domain [HistorySelection], Điều kiện: companyID ＝Input．companyID, selectionItemID ＝ 「PerInfoSelectionItem」．ID đa lấy
 		List<String> selectionItemIds = ppemtSelectionItem.stream().map(item -> item.selectionItemPk.selectionItemId)
 				.collect(Collectors.toList());
-		List<PpemtHistorySelection> ppemtHistorySelections = this.entityManager
+		List<PpemtHistorySelection> ppemtHistorySelections = new ArrayList<>();
+		CollectionUtil.split(selectionItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			ppemtHistorySelections.addAll(this.entityManager
 				.createQuery(QUERY_HISTORY_SELECTION, PpemtHistorySelection.class).setParameter("companyId", targetCid)
-				.setParameter("selectionItemIds", selectionItemIds).getResultList();
+				.setParameter("selectionItemIds", subList).getResultList());
+		});
 		List<String> histIds = ppemtHistorySelections.stream().map(item -> item.histidPK.histId)
 				.collect(Collectors.toList());
 		this.commandProxy.removeAll(ppemtHistorySelections);
 		if (!histIds.isEmpty()) {
-			// Delete doman [Selection], ĐK: historyID ＝「HistorySelection」．history．historyID
-			this.entityManager.createQuery(DELETE_SELECTION, PpemtSelection.class).setParameter("histIds", histIds)
+			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				// Delete doman [Selection], ĐK: historyID ＝「HistorySelection」．history．historyID
+				this.entityManager.createQuery(DELETE_SELECTION, PpemtSelection.class)
+					.setParameter("histIds", subList)
 					.executeUpdate();
-			// Delete domain [OrderSelectionAndDefaultValues], ĐK: historyID ＝「HistorySelection」．history．historyID
-			this.entityManager.createQuery(DELETE_SELECTION_ORDER, PpemtSelItemOrder.class)
-					.setParameter("histIds", histIds).executeUpdate();
+				
+				// Delete domain [OrderSelectionAndDefaultValues], ĐK: historyID ＝「HistorySelection」．history．historyID
+				this.entityManager.createQuery(DELETE_SELECTION_ORDER, PpemtSelItemOrder.class)
+					.setParameter("histIds", subList)
+					.executeUpdate();
+			});
 		}
 
 		// 指定会社の選択項目定義を全て取得する
