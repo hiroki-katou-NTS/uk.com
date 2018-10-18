@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.algorithm.AppTargetPersonStatusAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.checkconfirm.StateConfirm;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CheckBossConfirmedService {
@@ -17,6 +18,14 @@ public class CheckBossConfirmedService {
 	
 	public List<StateConfirm> checkBossConfirmed(String employeeID,GeneralDate startDate,GeneralDate endDate){
 		List<StateConfirm> listState = appTargetPersonStatusAdapter.appTargetPersonStatus(employeeID, startDate, endDate, 1);
+		if(listState.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return listState;
+	}
+	
+	public List<StateConfirm> checkBossConfirmed(String employeeID,DatePeriod datePeriod){
+		List<StateConfirm> listState = appTargetPersonStatusAdapter.appTargetPersonStatus(employeeID, datePeriod, 1);
 		if(listState.isEmpty()) {
 			return Collections.emptyList();
 		}

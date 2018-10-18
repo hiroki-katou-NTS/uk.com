@@ -616,8 +616,13 @@ public class DailyAggregationProcessService {
 					}
 					break;
 				case 3:
+				/*	No 113 old
 					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(
-							employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+							employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());*/
+					
+					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(
+							employee.getWorkplaceId(), employee.getId(), new DatePeriod(period.getStartDate(),  period.getEndDate()));
+					
 					if (!listCheckAdminUnverified.isEmpty()) {
 						for (ValueExtractAlarm tmp : listCheckAdminUnverified) {
 							tmp.setComment(Optional.ofNullable(fixedData.getMessage()));

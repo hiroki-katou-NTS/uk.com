@@ -159,7 +159,7 @@ public class MonthlyAggregateProcessService {
 			for (FixedExtraMonFunImport fixedExtraMonFunImport : listFixed) {
 				if(fixedExtraMonFunImport.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.CHECK_DEADLINE_HOLIDAY.value
 						&& fixedExtraMonFunImport.isUseAtr()){
-					Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(listFixed.get(1), employee, companyID);
+					Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(fixedExtraMonFunImport, employee, companyID);
 					if (valueExtractAlarms.isPresent()) {
 						listValueExtractAlarm.addAll(valueExtractAlarms.get());
 					}
