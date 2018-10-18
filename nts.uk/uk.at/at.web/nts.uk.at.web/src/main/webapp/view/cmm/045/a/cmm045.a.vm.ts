@@ -662,7 +662,7 @@ module cmm045.a.viewmodel {
             });
             let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = framName + otherInfo;
+            let result = framName + '　' + otherInfo;
             return result;
         }
         sortFrameTime(lstFrame: Array<vmbase.OverTimeFrame>, appType: number): any {
@@ -743,14 +743,14 @@ module cmm045.a.viewmodel {
             let lstSort = self.sortFrameTime(lstFrame, 6);
             _.each(lstSort, function(item, index) {
                 if (item.applicationTime != 0) {
-                    if (count <= 1) {
+                    if (count < 3) {
                         framName += '　' + item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
                     count += 1;
                 }
             });
-            let other = count > 2 ? count - 2 : 0;
+            let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
             //#102010
             let result = framName + '　' + otherInfo;

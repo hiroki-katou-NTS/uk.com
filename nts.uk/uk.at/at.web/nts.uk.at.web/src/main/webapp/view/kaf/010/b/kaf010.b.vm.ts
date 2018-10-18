@@ -650,6 +650,10 @@ module nts.uk.at.view.kaf010.b {
                         self.timeEnd1(childData.first.end);
                         self.timeStart2(childData.second.start);
                         self.timeEnd2(childData.second.end);
+                        let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
+                        service.getBreakTimes(param).done((data) => {
+                            self.setTimeZones(data);
+                        });
                         //                    service.getRecordWork(
                         //                        {
                         //                            employeeID: self.employeeID(), 
@@ -671,6 +675,25 @@ module nts.uk.at.view.kaf010.b {
             /**
              * Jump to CMM018 Screen
              */
+            setTimeZones(timeZones) {
+                let self = this;
+                if (timeZones) {
+                    let times = [];
+                    for (let i = 1; i < 11; i++) {
+                        times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
+                    }
+                    self.restTime(times);
+                }
+            }
+
+            getStartTime(data) {
+                return data ? data.start : null;
+            }
+
+            getEndTime(data) {
+                return data ? data.end : null;
+            }
+            
             openCMM018() {
                 let self = this;
                 nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID() });

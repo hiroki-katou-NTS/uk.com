@@ -721,8 +721,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 									count++;
 								}
 							}
-							String frameInfo = moreInf
-									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
+							String frameInfo = moreInf + "　"
+									+ (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 							content += frameInfo;
 						}
 					}
