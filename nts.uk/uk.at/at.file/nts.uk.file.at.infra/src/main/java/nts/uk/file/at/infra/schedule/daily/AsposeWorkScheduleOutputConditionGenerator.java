@@ -2274,8 +2274,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				} else {
 					cell.setValue(getTimeAttr(value, true));
 				}
-			} else
-				cell.setValue(getTimeAttr("0", true));
+			}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		}
 		else {
