@@ -123,6 +123,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
+import nts.uk.file.at.infra.schedule.EmployeePrintOrder;
 import nts.uk.file.at.infra.schedule.RowPageTracker;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
@@ -375,6 +376,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				currentRow = writeDetailedDailySchedule(currentRow, sheetCollection, sheet, dailyReportData, nSize, condition, rowPageTracker);
 			}
 			
+			// Delete footer if user doesn't set remark content
+			if (outputItemDailyWork.getLstRemarkContent().stream().filter(remark -> remark.isUsedClassification()).count() > 0) {
+				hideFooter(sheet);
+			}
+			
 			// Rename sheet
 			sheet.setName(WorkScheOutputConstants.SHEET_NAME_MONTHLY);
 			
@@ -459,6 +465,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<String> lstWorkplaceId = new ArrayList<>();
 		List<String> lstEmployeeNoWorkplace = new ArrayList<>();
 		
+		// Push all employeeId into print order
+		List<EmployeePrintOrder> lstEmployeePrintOrder = new ArrayList<>();
+		int order = 0;
+		
 		// Get all workplace of selected employees within given period
 		for (String employeeId: query.getEmployeeId()) {
 			WkpHistImport workplaceHist = workplaceAdapter.findWkpBySid(employeeId, baseDate);
@@ -468,6 +478,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			lstWorkplaceId.add(workplaceHist.getWorkplaceId());
 			queryData.getLstWorkplaceImport().add(workplaceHist);
+			
+			// Also add into print order list
+			lstEmployeePrintOrder.add(new EmployeePrintOrder(order++, employeeId));
 		}
 		
 		if (!lstEmployeeNoWorkplace.isEmpty()) {
@@ -637,6 +650,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
 			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
+			
+			// Put these dto into print order list
+			lstEmloyeeDto.stream().forEach(dto -> {
+				lstEmployeePrintOrder.stream().filter(employee -> StringUtils.equals(employee.getEmployeeId(), dto.getEmployeeId())).findFirst().get().setEmployeeDto(Optional.of(dto));
+			});
+			
+			// Filter out all employee w/o data, workplace (no employee dto)
+			List<EmployeePrintOrder> lstEmployeePrintOrderWithData = lstEmployeePrintOrder.stream().filter(employee -> employee.getEmployeeDto().isPresent()).collect(Collectors.toList());
+			
+			// Convert print order list back into list employee dto so we can keep the correct printing order as inputed
+			lstEmloyeeDto = lstEmployeePrintOrderWithData.stream().map(employee -> employee.getEmployeeDto().get()).collect(Collectors.toList());
 			
 			for (EmployeeDto dto: lstEmloyeeDto) {
 				EmployeeReportData employeeReportData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
@@ -2719,6 +2743,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		return currentRow;
+	}
+	
+	/**
+	 * Hide footer.
+	 *
+	 * @param sheet the sheet
+	 */
+	private void hideFooter(Worksheet sheet) {
+		PageSetup pageSetup = sheet.getPageSetup();
+		pageSetup.setFooter(0, "");
 	}
 	
 	/**
