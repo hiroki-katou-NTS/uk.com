@@ -7,13 +7,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.sysfixedcheckcondition.checkforagreement.CheckAgreementService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.sysfixedcheckcondition.monthlyunconfirmed.MonthlyUnconfirmedService;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
 import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessExport;
@@ -54,10 +56,14 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 	
 	@Override
 	public List<ValueExtractAlarmWRPubExport> checkMonthlyUnconfirmeds(String employeeID, int yearMonth,IdentityConfirmProcessExport identityExport) {
-		Optional<IdentityProcess> identityProcess = Optional.empty();
+		Optional<IdentityProcessUseSet> identityProcess = Optional.empty();
 		if (identityExport != null) {
-//			identityProcess = Optional.of(IdentityProcess.createFromJavaType(identityExport.getCompanyId(), identityExport.isUseConfirmByYourself(),
-//					identityExport.getUseMonthSelfCK(), identityExport.getYourselfConfirmError()));
+			Optional<SelfConfirmError> yourSelfConfirmError = Optional.empty();
+			if(identityExport.getYourSelfConfirmError().isPresent()){
+				yourSelfConfirmError = Optional.of(EnumAdaptor.valueOf(identityExport.getYourSelfConfirmError().get().value, SelfConfirmError.class)); 
+			}
+			identityProcess = Optional.of(IdentityProcessUseSet.createFromJavaType(identityExport.getCompanyId(), identityExport.isUseConfirmByYourself(),
+					identityExport.isUseIdentityOfMonth(),yourSelfConfirmError));
 		}
 		List<ValueExtractAlarmWR> datas = monthlyUnconfirmedService.checkMonthlyUnconfirmeds(employeeID, yearMonth,identityProcess);
 		List<ValueExtractAlarmWRPubExport> lstReturn = new ArrayList<>();

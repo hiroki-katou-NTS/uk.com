@@ -172,7 +172,7 @@ public class MonthlyAggregateProcessService {
 								if(!CollectionUtil.isEmpty(unconfirmeds)) {
 									for (ValueExtractAlarm valueExtractAlarm : unconfirmeds) {
 										if(valueExtractAlarm!=null){
-											valueExtractAlarm.setAlarmValueMessage(listFixed.get(i).getMessage());
+											valueExtractAlarm.setComment(Optional.ofNullable(listFixed.get(i).getMessage()));
 											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
 											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
 											valueExtractAlarm.setAlarmValueDate(dateString);
@@ -181,7 +181,19 @@ public class MonthlyAggregateProcessService {
 									}
 								}
 							break;
-							case 1 :// tuong ung vs 6
+							case 2 :
+								List<ValueExtractAlarm> unconfirmedsAdmin = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmedsAdmin(employee.getId(), yearMonth, approvalProcessImport);
+								if(!CollectionUtil.isEmpty(unconfirmedsAdmin)) {
+									for (ValueExtractAlarm valueExtractAlarm : unconfirmedsAdmin) {
+										if(valueExtractAlarm!=null){
+											valueExtractAlarm.setAlarmValueMessage(listFixed.get(i).getMessage());
+											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
+											valueExtractAlarm.setAlarmValueDate(dateString);
+											listValueExtractAlarm.add(valueExtractAlarm);
+										}
+									}
+								}
 								break;
 							//case 2 :break;//chua co
 							//case 3 :break;//chua co

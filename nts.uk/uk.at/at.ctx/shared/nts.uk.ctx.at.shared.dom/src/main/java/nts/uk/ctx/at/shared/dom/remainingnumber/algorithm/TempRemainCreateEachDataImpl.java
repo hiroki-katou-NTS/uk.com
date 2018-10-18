@@ -220,7 +220,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		} else {
 			//期限指定のある使用期限日を作成する
 			if(expriTime != null) {
-				return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(),subSetting.getExpirationDate(), inforData.getYmd());
+				return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(), expriTime, inforData.getYmd());
 			}
 		}
 		return GeneralDate.max();
