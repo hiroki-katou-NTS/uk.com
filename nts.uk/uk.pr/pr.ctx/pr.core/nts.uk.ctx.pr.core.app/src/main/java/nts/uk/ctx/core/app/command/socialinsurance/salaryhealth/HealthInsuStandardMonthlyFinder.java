@@ -27,9 +27,7 @@ public class HealthInsuStandardMonthlyFinder {
 	
 	@Inject
 	private HealthInsuranceStandardMonthlyRepository healthInsuranceStandardMonthlyRepository;
-	
-	@Inject
-	private MonthlyHealthInsuranceCompensationRepository monthlyHealthInsuranceCompensationRepository;
+
 	
 	@Inject
 	private HealthInsuranceMonthlyFeeRepository healthInsuranceMonthlyFeeRepository;
