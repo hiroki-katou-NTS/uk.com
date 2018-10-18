@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
@@ -27,9 +29,9 @@ public class AppWorkChangeRecordWorkInfoFinder {
 	private WorkTypeRepository workTypeRepository;
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	public RecordWorkInfoDto getRecordWorkInfor(String appDate){
+	public RecordWorkInfoDto getRecordWorkInfor(String appDate, String employeeID){
 		// 申請者
-		String employeeId = AppContexts.user().employeeId();
+		String employeeId = Strings.isBlank(employeeID) ? AppContexts.user().employeeId() : employeeID;
 		String companyId = AppContexts.user().companyId();
 		String workTypeName = "";
 		String workTimeName = "";

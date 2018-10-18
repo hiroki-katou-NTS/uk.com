@@ -9,7 +9,8 @@ module nts.uk.at.view.kaf010.shr.service {
         checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/holidaywork/checkBeforeUpdate",
         findByAppID: "at/request/application/holidaywork/findByAppID",
-        getRecordWork: "at/request/application/holidaywork/getRecordWork"
+        getRecordWork: "at/request/application/holidaywork/getRecordWork",
+        getBreakTimes: "at/request/application/holidaywork/getBreakTimes"
     }
     /** Get TitleMenu */
     export function getHolidayWorkByUI(param: any): JQueryPromise<any> {
@@ -50,5 +51,9 @@ module nts.uk.at.view.kaf010.shr.service {
     
      export function checkBeforeUpdate(overtime:any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkBeforeUpdate ,overtime);
+    }
+    
+     export function getBreakTimes(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getBreakTimes, param);
     }
 }

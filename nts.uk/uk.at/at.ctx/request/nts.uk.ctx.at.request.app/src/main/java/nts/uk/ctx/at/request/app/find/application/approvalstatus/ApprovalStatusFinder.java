@@ -551,7 +551,7 @@ public class ApprovalStatusFinder {
 		}
 		int countTemp = countRest -3;
 		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
-		String otherFull = (frameName != "" || other != "") ? frameName + other : "";
+		String otherFull = (frameName != "" || other != "") ? frameName + "　" + other : "";
 		appContent += otherFull;
 		return appContent;
 	}
