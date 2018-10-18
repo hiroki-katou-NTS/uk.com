@@ -73,6 +73,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
 		int count = 0;
 		for (TargetPersonImport targetPersonImport : lstPerson) {
+			
 			count += 1;
 			//データ更新
 			//状態確認
@@ -89,7 +90,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
 			}	
 			
-			
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.PROCESSING.nameId);
 			dataSetter.updateData("reflectApprovalCount", count);
 			//社員に対応する締め開始日を取得する
 			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(targetPersonImport.getEmployeeId());
