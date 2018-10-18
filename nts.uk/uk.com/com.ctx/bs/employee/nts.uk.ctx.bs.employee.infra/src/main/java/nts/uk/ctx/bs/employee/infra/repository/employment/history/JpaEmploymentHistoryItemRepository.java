@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -439,37 +440,35 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	}
 
 	@Override
+	@SneakyThrows
 	public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
 		if (CollectionUtil.isEmpty(historyIds)) {
 			return new ArrayList<>();
 		}
 		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+				try(PreparedStatement statement = this.connection().prepareStatement(
 						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
-						+ " where a.HIST_ID in (" 
-						+ NtsStatement.In.createParamsString(subList) 
-						+ ")");
-			
-				for (int i = 0; i < subList.size(); i++) {
-					statement.setString(i + 1, subList.get(i));
-				}
-				
-				List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-					BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
-					entity.hisId = rec.getString("HIST_ID");
-					entity.sid = rec.getString("SID");
-					entity.empCode = rec.getString("EMP_CD");
-					entity.salarySegment  = rec.getInt("SALARY_SEGMENT");
-					return entity;
-				});
-				
-				listHistItem.addAll(results);
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
-			}
-			
+					  + " where a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")")){
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
+					
+					List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
+						entity.hisId = rec.getString("HIST_ID");
+						entity.sid = rec.getString("SID");
+						entity.empCode = rec.getString("EMP_CD");
+						entity.salarySegment  = rec.getInt("SALARY_SEGMENT");
+						return entity;
+					});
+					
+					listHistItem.addAll(results);
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				};
 		});
 		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
