@@ -155,8 +155,8 @@ public class MonthlyAggregateProcessService {
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		for(EmployeeSearchDto employee : employees) {
 			
-			if(listFixed.get(1).isUseAtr()) {
-				Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(listFixed.get(1), employee, companyID);
+			if(listFixed.get(2).isUseAtr()) {
+				Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(listFixed.get(2), employee, companyID);
 				if (valueExtractAlarms.isPresent()) {
 					listValueExtractAlarm.addAll(valueExtractAlarms.get());
 				}
