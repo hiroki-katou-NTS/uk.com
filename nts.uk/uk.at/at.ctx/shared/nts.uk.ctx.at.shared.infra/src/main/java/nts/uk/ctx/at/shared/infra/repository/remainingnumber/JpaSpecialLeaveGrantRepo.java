@@ -36,6 +36,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			+ " AND a.deadlineDate >= :deadlineDate"
 			+ " AND a.expStatus = :expStatus"
 			+ " ORDER BY a.grantDate ASC";
+	
+	private static final String GET_ALL_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :sid AND a.grantDate =:grantDate AND a.specialLeaID !=:specialLeaID";
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAll(String employeeId, int specialCode) {
@@ -277,6 +279,20 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				x.specialLeaCode, x.grantDate, x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant,
 				x.timeGrant, x.numberDayUse, x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver,
 				x.numberDayRemain, x.timeRemain);
+	}
+
+	@Override
+	public boolean isHasData(String sid, String specialId, GeneralDate grantDate) {
+		//GET_ALL_BY_SID_AND_GRANT_DATE
+		List<KrcmtSpecialLeaveReam> specialLeave = this.queryProxy().query(GET_ALL_BY_SID_AND_GRANT_DATE, KrcmtSpecialLeaveReam.class)
+				.setParameter("sid", sid)
+				.setParameter("grantDate", grantDate)
+				.setParameter("specialLeaID", specialId)
+				.getList();
+		if(specialLeave.size()> 0) {
+			return true;
+		}		
+		return false;
 	}
 
 }
