@@ -18,9 +18,8 @@ public class SalGenParaValueFinder
     @Inject
     private SalGenParaValueRepository finder;
 
-    public List<SalGenParaValueDto> getAllSalGenParaValue(String hisId){
-        return finder.getAllSalGenParaValue().stream().map(item -> SalGenParaValueDto.fromDomain(item))
-                .collect(Collectors.toList());
+    public SalGenParaValueDto getAllSalGenParaValue(String hisId){
+        return SalGenParaValueDto.fromDomain(finder.getSalGenParaValueById(hisId).get());
     }
 
 }

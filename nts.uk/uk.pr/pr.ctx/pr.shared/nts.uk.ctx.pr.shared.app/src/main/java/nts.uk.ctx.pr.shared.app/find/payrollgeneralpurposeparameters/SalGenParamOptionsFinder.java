@@ -19,14 +19,11 @@ public class SalGenParamOptionsFinder
     @Inject
     private SalGenParamOptionsRepository finder;
 
-    public List<SalGenParamOptionsDto> getAllSalGenParamOptions(){
-        return finder.getAllSalGenParamOptions().stream().map(item -> SalGenParamOptionsDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
-    public List<SalGenParamOptionsDto> getSalGenParamOptions(int paraNo){
+    public List<SalGenParamOptionsDto> getAllSalGenParamOptions(String paraNo){
         String cId = AppContexts.user().companyId();
-        return finder.getAllSalGenParamOptions().stream().map(item -> SalGenParamOptionsDto.fromDomain(item))
+        return finder.getAllSalGenParamOptions(paraNo,cId).stream().map(item -> SalGenParamOptionsDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
+
 
 }

@@ -14,11 +14,14 @@ public class JpaSalGenParamOptionsRepository extends JpaRepository implements Sa
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalGenPrOptions f";
+    private static final String SELECT_BY_KEY_PARANO = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrOptionsPk.paraNo =:paraNo AND  f.salGenPrOptionsPk.cid =:cid ";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrOptionsPk.paraNo =:paraNo AND  f.salGenPrOptionsPk.cid =:cid AND  f.salGenPrOptionsPk.optionNo =:optionNo ";
 
     @Override
-    public List<SalGenParamOptions> getAllSalGenParamOptions(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSalGenPrOptions.class)
+    public List<SalGenParamOptions> getAllSalGenParamOptions(String paraNo, String cid){
+        return this.queryProxy().query(SELECT_BY_KEY_PARANO, QpbmtSalGenPrOptions.class)
+                .setParameter("paraNo", paraNo)
+                .setParameter("cid", cid)
                 .getList(item -> item.toDomain());
     }
 

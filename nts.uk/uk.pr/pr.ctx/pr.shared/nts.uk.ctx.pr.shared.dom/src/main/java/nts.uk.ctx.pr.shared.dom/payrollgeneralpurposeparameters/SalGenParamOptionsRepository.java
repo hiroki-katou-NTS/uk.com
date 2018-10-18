@@ -9,7 +9,7 @@ import java.util.List;
 public interface SalGenParamOptionsRepository
 {
 
-    List<SalGenParamOptions> getAllSalGenParamOptions();
+    List<SalGenParamOptions> getAllSalGenParamOptions(String paraNo, String cid);
 
     Optional<SalGenParamOptions> getSalGenParamOptionsById(String paraNo, String cid, int optionNo);
 

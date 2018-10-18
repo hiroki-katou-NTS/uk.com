@@ -49,11 +49,11 @@ public class SalGenParaIdentificationWebService extends WebService {
     @POST
     @Path("getSalGenParamOptions/{paraNo}")
     public List<SalGenParamOptionsDto> getSalGenParamOptions(@PathParam("paraNo") String paraNo) {
-        return mSalGenParamOptionsFinder.getAllSalGenParamOptions();
+        return mSalGenParamOptionsFinder.getAllSalGenParamOptions(paraNo);
     }
     @POST
     @Path("getSalGenParaValue/{hisId}")
-    public List<SalGenParaValueDto> getSalGenParaValue(@PathParam("hisId") String hisId) {
+    public SalGenParaValueDto getSalGenParaValue(@PathParam("hisId") String hisId) {
         return mSalGenParaValueFinder.getAllSalGenParaValue(hisId);
     }
     @POST

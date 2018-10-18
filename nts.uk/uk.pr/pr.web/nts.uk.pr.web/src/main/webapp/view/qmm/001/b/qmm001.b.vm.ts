@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import model = qmm001.share.model;
+
 
     export class ScreenModel {
         listTakeOver: KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
@@ -95,8 +95,8 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
 
     export function getListtakeOver(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText('QMM001_33')),
-            new model.ItemModel(1, getText('QMM001_34'))
+            // new mItemModel(0, getText('QMM001_33')),
+            // new model.ItemModel(1, getText('QMM001_34'))
         ];
     }
 
