@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -196,12 +198,20 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("WHERE a.employeeId IN :employeeId ");
 		builderString.append("AND a.processingDate <= :end ");
 		builderString.append("AND a.processingDate >= :start ");
-		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
-				.setParameter("employeeId", employeeID).setParameter("end", processingDate.end())
-				.setParameter("start", processingDate.start()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.employeeId + c.processingDate.toString())).entrySet().stream()
-				.map(c -> c.getValue().stream().map(item -> item.toDomain()).collect(Collectors.toList()))
-				.flatMap(List::stream).collect(Collectors.toList());
+		
+		List<EmployeeDailyPerError> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+					.setParameter("employeeId", subList)
+					.setParameter("end", processingDate.end())
+					.setParameter("start", processingDate.start())
+					.getList()
+					.stream().collect(Collectors.groupingBy(c -> c.employeeId + c.processingDate.toString())).entrySet().stream()
+					.map(c -> c.getValue().stream().map(item -> item.toDomain()).collect(Collectors.toList()))
+					.flatMap(List::stream).collect(Collectors.toList()));
+		});
+		
+		return resultList;
 	}
 
 	@Override
@@ -252,8 +262,17 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate) {
-		return this.queryProxy().query(CHECK_EXIST_CODE_BY_LIST_DATE, long.class).setParameter("employeeId", employeeID)
-				.setParameter("companyID", companyID).setParameter("processingDates", lstDate).getSingle().get() > 0;
+		LongAdder counter = new LongAdder();
+		CollectionUtil.split(lstDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			if (this.queryProxy().query(CHECK_EXIST_CODE_BY_LIST_DATE, long.class)
+					.setParameter("employeeId", employeeID)
+					.setParameter("companyID", companyID)
+					.setParameter("processingDates", subList)
+					.getSingle().get() > 0) {
+				counter.add(1);
+			}
+		});
+		return counter.intValue() > 0;
 	}
 
 	@Override

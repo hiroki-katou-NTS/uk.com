@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -67,7 +68,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	@Override
 	public List<User> getByListUser(List<String> listUserID) {
 		List<User> datas = new ArrayList<>();
-		CollectionUtil.split(listUserID, 1000, subIdList -> {
+		CollectionUtil.split(listUserID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(SELECT_USER_BY_IDS, SacmtUser.class)
 					.setParameter("listUserID", subIdList).getList(c -> c.toDomain()));
 		});
@@ -118,7 +119,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	@Override
 	public List<User> getListUserByListAsID(List<String> listAssociatePersonId) {
 		List<User> datas = new ArrayList<>();
-		CollectionUtil.split(listAssociatePersonId, 1000, subIdList -> {
+		CollectionUtil.split(listAssociatePersonId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(SELECT_USER_BY_LIST_AS_ID, SacmtUser.class)
 					.setParameter("listAssociatePersonId", subIdList).getList(c -> c.toDomain()));
 		});
@@ -177,15 +178,15 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		}
 		List<User> result = new ArrayList<>();
 		if (employeePersonIdFindName.isEmpty()) {
-			CollectionUtil.split(employeePersonId, 1000, subIdList -> {
+			CollectionUtil.split(employeePersonId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 				result.addAll(this.queryProxy().query(SELECT_MULTI_NO_PERSON_ID, Object[].class)
 						.setParameter("systemDate", systemDate).setParameter("specialUser", special)
 						.setParameter("multiCompanyConcurrent", multi).setParameter("employeePersonId", subIdList)
 						.setParameter("key", '%' + key + '%').getList(c -> this.joinObjectToDomain(c)));
 			});
 		} else {
-			CollectionUtil.split(employeePersonIdFindName, 1000, subIdList -> {
-				CollectionUtil.split(employeePersonId, 1000, subList -> {
+			CollectionUtil.split(employeePersonIdFindName, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+				CollectionUtil.split(employeePersonId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 					result.addAll(this.queryProxy().query(SELECT_MULTI_AND_PERSON_ID, Object[].class)
 							.setParameter("systemDate", systemDate).setParameter("specialUser", special)
 							.setParameter("multiCompanyConcurrent", multi).setParameter("employeePersonId", subList)
@@ -211,7 +212,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	@Override
 	public List<User> getListUserByListAsIDOrderByLoginID(List<String> listAssociatePersonId) {
 		List<User> datas = new ArrayList<>();
-		CollectionUtil.split(listAssociatePersonId, 1000, subIdList -> {
+		CollectionUtil.split(listAssociatePersonId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(SELECT_USER_BY_LIST_AS_ID_ORDER_BY_LOGINID, SacmtUser.class)
 					.setParameter("listAssociatePersonId", subIdList).getList(c -> c.toDomain()));
 		});

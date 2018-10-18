@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -181,12 +183,16 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	@Override
 	public List<RoleIndividualGrant> findRoleIndividual(String companyId, int roleType, List<String> roleIDLst,
 			GeneralDate date) {
-		return this.queryProxy().query(FIND, SacmtRoleIndiviGrant.class)
+		List<RoleIndividualGrant> resultList = new ArrayList<>();
+		CollectionUtil.split(roleIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND, SacmtRoleIndiviGrant.class)
 				.setParameter("companyId", companyId)
 				.setParameter("roleType", roleType)
-				.setParameter("roleIDLst", roleIDLst)
+				.setParameter("roleIDLst", subList)
 				.setParameter("date", date)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 
 }

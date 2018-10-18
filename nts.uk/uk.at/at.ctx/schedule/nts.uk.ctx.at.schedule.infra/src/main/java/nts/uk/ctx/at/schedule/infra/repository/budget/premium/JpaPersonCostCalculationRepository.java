@@ -326,8 +326,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		query.append(" WHERE a.CID = ?");
 		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
 		query.append(" and b.PREMIUM_NO in (" + itemNos.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(query.toString());
+		try (PreparedStatement statement = this.connection().prepareStatement(query.toString())) {
 
 			statement.setString(1, companyID);
 			statement.setDate(2, Date.valueOf(date.end().localDate()));
@@ -392,9 +391,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	}
 
 	private List<KmnmtPremiumItem> getPremiumItems(String comId) {
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(
-					"select * FROM KMNMT_PREMIUM_ITEM where CID = ? ");
+		try (PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KMNMT_PREMIUM_ITEM where CID = ? ")) {
 
 			statement.setString(1, comId);
 			List<KmnmtPremiumItem> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {

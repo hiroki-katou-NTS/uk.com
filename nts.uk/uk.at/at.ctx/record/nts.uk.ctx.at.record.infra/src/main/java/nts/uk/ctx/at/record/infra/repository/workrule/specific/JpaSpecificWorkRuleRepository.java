@@ -154,8 +154,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public Optional<UpperLimitTotalWorkingHour> findUpperLimitWkHourByCid(String companyId) {
-		try {
-			PreparedStatement statement = this.connection().prepareStatement("select * FROM KRCST_WK_HOUR_LIMIT_CTRL where CID = ?");
+		try (PreparedStatement statement = this.connection().prepareStatement("select * FROM KRCST_WK_HOUR_LIMIT_CTRL where CID = ?")) {
 			statement.setString(1, companyId);
 			Optional<KrcstWkHourLimitCtrl> opt = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
 				val entity = new KrcstWkHourLimitCtrl();

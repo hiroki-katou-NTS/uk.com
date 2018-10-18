@@ -9,16 +9,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
-import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -50,7 +48,6 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 		//「月の本人確認を利用する」をチェックする  :  利用する場合
 		if(identityProcess.get().getUseMonthSelfCK() == 1) {
 			for (AttendanceTimeOfMonthly tmp : attendanceTimeOfMonthlys) {
-				Day dayClousre = new Day(tmp.getClosureDate().getClosureDay().v() + 1);
 				// fix bug 101936 (thêm closureDate)
 				ClosureDate closureDate = new ClosureDate(tmp.getClosureDate().getClosureDay().v() + 1, tmp.getClosureDate().getLastDayOfMonth());
 				// ドメインモデル「月の本人確認」を取得する
@@ -70,6 +67,45 @@ public class MonthlyUnconfirmedDefault implements MonthlyUnconfirmedService {
 			}
 		}
 		return Optional.empty();
+	}
+	
+	@Override
+	public List<ValueExtractAlarmWR> checkMonthlyUnconfirmeds(String employeeID, int yearMonth,
+			Optional<IdentityProcessUseSet> identityProcess) {
+		String companyID = AppContexts.user().companyId();
+		List<ValueExtractAlarmWR> lstDataReturn = new ArrayList<>();
+		// ドメインモデル「本人確認処理の利用設定」を取得する
+		if (!identityProcess.isPresent()) {
+			return lstDataReturn;
+		}
+		// ドメインモデル「月別実績の勤怠時間」を取得する
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlys = new ArrayList<>();
+		attendanceTimeOfMonthlys = attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeID,
+				YearMonth.of(yearMonth));
+		// 「月の本人確認を利用する」をチェックする : 利用する場合
+		if (identityProcess.get().isUseIdentityOfMonth()) {
+			for (AttendanceTimeOfMonthly tmp : attendanceTimeOfMonthlys) {
+				// fix bug 101936 (thêm closureDate)
+				ClosureDate closureDate = new ClosureDate(tmp.getClosureDate().getClosureDay().v() + 1,
+						tmp.getClosureDate().getLastDayOfMonth());
+				// ドメインモデル「月の本人確認」を取得する
+				// fix bug 101936
+				Optional<ConfirmationMonth> confirmationMonth = confirmationMonthRepo.findByKey(companyID, employeeID,
+						tmp.getClosureId(), closureDate, tmp.getYearMonth());
+				// 取得できた場合
+				if (!confirmationMonth.isPresent()) {
+					// 取得できなかった場合
+					GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth).substring(0, 4) + '-'
+							+ String.valueOf(yearMonth).substring(4, 6) + '-' + "01", "yyyy-MM-dd");
+					ValueExtractAlarmWR valueExtractAlarmWR = new ValueExtractAlarmWR(null, employeeID, date,
+							TextResource.localize("KAL010_100"), TextResource.localize("KAL010_102"),
+							TextResource.localize("KAL010_108"), null);
+					lstDataReturn.add(valueExtractAlarmWR);
+				}
+
+			}
+		}
+		return lstDataReturn;
 	}
 
 }
