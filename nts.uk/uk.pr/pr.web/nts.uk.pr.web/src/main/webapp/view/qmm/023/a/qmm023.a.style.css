@@ -19,3 +19,7 @@
 #qmm-right .table .cell:nth-child(2) {
     width: 350px;
 }
+
+#A2_3 tbody tr td:nth-child(3){
+    text-align: right;
+}

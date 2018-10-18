@@ -24,13 +24,7 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
             this.columns = ko.observableArray([
                 {headerText: getText('QMM023_7'), key: 'taxFreeamountCode', width: 50, formatter: _.escape},
                 {headerText: getText('QMM023_8'), key: 'taxExemptionName', width: 180, formatter: _.escape},
-                {
-                    headerText: getText('QMM023_9'),
-                    key: 'taxExemptionDisp',
-                    width: 170,
-                    formatter: _.escape,
-                    template: "<div style='text-align: right'>${taxExemptionDisp}</div>"
-                }
+                {headerText: getText('QMM023_9'), key: 'taxExemptionDisp', width: 170, formatter: _.escape}
             ]);
             self.currentCode.subscribe((item) => {
                 if (item != '') {
