@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
@@ -616,14 +614,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		
 		List<ClosureDto> closureDtos = new ArrayList<>();
-		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"select * from KCLMT_CLOSURE c"
 						+ " inner join KCLMT_CLOSURE_EMPLOYMENT e"
 						+ " on c.CLOSURE_ID = e.CLOSURE_ID"
 						+ " where e.CID = ?"
-						+ " and EMPLOYMENT_CD in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " and EMPLOYMENT_CD in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				
 				statement.setString(1, AppContexts.user().companyId());
 				for (int i = 0; i < subList.size(); i++) {
@@ -732,12 +729,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.collect(Collectors.toList());
 
 		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
-		CollectionUtil.split(workPlaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", subList)
+		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
 				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().forEach(w -> {
 					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
-		});
 		return lstWkp;
 	}
 	
@@ -746,22 +741,17 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (employeeId.isEmpty())
 			return Collections.emptyMap();
 		Map<String, String> lstWkp = new HashMap<>();
-		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = new ArrayList<>();
-		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			bsymtAffiWorkplaceHistItem.addAll(this.queryProxy()
-				.query(SEL_WORKPLACE_ALL, BsymtAffiWorkplaceHistItem.class).setParameter("sIds", subList)
-				.setParameter("baseDate", dateRange).getList());
-		});
+		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
+				.query(SEL_WORKPLACE_ALL, BsymtAffiWorkplaceHistItem.class).setParameter("sIds", employeeId)
+				.setParameter("baseDate", dateRange).getList();
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 
 		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
-		CollectionUtil.split(workPlaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", subList)
+		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
 				.setParameter("baseDate", dateRange).getList().stream().forEach(w -> {
 					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
-		});
 		return lstWkp;
 	}
 	
@@ -773,13 +763,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 		if(workPlaceIds.isEmpty()) return Collections.emptyList();
-		List<String> results = new ArrayList<>();
-		CollectionUtil.split(workPlaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			results.addAll(this.queryProxy().query(FIND_EMP_WORKPLACE, String.class)
-					.setParameter("workPlaceId", subList)
-					.setParameter("baseDate", dateRange.getEndDate()).getList());
-		});
-		return results;
+		return this.queryProxy().query(FIND_EMP_WORKPLACE, String.class).setParameter("workPlaceId", workPlaceIds).setParameter("baseDate", dateRange.getEndDate()).getList();
 	}
 
 	@Override
@@ -788,7 +772,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (lstEmployee.isEmpty())
 			return new ArrayList<>();
 		List<WorkInfoOfDailyPerformanceDto> results = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			results.addAll(this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList(e -> {
 						return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
@@ -812,7 +796,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
 		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
-		CollectionUtil.split(lstWorkplace.keySet().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(lstWorkplace.keySet().stream().collect(Collectors.toList()), 1000, subList -> {
 			lstEmployee.addAll(this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
 					.setParameter("lstWkp", subList).getList());
 		});
@@ -821,7 +805,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
 		List<BpsmtPerson> lstPerson = new ArrayList<>();
-		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(ids, 1000, subList -> {
 			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
 					.getList());
 		});
@@ -845,7 +829,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (sids.isEmpty())
 			return Collections.emptyList();
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		CollectionUtil.split(sids, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
 					.setParameter("listSid", subList).getList());
 		});
@@ -873,30 +857,20 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
 		List<String> businessTypes = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			businessTypes.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, String.class)
 					.setParameter("lstSID", subList).setParameter("startYmd", dateRange.getStartDate())
 					.setParameter("endYmd", dateRange.getEndDate()).getList());
 		});
-		businessTypes.sort(Comparator.naturalOrder());
 		return businessTypes;
 	}
 
 	@Override
 	public List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType) {
 		if (lstBusinessType.size() > 1) {
-			List<KrcmtBusinessTypeDaily> results = new ArrayList<>();
-			CollectionUtil.split(lstBusinessType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				results.addAll(this.queryProxy().query(SEL_FORMAT_DP_CORRECTION_MULTI, KrcmtBusinessTypeDaily.class)
+			return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION_MULTI, KrcmtBusinessTypeDaily.class)
 					.setParameter("companyId", AppContexts.user().companyId())
-					.setParameter("lstBusinessTypeCode", subList).getList());
-			});
-			results.sort((o1, o2) -> {
-				int tmp = o1.order - o2.order;
-				if (tmp != 0) return tmp;
-				return o1.krcmtBusinessTypeDailyPK.attendanceItemId - o2.krcmtBusinessTypeDailyPK.attendanceItemId;
-			});
-			return results.stream()
+					.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
 					.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
 							f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
 							String.valueOf(f.krcmtBusinessTypeDailyPK.sheetNo),
@@ -919,12 +893,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DPBusinessTypeControl> getListBusinessTypeControl(String companyId, String authorityDailyID,
 			List<Integer> lstAttendanceItem, boolean use) {
-		List<KshstDailyServiceTypeControl> entities = new ArrayList<>();
-		CollectionUtil.split(lstAttendanceItem, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(SEL_DP_TYPE_CONTROL, KshstDailyServiceTypeControl.class)
-				.setParameter("authorityDailyID", authorityDailyID).setParameter("lstItem", subList).getList());
-		});
-		return entities.stream().map(c -> {
+		return this.queryProxy().query(SEL_DP_TYPE_CONTROL, KshstDailyServiceTypeControl.class)
+				.setParameter("authorityDailyID", authorityDailyID).setParameter("lstItem", lstAttendanceItem).getList()
+				.stream().map(c -> {
 					return new DPBusinessTypeControl(c.kshstDailyServiceTypeControlPK.itemDailyID, c.toUse == 1,
 							c.canBeChangedByOthers == 1, c.youCanChangeIt == 1);
 				}).collect(Collectors.toList());
@@ -937,12 +908,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		
 		String companyId = AppContexts.user().companyId();
-		List<KrcmtDailyAttendanceItem> entities = new ArrayList<>();
-		CollectionUtil.split(lstAttendanceItem, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
-				.setParameter("companyId", companyId).setParameter("lstItem", subList)
-				.getList());
-		});
+		List<KrcmtDailyAttendanceItem> entities = this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
+				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem)
+				.getList();
 		return entities.stream().map(i -> {
 					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 							i.displayNumber, i.userCanSet == 1 ? true : false,
@@ -953,12 +921,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem) {
-		List<KshstControlOfAttendanceItems> entities = new ArrayList<>();
-		CollectionUtil.split(lstAttendanceItem, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
-				.setParameter("lstItem", subList).getList());
-		});
-		return entities.stream().map(c -> {
+		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
+				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
 					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.itemDailyID,
 							c.inputUnitOfTimeItem, c.headerBgColorOfDailyPer != null ? c.headerBgColorOfDailyPer : "",
 							null);
@@ -968,7 +932,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee) {
 		List<DPErrorDto> listDPError = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			listDPError.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
 					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
 					.setParameter("lstEmployee", subList).getList().stream().map(e -> {
@@ -985,19 +949,17 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String> errorCodes) {
 		List<DPErrorDto> dpErrors = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmp -> {
-			CollectionUtil.split(errorCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstErr -> {
-				dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
-						.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
-						.setParameter("lstEmployee", lstEmp).setParameter("errorCodes", lstErr).getList().stream()
-						.map(e -> {
-							return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
-									!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()
-											.map(x -> x.krcdtErAttendanceItemPK.attendanceItemId)
-											.collect(Collectors.toList()) : Collections.emptyList(),
-									e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
-						}).collect(Collectors.toList()));
-			});
+		CollectionUtil.split(lstEmployee, 1000, subList -> {
+			dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
+					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
+					.setParameter("lstEmployee", subList).setParameter("errorCodes", errorCodes).getList().stream()
+					.map(e -> {
+						return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
+								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()
+										.map(x -> x.krcdtErAttendanceItemPK.attendanceItemId)
+										.collect(Collectors.toList()) : Collections.emptyList(),
+								e.errorCancelable.intValue() == 1 ? true : false, e.errorAlarmMessage);
+					}).collect(Collectors.toList()));
 		});
 		return dpErrors;
 	}
@@ -1021,60 +983,54 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private List<DPErrorSettingDto> getErrorSettingN(String companyId, List<String> listErrorCode){
 		List<DPErrorSettingDto> dtos = new ArrayList<>();
-		CollectionUtil.split(listErrorCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String textIn ="";
-			int size = subList.size();
-			for(int i =0; i<size; i++){
-				String  text = subList.get(i);
-				if(i == (size -1)){
-					textIn += "'" +text+ "'";
-				}else{
-					textIn += "'" +text+ "'"+ ",";
-				}
+		String textIn ="";
+		for(int i =0; i<listErrorCode.size(); i++){
+			String  text = listErrorCode.get(i);
+			if(i == (listErrorCode.size() -1)){
+				textIn += "'" +text+ "'";
+			}else{
+				textIn += "'" +text+ "'"+ ",";
 			}
-			try {
-				Connection con = this.getEntityManager().unwrap(Connection.class);
-				String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
-				PreparedStatement pstatement = con.prepareStatement(query);
-				pstatement.setString(1, companyId);
-	//			Array array = pstatement.getConnection().createArrayOf("ANY ", new Object[]{"A", "B","C"});
-	//			pstatement.setArray(2, array);
-				ResultSet rs = pstatement.executeQuery();
-	
-				while (rs.next()) {
-	
-					String errorAlarmCode = rs.getString("ERROR_ALARM_CD");
-					String errorAlarmName = rs.getString("ERROR_ALARM_NAME");
-					int fixedAtr = rs.getInt("FIXED_ATR");
-					int useAtr = rs.getInt("USE_ATR");
-					int typeAtr = rs.getInt("ERAL_ATR");
-					int boldAtr = rs.getInt("BOLD_ATR");
-					String messageColor = rs.getString("MESSAGE_COLOR");
-					int cancelableAtr = rs.getInt("CANCELABLE_ATR");
-					Integer errorDisplayItem = rs.getInt("ERROR_DISPLAY_ITEM");
-					String messageDisplay = rs.getString("MESSAGE_DISPLAY");
-	
-					dtos.add(new DPErrorSettingDto(companyId, errorAlarmCode, errorAlarmName, fixedAtr == 1 ? true : false,
-							useAtr == 1 ? true : false, typeAtr, messageDisplay == null ? "" : messageDisplay,
-							boldAtr == 1 ? true : false, messageColor, cancelableAtr == 1 ? true : false,
-							errorDisplayItem));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
+		}
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
+			pstatement.setString(1, companyId);
+//			Array array = pstatement.getConnection().createArrayOf("ANY ", new Object[]{"A", "B","C"});
+//			pstatement.setArray(2, array);
+			ResultSet rs = pstatement.executeQuery();
+
+			while (rs.next()) {
+
+				String errorAlarmCode = rs.getString("ERROR_ALARM_CD");
+				String errorAlarmName = rs.getString("ERROR_ALARM_NAME");
+				int fixedAtr = rs.getInt("FIXED_ATR");
+				int useAtr = rs.getInt("USE_ATR");
+				int typeAtr = rs.getInt("ERAL_ATR");
+				int boldAtr = rs.getInt("BOLD_ATR");
+				String messageColor = rs.getString("MESSAGE_COLOR");
+				int cancelableAtr = rs.getInt("CANCELABLE_ATR");
+				Integer errorDisplayItem = rs.getInt("ERROR_DISPLAY_ITEM");
+				String messageDisplay = rs.getString("MESSAGE_DISPLAY");
+
+				dtos.add(new DPErrorSettingDto(companyId, errorAlarmCode, errorAlarmName, fixedAtr == 1 ? true : false,
+						useAtr == 1 ? true : false, typeAtr, messageDisplay == null ? "" : messageDisplay,
+						boldAtr == 1 ? true : false, messageColor, cancelableAtr == 1 ? true : false,
+						errorDisplayItem));
 			}
-		});
+
+			return dtos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return dtos;
 	}
 
 	@Override
 	public List<DPSheetDto> getFormatSheets(List<String> lstBusinessType) {
-		List<KrcmtBusinessFormatSheet> entities = new ArrayList<>();
-		CollectionUtil.split(lstBusinessType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(SEL_FORMAT_SHEET, KrcmtBusinessFormatSheet.class)
+		return this.queryProxy().query(SEL_FORMAT_SHEET, KrcmtBusinessFormatSheet.class)
 				.setParameter("companyId", AppContexts.user().companyId())
-				.setParameter("lstBusinessTypeCode", subList).getList());
-		});
-		return entities.stream().map(s -> {
+				.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream().map(s -> {
 					return new DPSheetDto(String.valueOf(s.krcmtBusinessFormatSheetPK.sheetNo), s.sheetName);
 				}).collect(Collectors.toList());
 	}
@@ -1097,9 +1053,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findEmployment(String companyId) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SEL_EMPLOYMENT_BY_CLOSURE_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_EMPLOYMENT_BY_CLOSURE_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("CODE"), rs.getString("NAME"), "");
@@ -1112,9 +1066,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findJobInfo(String companyId, GeneralDate date) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_JOB_INFO_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_JOB_INFO_JDBC)) {
 			statement.setString(1, companyId);statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setDate(3, Date.valueOf(date.localDate()));
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
@@ -1128,9 +1080,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findClassification(String companyId) {
-		try {
-		
-			PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_CLASSIFICATION_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_CLASSIFICATION_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("CLSCD"), rs.getString("CLSNAME"), "");
@@ -1143,9 +1093,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkplace(String companyId, GeneralDate date) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC)) {
 			statement.setString(1, companyId);
 			statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setDate(3, Date.valueOf(date.localDate()));
@@ -1161,9 +1109,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<CodeName> findWorkplaceLocation(String companyId) {
 		String sql = SEL_FIND_WORKPLACE_LOCATION_JDBC;
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(sql);
+		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("WORK_LOCATION_CD"), rs.getString("WORK_LOCATION_NAME"), "");
@@ -1176,9 +1122,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findReason(String companyId) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SELECT_ALL_DIVREASON_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SELECT_ALL_DIVREASON_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("REASON_CD"), rs.getString("REASON"), rs.getInt("NO").toString());
@@ -1203,16 +1147,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (listEmployeeId.isEmpty())
 			return Collections.emptyList();
 		List<DailyRecEditSetDto> editSets = new ArrayList<>();
-		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmp -> {
-			CollectionUtil.split(dateRange.toListDate(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDates -> {
-				editSets.addAll(this.queryProxy().query(SEL_DAILY_REC_EDIT_SET, KrcdtDailyRecEditSet.class)
-						.setParameter("employeeIds", lstEmp).setParameter("ymds", lstDates).getList()
-						.stream().map(s -> {
-							return new DailyRecEditSetDto(s.krcdtDailyRecEditSetPK.employeeId,
-									s.krcdtDailyRecEditSetPK.processingYmd, s.krcdtDailyRecEditSetPK.attendanceItemId,
-									s.editState);
-						}).collect(Collectors.toList()));
-			});
+		CollectionUtil.split(listEmployeeId, 1000, subList -> {
+			editSets.addAll(this.queryProxy().query(SEL_DAILY_REC_EDIT_SET, KrcdtDailyRecEditSet.class)
+					.setParameter("employeeIds", subList).setParameter("ymds", dateRange.toListDate()).getList()
+					.stream().map(s -> {
+						return new DailyRecEditSetDto(s.krcdtDailyRecEditSetPK.employeeId,
+								s.krcdtDailyRecEditSetPK.processingYmd, s.krcdtDailyRecEditSetPK.attendanceItemId,
+								s.editState);
+					}).collect(Collectors.toList()));
 		});
 		return editSets;
 	}
@@ -1249,27 +1191,28 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@SneakyThrows
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
-		val statement = this.connection().prepareStatement(
-				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1");
-		statement.setString(1, AppContexts.user().companyId());
-		statement.setInt(2, closureId);
-		
-		List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			KrcstWorkFixed w = new KrcstWorkFixed();
-			w.setKrcstWorkFixedPK(new KrcstWorkFixedPK(
-					rec.getString("WKPID"),
-					rec.getInt("CLOSURE_ID"),
-					rec.getString("CID")));
-			w.setConfirmPid(rec.getString("CONFIRM_PID"));
-			w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
-			w.setFixedDate(rec.getDate("FIXED_DATE"));
-			w.setProcessYm(rec.getInt("PROCESS_YM"));
+		try (val statement = this.connection().prepareStatement(
+				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1")) {
+			statement.setString(1, AppContexts.user().companyId());
+			statement.setInt(2, closureId);
 			
-			return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
-					w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
-		});
-		
-		return workOp;
+			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				KrcstWorkFixed w = new KrcstWorkFixed();
+				w.setKrcstWorkFixedPK(new KrcstWorkFixedPK(
+						rec.getString("WKPID"),
+						rec.getInt("CLOSURE_ID"),
+						rec.getString("CID")));
+				w.setConfirmPid(rec.getString("CONFIRM_PID"));
+				w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
+				w.setFixedDate(rec.getDate("FIXED_DATE"));
+				w.setProcessYm(rec.getInt("PROCESS_YM"));
+				
+				return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
+						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
+			});
+			
+			return workOp;
+		}
 	}
 
 	@Override
@@ -1296,32 +1239,20 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCodes) {
-		List<KfnmtAuthorityDailyItem> entities = new ArrayList<>();
-		CollectionUtil.split(formatCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(SEL_AUTHOR_DAILY_ITEM, KfnmtAuthorityDailyItem.class)
-				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCodes", subList)
-				.getList());
-		});
-		return entities.stream().map(f -> new AuthorityFomatDailyDto(f.kfnmtAuthorityDailyItemPK.companyId,
+		return this.queryProxy().query(SEL_AUTHOR_DAILY_ITEM, KfnmtAuthorityDailyItem.class)
+				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCodes", formatCodes)
+				.getList(f -> new AuthorityFomatDailyDto(f.kfnmtAuthorityDailyItemPK.companyId,
 						f.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode,
 						f.kfnmtAuthorityDailyItemPK.attendanceItemId, f.kfnmtAuthorityDailyItemPK.sheetNo,
-						f.displayOrder, f.columnWidth)).collect(Collectors.toList());
+						f.displayOrder, f.columnWidth));
 	}
 
 	@Override
 	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,
 			List<BigDecimal> sheetNo) {
-		List<KfnmtAuthorityFormSheet> ent = new ArrayList<>();
-		CollectionUtil.split(formatCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstCode -> {
-			CollectionUtil.split(sheetNo, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstNo -> {
-				ent.addAll(this.queryProxy().query(SEL_AUTHOR_FORM_SHEET, KfnmtAuthorityFormSheet.class)
-						.setParameter("companyId", companyId)
-						.setParameter("dailyPerformanceFormatCode", lstCode).setParameter("sheetNo", lstNo).getList());
-			});
-		});
-		ent.sort((o1, o2) -> {
-			return o1.kfnmtAuthorityFormSheetPK.sheetNo.compareTo(o2.kfnmtAuthorityFormSheetPK.sheetNo);
-		});
+		List<KfnmtAuthorityFormSheet> ent = this.queryProxy()
+				.query(SEL_AUTHOR_FORM_SHEET, KfnmtAuthorityFormSheet.class).setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", formatCode).setParameter("sheetNo", sheetNo).getList();
 		return ent.isEmpty() ? Collections.emptyList()
 				: ent.stream()
 						.map(f -> new AuthorityFormatSheetDto(f.kfnmtAuthorityFormSheetPK.companyId,
@@ -1332,15 +1263,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo) {
-		List<KrcstDvgcTime> entities = new ArrayList<>();
-		CollectionUtil.split(divergenceNo, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entities.addAll(this.queryProxy().query(FIND_DVGC_TIME, KrcstDvgcTime.class).setParameter("cid", companyId)
-					.setParameter("no", subList)
-					.getList());
-		});
-		return entities.stream().map(x -> new DivergenceTimeDto(x.getId().getNo(), companyId, x.getDvgcTimeUseSet().intValue(),
-						x.getDvgcReasonInputed().intValue() == 1,
-						x.getDvgcReasonSelected().intValue() == 1)).collect(Collectors.toList());
+		return this.queryProxy().query(FIND_DVGC_TIME, KrcstDvgcTime.class).setParameter("cid", companyId)
+				.setParameter("no", divergenceNo)
+				.getList(x -> new DivergenceTimeDto(x.getId().getNo(), companyId, x.getDvgcTimeUseSet().intValue(),
+						x.getDvgcReasonInputed().intValue() == 1 ? true : false,
+						x.getDvgcReasonSelected().intValue() == 1 ? true : false));
 
 	}
 
@@ -1398,30 +1325,24 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkTimeZone(String companyId, List<String> shifCode) {
-		List<CodeName> results = new ArrayList<>();
-		CollectionUtil.split(shifCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = FIND_WORK_TIME_ZONE_JDBC;
-			if(!subList.isEmpty()){
-				sql = sql.concat(" AND WORKTIME_CD IN ( ")
-					.concat(subList.stream().map(x -> "?").collect(Collectors.joining(",")))
-					.concat(") ORDER BY WORKTIME_CD ASC");
+		String sql = FIND_WORK_TIME_ZONE_JDBC;
+		if(!shifCode.isEmpty()){
+			sql = sql.concat(" AND WORKTIME_CD IN ( ")
+				.concat(shifCode.stream().map(x -> "?").collect(Collectors.joining(",")))
+				.concat(") ORDER BY WORKTIME_CD ASC");
+		}
+		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
+			statement.setString(1, companyId);
+			for (int i = 0; i < shifCode.size(); i++) {
+				statement.setString(i + 2, shifCode.get(i));
 			}
-			try {
-				
-				PreparedStatement statement = this.connection().prepareStatement(sql);
-				statement.setString(1, companyId);
-				for (int i = 0; i < subList.size(); i++) {
-					statement.setString(i + 2, subList.get(i));
-				}
-				results.addAll(new NtsResultSet(statement.executeQuery()).getList(rs -> { 
-					return new CodeName(rs.getString("WORKTIME_CD"), rs.getString("NAME"), "");
-				}));
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		});
-		return results;
+			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
+				return new CodeName(rs.getString("WORKTIME_CD"), rs.getString("NAME"), "");
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -1450,30 +1371,25 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkType(String companyId, Set<String> typeCodes) {
-		List<CodeName> results = new ArrayList<>();
-		CollectionUtil.split(typeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = SELECT_WORKTYPE_JDBC;
-			if(!typeCodes.isEmpty()){
-				sql = sql.concat(" AND CD IN ( ")
-					.concat(subList.stream().map(x -> "?").collect(Collectors.joining(",")))
-					.concat(")");
+		String sql = SELECT_WORKTYPE_JDBC;
+		if(!typeCodes.isEmpty()){
+			sql = sql.concat(" AND CD IN ( ")
+				.concat(typeCodes.stream().map(x -> "?").collect(Collectors.joining(",")))
+				.concat(")");
+		}
+		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
+			List<String> xcodes = new ArrayList<>(typeCodes);
+			statement.setString(1, companyId);
+			for (int i = 0; i < xcodes.size(); i++) {
+				statement.setString(i + 2, xcodes.get(i));
 			}
-			try {
-				List<String> xcodes = new ArrayList<>(subList);
-				
-				PreparedStatement statement = this.connection().prepareStatement(sql);
-				statement.setString(1, companyId);
-				for (int i = 0; i < xcodes.size(); i++) {
-					statement.setString(i + 2, xcodes.get(i));
-				}
-				results.addAll(new NtsResultSet(statement.executeQuery()).getList(rs -> { 
-					return new CodeName(rs.getString("CD"), rs.getString("NAME"), "");
-				}));
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
-			}
-		});
-		return results;
+			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
+				return new CodeName(rs.getString("CD"), rs.getString("NAME"), "");
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -1504,7 +1420,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid) {
 		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
-		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(sid, 1000, subList -> {
 			lstEmployee.addAll(this.queryProxy().query(SEL_EMPLOYEE_WITH_SID, BsymtEmployeeDataMngInfo.class)
 					.setParameter("sids", subList).getList());
 		});
@@ -1514,7 +1430,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}).collect(Collectors.toList());
 
 		List<BpsmtPerson> lstPerson = new ArrayList<>();
-		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		CollectionUtil.split(ids, 1000, subList -> {
 			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
 					.getList());
 		});
@@ -1534,11 +1450,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Map<String, List<EnumConstant>> findErAlApplicationByCidAndListErrCd(String companyId,
 			List<String> errorCode) {
-		List<KrcstErAlApplication> entity = new ArrayList<>();
-		CollectionUtil.split(errorCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entity.addAll(this.queryProxy().query(SEL_FIND_ER_AL_APP, KrcstErAlApplication.class)
-				.setParameter("cid", companyId).setParameter("errorCd", subList).getList());
-		});
+		List<KrcstErAlApplication> entity = this.queryProxy().query(SEL_FIND_ER_AL_APP, KrcstErAlApplication.class)
+				.setParameter("cid", companyId).setParameter("errorCd", errorCode).getList();
 		Map<String, List<EnumConstant>> result = new HashMap<>();
 		if (!entity.isEmpty()) {
 			result = entity.stream()
@@ -1568,15 +1481,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates) {
 		if (!sids.isEmpty()) {
 			Map<String, Boolean> result = new HashMap<>();
-			CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIDs -> {
-				CollectionUtil.split(dates.toListDate(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDates -> {
-					result.putAll(this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
-							.setParameter("companyID", companyId).setParameter("sids", lstIDs)
-							.setParameter("processingYmds", lstDates)
-							.getList(x -> x.krcdtIdentificationStatusPK.employeeId + "|"
-									+ x.krcdtIdentificationStatusPK.processingYmd)
-							.stream().collect(Collectors.toMap(y -> y, y -> true)));
-				});
+			CollectionUtil.split(sids, 1000, subList -> {
+				result.putAll(this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
+						.setParameter("companyID", companyId).setParameter("sids", subList)
+						.setParameter("processingYmds", dates.toListDate())
+						.getList(x -> x.krcdtIdentificationStatusPK.employeeId + "|"
+								+ x.krcdtIdentificationStatusPK.processingYmd)
+						.stream().collect(Collectors.toMap(y -> y, y -> true)));
 			});
 			return result;
 		} else {
@@ -1598,13 +1509,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (sids.isEmpty())
 			return Collections.emptyMap();
 		List<WorkPlaceHistTemp> resultList = new ArrayList<>();
-		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		CollectionUtil.split(sids, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID_WPH, WorkPlaceHistTemp.class)
 					.setParameter("listSid", subList).setParameter("baseDate", date).getList());
 		});
 		if(resultList.isEmpty()) return Collections.emptyMap();
 		Map<String, String> wplName = new HashMap<>();
-		CollectionUtil.split(resultList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		CollectionUtil.split(resultList, 1000, (subList) -> {
 			wplName.putAll(this.queryProxy().query(SELECT_BY_LISTSID_NAME, Object[].class)
 					.setParameter("companyId", companyId)
 					.setParameter("wkpids", subList.stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
@@ -1623,17 +1534,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			List<String> employeeIds) {
 		if (employeeIds.isEmpty())
 			return Collections.emptyMap();
-		List<BsymtAffCompanyHist> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		List<AffComHistItemAtScreen> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class)
 					.setParameter("sIds", subList).setParameter("cid", cid)
-					.getList());
+					.getList(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId,
+							new DatePeriod(x.startDate, x.endDate))));
 		});
-		resultList.sort((o1, o2) -> {
-			return o1.startDate.compareTo(o2.startDate);
-		});
-		return resultList.stream().map(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId,
-							new DatePeriod(x.startDate, x.endDate))).collect(Collectors.groupingBy(AffComHistItemAtScreen::getEmployeeId,
+		return resultList.stream().collect(Collectors.groupingBy(AffComHistItemAtScreen::getEmployeeId,
 				Collectors.mapping(x -> x, Collectors.toList())));
 	}
 
@@ -1654,12 +1562,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public String findWorkConditionLastest(List<String> hists, String employeeId) {
-		List<KshmtWorkingCond> entitys = new ArrayList<>();
-		CollectionUtil.split(hists, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			entitys.addAll(this.queryProxy().query(FIND_WORK_CONDITION, KshmtWorkingCond.class)
-				.setParameter("historyId", hists).setParameter("sid", subList).getList());
-		});
-		entitys.sort(Comparator.comparing(KshmtWorkingCond::getEndD).reversed());
+		List<KshmtWorkingCond> entitys = this.queryProxy().query(FIND_WORK_CONDITION, KshmtWorkingCond.class)
+				.setParameter("historyId", hists).setParameter("sid", employeeId).getList();
 		return entitys.isEmpty() ? "" : entitys.get(0).getKshmtWorkingCondItem().getHistoryId();
 	}
 
@@ -1694,15 +1598,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Map<String, String> getAllEmployment(String companyId, List<String> employeeId, DateRange rangeDate) {
 		Map<String, String> empCodes = new HashMap<>();
-		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		CollectionUtil.split(employeeId, 1000, (subList) -> {
 			
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"select h.SID, i.EMP_CD from BSYMT_EMPLOYMENT_HIST h" + 
 						" inner join BSYMT_EMPLOYMENT_HIS_ITEM i on h.HIST_ID = i.HIST_ID" + 
 						" where h.CID = ?" + 
 						" and h.START_DATE <= ? and h.END_DATE >= ?" + 
-						" and h.SID in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						" and h.SID in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				
 				statement.setString(1, companyId);
 				statement.setDate(2, Date.valueOf(rangeDate.getEndDate().toLocalDate()));
@@ -1729,34 +1632,33 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		//KRCST_OPTIONAL_ITEM
 		//KrcstOptionalItem
 		List<OptionalItemDto> dtos = new ArrayList<>();
-		CollectionUtil.split(optionalitemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String textIn = "";
-			int size = subList.size();
-			for (int i = 0; i < size; i++) {
-				int number = subList.get(i);
-				if (i == (size - 1)) {
-					textIn += number;
-				} else {
-					textIn += number + ",";
-				}
+		String textIn = "";
+		for (int i = 0; i < optionalitemNos.size(); i++) {
+			int number = optionalitemNos.get(i);
+			if (i == (optionalitemNos.size() - 1)) {
+				textIn += number;
+			} else {
+				textIn += number + ",";
 			}
-			try {
-				Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.OPTIONAL_ITEM_NO IN ("
-						+ textIn + ")";
-				PreparedStatement pstatement = con.prepareStatement(query);
-				pstatement.setString(1, companyId);
-				ResultSet rs = pstatement.executeQuery();
-				while (rs.next()) {
-					int itemNo = rs.getInt("OPTIONAL_ITEM_NO");
-					String itemName = rs.getString("OPTIONAL_ITEM_NAME");
-					int itemAtr = rs.getInt("OPTIONAL_ITEM_ATR");
-					dtos.add(new OptionalItemDto(itemNo, itemName, OptionalItemAtr.valueOf(itemAtr)));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
+		}
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.OPTIONAL_ITEM_NO IN ("
+					+ textIn + ")";
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
+			pstatement.setString(1, companyId);
+			ResultSet rs = pstatement.executeQuery();
+			while (rs.next()) {
+				int itemNo = rs.getInt("OPTIONAL_ITEM_NO");
+				String itemName = rs.getString("OPTIONAL_ITEM_NAME");
+				int itemAtr = rs.getInt("OPTIONAL_ITEM_ATR");
+				dtos.add(new OptionalItemDto(itemNo, itemName, OptionalItemAtr.valueOf(itemAtr)));
 			}
-		});
+
+			return dtos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return dtos;
 	}
 
@@ -1773,7 +1675,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange) {
 		Map<Pair<String, DatePeriod>, String> empCodes = new HashMap<>();
 		MutableValue<Exception> exception = new MutableValue<>(null);
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		CollectionUtil.split(employeeIds, 1000, (subList) -> {
 			if(exception.optional().isPresent()){
 				return;
 			}
@@ -1783,8 +1685,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.append(joinParam(subList))
 					.append(")").toString();
 			
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(GET_EMP_ALL_X);
+			try (PreparedStatement statement = this.connection().prepareStatement(GET_EMP_ALL_X)) {
 				statement.setDate(1, Date.valueOf(dateRange.getEndDate().localDate()));
 				statement.setDate(2, Date.valueOf(dateRange.getStartDate().localDate()));
 				statement.setString(3, companyId);
@@ -1810,7 +1711,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		
 		List<ClosureDto> closureDtos = new ArrayList<>();
-		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
 			StringBuilder builderString = new StringBuilder();
 			builderString.append("SELECT c.CLOSURE_ID , c.USE_ATR, c.CLOSURE_MONTH, emp.EMPLOYMENT_CD ");
 			builderString.append("FROM KCLMT_CLOSURE c JOIN ");
@@ -1818,8 +1719,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			builderString.append("WHERE emp.CID = ? AND c.USE_ATR = 1");
 			builderString.append("AND emp.EMPLOYMENT_CD IN ( ").append(joinParam(subList)).append(")");
 			
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(builderString.toString());
+			try (PreparedStatement statement = this.connection().prepareStatement(builderString.toString())) {
 				statement.setString(1, companyId);
 				for (int i = 0; i < subList.size(); i++) {
 					statement.setString(i + 2, subList.get(i));
@@ -1873,10 +1773,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			}
 		}
 
-		try {
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND (" + textParam + " )";
-			PreparedStatement pstatement = con.prepareStatement(query);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND (" + textParam + " )";
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			pstatement.setString(1, companyId);
 			ResultSet rs = pstatement.executeQuery();
 			while (rs.next()) {

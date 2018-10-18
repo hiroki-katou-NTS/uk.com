@@ -51,19 +51,20 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 	
 	@Override
 	public Optional<ContinuousHolCheckSet> findSpecial(String companyId) {
-		try {/* TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
+		/* TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
 //			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
 //			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
 //			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
 //			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCCT_OTK_WT_NONTARGET c ");
 //			queryString.append(" WHERE a.CID = c.CID FOR XML PATH('')), 1, 1, '') [NONTARGET] ");
-			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
-			queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
-			queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
-			queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
-			queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
-			queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
-			PreparedStatement statement = this.connection().prepareStatement(queryString.toString());
+		StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
+		queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
+		queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
+		queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
+		queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
+		queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
+			
+		try (PreparedStatement statement = this.connection().prepareStatement(queryString.toString())) {
 
 			statement.setString(1, companyId);
 			statement.setInt(2, 1);

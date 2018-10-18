@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -318,54 +317,52 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs, String approverID) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalRootState> result = new ArrayList<>();
-		CollectionUtil.split(rootStateIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			try {
-				int size = subList.size();
-				String rootStateIDLst = "";
-				for(int i = 0; i < size; i++){
-					rootStateIDLst+="'"+subList.get(i)+"'";
-					if(i != (size-1)){
-						rootStateIDLst+=",";
-					}
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String rootStateIDLst = "";
+			for(int i = 0; i < rootStateIDs.size(); i++){
+				rootStateIDLst+="'"+rootStateIDs.get(i)+"'";
+				if(i != (rootStateIDs.size()-1)){
+					rootStateIDLst+=",";
 				}
-				String query = 
-						"SELECT root.ROOT_STATE_ID, root.HIST_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, " +
-						"phaseJoin.PHASE_ORDER, phaseJoin.APPROVAL_FORM, phaseJoin.APP_PHASE_ATR, " +
-						"phaseJoin.FRAME_ORDER, phaseJoin.APP_FRAME_ATR, phaseJoin.CONFIRM_ATR, phaseJoin.APPROVER_ID, phaseJoin.REPRESENTER_ID, " +
-						"phaseJoin.APPROVAL_DATE, phaseJoin.APPROVAL_REASON, phaseJoin.APPROVER_CHILD_ID " +
-						"FROM WWFDT_APPROVAL_ROOT_STATE root " +
-						"LEFT JOIN " +
-						"(SELECT phase.ROOT_STATE_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, " +
-						"frameJoin.FRAME_ORDER, frameJoin.APP_FRAME_ATR, frameJoin.CONFIRM_ATR, frameJoin.APPROVER_ID, frameJoin.REPRESENTER_ID, " +
-						"frameJoin.APPROVAL_DATE, frameJoin.APPROVAL_REASON, frameJoin.APPROVER_CHILD_ID " +
-						"FROM WWFDT_APPROVAL_PHASE_ST phase " +
-						"LEFT JOIN ( " +
-						"SELECT frame.ROOT_STATE_ID, frame.PHASE_ORDER, frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, " +
-						"frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON, approver.APPROVER_CHILD_ID " +
-						"FROM WWFDT_APPROVAL_FRAME frame " +
-						"LEFT JOIN " +
-						"WWFDT_APPROVER_STATE approver " +
-						"ON frame.ROOT_STATE_ID = approver.ROOT_STATE_ID " +
-						"AND frame.PHASE_ORDER = approver.PHASE_ORDER " +
-						"AND frame.FRAME_ORDER = approver.FRAME_ORDER) " +
-						"AS frameJoin " +
-						"ON phase.ROOT_STATE_ID = frameJoin.ROOT_STATE_ID " +
-						"AND phase.PHASE_ORDER = frameJoin.PHASE_ORDER) " +
-						"AS phaseJoin " +
-						"ON root.ROOT_STATE_ID = phaseJoin.ROOT_STATE_ID " +
-						"WHERE root.ROOT_STATE_ID IN ( " +
-						"SELECT DISTINCT c.ROOT_STATE_ID FROM ( " +
-						"SELECT a.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE a WHERE a.APPROVER_CHILD_ID = 'approverID' " + 
-						"UNION ALL " +
-						"SELECT b.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE b WHERE b.APPROVER_CHILD_ID IN " +
-						"( SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' )) c " +
-						"WHERE c.ROOT_STATE_ID IN (rootStateIDs))";
-				query = query.replaceAll("approverID", approverID);
-				query = query.replaceFirst("rootStateIDs", rootStateIDLst);
-				PreparedStatement pstatement = con.prepareStatement(query);
+			}
+			String query = 
+					"SELECT root.ROOT_STATE_ID, root.HIST_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, " +
+					"phaseJoin.PHASE_ORDER, phaseJoin.APPROVAL_FORM, phaseJoin.APP_PHASE_ATR, " +
+					"phaseJoin.FRAME_ORDER, phaseJoin.APP_FRAME_ATR, phaseJoin.CONFIRM_ATR, phaseJoin.APPROVER_ID, phaseJoin.REPRESENTER_ID, " +
+					"phaseJoin.APPROVAL_DATE, phaseJoin.APPROVAL_REASON, phaseJoin.APPROVER_CHILD_ID " +
+					"FROM WWFDT_APPROVAL_ROOT_STATE root " +
+					"LEFT JOIN " +
+					"(SELECT phase.ROOT_STATE_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, " +
+					"frameJoin.FRAME_ORDER, frameJoin.APP_FRAME_ATR, frameJoin.CONFIRM_ATR, frameJoin.APPROVER_ID, frameJoin.REPRESENTER_ID, " +
+					"frameJoin.APPROVAL_DATE, frameJoin.APPROVAL_REASON, frameJoin.APPROVER_CHILD_ID " +
+					"FROM WWFDT_APPROVAL_PHASE_ST phase " +
+					"LEFT JOIN ( " +
+					"SELECT frame.ROOT_STATE_ID, frame.PHASE_ORDER, frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, " +
+					"frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON, approver.APPROVER_CHILD_ID " +
+					"FROM WWFDT_APPROVAL_FRAME frame " +
+					"LEFT JOIN " +
+					"WWFDT_APPROVER_STATE approver " +
+					"ON frame.ROOT_STATE_ID = approver.ROOT_STATE_ID " +
+					"AND frame.PHASE_ORDER = approver.PHASE_ORDER " +
+					"AND frame.FRAME_ORDER = approver.FRAME_ORDER) " +
+					"AS frameJoin " +
+					"ON phase.ROOT_STATE_ID = frameJoin.ROOT_STATE_ID " +
+					"AND phase.PHASE_ORDER = frameJoin.PHASE_ORDER) " +
+					"AS phaseJoin " +
+					"ON root.ROOT_STATE_ID = phaseJoin.ROOT_STATE_ID " +
+					"WHERE root.ROOT_STATE_ID IN ( " +
+					"SELECT DISTINCT c.ROOT_STATE_ID FROM ( " +
+					"SELECT a.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE a WHERE a.APPROVER_CHILD_ID = 'approverID' " + 
+					"UNION ALL " +
+					"SELECT b.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE b WHERE b.APPROVER_CHILD_ID IN " +
+					"( SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' )) c " +
+					"WHERE c.ROOT_STATE_ID IN (rootStateIDs))";
+			query = query.replaceAll("approverID", approverID);
+			query = query.replaceFirst("rootStateIDs", rootStateIDLst);
+			List<WwfdtFullJoinState> listFullData = new ArrayList<>();
+			try (PreparedStatement pstatement = con.prepareStatement(query)) {
 				ResultSet rs = pstatement.executeQuery();
-				List<WwfdtFullJoinState> listFullData = new ArrayList<>();
 				while (rs.next()) {
 					listFullData.add(new WwfdtFullJoinState(
 							rs.getString("ROOT_STATE_ID"), 
@@ -384,66 +381,66 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 							rs.getString("APPROVAL_REASON"), 
 							rs.getString("APPROVER_CHILD_ID")));
 				}
-				List<ApprovalRootState> entityRoot = listFullData.stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getRootStateID)).entrySet()
-						.stream().map(x -> {
-							String rootStateID = x.getValue().get(0).getRootStateID();
-							String historyID = x.getValue().get(0).getHistoryID();
-							GeneralDate recordDate = x.getValue().get(0).getRecordDate();
-							String employeeID = x.getValue().get(0).getEmployeeID();
-							List<ApprovalPhaseState> listAppPhase =
-							x.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getPhaseOrder)).entrySet()
-							.stream().map(y -> {
-								Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
-								ApprovalForm approvalForm = y.getValue().get(0).getApprovalForm();
-								ApprovalBehaviorAtr appPhaseAtr =  y.getValue().get(0).getAppPhaseAtr();
-								List<ApprovalFrame> listAppFrame =
-								y.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getFrameOrder)).entrySet()
-								.stream().map(z -> { 
-									Integer frameOrder = z.getValue().get(0).getFrameOrder();
-									ConfirmPerson confirmAtr = z.getValue().get(0).getConfirmAtr();
-									String frameApproverID =  z.getValue().get(0).getApproverID();
-									String representerID = z.getValue().get(0).getRepresenterID();
-									GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
-									String approvalReason = z.getValue().get(0).getApprovalReason();
-									ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
-									List<ApproverState> listApprover = z.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getApproverChildID)).entrySet()
-									.stream().map(t -> {
-										return new ApproverState(
-												rootStateID,
-												phaseOrder,
-												frameOrder,
-												t.getValue().get(0).getApproverChildID(),
-												companyID,
-												recordDate);
-									}).collect(Collectors.toList());
-									return new ApprovalFrame(
+			}
+			List<ApprovalRootState> entityRoot = listFullData.stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getRootStateID)).entrySet()
+					.stream().map(x -> {
+						String rootStateID = x.getValue().get(0).getRootStateID();
+						String historyID = x.getValue().get(0).getHistoryID();
+						GeneralDate recordDate = x.getValue().get(0).getRecordDate();
+						String employeeID = x.getValue().get(0).getEmployeeID();
+						List<ApprovalPhaseState> listAppPhase =
+						x.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getPhaseOrder)).entrySet()
+						.stream().map(y -> {
+							Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
+							ApprovalForm approvalForm = y.getValue().get(0).getApprovalForm();
+							ApprovalBehaviorAtr appPhaseAtr =  y.getValue().get(0).getAppPhaseAtr();
+							List<ApprovalFrame> listAppFrame =
+							y.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getFrameOrder)).entrySet()
+							.stream().map(z -> { 
+								Integer frameOrder = z.getValue().get(0).getFrameOrder();
+								ConfirmPerson confirmAtr = z.getValue().get(0).getConfirmAtr();
+								String frameApproverID =  z.getValue().get(0).getApproverID();
+								String representerID = z.getValue().get(0).getRepresenterID();
+								GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
+								String approvalReason = z.getValue().get(0).getApprovalReason();
+								ApprovalBehaviorAtr appFrameAtr = z.getValue().get(0).getAppFrameAtr();
+								List<ApproverState> listApprover = z.getValue().stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getApproverChildID)).entrySet()
+								.stream().map(t -> {
+									return new ApproverState(
 											rootStateID,
 											phaseOrder,
 											frameOrder,
-											appFrameAtr,
-											confirmAtr,
-											listApprover,
-											frameApproverID,
-											representerID,
-											approvalDate,
-											approvalReason
-									);
+											t.getValue().get(0).getApproverChildID(),
+											companyID,
+											recordDate);
 								}).collect(Collectors.toList());
-								return new ApprovalPhaseState(
-											rootStateID,
-											phaseOrder,
-											appPhaseAtr,
-											approvalForm,
-											listAppFrame
-										);
+								return new ApprovalFrame(
+										rootStateID,
+										phaseOrder,
+										frameOrder,
+										appFrameAtr,
+										confirmAtr,
+										listApprover,
+										frameApproverID,
+										representerID,
+										approvalDate,
+										approvalReason
+								);
 							}).collect(Collectors.toList());
-							return new ApprovalRootState(rootStateID, RootType.EMPLOYMENT_APPLICATION, historyID, recordDate, employeeID, listAppPhase);
+							return new ApprovalPhaseState(
+										rootStateID,
+										phaseOrder,
+										appPhaseAtr,
+										approvalForm,
+										listAppFrame
+									);
 						}).collect(Collectors.toList());
-				result.addAll(entityRoot);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		});
+						return new ApprovalRootState(rootStateID, RootType.EMPLOYMENT_APPLICATION, historyID, recordDate, employeeID, listAppPhase);
+					}).collect(Collectors.toList());
+			result = entityRoot;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 	
@@ -747,54 +744,33 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	@Override
 	public List<ApprovalRootState> findAppByListEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,
 			List<String> employeeIDs, Integer rootType) {
-		List<ApprovalRootState> results = new ArrayList<>();
-		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			results.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
+		return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.setParameter("rootType", rootType)
-				.setParameter("employeeID", subList).getList(x -> x.toDomain()));
-		});
-		return results;
+				.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
 	}
 
 	@Override
 	public List<ApprovalRootState> findAppByListEmployeeIDAndListRecordDate(List<GeneralDate> approvalRecordDates,
 			List<String> employeeIDs, Integer rootType) {
-		List<ApprovalRootState> results = new ArrayList<>();
 		switch (rootType) {
 		case 1:
-			CollectionUtil.split(approvalRecordDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
-				CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmpIds -> {
-					results.addAll(this.queryProxy().query(SELECT_CFS_DAY_BY_EMP_AND_DATES, WwfdtApprovalRootDay.class)
-							.setParameter("recordDate", lstDate)
-							.setParameter("employeeID", lstEmpIds)
-							.getList(x -> x.toDomain()));
-				});
-			});
-			break;
+			return this.queryProxy().query(SELECT_CFS_DAY_BY_EMP_AND_DATES, WwfdtApprovalRootDay.class)
+				.setParameter("recordDate", approvalRecordDates)
+				.setParameter("employeeID", employeeIDs)
+				.getList(x -> x.toDomain());
 		case 2:
-			CollectionUtil.split(approvalRecordDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
-				CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmpIds -> {
-					results.addAll(this.queryProxy().query(SELECT_CFS_MONTH_BY_EMP_AND_DATES, WwfdtApprovalRootMonth.class)
-							.setParameter("recordDate", lstDate)
-							.setParameter("employeeID", lstEmpIds)
-							.getList(x -> x.toDomain()));
-				});
-			});
-			break;
+			return this.queryProxy().query(SELECT_CFS_MONTH_BY_EMP_AND_DATES, WwfdtApprovalRootMonth.class)
+					.setParameter("recordDate", approvalRecordDates)
+					.setParameter("employeeID", employeeIDs)
+					.getList(x -> x.toDomain());
 		default:
-			CollectionUtil.split(approvalRecordDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
-				CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmpIds -> {
-					results.addAll(this.queryProxy().query(SELECT_APPS_BY_EMP_AND_DATES, WwfdtApprovalRootState.class)
-							.setParameter("recordDate", lstDate)
-							.setParameter("employeeID", lstEmpIds)
-							.getList(x -> x.toDomain()));
-				});
-			});
-			break;
+			return this.queryProxy().query(SELECT_APPS_BY_EMP_AND_DATES, WwfdtApprovalRootState.class)
+					.setParameter("recordDate", approvalRecordDates)
+					.setParameter("employeeID", employeeIDs)
+					.getList(x -> x.toDomain());
 		}
-		return results;
 	}
 
 	@Override

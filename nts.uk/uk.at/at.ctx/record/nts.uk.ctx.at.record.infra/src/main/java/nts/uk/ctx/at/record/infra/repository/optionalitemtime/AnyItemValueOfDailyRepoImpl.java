@@ -100,7 +100,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
 						+" WHERE YMD >= ?"
 						+" AND YMD <= ?"
-						+" SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
+						+" AND SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
 				) {
 
 				stmt.setDate(1, Date.valueOf(baseDate.start().toLocalDate()));
@@ -204,12 +204,13 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	
 	@SneakyThrows
 	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
-		val statement = this.connection().prepareStatement(
+		try (val statement = this.connection().prepareStatement(
 				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
-				+ " WHERE SID = ? AND YMD = ?");
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(baseDate.localDate()));
-		statement.executeUpdate();
+				+ " WHERE SID = ? AND YMD = ?")) {
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(baseDate.localDate()));
+			statement.executeUpdate();
+		}
 	}
 	
 	@Override

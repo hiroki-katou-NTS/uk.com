@@ -78,8 +78,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-		try {
-			val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?");
+		try (val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(standardDate.localDate()));
 			statement.setDate(3, Date.valueOf(standardDate.localDate()));

@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -91,9 +92,8 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		try {
-			val statement = this.connection().prepareStatement(
-					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
+		try (val statement = this.connection().prepareStatement(
+					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			statement.execute();
@@ -125,11 +125,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return group(krcdtDaiBreakTimes);
 	}
 
+	@SneakyThrows
 	private List<KrcdtDaiBreakTime> findEntities(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = null; 
 
-		try {
-			val statement = this.connection().prepareStatement("select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
+		try (val statement = this.connection().prepareStatement("select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getList(rec -> {
@@ -143,8 +143,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				entity.endStampTime = rec.getInt("END_STAMP_TIME");
 				return entity;
 			});
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 
 		if (krcdtDaiBreakTimes == null || krcdtDaiBreakTimes.isEmpty()) {

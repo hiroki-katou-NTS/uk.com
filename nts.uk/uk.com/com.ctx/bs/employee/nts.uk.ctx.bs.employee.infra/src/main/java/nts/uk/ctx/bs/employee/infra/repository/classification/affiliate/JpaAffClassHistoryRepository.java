@@ -64,28 +64,28 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	@SneakyThrows
 	public Optional<DateHistoryItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		
-		PreparedStatement statement = this.connection().prepareStatement(
+		try (PreparedStatement statement = this.connection().prepareStatement(
 				"select * from BSYMT_AFF_CLASS_HISTORY"
 				+ " where SID = ?"
 				+ " and START_DATE <= ?"
-				+ " and END_DATE >= ?");
-		
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(standardDate.localDate()));
-		statement.setDate(3, Date.valueOf(standardDate.localDate()));
-		
-		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			BsymtAffClassHistory history = new BsymtAffClassHistory();
-			history.historyId = rec.getString("HIST_ID");
-			history.cid = rec.getString("CID");
-			history.sid = rec.getString("SID");
-			history.startDate = rec.getGeneralDate("START_DATE");
-			history.endDate = rec.getGeneralDate("END_DATE");
-			return new DateHistoryItem(
-					history.historyId,
-					new DatePeriod(history.startDate, history.endDate));
-		});
-		
+				+ " and END_DATE >= ?")) {
+			
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(standardDate.localDate()));
+			statement.setDate(3, Date.valueOf(standardDate.localDate()));
+			
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				BsymtAffClassHistory history = new BsymtAffClassHistory();
+				history.historyId = rec.getString("HIST_ID");
+				history.cid = rec.getString("CID");
+				history.sid = rec.getString("SID");
+				history.startDate = rec.getGeneralDate("START_DATE");
+				history.endDate = rec.getGeneralDate("END_DATE");
+				return new DateHistoryItem(
+						history.historyId,
+						new DatePeriod(history.startDate, history.endDate));
+			});
+		}
 	}
 
 

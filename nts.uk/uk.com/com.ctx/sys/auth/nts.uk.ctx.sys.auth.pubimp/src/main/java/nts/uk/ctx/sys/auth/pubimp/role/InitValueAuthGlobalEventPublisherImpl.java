@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 //Event：権限管理の初期値登録 - Tuy la event nhưng thực tế đang viết dạng publish
 @Stateless
-public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGlobalEventPublisher , DomainEventSubscriber<RoleByRoleTiesGlobalEvent>{
+public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGlobalEventPublisher {
 
 	@Inject
 	private RoleRepository roleRepo;
@@ -44,24 +44,13 @@ public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGloba
 				listRoleCopy.add(initRole);
 				listRoleTiesID.add(roleID);
 				this.roleRepo.insert(initRole);
-				RoleByRoleTiesGlobalEvent roleEvent = new RoleByRoleTiesGlobalEvent(roleID, role.getCompanyId());
+				RoleByRoleTiesGlobalEvent roleEvent = new RoleByRoleTiesGlobalEvent(roleID, companyIDCopy);
 				roleEvent.toBePublished();
 			}
 		}
 	}
 
-	@Override
-	public Class<RoleByRoleTiesGlobalEvent> subscribedToEventType() {
-		// TODO Auto-generated method stub
-		return RoleByRoleTiesGlobalEvent.class;
-	}
-
-	@Override
-	public void handle(RoleByRoleTiesGlobalEvent domainEvent) {
-		RoleByRoleTiesGlobalEvent roleEvent = new RoleByRoleTiesGlobalEvent(domainEvent.getRoleId(),domainEvent.getCompanyId());
-		roleEvent.toBePublished();
-		
-	}
+	
 	
 	
 }
