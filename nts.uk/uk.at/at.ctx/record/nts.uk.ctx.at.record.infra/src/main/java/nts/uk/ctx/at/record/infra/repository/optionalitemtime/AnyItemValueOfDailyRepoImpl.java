@@ -96,7 +96,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
 						+" WHERE YMD >= ?"
 						+" AND YMD <= ?"
-						+" SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
+						+" AND SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
 				) {
 
 				stmt.setDate(1, Date.valueOf(baseDate.start().toLocalDate()));
