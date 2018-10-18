@@ -25,19 +25,19 @@
 				<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('QMM002_2')}</button>
 				<button tabindex="3" data-bind="enable: false">#{i18n.getText('QMM002_3')}</button>
 				<button tabindex="4" data-bind="click: openDialogQmm002d">#{i18n.getText('QMM002_4')}</button>
-				<button tabindex="5" data-bind="click: openDialogQmm002c">#{i18n.getText('QMM002_5')}</button>
+				<button tabindex="5" data-bind="click: openDialogQmm002c, enable: totalBranches() > 1">#{i18n.getText('QMM002_5')}</button>
 				<button tabindex="6" data-bind="enable: false">#{i18n.getText('QMM002_6')}</button>
-				<button tabindex="7" class="danger" data-bind="click: deleteBranch">#{i18n.getText('QMM002_7')}</button>
+				<button tabindex="7" class="danger" data-bind="click: deleteBranch, enable: updateMode()">#{i18n.getText('QMM002_7')}</button>
 				<button tabindex="8" class="danger" data-bind="click: openDialogQmm002b">#{i18n.getText('QMM002_8')}</button>
-				<a class="goout" tabindex="9" data-bind="ntsLinkButton: { jump: 'qmm/006/a/index.xhtml' }">#{i18n.getText('QMM002_9')}</a>
+				<a class="goout" tabindex="9" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('QMM002_9')}</a>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
-					<div data-bind="ntsPanel:{width: '450px', height: '530px', showIcon: true, visible: true}">
+					<div data-bind="ntsPanel:{width: '450px', height: '450px', showIcon: true, visible: true}">
 						<div tabindex="10" data-bind="ntsSearchBox: {
-							targetKey: 'code', mode:'igTree', comId:'treegridbankbranch', items: bankBranchList, 
+							targetKey: 'id', mode:'igTree', comId:'A2_3', items: bankBranchList, 
 							selected: selectedCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
-						<table id="treegridbankbranch" tabindex="11"
+						<table id="A2_3" tabindex="11"
 							data-bind="ntsTreeGridView:{
 								width: 450,
 								name: '#[QMM002_10]',
@@ -52,12 +52,12 @@
 								rows: 15,
 								initialExpandDepth: 0,
 								showCheckBox: false}"></table>
-						<span class="label" data-bind="text: totalBranches"></span>
+						<span class="label" style="padding: 10px 0px;" data-bind="text: totalBranchesDisplay"></span>
 					</div>
 				</div>
 				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 					<div data-bind="with: selectedBank">
-						<div style="float: left; width: 50%">
+						<div style="float: left; width: 60%">
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('QMM002_13')}</div>
 								<span class="label" data-bind="text: code"></span>
@@ -79,13 +79,13 @@
 					<div data-bind="with: selectedBankBranch">
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: {  required: true, constraint: ['BankBranchCode', 'BankBranchName'] }">#{i18n.getText('QMM002_16')}</div>
-							<input tabindex="13" data-bind="ntsTextEditor: {
+							<input tabindex="13" id="A3_9" data-bind="ntsTextEditor: {
 								name: '#[QMM002_17]',
 								value: code,
 								constraint: 'BankBranchCode',
-								option: {width: '70px'},
-								required: true}" />
-							<input tabindex="14" data-bind="ntsTextEditor: {
+								option: {width: '40px'},
+								required: true, enable: !$vm.updateMode()}" />
+							<input tabindex="14" id="A3_10" data-bind="ntsTextEditor: {
 								name: '#[QMM002_18]',
 								value: name,
 								constraint: 'BankBranchName',

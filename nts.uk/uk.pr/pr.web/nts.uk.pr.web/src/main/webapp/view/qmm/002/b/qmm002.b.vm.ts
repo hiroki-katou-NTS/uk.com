@@ -25,6 +25,7 @@ module nts.uk.pr.view.qmm002.b.viewmodel {
             block.invisible();
             service.getAllBank().done((data: Array<any>) => {
                 if (_.isEmpty(data)) {
+                    dfd.resolve();
                     alertError({messageId: "Msg_672"});
                 } else {
                     block.invisible();
@@ -60,6 +61,7 @@ module nts.uk.pr.view.qmm002.b.viewmodel {
         }
 
         cancel() {
+            setShared("QMM002BCancel", {isCancel: true});
             nts.uk.ui.windows.close();
         }
 

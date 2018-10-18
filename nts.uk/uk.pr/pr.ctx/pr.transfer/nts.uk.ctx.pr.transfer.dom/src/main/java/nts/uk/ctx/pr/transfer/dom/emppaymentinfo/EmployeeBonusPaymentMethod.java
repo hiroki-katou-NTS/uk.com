@@ -38,7 +38,7 @@ public class EmployeeBonusPaymentMethod extends AggregateRoot {
 		}
 	}
 
-	public EmployeeBonusPaymentMethod(String historyId, int settingAtr, List<PaymentMethodDetail> listPaymentMethod) {
+	public EmployeeBonusPaymentMethod(String historyId, boolean settingAtr, List<PaymentMethodDetail> listPaymentMethod) {
 		super();
 		this.historyId = historyId;
 		this.settingAtr = IndividualSettingAtr.of(settingAtr);

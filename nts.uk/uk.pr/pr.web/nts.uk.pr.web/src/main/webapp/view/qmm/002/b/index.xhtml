@@ -21,10 +21,10 @@
 				<div class="valign-center control-group">
 					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
 					<div tabindex="1" style="width: 400px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
-						targetKey: 'id', mode:'igTree', comId:'treegridbankbranch', items: bankBranchList, 
+						targetKey: 'id', mode:'igTree', comId:'B1_4', items: bankBranchList, 
 						selected: selectedBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
 				</div>
-				<table id="treegridbankbranch" tabindex="2"
+				<table id="B1_4" tabindex="2"
 					data-bind="ntsTreeGridView:{
 						width: 450,
 						rows: 15,
@@ -45,7 +45,7 @@
 				<button tabindex = "4" data-bind="click: cancel">#{i18n.getText('QMM002_21')}</button>
 			</div>
 			<style>
-				#treegridbankbranch_container{clear: both}
+				#B1_4_container{clear: both}
 			</style>
 		</ui:define>
 	</ui:composition>

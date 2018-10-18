@@ -13,7 +13,8 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         bankBranchList: KnockoutObservableArray<Node>;
         selectedCode: KnockoutObservable<string>;
         headers: any;
-        totalBranches: KnockoutObservable<string> = ko.observable(getText("QMM002_12", [0]));
+        totalBranches: KnockoutObservable<number> = ko.observable(0);
+        totalBranchesDisplay: KnockoutObservable<string> = ko.observable(getText("QMM002_12", [0]));
         
         listBank: KnockoutObservableArray<Bank> = ko.observableArray([]);
         selectedBankBranch: KnockoutObservable<BankBranch> = ko.observable(new BankBranch("", "", "", "", "", ""));
@@ -29,14 +30,16 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                 if (_.isEmpty(val)) {
                     self.selectedBankBranch(new BankBranch("", self.selectedBank().code(), "", "", "", ""));
                     self.updateMode(false);
+                    $("#A3_9").focus();
                 } else {
-                    self.updateMode(true);
                     if (val.length > 4) { // bank branch selected
                         block.invisible();
                         service.getBankBranch(val).done(data =>{
                             let selectedBank = _.find(self.listBank(), b => {return b.code() == data.bankCode;});
                             self.selectedBank(selectedBank);
                             self.selectedBankBranch(new BankBranch(data.id, data.bankCode, data.code, data.name, data.kanaName, data.memo));
+                            self.updateMode(true);
+                            $("#A3_10").focus();
                         }).fail(error => {
                             alertError(error);
                         }).always(() => {
@@ -47,14 +50,22 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                         self.selectedBank(selectedBank);
                         self.selectedBankBranch(new BankBranch("", self.selectedBank().code(), "", "", "", ""));
                         self.updateMode(false);
+                        $("#A3_9").focus();
                     }
                 }
+            });
+            self.totalBranches.subscribe(val => {
+                self.totalBranchesDisplay(getText("QMM002_12", [val]));
             });
         }
         
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
+            self.bankBranchList([]);
+            self.listBank([]);
+            self.selectedBank(new Bank("", "", "", ""));
+            self.selectedCode(null);
             service.getAllBank().done((data: Array<any>) => {
                 if (_.isEmpty(data)) {
                     dfd.resolve();
@@ -89,22 +100,13 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                 block.invisible();
                 let command = ko.toJS(self.selectedBankBranch());
                 service.registerBranch(command).done(data => {
-                    service.getAllBankBranch(_.map(self.listBank(), b => b.code())).done((branchData: Array<any>) => {
-                        let displayList = _.map(self.listBank(), b => {
-                            let lstBr = _.filter(branchData, br => { return br.bankCode == b.code(); }).map(br => { return new Node(br.id, br.code, br.name, [])});
-                            return new Node(b.code(), b.code(), b.name(), lstBr);
-                        });
-                        self.bankBranchList(displayList);
+                    self.getAllBranch(ko.toJS(self.listBank())).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             if (self.selectedCode() == data)
                                 self.selectedCode.valueHasMutated();
                             else
                                 self.selectedCode(data);
                         });
-                    }).fail(error => {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
                     });
                 }).fail(error => {
                     alertError(error);
@@ -124,6 +126,9 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                         self.startPage().done(() => {
                             info({ messageId: "Msg_16" }).then(() => {
                                 self.selectedCode(nextSelectNodeId);
+                                if (self.listBank().length == 0) {
+                                    self.openDialogQmm002d();
+                                }
                             });
                         });
                     }).fail(error => {
@@ -143,11 +148,14 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         openDialogQmm002b() {
             let self = this;
             modal("/view/qmm/002/b/index.xhtml").onClosed(() => {
-                self.startPage().done(() => {
-                    if (self.listBank().length == 0) {
-                        self.openDialogQmm002d();
-                    }
-                });
+                let isCancel = getShared("QMM002BCancel");
+                if (_.isEmpty(isCancel)) {
+                    self.startPage().done(() => {
+                        if (self.listBank().length == 0) {
+                            self.openDialogQmm002d();
+                        }
+                    });
+                }
             });
         }
         
@@ -184,15 +192,21 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                         return new Node(b.code, b.code, b.name, []);
                     });
                     self.bankBranchList(displayList);
-                    self.selectedCode(data[0].code);
+                    if (self.selectedCode() == data[0].code)
+                        self.selectedCode.valueHasMutated();
+                    else
+                        self.selectedCode(data[0].code);
                 } else {
-                    self.totalBranches(getText("QMM002_12", [branchData.length]));
+                    self.totalBranches(branchData.length);
                     let displayList = _.map(data, b => {
                         let lstBr = _.filter(branchData, br => { return br.bankCode == b.code; }).map(br => { return new Node(br.id, br.code, br.name, [])});
                         return new Node(b.code, b.code, b.name, lstBr);
                     });
                     self.bankBranchList(displayList);
-                    self.selectedCode(branchData[0].id);
+                    if (self.selectedCode() == branchData[0].id)
+                        self.selectedCode.valueHasMutated();
+                    else
+                        self.selectedCode(branchData[0].id);
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -218,7 +232,7 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             if (selectedNode.id != selectedNode.code) {
                 // branch
                 let currBankNode: Node = _.find(listNode, n => {return n.id == self.selectedBank().code();});
-                if (currBankNode.children.length = 1) {
+                if (currBankNode.children.length == 1) {
                     nextSelectNodeId = currBankNode.id;
                 } else {
                     let currBranchIndex = _.findIndex(currBankNode.children, b => { return b.id == selectedNode.id; });

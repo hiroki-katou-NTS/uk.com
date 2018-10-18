@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
         dataSource: KnockoutObservableArray<Bank>;
         selectedCode: KnockoutObservable<string>;
         selectedBank: KnockoutObservable<Bank>;
+        updateMode: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             self.bankList = ko.observableArray([]);
@@ -23,9 +24,13 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 if (val == null) {
                     self.selectedBank(new Bank("", "", "", ""));
+                    self.updateMode(false);
+                    $("#D3_2").focus();
                 } else {
                     let bank = _.find(self.dataSource(), b => {return b.code() == val});
                     self.selectedBank(bank);
+                    self.updateMode(true);
+                    $("#D3_3").focus();
                 }
             });
         }
@@ -74,6 +79,7 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let command = ko.toJS(self.selectedBank());
+                ko.utils.extend(command, { updateMode: self.updateMode() });
                 qmm002.a.service.registerBank(command).done(() => {
                     qmm002.a.service.getAllBank().done((data: Array<any>) => {
                         let lstBank = [], lstDisp = [];
@@ -95,7 +101,9 @@ module nts.uk.pr.view.qmm002.d.viewmodel {
                         block.clear();
                     });
                 }).fail(error => {
-                    alertError(error);
+                    alertError(error).then(() => {
+                        if (error.messageId == "Msg_3") $("#D3_2").focus();
+                    });
                 }).always(() => {
                     block.clear();
                 });

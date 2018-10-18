@@ -27,7 +27,7 @@
 			</div>
 			<div class="contents-area dialog-content fixed-flex-layout" style="padding: 20px 25px">
 				<div class="fixed-flex-layout-left">
-					<table id="single-list" 
+					<table id="single-list" tabindex = "4"
 						data-bind="ntsGridList: {								
 							rows: 15,
 							name: '#[QMM002_31]',
@@ -45,13 +45,13 @@
 					<div data-bind="with: selectedBank">
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: {  required: true, constraint: ['BankCode', 'BankName'] }">#{i18n.getText('QMM002_13')}</div>
-							<input tabindex="13" data-bind="ntsTextEditor: {
+							<input tabindex="5" id="D3_2" data-bind="ntsTextEditor: {
 								name: '#[QMM002_32]',
 								value: code,
 								constraint: 'BankCode',
 								option: {width: '40px'},
-								required: true}" />
-							<input tabindex="14" data-bind="ntsTextEditor: {
+								required: true, enable: !$vm.updateMode()}" />
+							<input tabindex="6" id="D3_3" data-bind="ntsTextEditor: {
 								name: '#[QMM002_33]',
 								value: name,
 								constraint: 'BankName',
@@ -59,7 +59,7 @@
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { constraint: 'BankNameKana' }">#{i18n.getText('QMM002_15')}</div>
-							<input tabindex="15" data-bind="ntsTextEditor: {
+							<input tabindex="7" data-bind="ntsTextEditor: {
 								name: '#[QMM002_15]',
 								value: kanaName,
 								constraint: 'BankNameKana',
@@ -70,7 +70,7 @@
 					<div data-bind="with: selectedBank">
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('QMM002_14')}</div>
-							<textarea style="height: 150px" tabindex="16" data-bind="ntsMultilineEditor: {
+							<textarea style="height: 150px" tabindex="8" data-bind="ntsMultilineEditor: {
 								value: memo,
 								name: '#[QMM002_14]',
 								constraint: 'Memo',

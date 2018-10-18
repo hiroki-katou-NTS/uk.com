@@ -36,7 +36,7 @@ public class DeleteListBankBranchCommandHandler extends CommandHandler<List<Stri
 			bankRepo.removeBank(companyId, bankCode);
 			branchRepo.removeListBranchFromBank(companyId, bankCode);
 		}
-		List<String> branches = targets.stream().filter(t -> t.length() <= 4).collect(Collectors.toList());
+		List<String> branches = targets.stream().filter(t -> t.length() > 4).collect(Collectors.toList());
 		branchRepo.removeListBranch(companyId, branches);
 	}
 
