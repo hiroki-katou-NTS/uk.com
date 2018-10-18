@@ -154,7 +154,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let self = this;
             self.singleSelectedCode.subscribe((o)=>{
                 nts.uk.ui.errors.clearAll();
-                self.enableButtonNew(true);
                 if(o){
                 let fistHistory,code,hisId;
                 let params = o.split('__');
@@ -167,18 +166,22 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         if(fistHistory && self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY && self.newHisId() && self.newHisId() === hisId){
                             hisId = fistHistory.hisId;
                             self.mode(MODE.ADD_HISTORY);
+                            self.enableButtonNew(false);
                             self.enableEditHistoryButton(false);
                         }else if(self.historyTakeover() === HISTORYTAKEOVER.CREATE_NEW && self.newHisId() && self.newHisId() === hisId){
                             self.mode(MODE.ADD_HISTORY);
+                            self.enableButtonNew(false);
                             self.enableEditHistoryButton(false);
                         } else{
                             self.enableYearMonth(false);
+                            self.enableButtonNew(true);
                             self.enableEditHistoryButton(true);
                             self.enableAddHistoryButton(true);
                             self.mode(MODE.UPDATE);
                         }
                         if(self.newHisId() && self.newNode() && code === self.newNode().code.split('__')[0]){
                             self.enableAddHistoryButton(false);
+
                         }else if(self.newHisId() && self.newNode() && code != self.newNode().code.split('__')[0]){
                             _.forEach(self.dataSource(),(o)=>{
                                 _.remove(o.childs,(d)=>{ return d.code === self.newNode().code});
@@ -322,6 +325,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     self.dataSource(self.dataSource());
 
                     self.mode(MODE.ADD_HISTORY);
+                    self.enableButtonNew(false);
                     self.singleSelectedCode(code + '__' + hisId);
 
 
