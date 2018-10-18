@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.record.pub.workrecord.identificationstatus.identityconfirmprocess;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 @AllArgsConstructor
 @Getter
@@ -11,26 +15,26 @@ public class IdentityConfirmProcessExport {
 	/**
 	 * 会社ID
 	 */
-	private String cid;
-
+	private CompanyId companyId;
+	
 	/**
 	 * 日の本人確認を利用する
 	 */
-	private int useDailySelfCk;
-
+	private boolean useConfirmByYourself;
+	
 	/**
 	 * 月の本人確認を利用する
 	 */
-	private int useMonthSelfCK;
-
+	private boolean useIdentityOfMonth;
+	
 	/**
-	 * エラーがある場合の本人確認
+	 * エラーがある場合の日の本人確認
 	 */
-	private Integer yourselfConfirmError;
+	private Optional<SelfConfirmError> yourSelfConfirmError;
 
-	public static IdentityConfirmProcessExport fromDomain(IdentityProcess domain) {
-		return new IdentityConfirmProcessExport(domain.getCid(), domain.getUseDailySelfCk(), domain.getUseMonthSelfCK(),
-				domain.getYourselfConfirmError() == null ? null : domain.getYourselfConfirmError().value);
+	public static IdentityConfirmProcessExport fromDomain(IdentityProcessUseSet domain) {
+		return new IdentityConfirmProcessExport(domain.getCompanyId(), domain.isUseConfirmByYourself(), domain.isUseIdentityOfMonth(), 
+				domain.getYourSelfConfirmError());
 	}
 
 }

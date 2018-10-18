@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes;
+package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
