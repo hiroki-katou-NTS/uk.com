@@ -752,7 +752,8 @@ module cmm045.a.viewmodel {
             });
             let other = count > 2 ? count - 2 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = framName + otherInfo;
+            //#102010
+            let result = framName + '　' + otherInfo;
             return result;
         }
         /**

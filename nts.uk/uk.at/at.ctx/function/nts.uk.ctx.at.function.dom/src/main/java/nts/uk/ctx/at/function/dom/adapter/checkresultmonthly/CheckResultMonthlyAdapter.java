@@ -27,5 +27,5 @@ public interface CheckResultMonthlyAdapter {
 	List<Check36AgreementValueImport> check36AgreementConditions(String employeeId,List<MonthlyRecordValuesImport> monthlyRecords,AgreementCheckCon36FunImport agreementCheckCon36, Optional<Closure> closure);
 	
 	//HoiDD No.257
-	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition, List<Integer> attendanceIds);
+	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition);
 }

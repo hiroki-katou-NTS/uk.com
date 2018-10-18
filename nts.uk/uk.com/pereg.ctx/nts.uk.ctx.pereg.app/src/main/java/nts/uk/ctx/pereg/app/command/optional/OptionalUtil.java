@@ -53,7 +53,7 @@ public class OptionalUtil {
 		try {
 			return new BigDecimal(convertToString(obj));
 		} catch (Exception e) {
-			return new BigDecimal("0");
+			return null;
 		}
 	}
 	
@@ -63,6 +63,7 @@ public class OptionalUtil {
 	 * @return
 	 */
 	public static DataState createDataState(ItemValue item) {
+		if(item.value() == null) return null;
 		switch (item.saveDataType()) {
 		case STRING:
 			return DataState.createFromStringValue(convertToString(item.value()));
