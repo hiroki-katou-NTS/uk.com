@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -152,6 +153,10 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 	@Override
 	public Map<WorkTimeCode, List<AmPmWorkTimezone>> getDiffOffdayWorkRestTimezones(
 			String companyId, List<String> workTimeCodes) {
+		if(CollectionUtil.isEmpty(workTimeCodes)) {
+			return Collections.emptyMap();
+		}
+		
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();

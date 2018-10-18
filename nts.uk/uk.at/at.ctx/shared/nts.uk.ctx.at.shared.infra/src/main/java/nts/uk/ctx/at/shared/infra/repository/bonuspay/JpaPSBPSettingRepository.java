@@ -36,7 +36,7 @@ public class JpaPSBPSettingRepository extends JpaRepository implements PSBonusPa
 		List<PersonalBonusPaySetting> resultList = new ArrayList<>();
 		CollectionUtil.split(lstEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(queryProxy().query(SELECT_BY_LIST_ID, KbpstPersonalBPSetting.class)
-				.setParameter("employeeIds", lstEmployeeId)
+				.setParameter("employeeIds", subList)
 				.getList(m -> toDomain(m)));
 		});
 		return resultList;

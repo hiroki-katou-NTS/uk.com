@@ -28,9 +28,6 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 	/** The Constant LEAVE_ABSENCE_QUOTA_NO. */
 	public static final int LEAVE_ABSENCE_QUOTA_NO = 1;
 
-	/** The Constant MAX_WHERE_IN. */
-	private static final int MAX_WHERE_IN = 1000;
-
 	/** The Constant SEARCH_BY_WORKPLACE. */
 	private static final String SEARCH_BY_WORKPLACE = "SELECT e.bsymtEmployeeDataMngInfoPk.sId, e.employeeCode, p.businessName, wi.wkpName, "
 			+ "ach.startDate, ach.endDate, absHis.startDate, absHis.endDate, absHisItem.tempAbsFrameNo "
@@ -61,7 +58,8 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<EmployeeSearchOutput> searchEmpByWorkplaceList(SearchEmpInput input) {
-		if (input.getEmpStatus().isEmpty()) {
+		if (CollectionUtil.isEmpty(input.getEmpStatus())
+				|| CollectionUtil.isEmpty(input.getWorkplaceIdList())) {
 			return Collections.emptyList();
 		}
 

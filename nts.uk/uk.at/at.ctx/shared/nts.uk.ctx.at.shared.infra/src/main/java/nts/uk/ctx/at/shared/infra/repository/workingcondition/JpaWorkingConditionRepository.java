@@ -326,6 +326,12 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	 */
 	@Override
 	public List<WorkingCondition> getBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod) {
+		
+		// Check exist
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return Collections.emptyList();
+		}
+				
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -360,11 +366,6 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			result.addAll(query.getResultList());
 		});
 
-		// Check exist
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
-		
 		return result.parallelStream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 				.values().parallelStream()

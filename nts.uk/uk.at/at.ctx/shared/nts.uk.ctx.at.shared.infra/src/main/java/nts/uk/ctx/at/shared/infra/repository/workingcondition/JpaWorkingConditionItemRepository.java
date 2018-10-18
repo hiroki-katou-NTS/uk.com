@@ -84,7 +84,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @return the by list sid and monthly pattern not null
 	 */
 	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds, List<String> monthlyPatternCodes){
-		if (employeeIds.isEmpty()){
+		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(monthlyPatternCodes)) {
 			return Collections.emptyList();
 		}
 
@@ -131,11 +131,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 							});
 				});
 		
-		// Check empty
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
-
 		// exclude select
 		return result.stream()
 				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
@@ -526,6 +521,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @return the last working cond item
 	 */
 	private List<KshmtWorkingCondItem> getLastWorkingCondItemEntities(List<String> employeeId) {
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(employeeId)) {
+			return Collections.emptyList();
+		}
+				
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -560,11 +561,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 			result.addAll(query.getResultList());
 		});
-
-		// Check empty
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
 
 		// exclude select
 		return result;
@@ -698,10 +694,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	@Override
 	public List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds) {
 		List<KshmtWorkingCondItem> result = this.getLastWorkingCondItemEntities(employeeIds);
-		// Check empty
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
 
 		// exclude select
 		return result.stream().map(
