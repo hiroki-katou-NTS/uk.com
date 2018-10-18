@@ -28,5 +28,9 @@ public interface AnnLeaGrantRemDataRepository {
 	void deleteAfterDate(String employeeId, GeneralDate date);
 	
 	void delete(String annaLeavID);
+	
+	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForAdd(String employeeId, GeneralDate grantDate);
+	
+	List<AnnualLeaveGrantRemainingData> checkConditionUniqueForUpdate(String employeeId, String annLeavID, GeneralDate grantDate);
 
 }
