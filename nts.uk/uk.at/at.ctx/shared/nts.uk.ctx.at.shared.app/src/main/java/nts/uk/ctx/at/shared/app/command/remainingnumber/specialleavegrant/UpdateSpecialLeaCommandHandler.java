@@ -21,15 +21,22 @@ public class UpdateSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveR
 	@Override
 	protected void handle(CommandHandlerContext<SpecialLeaveRemainCommand> context) {
 		SpecialLeaveRemainCommand command = context.getCommand();
-	
+		GeneralDate grantDate = GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd");
+		boolean isHasData = this.repo.isHasData(command.getSid(), command.getSpecialid(), grantDate);
+		
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
 			throw new BusinessException("Msg_1023");
 		}
 		
+		//update No.2845 theo mã bug 102061 - ユニーク制約, 社員ID、付与日 #Msg_1456
+		if(isHasData == true) {
+			throw new BusinessException("Msg_1456");
+		}
+		
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
 				command.getSpecialid(),AppContexts.user().companyId() ,command.getSid(), command.getSpecialLeaCode(),
-				GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd"),
+				grantDate,
 				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),
 				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(),command.getTimeGrant(), 
@@ -38,7 +45,9 @@ public class UpdateSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveR
 				command.getNumberDaysOver(), command.getTimeOver(), 
 				command.getNumberDayRemain(),command.getTimeRemain(),
 				command.grantDateItemName, command.deadlineDateItemName);
+		
 		repo.update(data);
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.log.app.command.pereg;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
@@ -58,11 +60,14 @@ public class PeregCorrectionLogProcessorExt extends PeregCorrectionLogProcessor 
 		
 		@SuppressWarnings("unchecked")
 		HashMap<String, Serializable> parameters = (HashMap<String, Serializable>) parameter;
-		
 		val context = PeregCorrectionLogProcessorContext.newContext(basicInfo.getOperationId(), parameters);
+		
 		this.buildLogContents(context);
-
-		this.basicInfoRepository.save(basicInfo);
-		this.correctionLogRepository.save(context.getCorrections());
+		
+		if (!CollectionUtil.isEmpty(context.getCorrections())) {
+			this.basicInfoRepository.save(basicInfo);
+			this.correctionLogRepository.save(context.getCorrections());
+		}
+		
 	}
 }
