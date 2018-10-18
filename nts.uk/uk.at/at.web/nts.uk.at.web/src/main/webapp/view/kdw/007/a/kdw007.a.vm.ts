@@ -301,6 +301,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -312,6 +320,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {

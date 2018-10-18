@@ -10,13 +10,11 @@ import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 
 @Data
 @AllArgsConstructor
-public class EmployeeApproverAsApplicationOutput {
-	/**
-	 * 社員の情報
-	 */
-	EmployeeApproverOutput employeeInfor;
-	/**
-	 * apptype 
-	 */
-	Map<AppTypes, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover;
+public class EmpApproverAsApp {
+	/** 社員の情報 */
+	private EmployeeApproverOutput employeeInfor;
+	/**key: appType, values: list phase */
+	private Map<AppTypes, List<ApproverAsAppInfor>> mapAppType;
+	/** list AppTypes */
+	private List<AppTypes> lstAppTypes;	
 }

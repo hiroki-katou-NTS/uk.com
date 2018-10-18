@@ -3501,7 +3501,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 dfd.resolve({ id: rowId, item: columnKey, value: value });
             }
             else {
-                if (valueError != undefined) {
+                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
+                    return data.rowId == rowId;
+                });
+                if (valueError != undefined || rowError != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
                     //nts.uk.ui.block.invisible();
@@ -3555,8 +3558,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve({});
                     }).fail(error => {
                          __viewContext.vm.listCheck28.push({ itemId: keyId, layoutCode: error.message, rowId: rowId});
-                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                          nts.uk.ui.block.clear();
+                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                         let e = document.createEvent("HTMLEvents");
+                         e.initEvent("mouseup", false, true);
+                         $("#dpGrid")[0].dispatchEvent(e);
                          dfd.resolve({ id: rowId, item: columnKey, value: value });
                     });
                 }
@@ -3869,6 +3875,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         else {
                             if (returnWorkLocationCD == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             dfd3.resolve();
                         }
                     });
@@ -3906,6 +3913,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         else {
                             if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             nts.uk.ui.block.clear();
                             dfd4.resolve();
                         }

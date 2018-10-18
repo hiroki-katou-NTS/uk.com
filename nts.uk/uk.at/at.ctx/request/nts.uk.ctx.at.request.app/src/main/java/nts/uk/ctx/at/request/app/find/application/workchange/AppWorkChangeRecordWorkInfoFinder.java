@@ -36,13 +36,13 @@ public class AppWorkChangeRecordWorkInfoFinder {
 		//(就業.contexts)「勤務実績」 imported (Request list No 05)s
 		RecordWorkInfoImport recordInfo = recordWorkInfoAdapter.getRecordWorkInfo(employeeId, GeneralDate.fromString(appDate, DATE_FORMAT));
 		// Get work type name & work time name
-		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyId, recordInfo.getWorkTypeCode());
+		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyId, recordInfo.getWorkTimeCode());
 		if (workTime.isPresent()) {
-			workTypeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+			workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 		}
-		Optional<WorkType> workType = workTypeRepository.findByPK(companyId, recordInfo.getWorkTimeCode());
+		Optional<WorkType> workType = workTypeRepository.findByPK(companyId, recordInfo.getWorkTypeCode());
 		if (workType.isPresent()) {
-			workTimeName = workType.get().getName().v();
+			workTypeName = workType.get().getName().v();
 		}
 		//TODO: (就業.contexts)「勤務実績」．休憩時刻1、休憩時刻2 ?????
 		RecordWorkInfoDto dto = new RecordWorkInfoDto(
@@ -55,8 +55,8 @@ public class AppWorkChangeRecordWorkInfoFinder {
 				recordInfo.getLeaveStampTimeFirst() , 
 				recordInfo.getAttendanceStampTimeSecond() , 
 				recordInfo.getLeaveStampTimeSecond(), 
-				0, 
-				0);
+				null, 
+				null);
 		//Test data
 		//RecordWorkInfoDto dto = new RecordWorkInfoDto("2017/12/08", "001", "山田001", "AAC", "通常８ｈ", 420, 480, 600, 660, 360, 540);
 		

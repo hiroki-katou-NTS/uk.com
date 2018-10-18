@@ -174,9 +174,6 @@ button.nts-switch-button {
 .nts-wizard>.content>.body {
 	padding: 0;
 }
-.nts-wizard > .content{
-	min-height: 55.5em;
-}
 
 .buttonBeginNext {
 	margin-left: 20px;

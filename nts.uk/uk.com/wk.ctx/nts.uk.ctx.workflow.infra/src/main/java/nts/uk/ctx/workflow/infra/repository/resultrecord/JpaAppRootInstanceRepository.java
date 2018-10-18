@@ -364,8 +364,8 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				PreparedStatement statement = this.connection().prepareStatement(sql.toString());
 				statement.setString(1, compID);
 				statement.setInt(2, rootType.value);
-				statement.setDate(3, Date.valueOf(period.end().localDate()));
-				statement.setDate(4, Date.valueOf(period.start().localDate()));
+				statement.setDate(3, Date.valueOf(period.start().localDate()));
+				statement.setDate(4, Date.valueOf(period.end().localDate()));
 				for (int i = 0; i < employeeIDLst.size(); i++) {
 					statement.setString(i + 5, employeeIDLst.get(i));
 				}

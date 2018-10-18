@@ -198,7 +198,7 @@ module nts.uk.time {
     export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
         outputFormat = text.getISOFormat(outputFormat);
         var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-        return moment.utc(date, inputFormats).format(outputFormat);
+        return moment(date, inputFormats).format(outputFormat);
     }
 
     export abstract class ParseResult {

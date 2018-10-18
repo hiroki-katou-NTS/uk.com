@@ -426,26 +426,24 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		List<InterimRemain> lstInterimMng = new ArrayList<>();
 		//INPUT．モードをチェックする
 		if(param.isMode()) {
-			//暫定残数管理データを作成する
+			/*//暫定残数管理データを作成する
 			Map<GeneralDate, DailyInterimRemainMngData> interimMngData = interimMonthProcess.monthInterimRemainData(param.getCid(),
 					param.getSid(), param.getDateData());
 			List<DailyInterimRemainMngData> lstDailyInterimRemainMngData = interimMngData.values()
 					.stream().collect(Collectors.toList());
 			//メモリ上の「特別休暇暫定データ」を取得する
-			for(DailyInterimRemainMngData y : lstDailyInterimRemainMngData) {
-				List<InterimSpecialHolidayMng> specialHolidayData = y.getSpecialHolidayData().stream()
-						.filter(z -> z.getSpecialHolidayCode() == param.getSpeCode())
-						.collect(Collectors.toList());
+			for(DailyInterimRemainMngData y : lstDailyInterimRemainMngData) {*/
+				List<InterimSpecialHolidayMng> specialHolidayData = param.getInterimSpecialData();
 				for(InterimSpecialHolidayMng specialData : specialHolidayData) {
 					lstOutput.add(specialData);
-					List<InterimRemain> mngData = y.getRecAbsData().stream()
+					List<InterimRemain> mngData = param.getRemainData().stream()
 							.filter(a -> a.getRemainManaID().equals(specialData.getSpecialHolidayId()))
 							.collect(Collectors.toList());
 					if(!mngData.isEmpty()) {
 						lstInterimMng.add(mngData.get(0));
 					}
 				}
-			}
+			//}
 		} else {
 			//ドメインモデル「特別休暇暫定データ」を取得する
 			List<InterimRemain> lstInterimMngTmp = interimMngRepo.getRemainBySidPriod(param.getSid(),
