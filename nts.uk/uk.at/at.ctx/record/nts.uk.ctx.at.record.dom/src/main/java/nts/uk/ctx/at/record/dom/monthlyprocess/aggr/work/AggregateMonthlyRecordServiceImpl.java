@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
@@ -73,6 +75,10 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	@Inject
 	private EditStateOfMonthlyPerRepository editStateRepo;
 	
+	/** 並列処理用 */
+	@Resource
+	private ManagedExecutorService executorService;
+	
 	/** 集計処理　（アルゴリズム） */
 	@Override
 	public AggregateMonthlyRecordValue aggregate(
@@ -95,7 +101,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.specialHolidayRepo,
 				this.specialLeaveMng,
 				this.createPerErrorFromLeaveErrors,
-				this.editStateRepo);
+				this.editStateRepo,
+				this.executorService);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
 				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);

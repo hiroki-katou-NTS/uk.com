@@ -81,7 +81,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 //				.setParameter("useAtr", UseAttribute.Use.value)
 //				.getList(x -> convertToDomain(x));
 		
-		try {val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?");
+		try (val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?")) {
 			statement.setString(1, companyID);
 			statement.setInt(2, UseAttribute.Use.value);
 			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
