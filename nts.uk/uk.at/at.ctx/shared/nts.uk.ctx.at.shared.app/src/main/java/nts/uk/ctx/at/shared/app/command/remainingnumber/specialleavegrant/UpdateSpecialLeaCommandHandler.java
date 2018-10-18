@@ -22,7 +22,7 @@ public class UpdateSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveR
 	protected void handle(CommandHandlerContext<SpecialLeaveRemainCommand> context) {
 		SpecialLeaveRemainCommand command = context.getCommand();
 		GeneralDate grantDate = GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd");
-		boolean isHasData = this.repo.isHasData(command.getSid(), command.getSpecialid(), grantDate);
+		boolean isHasData = this.repo.isHasData(command.getSid(), command.getSpecialid(), grantDate, command.getSpecialLeaCode());
 		
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0) {
