@@ -1824,7 +1824,7 @@ var nts;
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
                 var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-                return moment.utc(date, inputFormats).format(outputFormat);
+                return moment(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
@@ -4225,41 +4225,55 @@ var nts;
                                 // TODO: Jump to personal profile.
                             });
                             $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
-                            var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
-                            $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
-                            var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
-                            _.forEach(userOptions, function (option, i) {
-                                var $li = $("<li class='menu-item'/>").text(option.name);
-                                $userOptions.append($li);
-                                if (i === 0) {
+                            nts.uk.request.ajax(constants.APP_ID, constants.ShowManual).done(function (show) {
+                                var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
+                                $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
+                                var userOptions;
+                                if (show)
+                                    userOptions = [new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト")];
+                                else
+                                    userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
+                                var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
+                                _.forEach(userOptions, function (option, i) {
+                                    var $li = $("<li class='menu-item'/>").text(option.name);
+                                    $userOptions.append($li);
+                                    if (i === 0) {
+                                        $li.on(constants.CLICK, function () {
+                                            // TODO: Jump to personal information settings.
+                                        });
+                                        return;
+                                    }
+                                    if (userOptions.length === 3 && i === 1) {
+                                        $li.on(constants.CLICK, function () {
+                                            // jump to index page of manual
+                                            var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                                            window.open(path);
+                                        });
+                                        return;
+                                    }
                                     $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to personal information settings.
-                                    });
-                                    return;
-                                }
-                                $li.on(constants.CLICK, function () {
-                                    // TODO: Jump to login screen and request logout to server
-                                    nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                        nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                        nts.uk.request.login.jumpToUsedLoginPage();
+                                        // TODO: Jump to login screen and request logout to server
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                            nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
+                                            nts.uk.request.login.jumpToUsedLoginPage();
+                                        });
                                     });
                                 });
-                            });
-                            $companyList.css("right", $user.outerWidth() + 30);
-                            $userSettings.on(constants.CLICK, function () {
-                                if ($userOptions.css("display") === "none") {
-                                    $userOptions.fadeIn(100);
-                                    return;
-                                }
-                                $userOptions.fadeOut(100);
-                            });
-                            $(document).on(constants.CLICK, function (evt) {
-                                notThen($companySelect, evt.target, function () {
-                                    $companyList.fadeOut(100);
-                                });
-                                notThen($userSettings, evt.target, function () {
+                                $companyList.css("right", $user.outerWidth() + 30);
+                                $userSettings.on(constants.CLICK, function () {
+                                    if ($userOptions.css("display") === "none") {
+                                        $userOptions.fadeIn(100);
+                                        return;
+                                    }
                                     $userOptions.fadeOut(100);
+                                });
+                                $(document).on(constants.CLICK, function (evt) {
+                                    notThen($companySelect, evt.target, function () {
+                                        $companyList.fadeOut(100);
+                                    });
+                                    notThen($userSettings, evt.target, function () {
+                                        $userOptions.fadeOut(100);
+                                    });
                                 });
                             });
                         });
@@ -4461,6 +4475,7 @@ var nts;
                     constants.Companies = "sys/portal/webmenu/companies";
                     constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
                     constants.UserName = "sys/portal/webmenu/username";
+                    constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
                 })(constants || (constants = {}));
@@ -5601,11 +5616,14 @@ var nts;
                                 $label.unbind('mouseleave.limitedlabel');
                                 $view_1.remove();
                             });
+                            $label.on('remove', function () {
+                                $view_1.remove();
+                            });
                         }
                     });
                 });
                 function isOverflow($label) {
-                    if ($label[0].nodeName === "INPUT"
+                    if (($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")
                         && (window.navigator.userAgent.indexOf("MSIE") > -1
                             || !!window.navigator.userAgent.match(/trident/i))) {
                         var $div = $("<div/>").appendTo($(document.body));
@@ -16051,6 +16069,10 @@ var nts;
                             //                if(onChanging === true){
                             //                    return;
                             //                }
+                            if ($input.data("change")) {
+                                $input.data("change", false);
+                                return;
+                            }
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
@@ -16071,9 +16093,23 @@ var nts;
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
                                 //                    container.data("changed", true);
-                                value(result.parsedValue);
+                                if (typeof result.parsedValue === "string") {
+                                    if (_.has(data, "type") && ko.toJS(data.type) === "date") {
+                                        value(new Date(result.parsedValue));
+                                    }
+                                    else {
+                                        value(result.parsedValue);
+                                    }
+                                    var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                                    if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                        $input.data("change", true);
+                                        $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
+                                    }
+                                }
+                                else {
+                                    value(result.parsedValue);
+                                }
                                 value.valueWillMutate();
-                                value.valueHasMutated();
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -16213,7 +16249,7 @@ var nts;
                                 $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
-                            else if (dateFormatValue === "Invalid date") {
+                            else if (dateFormatValue === "Invalid date" && (typeof value() === "string" || value() instanceof String)) {
                                 $input.val(value());
                                 $label.text("");
                                 $input.trigger("validate");
@@ -25163,6 +25199,7 @@ var nts;
                             _summaries = null;
                             _objId = null;
                             _getObjId = null;
+                            dkn.allCheck = {};
                             _hasSum = null;
                             _pageSize = null;
                             _currentPage = null;
@@ -37780,8 +37817,8 @@ var nts;
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
                         if (!nts.uk.util.isNullOrUndefined(value)) {
-                            construct.startValue(value.startDate);
-                            construct.endValue(value.endDate);
+                            construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                            construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);
                         }
                         ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
                             return construct.createStartBinding(data);
@@ -37809,8 +37846,8 @@ var nts;
                     DateRangeHelper.prototype.bindInit = function (parentBinding, allBindingsAccessor, viewModel, bindingContext) {
                         var self = this;
                         self.value = parentBinding.value;
-                        self.startValue = ko.observable(self.value().startDate);
-                        self.endValue = ko.observable(self.value().endDate);
+                        self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+                        self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
                         self.startValue.subscribe(function (v) {
                             var oldValue = self.value();
                             oldValue.startDate = v;
@@ -37989,8 +38026,9 @@ var nts;
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            endDate: self.endValue };
+                            disabled: parentBinding.disabled
+                            //,endDate: self.endValue 
+                        };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
@@ -38000,8 +38038,9 @@ var nts;
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            startDate: self.startValue };
+                            disabled: parentBinding.disabled
+                            //,startDate: self.startValue 
+                        };
                     };
                     return DateRangeHelper;
                 }());
