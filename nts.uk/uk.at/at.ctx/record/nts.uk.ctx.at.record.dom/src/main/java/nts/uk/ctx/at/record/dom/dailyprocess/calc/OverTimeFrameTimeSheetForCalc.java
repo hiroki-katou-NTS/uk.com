@@ -125,33 +125,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public OverTimeFrameTimeSheet changeNotWorkFrameTimeSheet() {
 		return new OverTimeFrameTimeSheet(this.calcrange, this.frameTime.getOverWorkFrameNo());
 	}
-	
-//	public OverTimeFrameTimeSheetForCalc changeFromPremiumTimeSheet(TimeSpanForCalc timeSpan) {
-//		List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-//		List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-//		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-//		Optional<MidNightTimeSheetForCalc> midNighttimeSheet, OverTimeFrameTime frameTime,
-//		StatutoryAtr withinStatutryAtr, boolean goEarly, EmTimezoneNo overTimeWorkSheetNo, boolean asTreatBindTime,
-//		Optional<SettlementOrder> payOrder, Optional<AttendanceTime> adjustTime) {
-//		return new OverTimeFrameTimeSheet(new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), null)),
-//										  timeSpan,
-//										  ,
-//										  ,
-//										  ,
-//										  ,
-//										  ,
-//										  new OverTimeFrameTime(overWorkFrameNo, 
-//												  				overTimeWork, 
-//												  				transferTime, 
-//												  				beforeApplicationTime, 
-//												  				orderTime),
-//										  StatutoryAtr.Excess,
-//										  false,
-//										  new EmTimezoneNo(0),
-//										  false,
-//										  Optional.empty(),
-//										  new AttendanceTime(0));
-//	}
+
 	/**
 	 * 残業枠分ループし残業枠時間帯の作成
 	 * @param overTimeHourSetList 固定勤務の時間帯設定クラス
@@ -387,14 +361,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		AttendanceTime transTime = new AttendanceTime(0);
 		for(int number = 0; number < overTimeWorkFrameTimeSheetList.size(); number++) {
 			overTime = overTimeWorkFrameTimeSheetList.get(number).correctCalculationTime(Optional.of(forceAtr),autoCalculationSet,DeductionAtr.Deduction);
-//			if(forceCalcTime.get()) {
-//				if(!decisionCalcAtr(overTimeWorkFrameTimeSheetList.get(number),autoCalculationSet)) {
-//					overTime = new AttendanceTime(0);
-//				}
-//			}
-//			else {
-//				overTime = new AttendanceTime(0);
-//			}
+
 			//振替できる時間計算
 			if(ableRangeTime.greaterThan(overTime)) {
 				transTime = overTime;
@@ -572,14 +539,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public AttendanceTime correctCalculationTime(Optional<Boolean> forceCalcTime,AutoCalOvertimeSetting autoCalcSet
 												,DeductionAtr dedAtr) {
-		//区分をみて、計算設定を設定
-		//一旦、打刻から計算する場合　を入れとく
-		//val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
-		AttendanceTime calcTime = overTimeCalculationByAdjustTime(dedAtr);
-		//if(!forceAtr.isCalculateEmbossing()) {
-		//	calcTime = new AttendanceTime(0);
-		//}
-		return calcTime;
+		return overTimeCalculationByAdjustTime(dedAtr);
 	}
 	
 	/**

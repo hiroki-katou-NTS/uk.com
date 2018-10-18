@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
@@ -97,13 +96,6 @@ public class HolidayWorkTimeOfDaily {
 										  holidayWorkFrameTime,
 										  holidayMidnightWork,
 										  holidayTimeSpentTime);
-	}
-	/**
-	 * 休出枠時間へ休出時間の集計結果を追加する
-	 * @param hasAddListClass 休出時間帯の集計を行った後の休出枠時間クラス
-	 */
-	public void addToList(ControlHolidayWorkTime hasAddListClass) {
-		this.holidayWorkFrameTime.addAll(hasAddListClass.getHolidayWorkFrame());
 	}
 	
 	/**
