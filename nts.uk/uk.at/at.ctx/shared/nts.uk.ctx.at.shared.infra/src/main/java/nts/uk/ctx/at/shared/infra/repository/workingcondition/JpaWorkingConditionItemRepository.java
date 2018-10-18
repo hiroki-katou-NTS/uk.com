@@ -285,7 +285,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			if (result.isEmpty()) {
 				return Collections.emptyList();
 			}
-			;
 
 			List<String> histIds = result.stream().map(KshmtWorkingCondItem::getHistoryId)
 					.collect(Collectors.toList());
@@ -294,9 +293,13 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				String sqlJdbcWc = "SELECT * FROM KSHMT_WORK_CAT_TIME_ZONE KWCTZ WHERE KWCTZ.HIST_ID IN ("
 						+ NtsStatement.In.createParamsString(subList) + ")";
+				
 				PreparedStatement statement;
 				try {
 					statement = this.connection().prepareStatement(sqlJdbcWc);
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
 					kshmtWorkCatTimeZones
 							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
 								KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK = new KshmtWorkCatTimeZonePK();
@@ -323,6 +326,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				PreparedStatement statement;
 				try {
 					statement = this.connection().prepareStatement(sqlJdbcWc);
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
 					kshmtPerWorkCats
 							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
 								KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
@@ -348,6 +354,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				PreparedStatement statement;
 				try {
 					statement = this.connection().prepareStatement(sqlJdbcWc);
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
 					kshmtDayofweekTimeZones
 							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
 								KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK = new KshmtDayofweekTimeZonePK();
@@ -374,6 +383,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				PreparedStatement statement;
 				try {
 					statement = this.connection().prepareStatement(sqlJdbcWc);
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
 					kshmtPersonalDayOfWeeks
 							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
 								KshmtPersonalDayOfWeekPK kshmtPersonalDayOfWeekPK = new KshmtPersonalDayOfWeekPK();
