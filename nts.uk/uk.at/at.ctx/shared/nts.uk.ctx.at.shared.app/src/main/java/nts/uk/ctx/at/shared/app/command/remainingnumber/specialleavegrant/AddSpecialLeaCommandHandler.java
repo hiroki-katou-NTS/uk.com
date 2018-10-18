@@ -25,7 +25,9 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 		SpecialLeaveRemainCommand command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
-		boolean isHasData = this.repo.isHasData(command.getSid(), specialId, GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd"));
+		GeneralDate grantDate = GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd");
+		
+		boolean isHasData = this.repo.isHasData(command.getSid(), specialId, grantDate, command.getSpecialLeaCode());
 		
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadlineDate()) > 0){
@@ -39,7 +41,7 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
 				specialId,cid, command.getSid(), command.getSpecialLeaCode(), 
-				GeneralDate.fromString(command.getGrantDate(), "yyyy/MM/dd"),
+				grantDate,
 				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),
 				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getNumberDayGrant(), command.getTimeGrant(), 
