@@ -66,10 +66,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode.subscribe(function (newValue) {
-                if (self.dataSource()[newValue] != undefined) {
-                    self.individualPriceCode(self.dataSource()[newValue].code);
-                    self.individualPriceName(self.dataSource()[newValue].name);
-                    self.historyProcess(self.dataSource()[newValue].code);
+                let index = _.findIndex(self.dataSource(), function(o) { return o.code == newValue; });
+                if (index != -1) {
+                    self.individualPriceCode(self.dataSource()[index].code);
+                    self.individualPriceName(self.dataSource()[index].name);
+                    self.historyProcess(self.dataSource()[index].code);
                 }
             });
             self.selectedHisCode = ko.observable(0);
@@ -136,7 +137,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
 
             }
-            $('#com-ccg0011').ntsGroupComponent(self.ccgcomponent);
+            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
 
         }
 
@@ -238,6 +239,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
                     self.isRegistrationable(true);
+                    self.currencyeditor.enable(true);
                     self.mode(MODE.NORMAL);
                     let array = [];
                     for (let i = 0; i < data.period.length; i++) {
@@ -257,6 +259,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodEndYM(null);
                     self.currencyeditor.value(null);
                     self.isRegistrationable(false);
+                    self.currencyeditor.enable(false);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                 }
             });
@@ -314,7 +317,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: self.tabindex
             };
-            $('#emp-component1').ntsLoadListComponent(self.listComponentOption);
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
@@ -323,7 +326,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             _.each(dataList, function (item) {
                 self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
             });
-            $('#emp-component1').ntsLoadListComponent(self.listComponentOption);
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
             if (dataList.length == 0) {
                 self.selectedItem('');
             } else {
@@ -420,6 +423,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     }
                     self.itemList(array);
                     self.isEditableHis(false);
+                    self.currencyeditor.enable(true);
                     self.mode(MODE.ADD_HISTORY);
                 }
             });

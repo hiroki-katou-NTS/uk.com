@@ -47,10 +47,10 @@
             </div>
             <div class="contents-area">
                 <!--A3_3 社員検索-->
-                <div tabindex="4" id="com-ccg0011"></div>
+                <div tabindex="4" id="com-ccg001"></div>
                 <div style="display: flex">
                     <!--A3_1 対象者-->
-                    <div tabindex="2" id="emp-component1" style="float: left;"></div>
+                    <div tabindex="2" id="emp-component" style="float: left;"></div>
                     <!--A3_2 金額の一覧を表示する-->
                     <div tabindex="3" style="float: left; margin: auto 0">
                         <button data-bind="click: toScreenD">#{i18n.getText('QMM039_11')}</button>
@@ -81,7 +81,7 @@
                                 ],
                                 value: singleSelectedCode,
                                 primaryText: 'name',
-                                optionsValue: 'index',
+                                optionsValue: 'code',
                                 multiple: false,
                                 enable: true,
                                 showCheckBox: false}">
@@ -105,7 +105,7 @@
                             <!--A5_4 履歴リスト-->
                             <!--A5_5 履歴-->
                             <!--A5_6 金額-->
-                            <div id="list-box1" tabindex="9" data-bind="ntsListBox: {
+                            <div id="list-box" tabindex="9" data-bind="ntsListBox: {
                                     options: itemList,
                                     optionsValue: 'index',
                                     optionsText: 'period',
