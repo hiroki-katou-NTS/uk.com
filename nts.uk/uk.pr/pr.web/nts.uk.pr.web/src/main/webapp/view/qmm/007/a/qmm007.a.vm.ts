@@ -382,7 +382,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
         create(){
             let self = this;
-            self.singleSelectedCode(null);
+            //self.singleSelectedCode(null);
             self.enableCode(true);
             self.enableName(true);
             self.enableYearMonth(true);
