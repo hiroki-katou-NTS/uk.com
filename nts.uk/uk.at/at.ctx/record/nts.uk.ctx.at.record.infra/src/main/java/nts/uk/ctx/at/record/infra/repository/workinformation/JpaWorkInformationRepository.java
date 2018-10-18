@@ -485,8 +485,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		List<WorkInfoOfDailyPerformance> resultList = new ArrayList<>();
 		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_DATE, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeId", subList)
-				.setParameter("dates", dates)
+				.setParameter("employeeId", employeeId)
+				.setParameter("dates", subList)
 				.getList(f -> f.toDomain()));
 		});
 		

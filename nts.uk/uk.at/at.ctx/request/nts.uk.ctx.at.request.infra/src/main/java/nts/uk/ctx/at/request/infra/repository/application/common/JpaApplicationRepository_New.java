@@ -107,8 +107,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " WHERE c.employeeID = :employeeID"
 			+ " AND c.appDate IN :dates"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals"
-			+ " AND c.stateReflectionReal IN :stateReflectionReals"
 			+ " AND c.appType IN :appTypes";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)

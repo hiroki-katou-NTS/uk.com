@@ -79,7 +79,7 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 		List<ConfirmationMonth> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublist -> {
 			result.addAll(this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
-					.setParameter("employeeIds", employeeIds)
+					.setParameter("employeeIds", sublist)
 					.setParameter("processYM", processYM)
 					.setParameter("closureDay", closureDate)
 					.setParameter("isLastDayOfMonth", isLastDayOfMonth ? 1 : 0)
