@@ -466,8 +466,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 					listHistItem.addAll(results);
 					
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				};
 		});
 		return listHistItem.stream().map(item -> toDomain(item))
