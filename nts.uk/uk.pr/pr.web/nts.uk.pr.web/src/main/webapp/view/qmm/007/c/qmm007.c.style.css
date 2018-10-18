@@ -2,12 +2,12 @@
     padding: 10px 0 0 10px;
 }
 
-
-
-#C1_7 {
+#C1_1{
+    margin-left: 10px;
 }
-
-
+#C2_1{
+    margin-top:10px;
+}
 
 .datepicker-container {
     z-index: 10010;
