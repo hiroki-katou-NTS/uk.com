@@ -66,12 +66,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		if(scheUpdate) {
 			if(dailyInfo.getScheduleInfo().getWorkTimeCode() == null 
 					|| !para.isWorkChange() 
-					|| (para.isWorkChange() &&!dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
+					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTimeCode() != null && !dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
 				lstItem.add(1);	
 			}
 			if(dailyInfo.getScheduleInfo().getWorkTypeCode() == null
 					|| !para.isWorkChange() 
-					|| (para.isWorkChange() &&!dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))) {
+					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTypeCode() != null && !dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
 				lstItem.add(2);	
 			}			
 			dailyInfo.setScheduleInfo(workInfor);
@@ -79,12 +79,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		} else {
 			if(dailyInfo.getRecordInfo().getWorkTimeCode() == null 
 					|| !para.isWorkChange() 
-					|| (para.isWorkChange() &&!dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
+					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTimeCode() != null && !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
 				lstItem.add(28);	
 			}
 			if(dailyInfo.getRecordInfo().getWorkTypeCode() == null 
 					|| !para.isWorkChange() 
-					|| (para.isWorkChange() &&!dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))) {
+					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTypeCode() != null && !dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
 				lstItem.add(29);
 			}
 			dailyInfo.setRecordInfo(workInfor);
