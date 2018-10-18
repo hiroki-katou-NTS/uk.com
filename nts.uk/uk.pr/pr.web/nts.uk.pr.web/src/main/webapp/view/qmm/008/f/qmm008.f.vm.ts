@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm008.f {
                     setTimeout(function () {
                         $(".nts-fixed-table").attr('tabindex', '6');
                         $(".nts-fixed-table").focus();
-                        if(self.dataList().length > 8) {
+                        if(self.dataList().length > 10) {
                             if (/Edge/.test(navigator.userAgent)) {
                                 $('#f3_1_container .scroll-header').addClass('edge_scroll_header');
                                 $('#f3_1_2_container .scroll-header').addClass('edge_scroll_header');

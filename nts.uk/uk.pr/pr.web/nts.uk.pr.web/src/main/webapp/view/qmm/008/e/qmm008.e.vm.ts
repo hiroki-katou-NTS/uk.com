@@ -48,9 +48,9 @@ module nts.uk.pr.view.qmm008.e {
 
                //Fixed table
                if (/Chrome/.test(navigator.userAgent)) {
-                   $("#fixed-table").ntsFixedTable({height: 344, width: 1172});
+                   $("#fixed-table").ntsFixedTable({height: 344, width: 1150});
                } else {
-                   $("#fixed-table").ntsFixedTable({height: 373, width: 1172});
+                   $("#fixed-table").ntsFixedTable({height: 373, width: 1150});
                }
 
            }
@@ -88,8 +88,8 @@ module nts.uk.pr.view.qmm008.e {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 
                        setTimeout(function () {
-                           $(".flex").attr('tabindex', '0');
-                           $(".flex").focus();
+                           $(".nts-fixed-table").attr('tabindex', '0');
+                           $(".nts-fixed-table").focus();
 
                        }, 500);
                        block.clear();
@@ -122,8 +122,8 @@ module nts.uk.pr.view.qmm008.e {
                    }
                    self.header(response.premiumRate);
                    setTimeout(function () {
-                       $(".flex").attr('tabindex', '0');
-                       $(".flex").focus();
+                       $(".nts-fixed-table").attr('tabindex', '0');
+                       $(".nts-fixed-table").focus();
 
                    }, 500);
                    block.clear();
