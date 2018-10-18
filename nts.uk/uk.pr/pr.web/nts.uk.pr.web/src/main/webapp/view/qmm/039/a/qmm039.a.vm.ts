@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import MODE = nts.uk.pr.view.qmm039.share.model.MODE;
     export class ScreenModel {
-        mode: KnockoutObservable<number> = ko.observable(0);
+        mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
         classificationCategory: KnockoutObservable<number> = ko.observable(PERVALUECATECLS.SUPPLY);
         salaryBonusCategory: KnockoutObservable<number> = ko.observable(SALBONUSCATE.SALARY);
         itemList: KnockoutObservableArray<ItemModel>;
@@ -26,6 +26,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         titleTab: KnockoutObservable<string> = ko.observable('');
         isRegistrationable: KnockoutObservable<boolean> = ko.observable(false);
         isEditableHis: KnockoutObservable<boolean> = ko.observable(false);
+        focusStartPage: boolean;
         itemClassLabel: KnockoutObservable<string> = ko.observable('');
         selectedTab: KnockoutObservable<string>;
         dataSource: any = ko.observableArray([]);
@@ -63,6 +64,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.isEditableHis(false);
                 }
             });
+            self.focusStartPage = true;
             self.selectedHis = ko.observable(null);
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode.subscribe(function (newValue) {
@@ -78,7 +80,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 self.changeHistory(self.itemList()[newValue]);
             });
             self.currencyeditor = {
-                value: ko.observable(0),
+                value: ko.observable(null),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
@@ -252,13 +254,18 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                                 format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney))
                     }
                     self.itemList(array);
+                    self.isRegistrationable(true);
                     self.changeHistory(array[0]);
+                    if(self.focusStartPage){
+                        $('#emp-component').focus();
+                        console.log("focus");
+                        self.focusStartPage = false;
+                    }
                 } else {
                     self.itemList([]);
                     self.periodStartYM(null);
                     self.periodEndYM(null);
                     self.currencyeditor.value(null);
-                    self.isRegistrationable(false);
                     self.currencyeditor.enable(false);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                 }
@@ -299,6 +306,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }).fail(function (result) {
                     dfd.reject();
                 });
+                $('#emp-component').focus();
             }).fail(function (result) {
                 dfd.reject();
             });
@@ -315,7 +323,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 employeeInputList: self.employeeInputList,
                 targetBtnText: self.targetBtnText,
                 selectedItem: self.selectedItem,
-                tabIndex: self.tabindex
+                tabIndex: -1
             };
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
@@ -380,6 +388,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         periodEndYm: self.itemList()[0].periodEndYm
                     }
                 }
+                $('#A5_3').focus();
                 self.openModalB(params);
             } else {
                 service.processYearFromEmp(self.individualPriceCode()).done(function (data) {
@@ -423,6 +432,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     }
                     self.itemList(array);
                     self.isEditableHis(false);
+                    self.isRegistrationable(true);
                     self.currencyeditor.enable(true);
                     self.mode(MODE.ADD_HISTORY);
                 }
@@ -432,6 +442,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         //TODO TO SCREEN C
         public toScreenC(): void {
             let self = this;
+            if(self.mode() == MODE.NORMAL) $('#list-box').focus();
             let params = {
                 employeeInfo: {
                     empId: self.selectedItem(),
