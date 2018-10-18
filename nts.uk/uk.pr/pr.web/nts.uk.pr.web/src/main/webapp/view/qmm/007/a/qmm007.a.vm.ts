@@ -382,7 +382,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
         create(){
             let self = this;
-            //self.singleSelectedCode(null);
+            self.singleSelectedCode(null);
             self.enableCode(true);
             self.enableName(true);
             self.enableYearMonth(true);
@@ -501,13 +501,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 payrollUnitPriceHistoryCommand: new PayrollUnitPriceHistory({
                     'cId':'',
                     'code':self.code(),
-                    'hisId': self.singleSelectedCode().split('__')[1],
+                    'hisId': self.singleSelectedCode() ? self.singleSelectedCode().split('__')[1] : '',
                     'startYearMonth':self.yearMonth(),
                     'endYearMonth': self.mode() === MODE.NEW || self.mode() === MODE.ADD_HISTORY  ? 999912 : self.endYearMonth(),
                     'isMode': self.mode()
                 }),
                 payrollUnitPriceSettingCommand: new PayrollUnitPriceSetting({
-                    historyId: self.singleSelectedCode().split('__')[1],
+                    historyId: self.singleSelectedCode() ? self.singleSelectedCode().split('__')[1] : '',
                     amountOfMoney: self.amountOfMoney(),
                     setClassification: self.selectedId(),
 
