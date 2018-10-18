@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.pub.workrecord.approvalmanagement.ApprovalProcessExport;
 import nts.uk.ctx.at.record.pub.workrecord.approvalmanagement.ApprovalProcessPub;
 
@@ -19,11 +19,11 @@ import nts.uk.ctx.at.record.pub.workrecord.approvalmanagement.ApprovalProcessPub
 @Stateless
 public class ApprovalProcessPubImpl implements ApprovalProcessPub {
 	@Inject
-    private ApprovalProcessRepository finder;
+    private ApprovalProcessingUseSettingRepository finder;
 	
 	@Override
 	public ApprovalProcessExport getApprovalProcess(String cid) {
-		Optional<ApprovalProcess> approvalProcess = finder.getApprovalProcessById(cid);
+		Optional<ApprovalProcessingUseSetting> approvalProcess = finder.findByCompanyId(cid);
 		if(approvalProcess.isPresent())
 		return ApprovalProcessExport.fromDomain(approvalProcess.get());
 		return null;

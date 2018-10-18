@@ -36,4 +36,9 @@ public class IdentityProcessUseSet {
 	 * エラーがある場合の日の本人確認
 	 */
 	private Optional<SelfConfirmError> yourSelfConfirmError;
+	
+	public static IdentityProcessUseSet createFromJavaType(CompanyId cid, boolean useConfirmByYourself, boolean useIdentityOfMonth,
+			Optional<SelfConfirmError> yourSelfConfirmError) {
+		return new IdentityProcessUseSet(cid, useConfirmByYourself, useIdentityOfMonth, yourSelfConfirmError);
+	}
 }

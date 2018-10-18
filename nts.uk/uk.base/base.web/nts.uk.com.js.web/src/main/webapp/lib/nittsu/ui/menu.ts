@@ -154,51 +154,56 @@ module nts.uk.ui.menu {
                     // TODO: Jump to personal profile.
                 });
                 $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
-                let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
-                $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                let userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト") ];
-                let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
-                _.forEach(userOptions, function(option: any, i: number) {
-                    let $li = $("<li class='menu-item'/>").text(option.name);
-                    $userOptions.append($li);
-                    if (i === 0) {
+                
+                nts.uk.request.ajax(constants.APP_ID, constants.ShowManual).done(function(show: any) {
+                    let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
+                    $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
+                    let userOptions;
+                    if (show) userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト") ];
+                    else userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("ログアウト") ];
+                    let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
+                    _.forEach(userOptions, function(option: any, i: number) {
+                        let $li = $("<li class='menu-item'/>").text(option.name);
+                        $userOptions.append($li);
+                        if (i === 0) {
+                            $li.on(constants.CLICK, function() {
+                                // TODO: Jump to personal information settings.
+                            });
+                            return;
+                        }
+                        if (userOptions.length === 3 && i === 1) {
+                            $li.on(constants.CLICK, function () {
+                                // jump to index page of manual
+                                var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                                window.open(path);
+                            });
+                            return;
+                        }
                         $li.on(constants.CLICK, function() {
-                            // TODO: Jump to personal information settings.
-                        });
-                        return;
-                    }
-                    if (i === 1) {
-                        $li.on(constants.CLICK, function() {
-                            // jump to index page of manual
-                            var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
-                            window.open(path);
-                        });
-                        return;
-                    }
-                    $li.on(constants.CLICK, function() {
-                        // TODO: Jump to login screen and request logout to server
-                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function() {
-                            nts.uk.cookie.remove("nts.uk.sescon", {path: "/"});
-                            nts.uk.request.login.jumpToUsedLoginPage();
+                            // TODO: Jump to login screen and request logout to server
+                            nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function() {
+                                nts.uk.cookie.remove("nts.uk.sescon", {path: "/"});
+                                nts.uk.request.login.jumpToUsedLoginPage();
+                            });
                         });
                     });
-                });
-                $companyList.css("right", $user.outerWidth() + 30);
-                
-                $userSettings.on(constants.CLICK, function() {
-                    if ($userOptions.css("display") === "none") {
-                        $userOptions.fadeIn(100);
-                        return;
-                    }
-                    $userOptions.fadeOut(100);
-                });
-                
-                $(document).on(constants.CLICK, function(evt: any) {
-                    notThen($companySelect, evt.target, function() {
-                        $companyList.fadeOut(100);
-                    });
-                    notThen($userSettings, evt.target, function() {
+                    $companyList.css("right", $user.outerWidth() + 30);
+                    
+                    $userSettings.on(constants.CLICK, function() {
+                        if ($userOptions.css("display") === "none") {
+                            $userOptions.fadeIn(100);
+                            return;
+                        }
                         $userOptions.fadeOut(100);
+                    });
+                    
+                    $(document).on(constants.CLICK, function(evt: any) {
+                        notThen($companySelect, evt.target, function() {
+                            $companyList.fadeOut(100);
+                        });
+                        notThen($userSettings, evt.target, function() {
+                            $userOptions.fadeOut(100);
+                        });
                     });
                 });
             });
@@ -408,6 +413,7 @@ module nts.uk.ui.menu {
         export let Companies = "sys/portal/webmenu/companies";
         export let ChangeCompany = "sys/portal/webmenu/changeCompany";
         export let UserName = "sys/portal/webmenu/username";
+        export let ShowManual = "sys/portal/webmenu/showmanual";
         export let Logout = "sys/portal/webmenu/logout";
         export let PG = "sys/portal/webmenu/program";
     }

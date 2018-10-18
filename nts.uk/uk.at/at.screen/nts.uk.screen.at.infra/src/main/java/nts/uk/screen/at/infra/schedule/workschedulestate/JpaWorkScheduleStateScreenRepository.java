@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -36,7 +37,7 @@ public class JpaWorkScheduleStateScreenRepository extends JpaRepository implemen
 	public List<WorkScheduleStateScreenDto> getByListSidAndDateAndScheId(List<String> sId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<WorkScheduleStateScreenDto> datas = new ArrayList<WorkScheduleStateScreenDto>();
-		CollectionUtil.split(sId, 1000, subIdList -> {
+		CollectionUtil.split(sId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(
 					this.queryProxy().query(SELECT_BY_SID_AND_DATE_AND_SCHEDULE_ITEM_ID, KscdtScheState.class)
 							.setParameter("sId", subIdList).setParameter("startDate", startDate)

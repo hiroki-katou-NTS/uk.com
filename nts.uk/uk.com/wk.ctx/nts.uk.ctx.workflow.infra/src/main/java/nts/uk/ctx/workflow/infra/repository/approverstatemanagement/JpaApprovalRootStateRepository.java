@@ -360,26 +360,27 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 					"WHERE c.ROOT_STATE_ID IN (rootStateIDs))";
 			query = query.replaceAll("approverID", approverID);
 			query = query.replaceFirst("rootStateIDs", rootStateIDLst);
-			PreparedStatement pstatement = con.prepareStatement(query);
-			ResultSet rs = pstatement.executeQuery();
 			List<WwfdtFullJoinState> listFullData = new ArrayList<>();
-			while (rs.next()) {
-				listFullData.add(new WwfdtFullJoinState(
-						rs.getString("ROOT_STATE_ID"), 
-						rs.getString("HIST_ID"), 
-						rs.getString("EMPLOYEE_ID"), 
-						GeneralDate.fromString(rs.getString("APPROVAL_RECORD_DATE"), "yyyy-MM-dd"), 
-						Integer.valueOf(rs.getString("PHASE_ORDER")), 
-						EnumAdaptor.valueOf(Integer.valueOf(rs.getString("APPROVAL_FORM")), ApprovalForm.class), 
-						EnumAdaptor.valueOf(Integer.valueOf(rs.getString("APP_PHASE_ATR")), ApprovalBehaviorAtr.class), 
-						Integer.valueOf(rs.getString("FRAME_ORDER")), 
-						EnumAdaptor.valueOf(Integer.valueOf(rs.getString("APP_FRAME_ATR")), ApprovalBehaviorAtr.class), 
-						EnumAdaptor.valueOf(Integer.valueOf(rs.getString("CONFIRM_ATR")), ConfirmPerson.class), 
-						rs.getString("APPROVER_ID"), 
-						rs.getString("REPRESENTER_ID"), 
-						rs.getString("APPROVAL_DATE") != null ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null, 
-						rs.getString("APPROVAL_REASON"), 
-						rs.getString("APPROVER_CHILD_ID")));
+			try (PreparedStatement pstatement = con.prepareStatement(query)) {
+				ResultSet rs = pstatement.executeQuery();
+				while (rs.next()) {
+					listFullData.add(new WwfdtFullJoinState(
+							rs.getString("ROOT_STATE_ID"), 
+							rs.getString("HIST_ID"), 
+							rs.getString("EMPLOYEE_ID"), 
+							GeneralDate.fromString(rs.getString("APPROVAL_RECORD_DATE"), "yyyy-MM-dd"), 
+							Integer.valueOf(rs.getString("PHASE_ORDER")), 
+							EnumAdaptor.valueOf(Integer.valueOf(rs.getString("APPROVAL_FORM")), ApprovalForm.class), 
+							EnumAdaptor.valueOf(Integer.valueOf(rs.getString("APP_PHASE_ATR")), ApprovalBehaviorAtr.class), 
+							Integer.valueOf(rs.getString("FRAME_ORDER")), 
+							EnumAdaptor.valueOf(Integer.valueOf(rs.getString("APP_FRAME_ATR")), ApprovalBehaviorAtr.class), 
+							EnumAdaptor.valueOf(Integer.valueOf(rs.getString("CONFIRM_ATR")), ConfirmPerson.class), 
+							rs.getString("APPROVER_ID"), 
+							rs.getString("REPRESENTER_ID"), 
+							rs.getString("APPROVAL_DATE") != null ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null, 
+							rs.getString("APPROVAL_REASON"), 
+							rs.getString("APPROVER_CHILD_ID")));
+				}
 			}
 			List<ApprovalRootState> entityRoot = listFullData.stream().collect(Collectors.groupingBy(WwfdtFullJoinState::getRootStateID)).entrySet()
 					.stream().map(x -> {

@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
@@ -175,10 +177,14 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		if(listOptionalWidgetID.size()==0) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_IN, Object[].class)
-				.setParameter("topPagePartID", listOptionalWidgetID)
+		List<OptionalWidget> results = new ArrayList<>();
+		CollectionUtil.split(listOptionalWidgetID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", subList)
 				.setParameter("companyID", companyId)
-				.getList(c -> joinObjectToDomain(c));
+				.getList(c -> joinObjectToDomain(c)));
+		});
+		return results;
 	}
 
 	private OptionalWidget joinObjectToDomain(Object[] entity) {

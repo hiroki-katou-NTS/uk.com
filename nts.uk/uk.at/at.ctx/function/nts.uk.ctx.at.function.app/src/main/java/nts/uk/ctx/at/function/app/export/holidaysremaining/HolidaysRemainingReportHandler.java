@@ -178,7 +178,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				}
 			}
 			val holidayRemainingInfor = this.getHolidayRemainingInfor(variousVacationControl, closureInforOpt,
-					emp.getEmployeeId(), baseDate, startDate, endDate);
+					emp.getEmployeeId(), baseDate, startDate, endDate,currentMonth);
 
 			employees.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
 					empMap.get(emp.getEmployeeId()).getEmployeeName(), empMap.get(emp.getEmployeeId()).getWorkplaceId(),
@@ -195,7 +195,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 	private HolidayRemainingInfor getHolidayRemainingInfor(VariousVacationControl variousVacationControl,
 			Optional<ClosureInfo> closureInforOpt, String employeeId, GeneralDate baseDate, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate, Optional<YearMonth> currMonth) {
 
 		// RequestList369
 		Optional<GeneralDate> grantDate = Optional.empty();
@@ -316,10 +316,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			}
 
             // Call RequestList273
-            DatePeriod dateRange =  new DatePeriod(closureInforOpt.get().getPeriod().start(),endDate);
-            SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
-                    employeeId, dateRange, false, baseDate, sphdCode, false);
-            mapSPVaCrurrentMonth.put(sphdCode, spVaImported);
+			if (currMonth.isPresent() && currMonth.get().lessThanOrEqualTo(endDate.yearMonth())){
+	            DatePeriod dateRange =  new DatePeriod(closureInforOpt.get().getPeriod().start(),endDate);
+	            SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
+	                    employeeId, dateRange, false, baseDate, sphdCode, false);
+	            mapSPVaCrurrentMonth.put(sphdCode, spVaImported);
+			}
 		}
 
 		if (variousVacationControl.isChildNursingSetting()) {

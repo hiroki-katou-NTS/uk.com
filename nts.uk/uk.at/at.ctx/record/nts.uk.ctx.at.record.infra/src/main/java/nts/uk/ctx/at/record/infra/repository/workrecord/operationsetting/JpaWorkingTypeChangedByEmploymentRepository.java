@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorktypeGroup;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
@@ -103,9 +105,13 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 	public List<String> checkSetting(String companyId, List<String> empCode) {
 		String query = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
 				+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode IN :employeeCode AND wtc.pk.workTypeCode != '　'";
-		List<KrcmtWorktypeChangeable> entities = this.queryProxy()
-		.query(query, KrcmtWorktypeChangeable.class).setParameter("companyId", companyId)
-		.setParameter("employeeCode", empCode).getList();
+		List<KrcmtWorktypeChangeable> entities = new ArrayList<>();
+		CollectionUtil.split(empCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(query, KrcmtWorktypeChangeable.class)
+								.setParameter("companyId", companyId)
+								.setParameter("employeeCode", subList).getList());
+		});
+		
 		if(entities.isEmpty()) {
 			new ArrayList<>();
 		}

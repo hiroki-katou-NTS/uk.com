@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonth;
@@ -73,13 +76,17 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 	@Override
 	public List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDate, boolean isLastDayOfMonth,
 			int closureId) {
-		return this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
-				.setParameter("employeeIds", employeeIds)
-				.setParameter("processYM", processYM)
-				.setParameter("closureDay", closureDate)
-				.setParameter("isLastDayOfMonth", isLastDayOfMonth ? 1 : 0)
-				.setParameter("closureId", closureId)
-				.getList(x -> x.toDomain());
+		List<ConfirmationMonth> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublist -> {
+			result.addAll(this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
+					.setParameter("employeeIds", sublist)
+					.setParameter("processYM", processYM)
+					.setParameter("closureDay", closureDate)
+					.setParameter("isLastDayOfMonth", isLastDayOfMonth ? 1 : 0)
+					.setParameter("closureId", closureId)
+					.getList(x -> x.toDomain()));
+		});
+		return result;
 	}
 
 }
