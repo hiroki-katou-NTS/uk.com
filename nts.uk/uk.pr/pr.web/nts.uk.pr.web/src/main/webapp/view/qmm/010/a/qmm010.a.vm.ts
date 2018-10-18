@@ -50,6 +50,7 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
             let self = this;
             block.invisible();
             service.findByOfficeCode(officeCode).done(function(data: model.ILaborInsuranceOffice) {
+                nts.uk.ui.errors.clearAll();
                 if (data) {
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                     self.selectedLaborOffice(new model.LaborInsuranceOffice(data));

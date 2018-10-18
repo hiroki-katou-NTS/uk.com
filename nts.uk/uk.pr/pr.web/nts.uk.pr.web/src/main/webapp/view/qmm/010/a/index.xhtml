@@ -52,7 +52,7 @@
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div style="margin-left: 20px; margin-top: 25px;" class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{width: '335px', height: '650px', direction: 'right', showIcon: true, visible: true}"
+                <div data-bind="ntsPanel:{width: '335px', height: '655px', direction: 'right', showIcon: true, visible: true}"
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <div style="width: 330px" tabindex="7"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'laborOfficeCode', comId: 'A2_3',
@@ -129,7 +129,8 @@
 
                 <div class="flex valign-center row">
                     <!--A3_16 カナ1-->
-                    <div class="column-1">#{i18n.getText('QMM010_17')}</div>
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'AddressKana1', required: false }">#{i18n.getText('QMM010_17')}</div>
                     <!--A3_17 住所カナ1-->
                     <input class="column-md-5" tabindex="17"
                            data-bind="ntsTextEditor: {constraint: 'AddressKana1',value: addressKana1, name: '#[QMM010_17]'}"/>
@@ -146,7 +147,8 @@
 
                 <div class="flex valign-center row">
                     <!--A3_20 カナ2-->
-                    <div class="column-1">#{i18n.getText('QMM010_19')}</div>
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'AddressKana2', required: false }">#{i18n.getText('QMM010_19')}</div>
                     <!--A3_21 住所カナ2-->
                     <input id="A3_21" tabindex="19"
                            data-bind="ntsTextEditor: {constraint: 'AddressKana2',value: addressKana2, name: '#[QMM010_19]'}"/>
@@ -163,7 +165,7 @@
                 <div style = "margin-top: 10px;" class="column-1">#{i18n.getText('QMM010_21')}</div>
                 <hr></hr>
 
-                <div class="flex valign-center row">
+                <div class="flex valign-center row" style="min-width: 700px;">
                     <!--A4_3 磁気媒体・e-Gov用：	-->
                     <div class="column-md-3"
                          data-bind="ntsFormLabel: { constraint: ['CityCode', 'OfficeCode'], required: false }">#{i18n.getText('QMM010_22')}</div>
@@ -178,7 +180,7 @@
                     <input style="margin-left: 5px;" tabindex="22"
                            data-bind="ntsTextEditor: {constraint: 'OfficeCode',value: employmentOfficeCode, name: '#[QMM010_26]'}"/>
                 </div>
-                <div class="flex valign-center row">
+                <div class="flex valign-center row" style="min-width: 700px;">
                     <!--A4_8 事業所整理番号-->
                     <div class="column-md-3"
                          data-bind="ntsFormLabel: { constraint: ['EmploymentInsuranceBusinessOfficeNumber1', 'EmploymentInsuranceBusinessOfficeNumber2', 'EmploymentInsuranceBusinessOfficeNumber3'], required: false }">#{i18n.getText('QMM010_27')}</div>
@@ -198,7 +200,7 @@
                 <div class="flex row">
                     <div class="column-1"
                          data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM010_29')}</div>
-                    <textarea style="height: 100px; width: 300px;" tabindex="26"
+                    <textarea style="height: 115px; width: 300px;" tabindex="26"
                               data-bind="ntsMultilineEditor: { constraint: 'Memo', value: notes, name: '#[QMM010_29]'}"/>
                 </div>
 

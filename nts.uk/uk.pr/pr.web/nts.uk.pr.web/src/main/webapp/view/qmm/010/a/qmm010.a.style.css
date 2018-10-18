@@ -1,6 +1,7 @@
 
 .column-1 {
-    width: 190px;
+    min-width: 190px;
+
 }
 .column-md-3 {
     width: 340px !important;
