@@ -1053,7 +1053,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 errorAll = true;
                             }
                             if (dataAfter.errorMap[2] != undefined) {
-                                self.listCheckHolidays(dataAfter.errorMap[2]);
+                                //self.listCheckHolidays(dataAfter.errorMap[2]);
                                 if (self.valueUpdateMonth != null || self.valueUpdateMonth != undefined) {
                                     self.valueUpdateMonth.items = [];
                                 }
