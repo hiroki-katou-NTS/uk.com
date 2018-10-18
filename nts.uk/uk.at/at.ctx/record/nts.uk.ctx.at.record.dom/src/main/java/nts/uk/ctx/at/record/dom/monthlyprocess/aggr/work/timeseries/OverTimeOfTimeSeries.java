@@ -175,4 +175,34 @@ public class OverTimeOfTimeSeries {
 				target.getBeforeApplicationTime().addMinutes(beforeAppTime.v()),
 				target.getOrderTime());
 	}
+
+	/**
+	 * 法定内残業の計算残業を残業時間の計算残業へ移送
+	 */
+	public void addCalcLegalOverTimeToCalcOverTime(){
+		int calcLegalOverMinutes = this.legalOverTime.getOverTimeWork().getCalcTime().v();
+		int calcLegalTransferMinutes = this.legalOverTime.getTransferTime().getCalcTime().v();
+		this.legalOverTime = new OverTimeFrameTime(
+				this.legalOverTime.getOverWorkFrameNo(),
+				TimeDivergenceWithCalculation.createTimeWithCalculation(
+						this.legalOverTime.getOverTimeWork().getTime(),
+						new AttendanceTime(0)),
+				TimeDivergenceWithCalculation.createTimeWithCalculation(
+						this.legalOverTime.getTransferTime().getTime(),
+						new AttendanceTime(0)),
+				this.legalOverTime.getBeforeApplicationTime(),
+				this.legalOverTime.getOrderTime()
+			);
+		this.overTime = new OverTimeFrameTime(
+				this.overTime.getOverWorkFrameNo(),
+				this.overTime.getOverTimeWork().addMinutes(
+						new AttendanceTime(0),
+						new AttendanceTime(calcLegalOverMinutes)),
+				this.overTime.getTransferTime().addMinutes(
+						new AttendanceTime(0),
+						new AttendanceTime(calcLegalTransferMinutes)),
+				this.overTime.getBeforeApplicationTime(),
+				this.overTime.getOrderTime()
+			);
+	}
 }

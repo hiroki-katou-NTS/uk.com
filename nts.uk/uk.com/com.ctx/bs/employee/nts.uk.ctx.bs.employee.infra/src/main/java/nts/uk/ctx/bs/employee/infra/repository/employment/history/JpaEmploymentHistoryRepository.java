@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
@@ -77,8 +78,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-		try {
-			val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?");
+		try (val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(standardDate.localDate()));
 			statement.setDate(3, Date.valueOf(standardDate.localDate()));
@@ -222,7 +222,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		// Split query.
 		List<BsymtEmploymentHist> lstEmpHist = new ArrayList<>();
 
-		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			lstEmpHist.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtEmploymentHist.class)
 					.setParameter("listSid", subList).setParameter("start", datePeriod.start())
 					.setParameter("end", datePeriod.end()).getList());

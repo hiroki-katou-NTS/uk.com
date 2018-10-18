@@ -215,8 +215,13 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		//// display top page job title set (職位別トップページ設定)-A
 		check = false;
 		String menuCode = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
-		layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
-				topPageJob.getMenuClassification().value, isLoginScreen);
+		if(isLoginScreen) {
+			layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
+					topPageJob.getMenuClassification().value, isLoginScreen);
+		}else {
+			layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
+					MenuClassification.TopPage.value, isLoginScreen);
+		}
 		if (!checkMyPage) {// not use my page
 			check = true;
 			return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);

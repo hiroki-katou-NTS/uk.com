@@ -80,6 +80,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
@@ -283,13 +284,13 @@ public class AppHolidayWorkFinder {
 				1, EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), inputDate.toDate());
 		if (!isSettingDisplay(appCommonSettingOutput)) {
 			// 休憩時間帯を取得する
-			BreakTimeZoneSharedOutPut timeZones = this.overtimeService.getBreakTimes(companyID, workTypeCode, siftCD);
+			List<DeductionTimeDto> timeZones =  getBreakTimes(workTypeCode, siftCD); 
 
-			if (!CollectionUtil.isEmpty(timeZones.getLstTimezone())) {
-				startTimeRests = timeZones.getLstTimezone().stream().map(x -> x.getStart().v())
+			if (!CollectionUtil.isEmpty(timeZones)) {
+				startTimeRests = timeZones.stream().map(x -> x.getStart())
 						.collect(Collectors.toList());
 
-				endTimeRests = timeZones.getLstTimezone().stream().map(x -> x.getEnd().v())
+				endTimeRests = timeZones.stream().map(x -> x.getEnd())
 						.collect(Collectors.toList());
 			}
 		}
@@ -329,6 +330,20 @@ public class AppHolidayWorkFinder {
 				result,
 				dailyAttendanceTimeCaculationImport.getHolidayWorkTime(),prePostAtr);
 		return result;
+	}
+	/**
+	 * 休憩時間帯を取得する
+	 * @param workTypeCD
+	 * @param workTimeCD
+	 * @return BreakTimeZoneSharedOutPut
+	 */
+	public List<DeductionTimeDto> getBreakTimes(String workTypeCD ,String workTimeCD){
+		String companyID = AppContexts.user().companyId();
+		return this.overtimeService.getBreakTimes(companyID, workTypeCD, workTimeCD).getLstTimezone().stream().map(domain -> {
+			DeductionTimeDto dto = new DeductionTimeDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -405,13 +420,13 @@ public class AppHolidayWorkFinder {
 		
 		if (!isSettingDisplay(appCommonSettingOutput)) {
 			// 休憩時間帯を取得する
-			BreakTimeZoneSharedOutPut timeZones = this.overtimeService.getBreakTimes(companyID, workTypeCD, workTimeCD);
+			List<DeductionTimeDto> timeZones =  getBreakTimes(workTypeCD, workTimeCD);
 
-			if (!CollectionUtil.isEmpty(timeZones.getLstTimezone())) {
-				startTimeRests = timeZones.getLstTimezone().stream().map(x -> x.getStart().v())
+			if (!CollectionUtil.isEmpty(timeZones)) {
+				startTimeRests = timeZones.stream().map(x -> x.getStart())
 						.collect(Collectors.toList());
 
-				endTimeRests = timeZones.getLstTimezone().stream().map(x -> x.getEnd().v())
+				endTimeRests = timeZones.stream().map(x -> x.getEnd())
 						.collect(Collectors.toList());
 			}
 		}
@@ -724,7 +739,10 @@ public class AppHolidayWorkFinder {
 				workTime.setSiftCode(workTimes.getWorkTimeCode());
 				workTime.setSiftName(workTimes.getWorkTimeName());
 				result.setWorkTime(workTime);
+				//休憩時間帯を取得する
+				List<DeductionTimeDto> timeZones = getBreakTimes(WorkTypes.getWorkTypeCode(),workTime.getSiftCode());
 				
+				result.setTimeZones(timeZones);
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
 				result.setDisplayRestTime(displayRestTime);

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.overtime;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -180,10 +182,13 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 		if(lstAppID.isEmpty()){
 			return lstMap;
 		}
-		List<AppOverTime> lstOt =  this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppOvertime.class)
-			.setParameter("companyID", companyID)
-			.setParameter("lstAppID", lstAppID)
-			.getList(c -> toDomainPlus(c));
+		List<AppOverTime> lstOt = new ArrayList<>();
+		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstOt.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppOvertime.class)
+							 .setParameter("companyID", companyID)
+							 .setParameter("lstAppID", subList)
+							 .getList(c -> toDomainPlus(c)));
+		});
 		for (AppOverTime ot : lstOt) {
 			lstMap.put(ot.getAppID(), ot);
 		}

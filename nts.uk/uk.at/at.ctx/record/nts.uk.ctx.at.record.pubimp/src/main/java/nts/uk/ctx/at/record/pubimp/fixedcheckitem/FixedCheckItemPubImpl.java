@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.w
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.worktypenotregister.WorkTypeNotRegisterService;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.FixedCheckItemPub;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class FixedCheckItemPubImpl implements FixedCheckItemPub {
@@ -86,6 +87,13 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 				valueExtractAlarmWR.getAlarmValueMessage(),
 				valueExtractAlarmWR.getComment().orElse(null)
 				);
+	}
+
+	@Override
+	public List<ValueExtractAlarmWRPubExport> checkAdminUnverified(String workplaceID, String employeeID,
+			DatePeriod datePeriod) {
+		return checkAdminUnverifiedService.checkAdminUnverified(workplaceID, employeeID,datePeriod)
+				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
 	
 	

@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
@@ -447,26 +449,24 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<String> isExistItem(List<String> perInfoCtgId) {
-		List<PersonInfoItemDefinition> item = this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
-				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainString(c));
-
-		if (item.size() > 0) {
-			List<String> itemIdList = item.stream().map(c -> c.getPerInfoCategoryId()).distinct()
-					.collect(Collectors.toList());
-			return itemIdList;
-		}
-		return new ArrayList<>();
+		List<PersonInfoItemDefinition> item = new ArrayList<>();
+		CollectionUtil.split(perInfoCtgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			item.addAll(this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
+				.setParameter("perInfoCtgId", subList).getList(c -> toDomainString(c)));
+		});
+		if (CollectionUtil.isEmpty(item)) return new ArrayList<>();
+		return item.stream().map(c -> c.getPerInfoCategoryId()).distinct()
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
-
-		List<String> itemLst = this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class).setParameter("itemCd", itemCd)
-				.setParameter("perInfoCtgId", perInfoCtgId).getList();
-		if (itemLst.size() > 0) {
-			return true;
-		}
-		return false;
+		List<String> itemLst = new ArrayList<>(); 
+		CollectionUtil.split(perInfoCtgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			itemLst.addAll(this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class).setParameter("itemCd", itemCd)
+				.setParameter("perInfoCtgId", subList).getList());
+		});
+		return itemLst.size() > 0;
 	}
 
 }

@@ -1,13 +1,21 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
@@ -49,19 +57,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE e.pk.companyId = :companyId "
 			+ "ORDER BY e.pk.specialHolidayCode ASC";
 	
-	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
-			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
-			+ " pe.timeMethod, pe.startDate, pe.endDate, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
-			+ " re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
-			+ " FROM KshstSpecialHoliday sphd"
-			+ " LEFT JOIN KshstGrantRegular gra"
-			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
-			+ " LEFT JOIN KshstGrantPeriodic pe"
-			+ " ON sphd.pk.companyId = pe.pk.companyId AND sphd.pk.specialHolidayCode = pe.pk.specialHolidayCode"
-			+ " LEFT JOIN KshstSpecialLeaveRestriction re"
-			+ " ON sphd.pk.companyId = re.pk.companyId AND sphd.pk.specialHolidayCode = re.pk.specialHolidayCode"
-			+ " WHERE sphd.pk.companyId = :companyId AND sphd.pk.specialHolidayCode = :specialHolidayCode"
-			+ " ORDER BY sphd.pk.specialHolidayCode";
+	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.MEMO,"
+			+ " gra.TYPE_TIME, gra.GRANT_DATE, gra.ALLOW_DISAPPEAR, gra.INTERVAL, gra.GRANTED_DAYS,"
+			+ " pe.TIME_CSL_METHOD, pe.START_DATE, pe.END_DATE, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
+			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER"
+			+ " FROM KSHST_SPECIAL_HOLIDAY sphd"
+			+ " LEFT JOIN KSHST_GRANT_REGULAR gra"
+			+ " ON sphd.CID = gra.CID AND sphd.SPHD_CD = gra.SPHD_CD"
+			+ " LEFT JOIN KSHST_GRANT_PERIODIC pe"
+			+ " ON sphd.CID = pe.CID AND sphd.SPHD_CD = pe.SPHD_CD"
+			+ " LEFT JOIN KSHST_SPEC_LEAVE_REST re"
+			+ " ON sphd.CID = re.CID AND sphd.SPHD_CD = re.SPHD_CD"
+			+ " WHERE sphd.CID = ? AND sphd.SPHD_CD = ?"
+			+ " ORDER BY sphd.SPHD_CD";
 	
 	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
 			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
@@ -173,35 +181,36 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE e.pk.companyId = :companyId "
 			+ "AND e.pk.specialHolidayCode IN :specialHolidayCode";
 	
-	private SpecialHoliday createDomainFromEntity(Object[] c) {
-		String companyId = String.valueOf(c[0]);
-		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
-		String specialHolidayName = String.valueOf(c[2]);
-		String memo = String.valueOf(c[3]);
-		int typeTime = Integer.parseInt(String.valueOf(c[4]));
-		int grantDate = Integer.parseInt(String.valueOf(c[5]));
-		boolean allowDisappear = Integer.parseInt(String.valueOf(c[6])) == 1 ? true : false;
-		int interval = c[7] != null ? Integer.parseInt(String.valueOf(c[7])) : 0;
-		int grantedDays = c[8] != null ? Integer.parseInt(String.valueOf(c[8])) : 0;
-		int timeMethod = Integer.parseInt(String.valueOf(c[9]));
-		Integer startDate = c[10] != null ? (Integer)c[10] : null;
-		Integer endDate = c[11] != null ? (Integer)c[11] : null;
-		int deadlineMonths = c[12] != null ? Integer.parseInt(String.valueOf(c[12])) : 0;
-		int deadlineYears = c[13] != null ? Integer.parseInt(String.valueOf(c[13])) : 0;
-		int limitCarryoverDays = c[14] != null ? Integer.parseInt(String.valueOf(c[14])) : 0;
-		int restrictionCls = Integer.parseInt(String.valueOf(c[15]));
-		int ageLimit = Integer.parseInt(String.valueOf(c[16]));
-		int genderRest = Integer.parseInt(String.valueOf(c[17]));
-		int restEmp = Integer.parseInt(String.valueOf(c[18]));
-		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[19])) : 0;
-		Integer ageBaseDateValue = c[21] != null ? Integer.parseInt(String.valueOf(c[20])) : null;
+	private SpecialHoliday createDomainFromEntity(NtsResultRecord c) {
+		
+		String companyId = c.getString("CID");
+		int specialHolidayCode = c.getInt("SPHD_CD");
+		String specialHolidayName = c.getString("SPHD_NAME");
+		String memo = c.getString("MEMO");
+		int typeTime = c.getInt("TYPE_TIME");
+		int grantDate = c.getInt("GRANT_DATE");
+		boolean allowDisappear = c.getInt("ALLOW_DISAPPEAR") == 1 ? true : false;
+		int interval = c.getInt("INTERVAL") != null ? c.getInt("INTERVAL") : 0;
+		int grantedDays = c.getInt("GRANTED_DAYS") != null ? c.getInt("GRANTED_DAYS") : 0;
+		int timeMethod = c.getInt("TIME_CSL_METHOD");
+		Integer startDate = c.getInt("START_DATE");
+		Integer endDate = c.getInt("END_DATE");
+		int deadlineMonths = c.getInt("DEADLINE_MONTHS") != null ? c.getInt("DEADLINE_MONTHS") : 0;
+		int deadlineYears = c.getInt("DEADLINE_YEARS") != null ? c.getInt("DEADLINE_YEARS") : 0;
+		int limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") != null ? c.getInt("LIMIT_CARRYOVER_DAYS") : 0;
+		int restrictionCls = c.getInt("RESTRICTION_CLS");
+		int ageLimit = c.getInt("AGE_LIMIT");
+		int genderRest = c.getInt("GENDER_REST");
+		int restEmp = c.getInt("REST_EMP");
+		int ageCriteriaCls = c.getInt("AGE_CRITERIA_CLS") != null ? c.getInt("AGE_CRITERIA_CLS") : 0;
+		Integer ageBaseDateValue = c.getInt("AGE_BASE_DATE") != null ? c.getInt("AGE_BASE_DATE") : null;
 		MonthDay ageBaseDate = null;
 		if(ageBaseDateValue!=null){
 			ageBaseDate = new MonthDay(ageBaseDateValue/100, ageBaseDateValue%100);
 		}
-		int ageLowerLimit = c[21] != null ? Integer.parseInt(String.valueOf(c[21])) : 0;
-		int ageHigherLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
-		int gender = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
+		int ageLowerLimit = c.getInt("AGE_LOWER_LIMIT") != null ? c.getInt("AGE_LOWER_LIMIT") : 0;
+		int ageHigherLimit = c.getInt("AGE_HIGHER_LIMIT") != null ? c.getInt("AGE_HIGHER_LIMIT") : 0;
+		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 0;
 		
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
@@ -319,13 +328,18 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	}
 	
 	@Override
+	@SneakyThrows
 	public Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode) {
-		return this.queryProxy().query(SELECT_SPHD_BY_CODE_QUERY, Object[].class)
-				.setParameter("companyId", companyId)
-				.setParameter("specialHolidayCode", specialHolidayCode)
-				.getSingle(c -> {
-					return createDomainFromEntity(c);
-				});
+		
+		PreparedStatement stmt = this.connection().prepareStatement(
+				SELECT_SPHD_BY_CODE_QUERY);
+		
+		stmt.setString(1, companyId);
+		stmt.setInt(2, specialHolidayCode);
+		
+		return new NtsResultSet(stmt.executeQuery()).getSingle(x->{
+			return createDomainFromEntity(x);
+		});
 	}
 
 	@Override
@@ -548,12 +562,15 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	public List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes) {
 		if(specialHolidayCodes.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(SELECT_SPHD_BY_LIST_CODE, Object[].class)
+		List<SpecialHoliday> resultList = new ArrayList<>();
+		CollectionUtil.split(specialHolidayCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_SPHD_BY_LIST_CODE, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("specialHolidayCodes", specialHolidayCodes)
-				.getList(c -> {
-					return createSphdDomainFromEntity(c);
-				});
+				.setParameter("specialHolidayCodes", subList)
+				.getList(c -> { return createSphdDomainFromEntity(c); }));
+		});
+		resultList.sort(Comparator.comparing(SpecialHoliday::getSpecialHolidayCode));
+		return resultList;
 	}
 
 	@Override
@@ -585,11 +602,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	@Override
 	public List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes) {
 		if(specialHolidayCodes.isEmpty()) return Collections.emptyList();
-		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_AND_NO, Object[].class)
+		List<SpecialHoliday> resultList = new ArrayList<>();
+		CollectionUtil.split(specialHolidayCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_SPHD_BY_COMPANY_AND_NO, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("specialHolidayCode", specialHolidayCodes)
-				.getList(c -> {
-					return createSphdDomainFromEntity(c);
-				});
+				.setParameter("specialHolidayCode", subList)
+				.getList(c -> { return createSphdDomainFromEntity(c); }));
+		});
+		return resultList;
 	}
 }
