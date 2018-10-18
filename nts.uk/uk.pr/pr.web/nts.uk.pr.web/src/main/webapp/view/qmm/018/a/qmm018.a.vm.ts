@@ -140,10 +140,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                 $("#A2_22").trigger("validate");
             }
 
-            let inputExceptionFormula = String(self.exceptionFormula());
-            inputExceptionFormula =  inputExceptionFormula.substring(0, inputExceptionFormula.indexOf('.'));
-
-            self.displayData().averageWageCalculationSet().exceptionFormula(inputExceptionFormula);
+            self.displayData().averageWageCalculationSet().exceptionFormula(self.exceptionFormula());
             self.displayData().lstStatemetPaymentItem(self.lstTargetWageItem());
             if (self.selectedAttendanceDays() == 1) {
                 self.displayData().lstStatemetAttendanceItem()[0];
