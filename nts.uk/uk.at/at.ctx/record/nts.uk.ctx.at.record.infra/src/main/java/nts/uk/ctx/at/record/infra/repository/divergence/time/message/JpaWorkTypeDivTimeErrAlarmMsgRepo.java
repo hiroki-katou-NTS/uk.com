@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.message;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -87,6 +88,11 @@ public class JpaWorkTypeDivTimeErrAlarmMsgRepo extends JpaRepository
 	@Override
 	public List<WorkTypeDivergenceTimeErrorAlarmMessage> getByDivergenceTimeNoList(List<Integer> divergenceTimeNoList,
 			CompanyId cId, BusinessTypeCode workTypeCode) {
+		
+		if (CollectionUtil.isEmpty(divergenceTimeNoList)) {
+			return Collections.emptyList();
+		}
+		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstDvgcwtTimeEaMsg> cq = criteriaBuilder.createQuery(KrcstDvgcwtTimeEaMsg.class);

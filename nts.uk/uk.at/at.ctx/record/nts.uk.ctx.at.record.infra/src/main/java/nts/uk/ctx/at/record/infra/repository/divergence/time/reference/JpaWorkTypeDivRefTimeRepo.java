@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reference;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 	@Override
 	public List<WorkTypeDivergenceReferenceTime> findAll(String histId, BusinessTypeCode workTypeCode) {
 		// query data
-		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId, new ArrayList<Integer>());
+		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId);
 
 		// return
 		return krcstDrts.isEmpty() ? new ArrayList<WorkTypeDivergenceReferenceTime>()
@@ -127,7 +128,7 @@ public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 	 */
 	@Override
 	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
-		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId, new ArrayList<Integer>());
+		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId);
 
 		targetHistories.forEach(history -> {
 			// copy to new entity
@@ -208,6 +209,11 @@ public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 	 * @return the list
 	 */
 	private List<KrcstDrt> findByHistoryId(String historyId, List<Integer> divTimeNos) {
+
+		if (CollectionUtil.isEmpty(divTimeNos)) {
+			return Collections.emptyList();
+		}
+
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
@@ -217,21 +223,13 @@ public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 		cq.select(root);
 
 		List<KrcstDrt> krcstDrts = new ArrayList<>();
-		
-		boolean checkdivTimeNosEmpty = CollectionUtil.isEmpty(divTimeNos);
-		
-		if (checkdivTimeNosEmpty) {
-			divTimeNos = new ArrayList<>();
-			divTimeNos.add(0);
-		}
 
 		CollectionUtil.split(divTimeNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
-			if (!checkdivTimeNosEmpty) {
-				predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(splitData));
-			}
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId),
+					historyId));
+			predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(splitData));
 
 			// add where to query
 			cq.where(predicates.toArray(new Predicate[] {}));
@@ -242,5 +240,27 @@ public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 		});
 
 		return krcstDrts;
+	}
+	
+	private List<KrcstDrt> findByHistoryId(String historyId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
+		Root<KrcstDrt> root = cq.from(KrcstDrt.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(
+				criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+
+		// query data
+		return em.createQuery(cq).getResultList();
 	}
 }

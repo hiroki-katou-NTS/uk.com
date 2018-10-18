@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,9 +104,26 @@ public class JpaComDivRefTimeHisRepo extends JpaRepository
 	 */
 	@Override
 	public CompanyDivergenceReferenceTimeHistory findAll(String companyId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstComDrtHist> cq = criteriaBuilder.createQuery(KrcstComDrtHist.class);
+		Root<KrcstComDrtHist> root = cq.from(KrcstComDrtHist.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// order by insert date
+		cq.orderBy(criteriaBuilder.desc(root.get(KrcstComDrtHist_.strD)));
 
 		// return
-		return this.toDomain(this.findByCompanyId(companyId, new ArrayList<String>()));
+		return this.toDomain(em.createQuery(cq).getResultList());
 	}
 
 	/*
@@ -252,7 +270,12 @@ public class JpaComDivRefTimeHisRepo extends JpaRepository
 	 *            the hist ids
 	 * @return the list
 	 */
-	private List<KrcstComDrtHist> findByCompanyId(String companyId, List<String> histIds) {
+	private List<KrcstComDrtHist> findByCompanyId(String companyId, List<String> historyIds) {
+		
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return Collections.emptyList();
+		}
+
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstComDrtHist> cq = criteriaBuilder.createQuery(KrcstComDrtHist.class);
@@ -262,23 +285,14 @@ public class JpaComDivRefTimeHisRepo extends JpaRepository
 		cq.select(root);
 
 		List<KrcstComDrtHist> comDrtHists = new ArrayList<>();
-		
-		boolean checkHistIdsEmpty = CollectionUtil.isEmpty(histIds);
-		
-		if (checkHistIdsEmpty) {
-			histIds = new ArrayList<>();
-			histIds.add("");
-		}
 
-		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
 
 			// Find by history id
-			if (!checkHistIdsEmpty) {
-				predicates.add(root.get(KrcstComDrtHist_.histId).in(splitData));
-			}
+			predicates.add(root.get(KrcstComDrtHist_.histId).in(splitData));
 
 			// add where to query
 			cq.where(predicates.toArray(new Predicate[] {}));

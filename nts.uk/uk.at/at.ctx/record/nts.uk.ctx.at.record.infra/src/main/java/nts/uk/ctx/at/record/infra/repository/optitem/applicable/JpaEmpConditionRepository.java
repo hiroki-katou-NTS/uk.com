@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.applicable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -104,6 +105,11 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList) {
+		
+		if(CollectionUtil.isEmpty(optionalItemNoList)) {
+			return Collections.emptyList();
+		}
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

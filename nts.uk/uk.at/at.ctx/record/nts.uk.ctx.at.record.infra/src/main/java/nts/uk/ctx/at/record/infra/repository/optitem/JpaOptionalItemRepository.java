@@ -179,6 +179,12 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos) {
+
+		// Check empty
+		if (CollectionUtil.isEmpty(optionalitemNos)) {
+			return Collections.emptyList();
+		}
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -195,6 +201,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		List<Object[]> results = new ArrayList<>();
 
+		// Split conditions
 		CollectionUtil.split(optionalitemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -210,11 +217,6 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 			// Get results
 			results.addAll((List<Object[]>) em.createQuery(cq).getResultList());
 		});
-
-		// Check empty
-		if (CollectionUtil.isEmpty(results)) {
-			return Collections.emptyList();
-		}
 
 		// Return
 		return results.stream()

@@ -133,15 +133,19 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 				.createQuery(BshmtWorktimeHistItem.class);
 		Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
 		
+		List<BshmtWorktimeHistItem> result = new ArrayList<>();
+		
 		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// Predicate where clause
 			List<Predicate> predicateList = new ArrayList<>();
 			predicateList.add(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
 					.get(BshmtWorktimeHistItemPK_.histId).in(splitData));
 			query.where(predicateList.toArray(new Predicate[] {}));
+			
+			result.addAll(em.createQuery(query).getResultList());
 		});
 		
-		return em.createQuery(query).getResultList().stream().map(
+		return result.stream().map(
 				entity -> new ShortWorkTimeHistoryItem(new JpaSWorkTimeHistItemGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
