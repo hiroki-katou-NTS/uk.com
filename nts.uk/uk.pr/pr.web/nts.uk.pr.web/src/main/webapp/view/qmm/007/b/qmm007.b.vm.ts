@@ -26,6 +26,7 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
                 self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString().split(' ').join('')]));
             });
             if(params) {
+                self.startYearMonth(params.startYearMonth);
                 self.startLastYearMonth(params.startYearMonth);
                 self.code(params.code);
                 self.name(params.name);

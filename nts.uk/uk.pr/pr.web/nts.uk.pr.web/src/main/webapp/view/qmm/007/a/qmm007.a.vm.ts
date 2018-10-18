@@ -172,6 +172,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             self.mode(MODE.ADD_HISTORY);
                             self.enableEditHistoryButton(false);
                         } else{
+                            self.enableYearMonth(false);
                             self.enableEditHistoryButton(true);
                             self.enableAddHistoryButton(true);
                             self.mode(MODE.UPDATE);
@@ -215,7 +216,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             //
                             self.enableCode(false);
                             self.enableName(true);
-                            self.enableYearMonth(true);
                             self.enableTargetClassification(true);
                             self.enableSalary(true);
                             self.enableAmountOfMoney(true);
@@ -382,6 +382,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
         create(){
             let self = this;
+            self.singleSelectedCode(null);
             self.enableCode(true);
             self.enableName(true);
             self.enableYearMonth(true);
