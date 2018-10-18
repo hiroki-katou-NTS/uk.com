@@ -95,7 +95,9 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                             $("#taxExemptionName").focus();
                             self.isNewMode(false);
                             self.getAllData().done(() => {
-                                self.currentCode(data.taxFreeamountCode);
+                                _.delay(() => {
+                                    self.currentCode(data.taxFreeamountCode);
+                                }, 100, 'later');
                             });
                         });
                     }).fail(function (error) {
@@ -150,11 +152,15 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                                 if (self.lstTaxExemptLimit().length == 0) {
                                     self.createTaxExe();
                                 } else {
+                                    let code = "";
                                     if (index == self.lstTaxExemptLimit().length) {
-                                        self.currentCode(self.lstTaxExemptLimit()[index - 1].taxFreeamountCode);
+                                        code = self.lstTaxExemptLimit()[index - 1].taxFreeamountCode;
                                     } else {
-                                        self.currentCode(self.lstTaxExemptLimit()[index].taxFreeamountCode);
+                                        code = self.lstTaxExemptLimit()[index].taxFreeamountCode;
                                     }
+                                    _.delay(() => {
+                                        self.currentCode(code);
+                                    }, 100, 'later');
                                 }
                             });
                         });
