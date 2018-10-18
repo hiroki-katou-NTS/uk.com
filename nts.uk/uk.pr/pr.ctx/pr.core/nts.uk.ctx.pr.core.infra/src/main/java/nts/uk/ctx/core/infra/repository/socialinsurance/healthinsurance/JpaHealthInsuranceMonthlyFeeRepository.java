@@ -100,7 +100,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
                 .setParameter("historyId",domain.getHistoryId())
                 .getSingle();
 		if (!entity.isPresent()) return;
-        this.commandProxy().updateAll(this.toDomainFromOldData(domain, entity.get()));
+        this.commandProxy().updateAll(this.toEntityWithOldData(domain, entity.get()));
 	}
 	
 	@Override
@@ -109,7 +109,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
                 .setParameter("historyId", domain.getHistoryId())
                 .getSingle();
         if (!entity.isPresent()) return;
-        this.commandProxy().insertAll(this.toDomainFromOldData(domain, entity.get()));
+        this.commandProxy().insertAll(this.toEntityWithOldData(domain, entity.get()));
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     	this.getEntityManager().createQuery(DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyIds).executeUpdate();
     }
 
-    private List<QpbmtHealthInsurancePerGradeFee> toDomainFromOldData (HealthInsuranceMonthlyFee domain, QpbmtHealthInsuranceMonthlyFee entity) {
+    private List<QpbmtHealthInsurancePerGradeFee> toEntityWithOldData(HealthInsuranceMonthlyFee domain, QpbmtHealthInsuranceMonthlyFee entity) {
         return QpbmtHealthInsurancePerGradeFee.toEntity(domain, entity.bonusHealthInsurancePk.socialInsuranceOfficeCd, new YearMonthHistoryItem(entity.bonusHealthInsurancePk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth))));
     }
 

@@ -52,8 +52,6 @@ public class WelfareInsuranceService {
 		
 		if (!opt_welfarePensionHistory.isPresent()) {
 			// add new history if there are no history
-			welfarePensionHistory = new WelfarePensionInsuranceRateHistory(AppContexts.user().companyId(), officeCode,
-					Arrays.asList(yearMonthItem));
 			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification, officeCode, yearMonthItem);
 			return;
 		}
@@ -119,7 +117,7 @@ public class WelfareInsuranceService {
             YearMonthHistoryItem previousHistory =  welfarePensionHist.getHistory().get(currentIndex + 1);
             welfarePensionHist.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
             this.updateHistorySpan(officeCode, welfarePensionHist.getHistory().get(currentIndex + 1));
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e){
             return;
         }
 	}

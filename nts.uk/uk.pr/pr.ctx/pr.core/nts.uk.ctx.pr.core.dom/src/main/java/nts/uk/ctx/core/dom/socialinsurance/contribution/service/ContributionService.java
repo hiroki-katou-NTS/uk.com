@@ -37,22 +37,22 @@ public class ContributionService {
 
 		if (!optContributionRateHistory.isPresent()) {
 			// add history if not exist
-			contributionRateHistory = new ContributionRateHistory(cid, officeCode, Arrays.asList(yearMonthItem));
 			this.addContribution(contributionRate, officeCode, yearMonthItem);
-//			contributionRateHistoryRepository.add(contributionRateHistory);
 			return;
 		}
 		// delete old history
-//		contributionRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		contributionRateHistory = optContributionRateHistory.get();
 		if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
 			// add history
 			contributionRateHistory.add(yearMonthItem);
 			this.addContribution(contributionRate, officeCode, yearMonthItem);
+			// if have previous history
+			if (contributionRateHistory.getHistory().size() > 1) {
+			    this.updateHistoryItemSpan(officeCode, contributionRateHistory.getHistory().get(0));
+            }
 		} else {
 			this.updateContribution(contributionRate, officeCode, yearMonthItem);
 		}
-//		contributionRateHistoryRepository.add(contributionRateHistory);
 	}
 
 	public boolean checkContributionRate(ContributionRate contributionRate,
@@ -83,13 +83,16 @@ public class ContributionService {
 			return;
 		}
 		// get history and change span
+        this.updateHistoryItemSpan(officeCode, yearMonth);
 		ContributionRateHistory contributionRateHis = optContributionRateHis.get();
-		Optional<YearMonthHistoryItem> currentSpan = contributionRateHis.getHistory().stream()
-				.filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
-		if (!currentSpan.isPresent())
-			return;
-		contributionRateHis.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start(), yearMonth.end()));
-		//contributionRateHistoryRepository.update(contributionRateHis);
+		int currentIndex = contributionRateHis.getHistory().indexOf(yearMonth);
+        try {
+            YearMonthHistoryItem previousHistory = contributionRateHis.getHistory().get(currentIndex + 1);
+            contributionRateHis.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
+            this.updateHistoryItemSpan(officeCode, contributionRateHis.getHistory().get(currentIndex + 1));
+        } catch (IndexOutOfBoundsException e){
+            return;
+        }
 	}
 
 	public void deleteHistory(String officeCode, YearMonthHistoryItem yearMonth) {
@@ -108,7 +111,7 @@ public class ContributionService {
 			contributionRateHis.changeSpan(contributionRateHis.getHistory().get(0),
 					new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
-//		contributionRateHistoryRepository.remove(contributionRateHis);
+		this.updateHistoryItemSpan(officeCode, lastestHistory);
 		contributionRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()),officeCode);
 		contributionRateRepository.deleteContributionByGradeByHistoryId(Arrays.asList(yearMonth.identifier()));
 	}
@@ -127,5 +130,9 @@ public class ContributionService {
 		}
 		return contributionRate;
 	}
+
+	private void updateHistoryItemSpan (String officeCode, YearMonthHistoryItem yearMonth) {
+	    contributionRateRepository.updateHistoryItem(officeCode, yearMonth);
+    }
 
 }

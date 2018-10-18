@@ -126,7 +126,6 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity = this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
 				QpbmtEmployeesPensionMonthlyInsuranceFee.class).setParameter("historyId", data.getHistoryId()).getSingle();
 		if (!opt_entity.isPresent()) return;
-		if (!opt_entity.isPresent()) return;
 		QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
 		YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.welfarePenMonthlyPk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
 		this.commandProxy().updateAll(QpbmtGradeWelfarePensionInsurancePremium.toEntity(data, entity.welfarePenMonthlyPk.socialInsuranceOfficeCd , yearMonth));
@@ -136,7 +135,6 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	public void insertWelfarePension(EmployeesPensionMonthlyInsuranceFee data) {
 		Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> opt_entity = this.queryProxy().query(GET_EMPLOYEE_PENSION_MONTHLY_BY_HISTORY_ID,
 				QpbmtEmployeesPensionMonthlyInsuranceFee.class).setParameter("historyId", data.getHistoryId()).getSingle();
-		if (!opt_entity.isPresent()) return;
 		if (!opt_entity.isPresent()) return;
 		QpbmtEmployeesPensionMonthlyInsuranceFee entity = opt_entity.get();
 		YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.welfarePenMonthlyPk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));

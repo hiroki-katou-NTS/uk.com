@@ -47,6 +47,7 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
 
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
+    	if (historyIds.isEmpty()) return;
     	this.getEntityManager().createQuery(DELETE_BY_HISTORY_ID, QpbmtBonusEmployeePensionInsuranceRate.class).setParameter("historyId", historyIds).executeUpdate();
 	}
 	

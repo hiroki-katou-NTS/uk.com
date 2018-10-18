@@ -42,8 +42,6 @@ public class HealthInsuranceService {
 		healthInsuranceMonthlyFee = calculationGradeFee(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, yearMonthItem);
 		if (!opt_healthInsurance.isPresent()) {
 			// add new history if no history existed
-			welfarePensionHistory = new HealthInsuranceFeeRateHistory(AppContexts.user().companyId(), officeCode,
-					Arrays.asList(yearMonthItem));
 			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 			return;
 		}
@@ -96,7 +94,7 @@ public class HealthInsuranceService {
 			YearMonthHistoryItem previousHistory = healthInsurance.getHistory().get(currentIndex + 1);
 			healthInsurance.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
 			this.updateHistoryItem(officeCode, healthInsurance.getHistory().get(currentIndex + 1));
-		} catch (ArrayIndexOutOfBoundsException e){
+		} catch (IndexOutOfBoundsException e){
 			return;
 		}
 

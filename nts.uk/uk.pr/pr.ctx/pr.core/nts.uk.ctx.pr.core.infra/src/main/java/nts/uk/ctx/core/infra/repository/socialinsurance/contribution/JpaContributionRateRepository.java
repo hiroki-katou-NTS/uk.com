@@ -34,7 +34,7 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	private static final String GET_CONTRIBUTION_RATE_BY_HISTORY_ID = "SELECT a from QpbmtContributionRate a WHERE a.contributionRatePk.historyId =:historyId";
 
 	private ContributionRate toDomain(QpbmtContributionRate contributionRate,
-			List<QpbmtContributionByGrade> contributionByGrade) {
+									  List<QpbmtContributionByGrade> contributionByGrade) {
 		return new ContributionRate(contributionRate.contributionRatePk.historyId,contributionRate.childCareContributionRatio,
 				contributionRate.autoCalculationCls,
 				contributionByGrade.stream()
@@ -95,26 +95,55 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 
 	@Override
 	public void deleteContributionByGradeByHistoryId(List<String> historyIds) {
+		if (historyIds.isEmpty()) return;
 		this.getEntityManager().createQuery(DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class)
 				.setParameter("historyId", historyIds).executeUpdate();
 	}
 
 	@Override
 	public void updateHistoryItem(String officeCode, YearMonthHistoryItem yearMonth) {
-		Optional<QpbmtContributionRate> opt_entity = this.queryProxy().find(new QpbmtContributionRatePk(AppContexts.user().companyId(), officeCode, yearMonth.identifier()), QpbmtContributionRate.class);
+		this.updateContributionHistory(officeCode, yearMonth);
+		this.updateContributionByGradeHistory(officeCode, yearMonth);
+	}
 
+	private void updateContributionHistory (String officeCode, YearMonthHistoryItem history) {
+		Optional<QpbmtContributionRate> opt_entity = this.queryProxy().find(new QpbmtContributionRatePk(AppContexts.user().companyId(), officeCode, history.identifier()), QpbmtContributionRate.class);
+		if (!opt_entity.isPresent()) return;
+		QpbmtContributionRate entity = opt_entity.get();
+		entity.startYearMonth = history.start().v();
+		entity.endYearMonth = history.end().v();
+		this.commandProxy().update(entity);
+	}
+
+	private void updateContributionByGradeHistory (String officeCode, YearMonthHistoryItem history) {
+		List<QpbmtContributionByGrade> entities = this.queryProxy().query(GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class).setParameter("historyId", history.identifier()).getList();
+		for(QpbmtContributionByGrade entity: entities){
+			entity.startYearMonth = history.start().v();
+			entity.endYearMonth = history.end().v();
+		}
+		this.commandProxy().updateAll(entities);
 	}
 
 	@Override
 	public void insertContributionByGrade(ContributionRate domain) {
-
-//		this.commandProxy().insertAll(QpbmtContributionByGrade.toEntity(domain, officeCode, yearMonth));
+		Optional<QpbmtContributionRate> opt_entity = this.queryProxy().query(GET_CONTRIBUTION_RATE_BY_HISTORY_ID,QpbmtContributionRate.class)
+				.setParameter("historyId", domain.getHistoryId())
+				.getSingle();
+		if (!opt_entity.isPresent()) return;
+		QpbmtContributionRate entity = opt_entity.get();
+		YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.contributionRatePk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
+		this.commandProxy().insertAll(QpbmtContributionByGrade.toEntity(domain, entity.contributionRatePk.socialInsuranceOfficeCd, yearMonth));
 	}
 
 
 	@Override
 	public void updateContributionByGrade(ContributionRate domain) {
-//		this.commandProxy().updateAll(QpbmtContributionByGrade.toEntity(domain, officeCode, yearMonth));
+		Optional<QpbmtContributionRate> opt_entity = this.queryProxy().query(GET_CONTRIBUTION_RATE_BY_HISTORY_ID,QpbmtContributionRate.class)
+				.setParameter("historyId", domain.getHistoryId())
+				.getSingle();
+		if (!opt_entity.isPresent()) return;
+		QpbmtContributionRate entity = opt_entity.get();
+		YearMonthHistoryItem yearMonth = new YearMonthHistoryItem(entity.contributionRatePk.historyId, new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
+		this.commandProxy().updateAll(QpbmtContributionByGrade.toEntity(domain, entity.contributionRatePk.socialInsuranceOfficeCd, yearMonth));
 	}
-
 }
