@@ -118,8 +118,14 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("ymds", ymds).executeUpdate();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistEmployeeIds -> {
+			CollectionUtil.split(ymds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sublistYmds -> {
+				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
+					.setParameter("employeeIds", sublistEmployeeIds)
+					.setParameter("ymds", sublistYmds)
+					.executeUpdate();
+			});
+		});
 		this.getEntityManager().flush();
 	}
 
@@ -307,9 +313,16 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		List<Integer> outingFrameNos = domain.getOutingTimeSheets().stream().map(item -> {
 			return item.getOutingFrameNo().v();
 		}).collect(Collectors.toList());
-		List<KrcdtDaiOutingTime> krcdtDaiOutingTimeLists = this.queryProxy()
-				.query(SELECT_BY_KEY, KrcdtDaiOutingTime.class).setParameter("employeeId", domain.getEmployeeId())
-				.setParameter("ymd", domain.getYmd()).setParameter("outingFrameNos", outingFrameNos).getList();
+		
+		List<KrcdtDaiOutingTime> krcdtDaiOutingTimeLists = new ArrayList<>();
+		CollectionUtil.split(outingFrameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			krcdtDaiOutingTimeLists.addAll(this.queryProxy()
+				.query(SELECT_BY_KEY, KrcdtDaiOutingTime.class)
+					.setParameter("employeeId", domain.getEmployeeId())
+					.setParameter("ymd", domain.getYmd())
+					.setParameter("outingFrameNos", subList)
+				.getList());
+		});
 
 		List<OutingTimeSheet> outingTimeSheets = domain.getOutingTimeSheets();
 

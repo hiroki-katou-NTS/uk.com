@@ -225,6 +225,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         showLock: KnockoutObservable<boolean> = ko.observable(true);
         unLock: KnockoutObservable<boolean> = ko.observable(false);
+        hideLock: KnockoutObservable<boolean> = ko.observable(true);
 
         itemChange: any = [];
 
@@ -620,7 +621,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
             let showCheckbox = _.isEmpty(self.shareObject()) ? data.showPrincipal : data.showSupervisor;
             self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox));
-            self.showLock(self.showButton().available12());
+            self.hideLock(self.showButton().available12());
+            self.showLock(true);
             self.unLock(false);
             //            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
             // Fixed Header
@@ -1051,7 +1053,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 errorAll = true;
                             }
                             if (dataAfter.errorMap[2] != undefined) {
-                                self.listCheckHolidays(dataAfter.errorMap[2]);
+                                //self.listCheckHolidays(dataAfter.errorMap[2]);
                                 if (self.valueUpdateMonth != null || self.valueUpdateMonth != undefined) {
                                     self.valueUpdateMonth.items = [];
                                 }
@@ -1244,8 +1246,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                             || updateAll) {
                                             let itemId = self.getItemIdFromColumnKey(cell.columnKey);
                                             let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
-                                            if (itemValue)
-                                                $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
+                                            if (itemValue) {
+                                                let itemCalcTemp = _.find(data.lstCellStateCalc, itemCalc =>{
+                                                    return itemCalc.rowId ==  "_" +row.id && itemCalc.columnKey == cell.columnKey;
+                                                })
+                                                if (itemCalcTemp != undefined) {
+                                                    $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
+                                                } else {
+                                                    $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                }
+                                            }
                                                // $("#dpGrid").mGrid("setState", "_" + row.id, cell.columnKey, ["mgrid-calc"]);
                                         }
                                     }

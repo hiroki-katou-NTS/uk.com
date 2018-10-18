@@ -153,26 +153,30 @@ public class MonthlyAggregateProcessService {
 			IdentityConfirmProcessImport identityConfirmProcessImport) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		
 		for(EmployeeSearchDto employee : employees) {
-			
-			if(listFixed.get(2).isUseAtr()) {
-				Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(listFixed.get(2), employee, companyID);
-				if (valueExtractAlarms.isPresent()) {
-					listValueExtractAlarm.addAll(valueExtractAlarms.get());
+			// No 395 with FIX_EXTRA_ITEM_MON_NO 6
+			for (FixedExtraMonFunImport fixedExtraMonFunImport : listFixed) {
+				if(fixedExtraMonFunImport.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.CHECK_DEADLINE_HOLIDAY.value
+						&& fixedExtraMonFunImport.isUseAtr()){
+					Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(fixedExtraMonFunImport, employee, companyID);
+					if (valueExtractAlarms.isPresent()) {
+						listValueExtractAlarm.addAll(valueExtractAlarms.get());
+					}
 				}
 			}
 			
 			for (YearMonth yearMonth : lstYearMonth) {
-				for(int i = 0;i<listFixed.size();i++) {
-					if(listFixed.get(i).isUseAtr()) {
-//						FixedExtraMonFunImport fixedExtraMon = listFixed.get(i);
-						switch(i) {
-							case 0 :
+				for(FixedExtraMonFunImport fixedExtraMonFunImport : listFixed) {
+					if(fixedExtraMonFunImport.isUseAtr()) {
+						SysFixedMonPerEralEnum fixedExtraMon = EnumAdaptor.valueOf(fixedExtraMonFunImport.getFixedExtraItemMonNo(), SysFixedMonPerEralEnum.class);
+						switch(fixedExtraMon) {
+							case MON_UNCONFIRMED : // FIX_EXTRA_ITEM_MON_NO 1
 								List<ValueExtractAlarm> unconfirmeds = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmeds(employee.getId(), yearMonth.v().intValue(), identityConfirmProcessImport);
 								if(!CollectionUtil.isEmpty(unconfirmeds)) {
 									for (ValueExtractAlarm valueExtractAlarm : unconfirmeds) {
 										if(valueExtractAlarm!=null){
-											valueExtractAlarm.setComment(Optional.ofNullable(listFixed.get(i).getMessage()));
+											valueExtractAlarm.setComment(Optional.ofNullable(fixedExtraMonFunImport.getMessage()));
 											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
 											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
 											valueExtractAlarm.setAlarmValueDate(dateString);
@@ -181,12 +185,12 @@ public class MonthlyAggregateProcessService {
 									}
 								}
 							break;
-							case 2 :
+							case WITH_MON_CORRECTION : // FIX_EXTRA_ITEM_MON_NO 2 
 								List<ValueExtractAlarm> unconfirmedsAdmin = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmedsAdmin(employee.getId(), yearMonth, approvalProcessImport);
 								if(!CollectionUtil.isEmpty(unconfirmedsAdmin)) {
 									for (ValueExtractAlarm valueExtractAlarm : unconfirmedsAdmin) {
 										if(valueExtractAlarm!=null){
-											valueExtractAlarm.setAlarmValueMessage(listFixed.get(i).getMessage());
+											valueExtractAlarm.setAlarmValueMessage(fixedExtraMonFunImport.getMessage());
 											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
 											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
 											valueExtractAlarm.setAlarmValueDate(dateString);
@@ -195,7 +199,7 @@ public class MonthlyAggregateProcessService {
 									}
 								}
 								break;
-							//case 2 :break;//chua co
+							case CHECK_DEADLINE_HOLIDAY :break;//FIX_EXTRA_ITEM_MON_NO 6 has been split flow above
 							//case 3 :break;//chua co
 							//case 4 :
 								//ticket #100053
@@ -208,7 +212,7 @@ public class MonthlyAggregateProcessService {
 //									listValueExtractAlarm.add(agreement.get());
 //								}
 							//break;
-							default : break; // so 6 : chua co
+							default : break; 
 						}//end switch
 						
 					}

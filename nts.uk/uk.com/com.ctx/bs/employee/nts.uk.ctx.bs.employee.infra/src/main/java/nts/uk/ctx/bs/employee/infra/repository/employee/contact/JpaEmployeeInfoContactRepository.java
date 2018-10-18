@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.contact.BsymtEmpInfoContact;
@@ -94,9 +96,12 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 			return new ArrayList<>();
 		}
 		
-		List<BsymtEmpInfoContact> entities = this.queryProxy().query(GET_BY_LIST, BsymtEmpInfoContact.class)
-				.setParameter("employeeIds", employeeIds).getList();
-		
+		List<BsymtEmpInfoContact> entities = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_LIST, BsymtEmpInfoContact.class)
+								.setParameter("employeeIds", subList)
+								.getList());
+		});
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 

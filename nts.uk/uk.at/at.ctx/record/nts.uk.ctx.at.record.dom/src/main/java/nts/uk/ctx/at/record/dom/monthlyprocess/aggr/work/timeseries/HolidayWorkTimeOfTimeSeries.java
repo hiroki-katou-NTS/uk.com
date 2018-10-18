@@ -171,4 +171,32 @@ public class HolidayWorkTimeOfTimeSeries {
 				Finally.of(target.getBeforeApplicationTime().get().addMinutes(beforeAppTime.v()))
 			);
 	}
+
+	/**
+	 * 法定内休出の計算休出を休出時間の計算休出へ移送
+	 */
+	public void addCalcLegalHWTimeToCalcHWTime(){
+		int calcLegalHWMinutes = this.legalHolidayWorkTime.getHolidayWorkTime().get().getCalcTime().v();
+		int calcLegalTransMinutes = this.legalHolidayWorkTime.getTransferTime().get().getCalcTime().v();
+		this.legalHolidayWorkTime = new HolidayWorkFrameTime(
+				this.legalHolidayWorkTime.getHolidayFrameNo(),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
+						this.legalHolidayWorkTime.getHolidayWorkTime().get().getTime(),
+						new AttendanceTime(0))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(
+						this.legalHolidayWorkTime.getTransferTime().get().getTime(),
+						new AttendanceTime(0))),
+				Finally.of(this.legalHolidayWorkTime.getBeforeApplicationTime().get())
+			);
+		this.holidayWorkTime = new HolidayWorkFrameTime(
+				this.holidayWorkTime.getHolidayFrameNo(),
+				Finally.of(this.holidayWorkTime.getHolidayWorkTime().get().addMinutes(
+						new AttendanceTime(0),
+						new AttendanceTime(calcLegalHWMinutes))),
+				Finally.of(this.holidayWorkTime.getTransferTime().get().addMinutes(
+						new AttendanceTime(0),
+						new AttendanceTime(calcLegalTransMinutes))),
+				Finally.of(this.holidayWorkTime.getBeforeApplicationTime().get())
+			);
+	}
 }

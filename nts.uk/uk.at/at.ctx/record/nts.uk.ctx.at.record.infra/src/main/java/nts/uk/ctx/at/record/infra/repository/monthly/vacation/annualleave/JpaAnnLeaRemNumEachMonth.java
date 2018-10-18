@@ -105,7 +105,7 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 	public List<AnnLeaRemNumEachMonth> findbyEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
 		
-		List<AnnLeaRemNumEachMonth> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			results.addAll(this.queryProxy().query(FIND_BY_SIDS, KrcdtMonRemain.class)
 					.setParameter("employeeIds", splitData)
@@ -113,9 +113,14 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> c.toDomainAnnLeaRemNumEachMonth()));
+					.getList());
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainAnnLeaRemNumEachMonth()).collect(Collectors.toList());
 	}
 	
 	/** 検索　（社員IDリストと年月リスト） */
@@ -124,14 +129,21 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<AnnLeaRemNumEachMonth> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomainAnnLeaRemNumEachMonth()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainAnnLeaRemNumEachMonth()).collect(Collectors.toList());
 	}
 
 	/** 検索　（社員IDと締め期間、条件＝締め済み） */

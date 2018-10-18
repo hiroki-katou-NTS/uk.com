@@ -2,13 +2,18 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
@@ -60,11 +65,15 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	@Override
 	public List<Identification> findByListEmployeeID(List<String> employeeIDs, GeneralDate startDate,
 			GeneralDate endDate) {
+		if (CollectionUtil.isEmpty(employeeIDs)) return Collections.emptyList();
 		String companyID = AppContexts.user().companyId();
-
-		return this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
-				.setParameter("companyID", companyID).setParameter("employeeIds", employeeIDs)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> c.toDomain());
+		List<KrcdtIdentificationStatus> entities = new ArrayList<>();
+		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
+				.setParameter("companyID", companyID).setParameter("employeeIds", subList)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList());
+		});
+		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -119,9 +128,14 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 
 	@Override
 	public List<Identification> findByEmployeeID(String employeeID, List<GeneralDate> dates) {
-		return this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
-				.setParameter("companyID", AppContexts.user().companyId()).setParameter("employeeId", employeeID)
-				.setParameter("dates", dates).getList(c -> c.toDomain());
+		if (CollectionUtil.isEmpty(dates)) return Collections.emptyList();
+		List<KrcdtIdentificationStatus> entities = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
+					.setParameter("companyID", AppContexts.user().companyId()).setParameter("employeeId", employeeID)
+					.setParameter("dates", subList).getList());
+		});
+		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 }
