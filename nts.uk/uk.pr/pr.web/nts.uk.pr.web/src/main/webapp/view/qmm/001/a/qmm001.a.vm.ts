@@ -154,8 +154,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         }
         isOpenDialogB(){
             let self = this;
-            if(self.salGenParaIdent().historyAtr == PARAHISTORYATR.DONOTMANAGE || self.modeScreen== MODESCREEN.ADD)
+            if(self.modeScreen() == MODESCREEN.ADD || self.salGenParaIdent().historyAtr == PARAHISTORYATR.DONOTMANAGE){
                 return false;
+            }
             if(self.modeScreen() == MODESCREEN.NEW){
                 return true;
             }
@@ -232,6 +233,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if(item==null)
                     return;
                 self.selectedSwitchParaAvai(item.availableAtr);
+                self.selectedSwitchParaTargetAtr(item.targetAtr);
                 self.salGenParaValue(item);
                 self.valueComboBox(item.selection);
             }).fail(error => {
@@ -241,6 +243,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         register() {
             let self = this;
+            if(errors.hasError()){
+                return;
+            }
             self.salGenParaValue().selection = self.valueComboBox();
             let data: any = {
                 historyId: self.selectedSalGenParaHistory(),
@@ -250,8 +255,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 charValue: self.salGenParaValue().charValue,
                 timeValue: self.salGenParaValue().timeValue,
                 targetAtr: self.salGenParaValue().targetAtr,
-                modeScreen: self.modeScreen(),
-
+                modeScreen: self.modeScreen()
             };
             service.addSelectionProcess(data).done(() => {
                 if (self.modeScreen()== MODESCREEN.ADD){
@@ -275,7 +279,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         isOpenDiaLogC(){
             let self = this;
-            if(self.modeScreen() == MODESCREEN.NEW || self.modeScreen() == MODESCREEN.ADD){
+            if(self.modeScreen() == MODESCREEN.NEW || self.modeScreen() == MODESCREEN.ADD || self.salGenParaIdent().historyAtr ==PARAHISTORYATR.DONOTMANAGE){
                 return false;
             }
             return true;

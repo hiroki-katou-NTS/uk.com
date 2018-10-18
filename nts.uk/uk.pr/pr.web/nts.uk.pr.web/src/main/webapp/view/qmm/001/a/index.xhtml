@@ -87,7 +87,7 @@
 							optionsValue: 'historyId',
 							optionsText: 'historyId',
 							value: selectedSalGenParaHistory,
-							enable: !self.salGenParaIdent() == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE,
+							enable: self.salGenParaIdent().historyAtr != nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE,
 							multiple: false,
 							rows: 5,
 							columns: [
@@ -141,10 +141,10 @@
 						</div>
 					</div>
 					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.UPDATE">
-						<div  data-bind="if:self.salGenParaIdent()== nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+						<div style="margin: 7px 0px 0px 30px" data-bind="if:self.salGenParaIdent().historyAtr == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
 							<span id="A3_12">#{i18n.getText('QMM001_18')}</span>
 						</div>
-						<div data-bind="if:self.salGenParaIdent()!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+						<div data-bind="if:self.salGenParaIdent().historyAtr!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
 							<div style="margin: 10px 0px 0px 29px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
 								<span id="A3_9" data-bind="text: salGenParaHistory().startYearMonth"/>
 								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
