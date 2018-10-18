@@ -290,6 +290,8 @@ module nts.uk.com.view.cps001.g.vm {
                 }).fail((res) => {
                     if (res.messageId == 'Msg_1023') {
                         $('#idGrantDate').ntsError('set', { messageId: res.messageId });
+                    }else if (res.messageId == 'Msg_1456') {
+                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }
                     unblock();
                 });
@@ -300,7 +302,9 @@ module nts.uk.com.view.cps001.g.vm {
                     });
                     unblock();
                 }).fail((res) => {
-                    if (res.messageId == 'Msg_1023') {
+                    if (res.messageId == 'Msg_1456') {
+                       nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }else if (res.messageId != 'Msg_1023') {
                         $('#idGrantDate').ntsError('set', { messageId: res.messageId });
                     }
                     unblock();
