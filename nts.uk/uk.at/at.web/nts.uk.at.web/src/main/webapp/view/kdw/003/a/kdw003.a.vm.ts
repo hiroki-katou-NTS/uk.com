@@ -1021,7 +1021,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                              nts.uk.ui.block.clear();
                         }
 
-                        if (_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined && !errorFlex) {
+                        if ((_.isEmpty(dataAfter.errorMap) && dataAfter.errorMap[5] == undefined && !errorFlex) || dataAfter.errorMap[6] != undefined) {
                             if (self.valueUpdateMonth != null || self.valueUpdateMonth != undefined) {
                                 self.valueUpdateMonth.items = [];
                             }
@@ -1038,6 +1038,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 }
                             }else{
                               self.loadRowScreen(false, true);
+                            }
+                            if (dataAfter.errorMap[6] != undefined) {
+                                 nts.uk.ui.dialog.info({ messageId: "Msg_1455" });
                             }
                             nts.uk.ui.block.clear();
                         } else {
