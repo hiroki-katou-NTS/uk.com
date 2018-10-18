@@ -39,9 +39,6 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 	private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
 	@Inject
-	private MonthlyScopeOfWelfarePensionCompensationRepository monthlyScopeOfWelfarePensionCompensationRepository;
-
-	@Inject
 	private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
 	
 	@Inject

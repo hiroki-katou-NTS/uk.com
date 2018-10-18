@@ -6,11 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.*;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardGradePerMonth;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardMonthly;
 
 /**
  * 健康保険標準月額

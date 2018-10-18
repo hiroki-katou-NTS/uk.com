@@ -1,11 +1,8 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.*;
 import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtWelfarePensionStandardGradePerMonth;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtWelfarePensionStandardMonthlyFee;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtWelfarePensionStandardMonthlyFeePk;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -51,15 +48,7 @@ public class JpaWelfarePensionStandardMonthlyFeeRepository extends JpaRepository
         return new WelfarePensionStandardMonthlyFee(standardGradePerMonthEntity.get(0).targetStartYm, standardGradePerMonthEntity.get(0).targetEndYm, standardGradePerMonthEntity.stream().map(x -> new WelfarePensionStandardGradePerMonth(x.penStdGraMonPk.welfarePensionGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
     }
 
-    /**
-     * Convert domain to entity
-     *
-     * @param domain WelfarePensionStandardMonthlyFee
-     * @return QpbmtWelfarePensionStandardMonthlyFee
-     */
-    private QpbmtWelfarePensionStandardMonthlyFee toEntity(WelfarePensionStandardMonthlyFee domain) {
-        return new QpbmtWelfarePensionStandardMonthlyFee(new QpbmtWelfarePensionStandardMonthlyFeePk(domain.getTargetPeriod().start().v(), domain.getTargetPeriod().end().v()));
-    }
+
 
     private MonthlyScopeOfWelfarePensionCompensation toDomainCom(List<QpbmtWelfarePensionStandardGradePerMonth> standardGradePerMonthEntity) {
         return new MonthlyScopeOfWelfarePensionCompensation(standardGradePerMonthEntity.get(0).targetStartYm, standardGradePerMonthEntity.get(0).targetEndYm, standardGradePerMonthEntity.stream().map(x -> new WelfarePensionGradePerRewardMonthlyRange(x.penStdGraMonPk.welfarePensionGrade, x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
