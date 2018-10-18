@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.message;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,7 +13,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageRepository;
@@ -27,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class JpaDivergenceTimeErrorAlarmMessageRepository.
  */
 @Stateless
-public class JpaDivergenceTimeErrorAlarmMessageRepository extends JpaRepository
+public class JpaDivTimeErrAlarmMsgRepo extends JpaRepository
 		implements DivergenceTimeErrorAlarmMessageRepository {
 
 	/*
@@ -78,6 +81,11 @@ public class JpaDivergenceTimeErrorAlarmMessageRepository extends JpaRepository
 	@Override
 	public List<DivergenceTimeErrorAlarmMessage> findByDivergenceTimeNoList(CompanyId cId,
 			List<Integer> divergenceTimeNoList) {
+		
+		if(CollectionUtil.isEmpty(divergenceTimeNoList)) {
+			return Collections.emptyList();
+		}
+		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KrcstDvgcTimeEaMsg> cq = criteriaBuilder.createQuery(KrcstDvgcTimeEaMsg.class);
@@ -86,22 +94,26 @@ public class JpaDivergenceTimeErrorAlarmMessageRepository extends JpaRepository
 		// Build query
 		cq.select(root);
 
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTimeEaMsg_.id).get(KrcstDvgcTimeEaMsgPK_.cid), cId));
+		List<KrcstDvgcTimeEaMsg> krcstDvgcTimeEaMsg = new ArrayList<>();
+		CollectionUtil.split(divergenceTimeNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// create where conditions
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTimeEaMsg_.id).get(KrcstDvgcTimeEaMsgPK_.cid), cId));
 
-		// dvgcTimeNo in divergenceTimeNoList
-		predicates.add(root.get(KrcstDvgcTimeEaMsg_.id).get(KrcstDvgcTimeEaMsgPK_.dvgcTimeNo).in(divergenceTimeNoList));
+			// dvgcTimeNo in divergenceTimeNoList
+			predicates.add(
+					root.get(KrcstDvgcTimeEaMsg_.id).get(KrcstDvgcTimeEaMsgPK_.dvgcTimeNo).in(splitData));
 
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
+			// add where to query
+			cq.where(predicates.toArray(new Predicate[] {}));
 
-		// query data
-		List<KrcstDvgcTimeEaMsg> KrcstDvgcTimeEaMsg = em.createQuery(cq).getResultList();
+			// query data
+			krcstDvgcTimeEaMsg.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// return
-		return KrcstDvgcTimeEaMsg.isEmpty() ? new ArrayList<DivergenceTimeErrorAlarmMessage>()
-				: KrcstDvgcTimeEaMsg.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return krcstDvgcTimeEaMsg.isEmpty() ? new ArrayList<DivergenceTimeErrorAlarmMessage>()
+				: krcstDvgcTimeEaMsg.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**

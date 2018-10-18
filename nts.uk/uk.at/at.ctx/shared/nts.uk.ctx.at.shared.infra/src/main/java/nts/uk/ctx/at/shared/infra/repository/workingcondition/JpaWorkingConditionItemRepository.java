@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,8 +26,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -32,9 +38,15 @@ import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZonePK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZonePK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
@@ -84,7 +96,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @return the by list sid and monthly pattern not null
 	 */
 	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds, List<String> monthlyPatternCodes){
-		if (employeeIds.isEmpty()){
+		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(monthlyPatternCodes)) {
 			return Collections.emptyList();
 		}
 
@@ -103,33 +115,34 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		List<KshmtWorkingCondItem> result = new ArrayList<>();
 				
-		CollectionUtil.split(employeeIds, 1000, subList -> {
-			// add where
-			List<Predicate> lstpredicateWhere = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subEmployeeList -> {
+					CollectionUtil.split(monthlyPatternCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+							subPatternList -> {
+								// add where
+								List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-			// condition
-			lstpredicateWhere
-					.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
-			lstpredicateWhere
-					.add(root.get(KshmtWorkingCondItem_.monthlyPattern).in(monthlyPatternCodes));
-			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-					GeneralDate.max()));
+								// condition
+								lstpredicateWhere.add(
+										root.get(KshmtWorkingCondItem_.sid).in(subEmployeeList));
+								lstpredicateWhere.add(root.get(KshmtWorkingCondItem_.monthlyPattern)
+										.in(subPatternList));
+								lstpredicateWhere
+										.add(criteriaBuilder.equal(
+												root.get(KshmtWorkingCondItem_.kshmtWorkingCond)
+														.get(KshmtWorkingCond_.endD),
+												GeneralDate.max()));
 
-			// set where to SQL
-			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-			
-			// create query
-			TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+								// set where to SQL
+								cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-			result.addAll(query.getResultList());
-		});
+								// create query
+								TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+								result.addAll(query.getResultList());
+							});
+				});
 		
-		// Check empty
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
-
 		// exclude select
 		return result.stream()
 				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
@@ -223,20 +236,208 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @return the list
 	 */
 	// add 2018.1.31 shuichi_ishida
+	@SneakyThrows
 	@Override
-	public List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod) {
-		
-		List<KshmtWorkingCondItem> entitys = this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D, KshmtWorkingCondItem.class)
-												 .setParameter("employeeId", employeeId)
-												 .setParameter("startDate", datePeriod.start())
-												 .setParameter("endDate", datePeriod.end())
-												 .getList();
-		
-		if (entitys.isEmpty()) return Collections.emptyList();
-		
-		return entitys.stream()
-				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
-				.collect(Collectors.toList());
+	public List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId,
+			DatePeriod datePeriod) {
+		String sqlJdbc = "SELECT KWCI.*, KSM.* FROM KSHMT_WORKING_COND_ITEM KWCI "
+				+ "LEFT JOIN KSHMT_SCHEDULE_METHOD KSM ON KWCI.HIST_ID = KSM.HIST_ID "
+				+ "LEFT JOIN KSHMT_WORKING_COND KWC ON KWCI.HIST_ID = KWC.HIST_ID "
+				+ "WHERE KWCI.SID = ? " + "AND KWC.START_DATE <= ? " + "AND KWC.END_DATE >= ? "
+				+ "ORDER BY KWC.START_DATE";
+
+		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
+
+			stmt.setString(1, employeeId);
+			stmt.setDate(2, Date.valueOf(datePeriod.start().toLocalDate()));
+			stmt.setDate(3, Date.valueOf(datePeriod.end().toLocalDate()));
+
+			List<KshmtWorkingCondItem> result = new NtsResultSet(stmt.executeQuery())
+					.getList(rec -> {
+						KshmtScheduleMethod kshmtScheduleMethod = new KshmtScheduleMethod();
+						kshmtScheduleMethod.setHistoryId(rec.getString("HIST_ID"));
+						kshmtScheduleMethod.setBasicCreateMethod(rec.getInt("BASIC_CREATE_METHOD"));
+						kshmtScheduleMethod
+								.setRefBusinessDayCalendar(rec.getInt("REF_BUSINESS_DAY_CALENDAR"));
+						kshmtScheduleMethod.setRefBasicWork(rec.getInt("REF_BASIC_WORK"));
+						kshmtScheduleMethod.setRefWorkingHours(rec.getInt("REF_WORKING_HOURS"));
+
+						KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
+						entity.setHistoryId(rec.getString("HIST_ID"));
+						entity.setSid(rec.getString("SID"));
+						entity.setHourlyPayAtr(rec.getInt("HOURLY_PAY_ATR"));
+						entity.setScheManagementAtr(rec.getInt("SCHE_MANAGEMENT_ATR"));
+						entity.setAutoStampSetAtr(rec.getInt("AUTO_STAMP_SET_ATR"));
+						entity.setAutoIntervalSetAtr(rec.getInt("AUTO_INTERVAL_SET_ATR"));
+						entity.setVacationAddTimeAtr(rec.getInt("VACATION_ADD_TIME_ATR"));
+						entity.setContractTime(rec.getInt("CONTRACT_TIME"));
+						entity.setLaborSys(rec.getInt("LABOR_SYS"));
+						entity.setHdAddTimeOneDay(rec.getInt("HD_ADD_TIME_ONE_DAY"));
+						entity.setHdAddTimeMorning(rec.getInt("HD_ADD_TIME_MORNING"));
+						entity.setHdAddTimeAfternoon(rec.getInt("HD_ADD_TIME_AFTERNOON"));
+						entity.setTimeApply(rec.getString("TIME_APPLY"));
+						entity.setMonthlyPattern(rec.getString("MONTHLY_PATTERN"));
+						entity.setKshmtScheduleMethod(kshmtScheduleMethod);
+
+						return entity;
+					});
+
+			if (result.isEmpty()) {
+				return Collections.emptyList();
+			}
+			;
+
+			List<String> histIds = result.stream().map(KshmtWorkingCondItem::getHistoryId)
+					.collect(Collectors.toList());
+
+			List<KshmtWorkCatTimeZone> kshmtWorkCatTimeZones = new ArrayList<>();
+			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				String sqlJdbcWc = "SELECT * FROM KSHMT_WORK_CAT_TIME_ZONE KWCTZ WHERE KWCTZ.HIST_ID IN ("
+						+ NtsStatement.In.createParamsString(subList) + ")";
+				PreparedStatement statement;
+				try {
+					statement = this.connection().prepareStatement(sqlJdbcWc);
+					kshmtWorkCatTimeZones
+							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+								KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK = new KshmtWorkCatTimeZonePK();
+								kshmtWorkCatTimeZonePK.setHistoryId(rec.getString("HIST_ID"));
+								kshmtWorkCatTimeZonePK
+										.setPerWorkCatAtr(rec.getInt("PER_WORK_CAT_ATR"));
+								kshmtWorkCatTimeZonePK.setCnt(rec.getInt("CNT"));
+
+								KshmtWorkCatTimeZone entity = new KshmtWorkCatTimeZone();
+								entity.setKshmtWorkCatTimeZonePK(kshmtWorkCatTimeZonePK);
+
+								return entity;
+							}));
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			});
+
+			// Get KshmtPerWorkCats
+			List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
+			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				String sqlJdbcWc = "SELECT * FROM KSHMT_PER_WORK_CAT KPWC WHERE KPWC.HIST_ID IN ("
+						+ NtsStatement.In.createParamsString(subList) + ")";
+				PreparedStatement statement;
+				try {
+					statement = this.connection().prepareStatement(sqlJdbcWc);
+					kshmtPerWorkCats
+							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+								KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
+								kshmtPerWorkCatPK.setHistoryId(rec.getString("HIST_ID"));
+								kshmtPerWorkCatPK.setPerWorkCatAtr(rec.getInt("PER_WORK_CAT_ATR"));
+
+								KshmtPerWorkCat entity = new KshmtPerWorkCat();
+								entity.setKshmtPerWorkCatPK(kshmtPerWorkCatPK);
+								entity.setWorkTypeCode(rec.getString("WORK_TYPE_CODE"));
+								entity.setWorkTimeCode(rec.getString("WORK_TIME_CODE"));
+
+								return entity;
+							}));
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			});
+
+			List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones = new ArrayList<>();
+			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				String sqlJdbcWc = "SELECT * FROM KSHMT_DAYOFWEEK_TIME_ZONE KDTZ WHERE KDTZ.HIST_ID IN ("
+						+ NtsStatement.In.createParamsString(subList) + ")";
+				PreparedStatement statement;
+				try {
+					statement = this.connection().prepareStatement(sqlJdbcWc);
+					kshmtDayofweekTimeZones
+							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+								KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK = new KshmtDayofweekTimeZonePK();
+								kshmtDayofweekTimeZonePK.setHistoryId(rec.getString("HIST_ID"));
+								kshmtDayofweekTimeZonePK
+										.setPerWorkDayOffAtr(rec.getInt("PER_WORK_DAY_OFF_ATR"));
+								kshmtDayofweekTimeZonePK.setCnt(rec.getInt("CNT"));
+
+								KshmtDayofweekTimeZone entity = new KshmtDayofweekTimeZone();
+								entity.setKshmtDayofweekTimeZonePK(kshmtDayofweekTimeZonePK);
+
+								return entity;
+							}));
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			});
+
+			// Get
+			List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
+			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				String sqlJdbcWc = "SELECT * FROM KSHMT_PERSONAL_DAY_OF_WEEK KPDW WHERE KPDW.HIST_ID IN ("
+						+ NtsStatement.In.createParamsString(subList) + ")";
+				PreparedStatement statement;
+				try {
+					statement = this.connection().prepareStatement(sqlJdbcWc);
+					kshmtPersonalDayOfWeeks
+							.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+								KshmtPersonalDayOfWeekPK kshmtPersonalDayOfWeekPK = new KshmtPersonalDayOfWeekPK();
+								kshmtPersonalDayOfWeekPK.setHistoryId(rec.getString("HIST_ID"));
+								kshmtPersonalDayOfWeekPK
+										.setPerWorkDayOffAtr(rec.getInt("PER_WORK_DAY_OFF_ATR"));
+
+								KshmtPersonalDayOfWeek entity = new KshmtPersonalDayOfWeek();
+								entity.setKshmtPersonalDayOfWeekPK(kshmtPersonalDayOfWeekPK);
+								entity.setWorkTypeCode(rec.getString("WORK_TYPE_CODE"));
+								entity.setWorkTimeCode(rec.getString("WORK_TIME_CODE"));
+
+								return entity;
+							}));
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			});
+
+			// Put value
+			Map<String, Map<Integer, List<KshmtWorkCatTimeZone>>> kshmtWorkCatTimeZonesMap = kshmtWorkCatTimeZones
+					.stream()
+					.collect(Collectors.groupingBy(
+							item -> item.getKshmtWorkCatTimeZonePK().getHistoryId(),
+							Collectors.groupingBy(
+									item -> item.getKshmtWorkCatTimeZonePK().getPerWorkCatAtr())));
+
+			kshmtPerWorkCats.forEach(item -> {
+				item.setKshmtWorkCatTimeZones(
+						kshmtWorkCatTimeZonesMap.get(item.getKshmtPerWorkCatPK().getHistoryId())
+								.get(item.getKshmtPerWorkCatPK().getPerWorkCatAtr()));
+			});
+
+			Map<String, List<KshmtPerWorkCat>> kshmtPerWorkCatsMap = kshmtPerWorkCats.stream()
+					.collect(Collectors
+							.groupingBy(item -> item.getKshmtPerWorkCatPK().getHistoryId()));
+
+			Map<String, Map<Integer, List<KshmtDayofweekTimeZone>>> kshmtDayofweekTimeZonesMap = kshmtDayofweekTimeZones
+					.stream()
+					.collect(Collectors.groupingBy(
+							item -> item.getKshmtDayofweekTimeZonePK().getHistoryId(),
+							Collectors.groupingBy(item -> item.getKshmtDayofweekTimeZonePK()
+									.getPerWorkDayOffAtr())));
+
+			kshmtPersonalDayOfWeeks.forEach(item -> {
+				item.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZonesMap
+						.get(item.getKshmtPersonalDayOfWeekPK().getHistoryId())
+						.get(item.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()));
+			});
+
+			Map<String, List<KshmtPersonalDayOfWeek>> kshmtPersonalDayOfWeeksMap = kshmtPersonalDayOfWeeks
+					.stream().collect(Collectors
+							.groupingBy(item -> item.getKshmtPersonalDayOfWeekPK().getHistoryId()));
+
+			result.forEach(item -> {
+				item.setKshmtPerWorkCats(kshmtPerWorkCatsMap.get(item.getHistoryId()));
+				item.setKshmtPersonalDayOfWeeks(
+						kshmtPersonalDayOfWeeksMap.get(item.getHistoryId()));
+			});
+
+			return result.stream()
+					.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
+					.collect(Collectors.toList());
+		}
 	}
 	
 	/*
@@ -372,7 +573,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		List<KshmtWorkingCondItem> result = new ArrayList<>();
 
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -520,6 +721,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @return the last working cond item
 	 */
 	private List<KshmtWorkingCondItem> getLastWorkingCondItemEntities(List<String> employeeId) {
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(employeeId)) {
+			return Collections.emptyList();
+		}
+				
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -529,32 +736,31 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		// root data
 		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
-
+		
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal
-		lstpredicateWhere
-				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeId));
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-				GeneralDate.max()));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		
-		// create query
-		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+		List<KshmtWorkingCondItem> result = new ArrayList<>();
 
-		List<KshmtWorkingCondItem> result = query.getResultList();
-		
-		// Check empty
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			// equal
+			lstpredicateWhere
+					.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+					GeneralDate.max()));
+
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			// create query
+			TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+			result.addAll(query.getResultList());
+		});
 
 		// exclude select
 		return result;
@@ -688,10 +894,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	@Override
 	public List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds) {
 		List<KshmtWorkingCondItem> result = this.getLastWorkingCondItemEntities(employeeIds);
-		// Check empty
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
 
 		// exclude select
 		return result.stream().map(

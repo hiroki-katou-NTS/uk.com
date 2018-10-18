@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -120,6 +122,7 @@ public class ActualWorkingTimeOfDaily {
     
 	/**
 	 * 日別実績の実働時間の計算
+	 * @param workScheduleTime 
 	 * @param breakTimeCount 
 	 * @param schePreTimeSet 
 	 * @param schePreTimeSet 
@@ -140,7 +143,7 @@ public class ActualWorkingTimeOfDaily {
 			   List<DivergenceTime> divergenceTimeList, 
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   DeductLeaveEarly leaveLateSet) {
+			   DeductLeaveEarly leaveLateSet, WorkScheduleTimeOfDaily workScheduleTime) {
 
 		
 		/* 総労働時間の計算 */
@@ -160,7 +163,8 @@ public class ActualWorkingTimeOfDaily {
 		/*大塚残業*/
 		TotalWorkingTime calcResultOotsuka = calcOotsuka(recordClass,
 														 totalWorkingTime,
-														 workType);
+														 workType,
+														 workScheduleTime.getRecordPrescribedLaborTime());
 		
 		/*大塚モードの計算（欠勤控除時間）*/
 		//1日出勤系の場合は処理を呼ばないように作成が必要
@@ -316,11 +320,13 @@ public class ActualWorkingTimeOfDaily {
 	 * @param dailyUnit 
 	 * @param timeLeavingOfDailyPerformance 
 	 * @param workType 
+	 * @param attendanceTime 
 	 * @return
 	 */
 	private static TotalWorkingTime calcOotsuka(ManageReGetClass recordClass, 
 									TotalWorkingTime totalWorkingTime,
-									WorkType workType
+									WorkType workType, 
+									AttendanceTime acutualPredTime
 									) {
 		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() == null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
 		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork())&&recordClass.getOotsukaFixedWorkSet().isPresent()&& !workType.getDailyWork().isHolidayWork()) {
@@ -333,8 +339,19 @@ public class ActualWorkingTimeOfDaily {
 									recordClass.getIntegrationOfDaily().getAttendanceLeave().get()) 
 							: new AttendanceTime(0);
 			unUseBreakTime = unUseBreakTime.greaterThan(0)?unUseBreakTime:new AttendanceTime(0);
+			//所てない休憩未取得時間を算出する際に使用する所定時間に加算する時間(就業時間帯マスタに設定されている所定内の休憩時間の合計)
+			int withinBreakTime = 0;
+			//就業時間帯に設定されている休憩のループ
+			for(DeductionTime breakTImeSheet : recordClass.getFixRestTimeSetting().get().getLstTimezone()) {
+				//就業時間帯に設定されている勤務時間帯のstream
+				withinBreakTime += recordClass.getFixWoSetting().stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
+													  .map(tt -> tt.getTimezone().timeSpan().lengthAsMinutes())
+													  .collect(Collectors.summingInt(ts -> ts));
+					
+				
+			}
 			//所定内休憩未取得時間の計算
-			AttendanceTime unUseWithinBreakTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().calcUnUseWithinBreakTime(unUseBreakTime,recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime()));
+			AttendanceTime unUseWithinBreakTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().calcUnUseWithinBreakTime(unUseBreakTime,acutualPredTime,new AttendanceTime(withinBreakTime));
 			//所定外休憩未取得時間
 			AttendanceTime unUseExcessBreakTime = unUseBreakTime.minusMinutes(unUseWithinBreakTime.valueAsMinutes());
 			

@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedPerson;
@@ -118,12 +120,18 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 		if(lstSid.isEmpty() || roleSetCDLst.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(GET_SID_BY_ROLE_DATE ,String.class)
+		List<String> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListS -> {
+			CollectionUtil.split(roleSetCDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListCD -> {
+				resultList.addAll(this.queryProxy().query(GET_SID_BY_ROLE_DATE ,String.class)
 				.setParameter("companyID", companyID)
-				.setParameter("lstSid", lstSid)
-				.setParameter("roleSetCDLst", roleSetCDLst)
+				.setParameter("lstSid", subListS)
+				.setParameter("roleSetCDLst", subListCD)
 				.setParameter("date", date)
-				.getList();
+				.getList());
+			});
+		});
+		return resultList;
 	}
 
 }

@@ -196,7 +196,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 												   flexCalcMethod, bonusPayAutoCalcSet, 
 												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
 												    predetermineTimeSetByPersonInfo,scheleaveLateSet);
-				
+		
 			/*日別実績の実績時間の計算*/
 		Optional<WorkTimeDailyAtr> workDailyAtr = recordReGetClass.getWorkTimeSetting() != null && recordReGetClass.getWorkTimeSetting().isPresent()?
 													Optional.of(recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()):
@@ -212,7 +212,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				divergenceTimeList,
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
-				leaveLateSet);
+				leaveLateSet,
+				workScheduleTime);
 	
 	
 

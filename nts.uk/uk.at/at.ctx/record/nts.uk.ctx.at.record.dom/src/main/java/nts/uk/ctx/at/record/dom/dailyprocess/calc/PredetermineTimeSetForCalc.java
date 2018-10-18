@@ -171,27 +171,6 @@ public class PredetermineTimeSetForCalc {
 	}
 	
 	/**
-	 * 出勤系などの～～～刑による所定時間の取得
-	 * @param attendanceAtr
-	 * @return
-	 */
-	public AttendanceTime getPredetermineTimeByAttendanceAtr(AttendanceHolidayAttr attendanceAtr) {
-		switch(attendanceAtr) {
-		case FULL_TIME:
-			return additionSet.getPredTime().getOneDay();
-		case MORNING:
-			return additionSet.getPredTime().getMorning();
-		case AFTERNOON:
-			return additionSet.getPredTime().getAfternoon();
-		case HOLIDAY:
-			return new AttendanceTime(0);
-		default:
-				throw new RuntimeException("unknown workTypeRange");
-		}
-	}
-	
-	
-	/**
 	 * 所定時間設定を所定時間設定(計算用)に変換する
 	 * @param master 所定時間設定
 	 */

@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
@@ -355,7 +356,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 		// Split user id list.
 		List<SgwmtWindowAcc> resultList = new ArrayList<>();
 
-		CollectionUtil.split(ltsUserId, 1000, subList -> {
+		CollectionUtil.split(ltsUserId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(GET_BY_LIST_USERIDS, SgwmtWindowAcc.class)
 					.setParameter("lstUserId", subList).getList());
 		});

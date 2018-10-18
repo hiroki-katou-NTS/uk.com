@@ -3,14 +3,17 @@
  */
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.holiday;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KsmmtPublicHoliday;
@@ -37,9 +40,15 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 
 	@Override
 	public List<PublicHoliday> getHolidaysByListDate(String companyId, List<GeneralDate> lstDate) {
-		return this.queryProxy().query(SELECT_BY_LISTDATE, KsmmtPublicHoliday.class)
-				.setParameter("companyId", companyId).setParameter("lstDate", lstDate).getList().stream()
-				.map(entity -> toDomain(entity)).collect(Collectors.toList());
+		List<PublicHoliday> resultList = new ArrayList<>();
+		CollectionUtil.split(lstDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTDATE, KsmmtPublicHoliday.class)
+				.setParameter("companyId", companyId)
+				.setParameter("lstDate", subList)
+				.getList().stream()
+				.map(entity -> toDomain(entity)).collect(Collectors.toList()));
+		});
+		return resultList;
 	}
 
 	@Override

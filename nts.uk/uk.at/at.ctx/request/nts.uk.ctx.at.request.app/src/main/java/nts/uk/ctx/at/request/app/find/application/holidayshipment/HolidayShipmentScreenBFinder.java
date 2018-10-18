@@ -147,17 +147,8 @@ public class HolidayShipmentScreenBFinder {
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
-				//期間内の振出振休残数を取得する
-				AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyID,
-						employeeID,
-						new DatePeriod(refDate, refDate.addYears(1)),
-						GeneralDate.today(),
-						false,
-						false, 
-						Collections.emptyList(),
-						Collections.emptyList(),
-						Collections.emptyList());
-				AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
+				//[No.506]振休残数を取得する
+				double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
 				screenInfo.setAbsRecMng(absRecMng);
 			}
 		}

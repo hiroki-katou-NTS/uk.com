@@ -615,13 +615,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		
 		List<ClosureDto> closureDtos = new ArrayList<>();
 		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"select * from KCLMT_CLOSURE c"
 						+ " inner join KCLMT_CLOSURE_EMPLOYMENT e"
 						+ " on c.CLOSURE_ID = e.CLOSURE_ID"
 						+ " where e.CID = ?"
-						+ " and EMPLOYMENT_CD in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " and EMPLOYMENT_CD in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				
 				statement.setString(1, AppContexts.user().companyId());
 				for (int i = 0; i < subList.size(); i++) {
@@ -993,10 +992,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				textIn += "'" +text+ "'"+ ",";
 			}
 		}
-		try {
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
-			PreparedStatement pstatement = con.prepareStatement(query);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			pstatement.setString(1, companyId);
 //			Array array = pstatement.getConnection().createArrayOf("ANY ", new Object[]{"A", "B","C"});
 //			pstatement.setArray(2, array);
@@ -1055,9 +1053,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findEmployment(String companyId) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SEL_EMPLOYMENT_BY_CLOSURE_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_EMPLOYMENT_BY_CLOSURE_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("CODE"), rs.getString("NAME"), "");
@@ -1070,9 +1066,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findJobInfo(String companyId, GeneralDate date) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_JOB_INFO_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_JOB_INFO_JDBC)) {
 			statement.setString(1, companyId);statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setDate(3, Date.valueOf(date.localDate()));
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
@@ -1086,9 +1080,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findClassification(String companyId) {
-		try {
-		
-			PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_CLASSIFICATION_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_FIND_CLASSIFICATION_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("CLSCD"), rs.getString("CLSNAME"), "");
@@ -1101,9 +1093,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkplace(String companyId, GeneralDate date) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACE_JDBC)) {
 			statement.setString(1, companyId);
 			statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setDate(3, Date.valueOf(date.localDate()));
@@ -1119,9 +1109,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<CodeName> findWorkplaceLocation(String companyId) {
 		String sql = SEL_FIND_WORKPLACE_LOCATION_JDBC;
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(sql);
+		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("WORK_LOCATION_CD"), rs.getString("WORK_LOCATION_NAME"), "");
@@ -1134,9 +1122,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findReason(String companyId) {
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(SELECT_ALL_DIVREASON_JDBC);
+		try (PreparedStatement statement = this.connection().prepareStatement(SELECT_ALL_DIVREASON_JDBC)) {
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
 				return new CodeName(rs.getString("REASON_CD"), rs.getString("REASON"), rs.getInt("NO").toString());
@@ -1205,27 +1191,28 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@SneakyThrows
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
-		val statement = this.connection().prepareStatement(
-				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1");
-		statement.setString(1, AppContexts.user().companyId());
-		statement.setInt(2, closureId);
-		
-		List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			KrcstWorkFixed w = new KrcstWorkFixed();
-			w.setKrcstWorkFixedPK(new KrcstWorkFixedPK(
-					rec.getString("WKPID"),
-					rec.getInt("CLOSURE_ID"),
-					rec.getString("CID")));
-			w.setConfirmPid(rec.getString("CONFIRM_PID"));
-			w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
-			w.setFixedDate(rec.getDate("FIXED_DATE"));
-			w.setProcessYm(rec.getInt("PROCESS_YM"));
+		try (val statement = this.connection().prepareStatement(
+				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ? and CONFIRM_CLS = 1")) {
+			statement.setString(1, AppContexts.user().companyId());
+			statement.setInt(2, closureId);
 			
-			return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
-					w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
-		});
-		
-		return workOp;
+			List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				KrcstWorkFixed w = new KrcstWorkFixed();
+				w.setKrcstWorkFixedPK(new KrcstWorkFixedPK(
+						rec.getString("WKPID"),
+						rec.getInt("CLOSURE_ID"),
+						rec.getString("CID")));
+				w.setConfirmPid(rec.getString("CONFIRM_PID"));
+				w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
+				w.setFixedDate(rec.getDate("FIXED_DATE"));
+				w.setProcessYm(rec.getInt("PROCESS_YM"));
+				
+				return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
+						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
+			});
+			
+			return workOp;
+		}
 	}
 
 	@Override
@@ -1344,9 +1331,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.concat(shifCode.stream().map(x -> "?").collect(Collectors.joining(",")))
 				.concat(") ORDER BY WORKTIME_CD ASC");
 		}
-		try {
-			
-			PreparedStatement statement = this.connection().prepareStatement(sql);
+		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
 			statement.setString(1, companyId);
 			for (int i = 0; i < shifCode.size(); i++) {
 				statement.setString(i + 2, shifCode.get(i));
@@ -1392,10 +1377,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.concat(typeCodes.stream().map(x -> "?").collect(Collectors.joining(",")))
 				.concat(")");
 		}
-		try {
+		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
 			List<String> xcodes = new ArrayList<>(typeCodes);
-			
-			PreparedStatement statement = this.connection().prepareStatement(sql);
 			statement.setString(1, companyId);
 			for (int i = 0; i < xcodes.size(); i++) {
 				statement.setString(i + 2, xcodes.get(i));
@@ -1617,13 +1600,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		Map<String, String> empCodes = new HashMap<>();
 		CollectionUtil.split(employeeId, 1000, (subList) -> {
 			
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"select h.SID, i.EMP_CD from BSYMT_EMPLOYMENT_HIST h" + 
 						" inner join BSYMT_EMPLOYMENT_HIS_ITEM i on h.HIST_ID = i.HIST_ID" + 
 						" where h.CID = ?" + 
 						" and h.START_DATE <= ? and h.END_DATE >= ?" + 
-						" and h.SID in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						" and h.SID in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				
 				statement.setString(1, companyId);
 				statement.setDate(2, Date.valueOf(rangeDate.getEndDate().toLocalDate()));
@@ -1659,11 +1641,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				textIn += number + ",";
 			}
 		}
-		try {
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1  AND s.OPTIONAL_ITEM_NO IN ("
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.OPTIONAL_ITEM_NO IN ("
 					+ textIn + ")";
-			PreparedStatement pstatement = con.prepareStatement(query);
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			pstatement.setString(1, companyId);
 			ResultSet rs = pstatement.executeQuery();
 			while (rs.next()) {
@@ -1703,8 +1685,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.append(joinParam(subList))
 					.append(")").toString();
 			
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(GET_EMP_ALL_X);
+			try (PreparedStatement statement = this.connection().prepareStatement(GET_EMP_ALL_X)) {
 				statement.setDate(1, Date.valueOf(dateRange.getEndDate().localDate()));
 				statement.setDate(2, Date.valueOf(dateRange.getStartDate().localDate()));
 				statement.setString(3, companyId);
@@ -1738,8 +1719,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			builderString.append("WHERE emp.CID = ? AND c.USE_ATR = 1");
 			builderString.append("AND emp.EMPLOYMENT_CD IN ( ").append(joinParam(subList)).append(")");
 			
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(builderString.toString());
+			try (PreparedStatement statement = this.connection().prepareStatement(builderString.toString())) {
 				statement.setString(1, companyId);
 				for (int i = 0; i < subList.size(); i++) {
 					statement.setString(i + 2, subList.get(i));
@@ -1793,10 +1773,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			}
 		}
 
-		try {
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND (" + textParam + " )";
-			PreparedStatement pstatement = con.prepareStatement(query);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND (" + textParam + " )";
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			pstatement.setString(1, companyId);
 			ResultSet rs = pstatement.executeQuery();
 			while (rs.next()) {
