@@ -86,7 +86,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             self.name(params.name);
             self.code(params.code);
             self.startYearMonth(params.startYearMonth);
-            self.endYearMonth(getText('QMM007_43',[params.endYearMonth]));
+            self.endYearMonth(getText('QMM007_43',[self.convertYearMonthToDisplayYearMonth(params.endYearMonth)]));
             self.textResourceRadioFirt(getText('QMM007_42',[self.convertMonthYearToString(self.startYearMonth())]));
             self.isFirst(params.isFirst);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
@@ -98,7 +98,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         cancel(){
             close();
         }
-
+        convertYearMonthToDisplayYearMonth(yearMonth) {
+            return nts.uk.time.formatYearMonth(yearMonth);
+        }
         convertMonthYearToString(yearMonth: any) {
             let self = this;
             let year: string, month: string;
