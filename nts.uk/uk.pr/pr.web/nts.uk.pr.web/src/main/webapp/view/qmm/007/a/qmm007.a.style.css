@@ -1,0 +1,105 @@
+.padding-item {
+    padding: 10px 0 0 10px;
+}
+#functions-area{
+    height: 54px !important;
+    padding-top: 0px !important;
+}
+#A{
+    height: 45px;
+}
+
+.datepicker-container {
+    z-index: 10010;
+}
+#left{
+    margin-top: 15px;
+    margin-left: 25px;
+}
+#A2_4{
+    margin-bottom: 10px;
+}
+#A2_5{
+    float: right;
+}
+#A1_1{
+    margin-top: 10px;
+    margin-left: 50px;
+}
+#A1_2{
+    margin-top: 8px;
+    margin-left: 10px;
+}
+#A1_3{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+#A1_4{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+#A3_1{
+    display: inline-block;
+}
+#A3_2{
+    width:50px;
+    height: 20px;
+    margin-left: 27px;
+}
+#A3_3{
+    margin-left: 10px;
+    height: 20px;
+}
+#A3_4{
+    width: 110px;
+}
+.div-line{
+    margin-top:10px;
+}
+#A3_5{
+    margin-left: 98px;
+}
+#A3_8{
+    display: inline-block;
+}
+#A3_9{
+    width: 205px;
+}
+
+#A3_10 .ntsRadioBox{
+    width: 230px;
+}
+#A3_14, #A3_16, #A3_18{
+    width: 116px;
+}
+#A3_21{
+    margin-top: 10px;
+    float: left;
+}
+#A3_22{
+    margin-top: 10px;
+    height: 90px;
+}
+.space1 {
+    width: 235px;
+}
+.space2 {
+    width: 470px
+}
+.space1,.space3{
+    display: inline-block;
+}
+
+.space3 {
+    margin-left: 24px;
+    width: 60px;
+}
+
+#C1_8 {
+    margin-left: 175px;
+    margin-top:10px;
+}
+
+#C1_7 {
+    margin-left: 90px;
+}

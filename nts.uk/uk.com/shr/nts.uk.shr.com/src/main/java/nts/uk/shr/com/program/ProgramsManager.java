@@ -35,6 +35,15 @@ public class ProgramsManager {
 			"/view/qmm/011/e/index.xhtml");
 	public static final Program QMM011F = new Program(WebAppId.PR, ProgramIdConsts.QMM011F, "QMM011_65",
 			"/view/qmm/011/f/index.xhtml");
+	/**
+	 * QMM007
+	 */
+	public static final Program QMM007A = new Program(WebAppId.PR, ProgramIdConsts.QMM007A, "QMM007_46",
+			"/view/qmm/007/a/index.xhtml");
+    public static final Program QMM007B = new Program(WebAppId.PR, ProgramIdConsts.QMM007B, "QMM007_46",
+            "/view/qmm/007/b/index.xhtml");
+    public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM007_47",
+            "/view/qmm/007/c/index.xhtml");
 	
 	/**
 	 * CCG008A
