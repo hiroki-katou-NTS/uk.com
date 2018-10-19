@@ -1453,10 +1453,12 @@ public class DailyPerformanceCorrectionProcessor {
 		lstFormat = lstFormat.stream().distinct().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
 		result.addColumnsToSheet(lstFormat, mapDP, showButton);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
+		Map<Integer, DPAttendanceItemControl> mapAttendanceItemControl = this.repo
+				.getListAttendanceItemControl(companyId, lstAtdItemUnique).stream().collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x));
 		for (FormatDPCorrectionDto dto : lstFormat) {
 			lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
 					mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
-					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP));
+					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP, mapAttendanceItemControl));
 		}
 		
 		lstHeader.add(DPHeaderDto.addHeaderSubmitted());
@@ -1495,11 +1497,9 @@ public class DailyPerformanceCorrectionProcessor {
 			// set text to header
 			result.setHeaderText(lstAttendanceItem);
 			// set color to header
-			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
-					.getListAttendanceItemControl(lstAtdItemUnique);
 			result.setLstAttendanceItem(lstAttendanceItem);
 			result.getLstAttendanceItem().stream().forEach(c -> c.setName(""));
-			result.setHeaderColor(lstAttendanceItemControl);
+			//result.setHeaderColor(lstAttendanceItemControl);
 		} else {
 			result.setLstAttendanceItem(lstAttendanceItem);
 		}
