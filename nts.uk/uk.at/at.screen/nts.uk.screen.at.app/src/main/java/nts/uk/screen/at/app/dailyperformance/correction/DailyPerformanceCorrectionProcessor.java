@@ -121,6 +121,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.Dail
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
+import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
@@ -294,7 +295,7 @@ public class DailyPerformanceCorrectionProcessor {
 					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 					: objectShare.getLstEmployeeShare();
 			if(employeeIds.isEmpty()) needSortEmp = true;
-			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null, screenDto.getClosureId());
+			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null, screenDto.getClosureId(), screenDto);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
@@ -410,8 +411,8 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		//get itemId
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
-		if(!disItem.getErrors().isEmpty()) {
-			screenDto.setErrors(disItem.getErrors());
+		if(disItem == null || !disItem.getErrors().isEmpty()) {
+			if(disItem != null) screenDto.setErrors(disItem.getErrors());
 			return screenDto;
 		}
 		screenDto.setAutBussCode(disItem.getAutBussCode());
@@ -1381,6 +1382,10 @@ public class DailyPerformanceCorrectionProcessor {
 			if (lstFormat.size() > 0) {
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
 						lstAtdItemUnique, true);
+				if(lstDPBusinessTypeControl.isEmpty()) {
+					screenDto.setErrorInfomation(DCErrorInfomation.ITEM_HIDE_ALL.value);
+					return null;
+				}
 			}
 			Map<Integer, String> itemHide = lstDPBusinessTypeControl.stream().filter(x -> x.isUseAtr()).collect(Collectors.toMap(DPBusinessTypeControl :: getAttendanceItemId, x -> "", (x, y) -> x));
 
@@ -1557,7 +1562,7 @@ public class DailyPerformanceCorrectionProcessor {
 ////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId) {
+	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto) {
 		// 社員一覧を変更する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
@@ -1598,7 +1603,8 @@ public class DailyPerformanceCorrectionProcessor {
 				lstEmployeeId = employeeIds.stream().filter(x -> emloyeeIdAppMap.containsKey(x)).collect(Collectors.toList());
 			}			
 			if(lstEmployeeId.isEmpty()){
-				throw new BusinessException("Msg_916");
+				//throw new BusinessException("Msg_916");
+				screenDto.setErrorInfomation(DCErrorInfomation.APPROVAL_NOT_EMP.value);
 			}
 			return lstEmployeeId;
 		}
