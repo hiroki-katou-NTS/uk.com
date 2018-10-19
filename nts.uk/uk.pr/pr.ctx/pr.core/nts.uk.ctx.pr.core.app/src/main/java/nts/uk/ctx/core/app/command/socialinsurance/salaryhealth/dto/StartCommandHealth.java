@@ -9,5 +9,5 @@ public class StartCommandHealth {
 	
 	private String historyId;
 	private int date;
-	
+	private String socialInsuranceCode;
 }

@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
         startMonth: KnockoutObservable<string> = ko.observable('');
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
-        lastestHistory: number = 190001;
+        lastestHistory: number = 190000;
         constructor() {
             let self = this;
             let params = getShared("QMM008_G_PARAMS");
@@ -23,6 +23,7 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
                     let lastestHistory = history[0].startMonth;
                     displayLastestHistory = String(lastestHistory).substring(0, 4) + "/" + String(lastestHistory).substring(4, 6)
                     self.lastestHistory = lastestHistory;
+                    self.startMonth(lastestHistory);
                 }
                 self.socialInsuranceCode(selectedOffice.socialInsuranceCode);
                 self.socialInsuranceName(selectedOffice.socialInsuranceName);

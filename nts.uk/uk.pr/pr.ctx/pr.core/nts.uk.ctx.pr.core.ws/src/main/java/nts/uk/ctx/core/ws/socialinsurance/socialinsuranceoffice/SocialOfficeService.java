@@ -48,7 +48,8 @@ public class SocialOfficeService {
 		
 		// ドメインモデル「社会保険用都道府県履歴」を取得する
 		List<SociaInsuPreInfoDto> data = socialSuranOfficeFinder.findAll();
-		
+
+		// ドメインモデル「社会保険事業所」をすべて取得する
 		List<CusSociaInsuOfficeDto> dataCodeName = socialSuranOfficeFinder.findByCid();
 		if(!dataCodeName.isEmpty()) {
 			sociaInsuOfficeDetail = socialSuranOfficeFinder.findByKey(dataCodeName.get(0).getCode());

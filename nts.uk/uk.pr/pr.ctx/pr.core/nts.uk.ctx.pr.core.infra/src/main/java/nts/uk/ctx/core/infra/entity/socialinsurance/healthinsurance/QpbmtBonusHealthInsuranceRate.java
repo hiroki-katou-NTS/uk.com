@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -16,17 +16,29 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_BOUNUS_HEALTH_INS")
+@Table(name = "QPBMT_BONUS_HEALTH_INS")
 public class QpbmtBonusHealthInsuranceRate extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * ID
+     */
+    @EmbeddedId
+    public QpbmtBonusHealthInsuranceRatePk bonusHealthInsurancePk;
 
     /**
-     * 履歴ID
+     * 年月開始
      */
-    @Column(name = "HISTORY_ID")
-    @Id
-    public String historyId;
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 事業主負担分計算方法
@@ -107,6 +119,7 @@ public class QpbmtBonusHealthInsuranceRate extends UkJpaEntity implements Serial
 
     @Override
     protected Object getKey() {
-        return historyId;
+        return bonusHealthInsurancePk;
     }
+
 }

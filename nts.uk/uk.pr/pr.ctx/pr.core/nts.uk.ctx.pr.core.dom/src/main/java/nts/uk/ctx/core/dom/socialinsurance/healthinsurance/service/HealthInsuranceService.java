@@ -7,13 +7,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
@@ -24,9 +22,6 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class HealthInsuranceService {
-
-	@Inject
-	private HealthInsuranceFeeRateHistoryRepository healthInsuranceFeeRateHistoryRepository;
 
 	@Inject
 	private BonusHealthInsuranceRateRepository bonusHealthInsuranceRateRepository;
@@ -41,42 +36,40 @@ public class HealthInsuranceService {
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {
 		HealthInsuranceFeeRateHistory welfarePensionHistory = null;
 		// find history
-		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
-				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
+		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = bonusHealthInsuranceRateRepository.getHealthInsuranceHistoryByOfficeCode(officeCode);
 		// calculation
 		// アルゴリズム「月額健康保険料計算処理」を実行する
 		healthInsuranceMonthlyFee = calculationGradeFee(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, yearMonthItem);
 		if (!opt_healthInsurance.isPresent()) {
 			// add new history if no history existed
-			welfarePensionHistory = new HealthInsuranceFeeRateHistory(AppContexts.user().companyId(), officeCode,
-					Arrays.asList(yearMonthItem));
-			healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
-			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
+			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 			return;
 		}
 		// delete old history
-		healthInsuranceFeeRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		welfarePensionHistory = opt_healthInsurance.get();
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
 			// add history if not exist
 			welfarePensionHistory.add(yearMonthItem);
-			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
+			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
+			// if have previous history
+			if (welfarePensionHistory.getHistory().size() > 1) {
+			    this.updateHistoryItem(officeCode, welfarePensionHistory.getHistory().get(0));
+            }
 		} else {
-			this.updateHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
+			this.updateHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, officeCode, yearMonthItem);
 		}
-		healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
 	}
 
 	public void addHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
-			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee) {
-		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate);
-		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee);
+			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate, officeCode, yearMonth);
+		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee, officeCode, yearMonth);
 	}
 
 	public void updateHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
-			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee) {
-		bonusHealthInsuranceRateRepository.update(bonusHealthInsuranceRate);
-		healthInsuranceMonthlyFeeRepository.update(healthInsuranceMonthlyFee);
+			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, String officeCode, YearMonthHistoryItem yearMonth) {
+		bonusHealthInsuranceRateRepository.update(bonusHealthInsuranceRate, officeCode, yearMonth);
+		healthInsuranceMonthlyFeeRepository.update(healthInsuranceMonthlyFee, officeCode, yearMonth);
 	}
 	
 	public HealthInsuranceMonthlyFee calculationGradeFee (BonusHealthInsuranceRate bonusHealthInsuranceRate, HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {
@@ -90,21 +83,25 @@ public class HealthInsuranceService {
 	}
 	
 	public void updateHistory (String officeCode, YearMonthHistoryItem yearMonth){
-		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
-				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
-		if (!opt_healthInsurance.isPresent()) {
+		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = bonusHealthInsuranceRateRepository.getHealthInsuranceHistoryByOfficeCode(officeCode);
+		if (!opt_healthInsurance.isPresent()){
 			return;
 		}
+		this.updateHistoryItem(officeCode, yearMonth);
 		HealthInsuranceFeeRateHistory healthInsurance = opt_healthInsurance.get();
-		Optional<YearMonthHistoryItem> currentSpan = healthInsurance.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
-		if (!currentSpan.isPresent()) return;
-		healthInsurance.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
-		healthInsuranceFeeRateHistoryRepository.update(healthInsurance);
+		int currentIndex = healthInsurance.getHistory().indexOf(yearMonth);
+		try {
+			YearMonthHistoryItem previousHistory = healthInsurance.getHistory().get(currentIndex + 1);
+			healthInsurance.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
+			this.updateHistoryItem(officeCode, healthInsurance.getHistory().get(currentIndex + 1));
+		} catch (IndexOutOfBoundsException e){
+			return;
+		}
+
 	}
 	
 	public void deleteHistory (String officeCode, YearMonthHistoryItem yearMonth){
-		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
-				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
+		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = bonusHealthInsuranceRateRepository.getHealthInsuranceHistoryByOfficeCode(officeCode);
 		if (!opt_healthInsurance.isPresent()) {
 			return;
 		}
@@ -116,10 +113,15 @@ public class HealthInsuranceService {
 			lastestHistory = healthInsurance.getHistory().get(0);
 			healthInsurance.changeSpan(healthInsurance.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
-		healthInsuranceFeeRateHistoryRepository.remove(healthInsurance);
+		this.updateHistoryItem(officeCode, lastestHistory);
 		bonusHealthInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		healthInsuranceMonthlyFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 	}
+
+	private void updateHistoryItem (String officeCode, YearMonthHistoryItem yearMonth) {
+        bonusHealthInsuranceRateRepository.updateHistory(officeCode, yearMonth);
+        healthInsuranceMonthlyFeeRepository.updateHistory(officeCode, yearMonth);
+    }
 	
 	public boolean checkHealthInsuranceGradeFeeChange (String officeCode, BonusHealthInsuranceRate bonusHealthInsuranceRate,
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem){

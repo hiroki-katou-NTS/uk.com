@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import sun.awt.AppContext;
 
 /**
  * 厚生年金月額保険料額
@@ -24,9 +27,22 @@ public class QpbmtEmployeesPensionMonthlyInsuranceFee extends UkJpaEntity implem
     /**
      * 履歴ID
      */
-    @Column(name = "HISTORY_ID")
-    @Id
-    public String historyId;
+    @EmbeddedId
+    public QpbmtEmployeesPensionMonthlyInsuranceFeePk welfarePenMonthlyPk;
+
+    /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 自動計算区分
@@ -114,12 +130,13 @@ public class QpbmtEmployeesPensionMonthlyInsuranceFee extends UkJpaEntity implem
 
     @Override
     protected Object getKey() {
-        return historyId;
+        return welfarePenMonthlyPk;
     }
 
-    public static QpbmtEmployeesPensionMonthlyInsuranceFee toEntity(EmployeesPensionMonthlyInsuranceFee domain) {
-        return new QpbmtEmployeesPensionMonthlyInsuranceFee(
-                domain.getHistoryId(),
+    public static QpbmtEmployeesPensionMonthlyInsuranceFee toEntity(EmployeesPensionMonthlyInsuranceFee domain, String officeCode, YearMonthHistoryItem yearMonth) {
+        return new QpbmtEmployeesPensionMonthlyInsuranceFee( new QpbmtEmployeesPensionMonthlyInsuranceFeePk(AppContexts.user().companyId(), officeCode , yearMonth.identifier()),
+                yearMonth.start().v(),
+                yearMonth.end().v(),
                 domain.getAutoCalculationCls().value,
                 domain.getSalaryEmployeesPensionInsuranceRate().getEmployeeShareAmountMethod().value,
                 domain.getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualBurdenRatio().v(),

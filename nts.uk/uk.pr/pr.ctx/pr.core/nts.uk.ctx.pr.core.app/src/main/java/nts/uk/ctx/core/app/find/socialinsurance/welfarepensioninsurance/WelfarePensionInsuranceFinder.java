@@ -19,7 +19,6 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPens
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassificationRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistory;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -32,9 +31,6 @@ public class WelfarePensionInsuranceFinder {
 	
 	@Inject
 	private WelfarePensionInsuranceClassificationRepository welfarePensionInsuranceClassificationRepository;
-	
-	@Inject
-	private WelfarePensionInsuranceRateHistoryRepository welfarePensionInsuranceRateHistoryRepository;
 	
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
@@ -50,7 +46,7 @@ public class WelfarePensionInsuranceFinder {
 		List<SocialInsuranceOfficeDto> socialInsuranceDtoList = new ArrayList<>();
 		List<SocialInsuranceOffice> socialInsuranceOfficeList = socialInsuranceOfficeRepository.findByCid(AppContexts.user().companyId());
 		socialInsuranceOfficeList.forEach(office -> {
-			Optional<WelfarePensionInsuranceRateHistory> welfarePensionHistory = welfarePensionInsuranceRateHistoryRepository.getWelfarePensionInsuranceRateHistoryByOfficeCode(office.getCode().v());
+			Optional<WelfarePensionInsuranceRateHistory> welfarePensionHistory = welfarePensionInsuranceClassificationRepository.getWelfarePensionHistoryByOfficeCode(office.getCode().v());
 			socialInsuranceDtoList.add(new SocialInsuranceOfficeDto(office.getCode().v(), office.getName().v(), WelfarePensionInsuranceRateHistoryDto.fromDomainToDto(welfarePensionHistory, office.getCode().v())));
 		});
 		return socialInsuranceDtoList;

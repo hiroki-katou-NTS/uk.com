@@ -20,18 +20,21 @@ public class WelfarePensionStandardMonthlyFeeCommand extends CommandHandlerWithR
     @Inject
     private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
 
+    @Inject
+    private WelfarePensionInsuranceClassificationRepository welfarePensionInsuranceClassificationRepository;
+
     @Override
     protected List<String> handle(CommandHandlerContext<UpdateCommandWelfare> context) {
 
         List<String> response = new ArrayList<>();
         UpdateCommandWelfare command = context.getCommand();
-
+        Optional<WelfarePensionInsuranceClassification> data = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(command.getHistoryId());
         // ドメインモデル「厚生年金保険月額保険料額」を更新する
         Optional<EmployeesPensionMonthlyInsuranceFee> employeesPension = employeesPensionMonthlyInsuranceFeeRepository
                 .getEmployeesPensionMonthlyInsuranceFeeByHistoryId(command.getHistoryId());
         if (employeesPension.isPresent()) {
             List<GradeWelfarePensionInsurancePremium> dataUpdate = command.getCusWelfarePensions().stream()
-                    .map(CusWelfarePensionDto::fromToDomain).collect(Collectors.toList());
+                    .map(x -> x.fromToDomain(data,x)).collect(Collectors.toList());
             employeesPension.get().updateGradeList(dataUpdate);
             List<GradeWelfarePensionInsurancePremium> datacheck = employeesPension.get().getPensionInsurancePremium();
             if (datacheck.isEmpty()) {

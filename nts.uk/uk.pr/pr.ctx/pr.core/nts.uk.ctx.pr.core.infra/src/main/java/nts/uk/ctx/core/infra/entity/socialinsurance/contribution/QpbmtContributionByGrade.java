@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -31,6 +33,20 @@ public class QpbmtContributionByGrade extends UkJpaEntity implements Serializabl
      */
     @EmbeddedId
     public QpbmtContributionByGradePk contributionByGradePk;
+
+    /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 子ども・子育て拠出金
@@ -51,9 +67,10 @@ public class QpbmtContributionByGrade extends UkJpaEntity implements Serializabl
      * @param domain ContributionRate
      * @return QpbmtContributionByGrade
      */
-    public static List<QpbmtContributionByGrade> toEntity(ContributionRate domain) {
-        return domain.getContributionByGrade().stream().map(x -> new QpbmtContributionByGrade(new QpbmtContributionByGradePk(domain.getHistoryId(),
-                x.getWelfarePensionGrade()),
+    public static List<QpbmtContributionByGrade> toEntity(ContributionRate domain, String officeCode, YearMonthHistoryItem yearMonth) {
+        return domain.getContributionByGrade().stream().map(x -> new QpbmtContributionByGrade(new QpbmtContributionByGradePk(AppContexts.user().companyId(), officeCode,domain.getHistoryId(), x.getWelfarePensionGrade()),
+                yearMonth.start().v(),
+                yearMonth.end().v(),
                 x.getChildCareContribution().v())).collect(Collectors.toList());
     }
 }

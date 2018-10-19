@@ -20,7 +20,21 @@ import lombok.NoArgsConstructor;
 public class QpbmtContributionByGradePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * 社会保険事業所コード
+     */
+    @Basic(optional = false)
+    @Column(name = "SOCIAL_INSURANCE_OFFICE_CD")
+    public String socialInsuranceOfficeCd;
+
     /**
     * 履歴ID
     */

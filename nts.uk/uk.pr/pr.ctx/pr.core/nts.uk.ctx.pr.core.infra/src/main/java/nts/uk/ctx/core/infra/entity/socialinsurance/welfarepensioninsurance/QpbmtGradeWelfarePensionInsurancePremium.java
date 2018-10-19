@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import sun.awt.AppContext;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,6 +31,20 @@ public class QpbmtGradeWelfarePensionInsurancePremium extends UkJpaEntity implem
      */
     @EmbeddedId
     public QpbmtGradeWelfarePensionInsurancePremiumPk gradeWelfarePremiPk;
+
+    /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 女子保険料
@@ -90,9 +107,11 @@ public class QpbmtGradeWelfarePensionInsurancePremium extends UkJpaEntity implem
         return gradeWelfarePremiPk;
     }
 
-    public static List<QpbmtGradeWelfarePensionInsurancePremium> toEntity(EmployeesPensionMonthlyInsuranceFee domain) {
+    public static List<QpbmtGradeWelfarePensionInsurancePremium> toEntity(EmployeesPensionMonthlyInsuranceFee domain, String officeCode, YearMonthHistoryItem yearMonth) {
         return domain.getPensionInsurancePremium().stream().map(x -> new QpbmtGradeWelfarePensionInsurancePremium(
-                new QpbmtGradeWelfarePensionInsurancePremiumPk(domain.getHistoryId(), x.getWelfarePensionGrade()),
+                new QpbmtGradeWelfarePensionInsurancePremiumPk(AppContexts.user().companyId(), officeCode, domain.getHistoryId(), x.getWelfarePensionGrade()),
+                yearMonth.start().v(),
+                yearMonth.end().v(),
                 x.getEmployeeBurden().getFemaleInsurancePremium().v(),
                 x.getEmployeeBurden().getMaleInsurancePremium().v(),
                 x.getEmployeeBurden().getFemaleExemptionInsurance().map(PrimitiveValueBase::v).orElse(null),

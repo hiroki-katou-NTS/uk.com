@@ -1,6 +1,5 @@
 package nts.uk.ctx.core.dom.socialinsurance.contribution.service;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -10,10 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
-import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionByGrade;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistory;
-import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
@@ -28,42 +25,39 @@ public class ContributionService {
 	private ContributionRateRepository contributionRateRepository;
 
 	@Inject
-	private ContributionRateHistoryRepository contributionRateHistoryRepository;
-	@Inject
 	private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
 	public void registerContributionRate(String officeCode, ContributionRate contributionRate,
 			YearMonthHistoryItem yearMonthItem) {
 		String cid = AppContexts.user().companyId();
 		ContributionRateHistory contributionRateHistory = null;
-		Optional<ContributionRateHistory> optContributionRateHistory = contributionRateHistoryRepository
-				.findByCodeAndCid(cid, officeCode);
+		Optional<ContributionRateHistory> optContributionRateHistory = contributionRateRepository.getContributionRateHistoryByOfficeCode(officeCode);
 		// アルゴリズム「月額拠出金計算処理」を実行する
 		contributionRate = monthlyContributionCalProcess(contributionRate, yearMonthItem);
 
 		if (!optContributionRateHistory.isPresent()) {
 			// add history if not exist
-			contributionRateHistory = new ContributionRateHistory(cid, officeCode, Arrays.asList(yearMonthItem));
-			this.addContribution(contributionRate);
-			contributionRateHistoryRepository.add(contributionRateHistory);
+			this.addContribution(contributionRate, officeCode, yearMonthItem);
 			return;
 		}
 		// delete old history
-		contributionRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		contributionRateHistory = optContributionRateHistory.get();
 		if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
 			// add history
 			contributionRateHistory.add(yearMonthItem);
-			this.addContribution(contributionRate);
+			this.addContribution(contributionRate, officeCode, yearMonthItem);
+			// if have previous history
+			if (contributionRateHistory.getHistory().size() > 1) {
+			    this.updateHistoryItemSpan(officeCode, contributionRateHistory.getHistory().get(0));
+            }
 		} else {
-			this.updateContribution(contributionRate);
+			this.updateContribution(contributionRate, officeCode, yearMonthItem);
 		}
-		contributionRateHistoryRepository.add(contributionRateHistory);
 	}
 
-	public boolean checkContributionRate(String officeCode, ContributionRate contributionRate,
+	public boolean checkContributionRate(ContributionRate contributionRate,
 			YearMonthHistoryItem yearMonthItem) {
-		// String cid = AppContexts.user().companyId();
+		 //String cid = AppContexts.user().companyId();
 
 		// ドメインモデル「拠出金率」を取得する
 		Optional<ContributionRate> otpContributionRate = contributionRateRepository
@@ -75,33 +69,34 @@ public class ContributionService {
 		return checker;
 	}
 
-	public void addContribution(ContributionRate contributionRate) {
-		contributionRateRepository.add(contributionRate);
+	public void addContribution(ContributionRate contributionRate, String officeCode, YearMonthHistoryItem yearMonth) {
+		contributionRateRepository.add(contributionRate, officeCode, yearMonth);
 	}
 
-	public void updateContribution(ContributionRate contributionRate) {
-		contributionRateRepository.update(contributionRate);
+	public void updateContribution(ContributionRate contributionRate, String officeCode, YearMonthHistoryItem yearMonth) {
+		contributionRateRepository.update(contributionRate, officeCode, yearMonth);
 	}
 
 	public void updateHistory(String officeCode, YearMonthHistoryItem yearMonth) {
-		Optional<ContributionRateHistory> optContributionRateHis = contributionRateHistoryRepository
-				.getContributionRateHistoryByOfficeCode(officeCode);
+		Optional<ContributionRateHistory> optContributionRateHis = contributionRateRepository.getContributionRateHistoryByOfficeCode(officeCode);
 		if (!optContributionRateHis.isPresent()) {
 			return;
 		}
 		// get history and change span
+        this.updateHistoryItemSpan(officeCode, yearMonth);
 		ContributionRateHistory contributionRateHis = optContributionRateHis.get();
-		Optional<YearMonthHistoryItem> currentSpan = contributionRateHis.getHistory().stream()
-				.filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
-		if (!currentSpan.isPresent())
-			return;
-		contributionRateHis.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start(), yearMonth.end()));
-		contributionRateHistoryRepository.update(contributionRateHis);
+		int currentIndex = contributionRateHis.getHistory().indexOf(yearMonth);
+        try {
+            YearMonthHistoryItem previousHistory = contributionRateHis.getHistory().get(currentIndex + 1);
+            contributionRateHis.changeSpan(previousHistory, new YearMonthPeriod(previousHistory.start() , yearMonth.start().addMonths(-1)));
+            this.updateHistoryItemSpan(officeCode, contributionRateHis.getHistory().get(currentIndex + 1));
+        } catch (IndexOutOfBoundsException e){
+            return;
+        }
 	}
 
 	public void deleteHistory(String officeCode, YearMonthHistoryItem yearMonth) {
-		Optional<ContributionRateHistory> optContributionRateHis = contributionRateHistoryRepository
-				.getContributionRateHistoryByOfficeCode(officeCode);
+		Optional<ContributionRateHistory> optContributionRateHis = contributionRateRepository.getContributionRateHistoryByOfficeCode(officeCode);
 		if (!optContributionRateHis.isPresent()) {
 			return;
 		}
@@ -116,8 +111,8 @@ public class ContributionService {
 			contributionRateHis.changeSpan(contributionRateHis.getHistory().get(0),
 					new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
-		contributionRateHistoryRepository.remove(contributionRateHis);
-		contributionRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+		this.updateHistoryItemSpan(officeCode, lastestHistory);
+		contributionRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()),officeCode);
 		contributionRateRepository.deleteContributionByGradeByHistoryId(Arrays.asList(yearMonth.identifier()));
 	}
 
@@ -135,5 +130,9 @@ public class ContributionService {
 		}
 		return contributionRate;
 	}
+
+	private void updateHistoryItemSpan (String officeCode, YearMonthHistoryItem yearMonth) {
+	    contributionRateRepository.updateHistoryItem(officeCode, yearMonth);
+    }
 
 }

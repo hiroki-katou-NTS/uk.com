@@ -3,6 +3,9 @@ package nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+
 /**
  * 社会保険用都道府県情報
  */
@@ -15,6 +18,21 @@ public class SocialInsurancePrefectureInformation extends AggregateRoot {
     private int no;
 
     /**
+     * 履歴ID
+     */
+    private String historyID;
+
+    /**
+     * 年月開始
+     */
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    public int endYearMonth;
+
+    /**
      * 都道府県コード
      */
     private PrefectureCode prefectureCode;
@@ -24,10 +42,7 @@ public class SocialInsurancePrefectureInformation extends AggregateRoot {
      */
     private PrefectureName prefectureName;
 
-    /**
-     * 履歴ID
-     */
-    private String historyID;
+
 
     /**
      * 社会保険用都道府県情報
@@ -37,10 +52,13 @@ public class SocialInsurancePrefectureInformation extends AggregateRoot {
      * @param prefectureName 都道府県名称
      * @param historyID      履歴ID
      */
-    public SocialInsurancePrefectureInformation(int no, String prefectureCode, String prefectureName, String historyID) {
+    public SocialInsurancePrefectureInformation(int no, String historyID,int startYearMonth,int endYearMonth, String prefectureCode, String prefectureName) {
         this.no             = no;
+        this.historyID      = historyID;
+        this.startYearMonth = startYearMonth;
+        this.endYearMonth   = endYearMonth;
         this.prefectureCode = new PrefectureCode(prefectureCode);
         this.prefectureName = new PrefectureName(prefectureName);
-        this.historyID      = historyID;
+
     }
 }

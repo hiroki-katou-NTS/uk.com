@@ -11,5 +11,5 @@ public class UpdateCommandWelfare {
 	
 	List<CusWelfarePensionDto> cusWelfarePensions;
 	String historyId;
-	
+	private String socialInsuranceCode;
 }
