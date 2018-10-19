@@ -87,6 +87,7 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 					.setParameter("histIds", subList)
 					.executeUpdate();
 			});
+			this.entityManager.flush();
 		}
 
 		// 指定会社の選択項目定義を全て取得する
