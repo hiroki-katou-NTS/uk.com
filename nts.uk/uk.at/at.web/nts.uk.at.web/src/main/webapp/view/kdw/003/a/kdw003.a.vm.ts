@@ -1256,7 +1256,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                                 if (itemCalcTemp != undefined) {
                                                     $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
                                                 } else {
-                                                    $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                    if (editedCell && updateAll) {
+                                                        $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                    } else {
+                                                        $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
+                                                    }
                                                 }
                                             }
                                                // $("#dpGrid").mGrid("setState", "_" + row.id, cell.columnKey, ["mgrid-calc"]);
