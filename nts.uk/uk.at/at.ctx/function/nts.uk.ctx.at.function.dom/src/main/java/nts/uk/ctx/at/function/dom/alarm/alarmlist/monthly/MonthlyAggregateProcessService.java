@@ -190,7 +190,7 @@ public class MonthlyAggregateProcessService {
 								if(!CollectionUtil.isEmpty(unconfirmedsAdmin)) {
 									for (ValueExtractAlarm valueExtractAlarm : unconfirmedsAdmin) {
 										if(valueExtractAlarm!=null){
-											valueExtractAlarm.setAlarmValueMessage(fixedExtraMonFunImport.getMessage());
+											valueExtractAlarm.setComment(Optional.ofNullable(fixedExtraMonFunImport.getMessage()));
 											valueExtractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
 											String dateString = valueExtractAlarm.getAlarmValueDate().substring(0, 7);
 											valueExtractAlarm.setAlarmValueDate(dateString);
