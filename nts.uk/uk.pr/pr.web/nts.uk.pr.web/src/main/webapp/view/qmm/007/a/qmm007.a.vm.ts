@@ -512,7 +512,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 }),
                 payrollUnitPriceSettingCommand: new PayrollUnitPriceSetting({
                     historyId: self.singleSelectedCode() ? self.singleSelectedCode().split('__')[1] : '',
-                    amountOfMoney: parseFloat(self.amountOfMoney()).toLocaleString('ja-JP', { useGrouping: true }),
+                    amountOfMoney: self.amountOfMoney(),
                     setClassification: self.selectedId(),
 
                     targetClass: targetClass,
