@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -175,14 +174,14 @@ public class Formula extends AggregateRoot {
 											List<ResultOfCalcFormula> resultCalcFormula,
 											Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,
 											Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
-		BigDecimal calcValue = BigDecimal.ZERO;
+		double calcValue = 0;
 		if(this.getCalcAtr().isFormulaSetting()) {
 			if(this.calcFormulaSetting.getFormulaSetting().isPresent()) {
 				//計算式による計算
 				calcValue = this.calcFormulaSetting.getFormulaSetting().get().calculationBycalculationFormula(resultCalcFormula, optionalItem.getOptionalItemAtr());
 			}else {
 				//計算式設定が取得できない場合は0 ← これで良い？
-				calcValue = BigDecimal.ZERO;
+				calcValue = 0;
 			}
 		}
 		else if(this.getCalcAtr().isItemSelection()) {
@@ -191,7 +190,7 @@ public class Formula extends AggregateRoot {
 				calcValue = this.calcFormulaSetting.getItemSelection().get().calculationByItemSelection(performanceAtr, dailyRecordDto, monthlyRecordDto);
 			}else {
 				//計算項目選択が取得できない場合は0 ← これで良い？
-				calcValue = BigDecimal.ZERO;
+				calcValue = 0;
 			}
 		}
 		else {
@@ -206,13 +205,13 @@ public class Formula extends AggregateRoot {
 	}
 	
 	
-	public BigDecimal calcRounding(BigDecimal calcValue,PerformanceAtr performanceAtr){
+	public double calcRounding(double calcValue,PerformanceAtr performanceAtr){
 		if(performanceAtr.isDailyPerformance()) {
 			if(this.dailyRounding.isPresent()) {
-				 BigDecimal result = calcValue;
+				double result = calcValue;
 				switch(this.formulaAtr) {
 				case TIME:
-					result = this.dailyRounding.get().getTimeRounding().roundBigDecimal(calcValue);
+					result = this.dailyRounding.get().getTimeRounding().round((int)calcValue);
 					return result;
 				case NUMBER:
 					result = this.dailyRounding.get().getNumberRounding().round(calcValue);
@@ -227,10 +226,10 @@ public class Formula extends AggregateRoot {
 			return calcValue;
 		}else{
 			if(this.monthlyRounding.isPresent()) {
-				BigDecimal result = calcValue;
+				double result = calcValue;
 				switch(this.formulaAtr) {
 				case TIME:
-					result = this.monthlyRounding.get().getTimeRounding().roundBigDecimal(calcValue);
+					result = this.monthlyRounding.get().getTimeRounding().round((int)calcValue);
 					return result;
 				case NUMBER:
 					result = this.monthlyRounding.get().getNumberRounding().round(calcValue);

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,9 +55,9 @@ public class ItemSelection extends DomainObject {
 	 * @param dailyRecordDto
 	 * @return
 	 */
-	public BigDecimal calculationByItemSelection(PerformanceAtr performanceAtr,Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
+	public Integer calculationByItemSelection(PerformanceAtr performanceAtr,Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto,Optional<MonthlyRecordToAttendanceItemConverter> monthlyRecordDto) {
 		//計算値
-		BigDecimal result = BigDecimal.ZERO;
+		Integer result = 0;
 		if(performanceAtr.isDailyPerformance()&&dailyRecordDto.isPresent()) {//実績区分が日別実績の場合
 			for(SelectedAttendanceItem selectedAttendanceItem:this.selectedAttendanceItems) {//選択勤怠項目分ループ
 				//該当する勤怠項目を取得
@@ -68,9 +67,9 @@ public class ItemSelection extends DomainObject {
 				}
 			}
 			//マイナスかどうか
-			if(result.compareTo(BigDecimal.ZERO) < 0) {
+			if(result<0) {
 				if(this.minusSegment.isTreatedAsZero()) {
-					return BigDecimal.ZERO;
+					return 0;
 				}
 			}
 			return result;
@@ -84,9 +83,9 @@ public class ItemSelection extends DomainObject {
 				}
 			}
 			//マイナスかどうか
-			if(result.compareTo(BigDecimal.ZERO) < 0) {
+			if(result<0) {
 				if(this.minusSegment.isTreatedAsZero()) {
-					return BigDecimal.ZERO;
+					return 0;
 				}
 			}
 			return result;

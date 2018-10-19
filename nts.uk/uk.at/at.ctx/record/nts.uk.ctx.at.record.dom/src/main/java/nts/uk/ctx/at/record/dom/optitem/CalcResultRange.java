@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -83,11 +82,11 @@ public class CalcResultRange extends DomainObject {
 	 */
 	public CalcResultOfAnyItem checkRange(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
 		if(this.upperLimit.isSET()) {
-			BigDecimal upperValue = getUpperLimitValue(calcResultOfAnyItem,optionalItemAtr);
+			Integer upperValue = getUpperLimitValue(calcResultOfAnyItem,optionalItemAtr);
 			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(upperValue, optionalItemAtr);
 		}
 		if(this.lowerLimit.isSET()) {
-			BigDecimal lowerValue = getLowerLimitValue(calcResultOfAnyItem,optionalItemAtr);
+			Integer lowerValue = getLowerLimitValue(calcResultOfAnyItem,optionalItemAtr);
 			calcResultOfAnyItem = calcResultOfAnyItem.reCreateCalcResultOfAnyItem(lowerValue, optionalItemAtr);
 		}
 		return calcResultOfAnyItem;
@@ -99,47 +98,47 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItemAtr
 	 * @return
 	 */
-	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
+	public Integer getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
 		switch(optionalItemAtr) {
 		case TIME:
 			if(this.timeRange.isPresent()&&calcResultOfAnyItem.getTime().isPresent()) {
 				Optional<TimeRangeValue> timeUpperLimit = this.timeRange.get().getUpperLimit();
 				if(timeUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getTime().get().compareTo(BigDecimal.valueOf(timeUpperLimit.get().v())) > 0) {
-						return BigDecimal.valueOf(timeUpperLimit.get().v());							
+					if(calcResultOfAnyItem.getTime().get() > timeUpperLimit.get().v()) {
+						return timeUpperLimit.get().v();							
 					}else {
 						return calcResultOfAnyItem.getTime().get();
 					}	
 				}
 			}
-		return BigDecimal.ZERO;
+		return 0;
 		case NUMBER:
 			if(this.numberRange.isPresent()&&calcResultOfAnyItem.getCount().isPresent()) {
 				Optional<NumberRangeValue> numberUpperLimit = this.numberRange.get().getUpperLimit();
 				if(numberUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getCount().get().compareTo(BigDecimal.valueOf(numberUpperLimit.get().v().intValue())) > 0) {
-						return BigDecimal.valueOf(numberUpperLimit.get().v());						
+					if(calcResultOfAnyItem.getCount().get() > numberUpperLimit.get().v().intValue()) {
+						return numberUpperLimit.get().v().intValue();						
 					}else {
 						return calcResultOfAnyItem.getCount().get();
 					}	
 				}
 			}
-			return BigDecimal.ZERO;
+			return 0;
 		case AMOUNT:
 			if(this.amountRange.isPresent()&&calcResultOfAnyItem.getMoney().isPresent()) {
 				Optional<AmountRangeValue> amountUpperLimit = this.amountRange.get().getUpperLimit();
 				if(amountUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getMoney().get().compareTo(BigDecimal.valueOf(amountUpperLimit.get().v()))> 0 ) {
-						return BigDecimal.valueOf(amountUpperLimit.get().v());					
+					if(calcResultOfAnyItem.getMoney().get() > amountUpperLimit.get().v()) {
+						return amountUpperLimit.get().v();					
 					}else {
 						return calcResultOfAnyItem.getMoney().get();
 					}	
 				}
 			}
-			return BigDecimal.ZERO;
+			return 0;
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}
@@ -151,47 +150,47 @@ public class CalcResultRange extends DomainObject {
 	 * @param optionalItemAtr
 	 * @return
 	 */
-	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
+	public Integer getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem,OptionalItemAtr optionalItemAtr) {
 		switch(optionalItemAtr) {
 		case TIME:
 			if(this.timeRange.isPresent()&&calcResultOfAnyItem.getTime().isPresent()) {
 				Optional<TimeRangeValue> timeLowerLimit = this.timeRange.get().getLowerLimit();
 				if(timeLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getTime().get().compareTo(BigDecimal.valueOf(timeLowerLimit.get().v()))<0) {
-						return BigDecimal.valueOf(timeLowerLimit.get().v());							
+					if(calcResultOfAnyItem.getTime().get() < timeLowerLimit.get().v()) {
+						return timeLowerLimit.get().v();							
 					}else {
 						return calcResultOfAnyItem.getTime().get();
 					}	
 				}
 			}
-		return BigDecimal.ZERO;
+		return 0;
 		case NUMBER:
 			if(this.numberRange.isPresent()&&calcResultOfAnyItem.getCount().isPresent()) {
 				Optional<NumberRangeValue> numberLowerLimit = this.numberRange.get().getLowerLimit();
 				if(numberLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getCount().get().compareTo(BigDecimal.valueOf(numberLowerLimit.get().v().intValue()))<0) {
-						return BigDecimal.valueOf(numberLowerLimit.get().v().intValue());						
+					if(calcResultOfAnyItem.getCount().get() < numberLowerLimit.get().v().intValue()) {
+						return numberLowerLimit.get().v().intValue();						
 					}else {
 						return calcResultOfAnyItem.getCount().get();
 					}	
 				}
 			}
-			return BigDecimal.ZERO;
+			return 0;
 		case AMOUNT:
 			if(this.amountRange.isPresent()&&calcResultOfAnyItem.getMoney().isPresent()) {
 				Optional<AmountRangeValue> amountLowerLimit = this.amountRange.get().getLowerLimit();
 				if(amountLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getMoney().get().compareTo(BigDecimal.valueOf(amountLowerLimit.get().v()))<0) {
-						return BigDecimal.valueOf(amountLowerLimit.get().v());					
+					if(calcResultOfAnyItem.getMoney().get() < amountLowerLimit.get().v()) {
+						return amountLowerLimit.get().v();					
 					}else {
 						return calcResultOfAnyItem.getMoney().get();
 					}	
 				}
 			}
-			return BigDecimal.ZERO;
+			return 0;
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}
