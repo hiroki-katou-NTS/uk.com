@@ -24,6 +24,7 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.MailDestinationAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 
@@ -158,12 +159,13 @@ public class AlarmSendEmailService implements SendEmailService {
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
 		if (mailDestinationAlarmImport != null) {
-			String subject = subjectEmail;
-			String body = bodyEmail;
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (CollectionUtil.isEmpty(emails) || StringUtils.isEmpty(subject) || StringUtils.isEmpty(body)) {
+			if (CollectionUtil.isEmpty(emails)) {
 				return true;
 			} else {
+				if(StringUtils.isEmpty(subjectEmail)){
+					subjectEmail = TextResource.localize("KAL010_300");
+				}
 				// Genarate excel
 				AlarmExportDto alarmExportDto = alarmListGenerator.generate(generatorContext, listDataAlarmExport);
 				// Get all mail address
@@ -171,7 +173,7 @@ public class AlarmSendEmailService implements SendEmailService {
 					List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
 					attachedFiles
 							.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
-					MailContents mailContent = new MailContents(subject, body, attachedFiles);
+					MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
 					try {
 						if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
 							return true;

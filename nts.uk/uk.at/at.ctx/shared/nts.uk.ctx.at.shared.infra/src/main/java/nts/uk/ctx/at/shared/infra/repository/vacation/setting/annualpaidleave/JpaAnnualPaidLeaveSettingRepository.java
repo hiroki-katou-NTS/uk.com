@@ -4,31 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.PreparedStatement;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingRepository.
  */
 @Stateless
 public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implements AnnualPaidLeaveSettingRepository {
-    
-    /** The element first. */
-    private static final int ELEMENT_FIRST = 0;
     
     /*
      * (non-Javadoc)
@@ -61,28 +55,70 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
      * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
      * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
      */
+    @SneakyThrows
     @Override
-    public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
-        EntityManager em = this.getEntityManager();
+	public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
+		String sqlJdbc = "SELECT *, KMAS.ROUND_PRO_CLA KMASROUND_PRO_CLA, KTAS.ROUND_PRO_CLA KTASROUND_PRO_CLA "
+				+ "FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
+				+ "LEFT JOIN KMAMT_MNG_ANNUAL_SET KMAS ON KAPL.CID = KMAS.CID "
+				+ "LEFT JOIN KTVMT_TIME_ANNUAL_SET KTAS ON KAPL.CID = KTAS.CID "
+				+ "WHERE KAPL.CID = ?";
 
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KalmtAnnualPaidLeave> cq = builder.createQuery(KalmtAnnualPaidLeave.class);
-        Root<KalmtAnnualPaidLeave> root = cq.from(KalmtAnnualPaidLeave.class);
+		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
-        List<Predicate> predicateList = new ArrayList<Predicate>();
+			stmt.setString(1, companyId);
 
-        predicateList.add(builder.equal(root.get(KalmtAnnualPaidLeave_.cid), companyId));
+			Optional<KalmtAnnualPaidLeave> result = new NtsResultSet(stmt.executeQuery())
+					.getSingle(rec -> {
+						KmamtMngAnnualSet kmamtMngAnnualSet = new KmamtMngAnnualSet();
+						kmamtMngAnnualSet.setCid(rec.getString("CID"));
+						kmamtMngAnnualSet.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
+						kmamtMngAnnualSet.setHalfMaxDayYear(rec.getInt("HALF_MAX_DAY_YEAR"));
+						kmamtMngAnnualSet.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
+						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
+						kmamtMngAnnualSet
+								.setHalfMaxUniformComp(rec.getInt("HALF_MAX_UNIFORM_COMP"));
+						kmamtMngAnnualSet.setIsWorkDayCal(rec.getInt("IS_WORK_DAY_CAL"));
+						kmamtMngAnnualSet.setRetentionYear(rec.getInt("RETENTION_YEAR"));
+						kmamtMngAnnualSet.setRemainingMaxDay(rec.getDouble("REMAINING_MAX_DAY"));
+						kmamtMngAnnualSet
+								.setNextGrantDayDispAtr(rec.getInt("NEXT_GRANT_DAY_DISP_ATR"));
+						kmamtMngAnnualSet
+								.setRemainingNumDispAtr(rec.getInt("REMAINING_NUM_DISP_ATR"));
+						kmamtMngAnnualSet.setYearlyOfDays(rec.getDouble("YEARLY_OF_DAYS"));
+						kmamtMngAnnualSet.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
 
-        cq.where(predicateList.toArray(new Predicate[]{}));
-        
-        List<KalmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
-        if (result.isEmpty()) {
-            return null;
-        }
-        KalmtAnnualPaidLeave entity = result.get(ELEMENT_FIRST);
+						KtvmtTimeAnnualSet ktvmtTimeVacationSet = new KtvmtTimeAnnualSet();
+						ktvmtTimeVacationSet.setCid(rec.getString("CID"));
+						ktvmtTimeVacationSet.setTimeManageAtr(rec.getInt("TIME_MANAGE_ATR"));
+						ktvmtTimeVacationSet.setTimeUnit(rec.getInt("TIME_UNIT"));
+						ktvmtTimeVacationSet
+								.setTimeMaxDayManageAtr(rec.getInt("TIME_MAX_DAY_MANAGE_ATR"));
+						ktvmtTimeVacationSet
+								.setTimeMaxDayReference(rec.getInt("TIME_MAX_DAY_REFERENCE"));
+						ktvmtTimeVacationSet
+								.setTimeMaxDayUnifComp(rec.getInt("TIME_MAX_DAY_UNIF_COMP"));
+						ktvmtTimeVacationSet
+								.setIsEnoughTimeOneDay(rec.getInt("IS_ENOUGH_TIME_ONE_DAY"));
+						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("KTASROUND_PRO_CLA"));
 
-        return new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(entity));
-    }
+						KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
+						entity.setCid(rec.getString("CID"));
+						entity.setPriorityType(rec.getInt("PRIORITY_TYPE"));
+						entity.setManageAtr(rec.getInt("MANAGE_ATR"));
+						entity.setKmamtMngAnnualSet(kmamtMngAnnualSet);
+						entity.setKtvmtTimeVacationSet(ktvmtTimeVacationSet);
+						return entity;
+					});
+
+			if (!result.isPresent()) {
+				return null;
+			}
+
+			return new AnnualPaidLeaveSetting(
+					new JpaAnnualPaidLeaveSettingGetMemento(result.get()));
+		}
+	}
     
     /**
      * To entity.

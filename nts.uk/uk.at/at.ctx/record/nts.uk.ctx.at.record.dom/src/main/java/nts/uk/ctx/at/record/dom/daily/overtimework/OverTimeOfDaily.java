@@ -24,7 +24,6 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
@@ -134,16 +133,6 @@ public class OverTimeOfDaily {
 		else{
 			return (startTime.v() >= attendanceTime.v());
 		}
-	}
-	
-
-	
-	/**
-	 * 残業枠時間へ残業時間の集計結果を追加する
-	 * @param hasAddListClass 残業時間帯の集計を行った後の残業枠時間クラス
-	 */
-	public void addToList(ControlOverFrameTime hasAddListClass) {
-		this.overTimeWorkFrameTime.addAll(hasAddListClass.getOverTimeWorkFrameTime());
 	}
 	
 	/**

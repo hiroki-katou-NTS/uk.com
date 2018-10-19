@@ -60,8 +60,6 @@ public class LeaveEarlyDecisionClock {
 				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getEnd().backByMinutes(leaveEarlyGraceTime.getGraceTime().valueAsMinutes()),
 																	 calｃRange.get().getEnd());
 				// 重複している控除分をずらす(短時間・休憩)
-//				//List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isChildCare()).map(t -> t.getTimeSheet()).collect(Collectors.toList());
-				//List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).collect(Collectors.toList());
 				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
 				breakTimeSheetList = breakTimeSheetList.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
 
@@ -73,9 +71,6 @@ public class LeaveEarlyDecisionClock {
 						graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart().backByMinutes(breakTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
 															,graceTimeSheet.getEnd());
 					}
-//					if(deductTime.contains(graceTimeSheet.getEnd())){
-//						graceTimeSheet = new TimeSpanForCalc(breakTime.getStart(), graceTimeSheet.getEnd());
-//					}
 				}
 				decisionClock = graceTimeSheet.getStart();
 			}
@@ -117,7 +112,6 @@ public class LeaveEarlyDecisionClock {
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
-//				if(leave.lessThanOrEqualTo(coreTimeSetting.get().getCoreTimeSheet().getStartTime())) {
 				val coreTime = coreTimeSetting.get().getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
 				if(leave.lessThanOrEqualTo(coreTime.getStartTime())) {
 					return Optional.of(new TimeSpanForCalc(coreTime.getStartTime(),coreTime.getEndTime()));

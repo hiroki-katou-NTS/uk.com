@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.PriorityTimeReflectAtr;
 @AllArgsConstructor
 @Getter
 @Setter
@@ -23,15 +26,15 @@ public class GobackReflectPara {
 	/**
 	 * 打刻優先区分
 	 */
-	private PriorStampRequestAtr priorStampAtr;
+	private PriorityTimeReflectAtr priorStampAtr;
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
+	private ClassifyScheAchieveAtr scheAndRecordSameChangeFlg;
 	/**
 	 * 予定時刻反映区分
 	 */
-	private ScheTimeReflectRequesAtr scheTimeReflectAtr;
+	private ApplyTimeSchedulePriority scheTimeReflectAtr;
 	/**
 	 * 予定反映区分
 	 * True: 反映する
