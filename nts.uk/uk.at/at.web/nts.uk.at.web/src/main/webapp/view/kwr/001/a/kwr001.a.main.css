@@ -104,7 +104,7 @@ hr {
 }
 
 .td-right .right .panel.panel-frame {
-	padding: 15px;
+	padding: 10px;
 }
 
 .A13_1 label {
@@ -132,4 +132,8 @@ hr {
 }
 #checkedA10_7>label{
 	width:160px;
+}
+
+.A10-left label{
+	width:105px;
 }
