@@ -61,7 +61,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition, io.disporder");
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition");
 
 	private final static String JOIN_COMMON_TABLE = String.join(" ",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -69,8 +69,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
 			"ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId");
 
-	private final static String SELECT_NO_WHERE = String.join(" ", SELECT_COMMON_FIELD, JOIN_COMMON_TABLE);
-
+	private final static String SELECT_NO_WHERE = String.join(" ", SELECT_COMMON_FIELD, " ,io.disporder ", JOIN_COMMON_TABLE);
+	
 	private final static String COMMON_CONDITION = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL ORDER BY io.disporder";
 	
 	private final static String CONDITION_FOR_007008 = "ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND (ic.itemParentCd IS NULL OR ic.itemParentCd = '')  ORDER BY io.disporder";
@@ -1013,12 +1013,19 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				itemCodeAll.addAll(itemCodeChildChilds);
 		}
 		if(!itemCodeAll.isEmpty()) {
-			return this.queryProxy().query(SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
+			List<Object[]> results = new ArrayList<>();
+			CollectionUtil.split(categoryCodeLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstCat -> {
+				CollectionUtil.split(itemCodeAll, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstCodes -> {
+					results.addAll(this.queryProxy().query(SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
 					.setParameter("contractCd", contractCd)
-					.setParameter("itemCdLst", itemCodeAll)
+					.setParameter("itemCdLst", lstCodes)
 					.setParameter("cid", companyId)
-					.setParameter("ctgLst", categoryCodeLst)
-					.getList(c -> {return createDomainFromEntity1(c, null);});	
+					.setParameter("ctgLst", lstCat)
+					.getList());
+				});
+			});
+			results.sort(SORT_BY_DISPORDER);
+			return results.stream().map(c -> {return createDomainFromEntity1(c, null);}).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
@@ -1068,8 +1075,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String ctgId,
 			String categoryCd, String contractCd) {
 		List<String> itemCodeAll = new ArrayList<>();
-		List<String> itemCodeChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_ID_QUERY, String.class)
-				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList();
+		List<String> itemCodeChilds = new ArrayList<>();
+		CollectionUtil.split(listItemDefId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			itemCodeChilds.addAll(this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_ID_QUERY, String.class)
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", subList).getList());
+		});
 		if (!itemCodeChilds.isEmpty()) {
 			List<String> itemCodeChildChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_CD_QUERY, String.class)
 					.setParameter("contractCd", contractCd).setParameter("itemCdLst", itemCodeChilds).getList();

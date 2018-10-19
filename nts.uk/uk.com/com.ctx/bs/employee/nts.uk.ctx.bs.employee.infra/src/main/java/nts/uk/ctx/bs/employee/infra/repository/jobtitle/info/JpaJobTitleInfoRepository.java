@@ -418,8 +418,10 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		resultList.sort((o1, o2) -> {
-			Integer order1 = o1.getBsymtJobSeqMaster().getDisporder();
-			Integer order2 = o2.getBsymtJobSeqMaster().getDisporder();
+			BsymtJobSeqMaster seqMst1 = o1.getBsymtJobSeqMaster();
+			BsymtJobSeqMaster seqMst2 = o2.getBsymtJobSeqMaster();
+			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
+			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
 			if (order1 != null && order2 != null) return order1.compareTo(order2);
 			if (order1 != null && order2 == null) return 1;
 			if (order1 == null && order2 != null) return -1;
@@ -492,8 +494,10 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			resultList.addAll( (List<Object[]>) em.createQuery(cq).getResultList() );
 		});
 		resultList.sort((o1, o2) -> {
-			Integer order1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster().getDisporder();
-			Integer order2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster().getDisporder();
+			BsymtJobSeqMaster seqMst1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster();
+			BsymtJobSeqMaster seqMst2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster();
+			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
+			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
 			if (order1 != null && order2 != null) return order1.compareTo(order2);
 			if (order1 != null && order2 == null) return 1;
 			if (order1 == null && order2 != null) return -1;
