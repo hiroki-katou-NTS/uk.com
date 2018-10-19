@@ -15,6 +15,7 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
+import com.aspose.cells.PageSetup;
 import com.aspose.cells.Shape;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
@@ -71,7 +72,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			// Get first sheet in template
 			Worksheet worksheet = worksheets.get(0);
-
+			printHeader(worksheet, dataSource);
 			printTemplate(worksheet, dataSource);
 
 			if (dataSource.getPageBreak() == BreakSelection.None.value) {
@@ -1236,5 +1237,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private int totalMonths(YearMonth start, YearMonth end) {
 		return (end.year() - start.year()) * TOTAL_MONTH_IN_YEAR + (end.month() - start.month());
+	}
+	
+	/**
+	 * PRINT PAGE HEADER
+	 * 
+	 * @param worksheet
+	 * @param lstDeparmentInf
+	 */
+	private void printHeader(Worksheet worksheet, HolidayRemainingDataSource dataSource) {
+		// Set print page
+		PageSetup pageSetup = worksheet.getPageSetup();
+		pageSetup.setFirstPageNumber(1);
+		pageSetup.setPrintArea("A1:N");
+		pageSetup.setHeader(0, dataSource.getCompanyName());
 	}
 }
