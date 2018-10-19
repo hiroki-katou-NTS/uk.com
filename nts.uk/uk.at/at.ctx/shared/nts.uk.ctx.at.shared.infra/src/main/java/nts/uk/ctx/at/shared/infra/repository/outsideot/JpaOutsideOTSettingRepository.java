@@ -131,7 +131,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 			}
 			
 			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD_ATEN KOOBA "
-					+ "WHERE KOOBA.CID = ? ORDER BY KOT.BRD_ITEM_NO ASC";
+					+ "WHERE KOOBA.CID = ?";
 			List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten = new ArrayList<>();
 			try (PreparedStatement stmt3 = this.connection().prepareStatement(sqlJdbc)) {
 
