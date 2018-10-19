@@ -200,7 +200,7 @@ public enum Unit {
 	}
 	
 	public BigDecimal roundDownOverBigDecimal(BigDecimal timeAsMinutes) {
-		BigDecimal div = timeAsMinutes.divide(BigDecimal.valueOf(this.asTime()),5,BigDecimal.ROUND_HALF_UP);
+		BigDecimal div = timeAsMinutes.divide(BigDecimal.valueOf(this.asTime()));
 		//マイナスの場合
 		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
 			if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
