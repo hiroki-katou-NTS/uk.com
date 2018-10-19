@@ -7,6 +7,9 @@
 <body>
 <ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.AmountOfMoney
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
@@ -180,7 +183,7 @@
                                 <div data-bind="with: currencyeditor">
                                     <input tabindex="10" data-bind="ntsNumberEditor: {
                                             value: value,
-                                            constraint: constraint,
+                                            constraint: 'AmountOfMoney',
                                             option: option,
                                             required: required,
                                             enable: enable,
