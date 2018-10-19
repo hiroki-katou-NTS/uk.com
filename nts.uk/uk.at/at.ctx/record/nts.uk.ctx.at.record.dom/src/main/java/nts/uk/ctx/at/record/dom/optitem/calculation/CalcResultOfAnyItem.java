@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -17,9 +16,9 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 @AllArgsConstructor
 public class CalcResultOfAnyItem {
 	private OptionalItemNo optionalItemNo;
-	Optional<BigDecimal> count;
-	Optional<BigDecimal> time;
-	Optional<BigDecimal> money;
+	Optional<Integer> count;
+	Optional<Integer> time;
+	Optional<Integer> money;
 	
 	
 	/**
@@ -28,7 +27,7 @@ public class CalcResultOfAnyItem {
 	 * @param optionalItemAtr
 	 * @return
 	 */
-	public CalcResultOfAnyItem reCreateCalcResultOfAnyItem(BigDecimal value, OptionalItemAtr optionalItemAtr) {
+	public CalcResultOfAnyItem reCreateCalcResultOfAnyItem(Integer value, OptionalItemAtr optionalItemAtr) {
 		switch (optionalItemAtr) {
 		case NUMBER:
 			return new CalcResultOfAnyItem(this.optionalItemNo,Optional.of(value),this.time,this.money);

@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.app.find.monthly.finder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -26,6 +28,12 @@ import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
@@ -38,41 +46,47 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 
-	@Inject
-	private AffiliationInfoOfMonthlyFinder affi;
-	
-	@Inject
-	private AttendanceTimeOfMonthlyFinder attendanceTime;
-	
-	@Inject
-	private AnnLeaRemNumEachMonthFinder annLeaFinder;
-	
-	@Inject
-	private RsvLeaRemNumEachMonthFinder rsvLeaFinder;
+//	@Inject
+//	private AffiliationInfoOfMonthlyFinder affi;
+//	
+//	@Inject
+//	private AttendanceTimeOfMonthlyFinder attendanceTime;
+//	
+//	@Inject
+//	private AnnLeaRemNumEachMonthFinder annLeaFinder;
+//	
+//	@Inject
+//	private RsvLeaRemNumEachMonthFinder rsvLeaFinder;
 	
 	@Inject
 	private AnyItemOfMonthlyFinder anyItemFinder;
 
-	@Inject
-	private DayOffRemainMonthFinder dayOffFinder;
-	
-	@Inject
-	private SpecialHolidayRemainMonthFinder specialHolidayFinder;
-	
-	@Inject
-	private AbsenceLeaveRemainMonthFinder absenceLeaveFinder;
+//	@Inject
+//	private DayOffRemainMonthFinder dayOffFinder;
+//	
+//	@Inject
+//	private SpecialHolidayRemainMonthFinder specialHolidayFinder;
+//	
+//	@Inject
+//	private AbsenceLeaveRemainMonthFinder absenceLeaveFinder;
 	
 	@Inject
 	private MonthlyRemarksFinder remarksFinder;
 	
-	@Inject
-	private MonthlyCareRemainFinder careFinder;
-	
-	@Inject
-	private MonthlyChildCareRemainFinder childCareFinder;
+//	@Inject
+//	private MonthlyCareRemainFinder careFinder;
+//	
+//	@Inject
+//	private MonthlyChildCareRemainFinder childCareFinder;
 	
 	@Inject 
 	private AgreementTimeOfManagePeriodFinder agreementFinder; 
+	
+	@Inject
+	private TimeOfMonthlyRepository timeRepo;
+	
+	@Inject
+	private RemainMergeRepository remainRepo;
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -83,18 +97,27 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		dto.setClosureID(closureId.value);
 		dto.setEmployeeId(employeeId);
 		dto.setYearMonth(yearMonth);
-		dto.setAffiliation(affi.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setAttendanceTime(attendanceTime.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setAnnLeave(annLeaFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setRsvLeave(rsvLeaFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setAnyItem(anyItemFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setDayOff(dayOffFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setAbsenceLeave(absenceLeaveFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setSpecialHoliday(specialHolidayFinder.finds(employeeId, yearMonth, closureId, closureDate));
-		dto.setRemarks(remarksFinder.finds(employeeId, yearMonth, closureId, closureDate));
-		dto.setCare(careFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setChildCare(childCareFinder.find(employeeId, yearMonth, closureId, closureDate));
-		dto.setAgreementTime(agreementFinder.find(employeeId, yearMonth, closureId, closureDate));
+		
+		timeRepo.find(employeeId, yearMonth, closureId, closureDate).ifPresent(t -> {
+			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(t.getAffiliation().orElse(null)));
+			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(t.getAttendanceTime().orElse(null)));
+			remainRepo.find(new MonthMergeKey(employeeId, yearMonth, closureId, closureDate)).ifPresent(r -> {
+				dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(r.getAnnLeaRemNumEachMonth()));
+				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
+				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
+				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
+				dto.setSpecialHoliday(ConvertHelper.mapTo(r.getSpecialHolidayRemainList(), s -> SpecialHolidayRemainDataDto.from(s)));
+				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
+				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
+			});
+
+			dto.setAgreementTime(agreementFinder.find(employeeId, yearMonth, closureId, closureDate));
+			dto.setRemarks(remarksFinder.finds(employeeId, yearMonth, closureId, closureDate));
+			dto.setAnyItem(anyItemFinder.find(employeeId, yearMonth, closureId, closureDate));
+			
+			dto.exsistData();
+		});
+		
 		return dto;
 	}
 
@@ -117,58 +140,77 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId,
 			Collection<YearMonth> yearMonth) {
-		List<AffiliationInfoOfMonthlyDto> aff = affi.find(employeeId, yearMonth);
-		List<AttendanceTimeOfMonthlyDto> att = attendanceTime.find(employeeId, yearMonth);
+		List<String> empIds = new ArrayList<>(employeeId);
+		List<YearMonth> yearmonths = new ArrayList<>(yearMonth);
+		List<TimeOfMonthly> time = timeRepo.findBySidsAndYearMonths(empIds, yearmonths);
+		List<RemainMerge> remain = remainRepo.findBySidsAndYearMonths(empIds, yearmonths);
+//		List<AffiliationInfoOfMonthlyDto> aff = affi.find(employeeId, yearMonth);
+//		List<AttendanceTimeOfMonthlyDto> att = attendanceTime.find(employeeId, yearMonth);
 		List<AnyItemOfMonthlyDto> any = anyItemFinder.find(employeeId, yearMonth);
-		List<AnnLeaRemNumEachMonthDto> ann = annLeaFinder.find(employeeId, yearMonth);
-		List<RsvLeaRemNumEachMonthDto> rsv = rsvLeaFinder.find(employeeId, yearMonth);
-		List<MonthlyDayoffRemainDataDto> dayOff = dayOffFinder.find(employeeId, yearMonth);
-		List<AbsenceLeaveRemainDataDto> absenceLeave = absenceLeaveFinder.find(employeeId, yearMonth);
-		List<SpecialHolidayRemainDataDto> specialHoliday = specialHolidayFinder.find(employeeId, yearMonth);
+//		List<AnnLeaRemNumEachMonthDto> ann = annLeaFinder.find(employeeId, yearMonth);
+//		List<RsvLeaRemNumEachMonthDto> rsv = rsvLeaFinder.find(employeeId, yearMonth);
+//		List<MonthlyDayoffRemainDataDto> dayOff = dayOffFinder.find(employeeId, yearMonth);
+//		List<AbsenceLeaveRemainDataDto> absenceLeave = absenceLeaveFinder.find(employeeId, yearMonth);
+//		List<SpecialHolidayRemainDataDto> specialHoliday = specialHolidayFinder.find(employeeId, yearMonth);
 		List<MonthlyRemarksDto> remarks = remarksFinder.find(employeeId, yearMonth);
-		List<MonthlyCareHdRemainDto> care = careFinder.find(employeeId, yearMonth);
-		List<MonthlyChildCareHdRemainDto> childCare = childCareFinder.find(employeeId, yearMonth);
+//		List<MonthlyCareHdRemainDto> care = careFinder.find(employeeId, yearMonth);
+//		List<MonthlyChildCareHdRemainDto> childCare = childCareFinder.find(employeeId, yearMonth);
 		List<AgreementTimeOfManagePeriodDto> agreement = agreementFinder.find(employeeId, yearMonth);
-		return (List<T>) aff.stream().map(a -> {
+		return (List<T>) time.stream().map(a -> {
+			AffiliationInfoOfMonthly aff = a.getAffiliation().get();
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
-			dto.setClosureDate(a.getClosureDate());
-			dto.setClosureID(a.getClosureID());
-			dto.setEmployeeId(a.employeeId());
-			dto.setYearMonth(a.yearMonth());
-			dto.setAffiliation(a);
-			dto.setAttendanceTime(filterItem(att, a));
-			dto.setAnnLeave(filterItem(ann, a));
-			dto.setRsvLeave(filterItem(rsv, a));
-			dto.setAnyItem(filterItem(any, a));
-			dto.setDayOff(filterItem(dayOff, a));
-			dto.setAbsenceLeave(filterItem(absenceLeave, a));
-			dto.setSpecialHoliday(filterItems(specialHoliday, a));
-			dto.setRemarks(filterItems(remarks, a));
-			dto.setCare(filterItem(care, a));
-			dto.setChildCare(filterItem(childCare, a));
-			dto.setAgreementTime(filterItemX(agreement, a));
+			dto.setClosureDate(ClosureDateDto.from(aff.getClosureDate()));
+			dto.setClosureID(aff.getClosureId().value);
+			dto.setEmployeeId(aff.getEmployeeId());
+			dto.setYearMonth(aff.getYearMonth());
+			dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
+			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(a.getAttendanceTime().orElse(null)));
+			filterRemain(remain, aff).ifPresent(r -> {
+				dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(r.getAnnLeaRemNumEachMonth()));
+				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
+				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
+				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
+				dto.setSpecialHoliday(ConvertHelper.mapTo(r.getSpecialHolidayRemainList(), s -> SpecialHolidayRemainDataDto.from(s)));
+				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
+				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
+			});
+			dto.setAnyItem(filterItem(any, aff));
+			dto.setRemarks(filterItems(remarks, aff));
+			dto.setAgreementTime(filterItemX(agreement, aff));
+			dto.exsistData();
 			return dto;
 		}).collect(Collectors.toList());
 	}
-
-	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> T filterItemX(List<T> att, U a) {
-		return att.stream().filter(at ->  at.employeeId().equals(a.employeeId()) 
-											&& at.yearMonth().equals(a.yearMonth()) ).findFirst().orElse(null);
+	
+	private Optional<RemainMerge> filterRemain(List<RemainMerge> remains, AffiliationInfoOfMonthly aff) {
+		return remains.stream().filter(at ->  at.getMonthMergeKey().getEmployeeId().equals(aff.getEmployeeId()) 
+											&& at.getMonthMergeKey().getYearMonth().equals(aff.getYearMonth())
+											&& at.getMonthMergeKey().getClosureDate().equals(aff.getClosureDate())
+											&& at.getMonthMergeKey().getClosureDate().getClosureDay().equals(aff.getClosureDate().getClosureDay())
+											&& at.getMonthMergeKey().getClosureDate().getLastDayOfMonth() == aff.getClosureDate().getLastDayOfMonth())
+							.findFirst();
 	}
 
-	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> T filterItem(List<T> att, U a) {
+	private <T extends MonthlyItemCommon> T filterItemX(List<T> att, AffiliationInfoOfMonthly a) {
+		return att.stream().filter(at ->  at.employeeId().equals(a.getEmployeeId()) 
+											&& at.yearMonth().equals(a.getYearMonth())).findFirst().orElse(null);
+	}
+
+	private <T extends MonthlyItemCommon> T filterItem(List<T> att, AffiliationInfoOfMonthly a) {
 		return att.stream().filter(at -> 
-				at.getClosureDate().equals(a.getClosureDate()) 
-				&& at.employeeId().equals(a.employeeId()) 
-				&& at.yearMonth().equals(a.yearMonth()) 
-				&& at.getClosureID() == a.getClosureID()).findFirst().orElse(null);
+				at.getClosureDate().getClosureDay() == a.getClosureDate().getClosureDay().v()
+				&& at.getClosureDate().getLastDayOfMonth() == a.getClosureDate().getLastDayOfMonth()
+				&& at.employeeId().equals(a.getEmployeeId()) 
+				&& at.yearMonth().equals(a.getYearMonth()) 
+				&& at.getClosureID() == a.getClosureId().value).findFirst().orElse(null);
 	}
 	
-	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> List<T> filterItems(List<T> att, U a) {
+	private <T extends MonthlyItemCommon> List<T> filterItems(List<T> att, AffiliationInfoOfMonthly a) {
 		return att.stream().filter(at -> 
-				at.getClosureDate().equals(a.getClosureDate()) 
-				&& at.employeeId().equals(a.employeeId()) 
-				&& at.yearMonth().equals(a.yearMonth()) 
-				&& at.getClosureID() == a.getClosureID()).collect(Collectors.toList());
+				at.getClosureDate().getClosureDay() == a.getClosureDate().getClosureDay().v()
+				&& at.getClosureDate().getLastDayOfMonth() == a.getClosureDate().getLastDayOfMonth()
+				&& at.employeeId().equals(a.getEmployeeId()) 
+				&& at.yearMonth().equals(a.getYearMonth()) 
+				&& at.getClosureID() == a.getClosureId().value).collect(Collectors.toList());
 	}
 }

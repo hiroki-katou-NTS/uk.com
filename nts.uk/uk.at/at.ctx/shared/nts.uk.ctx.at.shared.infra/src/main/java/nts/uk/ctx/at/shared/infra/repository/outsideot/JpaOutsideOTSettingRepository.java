@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.outsideot;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
@@ -29,9 +32,13 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOutsideOtSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK_;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAtenPK;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime_;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemGetMemento;
@@ -45,8 +52,6 @@ import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMe
 @Stateless
 public class JpaOutsideOTSettingRepository extends JpaRepository
 		implements OutsideOTSettingRepository {
-
-
 	
 	/*
 	 * (non-Javadoc)
@@ -55,42 +60,114 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingRepository#findById(java
 	 * .lang.String)
 	 */
+	@SneakyThrows
 	@Override
 	public Optional<OutsideOTSetting> findById(String companyId) {
+		
+		String sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_SET KOOS "
+				+ "WHERE KOOS.CID = ?";
 
-		// call repository find entity setting
-		Optional<KshstOutsideOtSet> entity = this.queryProxy().find(companyId,
-				KshstOutsideOtSet.class);
+		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
-		// call repository find all domain overtime
-		List<Overtime> domainOvertime = this.findAllUseOvertime(companyId);
+			stmt.setString(1, companyId);
 
-		// call repository find all domain overtime break down item
-		List<OutsideOTBRDItem> domainOvertimeBrdItem = this.findAllUseBRDItem(companyId);
+			Optional<KshstOutsideOtSet> kshstOutsideOtSet = new NtsResultSet(stmt.executeQuery())
+					.getSingle(rec -> {
+						KshstOutsideOtSet entity = new KshstOutsideOtSet();
+						entity.setCid(rec.getString("CID"));
+						entity.setNote(rec.getString("NOTE"));
+						entity.setCalculationMethod(rec.getInt("CALCULATION_METHOD"));
+						return entity;
+					});
+			
+			sqlJdbc = "SELECT * FROM KSHST_OVER_TIME KOT "
+					+ "WHERE KOT.CID = ? AND KOT.USE_ATR = ? ORDER BY KOT.OVER_TIME_NO ASC";
+			List<KshstOverTime> entityOvertime = new ArrayList<>();
+			try (PreparedStatement stmt1 = this.connection().prepareStatement(sqlJdbc)) {
 
-		// domain to entity
-		List<KshstOverTime> entityOvertime = domainOvertime.stream().map(domain -> {
-			KshstOverTime entityItem = new KshstOverTime();
-			domain.saveToMemento(new JpaOvertimeSetMemento(entityItem, companyId));
-			return entityItem;
-		}).collect(Collectors.toList());
+				stmt1.setString(1, companyId);
+				stmt1.setInt(2, UseClassification.UseClass_Use.value);
 
-		// domain to entity
-		List<KshstOutsideOtBrd> entityOvertimeBRDItem = domainOvertimeBrdItem.stream()
-				.map(domain -> {
-					KshstOutsideOtBrd entityItem = new KshstOutsideOtBrd();
-					domain.saveToMemento(new JpaOutsideOTBRDItemSetMemento(entityItem, companyId));
-					return entityItem;
-				}).collect(Collectors.toList());
+				entityOvertime = new NtsResultSet(stmt1.executeQuery())
+						.getList(rec1 -> {
+							KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
+							kshstOverTimePK.setCid(rec1.getString("CID"));
+							kshstOverTimePK.setOverTimeNo(rec1.getInt("OVER_TIME_NO"));
 
-		// check exist data
-		if (entity.isPresent()) {
-			return Optional
-					.ofNullable(this.toDomain(entity.get(), entityOvertimeBRDItem, entityOvertime));
+							KshstOverTime entity = new KshstOverTime();
+							entity.setKshstOverTimePK(kshstOverTimePK);
+							entity.setIs60hSuperHd(rec1.getInt("IS_60H_SUPER_HD"));
+							entity.setUseAtr(rec1.getInt("USE_ATR"));
+							entity.setName(rec1.getString("NAME"));
+							entity.setOverTime(rec1.getInt("OVER_TIME"));
+
+							return entity;
+						});
+			}
+			
+			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD KOOB "
+					+ "WHERE KOOB.CID = ? AND KOOB.USE_ATR = ? ORDER BY KOOB.BRD_ITEM_NO ASC";
+			List<KshstOutsideOtBrd> entityOvertimeBRDItem = new ArrayList<>();
+			try (PreparedStatement stmt2 = this.connection().prepareStatement(sqlJdbc)) {
+
+				stmt2.setString(1, companyId);
+				stmt2.setInt(2, UseClassification.UseClass_Use.value);
+
+				entityOvertimeBRDItem = new NtsResultSet(stmt2.executeQuery())
+						.getList(rec2 -> {
+							KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
+							kshstOutsideOtBrdPK.setCid(rec2.getString("CID"));
+							kshstOutsideOtBrdPK.setBrdItemNo(rec2.getInt("BRD_ITEM_NO"));
+
+							KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
+							entity.setKshstOutsideOtBrdPK(kshstOutsideOtBrdPK);
+							entity.setName(rec2.getString("NAME"));
+							entity.setUseAtr(rec2.getInt("USE_ATR"));
+							entity.setProductNumber(rec2.getInt("PRODUCT_NUMBER"));
+
+
+							return entity;
+						});
+			}
+			
+			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD_ATEN KOOBA "
+					+ "WHERE KOOBA.CID = ?";
+			List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten = new ArrayList<>();
+			try (PreparedStatement stmt3 = this.connection().prepareStatement(sqlJdbc)) {
+
+				stmt3.setString(1, companyId);
+
+				lstOutsideOtBrdAten = new NtsResultSet(stmt3.executeQuery())
+						.getList(rec3 -> {
+							KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK = new KshstOutsideOtBrdAtenPK();
+							kshstOutsideOtBrdAtenPK.setCid(rec3.getString("CID"));
+							kshstOutsideOtBrdAtenPK.setBrdItemNo(rec3.getInt("BRD_ITEM_NO"));
+							kshstOutsideOtBrdAtenPK.setAttendanceItemId(rec3.getInt("ATTENDANCE_ITEM_ID"));
+
+							KshstOutsideOtBrdAten entity = new KshstOutsideOtBrdAten();
+							entity.setKshstOutsideOtBrdAtenPK(kshstOutsideOtBrdAtenPK);
+
+							return entity;
+						});
+			}
+			
+			Map<Integer, List<KshstOutsideOtBrdAten>> lstOutsideOtBrdAtenMap = lstOutsideOtBrdAten
+					.stream().collect(Collectors
+							.groupingBy(item -> item.getKshstOutsideOtBrdAtenPK().getBrdItemNo()));
+			entityOvertimeBRDItem.forEach(item -> {
+				item.setLstOutsideOtBrdAten(lstOutsideOtBrdAtenMap.get(item.getKshstOutsideOtBrdPK().getBrdItemNo()));
+			});
+			
+			// check exist data
+			if (kshstOutsideOtSet.isPresent()) {
+				return Optional
+						.ofNullable(this.toDomain(kshstOutsideOtSet.get(), entityOvertimeBRDItem, entityOvertime));
+			}
+			// default data
+			return Optional.ofNullable(
+					this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
 		}
-		// default data
-		return Optional.ofNullable(
-				this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
+		
 	}
 
 	/*

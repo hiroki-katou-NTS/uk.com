@@ -27,6 +27,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
@@ -614,7 +615,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		
 		List<ClosureDto> closureDtos = new ArrayList<>();
-		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
+		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			try (PreparedStatement statement = this.connection().prepareStatement(
 						"select * from KCLMT_CLOSURE c"
 						+ " inner join KCLMT_CLOSURE_EMPLOYMENT e"
@@ -772,7 +773,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (lstEmployee.isEmpty())
 			return new ArrayList<>();
 		List<WorkInfoOfDailyPerformanceDto> results = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, 1000, subList -> {
+		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			results.addAll(this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList(e -> {
 						return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
@@ -796,7 +797,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
 		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
-		CollectionUtil.split(lstWorkplace.keySet().stream().collect(Collectors.toList()), 1000, subList -> {
+		CollectionUtil.split(lstWorkplace.keySet().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			lstEmployee.addAll(this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
 					.setParameter("lstWkp", subList).getList());
 		});
@@ -805,7 +806,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
 		List<BpsmtPerson> lstPerson = new ArrayList<>();
-		CollectionUtil.split(ids, 1000, subList -> {
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
 					.getList());
 		});
@@ -829,7 +830,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (sids.isEmpty())
 			return Collections.emptyList();
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(sids, 1000, (subList) -> {
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
 					.setParameter("listSid", subList).getList());
 		});
@@ -838,7 +839,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
 		List<BpsmtPerson> lstPerson = new ArrayList<>();
-		CollectionUtil.split(ids, 1000, (subList) -> {
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
 					.getList());
 		});
@@ -857,7 +858,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
 		List<String> businessTypes = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, 1000, subList -> {
+		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			businessTypes.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, String.class)
 					.setParameter("lstSID", subList).setParameter("startYmd", dateRange.getStartDate())
 					.setParameter("endYmd", dateRange.getEndDate()).getList());
@@ -932,7 +933,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee) {
 		List<DPErrorDto> listDPError = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, 1000, subList -> {
+		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listDPError.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
 					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
 					.setParameter("lstEmployee", subList).getList().stream().map(e -> {
@@ -949,7 +950,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String> errorCodes) {
 		List<DPErrorDto> dpErrors = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, 1000, subList -> {
+		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
 					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
 					.setParameter("lstEmployee", subList).setParameter("errorCodes", errorCodes).getList().stream()
@@ -1147,7 +1148,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (listEmployeeId.isEmpty())
 			return Collections.emptyList();
 		List<DailyRecEditSetDto> editSets = new ArrayList<>();
-		CollectionUtil.split(listEmployeeId, 1000, subList -> {
+		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			editSets.addAll(this.queryProxy().query(SEL_DAILY_REC_EDIT_SET, KrcdtDailyRecEditSet.class)
 					.setParameter("employeeIds", subList).setParameter("ymds", dateRange.toListDate()).getList()
 					.stream().map(s -> {
@@ -1162,7 +1163,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkInfoOfDailyPerformanceDetailDto> find(List<String> listEmployeeId, DateRange dateRange) {
 		List<WorkInfoOfDailyPerformanceDetailDto> datas = new ArrayList<>();
-		CollectionUtil.split(listEmployeeId, 1000, subList -> {
+		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			datas.addAll(this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList)
 					.getList(c -> new WorkInfoOfDailyPerformanceDetailDto(c.krcdtDaiPerWorkInfoPK.employeeId,
@@ -1420,7 +1421,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid) {
 		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
-		CollectionUtil.split(sid, 1000, subList -> {
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			lstEmployee.addAll(this.queryProxy().query(SEL_EMPLOYEE_WITH_SID, BsymtEmployeeDataMngInfo.class)
 					.setParameter("sids", subList).getList());
 		});
@@ -1430,7 +1431,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}).collect(Collectors.toList());
 
 		List<BpsmtPerson> lstPerson = new ArrayList<>();
-		CollectionUtil.split(ids, 1000, subList -> {
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
 					.getList());
 		});
@@ -1481,7 +1482,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates) {
 		if (!sids.isEmpty()) {
 			Map<String, Boolean> result = new HashMap<>();
-			CollectionUtil.split(sids, 1000, subList -> {
+			CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				result.putAll(this.queryProxy().query(SELECT_CONFIRM_DAY, KrcdtIdentificationStatus.class)
 						.setParameter("companyID", companyId).setParameter("sids", subList)
 						.setParameter("processingYmds", dates.toListDate())
@@ -1509,13 +1510,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (sids.isEmpty())
 			return Collections.emptyMap();
 		List<WorkPlaceHistTemp> resultList = new ArrayList<>();
-		CollectionUtil.split(sids, 1000, (subList) -> {
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID_WPH, WorkPlaceHistTemp.class)
 					.setParameter("listSid", subList).setParameter("baseDate", date).getList());
 		});
 		if(resultList.isEmpty()) return Collections.emptyMap();
 		Map<String, String> wplName = new HashMap<>();
-		CollectionUtil.split(resultList, 1000, (subList) -> {
+		CollectionUtil.split(resultList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			wplName.putAll(this.queryProxy().query(SELECT_BY_LISTSID_NAME, Object[].class)
 					.setParameter("companyId", companyId)
 					.setParameter("wkpids", subList.stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
@@ -1535,7 +1536,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (employeeIds.isEmpty())
 			return Collections.emptyMap();
 		List<AffComHistItemAtScreen> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_EMPLOYEE_ID_AFF_COM, BsymtAffCompanyHist.class)
 					.setParameter("sIds", subList).setParameter("cid", cid)
 					.getList(x -> new AffComHistItemAtScreen(x.bsymtAffCompanyHistPk.sId,
@@ -1598,7 +1599,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public Map<String, String> getAllEmployment(String companyId, List<String> employeeId, DateRange rangeDate) {
 		Map<String, String> empCodes = new HashMap<>();
-		CollectionUtil.split(employeeId, 1000, (subList) -> {
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			
 			try (PreparedStatement statement = this.connection().prepareStatement(
 						"select h.SID, i.EMP_CD from BSYMT_EMPLOYMENT_HIST h" + 
@@ -1675,7 +1676,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange) {
 		Map<Pair<String, DatePeriod>, String> empCodes = new HashMap<>();
 		MutableValue<Exception> exception = new MutableValue<>(null);
-		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			if(exception.optional().isPresent()){
 				return;
 			}
@@ -1711,7 +1712,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		
 		List<ClosureDto> closureDtos = new ArrayList<>();
-		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
+		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			StringBuilder builderString = new StringBuilder();
 			builderString.append("SELECT c.CLOSURE_ID , c.USE_ATR, c.CLOSURE_MONTH, emp.EMPLOYMENT_CD ");
 			builderString.append("FROM KCLMT_CLOSURE c JOIN ");
