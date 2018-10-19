@@ -88,7 +88,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 				stmt1.setString(1, companyId);
 				stmt1.setInt(2, UseClassification.UseClass_Use.value);
 
-				entityOvertime = new NtsResultSet(stmt.executeQuery())
+				entityOvertime = new NtsResultSet(stmt1.executeQuery())
 						.getList(rec1 -> {
 							KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
 							kshstOverTimePK.setCid(rec1.getString("CID"));
@@ -113,7 +113,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 				stmt2.setString(1, companyId);
 				stmt2.setInt(2, UseClassification.UseClass_Use.value);
 
-				entityOvertimeBRDItem = new NtsResultSet(stmt.executeQuery())
+				entityOvertimeBRDItem = new NtsResultSet(stmt2.executeQuery())
 						.getList(rec2 -> {
 							KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
 							kshstOutsideOtBrdPK.setCid(rec2.getString("CID"));
@@ -131,13 +131,13 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 			}
 			
 			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD_ATEN KOOBA "
-					+ "WHERE KOOBA.CID = ? ORDER BY KOT.BRD_ITEM_NO ASC";
+					+ "WHERE KOOBA.CID = ?";
 			List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten = new ArrayList<>();
 			try (PreparedStatement stmt3 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt3.setString(1, companyId);
 
-				lstOutsideOtBrdAten = new NtsResultSet(stmt.executeQuery())
+				lstOutsideOtBrdAten = new NtsResultSet(stmt3.executeQuery())
 						.getList(rec3 -> {
 							KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK = new KshstOutsideOtBrdAtenPK();
 							kshstOutsideOtBrdAtenPK.setCid(rec3.getString("CID"));
