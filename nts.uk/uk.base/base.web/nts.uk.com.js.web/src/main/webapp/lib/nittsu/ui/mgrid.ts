@@ -54,6 +54,7 @@ module nts.uk.ui.mgrid {
          */
         makeDefault() {
             let self = this;
+            self.$container.tabIndex = -1;
             self.fixedHeader = _.assignIn(self.fixedHeader, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
             self.fixedBody = _.assignIn(self.fixedBody, _.cloneDeep(defaultOptions));
             self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
