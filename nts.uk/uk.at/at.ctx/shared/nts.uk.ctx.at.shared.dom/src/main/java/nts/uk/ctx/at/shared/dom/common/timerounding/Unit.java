@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.common.timerounding;
 
+import java.math.BigDecimal;
+
 /**
  * The Enum Unit.
  */
@@ -126,26 +128,32 @@ public enum Unit {
 	 * @return
 	 */
 	public int roundDown(int timeAsMinutes) {
+		return roundDownBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
+	}
+	
+	public BigDecimal roundDownBigDecimal(BigDecimal timeAsMinutes) {
 		//マイナスの場合
-		if(timeAsMinutes<0) {
+		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
 			// 一旦、プラスの数値にする
-			int result = -timeAsMinutes;
-			int amari = result % this.asTime();
-			if(amari>0) {
+			BigDecimal result = timeAsMinutes.negate();
+			BigDecimal amari = result.remainder(BigDecimal.valueOf(this.asTime()));
+			if(amari.compareTo(BigDecimal.ONE)>0) {
 				// 切り捨て処理
-				result = result - amari + this.asTime();
+				result = result.subtract(amari).add(BigDecimal.valueOf(this.asTime()));
 			}
 			//再びマイナスの値に戻す
-			return -result;
+			return result.negate();
 		}
 		//マイナスではない場合
-		int amari = timeAsMinutes % this.asTime();
-		if(amari>0) {
+		BigDecimal amari = timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime()));
+		if(amari.compareTo(BigDecimal.ZERO)>0) {
 			//切り捨て処理
-			return timeAsMinutes - amari;
+			return timeAsMinutes.subtract(amari);
 		}
 		return timeAsMinutes;
 	}
+	
+	
 	
 	/**
 	 * 切り上げ
@@ -154,26 +162,32 @@ public enum Unit {
 	 * @return
 	 */
 	public int roundUp(int timeAsMinutes) {
+		return roundUpBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
+	}
+	
+	public BigDecimal roundUpBigDecimal(BigDecimal timeAsMinutes) {
 		//マイナスの場合
-		if(timeAsMinutes<0) {
+		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
 			// 一旦、プラスの数値にする
-			int result = -timeAsMinutes;
-			int amari = result % this.asTime();
-			if(amari>0) {
+			BigDecimal result = timeAsMinutes.negate();
+			BigDecimal amari = result.remainder(BigDecimal.valueOf(this.asTime()));
+			if(amari.compareTo(BigDecimal.ZERO)>0) {
 				// 切り上げ処理
-				result = result - amari;
+				result = result.subtract(amari);
 			}
 			//再びマイナスの値に戻す
-			return -result;
+			return result.negate();
 		}
 		//マイナスではない場合
-		int amari = timeAsMinutes % this.asTime();
-		if(amari>0) {
+		BigDecimal amari = timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime()));
+		if(amari.compareTo(BigDecimal.ZERO)>0) {
 			//切り上げ処理
-			return timeAsMinutes - amari + this.asTime();
+			return timeAsMinutes.subtract(amari).add(BigDecimal.valueOf(this.asTime()));
 		}
 		return timeAsMinutes;
 	}
+	
+	
 	
 	/**
 	 * 未満切捨以上切上
@@ -182,26 +196,28 @@ public enum Unit {
 	 * @return
 	 */
 	public int roundDownOver(int timeAsMinutes) {
-		int div = timeAsMinutes/this.asTime();
+		return roundDownOverBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
+	}
+	
+	public BigDecimal roundDownOverBigDecimal(BigDecimal timeAsMinutes) {
+		BigDecimal div = timeAsMinutes.divide(BigDecimal.valueOf(this.asTime()),5,BigDecimal.ROUND_HALF_UP);
 		//マイナスの場合
-		if(timeAsMinutes<0) {
-			if((div % 2)==0) {
-				return timeAsMinutes - timeAsMinutes % this.asTime();
+		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
+			if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
+				return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())));
 			}else {
-				if(timeAsMinutes % this.asTime() == 0) {
-					return timeAsMinutes + this.asTime();
+				if(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).signum() == 0) {
+					return timeAsMinutes.add(BigDecimal.valueOf(this.asTime()));
 				}else {
-					return timeAsMinutes - timeAsMinutes % this.asTime() - this.asTime();
+					return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).subtract(BigDecimal.valueOf(this.asTime())));
 				}
 			}
 		}
 		//マイナスではない場合
-		if((div % 2)==0) {
-			return timeAsMinutes - timeAsMinutes % this.asTime();
+		if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
+			return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())));
 		}else {
-			return timeAsMinutes - timeAsMinutes % this.asTime() + this.asTime();
+			return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).add(BigDecimal.valueOf(this.asTime())));
 		}
 	}
-
-	
 }

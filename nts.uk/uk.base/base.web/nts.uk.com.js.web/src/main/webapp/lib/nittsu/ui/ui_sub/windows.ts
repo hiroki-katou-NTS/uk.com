@@ -102,6 +102,7 @@ module nts.uk.ui {
                     
                     let width = options.width || this.globalContext.dialogSize.width;
                     let height = options.height || this.globalContext.dialogSize.height;
+					let autoResize = this.globalContext.autoResize == undefined ? true : this.globalContext.autoResize;
                     
                     this.$dialog.data('__size__', { width, height });
                     
@@ -178,7 +179,10 @@ module nts.uk.ui {
                     //                    var widget= this.$dialog.dialog("widget");
                     //                    widget.draggable("option","containment",false);
                     
-                    $(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
+					if (autoResize) {
+						$(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
+					}
+                    
                     
                 });
 
@@ -266,7 +270,10 @@ module nts.uk.ui {
                 } 
                 
                 // resize error's position
-                this.changePositionOfError($dialog);    
+                this.changePositionOfError($dialog);
+                
+                // resize combo-box-dropdown's positions
+                setTimeout(this.changePositionComboBoxDropDown.bind(this, $dialog), 500);
                 
             }
             
@@ -281,6 +288,22 @@ module nts.uk.ui {
                                   .position({ my: 'left+5 top+48', at: 'left top', of: $functionsAreaBottom });
                     });
                 }
+            }
+            
+            changePositionComboBoxDropDown($dialog) {
+                let $iframeDoc = $($dialog.find("iframe")[0].contentWindow.document);
+                var $dropDownElements = $iframeDoc.find('.ui-igcombo-dropdown.ui-igcombo-no-border');
+                
+                if ($dropDownElements.length <= 0 ) {
+                    return;
+                }
+                
+                $dropDownElements.each(function() {
+                    $(this).css({
+                        top: '-99999px',
+                        left: '-99999px'
+                    });     
+                });
             }
         }
 

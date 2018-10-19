@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
@@ -92,37 +94,39 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	@Override
 	public List<OvertimeWorkFrame> getOvertimeWorkFrameByFrameNos(String companyId, List<Integer> overtimeWorkFrNos) {
 		// get entity manager
-				EntityManager em = this.getEntityManager();
-				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-				CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
-					.createQuery(KshstOvertimeFrame.class);
-				
-				// root data
-				Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
+		CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
+				.createQuery(KshstOvertimeFrame.class);
 
-				// select root
-				cq.select(root);
+		// root data
+		Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
 
-				// add where
-				List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// select root
+		cq.select(root);
 
-				// eq company id
-				lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
-						.get(KshstOvertimeFramePK_.cid), companyId));
-				lstpredicateWhere
-				.add(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
-					.get(KshstOvertimeFramePK_.otFrNo).in(overtimeWorkFrNos));
-				// set where to SQL
-				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<KshstOvertimeFrame> resultList = new ArrayList<>();
 
-				// creat query
-				TypedQuery<KshstOvertimeFrame> query = em.createQuery(cq);
+		CollectionUtil.split(overtimeWorkFrNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				splitData -> {
+					// add where
+					List<Predicate> lstpredicateWhere = new ArrayList<>();
+					// eq company id
+					lstpredicateWhere.add(
+							criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+									.get(KshstOvertimeFramePK_.cid), companyId));
 
-				// exclude select
-				return query.getResultList().stream().map(category -> toDomain(category))
-					.collect(Collectors.toList());
+					lstpredicateWhere.add(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+							.get(KshstOvertimeFramePK_.otFrNo).in(splitData));
+					// set where to SQL
+					cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+					resultList.addAll(em.createQuery(cq).getResultList());
+				});
+
+		// exclude select
+		return resultList.stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 	
 	@Override

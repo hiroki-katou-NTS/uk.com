@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.FixedCheckItemPub;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 	
@@ -68,5 +69,12 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 				export.getComment().orElse(null)
 				);
 	}
+
+	@Override
+	public List<ValueExtractAlarm> checkAdminUnverified(String workplaceID, String employeeID, DatePeriod datePeriod) {
+		return fixedCheckItemPub.checkAdminUnverified(workplaceID, employeeID, datePeriod )
+				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
+	}
+	
 
 }

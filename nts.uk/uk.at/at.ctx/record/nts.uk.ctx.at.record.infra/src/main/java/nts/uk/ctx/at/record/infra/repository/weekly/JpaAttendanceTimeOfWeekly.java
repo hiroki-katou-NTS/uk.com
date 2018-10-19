@@ -51,7 +51,15 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	private static final String WHERE_YM = "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
 
+	private static final String WHERE_SIDS_AND_YM = "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+
 	private static final String WHERE_CLOSURE = WHERE_YM
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
+
+	private static final String WHERE_SIDS_AND_CLOSURE = WHERE_SIDS_AND_YM
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
 			+ "AND a.PK.isLastDay = :isLastDay ";
@@ -68,11 +76,11 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ WHERE_CLOSURE
+			+ WHERE_SIDS_AND_CLOSURE
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ WHERE_YM
+			+ WHERE_SIDS_AND_YM
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtWekAttendanceTime a "
@@ -163,10 +171,12 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		List<AttendanceTimeOfWeekly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtWekAttendanceTime.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtWekAttendanceTime.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList(c -> c.toDomain()));
+			});
 		});
 		return results;
 	}

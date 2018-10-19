@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +23,9 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 	@Override
 	public List<RecordRemainCreateInfor> createRemainInfor(List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData,
 			List<WorkInfoOfDailyPerformance> lstWorkInfor) {
+		if(lstWorkInfor.isEmpty()) {
+			return Collections.emptyList();
+		}
 		List<RecordRemainCreateInfor> lstOutputData = new ArrayList<>();
 		//残数作成元情報を作成する
 		for (WorkInfoOfDailyPerformance workInfor : lstWorkInfor) {
@@ -66,9 +70,9 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
 		outputInfor.setSid(workInfor.getEmployeeId());
 		outputInfor.setYmd(workInfor.getYmd());
-		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "000" 
+		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "" 
 				: workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "000" 
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "" 
 				: workInfor.getRecordInfo().getSiftCode().v()));
 		return outputInfor;
 	}

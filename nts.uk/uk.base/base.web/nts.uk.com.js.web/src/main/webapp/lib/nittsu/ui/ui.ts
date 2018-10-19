@@ -94,8 +94,6 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-
-        let counter = 0;
         
         export function invisible() {
             let rect = calcRect();
@@ -108,8 +106,6 @@ module nts.uk.ui {
                     left: rect.left
                 }
             });
-            
-            counter++;
         }
 
         export function grayout() {
@@ -123,17 +119,12 @@ module nts.uk.ui {
                     left: rect.left
                 }
             });
-            
-            counter++;
         }
 
         export function clear() {
-            counter--;
-            if (counter <= 0) {
-                (<any>$).unblockUI({
-                    fadeOut: 200
-                });
-            }
+            (<any>$).unblockUI({
+                fadeOut: 200
+            });
         }
 
         function calcRect() {
@@ -201,12 +192,16 @@ module nts.uk.ui {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();
                     });
+                    
+                    $label.on('remove', function() {
+                        $view.remove();
+                    });
                 }
             });
         });
         
         function isOverflow($label) {
-            if ($label[0].nodeName === "INPUT" 
+            if ( ($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")  
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
                 || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));

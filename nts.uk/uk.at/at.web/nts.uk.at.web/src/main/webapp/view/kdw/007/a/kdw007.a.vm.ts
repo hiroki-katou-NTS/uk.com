@@ -301,6 +301,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -312,6 +320,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -362,6 +378,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         updateTab() {
             let self = this;
+            self.tabs()[0].visible(false);
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
@@ -375,7 +392,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                var data = ko.mapping.toJS(self.selectedErrorAlarm());
+                let data = ko.mapping.toJS(self.selectedErrorAlarm());
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;

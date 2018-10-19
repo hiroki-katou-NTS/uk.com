@@ -123,6 +123,11 @@ module nts.uk.ui.koExtentions {
 //                    return;
 //                }
                 
+                if ($input.data("change")) {
+                    $input.data("change", false);
+                    return;
+                }
+                
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
@@ -131,9 +136,10 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
-                    if(!validateMinMax(result.parsedValue)){
-                       return; 
-                    }
+                    //if(!validateMinMax(result.parsedValue)){
+                    //   return; 
+                    //}
+                    validateMinMax(result.parsedValue);
                     // Day of Week
                     if (hasDayofWeek) {
                         if (util.isNullOrEmpty(result.parsedValue))
@@ -142,7 +148,20 @@ module nts.uk.ui.koExtentions {
                             $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
                     }
 //                    container.data("changed", true);
-                    value(result.parsedValue);
+                    if (typeof result.parsedValue === "string") {
+                        if (_.has(data, "type") && ko.toJS(data.type) === "date") {
+                            value(new Date(result.parsedValue));
+                        } else {
+                            value(result.parsedValue);
+                        }
+                        let dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                        if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                            $input.data("change", true);
+                            $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
+                        }
+                    } else {
+                        value(result.parsedValue);
+                    }
                     value.valueWillMutate();
                 }
                 else {                    
@@ -289,6 +308,10 @@ module nts.uk.ui.koExtentions {
                     // Check equals to avoid multi datepicker with same value
                     $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                     $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                } else if (dateFormatValue === "Invalid date" && (typeof value() === "string" || value() instanceof String)) {
+                    $input.val(value());
+                    $label.text("");
+                    $input.trigger("validate");
                 }
                 else {
                     $input.val("");
@@ -858,7 +881,9 @@ module nts.uk.ui.koExtentions {
                     }, 0);
                 }
                 
-                self.$input.focus();
+                if (!_.isNil(view) && view !== "") {
+                    self.$input.focus();
+                }
             });
             return self;
         }

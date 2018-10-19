@@ -156,6 +156,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -280,6 +282,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
+	
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
 
 	@Resource
 	private SessionContext scContext;
@@ -995,7 +1000,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						} else {
 							workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
 							workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(null);
+							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(new ArrayList<>());
 						}
 					}
 				}
@@ -1664,13 +1669,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 
 						// 所定時間帯を取得する
-						Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
-								.findByWorkTimeCode(companyId,
-										workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
+						PredetermineTimeSetForCalc predetemineTimeSetting = workTimeSettingService
+								.getPredeterminedTimezone(companyId,workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(),
+										workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v(), null);
 
-						if (predetemineTimeSetting.isPresent()) {
-							List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting()
-									.getLstTimezone();
+						if (!predetemineTimeSetting.getTimezones().isEmpty()) {
+							List<TimezoneUse> lstTimezone = predetemineTimeSetting.getTimezones();
 							for (TimezoneUse timezone : lstTimezone) {
 								if (timezone.getUseAtr() == UseSetting.USE) {
 									TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
@@ -1835,6 +1839,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
 								|| (!leavingStamp.getAttendanceStamp().isPresent())
 								|| (leavingStamp.getAttendanceStamp().get().getStamp() == null)
+								|| (!leavingStamp.getAttendanceStamp().get().getStamp().isPresent())
 								|| (leavingStamp.getAttendanceStamp().get().getStamp().isPresent() && leavingStamp
 										.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null)) {
 
@@ -1871,6 +1876,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
 								|| (!leavingStamp.getLeaveStamp().isPresent())
 								|| (leavingStamp.getLeaveStamp().get().getStamp() == null)
+								|| (!leavingStamp.getLeaveStamp().get().getStamp().isPresent())
 								|| (leavingStamp.getLeaveStamp().get().getStamp().isPresent() && leavingStamp
 										.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null)) {
 

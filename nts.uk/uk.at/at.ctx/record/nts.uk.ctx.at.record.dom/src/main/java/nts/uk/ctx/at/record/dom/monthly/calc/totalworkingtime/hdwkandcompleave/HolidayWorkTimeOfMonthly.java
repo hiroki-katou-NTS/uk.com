@@ -48,6 +48,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	/** 集計休出時間 */
 	private Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> aggregateHolidayWorkTimeMap;
 
+	/** 事前申請時間を足したかどうか */
+	private boolean isAddedBeforeApp;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -128,7 +131,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param aggregateAtr 集計区分
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
-	 * @param excessOutsideTimeSet 時間外超過設定
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param autoExceptHolidayWorkFrames 自動的に除く休出枠
 	 * @param companySets 月別集計で必要な会社別設定
@@ -162,8 +165,15 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				
 				// 自動計算して休出時間を集計する
 				this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
-						workInfo, legalHolidayWorkTransferOrder, roleHolidayWorkFrameMap,
+						workInfo, legalHolidayWorkTransferOrder, excessOutsideTimeSet, roleHolidayWorkFrameMap,
 						companySets, employeeSets, repositories);
+			}
+		}
+		
+		// 法定内休出の計算休出を休出時間の計算休出へ移送
+		for (val entry : this.aggregateHolidayWorkTimeMap.entrySet()){
+			for (val workEntry : entry.getValue().getTimeSeriesWorks().entrySet()){
+				workEntry.getValue().addCalcLegalHWTimeToCalcHWTime();
 			}
 		}
 	}
@@ -172,7 +182,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * 休出を集計するか確認する
 	 * @param companyId 会社ID
 	 * @param workInfo 勤務情報
-	 * @param excessOutsideTimeSet 時間外超過設定
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return true：休出を集計する、false：休出を集計しない
@@ -209,6 +219,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param workingSystem 労働制
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
@@ -218,6 +229,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			String companyId, String placeId, String employmentCd, WorkingSystem workingSystem,
 			WorkInformation workInfo,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
@@ -249,11 +261,12 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				companyId, companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), false);
 		
 		// 休出・振替のループ
+		this.isAddedBeforeApp = false;
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
 		
 			// 休出枠時間のループ処理
 			canLegalHolidayWork = this.holidayWorkFrameTimeProcess(holidayWorkAndTransferAtr,
-					legalHolidayWorkTransferOrder, canLegalHolidayWork,
+					legalHolidayWorkTransferOrder, excessOutsideTimeSet, canLegalHolidayWork,
 					roleHolidayWorkFrameMap, holidayWorkFrameTimes, attendanceTimeOfDaily.getYmd());
 		}
 	}
@@ -295,6 +308,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * 休出枠時間のループ処理
 	 * @param holidayWorkAndTransferAtr 休出振替区分
 	 * @param legalHolidayWorkTransferOrderOfAggrMonthly 法定内休出振替順
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param canLegalHolidayWork 法定内休出に出来る時間
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param holidayWorkFrameTimeMap 休出枠時間　（日別実績より取得）
@@ -304,6 +318,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	private AttendanceTime holidayWorkFrameTimeProcess(
 			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrderOfAggrMonthly,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			AttendanceTime canLegalHolidayWork,
 			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			Map<HolidayWorkFrameNo, HolidayWorkFrameTime> holidayWorkFrameTimeMap,
@@ -322,6 +337,24 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			// 対象の時系列ワークを確認する
 			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
 			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
+			
+			// 「法定内休出を含める」を確認
+			if (excessOutsideTimeSet.getLegalHoliday() == false){
+				
+				// 取得した休出枠時間を集計休出時間に入れる
+				switch (holidayWorkAndTransferAtr){
+				case HOLIDAY_WORK:
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
+					break;
+				}
+				continue;
+			}
 			
 			// 対象の役割を確認する
 			if (!roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())) continue;
@@ -351,6 +384,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 							legalHolidayWorkTime, new AttendanceTime(0)));
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							holidayWorkTime, holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime()));
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
@@ -377,10 +413,29 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				
 			case STATUTORY_HOLIDAYS:
 				
+				// 取得した休出枠時間を集計休出時間に入れる
+				switch (holidayWorkAndTransferAtr){
+				case HOLIDAY_WORK:
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
+					break;
+				}
+				break;
+				
+			case NON_STATUTORY_HOLIDAYS:
+				
 				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
 				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
 					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					if (!this.isAddedBeforeApp){
+						timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					}
 					if (timeAfterCalc.lessThanOrEqualTo(holidayWorkFrameTime.getHolidayWorkTime().get().getTime())){
 						timeAfterCalc = new AttendanceTime(0);
 					}
@@ -401,21 +456,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					break;
 				}
 				break;
-				
-			case NON_STATUTORY_HOLIDAYS:
-				
-				// 取得した休出枠時間を集計休出時間に入れる
-				switch (holidayWorkAndTransferAtr){
-				case HOLIDAY_WORK:
-					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
-					break;
-				case TRANSFER:
-					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
-					break;
-				}
-				break;
 			}
 		}
+		this.isAddedBeforeApp = true;
 		
 		return timeAfterCalc;
 	}

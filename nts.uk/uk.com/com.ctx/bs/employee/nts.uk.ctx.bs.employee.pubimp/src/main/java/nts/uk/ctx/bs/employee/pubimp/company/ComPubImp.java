@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.pubimp.company;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,22 +27,23 @@ public class ComPubImp implements SyCompanyPub {
 	public List<AffCompanyHistExport> GetAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
 
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
-			return null;
+			return Collections.emptyList();
 
 		List<AffCompanyHist> his = affComHistRepo.getAffComHisEmpByLstSidAndPeriod(sids, datePeriod);
 		return sids.stream().map(sid -> {
 			AffCompanyHistExport affComHostEx = new AffCompanyHistExport();
 			affComHostEx.setEmployeeId(sid);
+			affComHostEx.setLstAffComHistItem(new ArrayList<>());
 			
 			AffCompanyHistByEmployee affComHistByEmp = his.stream().filter(c -> c.getAffCompanyHistByEmployee(sid) != null)
 								.map(c -> c.getAffCompanyHistByEmployee(sid))											
 								.findFirst().orElse(null);
-
-			if (affComHistByEmp.items() != null) {
-
-				affComHostEx.setLstAffComHistItem(affComHistByEmp.items().stream().map(item ->
-						new AffComHistItem(item.getHistoryId(), item.isDestinationData(), item.getDatePeriod())
-					).collect(Collectors.toList()));
+			if (affComHistByEmp != null) {
+				if (affComHistByEmp.items() != null) {
+					affComHostEx.setLstAffComHistItem(affComHistByEmp.items().stream().map(item -> new AffComHistItem(item.getHistoryId(),
+											item.isDestinationData(), item.getDatePeriod()))
+									.collect(Collectors.toList()));
+				}
 			}
 			return affComHostEx;
 		}).filter(c -> c != null).collect(Collectors.toList());

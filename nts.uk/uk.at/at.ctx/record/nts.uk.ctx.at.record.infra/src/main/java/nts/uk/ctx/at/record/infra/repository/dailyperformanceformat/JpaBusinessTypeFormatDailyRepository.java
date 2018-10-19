@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
@@ -106,8 +109,12 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 
 	@Override
 	public void deleteExistData(List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+				.setParameter("attendanceItemIds", subList)
 				.executeUpdate();
+		});
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -159,11 +166,15 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	
 	@Override
 	public void updateColumnsWidth(Map<Integer, Integer> lstHeader) {
-		List<KrcmtBusinessTypeDaily> lstBusDailyItem = this.queryProxy()
+		List<KrcmtBusinessTypeDaily> lstBusDailyItem = new ArrayList<>(); 
+		CollectionUtil.split(lstHeader, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subMap -> {
+			lstBusDailyItem.addAll(this.queryProxy()
 				.query(SEL_FORMAT_BY_ATD_ITEM, KrcmtBusinessTypeDaily.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstHeader.keySet())
-				.getList();
-		for(KrcmtBusinessTypeDaily busItem: lstBusDailyItem){
+				.setParameter("companyId", AppContexts.user().companyId())
+				.setParameter("lstItem", subMap.keySet())
+				.getList());
+		});
+		for(KrcmtBusinessTypeDaily busItem : lstBusDailyItem) {
 			busItem.columnWidth =  new BigDecimal(lstHeader.get(busItem.krcmtBusinessTypeDailyPK.attendanceItemId));
 		}
 		this.commandProxy().updateAll(lstBusDailyItem);
@@ -177,13 +188,15 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	@Override
 	public void deleteExistDataByCode(String businesstypeCode, String companyId, int sheetNo,
 			List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA_BY_CODE)
-			.setParameter("companyId", companyId)
-			.setParameter("businessTypeCode", businesstypeCode)
-			.setParameter("sheetNo", sheetNo)
-			.setParameter("attendanceItemIds", attendanceItemIds)
-			.executeUpdate();
-		
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA_BY_CODE)
+				.setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businesstypeCode)
+				.setParameter("sheetNo", sheetNo)
+				.setParameter("attendanceItemIds", subList)
+				.executeUpdate();
+		});
+		this.getEntityManager().flush();
 	}
 	
 }

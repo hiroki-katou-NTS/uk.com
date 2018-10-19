@@ -175,7 +175,14 @@ public class AggregateTotalWorkingTime implements Cloneable {
 			roleHolidayWorkFrameMap = settingsByDefo.getRoleHolidayWorkFrameMap();
 			autoExceptOverTimeFrames = settingsByDefo.getAutoExceptOverTimeFrames();
 			autoExceptHolidayWorkFrames = settingsByDefo.getAutoExceptHolidayWorkFrames();
-			excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet();
+			
+			// 「割増集計方法」を取得する
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+				excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet();
+			}
+			else {
+				excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getAggregateTimeSet();
+			}
 		}
 		else {
 			// 通常勤務の時
@@ -184,13 +191,21 @@ public class AggregateTotalWorkingTime implements Cloneable {
 			roleHolidayWorkFrameMap = settingsByReg.getRoleHolidayWorkFrameMap();
 			autoExceptOverTimeFrames = settingsByReg.getAutoExceptOverTimeFrames();
 			autoExceptHolidayWorkFrames = settingsByReg.getAutoExceptHolidayWorkFrames();
-			excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet();
+			
+			// 「割増集計方法」を取得する
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+				excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet();
+			}
+			else {
+				excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getAggregateTimeSet();
+			}
 		}
 		
 		// 残業時間を集計する　（通常・変形労働時間勤務用）
 		this.overTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
 				workingSystem, workInfo, legalTransferOrderSet.getLegalOverTimeTransferOrder(),
-				roleOverTimeFrameMap, autoExceptOverTimeFrames, companySets, employeeSets, repositories);
+				excessOutsideTimeSet, roleOverTimeFrameMap, autoExceptOverTimeFrames,
+				companySets, employeeSets, repositories);
 		
 		// 休出時間を集計する　（通常・変形労働時間勤務用）
 		this.holidayWorkTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,

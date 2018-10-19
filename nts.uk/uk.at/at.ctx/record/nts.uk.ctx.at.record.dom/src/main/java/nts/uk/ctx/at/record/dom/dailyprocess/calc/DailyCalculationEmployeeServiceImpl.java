@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
@@ -166,6 +167,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 	
+	@Inject
+	private ManagedParallelWithContext parallel;
+	
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -177,35 +181,47 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
-		//日別実績(WORK取得)
-		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		
-		//締め一覧取得
-		List<ClosureStatusManagement> closureList = getClosureList(employeeId,datePeriod);
-		
-		//計算処理を呼ぶ
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList,reCalcAtr);
-		//実績が無い社員の数を検知
-		val empIds = createList.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
-		//実績が無い社員を成功としてカウントアップ
-		employeeId.forEach(tc ->{
-			if(!empIds.contains(tc)) {
-					counter.accept(ProcessState.SUCCESS);
+		this.parallel.forEach(employeeIds, employeeId -> {
+			
+			// 中断処理　（中断依頼が出されているかチェックする）
+			if (asyncContext.hasBeenRequestedToCancel()) {
+				return;
 			}
-			//１：日別計算(ENUM)
-			//0:計算完了
-			targetPersonRepository.updateWithContent(tc, empCalAndSumExecLogID, 1, 0);
+			
+			//日別実績(WORK取得)
+			List<IntegrationOfDaily> createList = createIntegrationOfDaily(employeeId,datePeriod);
+			
+			//締め一覧取得
+			List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId), datePeriod);
+			
+			ManageProcessAndCalcStateResult afterCalcRecord;
+			if (createList.isEmpty()) {
+				counter.accept(ProcessState.SUCCESS);
+				
+				//１：日別計算(ENUM)
+				//0:計算完了
+				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
+			} else {
+				//計算処理を呼ぶ
+				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList,reCalcAtr);
+				
+				//１：日別計算(ENUM)
+				//0:計算完了
+				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
+				
+				List<IntegrationOfDaily> result = afterCalcRecord.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+				//データ更新
+				for(IntegrationOfDaily value:result) {
+					updateRecord(value);
+				}
+				//計算状態更新
+				for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
+					upDateCalcState(stateInfo);
+				}
+			}
 		});
-		val result = afterCalcRecord.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
-		//データ更新
-		for(IntegrationOfDaily value:result) {
-			updateRecord(value);
-		}
-		//計算状態更新
-		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-			upDateCalcState(stateInfo);
-		}
 	}
 	
 	
@@ -222,6 +238,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	}
 	
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
 		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
 		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
@@ -337,34 +354,5 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					));
 		}
 		return returnList;
-	}
-	
-	/**
-	 * List→Mapへの変換クラス
-	 * @param integrationOfDaily 日別実績(Work)
-	 * @return integrationOfDailyのMap
-	 */
-	private Map<GeneralDate, IntegrationOfDaily> convertMap(List<IntegrationOfDaily> integrationOfDaily) {
-		Map<GeneralDate, IntegrationOfDaily> map = new HashMap<>();
-		integrationOfDaily.forEach(tc ->{
-			map.put(tc.getAffiliationInfor().getYmd(), tc);
-		});
-		return map;
-	}
-	
-	/**
-	 * 前日翌日(parameterによってどっちにするか決める)の勤務情報を取得する
-	 * @param empId
-	 * @param mapIntegration
-	 * @param addDays　取得したい日(-1or+1した日を渡す)
-	 * @return addDaysの勤務情報
-	 */
-	private Optional<WorkInfoOfDailyPerformance> findAndGetWorkInfo(String empId, Map<GeneralDate, IntegrationOfDaily> mapIntegration, GeneralDate addDays) {
-		if(mapIntegration.containsKey(addDays)) {
-			return Optional.of(mapIntegration.get(addDays).getWorkInformation());
-		}
-		else {
-			return workInformationRepository.find(empId, addDays);
-		}
 	}
 }

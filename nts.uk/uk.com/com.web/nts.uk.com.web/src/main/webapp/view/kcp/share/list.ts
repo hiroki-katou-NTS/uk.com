@@ -165,6 +165,11 @@ module kcp.share.list {
          * in the select-all case, disableSelection is true. Else false
          */
         disableSelection?: boolean;
+
+        /**
+         * Select all item after reload.
+         */
+        isSelectAllAfterReload?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -258,6 +263,7 @@ module kcp.share.list {
         searchBoxId: string;
         disableSelection : boolean;
         componentOption: ComponentOption;
+        isSelectAllAfterReload: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -274,6 +280,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            this.isSelectAllAfterReload = true;
             disableSelection = false;
         }
 
@@ -315,6 +322,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
+            self.isSelectAllAfterReload = data.isSelectAllAfterReload;
             self.disableSelection = data.disableSelection;
             
             // Init data for employment list component.
@@ -375,7 +383,7 @@ module kcp.share.list {
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 
                     // select all items in multi mode
-                    if (!_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                    if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
                         const selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
                         self.selectedCodes(selectedValues);
                         gridList.ntsGridList("setSelectedValue", []);
@@ -460,7 +468,7 @@ module kcp.share.list {
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
-                if (self.itemList().length == self.selectedCodes().length) {
+                if ((!_.isEmpty(self.selectedCodes())) && (self.itemList().length == self.selectedCodes().length)) {
                     gridList.igGrid("virtualScrollTo", '0px');
                 }
             });

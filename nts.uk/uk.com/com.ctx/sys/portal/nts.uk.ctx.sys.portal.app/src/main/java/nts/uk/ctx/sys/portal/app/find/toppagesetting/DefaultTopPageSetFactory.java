@@ -215,8 +215,13 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		//// display top page job title set (職位別トップページ設定)-A
 		check = false;
 		String menuCode = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
-		layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
-				topPageJob.getMenuClassification().value, isLoginScreen);
+		if(isLoginScreen) {
+			layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
+					topPageJob.getMenuClassification().value, isLoginScreen);
+		}else {
+			layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
+					MenuClassification.TopPage.value, isLoginScreen);
+		}
 		if (!checkMyPage) {// not use my page
 			check = true;
 			return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
@@ -443,7 +448,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 * get info of top page or standard menu
 	 */
 	private LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean isLoginScreen) {
-		if (isLoginScreen && classification == MenuClassification.TopPage.value) {// topPage
+		if (classification == MenuClassification.TopPage.value) {// topPage
 			TopPageDto topPage = toppageFinder.findByCode(companyId, code, "0");
 			if(topPage==null){
 				return null;

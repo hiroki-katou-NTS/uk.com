@@ -186,8 +186,6 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			return Optional.empty();		
 		}
 		
-		// return new IntegrationOfDaily(workInformation, timeAttendance,
-		// attendanceTime.get());
 		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,
 				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
 				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 

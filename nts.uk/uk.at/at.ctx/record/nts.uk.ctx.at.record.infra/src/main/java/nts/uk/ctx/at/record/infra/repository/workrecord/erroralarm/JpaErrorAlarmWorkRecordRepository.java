@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -36,7 +37,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			+ " AND a.useAtr = 1 AND a.typeAtr IN (0,1)";
 	private static final String SELECT_ERAL_BY_LIST_CODE_ERROR = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId AND s.typeAtr = 0";
 	private static final String FIND_BY_COMPANY_AND_USEATR = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ";
-
+	private static final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId";
+	
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
 		Optional<KwrmtErAlWorkRecord> entity = this.queryProxy()
@@ -138,14 +140,13 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toConditionDomain(entity)).collect(Collectors.toList());
 	}
 
-	private static final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId";
 	@Override
 	public List<ErrorAlarmWorkRecord> getListErAlByListCode(String companyId, List<String> listCode) {
 		List<ErrorAlarmWorkRecord> datas = new ArrayList<>();
 		if (listCode.isEmpty())
 			return new ArrayList<ErrorAlarmWorkRecord>();
 		
-		CollectionUtil.split(listCode, 1000, subIdList -> {
+		CollectionUtil.split(listCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(SELECT_ERAL_BY_LIST_CODE, KwrmtErAlWorkRecord.class)
 					.setParameter("listCode", subIdList).setParameter("companyId", companyId)
 					.getList(c -> KwrmtErAlWorkRecord.toDomain(c)));
@@ -170,7 +171,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		if (listCode.isEmpty())
 			return new ArrayList<ErrorAlarmWorkRecord>();
 		
-		CollectionUtil.split(listCode, 1000, subIdList -> {
+		CollectionUtil.split(listCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(SELECT_ERAL_BY_LIST_CODE_ERROR, KwrmtErAlWorkRecord.class)
 					.setParameter("listCode", subIdList).setParameter("companyId", companyId)
 					.getList(c -> KwrmtErAlWorkRecord.toDomain(c)));

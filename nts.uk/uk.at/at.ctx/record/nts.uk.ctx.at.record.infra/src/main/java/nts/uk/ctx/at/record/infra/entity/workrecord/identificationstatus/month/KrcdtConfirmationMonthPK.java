@@ -32,6 +32,11 @@ public class KrcdtConfirmationMonthPK implements Serializable{
 	@Column(name = "CLOSURE_DAY")
 	public int closureDay;
 	
+	// fix bug 101936
+	/** 末日とする */
+	@Column(name = "IS_LAST_DAY")
+	public Integer isLastDay;
+	
 	@Column(name = "PROCESS_YM")
 	public int processYM;
 }

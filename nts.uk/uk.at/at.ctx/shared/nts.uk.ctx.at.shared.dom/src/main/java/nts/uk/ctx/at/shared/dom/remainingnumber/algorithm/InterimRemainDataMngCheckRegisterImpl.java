@@ -70,76 +70,20 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
 		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = interimCreateData.createInterimRemainDataMng(dataCreate, comHolidaySetting);
-		List<InterimRemain> interimMngAbsRec = new ArrayList<>();
-		List<InterimAbsMng> useAbsMng = new ArrayList<>();
-		List<InterimRecMng> useRecMng = new ArrayList<>();
-		List<InterimRemain> interimMngBreakDayOff = new ArrayList<>();
-		List<InterimBreakMng> breakMng = new ArrayList<>();
-		List<InterimDayOffMng> dayOffMng = new ArrayList<>();
-		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>();
-		List<InterimRemain> interimSpecial = new ArrayList<>();
-		List<TmpAnnualHolidayMng> annualHolidayData = new ArrayList<>();
-		List<InterimRemain> annualMng = new ArrayList<>();
-		List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
-		List<InterimRemain> resereMng = new ArrayList<>();
-		mapDataOutput.forEach((x,y) -> {
-			//積立年休
-			y.getResereData().ifPresent(z -> {
-				resereLeaveData.add(z);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID().equals(z.getResereId()))
-						.collect(Collectors.toList());
-				for (InterimRemain mngData : lstTmp) {
-					resereMng.add(mngData);
-				}
-				
-			});
-			//年休
-			y.getAnnualHolidayData().ifPresent(z -> {
-				annualHolidayData.add(z);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID().equals(z.getAnnualId()))
-						.collect(Collectors.toList());
-				for (InterimRemain mngData : lstTmp) {
-					annualMng.add(mngData);
-				}
-			});
-			//特別休暇
-			y.getSpecialHolidayData().stream().forEach(a -> {
-				specialHolidayData.add(a);
-				List<InterimRemain> interimMngSpe = y.getRecAbsData().stream()
-						.filter(b -> b.getRemainManaID().equals(a.getSpecialHolidayId()))
-						.collect(Collectors.toList());
-				if(!interimMngSpe.isEmpty()) {
-					interimSpecial.addAll(y.getRecAbsData());
-				}
-			});
-			
-			//休出代休
-			y.getBreakData().ifPresent(z -> {
-				breakMng.add(z);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(a -> z.getBreakMngId().equals(a.getRemainManaID()))
-				.collect(Collectors.toList());
-				interimMngBreakDayOff.addAll(lstTmp);
-			});
-			y.getDayOffData().ifPresent(a -> {
-				dayOffMng.add(a);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(b -> b.getRemainManaID().equals(a.getDayOffManaId()))
-						.collect(Collectors.toList());
-				interimMngBreakDayOff.addAll(lstTmp);
-			});
-			//振出振休
-			y.getRecData().ifPresent(b -> {
-				useRecMng.add(b);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(a -> b.getRecruitmentMngId().equals(a.getRemainManaID()))
-						.collect(Collectors.toList());
-				interimMngAbsRec.addAll(lstTmp);
-			});
-			y.getInterimAbsData().ifPresent(c -> {
-				useAbsMng.add(c);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(a -> c.getAbsenceMngId().equals(a.getRemainManaID()))
-						.collect(Collectors.toList());
-				interimMngAbsRec.addAll(lstTmp);
-			});
-		});
+		InterimEachData eachData = this.interimInfor(mapDataOutput);
+		List<InterimRemain> interimMngAbsRec = eachData.getInterimMngAbsRec();
+		List<InterimAbsMng> useAbsMng = eachData.getUseAbsMng();
+		List<InterimRecMng> useRecMng = eachData.getUseRecMng();
+		List<InterimRemain> interimMngBreakDayOff = eachData.getInterimMngBreakDayOff();
+		List<InterimBreakMng> breakMng = eachData.getBreakMng();
+		List<InterimDayOffMng> dayOffMng = eachData.getDayOffMng();
+		List<InterimSpecialHolidayMng> specialHolidayData = eachData.getSpecialHolidayData();
+		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
+		List<TmpAnnualHolidayMng> annualHolidayData = eachData.getAnnualHolidayData();
+		List<InterimRemain> annualMng = eachData.getAnnualMng();
+		List<TmpResereLeaveMng> resereLeaveData = eachData.getResereLeaveData();
+		List<InterimRemain> resereMng = eachData.getResereMng();
+		
 		//代休チェック区分をチェックする
 		if(inputParam.isChkSubHoliday()) {
 			
@@ -154,7 +98,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					breakMng, 
 					dayOffMng);
 			BreakDayOffRemainMngOfInPeriod remainMng = breakDayOffMngService.getBreakDayOffMngInPeriod(mngParam);
-			if(remainMng.getRemainDays() < 0) {
+			if(!remainMng.getLstError().isEmpty()) {
 				outputData.setChkSubHoliday(true);
 			}
 		}
@@ -171,7 +115,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					interimMngAbsRec,
 					useRecMng);
 			AbsRecRemainMngOfInPeriod remainMng = absRecMngService.getAbsRecMngInPeriod(mngParam);
-			if(remainMng.getRemainDays() < 0) {
+			if(!remainMng.getPError().isEmpty()) {
 				outputData.setChkPause(true);
 			}
 		}
@@ -257,6 +201,105 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		}
 
 		return outputData;
+	}
+	@Override
+	public InterimEachData interimInfor(Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput) {
+		/**
+		 * 振休か振出の暫定残数管理
+		 */
+		List<InterimRemain> interimMngAbsRec = new ArrayList<>();
+		List<InterimAbsMng> useAbsMng = new ArrayList<>();
+		List<InterimRecMng> useRecMng = new ArrayList<>();
+		/**
+		 * 休出か代休の暫定残数管理
+		 */
+		List<InterimRemain> interimMngBreakDayOff = new ArrayList<>();
+		List<InterimBreakMng> breakMng = new ArrayList<>();
+		List<InterimDayOffMng> dayOffMng = new ArrayList<>();
+		/**
+		 * 特別休暇の暫定残数管理
+		 */
+		List<InterimRemain> interimSpecial = new ArrayList<>();
+		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>();
+		/**
+		 * 年休の暫定残数管理
+		 */
+		List<InterimRemain> annualMng = new ArrayList<>();
+		List<TmpAnnualHolidayMng> annualHolidayData = new ArrayList<>();
+		/**
+		 * 積立年休の暫定残数管理
+		 */
+		List<InterimRemain> resereMng = new ArrayList<>();
+		List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
+		mapDataOutput.forEach((x,y) -> {
+			//積立年休
+			y.getResereData().ifPresent(z -> {
+				resereLeaveData.add(z);
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID().equals(z.getResereId()))
+						.collect(Collectors.toList());
+				for (InterimRemain mngData : lstTmp) {
+					resereMng.add(mngData);
+				}
+				
+			});
+			//年休
+			y.getAnnualHolidayData().ifPresent(z -> {
+				annualHolidayData.add(z);
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(w -> w.getRemainManaID().equals(z.getAnnualId()))
+						.collect(Collectors.toList());
+				for (InterimRemain mngData : lstTmp) {
+					annualMng.add(mngData);
+				}
+			});
+			//特別休暇
+			y.getSpecialHolidayData().stream().forEach(a -> {
+				specialHolidayData.add(a);
+				List<InterimRemain> interimMngSpe = y.getRecAbsData().stream()
+						.filter(b -> b.getRemainManaID().equals(a.getSpecialHolidayId()))
+						.collect(Collectors.toList());
+				if(!interimMngSpe.isEmpty()) {
+					interimSpecial.addAll(y.getRecAbsData());
+				}
+			});
+			
+			//休出代休
+			y.getBreakData().ifPresent(z -> {
+				breakMng.add(z);
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(a -> z.getBreakMngId().equals(a.getRemainManaID()))
+				.collect(Collectors.toList());
+				interimMngBreakDayOff.addAll(lstTmp);
+			});
+			y.getDayOffData().ifPresent(a -> {
+				dayOffMng.add(a);
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(b -> b.getRemainManaID().equals(a.getDayOffManaId()))
+						.collect(Collectors.toList());
+				interimMngBreakDayOff.addAll(lstTmp);
+			});
+			//振出振休
+			y.getRecData().ifPresent(b -> {
+				useRecMng.add(b);
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(a -> b.getRecruitmentMngId().equals(a.getRemainManaID()))
+						.collect(Collectors.toList());
+				interimMngAbsRec.addAll(lstTmp);
+			});
+			y.getInterimAbsData().ifPresent(c -> {
+				useAbsMng.add(c);
+				List<InterimRemain> lstTmp = y.getRecAbsData().stream().filter(a -> c.getAbsenceMngId().equals(a.getRemainManaID()))
+						.collect(Collectors.toList());
+				interimMngAbsRec.addAll(lstTmp);
+			});
+		});
+		return new InterimEachData(interimMngAbsRec,
+				useAbsMng,
+				useRecMng,
+				interimMngBreakDayOff,
+				breakMng, dayOffMng,
+				interimSpecial,
+				specialHolidayData,
+				annualMng,
+				annualHolidayData,
+				resereMng,
+				resereLeaveData);
 	}
 
 }

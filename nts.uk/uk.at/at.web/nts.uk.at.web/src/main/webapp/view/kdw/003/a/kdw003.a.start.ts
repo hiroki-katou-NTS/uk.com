@@ -13,6 +13,7 @@ module nts.uk.at.view.kdw003.a {
             if (data.bindDataMap) {
                 screenModel.processMapData(data.data);
                 //screenModel.loadKcp009();
+                nts.uk.ui.block.clear();
             }
             __viewContext.bind(screenModel);
             if (data.bindDataMap) {

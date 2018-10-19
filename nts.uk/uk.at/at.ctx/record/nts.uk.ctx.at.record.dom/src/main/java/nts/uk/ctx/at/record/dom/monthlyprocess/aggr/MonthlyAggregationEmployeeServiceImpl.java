@@ -15,12 +15,7 @@ import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
@@ -30,16 +25,15 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -49,6 +43,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregationEmployeeService {
 
+	/** リポジトリ：就業計算と集計実行ログ */
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	/** ドメインサービス：月別実績を集計する */
 	@Inject
 	private AggregateMonthlyRecordService aggregateMonthlyRecordService;
@@ -65,24 +62,24 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	
 	/** リポジトリ：月別実績の勤怠時間 */
-	@Inject
-	private TimeOfMonthlyRepository timeOfMonthlyRepo;
+//	@Inject
+//	private TimeOfMonthlyRepository timeOfMonthlyRepo;
 //	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;		// 旧版
 	/** アダプタ：承認状態の作成（月次） */
 //	@Inject
 //	private CreateMonthlyApproverAdapter createMonthlyApproverAd;
 	/** リポジトリ：週別実績の勤怠時間 */
-	@Inject
-	private AttendanceTimeOfWeeklyRepository attendanceTimeWeekRepo;
+//	@Inject
+//	private AttendanceTimeOfWeeklyRepository attendanceTimeWeekRepo;
 	/** リポジトリ：月別実績の任意項目 */
-	@Inject
-	private AnyItemOfMonthlyRepository anyItemRepository;
+//	@Inject
+//	private AnyItemOfMonthlyRepository anyItemRepository;
 	/** リポジトリ：管理時間の36協定時間 */
 //	@Inject
 //	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
 	/** 残数系データ */
-	@Inject
-	private RemainMergeRepository remainMergeRepo;
+//	@Inject
+//	private RemainMergeRepository remainMergeRepo;
 	/** エラーメッセージ情報 */
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -120,16 +117,6 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		val aggrStatus = this.aggregate(asyncContext, companyId, employeeId, criteriaDate,
 				empCalAndSumExecLogID, executionType, companySets);
-		
-		// 出力したデータに関連するキー値でストアドプロシージャを実行する
-//		for (val aggrPeriod : aggrStatus.getOutAggrPeriod()){
-//			this.storedProcedureProcess.monthlyProcessing(
-//					companyId,
-//					employeeId,
-//					aggrPeriod.getYearMonth(),
-//					aggrPeriod.getClosureId(),
-//					aggrPeriod.getClosureDate());
-//		}
 		
 		return aggrStatus.getState();
 	}
@@ -194,10 +181,23 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 			
 			// 中断依頼が出されているかチェックする
-			if (asyncContext.hasBeenRequestedToCancel()) {
-				//asyncContext.finishedAsCancelled();
+//			if (asyncContext.hasBeenRequestedToCancel()) {
+//				status.setState(ProcessState.INTERRUPTION);
+//				return status;
+//			}
+			
+			// 「就業計算と集計実行ログ」を取得し、実行状況を確認する
+			val exeLogOpt = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+			if (!exeLogOpt.isPresent()){
 				status.setState(ProcessState.INTERRUPTION);
 				return status;
+			}
+			if (exeLogOpt.get().getExecutionStatus().isPresent()){
+				val executionStatus = exeLogOpt.get().getExecutionStatus().get();
+				if (executionStatus == ExeStateOfCalAndSum.START_INTERRUPTION){
+					status.setState(ProcessState.INTERRUPTION);
+					return status;
+				}
 			}
 			
 			// 処理する期間が締められているかチェックする
@@ -214,7 +214,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			if (executionType == ExecutionType.RERUN){
 				
 				// 編集状態を削除
-				this.deleteEditState(employeeId, yearMonth, closureId, closureDate);
+				this.editStateRepo.remove(employeeId, yearMonth, closureId, closureDate);
 			}
 			
 			// 月別実績を集計する　（アルゴリズム）
@@ -243,55 +243,6 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			// 前回集計結果の退避
 			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
 			
-			// 計算結果と同月データ・締めID違い かつ 期間重複データの削除
-			val timeOlds = this.timeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : timeOlds){
-				if (!oldData.getAttendanceTime().isPresent()) continue;
-				val oldClosureId = oldData.getClosureId();
-				val oldClosureDate = oldData.getClosureDate();
-				val oldAttendanceTime = oldData.getAttendanceTime().get();
-				
-				MonthMergeKey oldDomainsKey = new MonthMergeKey();
-				oldDomainsKey.setEmployeeId(employeeId);
-				oldDomainsKey.setYearMonth(yearMonth);
-				oldDomainsKey.setClosureId(oldClosureId);
-				oldDomainsKey.setClosureDate(oldClosureDate);
-				
-				if (!this.periodCompareEx(oldAttendanceTime.getDatePeriod(), datePeriod)) continue;
-				boolean isTarget = false;
-				if (oldClosureId.value != closureId.value) isTarget = true;
-				if (oldClosureDate.getClosureDay().v() != closureDate.getClosureDay().v()) isTarget = true;
-				if (oldClosureDate.getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
-				if (!isTarget) continue;
-				
-				this.timeOfMonthlyRepo.remove(employeeId, yearMonth, oldClosureId, oldClosureDate);
-				
-				if (this.attendanceTimeWeekRepo.findByClosure(
-						employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
-					this.attendanceTimeWeekRepo.removeByClosure(
-							employeeId, yearMonth, oldClosureId, oldClosureDate);
-				}
-				
-				if (this.anyItemRepository.findByMonthlyAndClosure(
-						employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
-					this.anyItemRepository.removeByMonthlyAndClosure(
-							employeeId, yearMonth, oldClosureId, oldClosureDate);
-				}
-				
-				if (this.remainMergeRepo.find(oldDomainsKey).isPresent()){
-					this.remainMergeRepo.remove(oldDomainsKey);
-				}
-			}
-			
-			// 計算結果と同月・同締めの週次データのうち、不要になるデータを削除する
-			int maxWeekNo = value.getMaxWeekNo();
-			val oldCurrentWeeks = this.attendanceTimeWeekRepo.findByClosure(
-					employeeId, yearMonth, closureId, closureDate);
-			for (val oldWeek : oldCurrentWeeks){
-				if (oldWeek.getWeekNo() > maxWeekNo) this.attendanceTimeWeekRepo.remove(
-						employeeId, yearMonth, closureId, closureDate, oldWeek.getWeekNo());
-			}
-			
 			// 月別実績(WORK)を登録する
 			this.monthService.merge(Arrays.asList(value.getIntegration()), datePeriod.end());
 			
@@ -300,20 +251,6 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return status;
-	}
-	
-	/**
-	 * 編集状態を削除
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日
-	 */
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	private void deleteEditState(
-			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
-		
-		this.editStateRepo.remove(employeeId, yearMonth, closureId, closureDate);
 	}
 	
 	/**

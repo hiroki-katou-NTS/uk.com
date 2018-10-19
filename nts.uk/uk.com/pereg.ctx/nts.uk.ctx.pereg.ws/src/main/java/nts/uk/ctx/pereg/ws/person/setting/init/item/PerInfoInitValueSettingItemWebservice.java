@@ -24,9 +24,9 @@ public class PerInfoInitValueSettingItemWebservice extends WebService {
 	private ReferenceHistoryFinder refHistFinder;
 
 	@POST
-	@Path("find/{settingId}/{perInfoCtgId}")
-	public List<PerInfoInitValueSettingItemDto> getAllItem(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId) {
-		return this.finder.getAllItem(settingId, perInfoCtgId);
+	@Path("find/{settingId}/{perInfoCtgId}/{baseDate}")
+	public List<PerInfoInitValueSettingItemDto> getAllItem(@PathParam("settingId") String settingId, @PathParam("perInfoCtgId") String perInfoCtgId, @PathParam("baseDate") String baseDate) {
+		return this.finder.getAllItem(settingId, perInfoCtgId, baseDate);
 	}
 	
 	@POST

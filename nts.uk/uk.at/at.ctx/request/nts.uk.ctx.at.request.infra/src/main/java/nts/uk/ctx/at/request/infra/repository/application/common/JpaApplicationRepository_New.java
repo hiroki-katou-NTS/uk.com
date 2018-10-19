@@ -2,12 +2,14 @@ package nts.uk.ctx.at.request.infra.repository.application.common;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -93,14 +95,20 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.stateReflectionReal IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
 	
-	private String SELECT_BY_REFLECT = SELECT_BY_SID_PERIOD_APPTYPE + " OR c.stateReflection IN :stateReflection";
+	private String SELECT_BY_REFLECT = "SELECT c FROM KrqdtApplication_New c "
+			+ " WHERE c.employeeID = :employeeID"
+			+ " AND c.appDate >= :startDate"
+			+ " AND c.appDate <= :endDate"
+			+ " AND c.appType IN :appTypes"
+			+ " AND (c.stateReflectionReal IN :stateReflectionReals"			
+			+ " OR c.stateReflection IN :stateReflection)";
 	
-	private String SELECT_BY_SID_LISTDATE_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
+	private static final String SELECT_BY_SID_LISTDATE_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
 			+ " WHERE c.employeeID = :employeeID"
 			+ " AND c.appDate IN :dates"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals"
-			+ " AND c.stateReflectionReal IN :stateReflectionReals"
 			+ " AND c.appType IN :appTypes";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -211,11 +219,14 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	@Override
 	public List<Application_New> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<Application_New> data = this.queryProxy().query(SELECT_APP_BY_SIDS, KrqdtApplication_New.class)
-				.setParameter("employeeID", employeeID)
+		List<Application_New> data = new ArrayList<>();
+		CollectionUtil.split(employeeID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			data.addAll(this.queryProxy().query(SELECT_APP_BY_SIDS, KrqdtApplication_New.class)
+				.setParameter("employeeID", subList)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomain()));
+		});
 		return data;
 	}
 	
@@ -252,23 +263,33 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(listReflecInfor.size()==0) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
-			.setParameter("companyID", companyID)
-			.setParameter("employeeID", employeeID)
-			.setParameter("startDate", startDate)
-			.setParameter("endDate", endDate)
-			.setParameter("listReflecInfor", listReflecInfor)
-			.getList(x -> x.toDomain());
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(listReflecInfor, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+					.setParameter("companyID", companyID)
+					.setParameter("employeeID", employeeID)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
+					.setParameter("listReflecInfor", subList)
+					.getList(x -> x.toDomain()));
+		});
+		resultList.sort(Comparator.comparing(Application_New::getPrePostAtr));
+		return resultList;
 	}
 	@Override
 	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
 		if(CollectionUtil.isEmpty(listAppID)){
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
-				.setParameter("listAppID", listAppID)
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(listAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+				.setParameter("listAppID", subList)
 				.setParameter("companyID", companyID)
-				.getList(x -> x.toDomain());
+				.getList(x -> x.toDomain()));
+		});
+		resultList.sort(Comparator.comparing(Application_New::getAppDate));
+		return resultList;
 	}
 	@Override
 	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
@@ -283,13 +304,19 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	@Override
 	public List<Application_New> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
 			List<Integer> appType) {
-		return this.queryProxy().query(SELECT_BY_SID_PERIOD_APPTYPE, KrqdtApplication_New.class)
-				.setParameter("employeeID", sid)
-				.setParameter("startDate", dateData.start())
-				.setParameter("endDate", dateData.end())
-				.setParameter("stateReflectionReals", reflect)
-				.setParameter("appTypes", appType)
-				.getList(x -> x.toDomain());
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(reflect, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstReflect -> {
+			CollectionUtil.split(appType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAppType -> {
+				resultList.addAll(this.queryProxy().query(SELECT_BY_SID_PERIOD_APPTYPE, KrqdtApplication_New.class)
+									  .setParameter("employeeID", sid)
+									  .setParameter("startDate", dateData.start())
+									  .setParameter("endDate", dateData.end())
+									  .setParameter("stateReflectionReals", lstReflect)
+									  .setParameter("appTypes", lstAppType)
+									  .getList(x -> x.toDomain()));
+			});
+		});
+		return resultList;
 	}
 	/**
 	 * @author hoatt
@@ -308,7 +335,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			return new ArrayList<>();
 		}
 		List<KrqdtApplication_New> resultList = new ArrayList<>();
-		CollectionUtil.split(lstSID, 1000, subList -> {
+		CollectionUtil.split(lstSID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_SID, KrqdtApplication_New.class)
 					.setParameter("companyID", companyId)
 					.setParameter("lstSID", subList)
@@ -335,7 +362,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			return new ArrayList<>();
 		}
 		List<KrqdtApplication_New> resultList = new ArrayList<>();
-		CollectionUtil.split(lstSID, 1000, subList -> {
+		CollectionUtil.split(lstSID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_APPLICANT, KrqdtApplication_New.class)
 					.setParameter("companyID", companyId)
 					.setParameter("lstSID", subList)
@@ -351,36 +378,61 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(lstRef.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(FIND_BY_REF_PERIOD_TYPE, KrqdtApplication_New.class)
-				.setParameter("companyID", companyId)
-				.setParameter("employeeID", employeeID)
-				.setParameter("prePostAtr", prePostAtr)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
-				.setParameter("appType", appType)
-				.setParameter("lstRef", lstRef)
-				.getList(c -> c.toDomain());
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(lstRef, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_REF_PERIOD_TYPE, KrqdtApplication_New.class)
+								  .setParameter("companyID", companyId)
+								  .setParameter("employeeID", employeeID)
+								  .setParameter("prePostAtr", prePostAtr)
+								  .setParameter("startDate", startDate)
+								  .setParameter("endDate", endDate)
+								  .setParameter("appType", appType)
+								  .setParameter("lstRef", subList)
+								  .getList(c -> c.toDomain()));
+		});
+		resultList.sort((o1, o2) -> {
+			int tmp = o1.getAppType().value - o2.getAppType().value;
+			if (tmp != 0) return tmp;
+			return o2.getInputDate().compareTo(o1.getInputDate()); // DESC
+		});
+		return resultList;
 	}
 	@Override
 	public List<Application_New> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
 			List<Integer> scheStatus, List<Integer> appType) {
-		return this.queryProxy().query(SELECT_BY_REFLECT, KrqdtApplication_New.class)
-				.setParameter("employeeID", sid)
-				.setParameter("startDate", dateData.start())
-				.setParameter("endDate", dateData.end())
-				.setParameter("stateReflectionReals", recordStatus)
-				.setParameter("stateReflection", scheStatus)
-				.setParameter("appTypes", appType)
-				.getList(x -> x.toDomain());
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(recordStatus, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstRefReal -> {
+			CollectionUtil.split(scheStatus, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstRef -> {
+				CollectionUtil.split(appType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstApp -> {
+					resultList.addAll(this.queryProxy().query(SELECT_BY_REFLECT, KrqdtApplication_New.class)
+										  .setParameter("employeeID", sid)
+										  .setParameter("startDate", dateData.start())
+										  .setParameter("endDate", dateData.end())
+										  .setParameter("stateReflectionReals", lstRefReal)
+										  .setParameter("stateReflection", lstRef)
+										  .setParameter("appTypes", lstApp)
+										  .getList(x -> x.toDomain()));
+				});
+			});
+		});
+		return resultList;
 	}
 	@Override
 	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
 			List<Integer> appType) {
-		return this.queryProxy().query(SELECT_BY_SID_LISTDATE_APPTYPE, KrqdtApplication_New.class)
-				.setParameter("employeeID", sid)
-				.setParameter("dates", dateData)
-				.setParameter("stateReflectionReals", reflect)
-				.setParameter("appTypes", appType)
-				.getList(x -> x.toDomain());
+		List<Application_New> resultList = new ArrayList<>();
+		CollectionUtil.split(dateData, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
+			CollectionUtil.split(reflect, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstRef -> {
+				CollectionUtil.split(appType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstApp -> {
+					resultList.addAll(this.queryProxy().query(SELECT_BY_SID_LISTDATE_APPTYPE, KrqdtApplication_New.class)
+										  .setParameter("employeeID", sid)
+										  .setParameter("dates", lstDate)
+										  .setParameter("stateReflectionReals", lstRef)
+										  .setParameter("appTypes", lstApp)
+										  .getList(x -> x.toDomain()));
+				});
+			});
+		});
+		return resultList;
 	}
 }

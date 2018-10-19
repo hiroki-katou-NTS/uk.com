@@ -12,6 +12,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable("");
         endTime: KnockoutObservable<string> = ko.observable("");
+        endTimeTemp : KnockoutObservable<string> = ko.observable("");
         elapseTime: kibanTimer = new kibanTimer('elapseTime', 100);
         empCalAndSumExecLogID: KnockoutObservable<string> = ko.observable("");
 
@@ -171,8 +172,10 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             var self = this;
             nts.uk.request.asyncTask.requestToCancel(self.taskId());
             self.enableCancelTask(false);
-            service.updateLogState(self.empCalAndSumExecLogID());
-//            self.elapseTime.end();
+            service.updateLogState(self.empCalAndSumExecLogID()).done(result =>{
+               self.endTimeTemp(result); 
+               self.elapseTime.end(); 
+            });
         }
 
         closeDialog(): void {
@@ -219,12 +222,23 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
 
                         if (!info.pending && !info.running) {
+                            
+                            let stopped = 0;
+                                if(info.status === "CANCELLED"){
+                                    self.endTime(self.endTimeTemp());
+                                    stopped = 1;
+                                } else {
+                                   // Get EndTime from server, fallback to client
+                                    self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString); 
+                                }
+                            
                             self.isComplete(true);
                             self.executionContents(self.contents);
                             self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
 
-                            // Get EndTime from server, fallback to client
-                            self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
+                            // End count time
+                            self.elapseTime.end();
+                            
                             //                            if (nts.uk.text.isNullOrEmpty(endTime))
                             //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
                             //                            self.endTime(endTime);
@@ -280,14 +294,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // Get Log data
                             //self.getLogData();
                             self.enableCancelTask(false);
-                            
-                            let stopped = 0;
-                                if(info.status === "CANCELLED"){
-                                    self.endTime(moment().format("YYYY/MM/DD HH:mm:ss"));
-                                    stopped = 1;
-                                }
-                            // End count time
-                            self.elapseTime.end();
                             
                             if (self.endTime() != null && self.endTime() != undefined && self.endTime() != "") {
                                 

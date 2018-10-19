@@ -38,7 +38,7 @@ module nts.uk.com.view.ccg.share.ccg {
             showAllClosure: boolean; // 全締め表示
             showPeriod: boolean; // 対象期間利用
             showPeriodYM: boolean; // 対象期間精度
-            maxPeriodRange: string; // 最長期間
+            maxPeriodRange: string; // 最長期間 
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
@@ -76,6 +76,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isInDialog: boolean;
             isApplySearchDone: boolean = true;
             hasShownErrorDialog: boolean = false;
+            isFocusAdvancedSearchTab: KnockoutObservable<boolean>;
 
             // tabs
             tabs: KnockoutObservableArray<any>;
@@ -153,6 +154,7 @@ module nts.uk.com.view.ccg.share.ccg {
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
             ccg001Tabindex: number;
+            errors: any;
 
             /**
              * Init screen model
@@ -197,6 +199,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenJoptitleList = ko.observable(false);
                 self.isOpenWorkplaceList = ko.observable(false);
                 self.isOpenWorkTypeList = ko.observable(false);
+                self.isFocusAdvancedSearchTab = ko.observable(false);
 
                 // search reference date & period
                 self.acquiredBaseDate = ko.observable('');
@@ -234,10 +237,14 @@ module nts.uk.com.view.ccg.share.ccg {
                     // trigger computing when base date or period changed
                     self.inputBaseDate();
                     self.inputPeriod();
+                    self.retirePeriod();
                     return !($('#inp_baseDate').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsDateRangeComponent').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsStartDate input').ntsError('hasError') ||
-                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError'));
+                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsEndDate input').ntsError('hasError'));
                 });
                 self.isValidEntryDateSearch = ko.computed(() => {
                     self.entryDateTab3();
@@ -266,6 +273,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 self.selectedTab.subscribe(vl => {
                     if (vl == 'tab-2' && !self.tab2HasLoaded) {
+                        self.isFocusAdvancedSearchTab(true);
                         self.reloadAdvanceSearchTab();
                     }
                 });
@@ -648,6 +656,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.systemType = _.isNil(options.systemType) ? ConfigEnumSystemType.PERSONAL_INFORMATION : options.systemType;
                 self.showQuickSearchTab = _.isNil(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
                 self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? true : options.showAdvancedSearchTab;
+              
                 // showBaseDate and showPeriod can not hide at the same time
                 const isBaseDateAndPeriodHidden = !options.showBaseDate && !options.showPeriod;
                 self.showBaseDate = _.isNil(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
@@ -882,6 +891,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 if (self.isShow()) {
                     $('#component-ccg001').toggle('slide', () => {
+                        self.errors = $('#component-ccg001 .error').children();
+                        self.errors.ntsError('clear');
                         $('#component-ccg001').css('display', '');
                         $('#component-ccg001').css('visibility', 'hidden');
                     });
@@ -895,15 +906,32 @@ module nts.uk.com.view.ccg.share.ccg {
             public showComponent(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                if (self.isFirstTime) {
+                self.loadKcp005();
+                // init subscribers
+                self.initSubscribers();
+                self.setBaseDateAndPeriod().done(() => {
+                    // Comparing accquired base date to current system date.
+                    if (self.isFutureDate(moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT))) {
+                        // If base date is future date, check future reference permission
+                        self.getFuturePermit().done(hasPermission => {
+                            if (hasPermission) {
+                                self.queryParam.baseDate = self.acquiredBaseDate();
+                            } else {
+                                self.inputBaseDate(moment.utc().toISOString());
+                                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
+                            }
+                        })
+                    }else {
+                        self.queryParam.baseDate = self.acquiredBaseDate();
+                    }
+                })
+                
+                if (self.isFirstTime && self.isFocusAdvancedSearchTab()) {
                     // Apply data search & load Kcp components
                     self.synchronizeDate();
-                    self.toggleSlide().done(() => $.when(self.applyDataSearch(), self.loadKcp005()).always(() => {
+                    $.when(self.applyDataSearch()).done(() => self.toggleSlide().always(() => {
                         // Set acquired base date to status period end date
                         self.retirePeriod(new DateRangePickerModel('1900/01/01', self.queryParam.baseDate));
-
-                        // init subscribers
-                        self.initSubscribers();
 
                         // update flag isFirstTime
                         self.isFirstTime = false;
@@ -945,6 +973,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (!isSameDate) {
                         self.inputPeriod(new DateRangePickerModel(self.periodStartOfParentScreen(), self.periodEndOfParentScreen()));
                     }
+                }
+
+                // recheck errors
+                if (!_.isEmpty(self.errors)) {
+                    self.errors.ntsError('check');
                 }
             }
 
@@ -1155,7 +1188,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private loadAdvancedSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                if ((!self.isTab2Lazy || !self.isFirstTime) && self.showAdvancedSearchTab) {
+                if ((!self.isTab2Lazy || self.isFirstTime) && self.showAdvancedSearchTab) {
                     self.reloadAdvanceSearchTab().done(() => dfd.resolve());
                 } else {
                     dfd.resolve();
@@ -2472,8 +2505,11 @@ interface JQuery {
 
 (function($: any) {
     $.fn.ntsGroupComponent = function(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void> {
-
-        // Return.
-        return new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option).done(() => nts.uk.ui.block.clear());
+        let dfd = $.Deferred<void>();
+        new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option).done(() => {
+            nts.uk.ui.block.clear();
+            dfd.resolve();
+        });
+        return dfd.promise();
     }
 } (jQuery));

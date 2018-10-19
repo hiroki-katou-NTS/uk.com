@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.infra.repository.scherec.monthlyattendanceitem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
@@ -31,6 +33,13 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 
 	private static final String SELECT_BY_KEY_ATT_ITEM_ID = SELECT_BY_KEY 
 			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID IN :itemMonthlyIDs";
+
+	private static final String SELECT_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
+			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
+			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID  IN  :itemMonthlyIDs"
+			+ " AND c.toUse = :toUse "
+			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
 
 //	
 //	private final String SELECT_BY_AUTHORITY_MONTHLY_ID_AND_TO_USE = "SELECT c FROM KrcstDisplayAndInputMonthly c"
@@ -116,19 +125,12 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 			this.commandProxy().insert(krcstDisplayAndInputMonthly);
 		} 
 	}
-
-	private final String SELECT_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
-			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
-			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
-			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID  IN  :itemMonthlyIDs"
-			+ " AND c.toUse = :toUse "
-			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
 	
 	@Override
 	public Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByUse(String companyID, String authorityMonthlyId,
 			List<Integer> itemMonthlyIDs, int toUse) {
 		List<DisplayAndInputMonthly> data = new  ArrayList<>();
-		CollectionUtil.split(itemMonthlyIDs, 1000, subIdList -> {
+		CollectionUtil.split(itemMonthlyIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			data.addAll(
 					this.queryProxy().query(SELECT_BY_AUTHORITY_MONTHLY_LIST_ID,KrcstDisplayAndInputMonthly.class)
 					.setParameter("companyID", companyID)
@@ -140,6 +142,7 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 		});
 		if(CollectionUtil.isEmpty(data))
 			return Optional.empty();
+		data.sort(Comparator.comparing(DisplayAndInputMonthly::getItemMonthlyId));
 		MonthlyItemControlByAuthority monthlyItemControlByAuthority = new MonthlyItemControlByAuthority(
 				companyID,authorityMonthlyId,data
 				);
@@ -174,15 +177,19 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 			String authorityMonthlyId, List<Integer> attendanceItemIds) {
 		List<DisplayAndInputMonthly> data = new ArrayList<>();
 		if (attendanceItemIds == null || attendanceItemIds.isEmpty()) {
-			data = this.queryProxy().query(SELECT_BY_KEY, KrcstDisplayAndInputMonthly.class)
+			data.addAll(this.queryProxy().query(SELECT_BY_KEY, KrcstDisplayAndInputMonthly.class)
 					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
 					.setParameter("toUse", NotUseAtr.USE.value)
-					.getList(c -> c.toDomain());
+					.getList(c -> c.toDomain()));
 		} else {
-			data = this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KrcstDisplayAndInputMonthly.class)
-					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
-					.setParameter("toUse", NotUseAtr.USE.value).setParameter("itemMonthlyIDs", attendanceItemIds)
-					.getList(c -> c.toDomain());
+			CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				data.addAll(this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KrcstDisplayAndInputMonthly.class)
+					.setParameter("companyID", companyID)
+					.setParameter("authorityMonthlyID", authorityMonthlyId)
+					.setParameter("toUse", NotUseAtr.USE.value)
+					.setParameter("itemMonthlyIDs", subList)
+					.getList(c -> c.toDomain()));
+			});
 		}
 		if (data.isEmpty())
 			return Optional.empty();

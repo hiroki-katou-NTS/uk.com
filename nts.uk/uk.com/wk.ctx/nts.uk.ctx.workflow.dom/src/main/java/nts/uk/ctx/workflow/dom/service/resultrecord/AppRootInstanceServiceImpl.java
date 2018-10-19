@@ -131,7 +131,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 												&& c.getDatePeriod().start().beforeOrEquals(cd)).findFirst().orElse(null);
 				
 				if(appRootInstance==null){
-					throw new BusinessException("Msg_1430", cei);
+					throw new BusinessException("Msg_1430", "承認者");
 				}
 				// 対象日の就業実績確認状態を取得する
 				AppRootConfirm appRootConfirm = arcs.stream().filter(c -> c.getEmployeeID().equals(cei) && c.getRecordDate().equals(cd)).findFirst()
@@ -167,7 +167,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// INPUT．承認ルート中間データ一覧の先頭から最後へループする
 		for(AppRootInstance appRootInstance : appRootInstanceLst){
 			// ループ中の「承認ルート中間データ」．履歴期間．開始日とINPUT．年月日を比較する
-			if(appRootInstance.getDatePeriod().start().beforeOrEquals(date)){
+			if(appRootInstance.getDatePeriod().start().beforeOrEquals(date)&&appRootInstance.getDatePeriod().end().afterOrEquals(date)){
 				// 承認ルートなしフラグ=false
 				noAppRootFlag = false;
 				result = appRootInstance;
@@ -286,7 +286,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		ApproverToApprove approverToApprove = new ApproverToApprove(
 				approvalRootState.getApprovalRecordDate(),
 				approvalRootState.getEmployeeID(),
-				Collections.emptyList());
+				new ArrayList<>());
 		List<String> approverIDLst = new ArrayList<>();
 		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
 		List<ApprovalPhaseState> approvalPhaseStateLst = approvalRootState.getListApprovalPhaseState().stream()

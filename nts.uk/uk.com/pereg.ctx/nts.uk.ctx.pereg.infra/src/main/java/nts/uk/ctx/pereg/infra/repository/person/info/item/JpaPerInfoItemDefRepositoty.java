@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.infra.repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
@@ -59,7 +61,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition");
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition, io.disporder");
 
 	private final static String JOIN_COMMON_TABLE = String.join(" ",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -261,6 +263,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"INNER JOIN PpemtPerInfoItemCm ic ON  i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
 			"WHERE  ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId ");
 	
+	private final static String GET_LIST_ITEM_FOR_CPS002B = String.join(" ",
+			"SELECT distinct i.itemCd",
+			"FROM PpemtPerInfoItem i",
+			"INNER JOIN PpemtPerInfoItemCm ic ON  i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
+			"WHERE  ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId and i.abolitionAtr = 0 ");
+	
 	private final static String SELECT_ITEM_CD_BY_ITEM_CD_QUERY = String.join(" ",
 			"SELECT distinct ic.ppemtPerInfoItemCmPK.itemCd",
 			"FROM PpemtPerInfoItem i INNER JOIN  PpemtPerInfoItemCm ic  ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
@@ -315,6 +323,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND ic.itemType <> 1";
 	
+	private static Comparator<Object[]> SORT_BY_DISPORDER = (o1, o2) -> {
+		return ((int) o1[31]) - ((int) o2[31]); // index 31 for [disporder] 
+	};
 	
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -329,8 +340,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public Map<String, List<Object[]>> getAllPerInfoItemDefByListCategoryId(List<String> lstPerInfoCategoryId,
 			String contractCd) {
-		List<Object[]> lstObj = this.queryProxy().query(SELECT_ALL_ITEM_BY_LIST_CATEGORY_ID_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
+		List<Object[]> lstObj = new ArrayList<>();
+		CollectionUtil.split(lstPerInfoCategoryId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstObj.addAll(this.queryProxy().query(SELECT_ALL_ITEM_BY_LIST_CATEGORY_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", subList).getList());
+		});
+		lstObj.sort(SORT_BY_DISPORDER);
 		
 		// groupBy categoryId 
 		Map<String, List<Object[]>> result = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[27])));
@@ -357,26 +372,32 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd) {
-		return this.queryProxy().query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList(i -> {
+		List<Object[]> entities = new ArrayList<>();
+		CollectionUtil.split(listItemDefId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", subList).getList());
+		});
+		entities.sort(SORT_BY_DISPORDER);
+		return entities.stream().map(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity1(i, items);
-				});
+				}).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<PersonInfoItemDefinition> getPerInfoItemDefByListIdv2(List<String> listItemDefId, String contractCd) {
-		List<PersonInfoItemDefinition> result = this.queryProxy()
-				.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY_2, Object[].class).setParameter("contractCd", contractCd)
-				.setParameter("listItemDefId", listItemDefId).getList(i -> {
+		List<Object[]> entities = new ArrayList<>();
+		CollectionUtil.split(listItemDefId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy()
+					.query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY_2, Object[].class).setParameter("contractCd", contractCd)
+					.setParameter("listItemDefId", subList).getList());
+		});
+		if (CollectionUtil.isEmpty(entities)) return Collections.emptyList();
+		entities.sort(SORT_BY_DISPORDER);
+		return entities.stream().map(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity1(i, items);
-				});
-		if (!CollectionUtil.isEmpty(result)) {
-			return result;
-		} else {
-			return Collections.emptyList();
-		}
+				}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -468,9 +489,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public void removePerInfoItemDef(List<String> perInfoCtgIds, String categoryCd, String contractCd,
 			String itemCode) {
-		List<PpemtPerInfoItem> listItem = this.queryProxy()
-				.query(SELECT_ITEMS_BY_LIST_CTG_ID_QUERY, PpemtPerInfoItem.class).setParameter("itemCd", itemCode)
-				.setParameter("perInfoCtgIds", perInfoCtgIds).getList();
+		List<PpemtPerInfoItem> listItem = new ArrayList<>();
+		CollectionUtil.split(perInfoCtgIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listItem.addAll(this.queryProxy().query(SELECT_ITEMS_BY_LIST_CTG_ID_QUERY, PpemtPerInfoItem.class)
+					.setParameter("itemCd", itemCode)
+					.setParameter("perInfoCtgIds", subList)
+					.getList());
+		});
 		this.commandProxy().removeAll(listItem);
 		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd, categoryCd, itemCode);
 		this.commandProxy().remove(PpemtPerInfoItemCm.class, perInfoItemCmPK);
@@ -825,9 +850,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public List<PersonInfoItemDefinitionSimple> getRequiredItemFromCtgCdLst(String contractCd, String companyId,
 			List<String> categoryCds) {
-		return this.queryProxy().query(SEL_REQUIRED_ITEM_BY_CTG, Object[].class).setParameter("contractCd", contractCd)
-				.setParameter("companyId", companyId).setParameter("categoryCds", categoryCds).getList().stream()
-				.map(x -> toSimpleItem(x)).collect(Collectors.toList());
+		List<PersonInfoItemDefinitionSimple> results = new ArrayList<>();
+		CollectionUtil.split(categoryCds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SEL_REQUIRED_ITEM_BY_CTG, Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("companyId", companyId).setParameter("categoryCds", subList).getList().stream()
+				.map(x -> toSimpleItem(x)).collect(Collectors.toList()));
+		});
+		return results;
 	}
 
 	// Sonnlb Code end
@@ -897,9 +926,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId) {
-
-		return this.queryProxy().query(SEL_ITEM_USED, Object[].class).setParameter("perInfoCtgId", ctgId)
-				.getList(i -> toDomain(i));
+		List<PersonInfoItemDefinition> results = new ArrayList<>();
+		CollectionUtil.split(ctgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SEL_ITEM_USED, Object[].class).setParameter("perInfoCtgId", subList)
+				.getList(i -> toDomain(i)));
+		});
+		return results;
 	}
 
 	@Override
@@ -968,8 +1000,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public List<PersonInfoItemDefinition> getItemLstByListId(List<String> listItemDefId, String contractCd, String companyId, List<String> categoryCodeLst) {
 		List<String> itemCodeAll = new ArrayList<>();
-		List<String> itemCodeChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_ID_QUERY, String.class)
-				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList();
+		List<String> itemCodeChilds = new ArrayList<>(); 
+		CollectionUtil.split(listItemDefId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			itemCodeChilds.addAll(this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_ID_QUERY, String.class)
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", subList).getList());
+		});
 		if(!itemCodeChilds.isEmpty()) {
 			List<String> itemCodeChildChilds = this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_CD_QUERY, String.class)
 					.setParameter("contractCd", contractCd).setParameter("itemCdLst", itemCodeChilds).getList();
@@ -1002,10 +1037,15 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 
 	public List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst) {
-		List<PersonInfoItemDefinition> itemIdLst = this.queryProxy().query(SEL_ITEM_EVENT, Object[].class)
-				.setParameter("perInfoCtgId", ctgIdLst)
-				.setParameter("itemCd", itemCodeLst)
-				.getList(c -> toDomain(c));
+		List<PersonInfoItemDefinition> itemIdLst = new ArrayList<>();
+		CollectionUtil.split(ctgIdLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ctgIds -> {
+			CollectionUtil.split(itemCodeLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, codes -> {
+				itemIdLst.addAll(this.queryProxy().query(SEL_ITEM_EVENT, Object[].class)
+									.setParameter("perInfoCtgId", ctgIds)
+									.setParameter("itemCd", codes)
+									.getList(c -> toDomain(c)));
+			});
+		});
 		return itemIdLst;
 	}
 	
@@ -1038,14 +1078,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				itemCodeAll.addAll(itemCodeChildChilds);
 		}
 		if (!itemCodeAll.isEmpty()) {
-			return this.queryProxy().query(SELECT_ALL_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
+			List<Object[]> entities = new ArrayList<>();
+			CollectionUtil.split(itemCodeAll, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				entities.addAll(this.queryProxy().query(SELECT_ALL_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
 					.setParameter("contractCd", contractCd)
-					.setParameter("itemCdLst", itemCodeAll)
+					.setParameter("itemCdLst", subList)
 					.setParameter("categoryCd", categoryCd)
-					.setParameter("ctgId", ctgId)	
-					.getList(c -> {
-						return createDomainFromEntity1(c, null);
-					});
+					.setParameter("ctgId", ctgId)
+					.getList());
+			});
+			entities.sort(SORT_BY_DISPORDER);
+			return entities.stream().map(c -> { return createDomainFromEntity1(c, null); }).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
@@ -1082,8 +1125,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	@Override
 	public Map<String, List<PersonInfoItemDefinition>> getByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd) {
-		List<Object[]> lstObj = this.queryProxy().query(SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
+		List<Object[]> lstObj = new ArrayList<>();
+		CollectionUtil.split(lstPerInfoCategoryId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstObj.addAll(this.queryProxy().query(SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", subList).getList());
+		});
+		lstObj.sort(SORT_BY_DISPORDER);
 		
 		// groupBy categoryId 
 		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[31])));
@@ -1113,8 +1160,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			return result;
 		}
 		
-		List<Object[]> lstObj = this.queryProxy().query(SELECT_REQUIRED_ITEM, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", lstPerInfoCategoryId).getList();
+		List<Object[]> lstObj = new ArrayList<>();
+		CollectionUtil.split(lstPerInfoCategoryId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstObj.addAll(this.queryProxy().query(SELECT_REQUIRED_ITEM, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", subList).getList());
+		});
 		
 		// groupBy categoryId 
 		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])));
@@ -1130,6 +1180,45 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				}));
 
 		return result;
+	}
+
+	/**
+	 * Lấy ra danh sách item trong combobox của màn CPS002.B
+	 */
+	@Override
+	public List<PersonInfoItemDefinition> getItemLstByListIdForCPS002B(List<String> listItemDefId, String contractCd,
+			String companyId, List<String> categoryCodeLst) {
+		
+		List<PersonInfoItemDefinition> result = new ArrayList<>();
+		List<String> itemCodeAll = new ArrayList<>();
+		List<String> itemCodeChilds = new ArrayList<>();
+		CollectionUtil.split(listItemDefId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			itemCodeChilds.addAll(this.queryProxy().query(GET_LIST_ITEM_FOR_CPS002B, String.class)
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", subList).getList());
+		});
+		if(!itemCodeChilds.isEmpty()) {
+			List<String> itemCodeChildChilds = new ArrayList<>();
+			CollectionUtil.split(itemCodeChilds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				itemCodeChildChilds.addAll(this.queryProxy().query(SELECT_ITEM_CD_BY_ITEM_CD_QUERY, String.class)
+					.setParameter("contractCd", contractCd).setParameter("itemCdLst", subList).getList());
+			});
+			itemCodeAll.addAll(itemCodeChilds);
+			if(!itemCodeChildChilds.isEmpty()) 
+				itemCodeAll.addAll(itemCodeChildChilds);
+		}
+		if(!itemCodeAll.isEmpty()) {
+			List<PersonInfoItemDefinition> lstItemDf = new ArrayList<>();
+			CollectionUtil.split(categoryCodeLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				lstItemDf.addAll(this.queryProxy().query(SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY, Object[].class)
+					.setParameter("contractCd", contractCd)
+					.setParameter("itemCdLst", itemCodeAll)
+					.setParameter("cid", companyId)
+					.setParameter("ctgLst", subList)
+					.getList(c -> {return createDomainFromEntity1(c, null);}));
+			});
+			return lstItemDf.stream().filter(i -> i.getIsAbolition().value == 0).collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 }
 

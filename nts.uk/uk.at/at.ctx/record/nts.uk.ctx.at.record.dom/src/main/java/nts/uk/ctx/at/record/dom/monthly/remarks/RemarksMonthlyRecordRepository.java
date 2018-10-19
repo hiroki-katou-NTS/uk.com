@@ -3,11 +3,9 @@ package nts.uk.ctx.at.record.dom.monthly.remarks;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface RemarksMonthlyRecordRepository {
 	
@@ -61,22 +59,6 @@ public interface RemarksMonthlyRecordRepository {
 	
 	/**
 	 * 
-	 * @param employeeId
-	 * @param criteriaDate
-	 * @return
-	 */
-	List<RemarksMonthlyRecord> findByDate(String employeeId, GeneralDate criteriaDate);
-
-	/**
-	 * 
-	 * @param employeeId
-	 * @param period
-	 * @return
-	 */
-	List<RemarksMonthlyRecord> findByPeriodIntoEndYmd(String employeeId, DatePeriod period);
-
-	/**
-	 * 
 	 * @param attendanceTimeOfMonthly
 	 */
 	void persistAndUpdate(RemarksMonthlyRecord remarksMonthlyRecord);
@@ -96,4 +78,10 @@ public interface RemarksMonthlyRecordRepository {
 	 * @param yearMonth
 	 */
 	void removeByYearMonth(String employeeId, YearMonth yearMonth);
+
+	Optional<RemarksMonthlyRecord> find(String employeeId, ClosureId closureId, RemarksNo remarksNo,
+			YearMonth yearMonth, ClosureDate closureDate);
+
+	void remove(String employeeId, ClosureId closureId, RemarksNo remarksNo, YearMonth yearMonth,
+			ClosureDate closureDate);
 }

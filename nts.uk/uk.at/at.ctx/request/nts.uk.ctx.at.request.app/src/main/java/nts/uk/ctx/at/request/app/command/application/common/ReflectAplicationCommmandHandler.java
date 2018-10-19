@@ -14,16 +14,20 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfAppForReflect;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ReflectAplicationCommmandHandler extends CommandHandler<List<String>>{
 	@Inject
 	private ApplicationRepository_New repoApp;
-	
+	@Inject
+	private InformationSettingOfAppForReflect appSetting;
 	@Inject
 	private AppReflectManager appReflectManager;
 	@Override
 	protected void handle(CommandHandlerContext<List<String>> context) {
+		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
 		List<String> lstAppID = context.getCommand();
 		for (String appID : lstAppID) {
 			//get list application by list id
@@ -40,7 +44,7 @@ public class ReflectAplicationCommmandHandler extends CommandHandler<List<String
 					|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
 					|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION))
 			{
-				appReflectManager.reflectEmployeeOfApp(application);
+				appReflectManager.reflectEmployeeOfApp(application, reflectSetting);
 			}
 		}
 	}

@@ -38,7 +38,6 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
@@ -278,6 +277,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 					ClosureId.valueOf(closureId), screenDto.getClosureDate().toDomain(), ITEM_ID_ALL,
 					monthlyModifyQueryProcessor).call();
 			
+			// fix bug 
+			if (results.isEmpty()) {
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get());
+				return screenDto;
+			}
+
 			// lay lai employeeID cua nhung nhan vien co du lieu
 			employeeIds = results.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
 			
@@ -365,14 +370,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 			ApprovalProcessingUseSetting approvalProcessingUseSetting = optApprovalProcessingUseSetting.get();
 			if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
 				// アルゴリズム「ログイン社員の承認対象者の取得」を実行する
-				// request list 534
+//				// request list 534
+//				ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter
+//						.getApprovalEmpStatusMonth(AppContexts.user().employeeId(), new YearMonth(yearMonth),
+//								screenDto.getClosureId(), screenDto.getClosureDate().toDomain(),
+//								screenDto.getSelectedActualTime().getEndDate());
+				//Imported（就業）「基準社員の承認対象者」を取得する request list 133
 				ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter
-						.getApprovalEmpStatusMonth(AppContexts.user().employeeId(), new YearMonth(yearMonth),
-								screenDto.getClosureId(), screenDto.getClosureDate().toDomain(),
-								screenDto.getSelectedActualTime().getEndDate());
-
+						.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), 
+								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+				
 				if (approvalRootOfEmloyee == null) {
-					throw new BusinessException("Msg_916");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting);
+					return;
 				}
 
 				// 社員(list)に対応する処理締めを取得する
@@ -383,12 +393,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 				for (String empId : empIds) {
 					Closure closureDataByEmployee = closureService.getClosureDataByEmployee(empId,
 							screenDto.getSelectedActualTime().getEndDate());
-					if (closureDataByEmployee != null) {
+					if (closureDataByEmployee != null  && closureDataByEmployee.getClosureId().value ==  screenDto.getClosureId()) {
 						employeeIds.add(empId);
 					}
 				}
 				if (employeeIds.isEmpty()) {
-					throw new BusinessException("Msg_916");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting);
+					return;
 				}
 
 				// lay thong tin nhan vien theo empID thu duoc
@@ -693,8 +704,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		if(screenDto.getIdentityProcess().getUseMonthSelfCK() == 1){
 			// 月の本人確認を取得する
 			listConfirmationMonth = this.confirmationMonthRepository.findBySomeProperty(listEmployeeIds,
-					yearMonth, screenDto.getClosureDate().getLastDayOfMonth()
-							? new YearMonth(yearMonth).lastDateInMonth() : screenDto.getClosureDate().getClosureDay(),
+					yearMonth, screenDto.getClosureDate().getClosureDay(), screenDto.getClosureDate().getLastDayOfMonth(),
 					closureId);
 		}
 		
@@ -1009,4 +1019,53 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private String mergeString(String... x) {
 		return StringUtils.join(x);
 	}
+	private void createFixedHeader(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId,
+			ApprovalProcessingUseSetting approvalProcessingUseSetting) {
+		/**
+		 * Create Grid Sheet DTO
+		 */
+
+		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
+		MonthlyPerformanceParam param = screenDto.getParam();
+		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+//		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+//			throw new BusinessException("Msg_1261");
+//		}
+//
+//		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
+//			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());
+//			for (PAttendanceItem attend : c.getDisplayItems()) {
+//				sh.addColumn(mergeString(ADD_CHARACTER, attend.getId().toString()));
+//			}
+//			return sh;
+//		}).collect(Collectors.toList());
+//		displayItem.createSheets(lstSheets);
+
+		List<MPHeaderDto> lstMPHeaderDto = MPHeaderDto.GenerateFixedHeader();
+		
+		//G7 G8 G9 hidden column identitfy, approval, dailyconfirm
+		for (Iterator<MPHeaderDto> iter = lstMPHeaderDto.listIterator(); iter.hasNext(); ) {
+			MPHeaderDto mpHeaderDto = iter.next();
+			if ("identify".equals(mpHeaderDto.getKey())
+					&& screenDto.getIdentityProcess().getUseMonthSelfCK() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+			if ("approval".equals(mpHeaderDto.getKey())
+					&& approvalProcessingUseSetting.getUseMonthApproverConfirm() == false) {
+				iter.remove();
+				continue;
+			}
+			if ("dailyconfirm".equals(mpHeaderDto.getKey())
+					&& screenDto.getDailySelfChkDispAtr() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+		}
+		List<MPHeaderDto> lstHeader = new ArrayList<>();
+		lstHeader.addAll(lstMPHeaderDto);
+		displayItem.setLstHeader(lstHeader);
+		// Fixed header
+		screenDto.setLstFixedHeader(lstMPHeaderDto);
+		}
 }

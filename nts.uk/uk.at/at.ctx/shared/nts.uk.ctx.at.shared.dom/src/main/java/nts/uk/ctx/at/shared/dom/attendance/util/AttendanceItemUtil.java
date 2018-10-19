@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
@@ -371,7 +370,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 				correctList(idxField, itemsForIdx, originalIdx,  list);
 
-				ReflectionUtil.setFieldValue(field, attendanceItems, list);
+				setFieldValue(attendanceItems, field, list);
 
 				return;
 			}
@@ -395,9 +394,10 @@ public class AttendanceItemUtil implements ItemConst {
 
 					} else {
 						if(field.getType().isPrimitive() && itemValue.value() == null){
+							ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.valueOrDefault());
 							return;
 						}
-						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
+						setFieldValue(attendanceItems, field, itemValue.value());
 					}
 				}
 				return;
@@ -411,10 +411,14 @@ public class AttendanceItemUtil implements ItemConst {
 
 			setValueEnumField(layout, className, nVal, c.getValue());
 
-			ReflectionUtil.setFieldValue(field, attendanceItems, layout.isOptional() ? Optional.of(nVal) : nVal);
+			setFieldValue(attendanceItems, field, layout.isOptional() ? Optional.of(nVal) : nVal);
 		});
 
 		return attendanceItems;
+	}
+
+	private static synchronized <T> void setFieldValue(T attendanceItems, Field field, T list) {
+		ReflectionUtil.setFieldValue(field, attendanceItems, list);
 	}
 
 	private static <T> void markHaveData(T attendanceItems) {
@@ -573,7 +577,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		String enumText = getEnumTextFromList(items);
 
-		ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
+		setFieldValue(value, getField(layout.enumField(), className),
 				CACHE_HOLDER.getAndCache(enumText, () -> AttendanceItemIdContainer.getEnumValue(enumText)));
 	}
 
@@ -728,7 +732,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					T nIns = ReflectionUtil.newInstance(targetClass);
 
-					ReflectionUtil.setFieldValue(enumField, nIns, e);
+					setFieldValue(nIns, enumField, e);
 
 					list.add(nIns);
 				}
@@ -817,7 +821,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		T newValue = ReflectionUtil.newInstance(targetClass);
 
-		ReflectionUtil.setFieldValue(idxField, newValue, index);
+		setFieldValue(newValue, idxField, index);
 
 		return newValue;
 	}
@@ -1010,7 +1014,8 @@ public class AttendanceItemUtil implements ItemConst {
 		}
 		
 		public <T> T getAndCache(String key, Supplier<T> value) {
-			return cache.getShared(key, value);
+//			return cache.getShared(key, value);
+			return value.get();
 		}
 	}
 
