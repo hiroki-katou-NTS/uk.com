@@ -27,6 +27,7 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeNo the div time no
 	 * @return the div time list by no
 	 */
+	// Pls don't use this method, will be removed
 	List<DivergenceTime> getDivTimeListByNo(String companyId,List<Integer> divTimeNo);
 
 	/**
