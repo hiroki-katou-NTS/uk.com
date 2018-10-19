@@ -577,9 +577,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 					resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE, KshmtWorkType.class)
 										.setParameter("companyId", companyId)
 										.setParameter("oneDayAtrs", lstAll)
-										.setParameter("morningAtr", lstMorning)
+										.setParameter("morningAtr", morning)
 										.setParameter("afternoonAtrs", lstAfternoon)
-										.setParameter("afternoonAtr", lstAfternoon)
+										.setParameter("afternoonAtr", afternoon)
 										.setParameter("morningAtrs", lstMorning)
 										.getList(x -> toDomain(x)));
 				});
