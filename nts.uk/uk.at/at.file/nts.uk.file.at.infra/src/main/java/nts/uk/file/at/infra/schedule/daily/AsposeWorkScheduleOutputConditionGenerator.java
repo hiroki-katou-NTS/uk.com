@@ -1060,7 +1060,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			// ER/AL
-			if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
+			//if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
 				boolean erMark = false, alMark = false;
 				List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
 				// ドメインモデル「勤務実績のエラーアラーム」を取得する
@@ -1089,7 +1089,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				else if (alMark) {
 					detailedDate.errorAlarmMark = WorkScheOutputConstants.AL;
 				}
-			}
+			//}
 			
 			detailedDate.actualValue = new ArrayList<>();
 			lstDisplayItem.stream().forEach(item -> {
