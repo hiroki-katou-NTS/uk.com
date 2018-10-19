@@ -29,9 +29,8 @@ module nts.uk.pr.view.qmm001.a.service {
         let _path = format(paths.getSalGenParaValue, param);
         return ajax("pr", _path);
     }
-    export function addSelectionProcess(param :any): JQueryPromise<any> {
-        let _path = format(paths.addSelectionProcess, param);
-        return ajax("pr", _path);
+    export function addSelectionProcess(data :any): JQueryPromise<any> {
+        return ajax(paths.addSelectionProcess, data);
     }
 
 

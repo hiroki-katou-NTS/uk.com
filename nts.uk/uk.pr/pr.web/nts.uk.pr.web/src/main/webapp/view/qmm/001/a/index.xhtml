@@ -7,6 +7,11 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
 	<ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamTime
+            nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamCharacter
+
+        </com:ValidatorScript>
 		<com:scriptfile set="IGNITE"/>
 		<com:scriptfile path="../../001/share/layout-control-ko-ext.js"/>
 		<com:stylefile path="qmm001.a.style.css"/>
@@ -87,7 +92,7 @@
 							optionsValue: 'historyId',
 							optionsText: 'historyId',
 							value: selectedSalGenParaHistory,
-							enable: self.salGenParaIdent().historyAtr != nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE,
+							enable: salGenParaIdent().historyAtr != nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE,
 							multiple: false,
 							rows: 5,
 							columns: [
@@ -141,10 +146,10 @@
 						</div>
 					</div>
 					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.UPDATE">
-						<div style="margin: 7px 0px 0px 30px" data-bind="if:self.salGenParaIdent().historyAtr == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+						<div style="margin: 7px 0px 0px 30px" data-bind="if:salGenParaIdent().historyAtr == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
 							<span id="A3_12">#{i18n.getText('QMM001_18')}</span>
 						</div>
-						<div data-bind="if:self.salGenParaIdent().historyAtr!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+						<div data-bind="if:salGenParaIdent().historyAtr!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
 							<div style="margin: 10px 0px 0px 29px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
 								<span id="A3_9" data-bind="text: salGenParaHistory().startYearMonth"/>
 								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
@@ -191,10 +196,10 @@
 						   data-bind="ntsNumberEditor: {
 																option : {width: '70px', decimallength: 3},
 																name: '#{i18n.getText('QMM001_22')}',
-																value: '',
+																value: salGenParaValue().numValue,
 																required: true,
 																constraint: 'InsuranceRate',
-																enable: self.selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 																placeHolder: 'クリア',
 																} "/>
 				</div>
@@ -208,12 +213,12 @@
 
 					<input id="A4_8" style="margin-left: 3px" tabindex="11" class="B3_7"
 						   data-bind="ntsNumberEditor: {
-																option : {width: '70px', decimallength: 3},
+																option : {width: '70px'},
 																name: '#{i18n.getText('QMM001_23')}',
-																value: '',
+																value: salGenParaValue().timeValue,
 																required: true,
-																constraint: 'InsuranceRate',
-																enable: self.selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
+																constraint: 'ParamTime',
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 																placeHolder: 'クリア',
 																} "/>
 				</div>
@@ -228,10 +233,10 @@
 						   data-bind="ntsNumberEditor: {
 																option : {width: '70px', decimallength: 3},
 																name: '#{i18n.getText('QMM001_24')}',
-																value: '',
+																value: salGenParaValue().charValue,
 																required: true,
-																constraint: 'InsuranceRate',
-																enable: self.selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
+																constraint: 'ParamCharacter',
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 																placeHolder: 'クリア',
 																} "/>
                 </div>
@@ -248,7 +253,7 @@
 							optionsText: 'name',
 							value: selectedSwitchParaTargetAtr,
 							required: true,
-							enable: self.selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE }"/>
+							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE }"/>
 					<br></br>
 					<span id="A4_15" style="margin-left: 100px;" data-bind="text: salGenParaIdent().explanation"/>
 				</div>
@@ -260,7 +265,7 @@
 						</div>
 						<input  id="A4_17" tabindex="14" class="B3_7"
 							   data-bind="ntsComboBox: {
-							enable: true,
+							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 							optionsValue: 'name',
 							optionsText: 'name',
 							value: valueComboBox,

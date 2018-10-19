@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         selectedSwitchParaTargetAtr: KnockoutObservable<number> = ko.observable(PARATARGETATR.TARGET);
         salGenParaIdent: KnockoutObservable<SalGenParaIdentification> = ko.observable(new SalGenParaIdentification() );
         salGenParaHistory:KnockoutObservable<any> = ko.observable(new SalGenParaYearMonthHistory());
-        salGenParaValue:KnockoutObservable<SalGenParaValue> = ko.observable(null);
+        salGenParaValue:KnockoutObservable<SalGenParaValue> = ko.observable(new SalGenParaValue());
         modeLoadItems: KnockoutObservable<number> = ko.observable(null);
         salGenParamOptions: KnockoutObservable<SalGenParamOptions> = ko.observable(null);
         //data combo box
@@ -44,6 +44,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 self.salGenParaIdent(_.find(self.listItems(), {'paraNo': data}));
             });
             self.selectedSalGenParaHistory.subscribe((data) => {
+                errors.clearAll();
                 if(data == HIS_ID_TEMP)
                     return;
                 self.getSalGenParaValue(data);
@@ -54,6 +55,11 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if(data == SWITCH_EFF_CATEGORY.AVAILABLE){
                     errors.clearAll();
                 }
+
+            });
+            self.salGenParaValue().numValue.subscribe((data) => {
+                let self= this;
+                console.log(data);
 
             });
         }
@@ -232,9 +238,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             service.getSalGenParaValue(hisId).done((item: ISalGenParaValue) => {
                 if(item==null)
                     return;
+                self.salGenParaValue(item);
                 self.selectedSwitchParaAvai(item.availableAtr);
                 self.selectedSwitchParaTargetAtr(item.targetAtr);
-                self.salGenParaValue(item);
                 self.valueComboBox(item.selection);
             }).fail(error => {
                 dialog.alertError(error);
@@ -247,22 +253,21 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 return;
             }
             self.salGenParaValue().selection = self.valueComboBox();
-            let data: any = {
+            let data: SalGenParaValueCommand = {
                 historyId: self.selectedSalGenParaHistory(),
                 selection: self.salGenParaValue().selection,
-                availableAtr: self.salGenParaValue().availableAtr,
+                availableAtr: self.selectedSwitchParaAvai(),
                 numValue: self.salGenParaValue().numValue,
                 charValue: self.salGenParaValue().charValue,
                 timeValue: self.salGenParaValue().timeValue,
-                targetAtr: self.salGenParaValue().targetAtr,
+                targetAtr: self.selectedSwitchParaTargetAtr(),
                 modeScreen: self.modeScreen()
             };
             service.addSelectionProcess(data).done(() => {
                 if (self.modeScreen()== MODESCREEN.ADD){
                     self.initView();
-                } else {
-
                 }
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(error => {
                 dialog.alertError(error);
             });
@@ -535,14 +540,14 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         numValue: KnockoutObservable<string> = ko.observable('');
         charValue: KnockoutObservable<string> = ko.observable('');
 
-        selection: KnockoutObservable<number> = ko.observable(0);
-        availableAtr: KnockoutObservable<number> = ko.observable(0);
-        timeValue: KnockoutObservable<number> = ko.observable(0);
-        targetAtr: KnockoutObservable<number> = ko.observable(0);
+        selection: KnockoutObservable<number> = ko.observable(null);
+        availableAtr: KnockoutObservable<number> = ko.observable(null);
+        timeValue: KnockoutObservable<number> = ko.observable(null);
+        targetAtr: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
-
         }
+
     }
 
     interface ISalGenParamOptions {
