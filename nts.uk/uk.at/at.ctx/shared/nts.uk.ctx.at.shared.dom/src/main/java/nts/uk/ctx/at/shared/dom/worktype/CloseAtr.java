@@ -33,7 +33,27 @@ public enum CloseAtr {
 	/**
 	 * 傷病休業
 	 */
-	INJURY_OR_ILLNESS(4, "Enum_CloseAtr_INJURY_OR_ILLNESS");
+	INJURY_OR_ILLNESS(4, "Enum_CloseAtr_INJURY_OR_ILLNESS"),
+	
+	/**
+	 * 任意休業1
+	 */
+	OPTIONAL_LEAVE_1(5, "Enum_CloseAtr_OPTIONAL_LEAVE_1"),
+	
+	/**
+	 * 任意休業2
+	 */
+	OPTIONAL_LEAVE_2(6, "Enum_CloseAtr_OPTIONAL_LEAVE_2"),
+	
+	/**
+	 * 任意休業3
+	 */
+	OPTIONAL_LEAVE_3(7, "Enum_CloseAtr_OPTIONAL_LEAVE_3"),
+	
+	/**
+	 * 任意休業4
+	 */
+	OPTIONAL_LEAVE_4(8, "Enum_CloseAtr_OPTIONAL_LEAVE_4");
 	
     public final int value;
     public final String nameId;

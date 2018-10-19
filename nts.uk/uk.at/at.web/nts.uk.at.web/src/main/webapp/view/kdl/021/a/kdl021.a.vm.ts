@@ -39,7 +39,7 @@ module kdl021.a.viewmodel {
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
             //the fist item 
             if(!self.isMulti){
-                self.dataSoure.push(new ItemModel("", "選択なし", null));
+                self.dataSoure.push(new ItemModel("", "選択なし", ""));
             }
             //set source
             if (self.posibleItems.length > 0) {

@@ -17,7 +17,7 @@ public class OptionalUtil {
 	 * @return
 	 */
 	public static String convertToString(Object obj){
-		return obj == null ? "" : obj.toString();
+		return obj == null ? null : obj.toString();
 	}
 	/**
 	 * Convert value to int
@@ -63,7 +63,6 @@ public class OptionalUtil {
 	 * @return
 	 */
 	public static DataState createDataState(ItemValue item) {
-		if(item.value() == null) return null;
 		switch (item.saveDataType()) {
 		case STRING:
 			return DataState.createFromStringValue(convertToString(item.value()));

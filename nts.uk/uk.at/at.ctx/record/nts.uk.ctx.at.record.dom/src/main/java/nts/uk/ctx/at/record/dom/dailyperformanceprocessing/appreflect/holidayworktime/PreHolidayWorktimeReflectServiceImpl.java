@@ -71,7 +71,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			ReflectParameter reflectInfo = new ReflectParameter(holidayWorkPara.getEmployeeId(), 
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
-					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode()); 
+					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(),
+					false); 
 			daily = workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, false, daily);
 			
 			//予定開始時刻の反映
