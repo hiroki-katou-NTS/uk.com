@@ -62,6 +62,7 @@
                     <!-- I2_12 -->
                     <input id="A2_12"
                            data-bind="ntsTextEditor: {
+                                                    name:'#[QMM018_10]',
 													option: {width: '250px'},
 													value: targetWageItem,
 													readonly: true,
@@ -83,7 +84,7 @@
 													required: true,
 													enable: true }"></div>
                     <!--A2_15-->
-                    <button data-bind="ntsHelpButton: {image: 'QMM018_3.png', position: 'right top', enable: true }">?</button>
+                    <button tabindex="-1" data-bind="ntsHelpButton: {image: 'QMM018_3.png', position: 'right top', enable: true }">?</button>
                 </div>
                 <div class="valign-center control-group" style="margin-left: 200px;">
                     <!--A2_16-->
@@ -113,6 +114,7 @@
                     <!-- A2_22 -->
                     <input id="A2_22"
                            data-bind="ntsTextEditor: {
+                                                    name:'#[QMM018_10]',
 													option: {width: '250px'},
 													value: targetWorkingDaysItem,
 													readonly: true,

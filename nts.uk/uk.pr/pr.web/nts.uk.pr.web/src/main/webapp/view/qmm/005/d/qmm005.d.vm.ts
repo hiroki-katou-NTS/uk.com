@@ -364,23 +364,6 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             }
 
-           // closeDate: {timeCloseDate: 0, baseMonth: null, baseYear: null, refeDate: null}
-
-          //  detailPrintingMon: {printingMonth: 0}
-
-           // empInsurStanDate: {refeDate: 1, baseMonth: 1}
-
-          //  incomTaxBaseYear: {refeDate: 1, baseYear: 1, baseMonth: 1}
-
-          //  salaryInsuColMon: {monthCollected: 0}
-
-          //  sociInsuStanDate: {baseMonth: 0, baseYear: 1, refeDate: 1}
-
-
-
-
-
-
         }
 
         saveCharacterSetting(): void {
@@ -506,9 +489,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 monthlyPaymentDate: self.monthlyPaymentDate,
                 employeeExtractionReferenceDate: self.employeeExtractionReferenceDate,
                 accountingClosureDate: self.accountingClosureDate,
-                workDay: self.numberOfWorkingDays()
-
-
+                workDay: nts.uk.ntsNumber.getDecimal(self.numberOfWorkingDays(),2)
             }
 
             self.basicSetting = new model.BasicSetting(bassicSettingParam);
@@ -532,9 +513,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             }
 
             self.processInfomation = new model.ProcessInfomation(processInfomationParam);
-            console.log(self.processInfomation);
-            console.log(self.valPayDateSet);
-            
+
             if(self.mode==1){
                 service.registerprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),
@@ -574,10 +553,40 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         pushDaytoList(itemList: KnockoutObservableArray<model.ItemModel>, codeEnum: any): void {
             let items = itemList;
             let code = codeEnum;
-            for(let i=1;i<31;i++){
-                itemList.push(new model.ItemModel(i,i+'日'));
-            }
-            itemList.push(new model.ItemModel(31,'末日'));
+
+             itemList.push(new model.ItemModel(1,getText('Enum_DateSelectClassification_DAY_1')));
+             itemList.push(new model.ItemModel(2,getText('Enum_DateSelectClassification_DAY_2')));
+             itemList.push(new model.ItemModel(3,getText('Enum_DateSelectClassification_DAY_3')));
+             itemList.push(new model.ItemModel(4,getText('Enum_DateSelectClassification_DAY_4')));
+             itemList.push(new model.ItemModel(5,getText('Enum_DateSelectClassification_DAY_5')));
+             itemList.push(new model.ItemModel(6,getText('Enum_DateSelectClassification_DAY_6')));
+             itemList.push(new model.ItemModel(7,getText('Enum_DateSelectClassification_DAY_7')));
+             itemList.push(new model.ItemModel(8,getText('Enum_DateSelectClassification_DAY_8')));
+             itemList.push(new model.ItemModel(9,getText('Enum_DateSelectClassification_DAY_9')));
+             itemList.push(new model.ItemModel(10,getText('Enum_DateSelectClassification_DAY_10')));
+             itemList.push(new model.ItemModel(11,getText('Enum_DateSelectClassification_DAY_11')));
+             itemList.push(new model.ItemModel(12,getText('Enum_DateSelectClassification_DAY_12')));
+             itemList.push(new model.ItemModel(13,getText('Enum_DateSelectClassification_DAY_13')));
+             itemList.push(new model.ItemModel(14,getText('Enum_DateSelectClassification_DAY_14')));
+             itemList.push(new model.ItemModel(15,getText('Enum_DateSelectClassification_DAY_15')));
+             itemList.push(new model.ItemModel(16,getText('Enum_DateSelectClassification_DAY_16')));
+             itemList.push(new model.ItemModel(17,getText('Enum_DateSelectClassification_DAY_17')));
+             itemList.push(new model.ItemModel(18,getText('Enum_DateSelectClassification_DAY_18')));
+             itemList.push(new model.ItemModel(19,getText('Enum_DateSelectClassification_DAY_19')));
+             itemList.push(new model.ItemModel(20,getText('Enum_DateSelectClassification_DAY_20')));
+             itemList.push(new model.ItemModel(21,getText('Enum_DateSelectClassification_DAY_21')));
+             itemList.push(new model.ItemModel(22,getText('Enum_DateSelectClassification_DAY_22')));
+             itemList.push(new model.ItemModel(23,getText('Enum_DateSelectClassification_DAY_23')));
+             itemList.push(new model.ItemModel(24,getText('Enum_DateSelectClassification_DAY_24')));
+             itemList.push(new model.ItemModel(25,getText('Enum_DateSelectClassification_DAY_25')));
+             itemList.push(new model.ItemModel(26,getText('Enum_DateSelectClassification_DAY_26')));
+             itemList.push(new model.ItemModel(27,getText('Enum_DateSelectClassification_DAY_27')));
+             itemList.push(new model.ItemModel(28,getText('Enum_DateSelectClassification_DAY_28')));
+             itemList.push(new model.ItemModel(29,getText('Enum_DateSelectClassification_DAY_29')));
+             itemList.push(new model.ItemModel(30,getText('Enum_DateSelectClassification_DAY_30')));
+
+
+            itemList.push(new model.ItemModel(31,getText('Enum_DateSelectClassification_LAST_DAY_MONTH')));
 
         }
 

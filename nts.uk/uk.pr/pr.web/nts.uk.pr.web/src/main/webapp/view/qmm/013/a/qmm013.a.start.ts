@@ -9,11 +9,13 @@ module nts.uk.pr.view.qmm013.a {
 
             __viewContext.bind(screenModel);
 
-            if(screenModel.checkCreate()) {
-                $("#A3_2").focus();
-            } else {
-                $("#A3_3").focus();
-            }
+            setTimeout(function(){
+                if(screenModel.checkCreate()) {
+                    $("#A3_2").focus();
+                } else {
+                    $("#A3_3").focus();
+                }
+            }, 200);
         });
     });
 }
