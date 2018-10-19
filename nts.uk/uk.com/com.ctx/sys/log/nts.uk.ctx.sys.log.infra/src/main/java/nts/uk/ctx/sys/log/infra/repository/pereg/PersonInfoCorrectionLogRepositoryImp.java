@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.log.infra.repository.pereg;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -35,9 +37,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implements IPersonInfoCorrectionLogRepository {
-
-	/** The Constant MAX_WHERE_IN. */
-	private static final int MAX_WHERE_IN = 1000;
 
 	private static final String SELECT_ALL = String.join(" ", "SELECT pcl, ccl, dhl, iil",
 			"FROM SrcdtPerCorrectionLog pcl", "LEFT JOIN SrcdtCtgCorrectionLog ccl",
@@ -68,20 +67,13 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 
 		List<PersonalInfoCorrectionLogQuery> query = new ArrayList<PersonalInfoCorrectionLogQuery>();
 
-		CollectionUtil.split(operationIds, MAX_WHERE_IN, (subOpts) -> {
+		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subOpts) -> {
 			if (!CollectionUtil.isEmpty(listEmployeeId)) {
-				CollectionUtil.split(listEmployeeId, MAX_WHERE_IN, (subEmpIds) -> {
+				CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subEmpIds) -> {
 					List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
 							.setParameter("operationIDs", subOpts)
-							.setParameter("empIdNULL",
-									subEmpIds == null || subEmpIds.size() == 0 ? "ISNULL" : "ISNOTNULL")
-							.setParameter("employeeIDs",
-									subEmpIds == null || subEmpIds.size() == 0 ? new ArrayList<String>() {
-										private static final long serialVersionUID = 1L;
-										{
-											add("");
-										}
-									} : subEmpIds)
+							.setParameter("empIdNULL", "ISNOTNULL")
+							.setParameter("employeeIDs", subEmpIds)
 							.setParameter("startDate", start).setParameter("endDate", end).getList().stream().map(f -> {
 								SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
 								SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
@@ -97,15 +89,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			} else {
 				List<PersonalInfoCorrectionLogQuery> _query = queryProxy().query(SELECT_ALL, Object[].class)
 						.setParameter("operationIDs", subOpts)
-						.setParameter("empIdNULL",
-								listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
-						.setParameter("employeeIDs",
-								listEmployeeId == null || listEmployeeId.size() == 0 ? new ArrayList<String>() {
-									private static final long serialVersionUID = 1L;
-									{
-										add("");
-									}
-								} : listEmployeeId)
+						.setParameter("empIdNULL", "ISNULL")
+						.setParameter("employeeIDs", Arrays.asList(""))
 						.setParameter("startDate", start).setParameter("endDate", end).getList().stream().map(f -> {
 							SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
 							SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];

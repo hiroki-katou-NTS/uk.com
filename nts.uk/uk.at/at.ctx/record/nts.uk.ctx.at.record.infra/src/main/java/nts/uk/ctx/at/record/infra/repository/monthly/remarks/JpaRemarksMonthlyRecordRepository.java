@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.remarks;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,21 +125,27 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> c.toDomain()));
 		});
+		results.sort(Comparator.comparing(RemarksMonthlyRecord::getEmployeeId));
 		return results;
 	}
 
 	@Override
 	public List<RemarksMonthlyRecord> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
-val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<RemarksMonthlyRecord> results = new ArrayList<>();
+		List<KrcdtRemarksMonthlyRecord> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtRemarksMonthlyRecord.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtRemarksMonthlyRecord.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			return o1.getRecordPK().employeeId.compareTo(o2.getRecordPK().employeeId);
+		});
+		return results.stream().map(item -> item.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override

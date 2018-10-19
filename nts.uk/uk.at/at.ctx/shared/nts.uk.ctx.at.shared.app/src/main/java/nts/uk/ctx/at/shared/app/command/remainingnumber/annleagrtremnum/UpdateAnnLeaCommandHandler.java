@@ -30,8 +30,18 @@ public class UpdateAnnLeaCommandHandler extends CommandHandler<AnnLeaGrantRemnNu
 		if (!remainDataOpt.isPresent()) {
 			throw new RuntimeException("Can not update item which was deleted!");
 		}
-
+		
 		AnnualLeaveGrantRemainingData data = remainDataOpt.get();
+		
+		/**
+		 * update tài liệu 
+		 * #設計修正　2018/10/17　渡邉
+		 * ユニーク制約を追加
+         * EA修正履歴NO.2843
+		 */
+		if (!annLeaRepo.checkConditionUniqueForUpdate(command.getEmployeeId(), command.getAnnLeavID() ,command.getGrantDate()).isEmpty()) {
+			throw new BusinessException("Msg_1456");
+		}
 		
 		data.updateData(command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(),
 				GrantRemainRegisterType.MANUAL.value, command.getGrantDays(), command.getGrantMinutes(),

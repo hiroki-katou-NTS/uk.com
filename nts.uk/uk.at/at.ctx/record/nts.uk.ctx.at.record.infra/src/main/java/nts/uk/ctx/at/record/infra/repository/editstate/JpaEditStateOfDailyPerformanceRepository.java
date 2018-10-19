@@ -78,8 +78,15 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> processingYmds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("processingYmds", processingYmds).executeUpdate();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmployeeIds -> {
+			CollectionUtil.split(processingYmds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ymds -> {
+				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
+					.setParameter("employeeIds", lstEmployeeIds)
+					.setParameter("processingYmds", ymds)
+					.executeUpdate();
+			});
+		});
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -191,9 +198,17 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :items ");
-		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
-				.setParameter("employeeId", employeeId).setParameter("ymd", ymd).setParameter("items", ids)
-				.getList(c -> toDomain(c));
+		
+		List<EditStateOfDailyPerformance> resultList = new ArrayList<>();
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+					.setParameter("employeeId", employeeId)
+					.setParameter("ymd", ymd)
+					.setParameter("items", subList)
+					.getList(c -> toDomain(c)));
+		});
+		
+		return resultList;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -203,21 +218,23 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 //		.setParameter("ymd", ymd).setParameter("itemIdList", itemIdList).executeUpdate();
 //		this.getEntityManager().flush();
 		
-		String listItemIdString = "(";
-		for(int i = 0; i < itemIdList.size(); i++){
-			listItemIdString += "'"+ itemIdList.get(i) +"',";
-		}
-		// remove last , in string and add )
-		listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
-		
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"
-				+ " and ATTENDANCE_ITEM_ID IN " + listItemIdString;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
+		CollectionUtil.split(itemIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String listItemIdString = "(";
+			for(int i = 0; i < subList.size(); i++){
+				listItemIdString += "'"+ subList.get(i) +"',";
+			}
+			// remove last , in string and add )
+			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+			
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"
+					+ " and ATTENDANCE_ITEM_ID IN " + listItemIdString;
+			try {
+				con.createStatement().executeUpdate(sqlQuery);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 }

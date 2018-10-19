@@ -128,26 +128,27 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	@SneakyThrows
 	public List<AffJobTitleHistoryItem> getByJobIdAndReferDate(String jobId, GeneralDate referDate) {
 		
-		PreparedStatement stmt = this.connection().prepareStatement(
+		try (PreparedStatement stmt = this.connection().prepareStatement(
 				"select * from BSYMT_AFF_JOB_HIST_ITEM i" + 
 				" inner join BSYMT_AFF_JOB_HIST h" + 
 				" on h.HIST_ID = i.HIST_ID" + 
 				" where i.JOB_TITLE_ID = ?" + 
 				" and h.START_DATE <= ?" + 
-				" and h.END_DATE >= ?");
-		stmt.setString(1, jobId);
-		stmt.setDate(2, Date.valueOf(referDate.toLocalDate()));
-		stmt.setDate(3, Date.valueOf(referDate.toLocalDate()));
-		
-		List<AffJobTitleHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-			return AffJobTitleHistoryItem.createFromJavaType(
-					rec.getString("HIST_ID"),
-					rec.getString("SID"),
-					rec.getString("JOB_TITLE_ID"),
-					rec.getString("NOTE"));
-		});
-
-		return lstObj.isEmpty() ? null : lstObj;
+				" and h.END_DATE >= ?")) {
+			stmt.setString(1, jobId);
+			stmt.setDate(2, Date.valueOf(referDate.toLocalDate()));
+			stmt.setDate(3, Date.valueOf(referDate.toLocalDate()));
+			
+			List<AffJobTitleHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				return AffJobTitleHistoryItem.createFromJavaType(
+						rec.getString("HIST_ID"),
+						rec.getString("SID"),
+						rec.getString("JOB_TITLE_ID"),
+						rec.getString("NOTE"));
+			});
+	
+			return lstObj.isEmpty() ? null : lstObj;
+		}
 	}
 
 	@Override
@@ -172,10 +173,13 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 
 	@Override
 	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
-		List<BsymtAffJobTitleHistItem> data = this.queryProxy()
-				.query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
-				.setParameter("lstSid", lstSid)
-				.setParameter("referDate", referDate).getList();
+		List<BsymtAffJobTitleHistItem> data = new ArrayList<>();
+		CollectionUtil.split(lstSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			data.addAll(this.queryProxy().query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
+				.setParameter("lstSid", subList)
+				.setParameter("referDate", referDate)
+				.getList());
+		});
 		
 		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();
 		
@@ -212,9 +216,14 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	// request list 515
 	@Override
 	public List<AffJobTitleHistoryItem> findHistJob(String historyId, List<String> jobIds) {
-		return this.queryProxy().query(GET_BY_LIST_JOB, BsymtAffJobTitleHistItem.class)
+		List<AffJobTitleHistoryItem> resultList = new ArrayList<>();
+		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LIST_JOB, BsymtAffJobTitleHistItem.class)
 				.setParameter("histId", historyId)
-				.setParameter("jobTitleIds", jobIds).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
+				.setParameter("jobTitleIds", subList)
+				.getList().stream().map(x -> toDomain(x)).collect(Collectors.toList()));
+		});
+		return resultList;
 	}
 
 }

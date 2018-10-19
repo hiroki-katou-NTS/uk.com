@@ -159,6 +159,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 					.setParameter("endDate", dateperiod.end()).getList();
 			tempAbsHistoryEntities.addAll(lstBsymtAffCompanyHist);
 		});
+		tempAbsHistoryEntities.sort((o1, o2) -> {
+			int tmp = o1.sid.compareTo(o2.sid);
+			if (tmp != 0) return tmp;
+			return o1.startDate.compareTo(o2.startDate);
+		});
 		
 		Map<String, List<BsymtTempAbsHistory>> tempAbsEntityForEmp = tempAbsHistoryEntities.stream()
 				.collect(Collectors.groupingBy(x -> x.sid));
@@ -179,7 +184,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public List<String> getLstSidByListSidAndDatePeriod(List<String> employeeIds, DatePeriod dateperiod) {
 		List<String> listSid = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
 					.setParameter("employeeIds", subList)
 					.setParameter("startDate", dateperiod.start())

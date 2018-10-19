@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
@@ -115,10 +117,14 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	public List<TotalTimes> getTotalTimesDetailByListNo(String companyId, List<Integer> totalCountNos) {
 		if(totalCountNos.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND_ALL_BY_LIST_FRAME_NO, KshstTotalTimes.class)
+		List<TotalTimes> resultList = new ArrayList<>();
+		CollectionUtil.split(totalCountNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_ALL_BY_LIST_FRAME_NO, KshstTotalTimes.class)
 				.setParameter("companyId", companyId)
-				.setParameter("totalCountNos", totalCountNos)
-				.getList(x -> new TotalTimes(new JpaTotalTimesGetMemento(x)));
+				.setParameter("totalCountNos", subList)
+				.getList(x -> new TotalTimes(new JpaTotalTimesGetMemento(x))));
+		});
+		return resultList;
 	}
 
 }

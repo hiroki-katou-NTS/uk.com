@@ -207,18 +207,22 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
 		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
 		
-		List<Predicate> predicateList = new ArrayList<>();
+		List<BshmtWorktimeHist> result = new ArrayList<>();
 
-		predicateList.add(
-				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid).in(empIdList));
-		
-		predicateList.add(builder.not(builder.or(
-				builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
-				builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+		CollectionUtil.split(empIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<>();
 
-		query.where(predicateList.toArray(new Predicate[] {}));
+			predicateList.add(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
+					.get(BshmtWorktimeHistPK_.sid).in(splitData));
 
-		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+			predicateList.add(builder.not(builder.or(
+					builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
+					builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+
+			query.where(predicateList.toArray(new Predicate[] {}));
+
+			result.addAll(em.createQuery(query).getResultList());
+		});
 		
 		Map<String, List<BshmtWorktimeHist>> mapResult = result.stream()
 				.collect(Collectors.groupingBy(item -> item.getBshmtWorktimeHistPK().getSid()));

@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.ac.globalevent;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.sys.auth.pub.event.RoleByRoleTiesGlobalEvent;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
@@ -21,7 +22,7 @@ public class LinkComAdminRoleSubscriber implements DomainEventSubscriber<RoleByR
 
 	@Override
 	public void handle(RoleByRoleTiesGlobalEvent domainEvent) {
-		RoleByRoleTies roleTies = new RoleByRoleTies(domainEvent.getRoleId(), new WebMenuCode("0002"),
+		val roleTies = new RoleByRoleTies(domainEvent.getRoleId(), new WebMenuCode("002"),
 				AppContexts.user().zeroCompanyIdInContract());
 		this.roleTiesRepo.insertRoleByRoleTies(roleTies);
 	}

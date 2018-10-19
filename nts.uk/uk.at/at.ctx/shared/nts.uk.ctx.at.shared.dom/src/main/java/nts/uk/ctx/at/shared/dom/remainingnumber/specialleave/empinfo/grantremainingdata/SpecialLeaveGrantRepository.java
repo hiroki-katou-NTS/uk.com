@@ -30,6 +30,6 @@ public interface SpecialLeaveGrantRepository {
 	 */
 	List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode, LeaveExpirationStatus expirationStatus,
 			GeneralDate ymd);
-	boolean isHasData(String sid, String specialID,GeneralDate grantDate);
+	boolean isHasData(String sid, String specialID,GeneralDate grantDate, int specialLeaCode);
 
 }
