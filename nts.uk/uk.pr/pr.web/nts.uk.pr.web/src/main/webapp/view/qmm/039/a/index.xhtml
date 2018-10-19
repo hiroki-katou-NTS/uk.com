@@ -52,7 +52,6 @@
             </div>
             <div class="contents-area">
                 <!--A3_3 社員検索-->
-
                 <div style="display: flex; margin: 15px 0px 15px 65px;">
                     <!--A3_1 対象者-->
                     <div tabindex="2" id="emp-component" style="float: left;"></div>
@@ -83,8 +82,8 @@
                                 dataSource: dataSource,
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
-                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 3},
-                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 3}
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 2},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 4}
                                 ],
                                 value: singleSelectedCode,
                                 primaryText: 'name',
@@ -101,7 +100,7 @@
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
                                     <button id="A5_2" tabindex="7"
-                                            data-bind="click: toScreenB">#{i18n.getText('QMM039_15')}</button>
+                                            data-bind="click: toScreenB, enable: isAddableHis()">#{i18n.getText('QMM039_15')}</button>
                                 </div>
                                 <div class="cell right">
                                     <!--A5_3 履歴編集-->
