@@ -1,0 +1,25 @@
+#master-content {
+    padding: 20px;
+}
+
+#swap-list-move-data {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#B1_1 {
+    padding-bottom: 15px;
+}
+
+#B6_1 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.edgeList {
+    height: 245px !important;
+}
+
+.ieList {
+    height: 245px !important;
+}

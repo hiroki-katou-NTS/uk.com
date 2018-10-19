@@ -18,6 +18,8 @@ public interface TimeItemSetRepository {
 
 	void update(TimeItemSet domain);
 
+	void updateAll(List<String> lstSalaryId);
+
 	void remove(String cid, String salaryItemId);
 
 }
