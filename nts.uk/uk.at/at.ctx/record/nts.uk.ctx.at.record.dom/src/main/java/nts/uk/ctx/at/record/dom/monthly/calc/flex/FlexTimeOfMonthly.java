@@ -842,7 +842,8 @@ public class FlexTimeOfMonthly {
 				// 全て法定外フレックス時間として計算する
 				
 				// 「フレックス時間」を「法定外フレックス時間」に入れる
-				this.flexTime.setIllegalFlexTime(this.flexTime.getFlexTime().getTime());
+				this.flexTime.setIllegalFlexTime(new AttendanceTimeMonthWithMinus(
+						this.flexTime.getFlexTime().getTime().v()));
 			}
 			else {
 				// 法定内・法定外フレックス時間に分けて計算する
@@ -872,9 +873,6 @@ public class FlexTimeOfMonthly {
 					val vacationAddTime = GetVacationAddTime.getTime(
 							datePeriod, aggregateTotalWorkingTime.getVacationUseTime(), addSetWhenOnlyLegal);
 					
-					// 休暇加算時間を「法定内フレックス時間」に入れる
-					this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(vacationAddTime.v()));
-					
 					// 「フレックス時間」と「休暇加算時間」を比較する
 					if (this.flexTime.getFlexTime().getTime().greaterThan(vacationAddTime.v())){
 						
@@ -898,6 +896,12 @@ public class FlexTimeOfMonthly {
 							this.flexTime.setIllegalFlexTime(new AttendanceTimeMonthWithMinus(
 									beforeAddVacation - treatLegal));
 						}
+					}
+					else {
+						
+						// フレックス時間を「法定内フレックス時間」に入れる
+						this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(
+								this.flexTime.getLegalFlexTime().v() + this.flexTime.getFlexTime().getTime().v()));
 					}
 				}
 				else {
