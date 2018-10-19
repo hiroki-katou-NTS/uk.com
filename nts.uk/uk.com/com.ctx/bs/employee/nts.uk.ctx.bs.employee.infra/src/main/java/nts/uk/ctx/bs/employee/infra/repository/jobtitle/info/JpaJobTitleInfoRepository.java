@@ -418,11 +418,15 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		resultList.sort((o1, o2) -> {
-			Integer order1 = o1.getBsymtJobSeqMaster().getDisporder();
-			Integer order2 = o2.getBsymtJobSeqMaster().getDisporder();
-			if (order1 != null && order2 != null) return order1.compareTo(order2);
-			if (order1 != null && order2 == null) return 1;
-			if (order1 == null && order2 != null) return -1;
+			BsymtJobSeqMaster seqMst1 = o1.getBsymtJobSeqMaster();
+			BsymtJobSeqMaster seqMst2 = o2.getBsymtJobSeqMaster();
+			if (seqMst1 != null && seqMst2 != null) {
+				Integer order1 = seqMst1.getDisporder();
+				Integer order2 = seqMst2.getDisporder();
+				if (order1 != null && order2 != null) return order1.compareTo(order2);
+				if (order1 != null && order2 == null) return 1;
+				if (order1 == null && order2 != null) return -1;
+			}
 			return o1.getJobCd().compareTo(o2.getJobCd());
 		});
 		
@@ -492,11 +496,15 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			resultList.addAll( (List<Object[]>) em.createQuery(cq).getResultList() );
 		});
 		resultList.sort((o1, o2) -> {
-			Integer order1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster().getDisporder();
-			Integer order2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster().getDisporder();
-			if (order1 != null && order2 != null) return order1.compareTo(order2);
-			if (order1 != null && order2 == null) return 1;
-			if (order1 == null && order2 != null) return -1;
+			BsymtJobSeqMaster seqMst1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster();
+			BsymtJobSeqMaster seqMst2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster();
+			if (seqMst1 != null && seqMst2 != null) {
+				Integer order1 = seqMst1.getDisporder();
+				Integer order2 = seqMst2.getDisporder();
+				if (order1 != null && order2 != null) return order1.compareTo(order2);
+				if (order1 != null && order2 == null) return 1;
+				if (order1 == null && order2 != null) return -1;
+			}
 			String jobCd1 = ((BsymtJobInfo) o1[0]).getJobCd();
 			String jobCd2 = ((BsymtJobInfo) o2[0]).getJobCd();
 			return jobCd1.compareTo(jobCd2);
