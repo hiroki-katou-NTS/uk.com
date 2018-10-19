@@ -156,6 +156,10 @@ module nts.uk.pr.view.qmm013.a {
                     command.checkCreate = self.checkCreate();
                     command.salaryPerUnitPriceSetting.code = command.salaryPerUnitPriceName.code;
 
+                    if (_.isEmpty(command.salaryPerUnitPriceName.note)) {
+                        command.salaryPerUnitPriceName.note = null;
+                    }
+
                     block.invisible();
                     service.registerUnitPriceData(command).done(function() {
                         block.clear();
