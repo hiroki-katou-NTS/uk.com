@@ -11,6 +11,8 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGra
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.InsurancePremiumFractionClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

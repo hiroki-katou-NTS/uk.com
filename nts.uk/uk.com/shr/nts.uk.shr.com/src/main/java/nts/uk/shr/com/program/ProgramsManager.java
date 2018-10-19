@@ -35,6 +35,15 @@ public class ProgramsManager {
 			"/view/qmm/011/e/index.xhtml");
 	public static final Program QMM011F = new Program(WebAppId.PR, ProgramIdConsts.QMM011F, "QMM011_65",
 			"/view/qmm/011/f/index.xhtml");
+	/**
+	 * QMM007
+	 */
+	public static final Program QMM007A = new Program(WebAppId.PR, ProgramIdConsts.QMM007A, "QMM007_46",
+			"/view/qmm/007/a/index.xhtml");
+    public static final Program QMM007B = new Program(WebAppId.PR, ProgramIdConsts.QMM007B, "QMM007_46",
+            "/view/qmm/007/b/index.xhtml");
+    public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM007_47",
+            "/view/qmm/007/c/index.xhtml");
 	
 	/**
 	 * CCG008A
@@ -1780,6 +1789,9 @@ public class ProgramsManager {
 			"/view/qmm/012/j/index.xhtml");
 	public static final Program QMM012K = new Program(WebAppId.PR, ProgramIdConsts.QMM012K, "QMM012_11",
 			"/view/qmm/012/k/index.xhtml");
+			
+	public static final Program QMM013A = new Program(WebAppId.PR, ProgramIdConsts.QMM013A, "QMM013_39",
+			"/view/qmm/013/a/index.xhtml");
 	
 	// TODO: Define new programs here.
 	/**
@@ -2228,7 +2240,22 @@ public class ProgramsManager {
 			"/view/qmm/008/i/index.xhtml");
 	public static final Program QMM008J = new Program(WebAppId.PR, ProgramIdConsts.QMM008J, "QMM008_192",
 			"/view/qmm/008/j/index.xhtml");
+			
+	/**
+	* QMM010 
+	*/
+	 public static final Program QMM010A = new Program(WebAppId.PR, ProgramIdConsts.QMM010A, "QMM010_34",
+	 "/view/qmm/010/a/index.xhtml");
+	 public static final Program QMM010B = new Program(WebAppId.PR, ProgramIdConsts.QMM010B, "QMM010_35",
+	 "/view/qmm/010/b/index.xhtml");
 
+	/**
+	 * QMM018
+	 */
+	public static final Program QMM018A = new Program(WebAppId.PR, ProgramIdConsts.QMM018A, "QMM018_30",
+			"/view/qmm/018/a/index.xhtml");
+	public static final Program QMM018B = new Program(WebAppId.PR, ProgramIdConsts.QMM018B, "QMM018_31",
+			"/view/qmm/018/b/index.xhtml");
 	/**
 	 * All programs map.
 	 */

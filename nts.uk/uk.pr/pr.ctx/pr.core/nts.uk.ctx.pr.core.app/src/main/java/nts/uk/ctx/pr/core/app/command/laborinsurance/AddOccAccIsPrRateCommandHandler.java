@@ -14,6 +14,8 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.InsuPremiumFractionClassification;
 import nts.uk.ctx.pr.core.dom.laborinsurance.InsuranceRate;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatioService;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 @Transactional
@@ -33,7 +35,7 @@ public class AddOccAccIsPrRateCommandHandler extends CommandHandler<AddOccAccIsP
         if (command.isNewMode()) {
             occAccInsurBusiBurdenRatioService.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatios, startYearMonth, endYearMonth);
         } else {
-            occAccInsurBusiBurdenRatioService.updateOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatios,command.getHisId());
+            occAccInsurBusiBurdenRatioService.updateOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatios,new YearMonthHistoryItem(command.getHisId(), new YearMonthPeriod(startYearMonth, endYearMonth)));
         }
     }
 }

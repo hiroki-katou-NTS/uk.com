@@ -39,9 +39,6 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 	private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
 	@Inject
-	private MonthlyScopeOfWelfarePensionCompensationRepository monthlyScopeOfWelfarePensionCompensationRepository;
-
-	@Inject
 	private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
 	
 	@Inject
@@ -69,8 +66,8 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		}
 
 		// ドメインモデル「厚生年金報酬月額範囲」を取得する
-		Optional<MonthlyScopeOfWelfarePensionCompensation> monthlyScopeOfWelfarePensionCompensation = monthlyScopeOfWelfarePensionCompensationRepository
-				.getMonthlyScopeOfWelfarePensionCompensationByStartYearMonth(startCommand.getDate());
+		Optional<MonthlyScopeOfWelfarePensionCompensation> monthlyScopeOfWelfarePensionCompensation = welfarePensionStandardMonthlyFeeRepository
+				.getWelfarePensionStandardMonthlyFeeByStartYearMonthCom(startCommand.getDate());
 		if (monthlyScopeOfWelfarePensionCompensation.isPresent()) {
 			welfarePensionGradePerRewardMonthlyRangeDtos = monthlyScopeOfWelfarePensionCompensation.get()
 					.getWelfarePensionGradePerRewardMonthlyRange().stream()
@@ -169,8 +166,8 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		}
 
 		// ドメインモデル「厚生年金報酬月額範囲」を取得する
-		Optional<MonthlyScopeOfWelfarePensionCompensation> monthlyScopeOfWelfarePensionCompensation = monthlyScopeOfWelfarePensionCompensationRepository
-				.getMonthlyScopeOfWelfarePensionCompensationByStartYearMonth(startCommand.getDate());
+		Optional<MonthlyScopeOfWelfarePensionCompensation> monthlyScopeOfWelfarePensionCompensation = welfarePensionStandardMonthlyFeeRepository
+				.getWelfarePensionStandardMonthlyFeeByStartYearMonthCom(startCommand.getDate());
 		if (monthlyScopeOfWelfarePensionCompensation.isPresent()) {
 			gradePerRewardMonthlyRangeDtos = monthlyScopeOfWelfarePensionCompensation.get()
 					.getWelfarePensionGradePerRewardMonthlyRange().stream()

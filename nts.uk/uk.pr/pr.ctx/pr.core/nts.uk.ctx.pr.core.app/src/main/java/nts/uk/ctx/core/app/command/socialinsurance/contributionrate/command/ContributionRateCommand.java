@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
+import nts.uk.shr.com.context.AppContexts;
 
 @Data
 @AllArgsConstructor
 public class ContributionRateCommand {
+
 	/**
 	 * 履歴ID
 	 */
@@ -32,8 +34,8 @@ public class ContributionRateCommand {
 
 	private List<ContributionByGradeCommand> contributionByGrade;
 
-	public ContributionRate fromCommandToDomain() {
-		return new ContributionRate(this.historyId, this.childContributionRatio, this.automaticCalculationCls,
+	public ContributionRate fromCommandToDomain(String officeCode) {
+		return new ContributionRate(this.historyId,this.childContributionRatio, this.automaticCalculationCls,
 				this.contributionByGrade.stream().map(x -> x.fromCommandToDomain()).collect(Collectors.toList()));
 	}
 }

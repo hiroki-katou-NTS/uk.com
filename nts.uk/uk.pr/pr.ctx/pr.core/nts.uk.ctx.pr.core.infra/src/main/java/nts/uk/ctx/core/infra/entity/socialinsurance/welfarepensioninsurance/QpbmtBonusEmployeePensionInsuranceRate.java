@@ -10,7 +10,10 @@ import nts.arc.primitive.PrimitiveValueBase;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRate;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import sun.awt.AppContext;
 
 /**
  * 賞与厚生年金保険料率
@@ -23,11 +26,24 @@ public class QpbmtBonusEmployeePensionInsuranceRate extends UkJpaEntity implemen
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * 履歴ID
      */
-    @Column(name = "HISTORY_ID")
-    @Id
-    public String historyId;
+    @EmbeddedId
+    public QpbmtBonusEmployeePensionInsuranceRatePk welfarePenBonusPk;
+
+    /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 事業主負担分計算方法
@@ -108,11 +124,12 @@ public class QpbmtBonusEmployeePensionInsuranceRate extends UkJpaEntity implemen
 
     @Override
     protected Object getKey() {
-        return historyId;
+        return welfarePenBonusPk;
     }
-
-    public static QpbmtBonusEmployeePensionInsuranceRate toEntity(BonusEmployeePensionInsuranceRate domain) {
-        return new QpbmtBonusEmployeePensionInsuranceRate(domain.getHistoryId(),
+    public static QpbmtBonusEmployeePensionInsuranceRate toEntity(BonusEmployeePensionInsuranceRate domain, String officeCode, YearMonthHistoryItem yearMonth) {
+        return new QpbmtBonusEmployeePensionInsuranceRate(new QpbmtBonusEmployeePensionInsuranceRatePk(AppContexts.user().companyId(), officeCode, domain.getHistoryId()),
+                yearMonth.start().v(),
+                yearMonth.end().v(),
                 domain.getEmployeeShareAmountMethod().value,
                 domain.getFemaleContributionRate().getIndividualBurdenRatio().v(),
                 domain.getFemaleContributionRate().getEmployeeContributionRatio().v(),

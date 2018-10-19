@@ -29,8 +29,10 @@ public class InitialDisplayRegisterProcessingFinder {
 	private SetDaySupportRepository finderSetDaySupport;
 	@Inject
 	private CurrProcessDateRepository finderCurrProcessDate;
+
 	@Inject
 	private EmpTiedProYearRepository finderEmpTiedProYear;
+
 	@Inject
 	private SysEmploymentAdapter syEmploymentAdapter;
 
@@ -75,6 +77,5 @@ public class InitialDisplayRegisterProcessingFinder {
 		}
 
 		return null;
-
 	}
 }

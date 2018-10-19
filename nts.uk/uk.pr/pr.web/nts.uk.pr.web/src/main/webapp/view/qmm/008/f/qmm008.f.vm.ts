@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm008.f {
                 self.displayEnd(dataGetShare.selectedHistory.displayEnd);
                 self.historyId(dataGetShare.selectedHistory.historyId);
                 self.startMonth(dataGetShare.selectedHistory.startMonth);
-                let command = { historyId: self.historyId(),date : self.startMonth() };
+                let command = { historyId: self.historyId(),date : self.startMonth(),socialInsuranceCode: self.officeCode() };
                 nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
                     for (var i = 0; i < response.cusWelfarePensions.length; i++) {
                         self.dataList.push(new RowData(response.cusWelfarePensions[i]));
@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm008.f {
                     setTimeout(function () {
                         $(".nts-fixed-table").attr('tabindex', '6');
                         $(".nts-fixed-table").focus();
-                        if(self.dataList().length > 8) {
+                        if(self.dataList().length > 10) {
                             if (/Edge/.test(navigator.userAgent)) {
                                 $('#f3_1_container .scroll-header').addClass('edge_scroll_header');
                                 $('#f3_1_2_container .scroll-header').addClass('edge_scroll_header');
@@ -93,7 +93,8 @@ module nts.uk.pr.view.qmm008.f {
                 let self = this;
                 let command = {
                     cusWelfarePensions: ko.toJS(self.dataList()),
-                    historyId: self.historyId()
+                    historyId: self.historyId(),
+                    socialInsuranceCode: self.officeCode()
                 };
                 nts.uk.pr.view.qmm008.f.service.update(command).done(function(response) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -119,7 +120,7 @@ module nts.uk.pr.view.qmm008.f {
             private countReview(): void {
                 nts.uk.ui.errors.clearAll();
                 let self = this;
-                let command = { historyId: self.historyId(), date: self.startMonth() };
+                let command = { historyId: self.historyId(), date: self.startMonth(), socialInsuranceCode: self.officeCode() };
                 nts.uk.pr.view.qmm008.f.service.count(command).done(function(response) {
                     self.dataList([]);
                     for (var i = 0; i < response.cusWelfarePensions.length; i++) {

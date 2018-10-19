@@ -6,13 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardGradePerMonth;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthlyRepository;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.*;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardGradePerMonth;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardMonthly;
 
 /**
  * 健康保険標準月額
@@ -20,36 +16,46 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthI
 @Stateless
 public class JpaHealthInsuranceStandardMonthlyRepository extends JpaRepository implements HealthInsuranceStandardMonthlyRepository {
 
-    private static final String GET_HEALTH_INSURANCE_STANDARD_MONTHLY_BY_START_YEAR_MONTH = "SELECT a FROM QpbmtHealthInsuranceStandardMonthly a WHERE a.healthInsStdMonPk.targetStartYm <=:targetStartYm AND a.healthInsStdMonPk.targetEndYm >=:targetStartYm";
-    private static final String GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID = "SELECT a FROM QpbmtHealthInsuranceStandardGradePerMonth a WHERE a.healthStdGraMonPk.targetStartYm=:targetStartYm AND a.healthStdGraMonPk.targetEndYm=:targetEndYm order by a.healthStdGraMonPk.healthInsuranceGrade ASC ";
+    private static final String GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID = "SELECT a FROM QpbmtHealthInsuranceStandardGradePerMonth a WHERE a.targetStartYm <=:targetStartYm AND a.targetEndYm >=:targetStartYm order by a.healthStdGraMonPk.healthInsuranceGrade ASC ";
 
     @Override
     public Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyByStartYearMonth(int targetStartYm) {
-        Optional<QpbmtHealthInsuranceStandardMonthly> entity = this.queryProxy().query(GET_HEALTH_INSURANCE_STANDARD_MONTHLY_BY_START_YEAR_MONTH, QpbmtHealthInsuranceStandardMonthly.class)
-                .setParameter("targetStartYm", targetStartYm)
-                .getSingle();
-        if (!entity.isPresent())
-            return Optional.empty();
-
-        val healthInsuranceStandardMonthlyEntity = entity.get();
         List<QpbmtHealthInsuranceStandardGradePerMonth> details = this.queryProxy().query(GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID, QpbmtHealthInsuranceStandardGradePerMonth.class)
-                .setParameter("targetStartYm", healthInsuranceStandardMonthlyEntity.healthInsStdMonPk.targetStartYm)
-                .setParameter("targetEndYm", healthInsuranceStandardMonthlyEntity.healthInsStdMonPk.targetEndYm)
+                .setParameter("targetStartYm", targetStartYm)
                 .getList();
-        return Optional.of(toDomain(healthInsuranceStandardMonthlyEntity, details));
+        if(details.isEmpty())
+            return  Optional.empty();
+        return Optional.of(toDomainHealth(details));
+    }
+
+    @Override
+    public Optional<MonthlyHealthInsuranceCompensation> getHealthInsuranceStandardMonthlyByStartYearMonthCom(int targetStartYm) {
+        List<QpbmtHealthInsuranceStandardGradePerMonth> details = this.queryProxy().query(GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID, QpbmtHealthInsuranceStandardGradePerMonth.class)
+                .setParameter("targetStartYm", targetStartYm)
+                .getList();
+        if(details.isEmpty())
+            return  Optional.empty();
+        return Optional.of(toDomainMon(details));
     }
 
     /**
      * Convert entity to domain
      *
-     * @param entity  QpbmtHealthInsuranceStandardMonthly
      * @param details List<QpbmtHealthInsuranceStandardGradePerMonth>
      * @return HealthInsuranceStandardMonthly
      */
-    private HealthInsuranceStandardMonthly toDomain(QpbmtHealthInsuranceStandardMonthly entity, List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
+    private HealthInsuranceStandardMonthly toDomainHealth (List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
         return new HealthInsuranceStandardMonthly(
-                entity.healthInsStdMonPk.targetEndYm,
-                entity.healthInsStdMonPk.targetEndYm,
+                details.get(0).targetStartYm,
+                details.get(0).targetEndYm,
                 details.stream().map(x -> new HealthInsuranceStandardGradePerMonth(x.healthStdGraMonPk.healthInsuranceGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
     }
+
+    private MonthlyHealthInsuranceCompensation toDomainMon (List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
+        return new MonthlyHealthInsuranceCompensation(
+                details.get(0).targetStartYm,
+                details.get(0).targetEndYm,
+                details.stream().map(x -> new HealthInsuranceGradePerRewardMonthlyRange(x.healthStdGraMonPk.healthInsuranceGrade,x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
+    }
+
 }

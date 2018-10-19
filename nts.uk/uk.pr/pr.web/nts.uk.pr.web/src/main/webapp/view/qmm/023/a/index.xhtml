@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxLimitAmountCode
+            nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionName
+            nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemption
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm023.a.service.js"/>
+        <com:scriptfile path="qmm023.a.start.js"/>
+        <com:scriptfile path="qmm023.a.vm.js"/>
+        <com:stylefile path="qmm023.a.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- A1_1 -->
+            <button data-bind="click: createTaxExe, enable: !isNewMode()"
+                    tabindex="1">#{i18n.getText('QMM023_1')}</button>
+            <!-- A1_2 -->
+            <button data-bind="click: saveTaxExe, enable: $root.errors.isEmpty"
+                    tabindex="2" class="proceed">#{i18n.getText('QMM023_2')}</button>
+            <!-- A1_3 -->
+            <button data-bind="click: printPdf, enable: false"
+                    tabindex="3">#{i18n.getText('QMM023_3')}</button>
+            <!-- A1_4 -->
+            <button data-bind="click: correctionLog, enable: false" tabindex="4">#{i18n.getText('QMM023_4')}</button>
+            <!-- A1_5 -->
+            <button class="danger" data-bind="click: deleteTaxExe, enable: !isNewMode()"
+                    tabindex="5">#{i18n.getText('QMM023_5')}</button>
+        </div>
+        <div id="contents-area">
+            <div id="qmm-all" class="table">
+                <div class="cell valign-top">
+                    <!-- A2_1 -->
+                    <div class="panel"
+                         data-bind="ntsPanel:{width: '415px', height: '425px', direction: 'right',  visible: true, showIcon: true}">
+                        <!-- A2_2 -->
+                        <div style="width: 400px;" tabindex="6"
+                             data-bind="ntsSearchBox: {
+							    searchMode: 'highlight',
+							    targetKey: 'taxFreeamountCode',
+							    comId: 'A2_3',
+							    items: lstTaxExemptLimit,
+							    selectedKey: 'taxFreeamountCode',
+							    fields: ['taxFreeamountCode','taxExemptionName'],
+							    mode: 'igGrid'}"/>
+                        <!-- A2_3 -->
+                        <table id="A2_3" tabindex="7"
+                               data-bind="ntsGridList: {
+                                    name: '#[QMM023_6]',
+                                    multiple: false,
+                                    options: lstTaxExemptLimit,
+                                    optionsValue: 'taxFreeamountCode',
+                                    rows: 15,
+                                    columns: columns,
+                                    value: currentCode
+					    }"></table>
+                    </div>
+                </div>
+                <div id="qmm-right" class="cell valign-top">
+                    <div class="table">
+                        <div class="cell valign-center">
+                            <!-- A3_1 -->
+                            <div data-bind="ntsFormLabel: {
+                                constraint: ['TaxLimitAmountCode','TaxExemptionName'],
+                                required: true }">#{i18n.getText('QMM023_10')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A3_2 -->
+                            <input id="taxFreeamountCode"
+                                   tabindex="8"
+                                   data-bind="ntsTextEditor: {
+									option: {width: '30px'},
+									value: taxFreeamountCode,
+									constraint: 'TaxLimitAmountCode',
+									name:'#[QMM023_11]',
+									required: true,
+									enable: !enableCode()
+							}"/>
+                            <!-- A3_3 -->
+                            <input id="taxExemptionName"
+                                   style="margin-left: 20px"
+                                   tabindex="9"
+                                   data-bind="ntsTextEditor: {
+                                    option: {width: '200px'},
+                                    value: taxExemptionName,
+                                    constraint: 'TaxExemptionName',
+                                    name:'#[QMM023_12]',
+                                    required: true,
+                                    enable: true
+                             }"/>
+                        </div>
+                    </div>
+                    <div class="table" style="margin-top: 20px;">
+                        <div class="cell">
+                            <!-- A3_4 -->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM023_9')}</div>
+                        </div>
+                        <div class="cell">
+                            <!-- A3_5 -->
+                            <input id="taxExemption" class="check-validate" tabindex="10"
+                                   data-bind="ntsNumberEditor: {
+                                    name: '#[QMM023_9]',
+                                    value: taxExemption,
+                                    constraint: 'TaxExemption',
+                                    required: false,
+                                    option: {
+                                        grouplength: 3,
+                                        width: '150px',
+                                        textalign: 'right',
+                                        currencyformat: 'JPY'
+                                    },
+                                    enable: true
+                            }"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -11,5 +11,5 @@ public class UpdateContributionRateDto {
 	
 	List<CusWelfarePensionStandardDto> data;
 	String historyId;
-	
+	private String socialInsuranceCode;
 }

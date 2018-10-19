@@ -11,5 +11,5 @@ public class UpdateCommandHealth {
 	
 	List<CusHealthInsuDto> cusDataDtos;
 	String historyId;
-	
+	String socialInsuranceCode;
 }

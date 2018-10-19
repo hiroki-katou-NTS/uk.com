@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+            <script type='text/javascript'>
+                var dialogSize = {
+                    width: 760,
+                    height: 515
+                };
+            </script>
+			<com:stylefile path="qmm018.b.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm018.b.start.js" />
+			<com:scriptfile path="qmm018.b.service.js" />
+			<com:scriptfile path="qmm018.b.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- 対象項目を選択してください -->
+			<div id="B1_1">#{i18n.getText('QMM018_21')}</div>
+			<div id="swap-list" tabindex="3"
+                 data-bind="ntsSwapList: {
+                 	 name: '#[QMM018_22]',
+                     showSearchBox: { showLeft : true, showRight: true},
+                     showSort: { showLeft : true, showRight: true},
+                     height: 330,
+                     rows: 10,
+                     dataSource: statementList,
+                     disableMoveButton: false,
+                     primaryKey: 'itemNameCd',
+                     columns: gridColumns,
+                     value: statementListSelected,
+                     searchMode: 'highlight',
+                     searchCriterion: ['itemNameCd', 'name'],
+                     draggable: true,
+                     multipleDrag: { left: true, right: false },
+                     innerDrag: { left: false, right: true },
+                     outerDrag: { left: true, right: true }
+                 }">
+            </div>
+			<hr id="B6_1"/>
+			<div class="valign-center control-group" style="text-align: center; margin-bottom: 0px;">
+				<!-- 決定 -->
+				<button id="B6_2" tabindex="7" class="register proceed large" data-bind="click: register, enable: true">#{i18n.getText('QMM018_26')}</button>
+				<!-- キャンセル -->
+				<button id="B6_3" tabindex="8" class="cancel" data-bind="click: cancel, enable: true">#{i18n.getText('QMM018_27')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

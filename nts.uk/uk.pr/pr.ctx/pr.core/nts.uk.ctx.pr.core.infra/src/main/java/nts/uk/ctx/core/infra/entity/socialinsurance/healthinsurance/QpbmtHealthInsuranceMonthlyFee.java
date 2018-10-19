@@ -2,7 +2,10 @@ package nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -20,11 +23,24 @@ public class QpbmtHealthInsuranceMonthlyFee extends UkJpaEntity implements Seria
     private static final long serialVersionUID = 1L;
 
     /**
-     * 履歴ID
+     * ID
      */
-    @Column(name = "HISTORY_ID")
-    @Id
-    public String historyId;
+    @EmbeddedId
+    public QpbmtHealthInsuranceMonthlyFeePk bonusHealthInsurancePk;
+
+    /**
+     * 年月開始
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 年月終了
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
 
     /**
      * 自動計算実施区分
@@ -112,7 +128,7 @@ public class QpbmtHealthInsuranceMonthlyFee extends UkJpaEntity implements Seria
 
     @Override
     protected Object getKey() {
-        return historyId;
+        return bonusHealthInsurancePk;
     }
 
     /**
@@ -121,8 +137,10 @@ public class QpbmtHealthInsuranceMonthlyFee extends UkJpaEntity implements Seria
      * @param domain HealthInsuranceMonthlyFee
      * @return QpbmtHealthInsuranceMonthlyFee
      */
-    public static QpbmtHealthInsuranceMonthlyFee toEntity(HealthInsuranceMonthlyFee domain) {
-        return new QpbmtHealthInsuranceMonthlyFee(domain.getHistoryId(), domain.getAutoCalculationCls().value,
+    public static QpbmtHealthInsuranceMonthlyFee toEntity(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth) {
+        return new QpbmtHealthInsuranceMonthlyFee(
+                new QpbmtHealthInsuranceMonthlyFeePk(AppContexts.user().companyId(), officeCode, yearMonth.identifier()),
+                yearMonth.start().v(), yearMonth.end().v(), domain.getAutoCalculationCls().value,
                 domain.getHealthInsuranceRate().getIndividualBurdenRatio().getLongCareInsuranceRate().v(),
                 domain.getHealthInsuranceRate().getIndividualBurdenRatio().getBasicInsuranceRate().v(),
                 domain.getHealthInsuranceRate().getIndividualBurdenRatio().getHealthInsuranceRate().v(),

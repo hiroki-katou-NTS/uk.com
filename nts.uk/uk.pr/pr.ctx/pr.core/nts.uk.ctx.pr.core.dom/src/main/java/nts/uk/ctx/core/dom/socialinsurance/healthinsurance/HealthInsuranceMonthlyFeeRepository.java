@@ -1,5 +1,7 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+
 import java.util.Optional;
 
 import java.util.List;
@@ -18,15 +20,17 @@ public interface HealthInsuranceMonthlyFeeRepository {
 
     void deleteByHistoryIds(List<String> historyIds);
 
-    void add(HealthInsuranceMonthlyFee domain);
+    void add(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth);
 
-    void update(HealthInsuranceMonthlyFee domain);
+    void update(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth);
 
-    void delete(HealthInsuranceMonthlyFee domain);
+    void delete(HealthInsuranceMonthlyFee domain, String officeCode, YearMonthHistoryItem yearMonth);
     
     void updateGraFee(HealthInsuranceMonthlyFee domain);
     
     void insertGraFee(HealthInsuranceMonthlyFee domain);
     
     void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds);
+
+    void updateHistory(String officeCode, YearMonthHistoryItem history);
 }
