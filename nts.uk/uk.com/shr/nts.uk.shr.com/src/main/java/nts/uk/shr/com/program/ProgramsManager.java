@@ -1780,6 +1780,9 @@ public class ProgramsManager {
 			"/view/qmm/012/j/index.xhtml");
 	public static final Program QMM012K = new Program(WebAppId.PR, ProgramIdConsts.QMM012K, "QMM012_11",
 			"/view/qmm/012/k/index.xhtml");
+			
+	public static final Program QMM013A = new Program(WebAppId.PR, ProgramIdConsts.QMM013A, "QMM013_39",
+			"/view/qmm/013/a/index.xhtml");
 	
 	// TODO: Define new programs here.
 	/**
