@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1563,6 +1567,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (targetWorkplace != null) {
 					wrp.parent = targetWorkplace;
 					targetWorkplace.lstChildWorkplaceReportData.put(k, wrp);
+					targetWorkplace.lstChildWorkplaceReportData = sortByWorkplaceCodeExportByEmployee(targetWorkplace.lstChildWorkplaceReportData);
 					isFoundParent = true;
 					break;
 				}
@@ -1572,6 +1577,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (!isFoundParent) {
 				wrp.parent = parent;
 				parent.lstChildWorkplaceReportData.put(k, wrp);
+				parent.lstChildWorkplaceReportData = sortByWorkplaceCodeExportByEmployee(parent.lstChildWorkplaceReportData);
 			}
 		}
 	}
@@ -1639,6 +1645,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (targetWorkplace != null) {
 					wrp.parent = targetWorkplace;
 					targetWorkplace.lstChildWorkplaceData.put(k, wrp);
+					sortByWorkplaceCodeExportByDate(targetWorkplace.lstChildWorkplaceData);
 					isFoundParent = true;
 					break;
 				}
@@ -1648,6 +1655,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (!isFoundParent) {
 				wrp.parent = parent;
 				parent.lstChildWorkplaceData.put(k, wrp);
+				sortByWorkplaceCodeExportByDate(parent.lstChildWorkplaceData);
 			}
 		}
 	}
@@ -2845,6 +2853,62 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		return lstEnabledLevel;
 	}
+	
+	/*
+	 * Sort by workplace code within the same parent workplace (export by date)
+	 * @param unsortMap the unsort map
+	 * @return the map
+	 */
+	private static Map<String, DailyWorkplaceData> sortByWorkplaceCodeExportByDate(Map<String, DailyWorkplaceData> unsortMap) {
+
+        // 1. Convert Map to List of Map
+        List<Map.Entry<String, DailyWorkplaceData>> list =
+                new LinkedList<Map.Entry<String, DailyWorkplaceData>>(unsortMap.entrySet());
+
+        // 2. Sort list with Collections.sort(), provide a custom Comparator
+        //    Try switch the o1 o2 position for a different order
+        Collections.sort(list, new Comparator<Map.Entry<String, DailyWorkplaceData>>() {
+            public int compare(Map.Entry<String, DailyWorkplaceData> o1,
+                               Map.Entry<String, DailyWorkplaceData> o2) {
+                return (o1.getValue()).getWorkplaceCode().compareTo(o2.getValue().getWorkplaceCode());
+            }
+        });
+
+        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
+        Map<String, DailyWorkplaceData> sortedMap = new LinkedHashMap<String, DailyWorkplaceData>();
+        for (Map.Entry<String, DailyWorkplaceData> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+    }
+	
+	/*
+	 * Sort by workplace code within the same parent workplace (export by employee)
+	 * @param unsortMap the unsort map
+	 * @return the map
+	 */
+	private static Map<String, WorkplaceReportData> sortByWorkplaceCodeExportByEmployee(Map<String, WorkplaceReportData> unsortMap) {
+
+        // 1. Convert Map to List of Map
+        List<Map.Entry<String, WorkplaceReportData>> list =
+                new LinkedList<Map.Entry<String, WorkplaceReportData>>(unsortMap.entrySet());
+
+        // 2. Sort list with Collections.sort(), provide a custom Comparator
+        //    Try switch the o1 o2 position for a different order
+        Collections.sort(list, new Comparator<Map.Entry<String, WorkplaceReportData>>() {
+            public int compare(Map.Entry<String, WorkplaceReportData> o1,
+                               Map.Entry<String, WorkplaceReportData> o2) {
+                return (o1.getValue()).getWorkplaceCode().compareTo(o2.getValue().getWorkplaceCode());
+            }
+        });
+
+        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
+        Map<String, WorkplaceReportData> sortedMap = new LinkedHashMap<String, WorkplaceReportData>();
+        for (Map.Entry<String, WorkplaceReportData> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+    }
 	
 	/**
 	 * Gets the remark content.
