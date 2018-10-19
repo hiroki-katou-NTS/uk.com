@@ -6,10 +6,12 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.AverageWageAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * 
+ *
  * @author thanh.tq 支給項目設定
  *
  */
@@ -65,6 +67,26 @@ public class PaymentItemSet extends AggregateRoot {
 	 * 備考
 	 */
 	private Optional<Memo> note;
+
+    /**
+     * 項目名コード
+     */
+    private ItemNameCode itemNameCode;
+
+    /**
+     * カテゴリ区分
+     */
+    private CategoryAtr categoryAtr;
+
+    /**
+     * 支給アラーム範囲設定
+     */
+    private DetailAmountErrorAlarmRangeSetting alarmRangeSetting;
+
+    /**
+     * 支給エラー範囲設定
+     */
+    private DetailAmountErrorAlarmRangeSetting errorRangeSetting;
 
 	public PaymentItemSet(String cid, String salaryItemId, int breakdownItemUseAtr, int laborInsuranceCategory,
 			int settingAtr, Integer everyoneEqualSet, Integer monthlySalary, Integer hourlyPay, Integer dayPayee,

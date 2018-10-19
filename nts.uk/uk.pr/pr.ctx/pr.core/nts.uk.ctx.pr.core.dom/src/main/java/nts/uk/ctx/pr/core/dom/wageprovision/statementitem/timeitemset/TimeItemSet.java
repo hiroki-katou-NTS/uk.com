@@ -6,10 +6,12 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.AverageWageAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * 
+ *
  * @author thanh.tq 勤怠項目設定
  *
  */
@@ -45,6 +47,26 @@ public class TimeItemSet extends AggregateRoot {
 	 * 備考
 	 */
 	private Optional<Memo> note;
+
+    /**
+     * 項目名コード
+     */
+    private ItemNameCode itemNameCode;
+
+    /**
+     * カテゴリ区分
+     */
+    private CategoryAtr categoryAtr;
+
+    /**
+     * 勤怠アラーム範囲設定
+     */
+    private DetailTimeErrorAlarmRangeSetting alarmRangeSetting;
+
+    /**
+     * 勤怠エラー範囲設定
+     */
+    private DetailTimeErrorAlarmRangeSetting errorRangeSetting;
 
 	public TimeItemSet(String cid, String salaryItemId, int averageWageAtr, int workingDaysPerYear, int timeCountAtr,
 			String note) {
