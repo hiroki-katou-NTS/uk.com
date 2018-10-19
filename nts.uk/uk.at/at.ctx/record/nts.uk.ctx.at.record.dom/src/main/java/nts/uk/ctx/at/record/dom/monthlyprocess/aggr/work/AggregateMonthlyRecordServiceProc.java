@@ -313,14 +313,12 @@ public class AggregateMonthlyRecordServiceProc {
 			};
 			
 			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
-				log.info("集計処理を非同期実行");
 				this.executerService.submit(AsyncTask.builder()
 						.withContexts()
 						.threadName("Aggregation")
 						.build(asyncAggregation));
 			} else {
 				// バッチなどの場合は非同期にせずそのまま実行
-				log.info("集計処理をそのまま実行");
 				asyncAggregation.run();
 			}
 			
