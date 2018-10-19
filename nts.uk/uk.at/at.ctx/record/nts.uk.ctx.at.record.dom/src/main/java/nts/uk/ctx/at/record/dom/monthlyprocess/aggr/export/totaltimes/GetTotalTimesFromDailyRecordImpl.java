@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -28,6 +29,9 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 	/** 日別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeRepository attendanceTimeRepo;
+	/** 日別実績の任意項目 */
+	@Inject
+	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 	/** 日別実績の出退勤の取得 */
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepo;
@@ -52,6 +56,7 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
 				companyId, employeeId, period,
 				this.attendanceTimeRepo,
+				this.anyItemValueOfDailyRepo,
 				this.timeLeavingOfDailyRepo,
 				this.workInfoOfDailyRepo,
 				this.workTypeRepo,
@@ -67,6 +72,7 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
 				companyId, employeeId, period,
 				this.attendanceTimeRepo,
+				this.anyItemValueOfDailyRepo,
 				this.timeLeavingOfDailyRepo,
 				this.workInfoOfDailyRepo,
 				this.workTypeRepo,

@@ -6,10 +6,8 @@ package nts.uk.ctx.at.shared.infra.entity.outsideot.overtime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,14 +24,10 @@ public class KshstOverTimePK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The over time no. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "OVER_TIME_NO")
     private int overTimeNo;
 
@@ -41,6 +35,7 @@ public class KshstOverTimePK implements Serializable {
      * Instantiates a new kshst over time PK.
      */
     public KshstOverTimePK() {
+    	super();
     }
 
     /**
@@ -83,13 +78,5 @@ public class KshstOverTimePK implements Serializable {
 		}
 		return true;
 	}
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KshstOverTimePK[ cid=" + cid + ", overTimeNo=" + overTimeNo + " ]";
-    }
     
 }
