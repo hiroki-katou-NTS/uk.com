@@ -653,18 +653,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
-			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
+			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData).stream().sorted((o1, o2)->o1.getEmployeeCode().
+                    compareTo(o2.getEmployeeCode())).
+                    collect(Collectors.toList());
 			
-			// Put these dto into print order list
-			lstEmloyeeDto.stream().forEach(dto -> {
-				lstEmployeePrintOrder.stream().filter(employee -> StringUtils.equals(employee.getEmployeeId(), dto.getEmployeeId())).findFirst().get().setEmployeeDto(Optional.of(dto));
-			});
-			
-			// Filter out all employee w/o data, workplace (no employee dto)
-			List<EmployeePrintOrder> lstEmployeePrintOrderWithData = lstEmployeePrintOrder.stream().filter(employee -> employee.getEmployeeDto().isPresent()).collect(Collectors.toList());
-			
-			// Convert print order list back into list employee dto so we can keep the correct printing order as inputed
-			lstEmloyeeDto = lstEmployeePrintOrderWithData.stream().map(employee -> employee.getEmployeeDto().get()).collect(Collectors.toList());
+//			// Put these dto into print order list
+//			lstEmloyeeDto.stream().forEach(dto -> {
+//				lstEmployeePrintOrder.stream().filter(employee -> StringUtils.equals(employee.getEmployeeId(), dto.getEmployeeId())).findFirst().get().setEmployeeDto(Optional.of(dto));
+//			});
+//			
+//			// Filter out all employee w/o data, workplace (no employee dto)
+//			List<EmployeePrintOrder> lstEmployeePrintOrderWithData = lstEmployeePrintOrder.stream().filter(employee -> employee.getEmployeeDto().isPresent()).collect(Collectors.toList());
+//			
+//			// Convert print order list back into list employee dto so we can keep the correct printing order as inputed
+//			lstEmloyeeDto = lstEmployeePrintOrderWithData.stream().map(employee -> employee.getEmployeeDto().get()).collect(Collectors.toList());
 			
 			for (EmployeeDto dto: lstEmloyeeDto) {
 				EmployeeReportData employeeReportData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
