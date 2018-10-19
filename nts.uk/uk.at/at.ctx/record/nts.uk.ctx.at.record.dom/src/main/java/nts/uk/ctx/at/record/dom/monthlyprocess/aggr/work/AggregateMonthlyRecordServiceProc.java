@@ -297,47 +297,47 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.setAffiliationInfo(Optional.of(affiliationInfo));
 		
 		// 残数と集計の処理を並列で実行
-		this.aggregationProcess(monthPeriod);
-		this.remainingProcess(monthPeriod);
-//		{
-//			CountDownLatch cdlAggregation = new CountDownLatch(1);
-//			MutableValue<RuntimeException> excepAggregation = new MutableValue<>();
-//			
-//			// 日別修正等の画面から実行されている場合、集計処理を非同期で実行
-//			val asyncAggregation = AsyncTask.builder().withContexts().threadName("Aggregation").build(() -> {
-//				try {
-//					this.aggregationProcess(monthPeriod);
-//				} catch (RuntimeException ex) {
-//					excepAggregation.set(ex);
-//				} finally {
-//					cdlAggregation.countDown();
-//				}
-//			});
-//			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
-//				log.debug("集計処理を非同期実行");
-//				this.executerService.submit(asyncAggregation);
-//			} else {
-//				// バッチなどの場合は非同期にせずそのまま実行
-//				log.debug("集計処理をそのまま実行");
-//				asyncAggregation.run();
-//			}
-//			
-//			// 残数処理
-//			// こちらはDB書き込みをしているので非同期化できない
-//			this.remainingProcess(monthPeriod);
-//	
-//			// 非同期実行中の集計処理と待ち合わせ
-//			try {
-//				cdlAggregation.await();
-//			} catch (InterruptedException e) {
-//				throw new RuntimeException(e);
-//			}
-//			
-//			// 集計処理で例外が起きていたらここでthrow
-//			if (excepAggregation.optional().isPresent()) {
-//				throw excepAggregation.get();
-//			}
-//		}
+		{
+			CountDownLatch cdlAggregation = new CountDownLatch(1);
+			MutableValue<RuntimeException> excepAggregation = new MutableValue<>();
+			
+			// 日別修正等の画面から実行されている場合、集計処理を非同期で実行
+			Runnable asyncAggregation = () -> {
+				try {
+					this.aggregationProcess(monthPeriod);
+				} catch (RuntimeException ex) {
+					excepAggregation.set(ex);
+				} finally {
+					cdlAggregation.countDown();
+				}
+			};
+			
+			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
+				this.executerService.submit(AsyncTask.builder()
+						.withContexts()
+						.threadName("Aggregation")
+						.build(asyncAggregation));
+			} else {
+				// バッチなどの場合は非同期にせずそのまま実行
+				asyncAggregation.run();
+			}
+			
+			// 残数処理
+			// こちらはDB書き込みをしているので非同期化できない
+			this.remainingProcess(monthPeriod);
+	
+			// 非同期実行中の集計処理と待ち合わせ
+			try {
+				cdlAggregation.await();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+			
+			// 集計処理で例外が起きていたらここでthrow
+			if (excepAggregation.optional().isPresent()) {
+				throw excepAggregation.get();
+			}
+		}
 		
 		// 月別実績の編集状態　取得
 		this.editStates = this.editStateRepo.findByClosure(
@@ -796,7 +796,7 @@ public class AggregateMonthlyRecordServiceProc {
 					if (calcResult != null){
 						if (calcResult.getTime().isPresent()){
 							if (anyTime == null) anyTime = new AnyTimeMonth(0);
-							anyTime = anyTime.addMinutes(calcResult.getTime().get().intValue());
+							anyTime = anyTime.addMinutes(calcResult.getTime().get());
 						}
 						if (calcResult.getCount().isPresent()){
 							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
@@ -804,7 +804,7 @@ public class AggregateMonthlyRecordServiceProc {
 						}
 						if (calcResult.getMoney().isPresent()){
 							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
-							anyAmount = anyAmount.addAmount(calcResult.getMoney().get().intValue());
+							anyAmount = anyAmount.addAmount(calcResult.getMoney().get());
 						}
 					}
 				}

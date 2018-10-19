@@ -6,7 +6,7 @@ public interface StatusOfEmploymentPub {
 
 	/**
 	 * Find Status Of Employee by employeeId,referenceDate
-	 * For request No.75
+	 * RequestList75
 	 *
 	 */
 	StatusOfEmploymentExport getStatusOfEmployment(String employeeId, GeneralDate referenceDate);

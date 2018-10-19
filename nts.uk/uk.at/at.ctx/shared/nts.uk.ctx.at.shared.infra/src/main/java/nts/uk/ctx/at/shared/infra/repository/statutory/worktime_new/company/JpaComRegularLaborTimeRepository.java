@@ -75,7 +75,7 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 					});
 
 			if (!result.isPresent()) {
-				return null;
+				return Optional.empty();
 			}
 
 			return Optional.of(

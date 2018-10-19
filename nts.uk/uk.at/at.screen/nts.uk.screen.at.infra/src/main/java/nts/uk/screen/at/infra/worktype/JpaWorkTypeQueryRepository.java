@@ -15,6 +15,9 @@ import nts.uk.screen.at.app.worktype.WorkTypeQueryRepository;
 
 @Stateless
 public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTypeQueryRepository {
+	
+	/** use lesser value for nested split WHERE IN parameters to make sure total parameters < 2100 */
+	private static final int SPLIT_500 = 500;
 
 	private static final String SELECT_ALL_WORKTYPE;
 	private static final String SELECT_BY_WORKTYPE_ATR;
@@ -197,10 +200,10 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 			return new ArrayList<>();
 		}
 		List<WorkTypeDto> resultList = new ArrayList<>();
-		CollectionUtil.split(afternoon2, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subAfternoon2 -> {
-			CollectionUtil.split(morningAtr3, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subMorning3 -> {
-				CollectionUtil.split(afternoon4, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subAfternoon4 -> {
-					CollectionUtil.split(morningAtr5, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subMorning5 -> {
+		CollectionUtil.split(afternoon2, SPLIT_500, subAfternoon2 -> {
+			CollectionUtil.split(morningAtr3, SPLIT_500, subMorning3 -> {
+				CollectionUtil.split(afternoon4, SPLIT_500, subAfternoon4 -> {
+					CollectionUtil.split(morningAtr5, SPLIT_500, subMorning5 -> {
 						resultList.addAll(this.queryProxy().query(SELECT_HDSHIP_KAF022, WorkTypeDto.class)
 											.setParameter("companyId", companyId)
 											.setParameter("oneDayAtr", oneDayAtr)
@@ -297,8 +300,12 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 					.getList());
 		});
 		resultList.sort((o1, o2) -> {
-			if (o1.getDispOrder() == null || o2.getDispOrder() == null) return -1;
-			return o1.getDispOrder().compareTo(o2.getDispOrder());
+			Integer order1 = o1.getDispOrder();
+			Integer order2 = o2.getDispOrder();
+			if (order1 == null && order2 == null) return 0;
+			if (order1 != null && order2 == null) return 1;
+			if (order1 == null && order2 != null) return -1;
+			return order1.compareTo(order2);
 		});
 		return resultList;
 	}
