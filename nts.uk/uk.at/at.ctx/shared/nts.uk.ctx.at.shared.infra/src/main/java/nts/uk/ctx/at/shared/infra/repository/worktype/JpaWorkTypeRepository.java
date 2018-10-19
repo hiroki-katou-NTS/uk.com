@@ -31,6 +31,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTyp
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
+	/** use lesser value for nested split WHERE IN parameters to make sure total parameters < 2100 */
+	private static final int SPLIT_650 = 650;
+	
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
@@ -568,9 +571,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public List<WorkType> findWorkTypeForAppHolidayAppType(String companyId,List<Integer> allDayAtrs, List<Integer> mornings,List<Integer> afternoons,Integer morning,Integer afternoon) {
 		List<WorkType> resultList = new ArrayList<>();
-		CollectionUtil.split(allDayAtrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAll -> {
-			CollectionUtil.split(mornings, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstMorning -> {
-				CollectionUtil.split(afternoons, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAfternoon -> {
+		CollectionUtil.split(allDayAtrs, SPLIT_650, lstAll -> {
+			CollectionUtil.split(mornings, SPLIT_650, lstMorning -> {
+				CollectionUtil.split(afternoons, SPLIT_650, lstAfternoon -> {
 					resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE, KshmtWorkType.class)
 										.setParameter("companyId", companyId)
 										.setParameter("oneDayAtrs", lstAll)
@@ -606,9 +609,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findWorkTypeForAllDayAndHalfDay(String companyId, List<Integer> halfDay,
 			List<String> workTypeCodes, List<Integer> oneDays) {
 		List<WorkType> resultList = new ArrayList<>();
-		CollectionUtil.split(halfDay, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstHalf -> {
-			CollectionUtil.split(workTypeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstCodes -> {
-				CollectionUtil.split(oneDays, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAll -> {
+		CollectionUtil.split(halfDay, SPLIT_650, lstHalf -> {
+			CollectionUtil.split(workTypeCodes, SPLIT_650, lstCodes -> {
+				CollectionUtil.split(oneDays, SPLIT_650, lstAll -> {
 					resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES, KshmtWorkType.class)
 										.setParameter("companyId", companyId)
 										.setParameter("workTypeCodes", lstCodes)
