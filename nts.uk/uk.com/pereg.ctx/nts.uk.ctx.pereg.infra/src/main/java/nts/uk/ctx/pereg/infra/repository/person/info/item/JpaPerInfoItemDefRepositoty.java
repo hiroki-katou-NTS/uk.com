@@ -1140,7 +1140,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			lstObj.addAll(this.queryProxy().query(SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("lstPerInfoCategoryId", subList).getList());
 		});
-		lstObj.sort(SORT_BY_DISPORDER);
+		lstObj.sort( (o1, o2) -> {
+			return ((int) o1[32]) - ((int) o2[32]); // index 32 for [disporder] 
+		});
 		
 		// groupBy categoryId 
 		Map<String, List<Object[]>> perInfoItemDefByList = lstObj.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[31])));
