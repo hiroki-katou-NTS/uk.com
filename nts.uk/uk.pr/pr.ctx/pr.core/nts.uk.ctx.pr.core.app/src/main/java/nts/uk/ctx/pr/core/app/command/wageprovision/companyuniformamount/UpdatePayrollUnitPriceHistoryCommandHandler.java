@@ -31,7 +31,6 @@ public class UpdatePayrollUnitPriceHistoryCommandHandler extends CommandHandler<
     protected void handle(CommandHandlerContext<PayrollUnitPriceHistoryCommand> context) {
         String cId = AppContexts.user().companyId();
         PayrollUnitPriceHistoryCommand command = context.getCommand();
-//        repository.update(new PayrollUnitPriceHistory(command.getCode().,command.getCId(),new YearMonthHistoryItem(command.getHisId() , new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth())))));
         YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
         YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
 

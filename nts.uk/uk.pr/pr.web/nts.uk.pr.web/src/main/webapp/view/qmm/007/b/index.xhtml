@@ -31,12 +31,11 @@
 					<span id="B1_4" class="label" style="margin-left: 60px" data-bind = "text: name"></span>
 				</div>
 				<!-- B1_5 期間 -->
-				<div id="B1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
-					<span class="label">#{i18n.getText('QMM007_32')}</span>
-					<!-- B1_6 開始年月 -->
-					<div id = "B1_6"  style="margin-left: 80px" data-bind="ntsDatePicker: {
+				<div class="control-group">
+					<div id="B1_5" style="margin: 0px 10px 10px 10px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM007_32')}</div>
+					<div id = "B1_6"  style="margin-left: 60px" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM007_11')}',
-																value: startYearMonth, 
+																value: startYearMonth,
 																dateFormat: 'yearmonth',
 																valueFormat: 'YYYYMM',
 																required: true

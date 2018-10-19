@@ -28,6 +28,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         }
         submit(){
             let self = this;
+            block.invisible();
             let data: any = {
                 cId: '',
                 hisId: self.mPayrollUnitPriceHis().hisId,
@@ -48,11 +49,12 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                             self.cancel();
                         });
                     }).fail(function (res: any) {
+                        block.clear();
                         if (res)
                             dialog.alertError(res);
                     })
                 }).ifCancel(() => {
-                    nts.uk.ui.block.clear();
+                    block.clear();
                     return ;
                 });
 
@@ -70,8 +72,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                     if (res)
                         dialog.alertError(res);
                 }).always((res:any) => {
-                    if (res)
-                        dialog.alertError(res);
+                    block.clear();
                 });
             }
         }
