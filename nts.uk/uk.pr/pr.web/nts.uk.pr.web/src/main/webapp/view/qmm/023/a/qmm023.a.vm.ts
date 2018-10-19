@@ -24,13 +24,7 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
             this.columns = ko.observableArray([
                 {headerText: getText('QMM023_7'), key: 'taxFreeamountCode', width: 50, formatter: _.escape},
                 {headerText: getText('QMM023_8'), key: 'taxExemptionName', width: 180, formatter: _.escape},
-                {
-                    headerText: getText('QMM023_9'),
-                    key: 'taxExemptionDisp',
-                    width: 170,
-                    formatter: _.escape,
-                    template: "<div style='text-align: right'>${taxExemptionDisp}</div>"
-                }
+                {headerText: getText('QMM023_9'), key: 'taxExemptionDisp', width: 170, formatter: _.escape}
             ]);
             self.currentCode.subscribe((item) => {
                 if (item != '') {
@@ -95,7 +89,9 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                             $("#taxExemptionName").focus();
                             self.isNewMode(false);
                             self.getAllData().done(() => {
-                                self.currentCode(data.taxFreeamountCode);
+                                _.delay(() => {
+                                    self.currentCode(data.taxFreeamountCode);
+                                }, 100, 'later');
                             });
                         });
                     }).fail(function (error) {
@@ -150,11 +146,15 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                                 if (self.lstTaxExemptLimit().length == 0) {
                                     self.createTaxExe();
                                 } else {
+                                    let code = "";
                                     if (index == self.lstTaxExemptLimit().length) {
-                                        self.currentCode(self.lstTaxExemptLimit()[index - 1].taxFreeamountCode);
+                                        code = self.lstTaxExemptLimit()[index - 1].taxFreeamountCode;
                                     } else {
-                                        self.currentCode(self.lstTaxExemptLimit()[index].taxFreeamountCode);
+                                        code = self.lstTaxExemptLimit()[index].taxFreeamountCode;
                                     }
+                                    _.delay(() => {
+                                        self.currentCode(code);
+                                    }, 100, 'later');
                                 }
                             });
                         });
