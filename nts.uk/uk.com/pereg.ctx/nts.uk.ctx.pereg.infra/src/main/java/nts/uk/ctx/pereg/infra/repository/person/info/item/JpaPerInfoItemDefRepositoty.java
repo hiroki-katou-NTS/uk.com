@@ -313,7 +313,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
 			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition, c.categoryCd");
 
-	private final static String SELECT_NO_WHERE_BYCATEGORYCODE = String.join(" ", SELECT_COMMON_FIELD_BYCATEGORYCD, JOIN_COMMON_TABLE);
+	private final static String SELECT_NO_WHERE_BYCATEGORYCODE = String.join(" ", SELECT_COMMON_FIELD_BYCATEGORYCD, " ,io.disporder ", JOIN_COMMON_TABLE);
 	
 	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE_BYCATEGORYCODE, "WHERE",
 			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
