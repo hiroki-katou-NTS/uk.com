@@ -32,11 +32,9 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			//予定時刻の反映
 			dailyInfor = scheTimeReflect.reflectScheTime(para, chkTimeTypeSche.isChkReflect(), dailyInfor);
 			//勤種・就時の反映
-			dailyInfor = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
-			//時刻の反映
-			AppReflectRecordWork reflectWorkTypeTime = this.workTypetimeReflect(para, dailyInfor);
+			AppReflectRecordWork reflectWorkTypeTime = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
 			workRepository.updateByKeyFlush(reflectWorkTypeTime.getDailyInfo());
-			
+			//時刻の反映
 			scheTimeReflect.reflectTime(para, reflectWorkTypeTime.isChkReflect());			
 			return true;
 		} catch(Exception ex) {
@@ -53,9 +51,7 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			//予定時刻の反映
 			dailyInfor = afterScheTime.reflectScheTime(para, chkTimeTypeChe.isChkReflect(), chkTimeTypeChe.getDailyInfo());
 			//勤種・就時の反映
-			dailyInfor = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
-			
-			AppReflectRecordWork reflectWorkTypeTime = this.workTypetimeReflect(para, dailyInfor);
+			AppReflectRecordWork reflectWorkTypeTime = timeTypeSche.reflectRecordWorktimetype(para, dailyInfor);
 			workRepository.updateByKeyFlush(reflectWorkTypeTime.getDailyInfo());
 			//時刻の反映
 			scheTimeReflect.reflectTime(para, reflectWorkTypeTime.isChkReflect());
@@ -65,24 +61,4 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			return false;
 		}
 	}
-	/**
-	 * 勤種・就時の反映
-	 * @param para
-	 * @return
-	 */
-	private AppReflectRecordWork workTypetimeReflect(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
-		boolean workTypeTimeReflect;
-		//実績勤務種類による勤種・就時を反映できるかチェックする
-		if(timeTypeSche.checkReflectWorkTimeType(para)) {
-			ReflectParameter reflectData = new ReflectParameter(para.getEmployeeId(), 
-					para.getDateData(), para.getGobackData().getWorkTimeCode(), 
-					para.getGobackData().getWorkTypeCode()); 
-			dailyInfor = workTimeUpdate.updateWorkTimeType(reflectData, false, dailyInfor);
-			workTypeTimeReflect = true;
-		} else {
-			workTypeTimeReflect = false;			
-		}
-		return new AppReflectRecordWork(workTypeTimeReflect, dailyInfor);
-	}
-
 }

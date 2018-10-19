@@ -36,7 +36,7 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), para.getDateData(), 
 				para.getGobackData().getWorkTimeCode(), 
-				para.getGobackData().getWorkTypeCode()); 
+				para.getGobackData().getWorkTypeCode(), false); 
 		dailyInfor = workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfor);
 		return new AppReflectRecordWork(true, dailyInfor);
 	}
@@ -52,9 +52,9 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 			return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());			
 		} else {
 			//INPUT．予定と実績を同じに変更する区分をチェックする
-			if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY) {
+			if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 				return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());
-			} else if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK
+			} else if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK
 					&& workTimeService.checkWorkTimeIsFluidWork(para.getGobackData().getWorkTimeCode())){
 				//流動勤務かどうかの判断処理
 				return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());
@@ -85,14 +85,17 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	}
 
 	@Override
-	public WorkInfoOfDailyPerformance reflectRecordWorktimetype(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
+	public AppReflectRecordWork reflectRecordWorktimetype(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
+		boolean isReflect = this.checkReflectRecordForActual(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(),
+				para.getGobackData().getChangeAppGobackAtr());
 		//実績勤務種類による勤種・就時を反映できるかチェックする
-		if(this.checkReflectRecordForActual(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(), para.getGobackData().getChangeAppGobackAtr())) {
+		if(isReflect) {
 			//勤種・就時の反映
-			ReflectParameter reflectPara = new ReflectParameter(para.getEmployeeId(), para.getDateData(), para.getGobackData().getWorkTimeCode(), para.getGobackData().getWorkTypeCode());
-			return workUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
+			ReflectParameter reflectPara = new ReflectParameter(para.getEmployeeId(), para.getDateData(),
+					para.getGobackData().getWorkTimeCode(), para.getGobackData().getWorkTypeCode(), false);
+			return new AppReflectRecordWork(isReflect, workUpdate.updateWorkTimeType(reflectPara, false, dailyInfor));
 		}
-		return dailyInfor;
+		return new AppReflectRecordWork(isReflect, dailyInfor);
 	}
 
 	@Override

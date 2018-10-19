@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
@@ -28,10 +30,13 @@ public class JpaPerDayOfWeekGetMemento implements PersonalDayOfWeekGetMemento {
 	 *            the entitys
 	 */
 	public JpaPerDayOfWeekGetMemento(List<KshmtPersonalDayOfWeek> entities) {
-		this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-				entity -> DayOfWeekAtr
-						.valueOf(entity.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()),
-				entity -> new SingleDaySchedule(new JpaSDayScheDayOfGetMemento(entity))));
+		mapSingleDaySchedule = new HashMap<>();
+		if (!CollectionUtil.isEmpty(entities)) {
+			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
+					entity -> DayOfWeekAtr
+							.valueOf(entity.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()),
+					entity -> new SingleDaySchedule(new JpaSDayScheDayOfGetMemento(entity))));
+		}
 	}
 
 	/*

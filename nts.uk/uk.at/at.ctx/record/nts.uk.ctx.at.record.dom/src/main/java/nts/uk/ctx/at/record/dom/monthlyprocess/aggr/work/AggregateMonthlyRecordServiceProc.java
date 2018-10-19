@@ -274,6 +274,7 @@ public class AggregateMonthlyRecordServiceProc {
 		// 集計前の月別実績データを確認する
 		this.monthlyOldDatas = MonthlyOldDatas.loadData(
 				employeeId, yearMonth, closureId, closureDate, monthlyWorkOpt, this.repositories);
+		
 		// 「労働条件項目」を取得
 		List<WorkingConditionItem> workingConditionItems = this.repositories.getWorkingConditionItem()
 				.getBySidAndPeriodOrderByStrD(employeeId, monthPeriod);
@@ -301,7 +302,7 @@ public class AggregateMonthlyRecordServiceProc {
 			MutableValue<RuntimeException> excepAggregation = new MutableValue<>();
 			
 			// 日別修正等の画面から実行されている場合、集計処理を非同期で実行
-			val asyncAggregation = AsyncTask.builder().withContexts().threadName("Aggregation").build(() -> {
+			Runnable asyncAggregation = () -> {
 				try {
 					this.aggregationProcess(monthPeriod);
 				} catch (RuntimeException ex) {
@@ -309,13 +310,15 @@ public class AggregateMonthlyRecordServiceProc {
 				} finally {
 					cdlAggregation.countDown();
 				}
-			});
+			};
+			
 			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
-				log.debug("集計処理を非同期実行");
-				this.executerService.submit(asyncAggregation);
+				this.executerService.submit(AsyncTask.builder()
+						.withContexts()
+						.threadName("Aggregation")
+						.build(asyncAggregation));
 			} else {
 				// バッチなどの場合は非同期にせずそのまま実行
-				log.debug("集計処理をそのまま実行");
 				asyncAggregation.run();
 			}
 			

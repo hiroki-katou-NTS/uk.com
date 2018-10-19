@@ -404,10 +404,17 @@ public class DailyModifyResCommandFacade {
 			return dataResultAfterIU;
 		}
 
-		if (dataParent.getMode() == 0 && !dataParent.isFlagCalculation() && resultIU.getCommandNew() != null) {
-			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
-					dataParent.getDateRange(), resultIU.getCommandNew().stream().map(c -> c.getWorkInfo().getData())
-							.filter(c -> c != null).collect(Collectors.toList()));
+		if (dataParent.getMode() == 0) {
+			List<DPItemValue> dataCheck = new ArrayList<>();
+			if (!dataParent.isFlagCalculation() && resultIU.getCommandNew() != null) {
+				dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
+						dataParent.getDateRange(), resultIU.getCommandNew().stream().map(c -> c.getWorkInfo().getData())
+								.filter(c -> c != null).collect(Collectors.toList()));
+			}else if(dataParent.isFlagCalculation()) {
+				dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
+						dataParent.getDateRange(), dailyEdits.stream().map(c -> c.getWorkInfo().toDomain(null, null))
+								.filter(c -> c != null).collect(Collectors.toList()));
+			}
 			if (!dataCheck.isEmpty()) {
 				resultError.put(TypeError.CONTINUOUS.value, dataCheck);
 			}

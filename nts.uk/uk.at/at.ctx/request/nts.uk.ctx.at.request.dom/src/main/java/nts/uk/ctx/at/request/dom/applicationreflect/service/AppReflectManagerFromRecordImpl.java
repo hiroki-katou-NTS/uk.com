@@ -46,7 +46,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private AppReflectManager appRefMng;
 	@Inject
 	private GetClosureStartForEmployee getClosureStartForEmp;
-
+	@Inject
+	private InformationSettingOfAppForReflect appSetting;
 	
 	@Override
 	public ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext) {
@@ -69,8 +70,10 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(optRefAppResult.isPresent()) {
 			aprResult = optRefAppResult.get().getExecutionType();
 		}
+		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
 		int count = 0;
 		for (TargetPersonImport targetPersonImport : lstPerson) {
+			
 			count += 1;
 			//データ更新
 			//状態確認
@@ -87,7 +90,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
 			}	
 			
-			
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.PROCESSING.nameId);
 			dataSetter.updateData("reflectApprovalCount", count);
 			//社員に対応する締め開始日を取得する
 			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(targetPersonImport.getEmployeeId());
@@ -101,7 +104,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			}
 			//社員の申請を反映 (Phản ánh nhân viên)
 			if(!this.reflectAppOfEmployee(workId, targetPersonImport.getEmployeeId(), workDate, 
-					optRequesSetting.get(), aprResult)) {
+					optRequesSetting.get(), aprResult, reflectSetting)) {
 				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.STOPPING.nameId);
 				return ProcessStateReflect.INTERRUPTION;
 			}
@@ -112,7 +115,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	}
 	@Override
 	public boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
-			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult) {
+			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting) {
 		
 		
 		//ドメインモデル「締め状態管理」を取得する
@@ -139,8 +142,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(lstApp.isEmpty()) {
 			return true;
 		}
+		
 		for (Application_New appData : lstApp) {			
-			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData);
+			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData, reflectSetting);
 			
 			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
@@ -209,6 +213,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	
 	@Override
 	public ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
+		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
 		//ドメインモデル「申請承認設定」を取得する
 		Optional<RequestSetting> optRequesSetting = requestSettingRepo.findByCompany(AppContexts.user().companyId());
 		if(!optRequesSetting.isPresent()) {
@@ -226,7 +231,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			aprResult = optRefAppResult.get().getExecutionType();
 		}
 		if(!this.reflectAppOfEmployee(workId, sid, datePeriod, 
-				optRequesSetting.get(), aprResult)) {
+				optRequesSetting.get(), aprResult, reflectSetting)) {
 			return ProcessStateReflect.INTERRUPTION;
 		}
 		
