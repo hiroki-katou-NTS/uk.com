@@ -28,6 +28,8 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void removeParam(Map<String, List<GeneralDate>> param);
 	
+	void removeContinuosErrorIn(String sid, DatePeriod date, String code);
+	
 	boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate);
 	
 	boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate);

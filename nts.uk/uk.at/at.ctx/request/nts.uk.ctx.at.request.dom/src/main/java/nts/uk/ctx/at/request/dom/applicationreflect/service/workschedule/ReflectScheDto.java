@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
 @AllArgsConstructor
 @Setter
 @Getter
@@ -48,4 +49,6 @@ public class ReflectScheDto {
 	 * 振出申請
 	 */
 	private RecruitmentApp recruitment;
+	
+	private InformationSettingOfEachApp reflectSetting;
 }

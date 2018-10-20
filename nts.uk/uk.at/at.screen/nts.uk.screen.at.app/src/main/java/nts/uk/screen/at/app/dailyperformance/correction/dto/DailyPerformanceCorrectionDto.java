@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
+import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 
@@ -96,6 +97,8 @@ public class DailyPerformanceCorrectionDto {
 	
 	private List<DCMessageError> errors;
 	
+	private int errorInfomation;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
@@ -111,6 +114,7 @@ public class DailyPerformanceCorrectionDto {
 		this.lstCellStateCalc = new ArrayList<>();
 		this.indentityMonthResult = new IndentityMonthResult(false, false, true);
 		this.errors = new ArrayList<>();
+		this.errorInfomation = DCErrorInfomation.NORMAL.value;
 	}
 
 	/** Check if employeeId is login user */

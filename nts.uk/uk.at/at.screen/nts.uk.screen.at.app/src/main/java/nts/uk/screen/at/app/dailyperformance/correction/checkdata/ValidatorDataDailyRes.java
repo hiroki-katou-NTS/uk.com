@@ -196,6 +196,9 @@ public class ValidatorDataDailyRes {
 	
 	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date, List<WorkInfoOfDailyPerformance> workInfos) {
 		List<DPItemValue> r = new ArrayList<>();
+		
+		employeeErrorRepo.removeContinuosErrorIn(employeeId, new DatePeriod(date.getStartDate(), date.getEndDate()), ErAlWorkRecordCheckService.CONTINUOUS_CHECK_CODE);
+		
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
 				new DatePeriod(date.getStartDate(), date.getEndDate()), workInfos);
 		if (result == null)
@@ -455,6 +458,29 @@ public class ValidatorDataDailyRes {
 		return resultError;
 	}
 
+	/**
+	 * 乖離エラー発生時の本人確認解除
+	 */
+	public List<DPItemValue> releaseDivergence(List<IntegrationOfDaily> dailyResults) {
+		// 乖離エラーのチェック
+		List<DPItemValue> divergenceErrors = new ArrayList<>();
+		for (IntegrationOfDaily d : dailyResults) {
+			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
+			for (EmployeeDailyPerError err : employeeError) {
+				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") && (!err.getErrorAlarmMessage().isPresent() || !err.getErrorAlarmMessage().get().v().equals(TextResource.localize("Msg_1298")))) {
+					if(err.getAttendanceItemList().isEmpty()){
+						divergenceErrors.add(new DPItemValue("", err.getEmployeeID(), err.getDate(), 0));
+					} else {
+						divergenceErrors.addAll(err.getAttendanceItemList().stream()
+								.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+								.collect(Collectors.toList()));
+					}
+				}
+			}
+		}
+		return divergenceErrors;
+	}
+	
 	private List<String> createMessageError(EmployeeMonthlyPerError errorEmployeeMonth) {
 		List<String> messageIds = new ArrayList<>();
 		ErrorType errroType = errorEmployeeMonth.getErrorType();

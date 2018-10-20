@@ -96,9 +96,10 @@ public class DPHeaderDto {
 	}
 
 	public static DPHeaderDto createSimpleHeader(String companyId, String key, String width,
-			Map<Integer, DPAttendanceItem> mapDP) {
+			Map<Integer, DPAttendanceItem> mapDP, Map<Integer, DPAttendanceItemControl> mapColor) {
 		val keyId = getCode(key);
-		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)));
+		val colorHeader = mapColor.get(Integer.parseInt(keyId));
+		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, colorHeader == null ? "" : colorHeader.getHeaderBackgroundColor(), false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)));
 		// optionalRepo.findByListNos(companyId, optionalitemNos)
 		DPAttendanceItem item = mapDP.get(Integer.parseInt(keyId));
 		int attendanceAtr = item.getAttendanceAtr();
@@ -108,15 +109,16 @@ public class DPHeaderDto {
 			DPHeaderDto dtoG = new DPHeaderDto("コード", "Code" + keyId, "String", String.valueOf(withChild) + "px",
 					"", false, "", "code_"+"Name"+ keyId, "search", false, false, inputProcess(Integer.parseInt(keyId)));
 			dtoG.setConstraint(new Constraint("Primitive", isRequired(item), getPrimitiveAllName(item)));
+			dtoG.setColor(dto.getColor());
 			groups.add(dtoG);
-			groups.add(new DPHeaderDto("名称", "Name" + keyId, "String", String.valueOf(withChild) + "px", "",
+			groups.add(new DPHeaderDto("名称", "Name" + keyId, "String", String.valueOf(withChild) + "px", dto.getColor(),
 					false, "Link2", false, false, "center-align", null));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value && item.getTypeGroup() != null) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
-			groups.add(new DPHeaderDto("NO", "NO" + keyId, "number", String.valueOf(withChild) + "px", "", false,
+			groups.add(new DPHeaderDto("NO", "NO" + keyId, "number", String.valueOf(withChild) + "px", dto.getColor(), false,
 					"", "comboCode_"+"Name"+ keyId, "", false, false, inputProcess(Integer.parseInt(keyId))));
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
 				if(!DPText.ITEM_COMBOBOX_CALC.contains(Integer.parseInt(keyId))){
@@ -146,6 +148,7 @@ public class DPHeaderDto {
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 			}
+			groups.get(0).setColor(dto.getColor());
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {

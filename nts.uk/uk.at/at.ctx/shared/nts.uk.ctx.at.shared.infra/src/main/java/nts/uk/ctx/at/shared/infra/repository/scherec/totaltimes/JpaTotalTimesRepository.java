@@ -4,28 +4,29 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.totaltimes;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalConditionPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjects;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK_;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes_;
 
 /**
  * The Class JpaTotalTimesRepository.
@@ -39,33 +40,86 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository#
 	 * getAllTotalTimes(java.lang.String)
 	 */
+	@SneakyThrows
 	@Override
 	public List<TotalTimes> getAllTotalTimes(String companyId) {
-		EntityManager em = this.getEntityManager();
+		String sqlJdbc = "SELECT * " + "FROM KSHST_TOTAL_SUBJECTS KTS "
+				+ "WHERE KTS.CID = ? ORDER BY KTS.TOTAL_TIMES_NO ASC";
 
-		CriteriaBuilder builder = em.getCriteriaBuilder();
+		try (PreparedStatement stmt1 = this.connection().prepareStatement(sqlJdbc)) {
 
-		CriteriaQuery<KshstTotalTimes> query = builder.createQuery(KshstTotalTimes.class);
-		Root<KshstTotalTimes> root = query.from(KshstTotalTimes.class);
+			stmt1.setString(1, companyId);
 
-		List<Predicate> predicateList = new ArrayList<>();
+			List<KshstTotalSubjects> listTotalSubjects = new NtsResultSet(stmt1.executeQuery())
+					.getList(rec -> {
+						KshstTotalSubjectsPK kshstTotalSubjectsPK = new KshstTotalSubjectsPK();
+						kshstTotalSubjectsPK.setCid(rec.getString("CID"));
+						kshstTotalSubjectsPK.setTotalTimesNo(rec.getInt("TOTAL_TIMES_NO"));
+						kshstTotalSubjectsPK.setWorkTypeAtr(rec.getInt("WORK_TYPE_ATR"));
+						kshstTotalSubjectsPK.setWorkTypeCd(rec.getString("WORK_TYPE_CD"));
 
-		predicateList.add(
-				builder.equal(root.get(KshstTotalTimes_.kshstTotalTimesPK).get(KshstTotalTimesPK_.cid), companyId));
+						KshstTotalSubjects entity = new KshstTotalSubjects();
+						entity.setKshstTotalSubjectsPK(kshstTotalSubjectsPK);
 
-		query.where(predicateList.toArray(new Predicate[] {}));
+						return entity;
+					});
 
-		// order by closure id asc
-		query.orderBy(builder.asc(root.get(KshstTotalTimes_.kshstTotalTimesPK).get(KshstTotalTimesPK_.totalTimesNo)));
+			Map<Integer, List<KshstTotalSubjects>> listTotalSubjectsMap = listTotalSubjects.stream()
+					.collect(Collectors
+							.groupingBy(item -> item.getKshstTotalSubjectsPK().getTotalTimesNo()));
 
-		List<KshstTotalTimes> result = em.createQuery(query).getResultList();
+			sqlJdbc = "SELECT * " + "FROM KSHST_TOTAL_TIMES KTT "
+					+ "LEFT JOIN KSHST_TOTAL_CONDITION KTC ON KTT.CID = KTC.CID AND KTT.TOTAL_TIMES_NO = KTC.TOTAL_TIMES_NO "
+					+ "WHERE KTT.CID = ? ORDER BY KTT.TOTAL_TIMES_NO ASC";
 
-		if (result.isEmpty()) {
-			return Collections.emptyList();
+			try (PreparedStatement stmt2 = this.connection().prepareStatement(sqlJdbc)) {
+
+				stmt2.setString(1, companyId);
+
+				List<KshstTotalTimes> result = new NtsResultSet(stmt2.executeQuery())
+						.getList(rec -> {
+
+							KshstTotalConditionPK kshstTotalConditionPK = new KshstTotalConditionPK();
+							kshstTotalConditionPK.setCid(rec.getString("CID"));
+							kshstTotalConditionPK.setTotalTimesNo(rec.getInt("TOTAL_TIMES_NO"));
+
+							KshstTotalCondition totalCondition = new KshstTotalCondition();
+							totalCondition.setKshstTotalConditionPK(kshstTotalConditionPK);
+							totalCondition.setUpperLimitSetAtr(rec.getInt("UPPER_LIMIT_SET_ATR"));
+							totalCondition.setLowerLimitSetAtr(rec.getInt("LOWER_LIMIT_SET_ATR"));
+							totalCondition
+									.setThresoldUpperLimit(rec.getInt("THRESOLD_UPPER_LIMIT"));
+							totalCondition
+									.setThresoldLowerLimit(rec.getInt("THRESOLD_LOWER_LIMIT"));
+							totalCondition.setAttendanceItemId(rec.getInt("ATD_ITEM_ID"));
+
+							KshstTotalTimesPK kshstTotalTimesPK = new KshstTotalTimesPK();
+							kshstTotalTimesPK.setCid(rec.getString("CID"));
+							kshstTotalTimesPK.setTotalTimesNo(rec.getInt("TOTAL_TIMES_NO"));
+
+							KshstTotalTimes entity = new KshstTotalTimes();
+							entity.setKshstTotalTimesPK(kshstTotalTimesPK);
+							entity.setUseAtr(rec.getInt("USE_ATR"));
+							entity.setCountAtr(rec.getInt("COUNT_ATR"));
+							entity.setTotalTimesName(rec.getString("TOTAL_TIMES_NAME"));
+							entity.setTotalTimesAbname(rec.getString("TOTAL_TIMES_ABNAME"));
+							entity.setSummaryAtr(rec.getInt("SUMMARY_ATR"));
+							entity.setListTotalSubjects(listTotalSubjectsMap
+									.get(kshstTotalConditionPK.getTotalTimesNo()));
+							entity.setTotalCondition(totalCondition);
+
+							return entity;
+						});
+
+				if (result.isEmpty()) {
+					return Collections.emptyList();
+				}
+
+				return result.stream()
+						.map(entity -> new TotalTimes(new JpaTotalTimesGetMemento(entity)))
+						.collect(Collectors.toList());
+			}
 		}
-
-		return result.stream().map(entity -> new TotalTimes(new JpaTotalTimesGetMemento(entity)))
-				.collect(Collectors.toList());
 	}
 
 	/*

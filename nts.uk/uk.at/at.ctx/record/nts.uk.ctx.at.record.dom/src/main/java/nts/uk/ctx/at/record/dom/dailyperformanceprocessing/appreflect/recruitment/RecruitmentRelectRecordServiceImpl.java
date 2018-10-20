@@ -57,7 +57,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			//予定開始終了の反映
 			dailyInfor = this.reflectScheWorkTimeType(param, isPre, dailyInfor);
 			//勤種・就時の反映
-			ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(), param.getWorkTypeCode());		
+			ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(),
+					param.getWorkTypeCode(), false);		
 			dailyInfor = workUpdate.updateWorkTimeType(reflectData, false, dailyInfor);
 			//日別実績の勤務情報  変更
 			workRepository.updateByKeyFlush(dailyInfor);
@@ -78,7 +79,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			return dailyInfo;
 		}
 		//予定勤種・就時の反映
-		ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(), param.getWorkTypeCode());		
+		ReflectParameter reflectData = new ReflectParameter(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(),
+				param.getWorkTypeCode(), false);		
 		dailyInfo = workUpdate.updateWorkTimeType(reflectData, true, dailyInfo);
 		//予定開始終了の反映
 		//予定開始時刻の反映

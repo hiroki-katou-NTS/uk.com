@@ -1,18 +1,20 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
@@ -247,6 +249,18 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		if (!result.isEmpty()) {
 			commandProxy().removeAll(result);
 		}
+	}
+	
+	@Override
+	@SneakyThrows
+	public void removeContinuosErrorIn(String sid, DatePeriod date, String code) {
+		String query = new String("DELETE FROM KRCDT_SYAIN_DP_ER_LIST WHERE ERROR_CODE = ? AND SID = ? AND PROCESSING_DATE >= ? AND PROCESSING_DATE <= ?");
+		PreparedStatement statement = this.connection().prepareStatement(query);
+		statement.setString(1, code);
+		statement.setString(2, sid);
+		statement.setDate(3, Date.valueOf(date.start().toLocalDate()));
+		statement.setDate(4, Date.valueOf(date.end().toLocalDate()));
+		statement.executeUpdate();
 	}
 
 	@Override

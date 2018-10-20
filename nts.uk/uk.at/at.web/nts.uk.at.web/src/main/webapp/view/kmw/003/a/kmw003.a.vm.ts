@@ -982,7 +982,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         getGridFeatures(): Array<any> {
             let self = this;
-            let features = [
+            let features;
+            if(self.sheetsGrid().length > 0){
+             features = [
                 {
                     name: 'Resizing',
                     columnSettings: [{
@@ -1018,7 +1020,43 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     initialDisplay: self.sheetsGrid()[0].name,
                     sheets: self.sheetsGrid()
                 }
-            ];
+            ];} else {
+                let messId = self.dataAll().mess; 
+                nts.uk.ui.dialog.info({ messageId: messId });
+                $("#cbClosureInfo").hide();
+                features = [
+                {
+                    name: 'Resizing',
+                    columnSettings: [{
+                        columnKey: 'id', allowResizing: false, minimumWidth: 0
+                    }]
+                },
+                { name: 'MultiColumnHeaders' },
+                {
+                    name: 'Paging',
+                    pageSize: 100,
+                    currentPageIndex: 0
+                },
+                {
+                    name: 'ColumnFixing', fixingDirection: 'left',
+                    showFixButtons: false,
+                    columnSettings: self.fixHeaders()
+                },
+                {
+                    name: 'Summaries',
+                    showSummariesButton: false,
+                    showDropDownButton: false,
+                    columnSettings: self.columnSettings(),
+                    resultTemplate: '{1}'
+                }, {
+                    name: 'CellStyles',
+                    states: self.cellStates()
+                }, {
+                    name: 'HeaderStyles',
+                    columns: self.headerColors()
+                }
+            ];    
+            }
             return features;
         }
         getNtsFeatures(): Array<any> {
