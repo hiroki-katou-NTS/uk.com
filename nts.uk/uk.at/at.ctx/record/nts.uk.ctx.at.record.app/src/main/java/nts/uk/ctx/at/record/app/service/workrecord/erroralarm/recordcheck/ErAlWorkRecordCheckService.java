@@ -350,7 +350,7 @@ public class ErAlWorkRecordCheckService {
 			subWorkInfos.addAll(workInfo.findByListDate(employeeId, dateInRange));
 		}
 		
-		return subWorkInfos;
+		return subWorkInfos.stream().sorted((s1, s2) -> s2.getYmd().compareTo(s1.getYmd())).collect(Collectors.toList());
 	}
 
 	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {

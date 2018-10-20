@@ -167,7 +167,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_ATTENDANCE_ITEM;
 
-	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.itemDailyID IN :lstItem";
+	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.companyID = :companyId AND c.kshstControlOfAttendanceItemsPK.itemDailyID IN :lstItem";
 
 	private final static String SEL_DP_ERROR_EMPLOYEE;
 
@@ -921,8 +921,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem) {
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
+	public List<DPAttendanceItemControl> getListAttendanceItemControl(String companyId, List<Integer> lstAttendanceItem) {
+		if(lstAttendanceItem.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class).setParameter("companyId", companyId)
 				.setParameter("lstItem", lstAttendanceItem).getList().stream().map(c -> {
 					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.itemDailyID,
 							c.inputUnitOfTimeItem, c.headerBgColorOfDailyPer != null ? c.headerBgColorOfDailyPer : "",
