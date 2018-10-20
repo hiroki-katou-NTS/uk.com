@@ -156,6 +156,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				errList,
 				masterCache);
 		
+		if (validInputSchedules.isEmpty()) {
+			return errList.getErrors();
+		}
+		
 		basicScheduleListBefore.addAll(basicScheduleRepo.findSomeChildWithJDBC(validInputSchedules));
 
 		for (BasicSchedule scheduleInput : validInputSchedules) {
