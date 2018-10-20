@@ -71,9 +71,9 @@ public class AnyItemValueOfDaily {
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
         	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
-					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
-					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v.intValue())),
-					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v.intValue()))));
+					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
+					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
+					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
     	}
         
         return result;

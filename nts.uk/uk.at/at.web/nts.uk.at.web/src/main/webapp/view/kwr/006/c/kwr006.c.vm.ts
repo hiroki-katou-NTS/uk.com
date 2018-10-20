@@ -133,7 +133,7 @@ module nts.uk.at.view.kwr006.c {
                             _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
                                 value.code = self.mapIdCodeAtd[value.id];
                             })
-                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
+                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.id));
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
                                 self.currentCodeListSwap(chosen);

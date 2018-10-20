@@ -26,6 +26,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaApplicationRepository_New extends JpaRepository implements ApplicationRepository_New {
+	
+	/** use lesser value for nested split WHERE IN parameters to make sure total parameters < 2100 */
+	private static final int SPLIT_650 = 650;
+	
 	private static final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.companyID = :companyID";
 	private static final String UPDATE = "UPDATE KrqdtApplication_New a "
@@ -401,9 +405,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public List<Application_New> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
 			List<Integer> scheStatus, List<Integer> appType) {
 		List<Application_New> resultList = new ArrayList<>();
-		CollectionUtil.split(recordStatus, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstRefReal -> {
-			CollectionUtil.split(scheStatus, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstRef -> {
-				CollectionUtil.split(appType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstApp -> {
+		CollectionUtil.split(recordStatus, SPLIT_650, lstRefReal -> {
+			CollectionUtil.split(scheStatus, SPLIT_650, lstRef -> {
+				CollectionUtil.split(appType, SPLIT_650, lstApp -> {
 					resultList.addAll(this.queryProxy().query(SELECT_BY_REFLECT, KrqdtApplication_New.class)
 										  .setParameter("employeeID", sid)
 										  .setParameter("startDate", dateData.start())
@@ -421,9 +425,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
 			List<Integer> appType) {
 		List<Application_New> resultList = new ArrayList<>();
-		CollectionUtil.split(dateData, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
-			CollectionUtil.split(reflect, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstRef -> {
-				CollectionUtil.split(appType, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstApp -> {
+		CollectionUtil.split(dateData, SPLIT_650, lstDate -> {
+			CollectionUtil.split(reflect, SPLIT_650, lstRef -> {
+				CollectionUtil.split(appType, SPLIT_650, lstApp -> {
 					resultList.addAll(this.queryProxy().query(SELECT_BY_SID_LISTDATE_APPTYPE, KrqdtApplication_New.class)
 										  .setParameter("employeeID", sid)
 										  .setParameter("dates", lstDate)
