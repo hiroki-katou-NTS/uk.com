@@ -443,18 +443,28 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			}
 
 			//column 14
-			String text14 = this.stateColumn14(typeApp.getErr());
-			if (max > 1) {
-				cells.merge(firstRow, 14, max, 1);
+			if (rowMergered > 1) {
+				cells.merge(firstRow, 14, rowMergered, 1, true);
 			}
-			Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-			notice.setValue(text14);
+			Cell col_14 = cells.get(firstRow, COLUMN_INDEX[14]);
+			String text14 = this.stateColumn14(typeApp.getErr());
+			col_14.setValue(text14);
+			// SET STYLE CHO CỘT THỨ 14
 			for (int i = 0; i < max; i++) {
 				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
-				if (i == (max - 1)) {
+				//them RIGHT_BORDER
+				if (i < max) {
+						setTitleStyleMerge(style_Form);
+				}
+				//them BOTTOM_BORDER (TH ket thuc trang ma chua het app)
+				if ((i == (rowMergered - 1))){
 					setTitleStyle(style_Form);
-				} else {
-					setTitleStyleMerge(style_Form);
+				}
+				//merge row(column 3) + set value (column 3) : TH sang trang moi ma chua het a cu
+				if(i == rowMergered){
+					cells.merge(firstRow + i, 14, (max - rowMergered), 1, true);
+					Cell val_14 = cells.get(firstRow + i, COLUMN_INDEX[14]);
+					val_14.setValue(text14);
 				}
 			}
 			firstRow = firstRow + max;
