@@ -1089,7 +1089,35 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this,
                 dfd = $.Deferred<any>();
             service.getSpecialHoliday().done(function(data) {
-                self.listSpecialholidayframe = data;
+                let holidayCode;
+                _.map(self.extraResultMonthly().conditions(), (d) => {
+                    if (d.haveComboboxFrame()) {
+                        holidayCode = d.listItemID()[0];
+                    }
+                });
+
+                if (!nts.uk.util.isNullOrUndefined(holidayCode)) {
+                    let newdata = [];
+                    let haveInList = false;
+                    _.map(data, (d) => {
+                        newdata.push(d);
+                        if (holidayCode > d.specialHolidayCode) {
+                            newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL002_120')});
+                        }
+
+                        if (d.specialHolidayCode === holidayCode) {
+                            haveInList = true;
+                        }
+                    });
+                    if (!haveInList) {
+                        self.listSpecialholidayframe = newdata;
+                    } else {
+                        self.listSpecialholidayframe = data;
+                    }
+                } else {
+                    self.listSpecialholidayframe = data;
+                }
+
                 dfd.resolve();
             });
             return dfd.promise();
