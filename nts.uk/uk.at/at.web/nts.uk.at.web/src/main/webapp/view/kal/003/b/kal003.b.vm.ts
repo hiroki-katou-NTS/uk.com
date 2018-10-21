@@ -132,11 +132,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
 //                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
                     self.listTypeCheckVacation = ko.observableArray([
-                        new ItemModel(0, getText('KAL003_112')),
-                        new ItemModel(1, getText('KAL003_113')),
-                        new ItemModel(2, getText('KAL003_114')),
-                        new ItemModel(3, getText('KAL003_115')),
-                        new ItemModel(6, getText('KAL003_118'))
+                        new sharemodel.ItemModel(0, getText('KAL003_112')),
+                        new sharemodel.ItemModel(1, getText('KAL003_113')),
+                        new sharemodel.ItemModel(2, getText('KAL003_114')),
+                        new sharemodel.ItemModel(3, getText('KAL003_115')),
+                        new sharemodel.ItemModel(6, getText('KAL003_118'))
                     ]);
                                         
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
