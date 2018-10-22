@@ -1021,7 +1021,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     sheets: self.sheetsGrid()
                 }
             ];} else {
-                nts.uk.ui.dialog.info({ messageId: "Msg_1451" });
+                let messId = self.dataAll().mess; 
+                nts.uk.ui.dialog.info({ messageId: messId });
+                $("#cbClosureInfo").hide();
                 features = [
                 {
                     name: 'Resizing',
