@@ -415,8 +415,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 			kshmtPerWorkCats.forEach(item -> {
 				item.setKshmtWorkCatTimeZones(
-						kshmtWorkCatTimeZonesMap.get(item.getKshmtPerWorkCatPK().getHistoryId())
-								.get(item.getKshmtPerWorkCatPK().getPerWorkCatAtr()));
+						kshmtWorkCatTimeZonesMap.getOrDefault(item.getKshmtPerWorkCatPK().getHistoryId(), Collections.emptyMap())
+								.getOrDefault(item.getKshmtPerWorkCatPK().getPerWorkCatAtr(), Collections.emptyList()));
 			});
 
 			Map<String, List<KshmtPerWorkCat>> kshmtPerWorkCatsMap = kshmtPerWorkCats.stream()
@@ -432,8 +432,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 			kshmtPersonalDayOfWeeks.forEach(item -> {
 				item.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZonesMap
-						.get(item.getKshmtPersonalDayOfWeekPK().getHistoryId())
-						.get(item.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()));
+						.getOrDefault(item.getKshmtPersonalDayOfWeekPK().getHistoryId(), Collections.emptyMap())
+						.getOrDefault(item.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr(), Collections.emptyList()));
 			});
 
 			Map<String, List<KshmtPersonalDayOfWeek>> kshmtPersonalDayOfWeeksMap = kshmtPersonalDayOfWeeks
@@ -441,7 +441,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 							.groupingBy(item -> item.getKshmtPersonalDayOfWeekPK().getHistoryId()));
 
 			result.forEach(item -> {
-				item.setKshmtPerWorkCats(kshmtPerWorkCatsMap.get(item.getHistoryId()));
+				item.setKshmtPerWorkCats(kshmtPerWorkCatsMap.getOrDefault(item.getHistoryId(), Collections.emptyList()));
 				item.setKshmtPersonalDayOfWeeks(
 						kshmtPersonalDayOfWeeksMap.get(item.getHistoryId()));
 			});

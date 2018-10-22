@@ -16,6 +16,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 
 @Stateless
 public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
@@ -28,6 +30,9 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 	private ApproverRepository repoApprover;
 	@Inject
 	private ApprovalBranchRepository repoBranch;
+	
+	@Inject
+	private CreateDailyApprover createDailyApprover;
 
 	@Override
 	public void deleteHistoryByManagerSetting(GeneralDate startDate, GeneralDate endDate, String companyId,
@@ -67,6 +72,8 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 				repoPerson.updatePsApprovalRoot(psAppRoot);
 			}
 		}
+		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
+		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
 	}
 
 	/**

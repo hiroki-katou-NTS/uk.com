@@ -564,17 +564,17 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			// 月次モード
 			
 			// 「月次処理用の暫定残数管理データを作成する」を実行する
-			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
-					param.getCompanyId(), param.getEmployeeId(), param.getAggrPeriod());
+//			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
+//					param.getCompanyId(), param.getEmployeeId(), param.getAggrPeriod());
 			
 			// 受け取った「日別暫定管理データ」を積立年休のみに絞り込む
-			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
-				if (!dailyInterimRemainMngData.getResereData().isPresent()) continue;
-				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
-				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
-				val data = dailyInterimRemainMngData.getResereData().get();
-				results.add(TmpReserveLeaveMngWork.of(master, data));
-			}
+//			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
+//				if (!dailyInterimRemainMngData.getResereData().isPresent()) continue;
+//				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
+//				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
+//				val data = dailyInterimRemainMngData.getResereData().get();
+//				results.add(TmpReserveLeaveMngWork.of(master, data));
+//			}
 		}
 		if (param.getMode() == InterimRemainMngMode.OTHER){
 			// その他モード

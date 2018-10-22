@@ -67,7 +67,7 @@ public class DailyCorrectCalcTimeService {
 		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEditCalc.getEmployeeId())
 				.workingDate(itemEditCalc.getDate()).items(itemValues).completed();
 
-		checkInput28And1(dtoEdit, itemEditCalc);
+		checkInput28And1(dtoEdit, itemEdits);
 		
 		String companyId = AppContexts.user().companyId();
 		
@@ -157,10 +157,10 @@ public class DailyCorrectCalcTimeService {
 		}).collect(Collectors.toList());
 	}
 	
-	private void checkInput28And1(DailyRecordDto dailyEdit, DPItemValue itemEditCalc) {
+	private void checkInput28And1(DailyRecordDto dailyEdit, List<DPItemValue> itemEditCalc) {
 		DailyModifyResult updated = DailyModifyResult.builder().employeeId(dailyEdit.getEmployeeId())
 				.workingDate(dailyEdit.getDate()).items(AttendanceItemUtil.toItemValues(dailyEdit)).completed();
-		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(Arrays.asList(itemEditCalc),
+		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(itemEditCalc,
 				Arrays.asList(updated));
 		if (!resultError.isEmpty())
 			throw new BusinessException(resultError.get(0).getMessage());

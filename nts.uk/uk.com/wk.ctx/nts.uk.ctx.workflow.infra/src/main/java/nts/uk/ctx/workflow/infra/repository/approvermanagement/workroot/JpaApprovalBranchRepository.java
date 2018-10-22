@@ -49,6 +49,7 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 			lstEntity.add(toEntity(branch));
 		}
 		this.commandProxy().insertAll(lstEntity);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * convert entity WwfmtBranch to domain ApprovalBranch

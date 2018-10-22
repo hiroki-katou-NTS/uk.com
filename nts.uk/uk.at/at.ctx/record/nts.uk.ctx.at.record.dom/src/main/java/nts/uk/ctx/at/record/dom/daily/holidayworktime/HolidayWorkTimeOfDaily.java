@@ -131,10 +131,7 @@ public class HolidayWorkTimeOfDaily {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
 			if(frameTime.getMidNightTimeSheet().isPresent()) {
-				int dedTime = frameTime.getDedTimeSheetByAtr(DeductionAtr.Appropriate, ConditionAtr.BREAK).stream()
-																							.map(tc -> tc.getCalcrange().lengthAsMinutes())
-																							.collect(Collectors.summingInt(tc -> tc));
-				eachTime.addTime(frameTime.getStatutoryAtr().get(), frameTime.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate).minusMinutes(dedTime));
+				eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate):new AttendanceTime(0));
 			}
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
