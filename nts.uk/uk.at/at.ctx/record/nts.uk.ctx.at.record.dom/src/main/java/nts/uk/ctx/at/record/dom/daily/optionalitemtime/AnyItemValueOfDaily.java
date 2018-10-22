@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay;
 
 /** 日別実績の任意項目*/
 @Getter
@@ -71,11 +72,12 @@ public class AnyItemValueOfDaily {
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
         	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
-					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
-					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
-					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
+					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
+					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v.intValue())),
+					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v.intValue()))));
     	}
-        
+        MaxRemainingDay test = new MaxRemainingDay(99.0);
+        test.validate();
         return result;
     }
 

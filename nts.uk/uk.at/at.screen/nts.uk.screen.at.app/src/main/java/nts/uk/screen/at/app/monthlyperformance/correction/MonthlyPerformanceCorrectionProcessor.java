@@ -279,7 +279,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// fix bug 
 			if (results.isEmpty()) {
-				String mess = new String("Msg_1452");
+				String mess = new String("Msg_1450");
 				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
 				return screenDto;
 			}
@@ -292,7 +292,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			if (formatPerformance.isPresent()) {
 				monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
 			} else {
-				throw new BusinessException("FormatPerformance hasn't data");
+				throw new BusinessException("Msg_1452");
 			}
 
 			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
@@ -433,7 +433,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(),
 							screenDto);
 				} else {
-					throw new BusinessException("FormatPerformance hasn't data");
+					throw new BusinessException("Msg_1452");
 				}
 
 				List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
