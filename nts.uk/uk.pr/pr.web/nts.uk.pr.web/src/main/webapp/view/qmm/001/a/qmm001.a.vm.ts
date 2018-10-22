@@ -330,7 +330,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             }
 
             let data:any = {
-                startYearMonth : startDate ,
+                start : startDate ,
                 code: self.salGenParaIdent().paraNo,
                 name: self.salGenParaIdent().name,
                 historyAtr : self.salGenParaIdent().historyAtr

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 420, height: 450 };</script>
+			<script>var dialogSize = { width: 440, height: 450 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm001.b.vm.js" />
@@ -54,10 +54,11 @@
 					</com:ko-if>
 
 					<!-- B1_8 9999/12 -->
-					<span class="label" data-bind =" text: endYearMonthDay"></span>
+					<span class="label" data-bind =" text: end"></span>
 				</div>
 				<!-- B1_9 開始年月和暦 -->
 				<div id="B1_9" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<com:ko-if bind="!isFisrtHistory()">
 					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM001_32')}</span>
 
 					<div id = "B1_10" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
@@ -79,6 +80,18 @@
 										group: 'periodOption'}" >
 							</div>
 					</div>
+					</com:ko-if>
+					<com:ko-if bind="isFisrtHistory()">
+						<span class="label" style= "display: inline-block;text-align: left; margin-left:37px;">#{i18n.getText('QMM001_32')}</span>
+						<div  class="cell" tabindex="2"
+							  data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+						</div>
+					</com:ko-if>
 			</div>
 			</div>
 			<div id="functions-area-bottom">
