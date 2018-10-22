@@ -207,10 +207,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 					.setParameter("employeeId", subList)
 					.setParameter("end", processingDate.end())
 					.setParameter("start", processingDate.start())
-					.getList()
-					.stream().collect(Collectors.groupingBy(c -> c.employeeId + c.processingDate.toString())).entrySet().stream()
-					.map(c -> c.getValue().stream().map(item -> item.toDomain()).collect(Collectors.toList()))
-					.flatMap(List::stream).collect(Collectors.toList()));
+					.getList(c -> c.toDomain()));
 		});
 		
 		return resultList;
