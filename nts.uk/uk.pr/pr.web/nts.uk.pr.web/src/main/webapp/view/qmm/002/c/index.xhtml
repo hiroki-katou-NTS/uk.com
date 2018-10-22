@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 730 };</script>
+			<script>var dialogSize = { width: 942, height: 640 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="qmm002.c.service.js" />
 			<com:scriptfile path="qmm002.c.vm.js" />
@@ -19,16 +19,10 @@
 				<button tabindex = "2" data-bind="click: close">#{i18n.getText('QMM002_23')}</button>
 			</div>
 			<div class="contents-area dialog-content" style="padding: 10px 25px">
-				<div>
-					<div class="valign-center control-group">
-						<span class="label">#{i18n.getText('QMM002_24')}</span>
-					</div>
-					<div class="valign-center control-group">
-						<span class="label">#{i18n.getText('QMM002_25')}</span>
-					</div>
-					<div class="valign-center control-group">
-						<span class="label">#{i18n.getText('QMM002_26')}</span>
-					</div>
+				<div style="margin-bottom: 10px">
+					<span class="label">#{i18n.getText('QMM002_24')}</span><br/>
+					<span class="label">#{i18n.getText('QMM002_25')}</span><br/>
+					<span class="label">#{i18n.getText('QMM002_26')}</span><br/>
 				</div>
 				<div id="source" style="display: inline-block">
 					<div class="valign-center control-group">

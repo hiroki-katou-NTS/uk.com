@@ -125,7 +125,10 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                     service.deleteBranch(self.selectedCode()).done(() => {
                         self.startPage().done(() => {
                             info({ messageId: "Msg_16" }).then(() => {
-                                self.selectedCode(nextSelectNodeId);
+                                if (self.selectedCode() == nextSelectNodeId)
+                                    self.selectedCode.valueHasMutated();
+                                else
+                                    self.selectedCode(nextSelectNodeId);
                                 if (self.listBank().length == 0) {
                                     self.openDialogQmm002d();
                                 }

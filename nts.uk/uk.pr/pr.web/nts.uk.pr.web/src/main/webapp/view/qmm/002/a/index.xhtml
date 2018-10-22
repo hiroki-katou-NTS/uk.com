@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" data-bind="click: createNew">#{i18n.getText('QMM002_1')}</button>
-				<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('QMM002_2')}</button>
+				<button tabindex="2" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('QMM002_2')}</button>
 				<button tabindex="3" data-bind="enable: false">#{i18n.getText('QMM002_3')}</button>
 				<button tabindex="4" data-bind="click: openDialogQmm002d">#{i18n.getText('QMM002_4')}</button>
 				<button tabindex="5" data-bind="click: openDialogQmm002c, enable: totalBranches() > 1">#{i18n.getText('QMM002_5')}</button>
