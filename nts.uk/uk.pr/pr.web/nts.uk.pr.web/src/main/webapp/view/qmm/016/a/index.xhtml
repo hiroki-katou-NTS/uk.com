@@ -19,14 +19,16 @@
     <ui:define name="content">
         <div id="functions-area">
             <div id="">
-                <button id="A1_1" tabindex="1" data-bind="click: createNewWageTable, enable: screenMode() == 1">#{i18n.getText('QMM016_1')}</button>
+                <button id="A1_1" tabindex="1"
+                        data-bind="click: createNewWageTable, enable: screenMode() == 1">#{i18n.getText('QMM016_1')}</button>
                 <button id="A1_2" class="proceed" tabindex="2"
                         data-bind="click: registerWageTable, enable: $root.errors.isEmpty">#{i18n.getText('QMM016_2')}</button>
-                <button style = "margin-left: 70px;" id="A1_3" tabindex="3"
+                <button style="margin-left: 70px;" id="A1_3" tabindex="3"
                         data-bind="click: copy, enable: false">#{i18n.getText('QMM016_3')}</button>
                 <button id="A1_4" tabindex="4"
                         data-bind="click: outputExcel, enable: false">#{i18n.getText('QMM016_4')}</button>
-                <button id="A1_5" tabindex="5" data-bind="click: settingQualificationGroup, enable: true">#{i18n.getText('QMM016_5')}</button>
+                <button id="A1_5" tabindex="5"
+                        data-bind="click: settingQualificationGroup, enable: true">#{i18n.getText('QMM016_5')}</button>
                 <button id="A1_6" tabindex="6"
                         data-bind="click: correctMasterDialog, , enable: false">#{i18n.getText('QMM016_6')}</button>
             </div>
@@ -34,7 +36,48 @@
 
         </div>
         <div id="contents-area" class="fixed-flex-layout">
+            <div style="margin-left: 20px; margin-top: 20px;" class="fixed-flex-layout-left">
+                <div data-bind="ntsPanel:{width: '335px', height: '440px', direction: 'right', showIcon: true, visible: true}"
+                     style="margin-left: 10px; margin-bottom: 20px;">
+                    <div style="width: 335px" data-bind="ntsSearchBox: {
+                                label: '#{i18n.getText('QMM016_8')}',
+                                targetKey: 'identifier',
+                                mode:'igTree',
+                                comId:'A2_6',
+                                items: wageTableList,
+                                selected: selectedWageTableIdentifier,
+                                selectedKey: 'identifier',
+                                childField: 'childs',
+                                fields: ['name', 'code']}">
+                    </div>
+                    <table id="A2_6" data-bind="ntsTreeGridView:{
+                               width: 335,
+                               rows: 15,
+                               dataSource: wageTableList,
+                               value: selectedWageTableIdentifier,
+                               initialExpandDepth: 0,
+                               primaryKey: 'identifier',
+                               childDataKey: 'childs',
+                               primaryText: 'nodeText',
+                               multiple: false,
+                               enable: true,
+                               showCheckBox: false}">
+                    </table>
+                </div>
+            </div>
+            <div id="fixed-flex-layout-right" tabindex="9">
+                <div id="D3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+                     style="width: 665px;">
+                    <div class="tab-content-1">
+                        ad
 
+                    </div>
+                    <div class="tab-content-2">
+                        das
+
+                    </div>
+                </div>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

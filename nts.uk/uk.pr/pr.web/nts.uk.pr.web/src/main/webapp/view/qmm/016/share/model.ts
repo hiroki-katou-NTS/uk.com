@@ -326,4 +326,20 @@ module nts.uk.pr.view.qmm016.share.model {
             self.englishName(param ? param.englishName : '');
         }
     }
+
+    export class WageTableTreeNode {
+        code: string;
+        name: string;
+        nodeText: string;
+        childs: any;
+        identifier: string;
+        constructor(identifier: string, code: string, name: string, nodeText: string, childs: Array<Node>) {
+            var self = this;
+            self.code = code;
+            self.name = name;
+            self.nodeText = nodeText;
+            self.childs = childs;
+            self.identifier =  identifier
+        }
+    }
 }
