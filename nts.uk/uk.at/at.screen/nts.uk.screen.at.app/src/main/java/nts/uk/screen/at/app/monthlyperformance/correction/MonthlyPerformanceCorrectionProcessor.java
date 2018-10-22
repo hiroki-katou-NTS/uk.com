@@ -627,7 +627,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
 		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
-			throw new BusinessException("Msg_1261");
+			throw new BusinessException("Msg_1450");
 		}
 
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {

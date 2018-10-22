@@ -188,6 +188,8 @@ public class MonthlyPerformanceDisplay {
 				item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
 			});
 			param.setLstAtdItemUnique(lstAtdItemUnique);
+		} else {
+			throw new BusinessException("Msg_1452");
 		}
 		// アルゴリズム「ロック状態をチェックする」を実行する
 		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(cId, lstEmployeeIds,
