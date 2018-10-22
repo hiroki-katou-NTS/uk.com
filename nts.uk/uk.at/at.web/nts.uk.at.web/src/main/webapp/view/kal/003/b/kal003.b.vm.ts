@@ -6,6 +6,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
+    
 
 
     export class ScreenModel {
@@ -130,12 +131,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.modeScreen(1);
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
-                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
-                    //                    self.settingExtraMon = $.extend({}, shareutils.getDefaultExtraResultMonthly(0), option.data);
-                    //                    let extraResultMonthly = shareutils.convertTransferDataToExtraResultMonthly(self.settingExtraMon);
-                    //                    let data = ko.mapping.fromJS(option.data);
-                    //                    data.currentConditions = ko.observableArray([]);
-                    //                    sharemodel.setupCurrent(data);
+//                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
+                    self.listTypeCheckVacation = ko.observableArray([
+                        new sharemodel.ItemModel(0, resource.getText('KAL003_112')),
+                        new sharemodel.ItemModel(1, resource.getText('KAL003_113')),
+                        new sharemodel.ItemModel(2, resource.getText('KAL003_114')),
+                        new sharemodel.ItemModel(3, resource.getText('KAL003_115')),
+                        new sharemodel.ItemModel(6, resource.getText('KAL003_118'))
+                    ]);
+                                        
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                     break;
                 }
@@ -1085,7 +1089,35 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this,
                 dfd = $.Deferred<any>();
             service.getSpecialHoliday().done(function(data) {
-                self.listSpecialholidayframe = data;
+                let holidayCode;
+                _.map(self.extraResultMonthly().conditions(), (d) => {
+                    if (d.haveComboboxFrame()) {
+                        holidayCode = d.listItemID()[0];
+                    }
+                });
+
+                if (!nts.uk.util.isNullOrUndefined(holidayCode)) {
+                    let newdata = [];
+                    let haveInList = false;
+                    _.map(data, (d) => {
+                        newdata.push(d);
+                        if (holidayCode > d.specialHolidayCode) {
+                            newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL002_120')});
+                        }
+
+                        if (d.specialHolidayCode === holidayCode) {
+                            haveInList = true;
+                        }
+                    });
+                    if (!haveInList) {
+                        self.listSpecialholidayframe = newdata;
+                    } else {
+                        self.listSpecialholidayframe = data;
+                    }
+                } else {
+                    self.listSpecialholidayframe = data;
+                }
+
                 dfd.resolve();
             });
             return dfd.promise();

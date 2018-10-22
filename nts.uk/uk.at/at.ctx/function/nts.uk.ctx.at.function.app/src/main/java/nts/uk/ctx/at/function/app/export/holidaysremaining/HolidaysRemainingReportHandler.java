@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
-import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -58,6 +57,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -98,6 +99,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private NursingLeaveRemainingAdapter nursingLeaveAdapter;
 	@Inject
 	private VariousVacationControlService variousVacationControlService;
+	@Inject
+	private CompanyAdapter companyRepo;
+	
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -148,7 +152,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
 				.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, criteriaDate, true, false, true,
 						true, false, false));
-
 		// 出力するデータ件数をチェックする
 		if (listEmployeeInformationImport.isEmpty()) {
 			throw new BusinessException("Msg_885");
@@ -184,10 +187,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					empMap.get(emp.getEmployeeId()).getEmployeeName(), empMap.get(emp.getEmployeeId()).getWorkplaceId(),
 					wpCode, wpName, empmentName, positionName, currentMonth, holidayRemainingInfor));
 		}
+		
+		Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
 
 		HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(hdRemainCond.getStartMonth(),
 				hdRemainCond.getEndMonth(), variousVacationControl, hdRemainCond.getPageBreak(),
-				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth, employeeIds, employees);
+				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth, employeeIds, employees, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
 
 		this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 

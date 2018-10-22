@@ -1,20 +1,40 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.eclipse.persistence.jpa.rs.features.fieldsfiltering.FieldsFilterType;
+
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.FullJoinWwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhasePK;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.FullJoinAppRootInstance;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt
@@ -70,7 +90,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 */
 	@Override
 	public List<ApprovalPhase> getAllIncludeApprovers(String companyId, String branchId) {
-		List<WwfmtApprovalPhase> enPhases = this.queryProxy().query(SELECT_FROM_APPHASE,WwfmtApprovalPhase.class)
+		/*List<WwfmtApprovalPhase> enPhases = this.queryProxy().query(SELECT_FROM_APPHASE,WwfmtApprovalPhase.class)
 				.setParameter("companyId", companyId)
 				.setParameter("branchId", branchId)
 				.getList();
@@ -79,8 +99,32 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 			ApprovalPhase dPhase = toDomainApPhase(x);
 			dPhase.addApproverList(x.wwfmtAppovers.stream().map(a -> toDomainApprover(a)).collect(Collectors.toList()));
 			result.add(dPhase);
-		});
-		
+		});*/
+		List<ApprovalPhase> result = new ArrayList<>();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = "SELECT phase.CID, phase.BRANCH_ID, phase.APPROVAL_PHASE_ID, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.DISPORDER, " +
+						"approver.APPROVER_ID, approver.JOB_ID, approver.SID, approver.DISPORDER, approver.APPROVAL_ATR, approver.CONFIRM_PERSON " +
+						"FROM WWFMT_APPROVAL_PHASE phase " +
+						"LEFT JOIN WWFMT_APPROVER approver " +
+						"ON phase.CID = approver.CID " +
+						"AND phase.BRANCH_ID = approver.BRANCH_ID " +
+						"AND phase.APPROVAL_PHASE_ID = approver.APPROVAL_PHASE_ID " +
+						"WHERE phase.CID = 'companyID' " +
+						"AND phase.BRANCH_ID = 'branchID' ";
+		query = query.replaceAll("companyID", companyId);
+		query = query.replaceAll("branchID", branchId);
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
+			ResultSet rs = pstatement.executeQuery();
+			List<ApprovalPhase> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				result = Collections.emptyList();
+			} else {
+				result = listResult;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			result = Collections.emptyList();
+		}
 		return result;
 	}
 	
@@ -104,6 +148,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	@Override
 	public void addApprovalPhase(ApprovalPhase appPhase) {
 		this.commandProxy().insert(toEntityAppPhase(appPhase));
+		this.getEntityManager().flush();
 	}
 	/**
 	 * update Approval Phase
@@ -196,4 +241,58 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 				.setParameter("branchId", branchId)
 				.getSingle(c->toDomainApPhase(c));
 	}	
+	
+	private List<FullJoinWwfmtApprovalPhase> createFullJoinAppRootInstance(ResultSet rs){
+		List<FullJoinWwfmtApprovalPhase> listFullData = new ArrayList<>();
+		try {
+			while (rs.next()) {
+				listFullData.add(new FullJoinWwfmtApprovalPhase(
+						rs.getString("CID"), 
+						rs.getString("BRANCH_ID"), 
+						rs.getString("APPROVAL_PHASE_ID"), 
+						rs.getInt("APPROVAL_FORM"), 
+						rs.getInt("BROWSING_PHASE"), 
+						rs.getInt(6),  
+						rs.getString("APPROVER_ID"), 
+						rs.getString("JOB_ID"), 
+						rs.getString("SID"), 
+						rs.getInt(10), 
+						rs.getInt("APPROVAL_ATR"), 
+						rs.getInt("CONFIRM_PERSON")));
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listFullData;
+	}
+	
+	private List<ApprovalPhase> toDomain(List<FullJoinWwfmtApprovalPhase> listFullJoin){
+		listFullJoin.stream().collect(Collectors.groupingBy(x -> {
+			return new WwfmtApprovalPhasePK(x.companyId, x.branchId, x.approvalPhaseId); }));
+		return listFullJoin.stream().collect(Collectors.groupingBy(k -> {
+				return new WwfmtApprovalPhasePK(k.companyId, k.branchId, k.approvalPhaseId); }))
+						.entrySet().stream().map(x -> {
+					FullJoinWwfmtApprovalPhase first = x.getValue().get(0);
+					String companyId = first.companyId;
+					String branchId = first.branchId;
+					String approvalPhaseId = first.approvalPhaseId;
+					ApprovalForm approvalForm = EnumAdaptor.valueOf(first.approvalForm, ApprovalForm.class);
+					int browsingPhase = first.browsingPhase;
+					int orderNumber = first.phaseDispOrder;
+					List<Approver> approvers = x.getValue().stream().map(y -> 
+						new Approver(
+								companyId, 
+								branchId, 
+								approvalPhaseId, 
+								y.approverId, 
+								y.jobId, 
+								y.employeeId, 
+								y.approverDispOrder,
+								EnumAdaptor.valueOf(y.approvalAtr, ApprovalAtr.class), 
+								EnumAdaptor.valueOf(y.confirmPerson, ConfirmPerson.class))).collect(Collectors.toList());
+					return new ApprovalPhase(companyId, branchId, approvalPhaseId, approvalForm, browsingPhase, orderNumber, approvers);
+				}).collect(Collectors.toList());
+	}
 }
