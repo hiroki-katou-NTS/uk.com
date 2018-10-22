@@ -18,6 +18,9 @@
         <com:scriptfile path="qmm040.a.service.js"/>
         <com:scriptfile path="qmm040.a.vm.js"/>
         <com:stylefile path="qmm040.a.style.css"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.AmountOfMoney
+        </com:ValidatorScript>
     </ui:define>
 
     <ui:define name="sidebar">
@@ -40,7 +43,7 @@
             <div class="sidebar-content-header flex valign-center">
 
                 <span class="title" data-bind="text : titleTab"></span>
-                <button class="proceed">#{i18n.getText('QMM040_2')}</button>
+                <button class="proceed" data-bind="click:registerAmount">#{i18n.getText('QMM040_2')}</button>
                 <a class="goout" style="margin-left: 700px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
@@ -48,33 +51,64 @@
             <div class="contents-area fixed-flex-layout">
                 <div id="com-ccg001"></div>
                 <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
-                    <div style="float: left;width: 375px;">
-                        <div style=" margin-top: 15px"
-                             data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">
+                    <div style="float: left;width: 335px;">
+                        <!--<div style=" margin-top: 15px"-->
+                             <!--data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">-->
 
-                            <div style="width: 300px" data-bind="ntsSearchBox: {
-                    searchMode: 'filter',
-                    targetKey: 'individualPriceCode',
-                    comId: 'A4_4',
-	                    items: salIndAmountNames,
-	                    selected: salIndAmountNamesSelectedCode,
-	                    selectedKey: 'individualPriceCode',
-	                     fields: ['individualPriceName', 'individualPriceCode'],
-	                      mode: 'igGrid'}"/>
-                            <table id="A4_4" data-bind="ntsGridList: {
-                        height: 400,
-                        options: salIndAmountNames,
-                        optionsValue: 'individualPriceCode',
-                        columns: tilteTable,
-                        multiple: false,
-                        value: salIndAmountNamesSelectedCode
-                    }"></table>
+                            <!--<div style="width: 300px" data-bind="ntsSearchBox: {-->
+                    <!--searchMode: 'filter',-->
+                    <!--targetKey: 'individualPriceCode',-->
+                    <!--comId: 'A4_4',-->
+	                    <!--items: salIndAmountNames,-->
+	                    <!--selected: salIndAmountNamesSelectedCode,-->
+	                    <!--selectedKey: 'individualPriceCode',-->
+	                     <!--fields: ['individualPriceName', 'individualPriceCode'],-->
+	                      <!--mode: 'igGrid'}"/>-->
+                            <!--<table id="A4_4" data-bind="ntsGridList: {-->
+                        <!--height: 400,-->
+                        <!--options: salIndAmountNames,-->
+                        <!--optionsValue: 'individualPriceCode',-->
+                        <!--columns: tilteTable,-->
+                        <!--multiple: false,-->
+                        <!--value: salIndAmountNamesSelectedCode-->
+                    <!--}"></table>-->
 
 
+                        <!--</div>-->
+                        <div  class="panel" style=" margin-top: 15px"
+                             data-bind="ntsPanel:{width: '280px', height: '470px',showIcon: true, direction: 'bottom', visible: true}">
+                            <!--A4_3 検索-->
+                            <div style="width: 280px"
+                                 data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'individualPriceCode', comId: 'treegrid',items: salIndAmountNames, searchText: '検索', selected: salIndAmountNamesSelectedCode, selectedKey: 'individualPriceCode', fields: ['individualPriceName', 'individualPriceCode'], mode: 'igGrid'}"/>
+                            <!--A4_4 項目リスト-->
+                            <!--A4_5 コード-->
+                            <!--A4_6 名称-->
+                            <!--A4_7 コード-->
+                            <!--A4_8 名称-->
+                            <table id="treegrid"
+                                   data-bind="ntsGridList:{
+                                   name: '#[QMM039_12]',
+                                width: 280,
+                                height: 420,
+                                dataSource: salIndAmountNames,
+                                columns: [
+                                    {key:'index', length: 0, hidden: true},
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'individualPriceCode', length: 3},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'individualPriceName', length: 3}
+                                ],
+                                value: salIndAmountNamesSelectedCode,
+                                primaryText: 'individualPriceName',
+                                optionsValue: 'individualPriceCode',
+                                multiple: false,
+                                enable: true,
+                                showCheckBox: false}">
+                            </table>
                         </div>
+
+
                     </div>
                     <div style="float: left;height: 400px;width: 50px;margin-top: 130px;">
-                        <span  id="custom-caret" class="caret-right"></span>
+                        <span id="custom-caret" class="caret-right"></span>
                     </div>
 
 
@@ -86,7 +120,7 @@
 
                         <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
                         <!--A5_2 項目区分-->
-                        <div class="label margin-left-item" data-bind="text: itemClassification()"></div>
+                        <div style="margin-left: 40px" data-bind="text: itemClassification()"></div>
                     </div>
 
                     <div class="flex valign-center margin-top-item">
@@ -103,41 +137,49 @@
                         <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
                         <!--A5_7 基準年月-->
                         <div class="margin-left-item"
-                             data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth'}"></div>
+                             data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM040_13]',required: true}"></div>
                         <!--A5_8 抽出-->
                         <button class="caret-bottom" data-bind="click: filterData"
                                 style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
 
                     </div>
-                    <table id="substituteDataGrid"></table>
-                    <!--<table id="grid"></table>-->
 
-                    <!--<table id="A5_9">-->
-                    <!--<colgroup>-->
-                    <!--<col width="130px"/>-->
-                    <!--<col width="100px"/>-->
-                    <!--<col width="170px"/>-->
-                    <!--<col width="120px"/>-->
+                    <table id="A5_9">
+                        <colgroup>
+                            <col width="130px"/>
+                            <col width="120px"/>
+                            <col width="160px"/>
+                            <col width="158px"/>
 
-                    <!--</colgroup>-->
-                    <!--<thead>-->
-                    <!--<tr>-->
-                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>-->
-                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>-->
-                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>-->
-                    <!--<th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>-->
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>
+                            <th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>
+                            <th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>
+                            <th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>
 
-                    <!--</tr>-->
-                    <!--</thead>-->
-                    <!--<tbody>-->
-                    <!--<tr>-->
-                    <!--<td></td>-->
-                    <!--<td></td>-->
-                    <!--<td></td>-->
-                    <!--<td></td>-->
-                    <!--</tr>-->
-                    <!--</tbody>-->
-                    <!--</table>-->
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: salIndAmountUpdateCommandList">
+                        <tr>
+                            <td data-bind="text:employeeCode"></td>
+                            <td data-bind="text:employeeName"></td>
+                            <td data-bind="text:period"></td>
+                            <td>
+                                <input style="width: 120px" data-bind="ntsNumberEditor: {
+                                        value: amountOfMoney,
+                                        constraint:'AmountOfMoney',
+                                        name:'#[QMM040_20]',
+                                        option: {
+
+                                            grouplength: 3,
+                                            currencyformat: 'JPY'}}"/>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
 

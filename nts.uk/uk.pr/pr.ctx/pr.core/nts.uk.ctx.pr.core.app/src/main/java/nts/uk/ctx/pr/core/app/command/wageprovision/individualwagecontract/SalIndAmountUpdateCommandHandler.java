@@ -20,6 +20,6 @@ public class SalIndAmountUpdateCommandHandler extends CommandHandler<SalIndAmoun
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountUpdateAllCommand> commandHandlerContext) {
         SalIndAmountUpdateAllCommand command = commandHandlerContext.getCommand();
-        repository.updateAll(command.getSalIndAmountUpdateCommandList().stream().map(v->new SalIndAmount(v.getHistoryId(),v.getAmountOfMoney())).collect(Collectors.toList()));
+        repository.updateAll(command.getSalIndAmountUpdateCommandList().stream().map(v->new SalIndAmount(v.getHistoryID(), Long.parseLong(v.getAmountOfMoney()))).collect(Collectors.toList()));
     }
 }

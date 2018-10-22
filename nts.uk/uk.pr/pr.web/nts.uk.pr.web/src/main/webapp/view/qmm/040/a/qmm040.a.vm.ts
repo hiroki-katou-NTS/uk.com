@@ -1,13 +1,16 @@
 module nts.uk.pr.view.qmm040.a.viewmodel {
     import getText = nts.uk.resource.getText;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
 
         //SalIndAmountName
+
         salIndAmountNames: KnockoutObservableArray<SalIndAmountName>;
         salIndAmountNamesSelectedCode: KnockoutObservable<string>;
 
         personalAmount: PersonalAmount = new PersonalAmount();
+        salIndAmountUpdateCommandList:KnockoutObservableArray<Amount>=ko.observableArray([]);
 
         //onSelected
         cateIndicator: KnockoutObservable<number>;
@@ -22,25 +25,25 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         amountList: KnockoutObservableArray<Amount>;
 
 
-        yearMonthFilter: KnockoutObservable<number> = ko.observable(201804);
+        yearMonthFilter: KnockoutObservable<number>;
         onTab: KnockoutObservable<number> = ko.observable(0);
         titleTab: KnockoutObservable<string> = ko.observable('');
         itemClassification: KnockoutObservable<string> = ko.observable('');
         individualPriceCode: KnockoutObservable<string>;
         individualPriceName: KnockoutObservable<string>;
 
-        items: KnockoutObservableArray<any>;
-        first: any;
 
         constructor() {
             var self = this;
-            $("#A5_9").ntsFixedTable({height: 350, width: 520});
+            $("#A5_9").ntsFixedTable({height: 350, width: 700});
             self.tilteTable = ko.observableArray([
                 {headerText: getText('QMM040_8'), key: 'individualPriceCode', width: 100},
                 {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
 
             ]);
 
+
+            self.yearMonthFilter= ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.cateIndicator = ko.observable(0);
             self.salBonusCate = ko.observable(0);
 
@@ -74,17 +77,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
 
             });
-            self.showSubstiteDataGrid();
             self.reloadCcg001();
 
-            var array = [];
-            for (let i = 0; i < 100; i++) {
-                array.push({code: i, name: "text" + i, combo: "1"});
-            }
-            this.items = ko.observableArray(array);
 
-            this.first = this.items()[0];
-            self.initgrid2();
 
         }
 
@@ -175,6 +170,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         public onSelected(pelValCode: string) {
             let self = this;
             self.personalAmount.periodAndAmountDisplay.removeAll();
+            self.salIndAmountUpdateCommandList.removeAll();
             $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmountDisplay()).igGrid("dataBind");
             service.salIndAmountHisByPeValCode(pelValCode, self.cateIndicator(), self.salBonusCate()).done(function (data) {
 
@@ -196,10 +192,19 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     temp.push(self.personalAmount.periodAndAmount()[i])
             }
             self.personalAmount.periodAndAmountDisplay(temp);
+            self.salIndAmountUpdateCommandList(temp);
 
             $("#substituteDataGrid").igGrid("dataSourceObject", ko.mapping.toJS(self.personalAmount.periodAndAmountDisplay)).igGrid("dataBind");
 
             $("#grid").igGrid("dataSourceObject", ko.mapping.toJS(self.personalAmount.periodAndAmountDisplay)).igGrid("dataBind");
+        }
+
+        registerAmount():void{
+            let self=this;
+
+            service.salIndAmountUpdateAll({salIndAmountUpdateCommandList: ko.toJS(self.salIndAmountUpdateCommandList)}).done(function () {
+                dialog.info({messageId: "Msg_15"});
+            })
         }
 
 
@@ -208,14 +213,14 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 3, // システム区分
+                systemType: 1, // システム区分
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
                 showClosure: false,
                 showAllClosure: false,
-                showPeriod: true,
+                showPeriod: false,
                 periodFormatYM: false,
 
                 /** Required parameter */
@@ -251,102 +256,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             }
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
-
-        arr: KnockoutObservableArray<Amount>;
-
-
-        showSubstiteDataGrid() {
-
-
-            let self = this;
-            $("#substituteDataGrid").ntsGrid({
-                height: '350px',
-                name: 'Grid name',
-                dataSource: ko.mapping.toJS(self.personalAmount.periodAndAmountDisplay),
-                primaryKey: 'historyID',
-                autoCommit: true,
-                autoGenerateColumns: false,
-                features: [
-                    {
-                        name: 'Updating',
-                        editMode: 'cell',
-                        enableDeleteRow: false,
-                        enableAddRow: false,
-                        editCellStarting: function (evt, ui) {
-
-                            return true;
-                        },
-                    },
-                    {
-                        name: 'Paging',
-                        type: "local",
-                        pageSize: 20,
-                    },
-                    {
-                        name: 'Resizing',
-                        columnSettings: [
-                            {columnKey: "employeeCode", allowResizing: false},
-                            {columnKey: "employeeName", allowResizing: false},
-                            {columnKey: "period", allowResizing: false},
-                            {columnKey: "amountOfMoney", allowResizing: false},
-                        ],
-                    }
-                ],
-                columnSettings: [
-                    { columnKey: 'employeeCode', readOnly: true },
-                    { columnKey: 'employeeName', readOnly: true },
-                    { columnKey: 'period', readOnly: true },
-
-                ],
-                columns: [
-                    {
-                        headerText: getText('QMM040_16'),
-                        key: 'historyID',
-                        dataType: 'string',
-                        width: '130px',
-                        hidden: true
-                    },
-
-                    {headerText: getText('QMM040_16'), key: 'employeeCode', dataType: 'string', width: '130px'},
-                    {headerText: getText('QMM040_17'), key: 'employeeName', dataType: 'string', width: '102px'},
-                    {headerText: getText('QMM040_18'), key: 'period', dataType: 'string', width: '170px'},
-                    {headerText: getText('QMM040_19'), key: 'amountOfMoney', dataType: 'string', width: '120px'}
-
-                ]
-
-            });
-        }
-
-        initgrid2() {
-            var selt = this;
-
-
-            $('#grid').igGrid({
-                dataSource: ko.mapping.toJS(selt.personalAmount.periodAndAmountDisplay),
-                primaryKey: 'historyID',
-                autoCommit: true,
-                width: '520px',
-                height: '400px',
-                autoGenerateColumns: false,
-                features: [
-                    {
-                        name: 'Updating',
-                        editMode: 'cell',
-                        enableDeleteRow: false,
-                        enableAddRow: false,
-                        editCellStarting: function (evt, ui) {
-                            return true;
-                        }
-                    }
-                ],
-
-                columns: [
-                    {headerText: 'Code', key: 'historyID', dataType: 'string', width: 100, hidden: true},
-                    {headerText: 'Name', key: 'period', dataType: 'string', width: 200}
-                ]
-            });
-        }
-
     }
 
 
@@ -489,8 +398,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         perValCode: string;
         cateIndicator: number;
         salBonusCate: number;
-        periodAndAmount: KnockoutObservable<Amount> = ko.observableArray([]);
-        periodAndAmountDisplay: KnockoutObservable<Amount> = ko.observableArray([]);
+        periodAndAmount: KnockoutObservableArray<Amount> = ko.observableArray([]);
+        periodAndAmountDisplay: KnockoutObservableArray<Amount> = ko.observableArray([]);
 
         constructor() {
         }
@@ -518,14 +427,14 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         employeeName: string = '';
         periodStartYm: number;
         periodEndYm: number;
-        amountOfMoney: string;
+        amountOfMoney: number;
         period: string;
 
         constructor(param: IAmount) {
             this.historyID = param.historyID;
             this.periodStartYm = param.periodStartYm;
             this.periodEndYm = param.periodEndYm;
-            this.amountOfMoney = param.amountOfMoney;
+            this.amountOfMoney = ko.observable(param.amountOfMoney);
             this.period = nts.uk.time.formatYearMonth(param.periodStartYm) + ' ~ ' + nts.uk.time.formatYearMonth(param.periodEndYm);
         }
     }
@@ -543,7 +452,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         historyID: string,
         periodStartYm: number,
         periodEndYm: number,
-        amountOfMoney: string
+        amountOfMoney: number
     }
 
 

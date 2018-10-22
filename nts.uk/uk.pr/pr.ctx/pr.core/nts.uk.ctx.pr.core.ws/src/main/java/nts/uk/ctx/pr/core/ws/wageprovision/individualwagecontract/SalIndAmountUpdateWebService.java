@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 public class SalIndAmountUpdateWebService extends WebService {
 
     @Inject
-    SalIndAmountUpdateCommandHandler salIndAmountUpdateCommandHandler;
+    private SalIndAmountUpdateCommandHandler salIndAmountUpdateCommandHandler;
 
     @POST
     @Path("salIndAmountUpdateAll")

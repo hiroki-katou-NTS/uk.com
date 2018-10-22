@@ -24,8 +24,7 @@ module nts.uk.pr.view.qmm040.a.service {
         return ajax('pr', _path);
     }
     export function salIndAmountUpdateAll(command): JQueryPromise<any> {
-        let _path = format(paths.salIndAmountUpdateAll,command);
-        return ajax('pr', _path);
+        return ajax('pr', paths.salIndAmountUpdateAll,command);
     }
 
 }

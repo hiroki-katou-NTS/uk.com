@@ -8,10 +8,10 @@
 }
 
 .margin-top{
-    margin-top: 30px;
+    margin-top: 0px;
 }
 
-.caret-background.caret-right:after{
+.caret-background.caret-bottom:after{
     display: none !important;
 }
 

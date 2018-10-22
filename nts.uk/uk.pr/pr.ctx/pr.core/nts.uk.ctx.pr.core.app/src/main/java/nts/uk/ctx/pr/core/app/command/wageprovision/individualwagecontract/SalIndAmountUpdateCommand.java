@@ -4,18 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Value
 @Data
 @AllArgsConstructor
-public class SalIndAmountUpdateAllCommand {
+public class SalIndAmountUpdateCommand{
+    /**
+     * 履歴ID
+     */
+    private String historyID;
 
-    List<SalIndAmountUpdateCommand> salIndAmountUpdateCommandList;
+    /**
+     * 金額
+     */
+    private String amountOfMoney;
 
 }
-
-
-
-
