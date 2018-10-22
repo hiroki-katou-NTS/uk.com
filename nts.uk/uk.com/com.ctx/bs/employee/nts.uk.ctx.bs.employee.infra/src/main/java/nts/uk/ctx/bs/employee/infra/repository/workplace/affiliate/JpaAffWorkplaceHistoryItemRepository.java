@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +16,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
@@ -125,6 +128,32 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListEmpIdAndDateV2(GeneralDate basedate,
+			List<String> employeeId) {
+		List<AffWorkplaceHistoryItem> data = new ArrayList<>();
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT h.HIST_ID, h.SID, h.WORKPLACE_ID, h.NORMAL_WORKPLACE_ID from BSYMT_AFF_WPL_HIST_ITEM h"
+						+ " INNER JOIN BSYMT_AFF_WORKPLACE_HIST wh ON wh.HIST_ID = h.HIST_ID"
+						+ " WHERE wh.START_DATE <= ? and wh.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(basedate.localDate()));
+				statement.setDate(2, Date.valueOf(basedate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new AffWorkplaceHistoryItem(rec.getString("HIST_ID"), rec.getString("SID"), rec.getString("WORKPLACE_ID"), rec.getString("NORMAL_WORKPLACE_ID"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 
 	/*
