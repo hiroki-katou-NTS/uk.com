@@ -1,13 +1,14 @@
 package nts.uk.ctx.pr.core.infra.repository.payrollgeneralpurposeparameters;
 
-import java.util.Optional;
-import java.util.List;
-import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.infra.entity.payrollgeneralpurposeparameters.QpbmtSalGenParamValue;
 import nts.uk.ctx.pr.core.infra.entity.payrollgeneralpurposeparameters.QpbmtSalGenParamValuePk;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaValue;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaValueRepository;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class JpaSalGenParaValueRepository extends JpaRepository implements SalGenParaValueRepository
@@ -40,7 +41,7 @@ public class JpaSalGenParaValueRepository extends JpaRepository implements SalGe
     }
 
     @Override
-    public void remove(String hisId, Integer selection){
-        this.commandProxy().remove(QpbmtSalGenParamValue.class, new QpbmtSalGenParamValuePk(hisId, selection));
+    public void remove(String hisId){
+        this.commandProxy().remove(QpbmtSalGenParamValue.class, new QpbmtSalGenParamValuePk(hisId));
     }
 }

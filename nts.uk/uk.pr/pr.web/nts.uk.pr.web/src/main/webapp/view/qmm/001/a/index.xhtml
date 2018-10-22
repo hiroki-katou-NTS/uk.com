@@ -135,9 +135,9 @@
 					</div>
 					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.ADD">
 						<div style="margin: 10px 0px 0px 29px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
-							<span id="A3_9" data-bind="text: salGenParaHistory().startYearMonth"/>
+							<span id="A3_9" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().startYearMonth)"/>
 							<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
-							<span id="A3_11" data-bind="text: salGenParaHistory().endYearMonth"/>
+							<span id="A3_11" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().endYearMonth)"/>
 						</div>
 						<div style="margin: 10px 0px 0px 30px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
 							<span id="A3_9" data-bind="text: salGenParaHistory().startDate"/>
@@ -151,9 +151,9 @@
 						</div>
 						<div data-bind="if:salGenParaIdent().historyAtr!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
 							<div style="margin: 10px 0px 0px 29px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
-								<span id="A3_9" data-bind="text: salGenParaHistory().startYearMonth"/>
+								<span id="A3_9" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().startYearMonth)"/>
 								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
-								<span id="A3_11" data-bind="text: salGenParaHistory().endYearMonth"/>
+								<span id="A3_11" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().endYearMonth)"/>
 							</div>
 							<div style="margin: 10px 0px 0px 30px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
 								<span id="A3_9" data-bind="text: salGenParaHistory().startDate"/>
@@ -196,7 +196,7 @@
 						   data-bind="ntsNumberEditor: {
 																option : {width: '70px', decimallength: 3},
 																name: '#{i18n.getText('QMM001_22')}',
-																value: salGenParaValue().numValue,
+																value: value,
 																required: true,
 																constraint: 'InsuranceRate',
 																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
@@ -215,7 +215,7 @@
 						   data-bind="ntsNumberEditor: {
 																option : {width: '70px'},
 																name: '#{i18n.getText('QMM001_23')}',
-																value: salGenParaValue().timeValue,
+																value: value,
 																required: true,
 																constraint: 'ParamTime',
 																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
@@ -230,10 +230,10 @@
 
 					</div>
 					<input id="A4_10" tabindex="12" class="B3_7"
-						   data-bind="ntsNumberEditor: {
+						   data-bind="ntsTextEditor: {
 																option : {width: '70px', decimallength: 3},
 																name: '#{i18n.getText('QMM001_24')}',
-																value: salGenParaValue().charValue,
+																value: value,
 																required: true,
 																constraint: 'ParamCharacter',
 																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
@@ -266,10 +266,11 @@
 						<input  id="A4_17" tabindex="14" class="B3_7"
 							   data-bind="ntsComboBox: {
 							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
-							optionsValue: 'name',
+							optionsValue: 'code',
 							optionsText: 'name',
 							value: valueComboBox,
-							columns: [{ prop: 'name' }],
+							columns: [{ prop: 'code'},
+							{ prop: 'name' }],
 							options: listSalGenOptions()} "/>
 					</div>
 			</div>

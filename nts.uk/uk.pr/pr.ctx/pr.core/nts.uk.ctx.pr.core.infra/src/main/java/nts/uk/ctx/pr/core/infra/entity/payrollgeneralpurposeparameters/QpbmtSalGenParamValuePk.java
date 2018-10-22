@@ -1,14 +1,13 @@
 package nts.uk.ctx.pr.core.infra.entity.payrollgeneralpurposeparameters;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 /**
 * 給与汎用パラメータ値: 主キー情報
@@ -28,11 +27,6 @@ public class QpbmtSalGenParamValuePk implements Serializable
     @Column(name = "HIS_ID")
     public String hisId;
     
-    /**
-    * 選択肢
-    */
-    @Basic(optional = false)
-    @Column(name = "SELECTION")
-    public Integer selection;
+
     
 }

@@ -17,6 +17,6 @@ public interface SalGenParaValueRepository
 
     void update(SalGenParaValue domain);
 
-    void remove(String hisId, Integer selection);
+    void remove(String hisId);
 
 }

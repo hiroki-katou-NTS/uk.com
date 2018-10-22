@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                 self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(params.startYearMonthDay)]));
             }
             if (params && param.historyAtr == 1) {
-                self.startLastYearMonth(params.startYearMonth);
+                self.startLastYearMonth(params.startYearMonthDay);
                 self.code(params.code);
                 self.name(params.name);
                 self.historyAtr(params.historyAtr);

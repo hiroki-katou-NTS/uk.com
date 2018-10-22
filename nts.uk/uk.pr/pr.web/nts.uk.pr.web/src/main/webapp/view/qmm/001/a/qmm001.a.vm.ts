@@ -4,6 +4,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import errors = nts.uk.ui.errors;
     import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
@@ -35,6 +37,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         modeHistory:KnockoutObservable<number> = ko.observable(MODEHISTORY.YEARMONTH);
         isDisplayHis:KnockoutObservable<boolean> = ko.observable(false);
 
+        // value edit text
+        value: KnockoutObservable<number>= ko.observable(null);
 
         constructor() {
             let self = this;
@@ -49,7 +53,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     return;
                 self.getSalGenParaValue(data);
                 self.salGenParaHistory(_.find(self.listHistory(), {'historyId': data}));
-                console.log(self.selectedSwitchParaAvai());
             });
             self.selectedSwitchParaAvai.subscribe((data) => {
                 if(data == SWITCH_EFF_CATEGORY.AVAILABLE){
@@ -57,11 +60,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 }
 
             });
-            self.salGenParaValue().numValue.subscribe((data) => {
-                let self= this;
-                console.log(data);
 
-            });
         }
 
         initView() {
@@ -104,6 +103,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.isDisplayHis(true);
                         }
                         else{
+                            self.value(null);
+                            self.salGenParaValue(null);
                             self.listHistory(itemList);
                             self.selectedSalGenParaHistory(HIS_ID_TEMP);
                             self.modeScreen(MODESCREEN.NEW);
@@ -124,6 +125,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.isDisplayHis(true);
                         }
                         else{
+                            self.value(null);
+                            self.salGenParaValue(null);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
                             self.selectedSalGenParaHistory(HIS_ID_TEMP);
                             self.listHistory(itemList);
@@ -145,7 +148,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.isDisplayHis(true);
                         }
                         else{
-
+                            self.value(null);
+                            self.salGenParaValue(null);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
                             self.selectedSalGenParaHistory(HIS_ID_TEMP);
                             self.listHistory(itemList);
@@ -235,10 +239,12 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         getSalGenParaValue(hisId: string) {
             let self  = this;
-            service.getSalGenParaValue(hisId).done((item: ISalGenParaValue) => {
-                if(item==null)
+            service.getSalGenParaValue(hisId).done((item: SalGenParaValue) => {
+                if(item==null){
                     return;
+                }
                 self.salGenParaValue(item);
+                self.value(Number(item.timeValue));
                 self.selectedSwitchParaAvai(item.availableAtr);
                 self.selectedSwitchParaTargetAtr(item.targetAtr);
                 self.valueComboBox(item.selection);
@@ -253,7 +259,22 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 return;
             }
             self.salGenParaValue().selection = self.valueComboBox();
-            let data: SalGenParaValueCommand = {
+            switch (self.salGenParaIdent().attributeType){
+                case PARAATTRITYPE.NUMBER:{
+                    self.salGenParaValue().numValue = self.value();
+                    break;
+                }
+                case PARAATTRITYPE.TIME :{
+                    self.salGenParaValue().timeValue = self.value();
+                    break;
+                }
+                case PARAATTRITYPE.TEXT :{
+                    self.salGenParaValue().charValue = self.value();
+                    break;
+                }
+
+            };
+            let data: any = {
                 historyId: self.selectedSalGenParaHistory(),
                 selection: self.salGenParaValue().selection,
                 availableAtr: self.selectedSwitchParaAvai(),
@@ -300,6 +321,21 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         }
         openDialogB(){
             let self = this;
+            let  startDate :any = null;
+            if(self.salGenParaIdent().historyAtr == MODEHISTORY.DATE){
+                startDate = self.listHistory()[0].startYearMonth;
+            }
+            else{
+                startDate = self.listHistory()[0].startDate;
+            }
+
+            let data:any = {
+                startYearMonth : startDate ,
+                code: self.salGenParaIdent().paraNo,
+                name: self.salGenParaIdent().name,
+                historyAtr : self.salGenParaIdent().historyAtr
+            };
+            setShared('QMM001_PARAMS_TO_SCREEN_B', data);
             modal("/view/qmm/001/b/index.xhtml").onClosed(() => {
                 self.modeScreen(MODESCREEN.ADD);
             });
@@ -536,17 +572,19 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
     class SalGenParaValue {
 
-        historyId: KnockoutObservable<string> = ko.observable('');
-        numValue: KnockoutObservable<string> = ko.observable('');
-        charValue: KnockoutObservable<string> = ko.observable('');
+        historyId: KnockoutObservable<string>= ko.observable('');
+        numValue: KnockoutObservable<string>= ko.observable('');
+        charValue: KnockoutObservable<string>= ko.observable('');
 
-        selection: KnockoutObservable<number> = ko.observable(null);
-        availableAtr: KnockoutObservable<number> = ko.observable(null);
-        timeValue: KnockoutObservable<number> = ko.observable(null);
-        targetAtr: KnockoutObservable<number> = ko.observable(null);
+        selection: KnockoutObservable<number>= ko.observable(0);
+        availableAtr: KnockoutObservable<number>= ko.observable(0);
+        timeValue: KnockoutObservable<number>= ko.observable(0);
+        targetAtr: KnockoutObservable<number>= ko.observable(0);
 
         constructor() {
+
         }
+
 
     }
 
