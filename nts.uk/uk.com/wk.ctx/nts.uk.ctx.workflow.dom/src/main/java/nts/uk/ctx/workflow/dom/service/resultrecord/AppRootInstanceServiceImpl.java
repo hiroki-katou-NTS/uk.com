@@ -396,10 +396,14 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
 				if(appRootInstance==null){
-					throw new BusinessException("Msg_1430", "承認者");
+					continue;
 				}
 				// 対象日の就業実績確認状態を取得する
-				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+				Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+				if(!opAppRootConfirm.isPresent()){
+					continue;
+				}
+				AppRootConfirm appRootConfirm = opAppRootConfirm.get();
 				// 中間データから承認ルートインスタンスに変換する
 				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 				// 指定した社員が承認できるかの判断(NoDBACCESS)
@@ -428,12 +432,16 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 対象日の承認ルート中間データを取得する
 				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
 				if(appRootInstance==null){
-					throw new BusinessException("Msg_1430", "承認者");
+					continue;
 				}
 				if((approvalRouteDetails.getStartDate().isPresent()&&approvalRouteDetails.getStartDate().get().beforeOrEquals(loopDate)) ||
 						(approvalRouteDetails.getEndDate().isPresent()&&approvalRouteDetails.getEndDate().get().afterOrEquals(loopDate))){
 					// 対象日の就業実績確認状態を取得する
-					AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+					Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+					if(!opAppRootConfirm.isPresent()){
+						continue;
+					}
+					AppRootConfirm appRootConfirm = opAppRootConfirm.get();
 					// 中間データから承認ルートインスタンスに変換する
 					ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 					// 指定した社員が承認できるかの判断(NoDBACCESS)
