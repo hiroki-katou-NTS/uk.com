@@ -281,7 +281,12 @@ module cmm044.a.viewmodel {
                     agent.agentSid2, agent.agentAppType2,
                     agent.agentSid3, agent.agentAppType3,
                     agent.agentSid4, agent.agentAppType4));
-
+                
+                self.agentSid1(agent.agentSid1);
+                self.agentSid2(agent.agentSid2);
+                self.agentSid3(agent.agentSid3);
+                self.agentSid4(agent.agentSid4);
+                
                 self.agentAppType1(agent.agentAppType1);
                 self.agentAppType2(agent.agentAppType2);
                 self.agentAppType3(agent.agentAppType3);
