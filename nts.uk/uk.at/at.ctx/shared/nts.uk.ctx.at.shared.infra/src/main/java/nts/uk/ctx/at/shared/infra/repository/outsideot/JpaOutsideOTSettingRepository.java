@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.outsideot;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -155,7 +156,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 					.stream().collect(Collectors
 							.groupingBy(item -> item.getKshstOutsideOtBrdAtenPK().getBrdItemNo()));
 			entityOvertimeBRDItem.forEach(item -> {
-				item.setLstOutsideOtBrdAten(lstOutsideOtBrdAtenMap.get(item.getKshstOutsideOtBrdPK().getBrdItemNo()));
+				item.setLstOutsideOtBrdAten(lstOutsideOtBrdAtenMap.getOrDefault(
+						item.getKshstOutsideOtBrdPK().getBrdItemNo(), Collections.emptyList()));
 			});
 			
 			// check exist data

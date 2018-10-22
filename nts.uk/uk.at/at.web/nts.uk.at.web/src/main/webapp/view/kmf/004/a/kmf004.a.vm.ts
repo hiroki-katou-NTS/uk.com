@@ -643,7 +643,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
             $(".period-date-inp").trigger("validate");
-            
+            $("#ageBaseDate").trigger("validate");
+            $("#startDate").trigger("validate");
+            $("#endDate").trigger("validate");
             let dataItem = self.preData();
             
             if(self.yearReq() && self.dayReq()) {

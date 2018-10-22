@@ -279,7 +279,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// fix bug 
 			if (results.isEmpty()) {
-				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get());
+				String mess = new String("Msg_1452");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
 				return screenDto;
 			}
 
@@ -381,7 +382,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
 				
 				if (approvalRootOfEmloyee == null) {
-					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting);
+					String mess = new String("Msg_1451");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting,mess);
 					return;
 				}
 
@@ -398,7 +400,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 				}
 				if (employeeIds.isEmpty()) {
-					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting);
+					String mess = new String("Msg_1450");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting, mess);
 					return;
 				}
 
@@ -1020,7 +1023,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		return StringUtils.join(x);
 	}
 	private void createFixedHeader(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId,
-			ApprovalProcessingUseSetting approvalProcessingUseSetting) {
+			ApprovalProcessingUseSetting approvalProcessingUseSetting, String mess) {
 		/**
 		 * Create Grid Sheet DTO
 		 */
@@ -1067,5 +1070,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 		displayItem.setLstHeader(lstHeader);
 		// Fixed header
 		screenDto.setLstFixedHeader(lstMPHeaderDto);
+		screenDto.setMess(mess);
 		}
 }

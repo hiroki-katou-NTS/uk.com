@@ -322,7 +322,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
-            self.isSelectAllAfterReload = data.isSelectAllAfterReload;
+            self.isSelectAllAfterReload = _.isNil(data.isSelectAllAfterReload) ? true : data.isSelectAllAfterReload;
             self.disableSelection = data.disableSelection;
             
             // Init data for employment list component.
@@ -382,13 +382,15 @@ module kcp.share.list {
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 
+                    let selectedValues = self.isMultipleSelect ? [] : '';
+
                     // select all items in multi mode
                     if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                        const selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
-                        self.selectedCodes(selectedValues);
-                        gridList.ntsGridList("setSelectedValue", []);
-                        gridList.ntsGridList("setSelectedValue", selectedValues);
+                        selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
                     }
+                    self.selectedCodes(selectedValues);
+                    gridList.ntsGridList("setSelectedValue", []);
+                    gridList.ntsGridList("setSelectedValue", selectedValues);
                 });
             }
         }
