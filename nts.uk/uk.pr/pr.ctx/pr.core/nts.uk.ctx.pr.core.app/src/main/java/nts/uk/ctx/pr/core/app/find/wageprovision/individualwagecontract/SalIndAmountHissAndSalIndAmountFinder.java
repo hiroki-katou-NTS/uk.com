@@ -23,15 +23,16 @@ public class SalIndAmountHissAndSalIndAmountFinder {
     SalIndAmountRepository salIndAmountRepository;
 
 
-    public SalIndAmountHissDto getSalIndAmountHissDto(String perValCode, int cateIndicator, int salBonusCate) {
-        Optional<SalIndAmountHis> salIndAmountHis = this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(perValCode, cateIndicator, salBonusCate);
+    public SalIndAmountHissDto getSalIndAmountHissDto(String perValCode, int cateIndicator, int salBonusCate,String empID) {
+        //Optional<SalIndAmountHis> salIndAmountHis = this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(perValCode, cateIndicator, salBonusCate);
         //SalIndAmountHissDto salIndAmountHissDto=salIndAmountHis.map(v->new SalIndAmountHissDto(v.getPerValCode(),v.getEmpId(),v.getCateIndicator().value,v.getPeriod().stream().map(f->new PeriodDto(f.getHistoryID(),f.getPeriodYearMonth().start().v(),f.getPeriodYearMonth().end().v())).collect(Collectors.toList()), v.getSalBonusCate().value)).orElse(null);
         //return salIndAmountHissDto;
-        return SalIndAmountHissDto.fromDomain(this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(perValCode, cateIndicator, salBonusCate).orElse(null));
+        //return SalIndAmountHissDto.fromDomain(this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(perValCode, cateIndicator, salBonusCate).orElse(null));
+        return null;
     }
 
     public SalIndAmountByPerValCode getSalIndAmountDtosByPerValCode(String perValCode, int cateIndicator, int salBonusCate) {
-        SalIndAmountHissDto salIndAmountHissDto = getSalIndAmountHissDto(perValCode, cateIndicator, salBonusCate);
+        SalIndAmountHissDto salIndAmountHissDto = null;//getSalIndAmountHissDto(perValCode, cateIndicator, salBonusCate);
         if (Objects.isNull(salIndAmountHissDto))
             return null;
         List<SalIndAmountDto> salIndAmountDtos = new ArrayList<>();

@@ -70,14 +70,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 if (temp) {
                     self.individualPriceCode(temp.individualPriceCode);
                     self.individualPriceName(temp.individualPriceName);
-                    self.onSelected(self.individualPriceCode());
-
-
                 }
-
-
             });
-            self.reloadCcg001();
+
 
 
 
@@ -86,6 +81,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            service.employeeReferenceDate().done(function (data) {
+                self.reloadCcg001(data.empExtraRefeDate);
+            })
 
             dfd.resolve(self);
             return dfd.promise();
@@ -208,7 +206,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         }
 
 
-        public reloadCcg001(): void {
+        public reloadCcg001(empExtraRefeDate:string): void {
             let self = this;
 
             self.ccgcomponent = {
@@ -224,7 +222,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 periodFormatYM: false,
 
                 /** Required parameter */
-                baseDate: moment(new Date('06/05/2017')).format("YYYY-MM-DD"), // 基準日
+                baseDate: moment(new Date(empExtraRefeDate)).format("YYYY-MM-DD"), // 基準日
                 periodStartDate: moment(new Date('06/05/1990')).format("YYYY-MM-DD"), // 対象期間開始日
                 periodEndDate: moment(new Date('06/05/2018')).format("YYYY-MM-DD"), // 対象期間終了日
                 inService: true,
@@ -249,7 +247,15 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     //self.selectedEmployee(data.listEmployee);
                     if (data) {
-                        console.log(data);
+                        console.log(data.listEmployee);
+                        service.salIndAmountHisByPeValCode({
+                        //     self.cateIndicator = ko.observable(0);
+                        // self.salBonusCate = ko.observable(0);
+                            perValCode: self.individualPriceCode,
+                            cateIndicator: self.cateIndicator,
+                            salBonusCate:self.salBonusCate,
+                            EmpIDs:data.listEmployee
+                        })
                     }
                     self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
                 }

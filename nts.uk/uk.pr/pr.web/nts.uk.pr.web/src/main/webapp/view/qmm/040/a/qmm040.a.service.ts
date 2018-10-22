@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm040.a.service {
 
     var paths: any = {
         salIndAmountNameByCateIndicator :"ctx.pr.core.ws.wageprovision.individualwagecontract/allSalIndAmountNameflowCateIndicator/{0}",
-        salIndAmountHisByPeValCode :"ctx.pr.core.ws.wageprovision.individualwagecontract/salIndAmountHisByPeValCode/{0}/{1}/{2}",
+        salIndAmountHisByPeValCode :"ctx.pr.core.ws.wageprovision.individualwagecontract/salIndAmountHisByPeValCode",
         salIndAmountUpdateAll :"ctx.pr.core.ws.wageprovision.individualwagecontract/salIndAmountUpdateAll",
         employeeReferenceDate :"ctx.pr.core.ws.wageprovision.individualwagecontract/employeeReferenceDate",
     }
@@ -14,9 +14,8 @@ module nts.uk.pr.view.qmm040.a.service {
         return ajax('pr', _path);
     }
 
-    export function salIndAmountHisByPeValCode(perValCode:string,cateIndicator:number,salBonusCate:number): JQueryPromise<any> {
-        let _path = format(paths.salIndAmountHisByPeValCode, perValCode,cateIndicator,salBonusCate);
-        return ajax('pr', _path);
+    export function salIndAmountHisByPeValCode(command): JQueryPromise<any> {
+        return ajax('pr', paths.salIndAmountHisByPeValCode,command);
     }
 
     export function employeeReferenceDate(): JQueryPromise<any> {

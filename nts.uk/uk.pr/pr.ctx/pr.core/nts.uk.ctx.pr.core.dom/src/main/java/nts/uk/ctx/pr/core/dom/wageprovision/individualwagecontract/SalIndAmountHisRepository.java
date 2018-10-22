@@ -13,7 +13,7 @@ public interface SalIndAmountHisRepository
 
     Optional<SalIndAmountHis> getSalIndAmountHisById(String historyId, String perValCode, String empId);
 
-    Optional<SalIndAmountHis> getSalIndAmountHisByPerVal(String perValCode,int cateIndicator,int salBonusCate);
+    List<GenericHistYMPeriod> getSalIndAmountHisByPerVal(String perValCode,int cateIndicator,int salBonusCate,String empId);
 
     void add(SalIndAmountHis domain);
 

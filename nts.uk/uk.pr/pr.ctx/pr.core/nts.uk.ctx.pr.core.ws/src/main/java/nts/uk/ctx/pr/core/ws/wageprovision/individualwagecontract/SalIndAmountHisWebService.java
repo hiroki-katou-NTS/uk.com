@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.ws.wageprovision.individualwagecontract;
 
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract.SalIndAmountByPerValCodeCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountByPerValCode;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHissAndSalIndAmountFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHissDto;
@@ -20,8 +21,8 @@ public class SalIndAmountHisWebService  extends WebService {
     SalIndAmountHissAndSalIndAmountFinder finder;
 
     @POST
-    @Path("salIndAmountHisByPeValCode/{perValCode}/{cateIndicator}/{salBonusCate}")
-    public SalIndAmountByPerValCode salIndAmountHisByPeValCode(@PathParam("perValCode") String perValCode, @PathParam("cateIndicator") int cateIndicator, @PathParam("salBonusCate") int salBonusCate){
-        return finder.getSalIndAmountDtosByPerValCode(perValCode,cateIndicator,salBonusCate);
+    @Path("salIndAmountHisByPeValCode")
+    public SalIndAmountByPerValCode salIndAmountHisByPeValCode(SalIndAmountByPerValCodeCommand command){
+        return null;
     }
 }
