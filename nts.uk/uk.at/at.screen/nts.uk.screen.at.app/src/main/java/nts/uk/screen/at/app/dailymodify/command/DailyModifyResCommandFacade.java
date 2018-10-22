@@ -357,7 +357,7 @@ public class DailyModifyResCommandFacade {
 					val errorSign = validatorDataDaily.releaseDivergence(resultIU.getLstDailyDomain());
 					if(!errorSign.isEmpty()) {
 						//resultError.putAll(errorSign);
-						releaseSign(dataParent.getDataCheckSign(), errorSign, dailyEdits, AppContexts.user().employeeId(), false);
+						errorRelease = releaseSign(dataParent.getDataCheckSign(), errorSign, dailyEdits, AppContexts.user().employeeId(), false);
 					}
 					
 					if (!hasError) {
