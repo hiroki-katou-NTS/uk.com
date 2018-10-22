@@ -43,14 +43,14 @@ public class StatementItemDataCommand {
 	private Integer deprecatedAtr;
 
     public PaymentItemSet toPaymentItemSet(String cid) {
-        return paymentItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+        return paymentItemSet.toDomain(cid, this.categoryAtr, statementItem.getItemNameCd());
     }
 
     public DeductionItemSet toDeductionItemSet(String cid) {
-        return deductionItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+        return deductionItemSet.toDomain(cid, this.categoryAtr, statementItem.getItemNameCd());
     }
 
     public TimeItemSet toTimeItemSet(String cid) {
-        return timeItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+        return timeItemSet.toDomain(cid, this.categoryAtr, statementItem.getItemNameCd());
     }
 }
