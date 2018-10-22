@@ -165,6 +165,11 @@ module kcp.share.list {
          * in the select-all case, disableSelection is true. Else false
          */
         disableSelection?: boolean;
+        
+        /**
+         * when reload gridList, check to remove filter value
+         */
+        isRemoveFilterWhenReload?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -258,6 +263,7 @@ module kcp.share.list {
         searchBoxId: string;
         disableSelection : boolean;
         componentOption: ComponentOption;
+        isRemoveFilterWhenReload: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -274,7 +280,8 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
-            disableSelection = false;
+            this.disableSelection = false;
+            this.isRemoveFilterWhenReload = true;
         }
 
         /**
@@ -316,6 +323,9 @@ module kcp.share.list {
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
             self.disableSelection = data.disableSelection;
+            if (data.isRemoveFilterWhenReload !== undefined) { 
+                self.isRemoveFilterWhenReload = data.isRemoveFilterWhenReload; 
+            }
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
@@ -368,7 +378,9 @@ module kcp.share.list {
             if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 _.defer(() => {
                     // clear search box before update datasource
-                    searchBox.find('.clear-btn').click();
+                    if (self.isRemoveFilterWhenReload) {
+                        searchBox.find('.clear-btn').click();    
+                    }
 
                     // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
