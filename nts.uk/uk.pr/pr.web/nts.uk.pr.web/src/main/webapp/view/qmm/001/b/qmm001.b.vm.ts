@@ -5,39 +5,62 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
+    import model = qmm001.share.model;
 
 
     export class ScreenModel {
         listTakeOver: KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
         takeOver: KnockoutObservable<number> = ko.observable(0);
-        cId: KnockoutObservable<string> = ko.observable('');
+        cId: KnockoutObservale<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
         endYearMonth: KnockoutObservable<number> = ko.observable(999912);
-        monthlyCalendar: KnockoutObservable<string> = ko.observable('');
+        historyAtr: KnockoutObservable<number> = ko.observable(1);
+        startYearMonthDay: KnockoutObservable<string> = ko.observable('');
+        endYearMonthDay: KnockoutObservable<number> = ko.observable(99991231);
 
         constructor() {
             block.invisible()
             let self = this;
-            self.monthlyCalendar(getText('qmm001_12', []));
-            let params = getShared('qmm001_PARAMS_TO_SCREEN_B');
-            self.startYearMonth.subscribe((data) => {
-                self.monthlyCalendar(getText('qmm001_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString().split(' ').join('')]));
-            });
-            if(params) {
+            let params = getShared('QMM001_PARAMS_TO_SCREEN_B');
+
+            if(params && param.historyAtr == 0) {
                 self.startLastYearMonth(params.startYearMonth);
                 self.code(params.code);
                 self.name(params.name);
-                self.listTakeOver()[0] = new model.ItemModel(0,getText('qmm001_34', [self.convertMonthYearToString(params.startYearMonth)]));
+                self.historyAtr(params.historyAtr);
+                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(params.startYearMonthDay)]));
             }
+            if (params && param.historyAtr == 1) {
+                self.startLastYearMonth(params.startYearMonth);
+                self.code(params.code);
+                self.name(params.name);
+                self.historyAtr(params.historyAtr);
+                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(params.startYearMonth)]));
+            }
+                self.startLastYearMonth(201212);
+                self.code(003);
+                self.name('OPOTTPT');
+                self.historyAtr(1);
+                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(20120912)]));
+                self.endYearMonthDay(getText('QMM001_31', [9999/12/31]));
             block.clear();
         }
 
         validateYearMonth(){
             let self = this;
             if(!(self.startLastYearMonth() < self.startYearMonth())) {
+                dialog.error({ messageId: "Msg_79"});
+                return true;
+            }
+            return false;
+        }
+
+        validateYearMonthDay(){
+            let self = this;
+            if(!(self.startLastYearMonthDay() < self.startYearMonthDay())) {
                 dialog.error({ messageId: "Msg_79"});
                 return true;
             }
@@ -57,46 +80,44 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
             close();
         }
 
-        register(){
-            let self =this;
-            if(self.validateYearMonth()) {
-                return;
-            }
-            let data: any = {
-                code: self.code(),
-                startYearMonth: self.startYearMonth(),
-                endYearMonth:  self.endYearMonth()
-            }
-            service.addPayrollUnitPriceHis(data).done((historyId: any) => {
-                dialog.info({ messageId: "Msg_15" }).then(() => {
-                    setShared('qmm001_B_PARAMS_OUTPUT', {
-                        hisId: historyId,
-                        startYearMonth: self.startYearMonth(),
-                        takeOver: self.takeOver()
+        register() {
+            let self = this;
+            if (self.historyAtr() == 1) {
+                if (self.validateYearMonth()) {
+                    return;
+                }
+                dialog.info({messageId: "Msg_15"}).then(() => {
+                    setShared('QMM011_A', {
+                        startYearMonth: self.startYearMonth()
                     });
                     close();
                 });
-            }).fail(function(res: any) {
-                if (res)
-                    dialog.alertError(res);
-            }).always(() => {
-                block.clear();
-            });
+            } else {
+                if (self.validateYearMonthDay()) {
+                    return;
+                }
+                dialog.info({messageId: "Msg_15"}).then(() => {
+                    setShared('QMM011_A', {
+                        startYearMonthDay: self.startYearMonthDay()
+                    });
+                    close();
+                });
+            }
         }
     }
-    class PayrollUnitPriceHis{
-        cId :string;
-        code :string;
-        hisId: string;
-        startYearMonth:number;
-        endYearMonth: number;
 
+    export enum PARAHISTORYATR {
+        /*年月日履歴*/
+        YMDHIST = 0,
+
+        /*年月履歴*/
+        YMHIST = 1
     }
 
     export function getListtakeOver(): Array<model.ItemModel> {
         return [
-            // new mItemModel(0, getText('QMM001_33')),
-            // new model.ItemModel(1, getText('QMM001_34'))
+            new model.ItemModel(0, getText('QMM001_33')),
+            new model.ItemModel(1, getText('QMM001_34'))
         ];
     }
 

@@ -7,12 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 460, height: 450 };</script>
+			<script>var dialogSize = { width: 420, height: 450 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm001.b.vm.js" />
 			<com:scriptfile path="qmm001.b.start.js" />
-			<com:scriptfile path="qmm001.b.service.js" />
 			<com:stylefile path="qmm001.b.style.css" />
 		</ui:define>
 
@@ -26,7 +25,7 @@
 				<div id="B1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px">
 					<span class="label">#{i18n.getText('QMM001_14')}</span>
 					<!-- B2_3 会社単価コード -->
-					<span id="B1_3" class="label" style="margin-left: 40px" data-bind = "text: code"></span>
+					<span id="B1_3" class="label" style="margin-left: 50px" data-bind = "text: code"></span>
 					<!-- B1_4 会社単価名称 -->
 					<span id="B1_4" class="label" style="margin-left: 60px" data-bind = "text: name"></span>
 				</div>
@@ -34,6 +33,7 @@
 				<div id="B1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
 					<span class="label">#{i18n.getText('QMM001_29')}</span>
 					<!-- B1_6 開始年月 -->
+					<com:ko-if bind ="historyAtr() == 1">
 					<div id = "B1_6"  style="margin-left: 80px" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM001_30')}',
 																value: startYearMonth, 
@@ -41,10 +41,20 @@
 																valueFormat: 'YYYYMM',
 																required: true
 																}" tabindex="1"></div>
+					</com:ko-if>
 					<!-- B1_7 開始年月和暦 -->
-					<span id="B1_7" class="label">#{i18n.getText('QMM001_30')}</span>
+					<com:ko-if bind ="historyAtr() == 0"><!-- B1_7 開始年月和暦 -->
+					<div id = "B1_7"  style="margin-left: 80px" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM001_30')}',
+																value: startYearMonthDay,
+																dateFormat: 'YYYY/MM/DD',
+																valueFormat: 'YYYYMMDD',
+																required: true
+																}" tabindex="2"></div>
+					</com:ko-if>
+
 					<!-- B1_8 9999/12 -->
-					<span class="label">#{i18n.getText('QMM001_31')}</span>
+					<span class="label" data-bind =" text: endYearMonthDay"></span>
 				</div>
 				<!-- B1_9 開始年月和暦 -->
 				<div id="B1_9" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
@@ -74,10 +84,10 @@
 			<div id="functions-area-bottom">
 				<!-- E2_1 登録 -->
 				<button id="B2_1" tabindex="3" class="proceed large"
-					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_36')}</button>
+					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_35')}</button>
 				<!-- E2_2 削除 -->
 				<button id="B2_2" tabindex="4"
-					data-bind="click: cancel">#{i18n.getText('QMM001_37')}</button>
+					data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
