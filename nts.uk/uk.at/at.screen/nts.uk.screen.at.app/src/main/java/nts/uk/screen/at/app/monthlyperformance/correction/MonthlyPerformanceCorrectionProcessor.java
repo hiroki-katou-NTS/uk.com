@@ -822,10 +822,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
 							// 承認状況 ＝ 承認済 or 承認中 の場合
 							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)
-									&& approvalApprovalRecordDate
+									&& (approvalApprovalRecordDate
 											.getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL
 									|| approvalApprovalRecordDate
-											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
+											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED)) {
 								approve = true;
 								break;
 							}
