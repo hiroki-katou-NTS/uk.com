@@ -105,7 +105,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 							entity.setTotalTimesAbname(rec.getString("TOTAL_TIMES_ABNAME"));
 							entity.setSummaryAtr(rec.getInt("SUMMARY_ATR"));
 							entity.setListTotalSubjects(listTotalSubjectsMap
-									.get(kshstTotalConditionPK.getTotalTimesNo()));
+									.getOrDefault(kshstTotalConditionPK.getTotalTimesNo(), Collections.emptyList()));
 							entity.setTotalCondition(totalCondition);
 
 							return entity;
