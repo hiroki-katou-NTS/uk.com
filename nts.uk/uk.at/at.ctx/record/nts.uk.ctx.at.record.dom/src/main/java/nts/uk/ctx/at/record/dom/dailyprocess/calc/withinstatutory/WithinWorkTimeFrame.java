@@ -568,12 +568,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		dedTimeSheet.forEach(tc ->{
 			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction, commonSetting);
 		});
-		
+		//dedTimeSheet.addAll(addBreakListInLateEarly);
 		//計上用時間帯
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(dupTimeSheet.getTimezone().getTimeSpan(), DeductionAtr.Appropriate);
 		recordTimeSheet.forEach(tc ->{
 			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Appropriate, commonSetting);
 		});
+		//recordTimeSheet.addAll(addBreakListInLateEarly);
 		/*加給*/
 		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, dupTimeSheet.getTimezone().getTimeSpan(), dedTimeSheet, recordTimeSheet);
 		/*特定日*/

@@ -85,8 +85,14 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
 			Integer rootType) throws BusinessException {
 		List<String> employeeIDLst = Arrays.asList(employeeID);
-		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
-				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+		List<AppRootStateStatusSprExport> rslist = new ArrayList<>();
+		try {
+			rslist=	appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+		} catch (BusinessException e) {
+			throw new BusinessException("Msg_1430", "承認者");
+		}
+		return rslist;
 	}
 
 	@Override
