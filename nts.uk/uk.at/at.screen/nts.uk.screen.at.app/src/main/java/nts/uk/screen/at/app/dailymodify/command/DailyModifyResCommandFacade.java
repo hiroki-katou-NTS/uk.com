@@ -588,7 +588,7 @@ public class DailyModifyResCommandFacade {
 		val dailyClone = dailys.stream().map(x -> x.clone()).collect(Collectors.toList());
 		val dailyTemps = dailyClone.stream().filter(x -> x.getEmployeeId().equals(employeeId))
 				.sorted((x, y) -> x.getDate().compareTo(y.getDate())).collect(Collectors.toList());
-		if (dailys.isEmpty())
+		if (dailys.isEmpty() || dailyTemps.isEmpty())
 			return itemUi;
 		
 		val lstEmployeeId = dailys.stream().map(x -> x.getEmployeeId()).collect(Collectors.toSet());
