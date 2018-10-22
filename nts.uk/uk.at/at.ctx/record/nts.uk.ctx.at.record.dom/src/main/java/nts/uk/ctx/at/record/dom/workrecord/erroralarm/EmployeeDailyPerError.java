@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 @Getter
 @NoArgsConstructor
 public class EmployeeDailyPerError extends AggregateRoot {
-	
+	private String id;
 	/** 会社ID: 会社ID */
 	private String companyID;
 	
@@ -33,6 +34,7 @@ public class EmployeeDailyPerError extends AggregateRoot {
 	private ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode;
 	
 	/** 項目一覧: 勤怠項目ID */
+	@Setter
 	private List<Integer> attendanceItemList;
 
 	/** エラー解除する */
@@ -58,6 +60,20 @@ public class EmployeeDailyPerError extends AggregateRoot {
 			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList, int errorCancelAble,
 			String errorAlarmMessage) {
 		super();
+		this.companyID = companyID;
+		this.employeeID = employeeID;
+		this.date = date;
+		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
+		this.attendanceItemList = attendanceItemList == null ? new ArrayList<>() : attendanceItemList;
+		this.errorCancelAble = errorCancelAble;
+		this.errorAlarmMessage = errorAlarmMessage == null ? Optional.empty() : Optional.of(new ErrorAlarmMessage(errorAlarmMessage));
+	}
+	
+	public EmployeeDailyPerError(String id, String companyID, String employeeID, GeneralDate date,
+			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList, int errorCancelAble,
+			String errorAlarmMessage) {
+		super();
+		this.id = id;
 		this.companyID = companyID;
 		this.employeeID = employeeID;
 		this.date = date;
@@ -103,4 +119,6 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.attendanceItemList = attendanceItemList;
 		this.errorAlarmMessage = Optional.empty();
 	}
+	
+	
 }

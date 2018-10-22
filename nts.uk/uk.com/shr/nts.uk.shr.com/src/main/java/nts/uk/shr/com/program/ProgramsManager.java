@@ -910,7 +910,7 @@ public class ProgramsManager {
 	/**
 	 * KMF004D
 	 */
-	public static final Program KMF004D = new Program(WebAppId.AT, ProgramIdConsts.KMF004D, "KMF004_116",
+	public static final Program KMF004D = new Program(WebAppId.AT, ProgramIdConsts.KMF004D, "KMF004_95",
 			"/view/kmf/004/d/index.xhtml");
 
 	/**
@@ -946,7 +946,7 @@ public class ProgramsManager {
 	/**
 	 * KMF004J
 	 */
-	public static final Program KMF004J = new Program(WebAppId.AT, ProgramIdConsts.KMF004J, "KMF004_145",
+	public static final Program KMF004J = new Program(WebAppId.AT, ProgramIdConsts.KMF004J, "KMF004_98",
 			"/view/kmf/004/j/index.xhtml");
 	
 	/**

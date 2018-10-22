@@ -48,8 +48,9 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	@Override
 	public List<ErrorAlarmWorkRecord> getListErrorAlarmWorkRecord(String companyId) {
-		List<KwrmtErAlWorkRecord> lstData = this.queryProxy().query(FIND_BY_COMPANY, KwrmtErAlWorkRecord.class)
-				.setParameter("companyId", companyId).getList();
+		List<KwrmtErAlWorkRecord> lstData = this.queryProxy().query(FIND_BY_COMPANY_AND_USEATR, KwrmtErAlWorkRecord.class)
+				.setParameter("companyId", companyId)
+				.setParameter("useAtr", 1).getList();
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toDomain(entity)).collect(Collectors.toList());
 	}
 

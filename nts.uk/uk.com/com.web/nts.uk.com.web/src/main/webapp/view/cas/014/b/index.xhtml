@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="contents-area-b">
-		<div class="container">
+		<div class="container-b">
 			<div class="block">
 				<div class="top-row flex valign-center">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
@@ -74,7 +74,7 @@
 							data-bind="click: openDialogCDL009, enable: screenMode() == 0">#{i18n.getText('CAS014_39')}</button>
 						<label data-bind="text: roleSetPerson().employeeCd"
 							class="ntsControl label-code"></label> <label
-							data-bind="text: roleSetPerson().employeeName" class="label-name"></label>
+							data-bind="text: roleSetPerson().employeeName" class="label-name limited-label"></label>
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>
