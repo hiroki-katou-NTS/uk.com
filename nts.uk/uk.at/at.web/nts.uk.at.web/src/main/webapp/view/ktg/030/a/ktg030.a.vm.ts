@@ -36,5 +36,7 @@ module nts.uk.at.view.ktg030.a.viewmodel {
         monthPerformanceConfirm() {
            window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml?initmode=2';
         }
+        
+       
     }
 }
