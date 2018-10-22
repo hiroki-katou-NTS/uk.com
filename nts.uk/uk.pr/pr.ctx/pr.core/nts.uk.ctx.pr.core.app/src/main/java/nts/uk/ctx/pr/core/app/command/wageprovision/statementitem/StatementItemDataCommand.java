@@ -1,45 +1,60 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.statementitem;
 
-import java.util.List;
-
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
+
+import java.util.List;
 
 @Value
 public class StatementItemDataCommand {
-	private StatementItemCommand statementItem;
-	private StatementItemNameCommand statementItemName;
-	private PaymentItemSetCommand paymentItemSet;
-	private DeductionItemSetCommand deductionItemSet;
-	private TimeItemSetCommand timeItemSet;
-	private StatementItemDisplaySetCommand statementItemDisplaySet;
-	private ItemRangeSetCommand itemRangeSet;
-	private ValidityPeriodAndCycleSetCommand validityPeriodAndCycleSet;
-	private List<BreakdownItemSetCommand> breakdownItemSet;
-	private TaxExemptionLimitCommand taxExemptionLimit;
-	private IntegratedItemCommand integratedItem;
-	private boolean checkCreate;
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-	
-	/**
-	 * カテゴリ区分
-	 */
-	private int categoryAtr;
+    private StatementItemCommand statementItem;
+    private StatementItemNameCommand statementItemName;
+    private PaymentItemSetCommand paymentItemSet;
+    private DeductionItemSetCommand deductionItemSet;
+    private TimeItemSetCommand timeItemSet;
+    private StatementItemDisplaySetCommand statementItemDisplaySet;
+    private ItemRangeSetCommand itemRangeSet;
+    private ValidityPeriodAndCycleSetCommand validityPeriodAndCycleSet;
+    private List<BreakdownItemSetCommand> breakdownItemSet;
+    private TaxExemptionLimitCommand taxExemptionLimit;
+    private IntegratedItemCommand integratedItem;
+    private boolean checkCreate;
+    /**
+     * 給与項目ID
+     */
+    private String salaryItemId;
 
-	/**
-	 * 項目名コード
-	 */
-	private String itemNameCd;
+    /**
+     * カテゴリ区分
+     */
+    private int categoryAtr;
 
-	/**
-	 * 名称
-	 */
-	private String name;
+    /**
+     * 項目名コード
+     */
+    private String itemNameCd;
 
-	/**
-	 * 廃止区分
-	 */
-	private Integer deprecatedAtr;
+    /**
+     * 名称
+     */
+    private String name;
+
+    /**
+     * 廃止区分
+     */
+    private Integer deprecatedAtr;
+
+    public PaymentItemSet toPaymentItemSet(String cid) {
+        return paymentItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+    }
+
+    public DeductionItemSet toDeductionItemSet(String cid) {
+        return deductionItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+    }
+
+    public TimeItemSet toTimeItemSet(String cid) {
+        return timeItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+    }
 }

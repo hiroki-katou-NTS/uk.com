@@ -49,23 +49,25 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 
 		val statementItem = command.getStatementItem();
 		String salaryItemId = command.getSalaryItemId();
+		int categoryAtr = command.getCategoryAtr();
+		String itemNameCd = command.getItemNameCd();
 		statementItemRepository.remove(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(),
 				salaryItemId);
 		statementItemNameRepository.remove(cid, salaryItemId);
 
 		switch (EnumAdaptor.valueOf(command.getStatementItem().getCategoryAtr(), CategoryAtr.class)) {
 		case PAYMENT_ITEM:
-			paymentItemSetRepository.remove(cid, salaryItemId);
+			paymentItemSetRepository.remove(cid, categoryAtr, itemNameCd);
 			setPeriodCycleRepository.remove(salaryItemId);
 			breakdownItemSetRepository.removeAll(salaryItemId);
 			break;
 		case DEDUCTION_ITEM:
-			deductionItemSetRepository.remove(cid, salaryItemId);
+			deductionItemSetRepository.remove(cid, categoryAtr, itemNameCd);
 			setPeriodCycleRepository.remove(salaryItemId);
 			breakdownItemSetRepository.removeAll(salaryItemId);
 			break;
 		case ATTEND_ITEM:
-			timeItemSetRepository.remove(cid, salaryItemId);
+			timeItemSetRepository.remove(cid, categoryAtr, itemNameCd);
 			break;
 		case REPORT_ITEM:
 			break;

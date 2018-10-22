@@ -68,13 +68,7 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 			// ドメインモデル「支給項目設定」を新規追加する
 			val paymentItem = command.getPaymentItemSet();
 			if (paymentItem != null) {
-				paymentItemSetRepository.update(new PaymentItemSet(cid, salaryItemId,
-						paymentItem.getBreakdownItemUseAtr(), paymentItem.getLaborInsuranceCategory(),
-						paymentItem.getSettingAtr(), paymentItem.getEveryoneEqualSet(), paymentItem.getMonthlySalary(),
-						paymentItem.getHourlyPay(), paymentItem.getDayPayee(), paymentItem.getMonthlySalaryPerday(),
-						paymentItem.getAverageWageAtr(), paymentItem.getSocialInsuranceCategory(),
-						paymentItem.getTaxAtr(), paymentItem.getTaxableAmountAtr(), paymentItem.getLimitAmount(),
-						paymentItem.getLimitAmountAtr(), paymentItem.getTaxLimitAmountCode(), paymentItem.getNote()));
+				paymentItemSetRepository.add(command.toPaymentItemSet(cid));
 			}
 			break;
 
@@ -82,9 +76,7 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 			// ドメインモデル「控除項目設定」を新規追加する
 			val deductionItem = command.getDeductionItemSet();
 			if (deductionItem != null) {
-				deductionItemSetRepository
-						.update(new DeductionItemSet(cid, salaryItemId, deductionItem.getDeductionItemAtr(),
-								deductionItem.getBreakdownItemUseAtr(), deductionItem.getNote()));
+				deductionItemSetRepository.add(command.toDeductionItemSet(cid));
 			}
 			break;
 
@@ -92,8 +84,7 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 			// ドメインモデル「勤怠項目設定」を新規追加する
 			val timeItem = command.getTimeItemSet();
 			if (timeItem != null) {
-				timeItemSetRepository.update(new TimeItemSet(cid, salaryItemId, timeItem.getAverageWageAtr(),
-						timeItem.getWorkingDaysPerYear(), timeItem.getTimeCountAtr(), timeItem.getNote()));
+				timeItemSetRepository.update(command.toTimeItemSet(cid));
 			}
 			break;
 

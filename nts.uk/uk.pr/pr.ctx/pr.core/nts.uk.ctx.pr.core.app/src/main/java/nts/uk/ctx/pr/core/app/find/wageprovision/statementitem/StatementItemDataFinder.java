@@ -97,7 +97,7 @@ public class StatementItemDataFinder {
 			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStBySalaryId(salaryItemId).stream().map(i -> {
 				return BreakdownItemSetDto.fromDomain(i);
 			}).collect(Collectors.toList());
-			val paymentItemOpt = paymentItemSetRepository.getPaymentItemStById(cid, salaryItemId);
+			val paymentItemOpt = paymentItemSetRepository.getPaymentItemStById(cid, categoryAtr, itemNameCd);
 			if (paymentItemOpt.isPresent()) {
 				val taxLimitAmountCode = paymentItemOpt.get().getLimitAmountSetting().getTaxLimitAmountCode()
 						.map(i -> i.v()).orElse(null);
@@ -108,7 +108,7 @@ public class StatementItemDataFinder {
 			break;
 
 		case DEDUCTION_ITEM:
-			deductionItemSet = deductionItemSetRepository.getDeductionItemStById(cid, salaryItemId)
+			deductionItemSet = deductionItemSetRepository.getDeductionItemStById(cid, categoryAtr, itemNameCd)
 					.map(i -> DeductionItemSetDto.fromDomain(i)).orElse(null);
 			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
@@ -122,7 +122,7 @@ public class StatementItemDataFinder {
 			break;
 
 		case ATTEND_ITEM:
-			timeItemSet = timeItemSetRepository.getTimeItemStById(cid, salaryItemId)
+			timeItemSet = timeItemSetRepository.getTimeItemStById(cid, categoryAtr, itemNameCd)
 					.map(i -> TimeItemSetDto.fromDomain(i)).orElse(null);
 			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
