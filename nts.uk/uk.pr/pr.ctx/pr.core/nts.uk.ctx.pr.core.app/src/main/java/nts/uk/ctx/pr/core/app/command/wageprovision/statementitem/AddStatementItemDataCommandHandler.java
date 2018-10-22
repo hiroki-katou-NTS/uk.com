@@ -17,8 +17,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemNameRepos
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
@@ -41,8 +39,6 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 	@Inject
 	private StatementItemDisplaySetRepository statementItemDisplaySetRepository;
 	@Inject
-	private ItemRangeSetRepository itemRangeSetRepository;
-	@Inject
 	private ValidateStatementItemData validateStatementItemData;
 
 	@Override
@@ -50,7 +46,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 		val command = context.getCommand();
 		validateStatementItemData.validate(command);
 		String cid = AppContexts.user().companyId();
-		String salaryItemId = command.getSalaryItemId();
+		int categoryAtr = command.getCategoryAtr();
 
 		// ドメインモデル「明細書項目」を新規追加する
 		val statementItem = command.getStatementItem();
@@ -58,8 +54,10 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			return;
 		}
 
+		String itemNameCd = statementItem.getItemNameCd();
+
 		statementItemRepository
-				.add(new StatementItem(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(), salaryItemId,
+				.add(new StatementItem(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(),
 						statementItem.getDefaultAtr(), statementItem.getValueAtr(), statementItem.getDeprecatedAtr(),
 						statementItem.getSocialInsuaEditableAtr(), statementItem.getIntergrateCd()));
 
@@ -69,7 +67,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 
 			val paymentItem = command.getPaymentItemSet();
 			if (paymentItem != null) {
-				paymentItemSetRepository.add(new PaymentItemSet(cid, salaryItemId, paymentItem.getBreakdownItemUseAtr(),
+				paymentItemSetRepository.add(new PaymentItemSet(cid, categoryAtr, itemNameCd, paymentItem.getBreakdownItemUseAtr(),
 						paymentItem.getLaborInsuranceCategory(), paymentItem.getSettingAtr(),
 						paymentItem.getEveryoneEqualSet(), paymentItem.getMonthlySalary(), paymentItem.getHourlyPay(),
 						paymentItem.getDayPayee(), paymentItem.getMonthlySalaryPerday(),
@@ -84,7 +82,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			val deductionItem = command.getDeductionItemSet();
 			if (deductionItem != null) {
 				deductionItemSetRepository
-						.add(new DeductionItemSet(cid, salaryItemId, deductionItem.getDeductionItemAtr(),
+						.add(new DeductionItemSet(cid, categoryAtr, itemNameCd, deductionItem.getDeductionItemAtr(),
 								deductionItem.getBreakdownItemUseAtr(), deductionItem.getNote()));
 			}
 			break;
@@ -93,7 +91,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			// ドメインモデル「勤怠項目設定」を新規追加する
 			val timeItem = command.getTimeItemSet();
 			if (timeItem != null) {
-				timeItemSetRepository.add(new TimeItemSet(cid, salaryItemId, timeItem.getAverageWageAtr(),
+				timeItemSetRepository.add(new TimeItemSet(cid, categoryAtr, itemNameCd, timeItem.getAverageWageAtr(),
 						timeItem.getWorkingDaysPerYear(), timeItem.getTimeCountAtr(), timeItem.getNote()));
 			}
 			break;
@@ -104,31 +102,17 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			break;
 		}
 
-		// ドメインモデル「項目範囲設定初期値」を新規追加する
-		val itemRange = command.getItemRangeSet();
-		if (itemRange != null) {
-			itemRangeSetRepository.add(new ItemRangeSet(cid, salaryItemId, itemRange.getRangeValueAtr(),
-					itemRange.getErrorUpperLimitSettingAtr(), itemRange.getErrorUpperRangeValueAmount(),
-					itemRange.getErrorUpperRangeValueTime(), itemRange.getErrorUpperRangeValueNum(),
-					itemRange.getErrorLowerLimitSettingAtr(), itemRange.getErrorLowerRangeValueAmount(),
-					itemRange.getErrorLowerRangeValueTime(), itemRange.getErrorLowerRangeValueNum(),
-					itemRange.getAlarmUpperLimitSettingAtr(), itemRange.getAlarmUpperRangeValueAmount(),
-					itemRange.getAlarmUpperRangeValueTime(), itemRange.getAlarmUpperRangeValueNum(),
-					itemRange.getAlarmLowerLimitSettingAtr(), itemRange.getAlarmLowerRangeValueAmount(),
-					itemRange.getAlarmLowerRangeValueTime(), itemRange.getAlarmLowerRangeValueNum()));
-		}
-
 		// ドメインモデル「明細項目の表示設定」を新規追加する
 		val statementDisplay = command.getStatementItemDisplaySet();
 		if (statementDisplay != null) {
-			statementItemDisplaySetRepository.add(new StatementItemDisplaySet(cid, salaryItemId,
+			statementItemDisplaySetRepository.add(new StatementItemDisplaySet(cid, categoryAtr, itemNameCd,
 					statementDisplay.getZeroDisplayAtr(), statementDisplay.getItemNameDisplay()));
 		}
 
 		// ドメインモデル「明細書項目名称」を新規追加する
 		val statementItemName = command.getStatementItemName();
 		if (statementItemName != null) {
-			statementItemNameRepository.add(new StatementItemName(cid, salaryItemId, statementItemName.getName(),
+			statementItemNameRepository.add(new StatementItemName(cid, categoryAtr, itemNameCd, statementItemName.getName(),
 					statementItemName.getShortName(), statementItemName.getOtherLanguageName(),
 					statementItemName.getEnglishName()));
 		}

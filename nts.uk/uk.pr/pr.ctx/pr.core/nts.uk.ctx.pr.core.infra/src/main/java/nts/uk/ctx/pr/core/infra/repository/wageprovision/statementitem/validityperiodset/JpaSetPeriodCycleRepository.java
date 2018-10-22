@@ -16,7 +16,9 @@ public class JpaSetPeriodCycleRepository extends JpaRepository implements SetPer
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSetPeriodCycle f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.setPeriodCyclePk.salaryItemId =:salaryItemId ";
+			+ " WHERE  f.setPeriodCyclePk.cid =:cid "
+			+ " AND  f.setPeriodCyclePk.categoryAtr =:categoryAtr "
+			+ " AND  f.setPeriodCyclePk.itemNameCd =:itemNameCd ";
 
 	@Override
 	public List<SetValidityPeriodCycle> getAllSetPeriodCycle() {
@@ -25,22 +27,23 @@ public class JpaSetPeriodCycleRepository extends JpaRepository implements SetPer
 	}
 
 	@Override
-	public Optional<SetValidityPeriodCycle> getSetPeriodCycleById(String salaryItemId) {
+	public Optional<SetValidityPeriodCycle> getSetPeriodCycleById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSetPeriodCycle.class)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.setParameter("cid", cid).setParameter("categoryAtr", categoryAtr)
+				.setParameter("itemNameCd", itemNameCd).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void register(SetValidityPeriodCycle domain) {
-		this.remove(domain.getSalaryItemId());
+		this.remove(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v());
 		this.getEntityManager().flush();
 		this.commandProxy().insert(QpbmtSetPeriodCycle.toEntity(domain));
 	}
 
 	@Override
-	public void remove(String salaryItemId) {
-		if (this.getSetPeriodCycleById(salaryItemId).isPresent()) {
-			this.commandProxy().remove(QpbmtSetPeriodCycle.class, new QpbmtSetPeriodCyclePk(salaryItemId));
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getSetPeriodCycleById(cid, categoryAtr, itemNameCd).isPresent()) {
+			this.commandProxy().remove(QpbmtSetPeriodCycle.class, new QpbmtSetPeriodCyclePk(cid, categoryAtr, itemNameCd));
 		}
 	}
 }

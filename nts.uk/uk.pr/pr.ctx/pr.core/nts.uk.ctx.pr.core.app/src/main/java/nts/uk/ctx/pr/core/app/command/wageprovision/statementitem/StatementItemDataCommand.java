@@ -18,10 +18,6 @@ public class StatementItemDataCommand {
 	private TaxExemptionLimitCommand taxExemptionLimit;
 	private IntegratedItemCommand integratedItem;
 	private boolean checkCreate;
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
 	
 	/**
 	 * カテゴリ区分

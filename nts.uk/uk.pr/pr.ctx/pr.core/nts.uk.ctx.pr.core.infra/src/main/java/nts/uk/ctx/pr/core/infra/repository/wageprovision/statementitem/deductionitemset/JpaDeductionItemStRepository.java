@@ -16,7 +16,8 @@ public class JpaDeductionItemStRepository extends JpaRepository implements Deduc
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtDeductionItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.deductionItemStPk.cid =:cid AND  f.deductionItemStPk.salaryItemId =:salaryItemId ";
+			+ " WHERE  f.deductionItemStPk.cid =:cid AND  f.deductionItemStPk.categoryAtr =:categoryAtr "
+			+ " AND  f.deductionItemStPk.itemNameCd =:itemNameCd";
 
 	@Override
 	public List<DeductionItemSet> getAllDeductionItemSt() {
@@ -25,9 +26,10 @@ public class JpaDeductionItemStRepository extends JpaRepository implements Deduc
 	}
 
 	@Override
-	public Optional<DeductionItemSet> getDeductionItemStById(String cid, String salaryItemId) {
+	public Optional<DeductionItemSet> getDeductionItemStById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtDeductionItemSt.class).setParameter("cid", cid)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -41,9 +43,9 @@ public class JpaDeductionItemStRepository extends JpaRepository implements Deduc
 	}
 
 	@Override
-	public void remove(String cid, String salaryItemId) {
-		if (this.getDeductionItemStById(cid, salaryItemId).isPresent()) {
-			this.commandProxy().remove(QpbmtDeductionItemSt.class, new QpbmtDeductionItemStPk(cid, salaryItemId));
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getDeductionItemStById(cid, categoryAtr, itemNameCd).isPresent()) {
+			this.commandProxy().remove(QpbmtDeductionItemSt.class, new QpbmtDeductionItemStPk(cid, categoryAtr, itemNameCd));
 		}
 	}
 }

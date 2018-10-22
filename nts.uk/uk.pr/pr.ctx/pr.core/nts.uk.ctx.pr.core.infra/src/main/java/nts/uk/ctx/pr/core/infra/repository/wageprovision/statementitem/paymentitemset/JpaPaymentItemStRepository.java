@@ -16,7 +16,8 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPaymentItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.paymentItemStPk.cid =:cid AND  f.paymentItemStPk.salaryItemId =:salaryItemId ";
+			+ " WHERE  f.paymentItemStPk.cid =:cid AND  f.paymentItemStPk.categoryAtr =:categoryAtr "
+			+ " AND f.paymentItemStPk.itemNameCd =:itemNameCd";
 
 	@Override
 	public List<PaymentItemSet> getAllPaymentItemSt() {
@@ -25,9 +26,10 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
 	}
 
 	@Override
-	public Optional<PaymentItemSet> getPaymentItemStById(String cid, String salaryItemId) {
+	public Optional<PaymentItemSet> getPaymentItemStById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPaymentItemSt.class).setParameter("cid", cid)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -41,9 +43,9 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
 	}
 
 	@Override
-	public void remove(String cid, String salaryItemId) {
-		if (this.getPaymentItemStById(cid, salaryItemId).isPresent()) {
-			this.commandProxy().remove(QpbmtPaymentItemSt.class, new QpbmtPaymentItemStPk(cid, salaryItemId));
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getPaymentItemStById(cid, categoryAtr, itemNameCd).isPresent()) {
+			this.commandProxy().remove(QpbmtPaymentItemSt.class, new QpbmtPaymentItemStPk(cid, categoryAtr, itemNameCd));
 		}
 	}
 }

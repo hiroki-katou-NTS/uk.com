@@ -2,11 +2,9 @@ module nts.uk.pr.view.qmm012.b {
 
     import model = qmm012.share.model;
     import getText = nts.uk.resource.getText;
-    import alertError = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import modal = nts.uk.ui.windows.sub.modal;
     import dialog = nts.uk.ui.dialog;
 
     export module viewModel {
@@ -15,14 +13,14 @@ module nts.uk.pr.view.qmm012.b {
             // category comboBox
             categoryList: KnockoutObservableArray<model.ItemModel>;
             selectedCategory: KnockoutObservable<string> = ko.observable(null);
-            
+
             // Also display abolition
             isdisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
             
             // statement gridList
             statementItemDataList: KnockoutObservableArray<IStatementItemCustom> = ko.observableArray([]);
             statementItemDataSelected: KnockoutObservable<StatementItemData>;
-            salaryItemId: KnockoutObservable<string> = ko.observable(null);
+            currentKey: KnockoutObservable<string> = ko.observable(null);
             
             // define gridColumns
             gridColumns: any;
@@ -41,7 +39,7 @@ module nts.uk.pr.view.qmm012.b {
                 ]);
                 
                 self.gridColumns = [
-                                        { headerText: '', key: 'salaryItemId', width: 0, formatter: _.escape, hidden: true },
+                                        { headerText: '', key: 'key', hidden: true },
                                         { headerText: getText('QMM012_27'), key: 'categoryAtr', width: 80 , formatter: getCategoryAtrText },
                                         { headerText: getText('QMM012_32'), key: 'itemNameCd', width: 60, formatter: _.escape },
                                         { headerText: getText('QMM012_33'), key: 'name', width: 200, formatter: _.escape },
@@ -56,46 +54,46 @@ module nts.uk.pr.view.qmm012.b {
                 self.statementItemDataSelected = ko.observable(new StatementItemData(null, self));
                 
                 self.selectedCategory.subscribe(() => {
-                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    let oldKey= self.statementItemDataSelected().key;
                     
                     self.loadListData().done(function() {
-                        let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
-                            return oldSalaryId == o.salaryItemId;
+                        let matchKey = _.filter(self.statementItemDataList(), function(o) {
+                            return oldKey == o.key;
                         });
                         
-                        if(matchSalaryID.length > 0) {
-                            self.salaryItemId(oldSalaryId);
+                        if(matchKey.length > 0) {
+                            self.currentKey(oldKey);
                         } else if(self.statementItemDataList().length > 0) {
-                            self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
+                            self.currentKey(self.statementItemDataList()[0].key);
                         }
                     });
                 });
 
                 self.isdisplayAbolition.subscribe(() => {
-                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    let oldKey = self.statementItemDataSelected().key;
                     
                     self.loadListData().done(function() {
-                        let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
-                            return oldSalaryId == o.salaryItemId;
+                        let matchKey = _.filter(self.statementItemDataList(), function(o) {
+                            return oldKey == o.key;
                         });
                         
-                        if(matchSalaryID.length > 0) {
-                            self.salaryItemId(oldSalaryId);
+                        if(matchKey.length > 0) {
+                            self.currentKey(oldKey);
                         } else if(self.statementItemDataList().length > 0) {
-                            self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
+                            self.currentKey(self.statementItemDataList()[0].key);
                         }
                     });
                 });
 
-                self.salaryItemId.subscribe(x => {
+                self.currentKey.subscribe(x => {
 
                     if(x && (x != "")) {
                         let data: IStatementItemCustom = _.filter(self.statementItemDataList(), function(o) {
-                            return x == o.salaryItemId;
+                            return x == o.key;
                         })[0];
 
                         if(data) {
-                            self.loadItemData(data.categoryAtr, data.itemNameCd, data.salaryItemId);
+                            self.loadItemData(data.categoryAtr, data.itemNameCd);
 
                             setTimeout(function(){
                                 $("tr[data-id='" + x + "'] ").focus();
@@ -112,11 +110,11 @@ module nts.uk.pr.view.qmm012.b {
                 });
             }//end constructor
 
-            loadItemData(categoryAtr: number, itemNameCd: string, salaryItemId: string) {
+            loadItemData(categoryAtr: number, itemNameCd: string) {
                 let self = this;
                 block.invisible();
 
-                service.getStatementItemData(categoryAtr, itemNameCd, salaryItemId).done(function(data: IStatementItemData) {
+                service.getStatementItemData(categoryAtr, itemNameCd).done(function(data: IStatementItemData) {
                     if(data) {
                         self.statementItemDataSelected(new StatementItemData(data, self));
                     } else {
@@ -146,7 +144,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.statementItemDataList(data);
                     
                     if(self.statementItemDataList().length <= 0) {
-                        self.salaryItemId(null);
+                        self.currentKey(null);
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
                     
@@ -190,7 +188,7 @@ module nts.uk.pr.view.qmm012.b {
                     
                     if(data != null) {
                         let categoryAtr = parseInt(data, 10);
-                        self.salaryItemId(null);
+                        self.currentKey(null);
                         self.statementItemDataSelected().statementItem().categoryAtr(categoryAtr);
                     }
                     
@@ -261,7 +259,7 @@ module nts.uk.pr.view.qmm012.b {
                 }
                 
                 if(!nts.uk.ui.errors.hasError()) {
-                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    let oldKey = self.statementItemDataSelected().key;
                     let command = ko.toJS(self.statementItemDataSelected);
                     delete command.setBreakdownItem;
                     delete command.setValidity;
@@ -270,8 +268,7 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.screenModel;
                     
                     if(self.statementItemDataSelected().checkCreate()) {
-                         oldSalaryId = nts.uk.util.randomId();
-                         command.salaryItemId = oldSalaryId;
+                        oldKey = self.statementItemDataSelected().statementItem().categoryAtr().toString() + self.statementItemDataSelected().statementItem().itemNameCd;
                     }
 
                     // clear all tax value if not visible
@@ -458,15 +455,15 @@ module nts.uk.pr.view.qmm012.b {
                         
                         dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.loadListData().done(function() {
-                                let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
-                                    return oldSalaryId == o.salaryItemId;
+                                let matchKey = _.filter(self.statementItemDataList(), function(o) {
+                                    return oldKey == o.key;
                                 });
                                 
-                                if(matchSalaryID.length > 0) {
-                                    self.salaryItemId(oldSalaryId);
-                                    self.salaryItemId.valueHasMutated();
+                                if(matchKey.length > 0) {
+                                    self.currentKey(oldKey);
+                                    self.currentKey.valueHasMutated();
                                 } else if(self.statementItemDataList().length > 0) {
-                                    self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
+                                    self.currentKey(self.statementItemDataList()[0].key);
                                 }
                             });
                         });
@@ -492,7 +489,7 @@ module nts.uk.pr.view.qmm012.b {
             
             public deleteItem(): void {
                 let self = this;
-                let nextSalaryId = self.getNextSalaryId();
+                let nextKey = self.getNextKey();
                 
                 dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let command = ko.toJS(self.statementItemDataSelected);
@@ -510,8 +507,8 @@ module nts.uk.pr.view.qmm012.b {
                             self.loadListData().done(function() {
                                 if(self.statementItemDataList().length == 0) {
                                     self.create();
-                                } else if(nextSalaryId != null) {
-                                    self.salaryItemId(nextSalaryId);
+                                } else if(nextKey != null) {
+                                    self.currentKey(nextKey);
                                 }
                             });
                         });
@@ -522,11 +519,11 @@ module nts.uk.pr.view.qmm012.b {
                 })
             }
             
-            public getNextSalaryId(): string {
+            public getNextKey(): string {
                 let self = this;
                 let nextItem: string = null;
-                let array: Array<string> = self.statementItemDataList().map(x => x.salaryItemId);
-                let value = self.statementItemDataSelected().salaryItemId();
+                let array: Array<string> = self.statementItemDataList().map(x => x.key);
+                let value = self.statementItemDataSelected().key;
                 
                 if(array.length > 0) {
                     let index = array.indexOf(value);
@@ -566,7 +563,7 @@ module nts.uk.pr.view.qmm012.b {
         
         class StatementItemData {
             cid: string;
-            salaryItemId: KnockoutObservable<string>;
+            key: string;
             statementItem: KnockoutObservable<StatementItem>;
             statementItemName: KnockoutObservable<StatementItemName>;
             paymentItemSet: KnockoutObservable<PaymentItemSet>;
@@ -592,7 +589,7 @@ module nts.uk.pr.view.qmm012.b {
                 
                 if (data) {
                     self.cid = data.cid;
-                    self.salaryItemId = ko.observable(data.salaryItemId);
+                    self.key = data.key;
                     self.statementItem = ko.observable(new StatementItem(data.statementItem));
                     self.statementItemName = ko.observable(new StatementItemName(data.statementItemName));
                     self.paymentItemSet = ko.observable(new PaymentItemSet(data.paymentItemSet, screenModel));
@@ -612,7 +609,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.checkCreate = ko.observable(false);
                 } else {
                     self.cid = "";
-                    self.salaryItemId = ko.observable("");
+                    self.key = null;
                     self.statementItem = ko.observable(new StatementItem(null));
                     self.statementItemName = ko.observable(new StatementItemName(null));
                     self.paymentItemSet = ko.observable(new PaymentItemSet(null, screenModel));
@@ -630,7 +627,7 @@ module nts.uk.pr.view.qmm012.b {
             public setBreakdownItem(): void {
                 let self = this;
 
-                setShared("QMM012_B_TO_I_PARAMS", {salaryItemId: self.salaryItemId(), categoryName: self.statementItem().categoryName()});
+                setShared("QMM012_B_TO_I_PARAMS", {categoryAtr: self.statementItem().categoryAtr(), itemNameCd: self.statementItem().itemNameCd(), categoryName: self.statementItem().categoryName()});
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     let isSetting = getShared("QMM012_I_IS_SETTING");
@@ -644,7 +641,6 @@ module nts.uk.pr.view.qmm012.b {
                 let self = this;
 
                 setShared("QMM012_B_TO_H_SALARY_ITEM_ID", {
-                    salaryItemId: self.salaryItemId(),
                     categoryAtr: self.statementItem().categoryAtr(),
                     itemNameCd: self.statementItem().itemNameCd(),
                     name: self.statementItemName().name(),
@@ -1136,7 +1132,7 @@ module nts.uk.pr.view.qmm012.b {
         }
 
         interface IStatementItemCustom {
-            salaryItemId: string;
+            key: string;
             categoryAtr: number;
             itemNameCd: string;
             name: string;
@@ -1145,7 +1141,6 @@ module nts.uk.pr.view.qmm012.b {
 
         interface IStatementItemData {
             cid: string;
-            salaryItemId: string;
             statementItem: IStatementItem;
             statementItemName: IStatementItemName;
             paymentItemSet: IPaymentItemSet;
@@ -1157,6 +1152,7 @@ module nts.uk.pr.view.qmm012.b {
             breakdownItemSet: Array<IBreakdownItemSet>;
             
             // only show in gridlist
+            key: string;
             categoryAtr: number;
             itemNameCd: string;
             name: string;

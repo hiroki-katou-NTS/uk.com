@@ -147,14 +147,14 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
 	}
 
 	public PaymentItemSet toDomain() {
-		return new PaymentItemSet(paymentItemStPk.cid, paymentItemStPk.salaryItemId, breakdownItemUseAtr,
+		return new PaymentItemSet(paymentItemStPk.cid, paymentItemStPk.categoryAtr, paymentItemStPk.itemNameCd, breakdownItemUseAtr,
 				laborInsuranceCategory, settingAtr, everyoneEqualSet, monthlySalary, hourlyPay, dayPayee,
 				monthlySalaryPerday, averageWageAtr, socialInsuranceCategory, taxAtr, taxableAmountAtr, limitAmount,
 				limitAmountAtr, taxLimitAmountCode, note);
 	}
 
 	public static QpbmtPaymentItemSt toEntity(PaymentItemSet domain) {
-		return new QpbmtPaymentItemSt(new QpbmtPaymentItemStPk(domain.getCid(), domain.getSalaryItemId()),
+		return new QpbmtPaymentItemSt(new QpbmtPaymentItemStPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v()),
 				domain.getBreakdownItemUseAtr().value, domain.getLaborInsuranceCategory().value,
 				domain.getFixedWage().getSettingAtr().value,
 				domain.getFixedWage().getEveryoneEqualSet().map(i -> i.value).orElse(null),

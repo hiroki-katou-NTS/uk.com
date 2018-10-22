@@ -69,11 +69,11 @@
 						<!-- B2_6, B2_7, B2_8 -->
 						<div style="width: 410px" tabindex="10" data-bind="ntsSearchBox: {searchMode: 'highlight',
 																			label: 'コード/名称',
-																			targetKey: 'salaryItemId', 
+																			targetKey: 'key',
 																			comId: 'statementList', 
 																			items: statementItemDataList, 
-																			selected: statementItemDataSelected().salaryItemId, 
-																			selectedKey: 'salaryItemId',
+																			selected: currentKey,
+																			selectedKey: 'key',
 																			searchText: '検索',
 																			fields: ['itemNameCd', 'name'], 
 																			mode: 'igGrid'}" />
@@ -81,11 +81,11 @@
 						<table  id="statementList" 
 							    data-bind="ntsGridList: { name: '#[QMM012_31]',
 								options: statementItemDataList,
-								primaryKey: 'salaryItemId',
+								primaryKey: 'key',
 								columns: gridColumns,
 								multiple: false,
 								rows: 15,
-								value: salaryItemId
+								value: currentKey
 							}"></table>
 					</div>
 					

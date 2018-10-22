@@ -63,12 +63,12 @@ public class QpbmtTimeItemSt extends UkJpaEntity implements Serializable {
 	}
 
 	public TimeItemSet toDomain() {
-		return new TimeItemSet(timeItemStPk.cid, timeItemStPk.salaryItemId, averageWageAtr, workingDaysPerYear,
+		return new TimeItemSet(timeItemStPk.cid, timeItemStPk.categoryAtr, timeItemStPk.itemNameCd, averageWageAtr, workingDaysPerYear,
 				timeCountAtr, note);
 	}
 
 	public static QpbmtTimeItemSt toEntity(TimeItemSet domain) {
-		return new QpbmtTimeItemSt(new QpbmtTimeItemStPk(domain.getCid(), domain.getSalaryItemId()),
+		return new QpbmtTimeItemSt(new QpbmtTimeItemStPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v()),
 				domain.getAverageWageAtr().map(i -> i.value).orElse(null),
 				domain.getWorkingDaysPerYear().map(i -> i.value).orElse(null), domain.getTimeCountAtr().value,
 				domain.getNote().map(i -> i.v()).orElse(null));

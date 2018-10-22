@@ -41,10 +41,10 @@ public class StatementItemWebService extends WebService {
 	private UpdateStatementItemNameCommandHandler updateStatementItemNameCommandHandler;
 
 	@POST
-	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}")
+	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}")
 	public StatementItemDataDto getStatementItemData(@PathParam("categoryAtr") int categoryAtr,
-			@PathParam("itemNameCd") String itemNameCd, @PathParam("salaryItemId") String salaryItemId) {
-		return this.statementItemDataFinder.getStatementItemData(categoryAtr, itemNameCd, salaryItemId);
+			@PathParam("itemNameCd") String itemNameCd) {
+		return this.statementItemDataFinder.getStatementItemData(categoryAtr, itemNameCd);
 	}
 
 	@POST
@@ -62,8 +62,8 @@ public class StatementItemWebService extends WebService {
 	
 	@POST
 	@Path("getStatementItemAndStatementItemName/{categoryAtr}")
-	public List<StatementItemAndStatementItemNameDto> findStatementItemNameByListSalaryItemId(@PathParam("categoryAtr") int categoryAtr) {
-		return this.statementItemFinder.findStatementItemNameByListSalaryItemId(categoryAtr);
+	public List<StatementItemAndStatementItemNameDto> findStatementItemNameByListCode(@PathParam("categoryAtr") int categoryAtr) {
+		return this.statementItemFinder.findStatementItemNameByListCode(categoryAtr);
 	}
 
 	@POST
@@ -80,9 +80,9 @@ public class StatementItemWebService extends WebService {
 	}
 
 	@POST
-	@Path("getStatementItemName/{salaryItemId}")
-	public StatementItemNameDto getByCategoryAndCode(@PathParam("salaryItemId") String salaryItemId) {
-		return this.statementItemNameFinder.findStatementItemName(salaryItemId);
+	@Path("getStatementItemName/{categoryAtr}/{itemNameCd}")
+	public StatementItemNameDto getByCategoryAndCode1(@PathParam("categoryAtr") int categoryAtr, @PathParam("itemNameCd") String itemNameCd) {
+		return this.statementItemNameFinder.findStatementItemName(categoryAtr, itemNameCd);
 	}
 
 	@POST

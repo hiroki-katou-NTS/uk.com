@@ -31,8 +31,8 @@ public class InitialDisplayRegisterProcessingFinder {
 	private CurrProcessDateRepository finderCurrProcessDate;
 	@Inject
 	private EmpTiedProYearRepository finderEmpTiedProYear;
-	@Inject
-	private SysEmploymentAdapter syEmploymentAdapter;
+	//@Inject
+	//private SysEmploymentAdapter syEmploymentAdapter;
 
 	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing() {
 		String cid = AppContexts.user().companyId();
@@ -41,7 +41,7 @@ public class InitialDisplayRegisterProcessingFinder {
 		List<SetDaySupportDto> setDaySupportDto = new ArrayList<SetDaySupportDto>();
 		List<ProcessInformationDto> informationDto = new ArrayList<ProcessInformationDto>();
 		List<CurrProcessDateDto> currProcessDateDto = new ArrayList<CurrProcessDateDto>();
-		List<EmpCdNameImport> employeeList = syEmploymentAdapter.findAll(cid);
+		List<EmpCdNameImport> employeeList = null;
 
 		List<EmpTiedProYearDto> empTiedProYearDto = new ArrayList<EmpTiedProYearDto>();
 

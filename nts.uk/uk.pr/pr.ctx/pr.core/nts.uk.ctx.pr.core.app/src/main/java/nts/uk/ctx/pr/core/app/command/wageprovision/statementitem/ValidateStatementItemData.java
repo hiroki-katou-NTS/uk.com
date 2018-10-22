@@ -40,17 +40,17 @@ public class ValidateStatementItemData {
 		if (statementItemName == null) {
 			return;
 		}
-		val listSalaryItemId = listStatementItem.stream().map(i -> {
-			return i.getSalaryItemId();
+		val listCode = listStatementItem.stream().map(i -> {
+			return i.getItemNameCd().v();
 		}).collect(Collectors.toList());
 		if (!command.isCheckCreate()) {
-			listSalaryItemId.removeIf(c -> c.equals(command.getSalaryItemId()));
+			listCode.removeIf(c -> c.equals(command.getItemNameCd()));
 		}
-		if (listSalaryItemId.size() == 0) {
+		if (listCode.size() == 0) {
 			return;
 		}
-		val listStatementItemName = statementItemNameRepository.getStatementItemNameByListSalaryItemId(cid,
-				listSalaryItemId);
+		val listStatementItemName = statementItemNameRepository.getStatementItemNameByListCode(cid, statementItem.getCategoryAtr(),
+				listCode);
 		if (listStatementItemName.stream().anyMatch(i -> i.getName().v().equals(statementItemName.getName()))) {
 			throw new BusinessException("Msg_358");
 		}

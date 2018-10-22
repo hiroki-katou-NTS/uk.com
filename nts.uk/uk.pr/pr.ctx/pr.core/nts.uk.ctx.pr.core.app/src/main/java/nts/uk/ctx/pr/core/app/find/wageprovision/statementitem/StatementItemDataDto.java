@@ -16,11 +16,8 @@ public class StatementItemDataDto {
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
 	private List<BreakdownItemSetDto> breakdownItemSet;
 	private IntegratedItemDto integratedItem;
-	
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
+
+	private String key;
 	
 	/**
 	 * カテゴリ区分

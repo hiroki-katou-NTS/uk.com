@@ -64,18 +64,18 @@ public class StatementItemFinder {
 		}).collect(Collectors.toList());
 	}
 
-	public List<StatementItemAndStatementItemNameDto> findStatementItemNameByListSalaryItemId(int categoryAtr) {
+	public List<StatementItemAndStatementItemNameDto> findStatementItemNameByListCode(int categoryAtr) {
 		String cid = AppContexts.user().companyId();
 		List<StatementItem> listStatementItem = statementItemRepository.getByCategory(cid, categoryAtr);
-		val salaryItemIds = listStatementItem.stream().map(item -> item.getSalaryItemId()).collect(Collectors.toList());
-		if(salaryItemIds.size() == 0){
+		val codes = listStatementItem.stream().map(item -> item.getItemNameCd().v()).collect(Collectors.toList());
+		if(codes.size() == 0){
 			return null;
 		}
 		List<StatementItemName> statementItemName = statementItemNameRepository
-				.getStatementItemNameByListSalaryItemId(cid, salaryItemIds);
+				.getStatementItemNameByListCode(cid, categoryAtr, codes);
 		return listStatementItem.stream().map(domain -> {
 			Optional<StatementItemName> itemName = statementItemName.stream()
-					.filter(x -> x.getSalaryItemId().equals(domain.getSalaryItemId())).findFirst();
+					.filter(x -> x.getItemNameCd().equals(domain.getItemNameCd())).findFirst();
 			return StatementItemAndStatementItemNameDto.fromDomain(domain, itemName);
 		}).collect(Collectors.toList());
 	}

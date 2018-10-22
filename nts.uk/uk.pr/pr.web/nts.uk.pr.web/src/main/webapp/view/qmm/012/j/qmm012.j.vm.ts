@@ -146,7 +146,6 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
     export interface IDataScreen {
         categoryAtr: number;
         itemNameCd: string;
-        salaryItemId: string;
         defaultAtr: number;
         valueAtr: number;
         deprecatedAtr: number;
@@ -161,7 +160,6 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
     export class DataScreen {
         categoryAtr: number;
         itemNameCd: KnockoutObservable<string> = ko.observable('');
-        salaryItemId: KnockoutObservable<string> = ko.observable('');
         defaultAtr: KnockoutObservable<number> = ko.observable(0);
         valueAtr: KnockoutObservable<number> = ko.observable(0);
         deprecatedAtr: KnockoutObservable<number> = ko.observable(0);
@@ -173,7 +171,7 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
         englishName: KnockoutObservable<string> = ko.observable('')
         constructor(params: IDataScreen) {
             let self = this;
-            self.salaryItemId(params ? params.salaryItemId : '');
+            self.categoryAtr = params ? params.categoryAtr : null;
             self.itemNameCd(params ? params.itemNameCd : '');
             self.name(params ? params.name : '');
             self.shortName(params ? params.shortName : '');

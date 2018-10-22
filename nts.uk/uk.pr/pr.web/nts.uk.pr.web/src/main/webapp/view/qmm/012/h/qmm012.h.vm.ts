@@ -12,7 +12,6 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         currentSetting: KnockoutObservable<model.ValidityPeriodAndCycleSet> = ko.observable(null);
         validityPeriodAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getValidityPeriodAtr());
         cycleSettingAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCycleSettingAtr());
-        salaryItemId: string;
         categoryAtr: string;
         itemNameCd: string;
         name: string;
@@ -20,7 +19,6 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         constructor() {
             let self = this;
             let params = getShared("QMM012_B_TO_H_SALARY_ITEM_ID");
-            self.salaryItemId = params.salaryItemId;
             self.categoryAtr = model.getCategoryAtrText(params.categoryAtr);
             self.itemNameCd = params.itemNameCd;
             self.name = params.name;
@@ -30,9 +28,10 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
-            service.getValidityPeriodAndCycleSet(self.salaryItemId).done(function(data: model.IValidityPeriodAndCycleSet) {
+            service.getValidityPeriodAndCycleSet(self.categoryAtr, self.itemNameCd).done(function(data: model.IValidityPeriodAndCycleSet) {
                 self.currentSetting(new model.ValidityPeriodAndCycleSet(data));
-                self.currentSetting().salaryItemId(self.salaryItemId);
+                self.currentSetting().categoryAtr(parseInt(self.categoryAtr, 10));
+                self.currentSetting().itemNameCd(self.itemNameCd);
                 dfd.resolve();
             }).fail(function(error) {
                 alertError(error);

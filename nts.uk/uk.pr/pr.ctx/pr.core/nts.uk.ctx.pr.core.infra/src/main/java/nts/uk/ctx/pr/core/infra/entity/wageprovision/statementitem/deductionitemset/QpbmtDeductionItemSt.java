@@ -56,12 +56,12 @@ public class QpbmtDeductionItemSt extends UkJpaEntity implements Serializable {
 	}
 
 	public DeductionItemSet toDomain() {
-		return new DeductionItemSet(this.deductionItemStPk.cid, this.deductionItemStPk.salaryItemId,
+		return new DeductionItemSet(this.deductionItemStPk.cid, this.deductionItemStPk.categoryAtr, this.deductionItemStPk.itemNameCd,
 				this.deductionItemAtr, this.breakdownItemUseAtr, this.note);
 	}
 
 	public static QpbmtDeductionItemSt toEntity(DeductionItemSet domain) {
-		return new QpbmtDeductionItemSt(new QpbmtDeductionItemStPk(domain.getCid(), domain.getSalaryItemId()),
+		return new QpbmtDeductionItemSt(new QpbmtDeductionItemStPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v()),
 				domain.getDeductionItemAtr().value,
 				domain.getBreakdownItemUseAtr().value,
 				domain.getNote().map(i -> i.v()).orElse(null));

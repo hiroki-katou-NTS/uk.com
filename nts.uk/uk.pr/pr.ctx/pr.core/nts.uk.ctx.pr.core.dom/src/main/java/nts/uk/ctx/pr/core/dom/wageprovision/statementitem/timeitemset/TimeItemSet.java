@@ -6,6 +6,8 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.AverageWageAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -22,9 +24,14 @@ public class TimeItemSet extends AggregateRoot {
 	private String cid;
 
 	/**
-	 * 給与項目ID
+	 * カテゴリ区分
 	 */
-	private String salaryItemId;
+	private CategoryAtr categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	private ItemNameCode itemNameCd;
 
 	/**
 	 * 平均賃金区分
@@ -46,11 +53,12 @@ public class TimeItemSet extends AggregateRoot {
 	 */
 	private Optional<Memo> note;
 
-	public TimeItemSet(String cid, String salaryItemId, int averageWageAtr, int workingDaysPerYear, int timeCountAtr,
+	public TimeItemSet(String cid, int categoryAtr, String itemNameCd, int averageWageAtr, int workingDaysPerYear, int timeCountAtr,
 			String note) {
 		super();
 		this.cid = cid;
-		this.salaryItemId = salaryItemId;
+		this.categoryAtr = EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class);
+		this.itemNameCd = new ItemNameCode(itemNameCd);
 		this.averageWageAtr = Optional.of(EnumAdaptor.valueOf(averageWageAtr, AverageWageAtr.class));
 		this.workingDaysPerYear = Optional
 				.ofNullable(EnumAdaptor.valueOf(workingDaysPerYear, ClassifiedWorkingDaysPerYear.class));

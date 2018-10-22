@@ -16,7 +16,8 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtTimeItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeItemStPk.salaryItemId =:salaryItemId ";
+			+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeItemStPk.categoryAtr =:categoryAtr "
+			+ " AND f.timeItemStPk.itemNameCd =:itemNameCd";
 
 	@Override
 	public List<TimeItemSet> getAllTimeItemSt() {
@@ -24,9 +25,10 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 	}
 
 	@Override
-	public Optional<TimeItemSet> getTimeItemStById(String cid, String salaryItemId) {
+	public Optional<TimeItemSet> getTimeItemStById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtTimeItemSt.class).setParameter("cid", cid)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -40,9 +42,9 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 	}
 
 	@Override
-	public void remove(String cid, String salaryItemId) {
-		if (this.getTimeItemStById(cid, salaryItemId).isPresent()) {
-			this.commandProxy().remove(QpbmtTimeItemSt.class, new QpbmtTimeItemStPk(cid, salaryItemId));
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getTimeItemStById(cid, categoryAtr, itemNameCd).isPresent()) {
+			this.commandProxy().remove(QpbmtTimeItemSt.class, new QpbmtTimeItemStPk(cid, categoryAtr, itemNameCd));
 		}
 	}
 }

@@ -12,12 +12,12 @@ public interface TimeItemSetRepository {
 
 	List<TimeItemSet> getAllTimeItemSt();
 
-	Optional<TimeItemSet> getTimeItemStById(String cid, String salaryItemId);
+	Optional<TimeItemSet> getTimeItemStById(String cid, int categoryAtr, String itemNameCd);
 
 	void add(TimeItemSet domain);
 
 	void update(TimeItemSet domain);
 
-	void remove(String cid, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }

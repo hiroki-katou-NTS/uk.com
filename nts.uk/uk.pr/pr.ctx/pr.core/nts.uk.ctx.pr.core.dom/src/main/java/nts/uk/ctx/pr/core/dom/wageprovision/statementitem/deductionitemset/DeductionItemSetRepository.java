@@ -12,12 +12,12 @@ public interface DeductionItemSetRepository {
 
 	List<DeductionItemSet> getAllDeductionItemSt();
 
-	Optional<DeductionItemSet> getDeductionItemStById(String cid, String salaryItemId);
+	Optional<DeductionItemSet> getDeductionItemStById(String cid, int categoryAtr, String itemNameCd);
 
 	void add(DeductionItemSet domain);
 
 	void update(DeductionItemSet domain);
 
-	void remove(String cid, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }

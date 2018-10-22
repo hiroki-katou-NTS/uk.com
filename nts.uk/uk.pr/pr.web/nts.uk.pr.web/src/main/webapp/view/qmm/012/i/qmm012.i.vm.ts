@@ -15,7 +15,9 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         currentBreakdownItemSet: KnockoutObservable<model.BreakdownItemSet> = ko.observable(null);
 
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        salaryItemId: KnockoutObservable<string> = ko.observable('salary1');
+        categoryAtr: number;
+        itemNameCd: string;
+
         enableCode: KnockoutObservable<boolean> = ko.observable(true);
         bindAtr: KnockoutObservable<string> = ko.observable('bindAtr');
 
@@ -28,7 +30,8 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
             let params = getShared("QMM012_B_TO_I_PARAMS");
 
             if (params) {
-                self.salaryItemId(params.salaryItemId);
+                self.categoryAtr = params.categoryAtr;
+                self.itemNameCd = params.itemNameCd;
                 self.bindAtr(params.categoryName);
             }
 
@@ -44,7 +47,7 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 }
             });
             block.invisible();
-            service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<model.IBreakdownItemSet>) {
+            service.getAllBreakdownItemSetById(self.categoryAtr, self.itemNameCd).done(function(data: Array<model.IBreakdownItemSet>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["breakdownItemCode"]);
                     self.lstBreakdownItemSet(dataSort);
@@ -79,7 +82,8 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         saveItemSet() {
             let self = this;
             let data = {
-                salaryItemId: self.salaryItemId(),
+                categoryAtr: self.categoryAtr,
+                itemNameCd: self.itemNameCd,
                 breakdownItemCode: self.breakdownItemCode(),
                 breakdownItemName: self.breakdownItemName()
             };
@@ -126,7 +130,8 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         deleteItemSet() {
             let self = this;
             let data = {
-                salaryItemId: self.salaryItemId(),
+                categoryAtr: self.categoryAtr,
+                itemNameCd: self.itemNameCd,
                 breakdownItemCode: self.breakdownItemCode(),
                 breakdownItemName: self.breakdownItemName()
             };
@@ -178,7 +183,7 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
             self.lstBreakdownItemSet.removeAll();
-            service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<model.IBreakdownItemSet>) {
+            service.getAllBreakdownItemSetById(self.categoryAtr, self.itemNameCd).done(function(data: Array<model.IBreakdownItemSet>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["breakdownItemCode"]);
                     self.lstBreakdownItemSet(dataSort);

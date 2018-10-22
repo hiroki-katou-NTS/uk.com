@@ -12,7 +12,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetPeriodCycleRepository;
@@ -35,8 +34,6 @@ public class StatementItemDataFinder {
 	@Inject
 	private StatementItemDisplaySetRepository statementItemDisplaySetRepository;
 	@Inject
-	private ItemRangeSetRepository itemRangeSetRepository;
-	@Inject
 	private SetPeriodCycleRepository setPeriodCycleRepository;
 	@Inject
 	private BreakdownItemSetRepository breakdownItemSetRepository;
@@ -50,15 +47,13 @@ public class StatementItemDataFinder {
 	 *            categoryAtr
 	 * @param 項目名コード
 	 *            itemNameCd
-	 * @param 給与項目ID
-	 *            salaryItemId
 	 * @param 内訳項目コード
 	 *            breakdownItemCode
 	 * @param 非課税限度額コード
 	 *            taxFreeAmountCode
 	 * @return
 	 */
-	public StatementItemDataDto getStatementItemData(int categoryAtr, String itemNameCd, String salaryItemId) {
+	public StatementItemDataDto getStatementItemData(int categoryAtr, String itemNameCd) {
 		StatementItemDto statementItem = null;
 		StatementItemNameDto statementItemName = null;
 		PaymentItemSetDto paymentItemSet = null;
@@ -72,13 +67,13 @@ public class StatementItemDataFinder {
 		String cid = AppContexts.user().companyId();
 		String name = null;
 		Integer deprecatedAtr = null;
-		statementItem = statementItemRepository.getStatementItemById(cid, categoryAtr, itemNameCd, salaryItemId)
+		statementItem = statementItemRepository.getStatementItemById(cid, categoryAtr, itemNameCd)
 				.map(i -> StatementItemDto.fromDomain(i)).orElse(null);
 		if (statementItem != null) {
 			deprecatedAtr = statementItem.getDeprecatedAtr();
 		}
 
-		statementItemName = statementItemNameRepository.getStatementItemNameById(cid, salaryItemId)
+		statementItemName = statementItemNameRepository.getStatementItemNameById(cid, categoryAtr, itemNameCd)
 				.map(i -> StatementItemNameDto.fromDomain(i)).orElse(null);
 		if (statementItemName != null) {
 			name = statementItemName.getName();
@@ -88,16 +83,14 @@ public class StatementItemDataFinder {
 
 		switch (EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class)) {
 		case PAYMENT_ITEM:
-			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
+			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, categoryAtr, itemNameCd)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
-			itemRangeSet = itemRangeSetRepository.getItemRangeSetInitById(cid, salaryItemId)
-					.map(i -> ItemRangeSetDto.fromDomain(i)).orElse(null);
-			validityPeriodAndCycleSet = setPeriodCycleRepository.getSetPeriodCycleById(salaryItemId)
+			validityPeriodAndCycleSet = setPeriodCycleRepository.getSetPeriodCycleById(cid, categoryAtr, itemNameCd)
 					.map(i -> ValidityPeriodAndCycleSetDto.fromDomain(i)).orElse(null);
-			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStBySalaryId(salaryItemId).stream().map(i -> {
+			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStByStatementItemId(cid, categoryAtr, itemNameCd).stream().map(i -> {
 				return BreakdownItemSetDto.fromDomain(i);
 			}).collect(Collectors.toList());
-			val paymentItemOpt = paymentItemSetRepository.getPaymentItemStById(cid, salaryItemId);
+			val paymentItemOpt = paymentItemSetRepository.getPaymentItemStById(cid, categoryAtr, itemNameCd);
 			if (paymentItemOpt.isPresent()) {
 				val taxLimitAmountCode = paymentItemOpt.get().getLimitAmountSetting().getTaxLimitAmountCode()
 						.map(i -> i.v()).orElse(null);
@@ -108,30 +101,26 @@ public class StatementItemDataFinder {
 			break;
 
 		case DEDUCTION_ITEM:
-			deductionItemSet = deductionItemSetRepository.getDeductionItemStById(cid, salaryItemId)
+			deductionItemSet = deductionItemSetRepository.getDeductionItemStById(cid, categoryAtr, itemNameCd)
 					.map(i -> DeductionItemSetDto.fromDomain(i)).orElse(null);
-			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
+			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, categoryAtr, itemNameCd)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
-			itemRangeSet = itemRangeSetRepository.getItemRangeSetInitById(cid, salaryItemId)
-					.map(i -> ItemRangeSetDto.fromDomain(i)).orElse(null);
-			validityPeriodAndCycleSet = setPeriodCycleRepository.getSetPeriodCycleById(salaryItemId)
+			validityPeriodAndCycleSet = setPeriodCycleRepository.getSetPeriodCycleById(cid, categoryAtr, itemNameCd)
 					.map(i -> ValidityPeriodAndCycleSetDto.fromDomain(i)).orElse(null);
-			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStBySalaryId(salaryItemId).stream().map(i -> {
+			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStByStatementItemId(cid, categoryAtr, itemNameCd).stream().map(i -> {
 				return BreakdownItemSetDto.fromDomain(i);
 			}).collect(Collectors.toList());
 			break;
 
 		case ATTEND_ITEM:
-			timeItemSet = timeItemSetRepository.getTimeItemStById(cid, salaryItemId)
+			timeItemSet = timeItemSetRepository.getTimeItemStById(cid, categoryAtr, itemNameCd)
 					.map(i -> TimeItemSetDto.fromDomain(i)).orElse(null);
-			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
+			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, categoryAtr, itemNameCd)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
-			itemRangeSet = itemRangeSetRepository.getItemRangeSetInitById(cid, salaryItemId)
-					.map(i -> ItemRangeSetDto.fromDomain(i)).orElse(null);
 			break;
 
 		case REPORT_ITEM:
-			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
+			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, categoryAtr, itemNameCd)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
 			break;
 
@@ -142,7 +131,7 @@ public class StatementItemDataFinder {
 
 		return new StatementItemDataDto(statementItem, statementItemName, paymentItemSet, deductionItemSet, timeItemSet,
 				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem,
-				salaryItemId, categoryAtr, itemNameCd, name, deprecatedAtr);
+				String.valueOf(categoryAtr) + itemNameCd , categoryAtr, itemNameCd, name, deprecatedAtr);
 	}
 
 	public List<StatementItemDataDto> getAllStatementItemData(Integer categoryAtr, boolean isIncludeDeprecated) {
@@ -158,8 +147,7 @@ public class StatementItemDataFinder {
 			if (!isIncludeDeprecated && item.getDeprecatedAtr() == Abolition.ABOLISH) {
 				continue;
 			}
-			val data = this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v(),
-					item.getSalaryItemId());
+			val data = this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v());
 			if (data != null) {
 				result.add(data);
 			}
