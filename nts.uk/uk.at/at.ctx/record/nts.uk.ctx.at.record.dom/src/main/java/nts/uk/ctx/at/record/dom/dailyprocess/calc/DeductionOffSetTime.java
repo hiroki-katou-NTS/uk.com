@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -8,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author ken_takasu
  *
  */
-@Value
+@Getter
 public class DeductionOffSetTime {
 	//年休
 	private AttendanceTime annualLeave;
@@ -18,7 +19,18 @@ public class DeductionOffSetTime {
 	private AttendanceTime SpecialHoliday;
 	//代休
 	private AttendanceTime CompensatoryLeave;
-	
+
+	/**
+	 * Constructor 
+	 */
+	public DeductionOffSetTime(AttendanceTime annualLeave, AttendanceTime retentionYearly,
+			AttendanceTime specialHoliday, AttendanceTime compensatoryLeave) {
+		super();
+		this.annualLeave = annualLeave;
+		this.retentionYearly = retentionYearly;
+		SpecialHoliday = specialHoliday;
+		CompensatoryLeave = compensatoryLeave;
+	}	
 	
 	/**
 	 * 各相殺時間を合計した時間を返す
@@ -28,5 +40,4 @@ public class DeductionOffSetTime {
 		int totalTime = this.annualLeave.valueAsMinutes()+this.retentionYearly.valueAsMinutes()+this.SpecialHoliday.valueAsMinutes()+this.CompensatoryLeave.valueAsMinutes();
 		return totalTime;
 	}
-	
 }

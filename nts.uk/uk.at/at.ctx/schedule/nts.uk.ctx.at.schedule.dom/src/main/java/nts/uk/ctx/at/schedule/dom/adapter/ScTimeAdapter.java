@@ -10,5 +10,7 @@ public interface ScTimeAdapter {
 	 */
 	ScTimeImport calculation(Object companySetting, ScTimeParam param);
 	
+	List<ScTimeImport> calculation(Object companySetting, List<ScTimeParam> params);
+	
 	Object getCompanySettingForCalculation();
 }

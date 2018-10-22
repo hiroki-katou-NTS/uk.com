@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -14,9 +13,9 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 @Getter
 public class ResultOfCalcFormula {
 	FormulaId calculationFormulaId;
-	Optional<BigDecimal> count;
-	Optional<BigDecimal> time;
-	Optional<BigDecimal> money;
+	Optional<Integer> count;
+	Optional<Integer> time;
+	Optional<Integer> money;
 	
 	/**
 	 * constructor
@@ -25,7 +24,7 @@ public class ResultOfCalcFormula {
 	 * @param time time 
 	 * @param money money
 	 */
-	private ResultOfCalcFormula(FormulaId id,Optional<BigDecimal> count, Optional<BigDecimal> time, Optional<BigDecimal> money) {
+	private ResultOfCalcFormula(FormulaId id,Optional<Integer> count, Optional<Integer> time, Optional<Integer> money) {
 		this.calculationFormulaId = id;
 		this.count = count;
 		this.time = time;
@@ -41,14 +40,14 @@ public class ResultOfCalcFormula {
 	 * @param element 計算値
 	 * @return 計算式の結果クラス
 	 */
-	public static ResultOfCalcFormula of(FormulaId id,OptionalItemAtr optionalItemAtr,BigDecimal calcValue) {
+	public static ResultOfCalcFormula of(FormulaId id,OptionalItemAtr optionalItemAtr,double calcValue) {
 		switch(optionalItemAtr) {
 			case NUMBER:
-				return new ResultOfCalcFormula(id, Optional.of(calcValue), Optional.of(BigDecimal.valueOf(0)), Optional.of(BigDecimal.valueOf(0)));
+				return new ResultOfCalcFormula(id, Optional.of((int)calcValue), Optional.of(0), Optional.of(0));
 			case TIME:
-				return new ResultOfCalcFormula(id, Optional.of(BigDecimal.valueOf(0)), Optional.of(calcValue), Optional.of(BigDecimal.valueOf(0)));
+				return new ResultOfCalcFormula(id, Optional.of(0), Optional.of((int)calcValue), Optional.of(0));
 			case AMOUNT:
-				return new ResultOfCalcFormula(id, Optional.of(BigDecimal.valueOf(0)), Optional.of(BigDecimal.valueOf(0)), Optional.of(calcValue));
+				return new ResultOfCalcFormula(id, Optional.of(0), Optional.of(0), Optional.of((int)calcValue));
 			default:
 				throw new RuntimeException("unknown optionalItemAtr:"+optionalItemAtr);
 		}
@@ -59,7 +58,7 @@ public class ResultOfCalcFormula {
 	 *　渡された属性に一致する結果を返す
 	 * @return
 	 */
-	public Optional<BigDecimal> getResult(OptionalItemAtr optionalItemAtr){
+	public Optional<Integer> getResult(OptionalItemAtr optionalItemAtr){
 		switch(optionalItemAtr) {
 			case NUMBER:
 				return this.count;

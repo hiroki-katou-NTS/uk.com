@@ -128,12 +128,12 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			GeneralDate systemDate = GeneralDate.today();
 			if(startDate.beforeOrEquals(systemDate)){
 				//指定社員の中間データを作成する（日別）
-				AppRootInstanceContent result =  createDailyApprover.createDailyApprover(dailyApproverId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
+				AppRootInstanceContent result =  createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
 				if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
 					throw new BusinessException(result.getErrorMsgID());
 				}
 				//指定社員の中間データを作成する（月別）
-				result = createDailyApprover.createDailyApprover(dailyApproverId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
+				result = createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
 				if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
 					throw new BusinessException(result.getErrorMsgID());
 				}

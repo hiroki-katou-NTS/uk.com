@@ -291,7 +291,8 @@ module cps001.h.vm {
                                 unblock();
                             });
 
-                        }).fail((mes) => {
+                        }).fail((mes) => { 
+                            nts.uk.ui.dialog.alertError({ messageId: mes.messageId });
                             unblock();
                         });
                 } else {
@@ -315,6 +316,7 @@ module cps001.h.vm {
                             });
 
                         }).fail((mes) => {
+                            nts.uk.ui.dialog.alertError({ messageId: mes.messageId });
                             unblock();
                         });
                 }

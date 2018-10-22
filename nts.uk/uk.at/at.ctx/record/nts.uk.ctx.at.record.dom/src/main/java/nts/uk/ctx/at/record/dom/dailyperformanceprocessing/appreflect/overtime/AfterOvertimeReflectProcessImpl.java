@@ -38,10 +38,10 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			return dailyInfor;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.NOTAUTO) {
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO) {
 			return dailyInfor;
 		}
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//INPUT．就業時間帯コードに値があるかチェックする
 			if(overtimePara.getOvertimePara().getWorkTimeCode().isEmpty()) {
 				return dailyInfor;
@@ -58,7 +58,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		ReflectParameter reflectPara = new ReflectParameter(overtimePara.getEmployeeId(),
 				overtimePara.getDateInfo(),
 				overtimePara.getOvertimePara().getWorkTimeCode(), 
-				overtimePara.getOvertimePara().getWorkTypeCode());
+				overtimePara.getOvertimePara().getWorkTypeCode(), false);
 		return scheWorkUpdateService.updateWorkTimeType(reflectPara, true, dailyInfor);
 	}
 
@@ -83,11 +83,11 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		}
 		boolean isWorktimeIsFluid = false;
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
 			isWorktimeIsFluid = workTimeService.checkWorkTimeIsFluidWork(overtimePara.getOvertimePara().getWorkTimeCode());
 		}
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO
 				|| isWorktimeIsFluid) {
 			return true;
 		}
@@ -98,7 +98,8 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Override
 	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
 		//自動打刻をクリアする
-		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(), overtimePara.isAutoClearStampFlg(), 0);
+		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(),
+				overtimePara.isAutoClearStampFlg(), overtimePara.getOvertimePara());
 		//出退勤時刻反映できるかチェックする
 		if(!overtimePara.isActualReflectFlg()
 				&& !overtimePara.isScheTimeOutFlg()) {

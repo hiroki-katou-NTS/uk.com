@@ -35,7 +35,7 @@ public interface WorkTimeTypeScheReflect {
 	 * @param para
 	 * @return
 	 */
-	public WorkInfoOfDailyPerformance reflectRecordWorktimetype(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor);
+	public AppReflectRecordWork reflectRecordWorktimetype(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor);
 	/**
 	 * 実績勤務種類による勤種・就時を反映できるかチェックする
 	 * @param employeeId
