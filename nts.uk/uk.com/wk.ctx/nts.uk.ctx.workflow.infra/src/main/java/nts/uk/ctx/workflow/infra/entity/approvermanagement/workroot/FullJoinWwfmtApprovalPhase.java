@@ -1,8 +1,10 @@
 package nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class FullJoinWwfmtApprovalPhase {
 	public String companyId;
 	public String branchId;
