@@ -233,18 +233,18 @@ public class ValidatorDataDailyRes {
 		// });
 	}
 
-	public List<DPItemValue> checkInput28And1(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
+	public List<DPItemValue> checkInput28And1(List<DPItemValue> itemChanges, List<DailyModifyResult> allItemValues) {
 		List<DPItemValue> result = new ArrayList<>();
-		result = checkInputItem28(items, itemValues);
-		result.addAll(checkInputItem1(items, itemValues));
+		result = checkInputItem28(itemChanges, allItemValues);
+		result.addAll(checkInputItem1(itemChanges, allItemValues));
 		return result;
 	}
 
-	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
+	public List<DPItemValue> checkInputItem28(List<DPItemValue> itemChanges, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
 		DPItemValue valueTemp;
-		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
-		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
+		Optional<DPItemValue> item28 = itemChanges.stream().filter(x -> x.getItemId() == 28).findFirst();
+		Optional<DPItemValue> item29 = itemChanges.stream().filter(x -> x.getItemId() == 29).findFirst();
 		if (!item28.isPresent() && !item29.isPresent()) {
 			return result;
 		}
