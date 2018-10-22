@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.function.infra.repository.monthlycorrection.fixedformatmonthly;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthlyRepository;
@@ -29,16 +31,18 @@ public class JpaMonGridColWidthRepository extends JpaRepository implements Colum
 			+ " AND c.monGridColWidthPk.attendanceItemId IN :attendanceItemIds";
 
 	@Override
+	@SneakyThrows
 	public Optional<ColumnWidtgByMonthly> getColumnWidtgByMonthly(String companyID) {
-		List<KrcmtMonGridColWidth> lstData = this.queryProxy().query(Get_COL_WIDTH_BY_CID, KrcmtMonGridColWidth.class)
-				.setParameter("companyID", companyID).getList();
+		PreparedStatement statement = this.connection().prepareStatement(
+				"SELECT * from KRCMT_MON_GRID_COL_WIDTH h WHERE h.CID = ?");
+		statement.setString(1, companyID);
+		
+		List<ColumnWidthOfDisplayItem> columns = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+			return new ColumnWidthOfDisplayItem(rec.getInt("ATTENDANCE_ITEM_ID"), rec.getInt("COLUMN_WIDTH"));
+		});
 
-		if (!lstData.isEmpty()) {
-			List<ColumnWidthOfDisplayItem> listColumnWidthOfDisplayItem = lstData.stream()
-					.map(row -> new ColumnWidthOfDisplayItem(row.monGridColWidthPk.attendanceItemId, row.columnWidth))
-					.collect(Collectors.toList());
-
-			return Optional.of(new ColumnWidtgByMonthly(companyID, listColumnWidthOfDisplayItem));
+		if (!columns.isEmpty()) {
+			return Optional.of(new ColumnWidtgByMonthly(companyID, columns));
 
 		}
 		return Optional.empty();

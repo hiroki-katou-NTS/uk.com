@@ -219,7 +219,7 @@ public class SaveHolidayShipmentCommandHandler
 			}
 			
 			InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,
-					new DatePeriod(GeneralDate.today(), GeneralDate.today().addYears(1)), false,
+					new DatePeriod(GeneralDate.today(), GeneralDate.today().addYears(1).addDays(-1)), false,
 					command.getAbsCmd().getAppDate(),
 					new DatePeriod(command.getAbsCmd().getAppDate(), command.getAbsCmd().getAppDate()), true,
 					Collections.emptyList(), Collections.emptyList(),getAppData(command,sID) , chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual, chkSpecial,

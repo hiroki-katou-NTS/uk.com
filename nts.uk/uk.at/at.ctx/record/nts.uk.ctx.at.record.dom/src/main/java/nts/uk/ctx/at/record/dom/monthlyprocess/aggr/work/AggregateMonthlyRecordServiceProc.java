@@ -796,7 +796,7 @@ public class AggregateMonthlyRecordServiceProc {
 					if (calcResult != null){
 						if (calcResult.getTime().isPresent()){
 							if (anyTime == null) anyTime = new AnyTimeMonth(0);
-							anyTime = anyTime.addMinutes(calcResult.getTime().get());
+							anyTime = anyTime.addMinutes(calcResult.getTime().get().intValue());
 						}
 						if (calcResult.getCount().isPresent()){
 							if (anyTimes == null) anyTimes = new AnyTimesMonth(0.0);
@@ -804,7 +804,7 @@ public class AggregateMonthlyRecordServiceProc {
 						}
 						if (calcResult.getMoney().isPresent()){
 							if (anyAmount == null) anyAmount = new AnyAmountMonth(0);
-							anyAmount = anyAmount.addAmount(calcResult.getMoney().get());
+							anyAmount = anyAmount.addAmount(calcResult.getMoney().get().intValue());
 						}
 					}
 				}

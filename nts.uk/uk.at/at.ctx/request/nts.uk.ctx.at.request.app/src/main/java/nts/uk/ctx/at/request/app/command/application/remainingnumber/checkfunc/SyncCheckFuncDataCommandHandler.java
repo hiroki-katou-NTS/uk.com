@@ -187,6 +187,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 				// 取得した情報をもとにExcel 出力情報Listに設定する
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
+				excelInforCommand.setEmployeeCode(employeeRecordImport.getEmployeeCode());
 				excelInforCommand.setName(employeeRecordImport.getBusinessName());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
 				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ? ""

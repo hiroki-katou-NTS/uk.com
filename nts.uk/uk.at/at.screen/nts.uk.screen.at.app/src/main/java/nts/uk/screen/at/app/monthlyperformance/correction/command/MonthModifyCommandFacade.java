@@ -39,8 +39,8 @@ public class MonthModifyCommandFacade {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void handleUpdate(List<MonthlyModifyQuery> query) {
-		this.commandHandler.handleUpdate(createMultiCommand(query));
+	public void handleUpdate(List<MonthlyModifyQuery> query,List<MonthlyRecordWorkDto> values) {
+		this.commandHandler.handleUpdate(createMultiCommand(query,values));
 	}
 
 	public MonthlyRecordWorkDto toDto(MonthlyModifyQuery query) {
@@ -50,15 +50,15 @@ public class MonthModifyCommandFacade {
 		return AttendanceItemUtil.fromItemValues(oldValues, query.getItems(), AttendanceItemType.MONTHLY_ITEM);
 	}
 	
-	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query) {
+	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query,List<MonthlyRecordWorkDto> values) {
 		Set<String> emps = new HashSet<>();
 		Set<YearMonth> yearmonth = new HashSet<>();
 		query.stream().forEach(q -> {
 			emps.add(q.getEmployeeId());
 			yearmonth.add(new YearMonth(q.getYearMonth()));
 		});
-		List<MonthlyRecordWorkDto> oldValues = finder.find(emps, yearmonth);
-		return oldValues.stream().map(v -> {
+		//List<MonthlyRecordWorkDto> oldValues = finder.find(emps, yearmonth);
+		return values.stream().map(v -> {
 			MonthlyModifyQuery q = query.stream().filter(qr -> {
 				return qr.getClosureId() == v.getClosureID() && qr.getEmployeeId().equals(v.getEmployeeId())
 						&& v.yearMonth().compareTo(qr.getYearMonth()) == 0 && v.getClosureDate().equals(qr.getClosureDate());

@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
 import nts.uk.shr.com.context.AppContexts;
@@ -369,6 +371,44 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 			return Optional.of(toAffJobTitleHist(listEntity));
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<AffJobTitleHistory> getListByListHidSid(List<String> sid, GeneralDate targetDate) {
+		List<AffJobTitleHistory> data = new ArrayList<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT h.HIST_ID, h.SID, h.CID, h.END_DATE, h.START_DATE from BSYMT_AFF_JOB_HIST h"
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(targetDate.localDate()));
+				statement.setDate(2, Date.valueOf(targetDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				List<Map<String, Object>> map = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					Map<String, Object> m = new HashMap<>();
+					m.put("HIST_ID", rec.getString("HIST_ID"));
+					m.put("SID", rec.getString("SID"));
+					m.put("CID", rec.getString("CID"));
+					m.put("START_DATE", rec.getGeneralDate("START_DATE"));
+					m.put("END_DATE", rec.getGeneralDate("END_DATE"));
+					return m;
+				});
+				
+				map.stream().collect(Collectors.groupingBy(c -> c.get("SID"), Collectors.collectingAndThen(Collectors.toList(), list -> {
+					AffJobTitleHistory his = new AffJobTitleHistory(list.get(0).get("CID").toString(), list.get(0).get("SID").toString(), list.stream().map(c -> {
+						return new DateHistoryItem(c.get("HIST_ID").toString(), new DatePeriod((GeneralDate) c.get("START_DATE"), (GeneralDate) c.get("END_DATE")));
+					}).collect(Collectors.toList()));
+					data.add(his);
+					return his;
+				})));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 
 

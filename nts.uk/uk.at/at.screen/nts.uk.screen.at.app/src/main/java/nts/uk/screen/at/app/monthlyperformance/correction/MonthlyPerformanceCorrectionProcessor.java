@@ -518,8 +518,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private List<MonthlyPerformanceAuthorityDto> getAuthority(MonthlyPerformanceCorrectionDto screenDto) {
 		String roleId = AppContexts.user().roles().forAttendance();
 		if (roleId != null) {
-			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId,
-					new BigDecimal(1));
+			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId, new BigDecimal(1));
 			if (!dailyPerformans.isEmpty()) {
 				return dailyPerformans;
 			}
@@ -832,10 +831,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
 							// 承認状況 ＝ 承認済 or 承認中 の場合
 							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)
-									&& approvalApprovalRecordDate
+									&& (approvalApprovalRecordDate
 											.getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL
 									|| approvalApprovalRecordDate
-											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
+											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED)) {
 								approve = true;
 								break;
 							}

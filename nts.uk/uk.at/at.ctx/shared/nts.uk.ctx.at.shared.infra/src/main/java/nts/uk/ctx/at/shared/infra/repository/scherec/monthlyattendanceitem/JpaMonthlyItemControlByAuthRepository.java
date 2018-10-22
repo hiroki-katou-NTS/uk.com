@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.scherec.monthlyattendanceitem;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -10,11 +11,12 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.InputControlMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
-import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KrcstDisplayAndInputMonthly;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -129,24 +131,39 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 	@Override
 	public Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByUse(String companyID, String authorityMonthlyId,
 			List<Integer> itemMonthlyIDs, int toUse) {
-		List<DisplayAndInputMonthly> data = new  ArrayList<>();
-		CollectionUtil.split(itemMonthlyIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			data.addAll(
-					this.queryProxy().query(SELECT_BY_AUTHORITY_MONTHLY_LIST_ID,KrcstDisplayAndInputMonthly.class)
-					.setParameter("companyID", companyID)
-					.setParameter("authorityMonthlyID", authorityMonthlyId)
-					.setParameter("itemMonthlyIDs", itemMonthlyIDs)
-					.setParameter("toUse", toUse)
-					.getList(c->c.toDomain()));
-			
+		List<DisplayAndInputMonthly> data = new ArrayList<>();
+		CollectionUtil.split(itemMonthlyIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from KSHST_MON_SER_TYPE_CTR h"
+						+ " WHERE h.CID = ? and h.AUTHORITY_MON_ID = ? AND h.USE_ATR = ?  AND h.ITEM_MONTHLY_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setString(1, companyID);
+				statement.setString(2, authorityMonthlyId);
+				statement.setInt(3, toUse);
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setInt(i + 4, subList.get(i));
+				}
+				
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new DisplayAndInputMonthly(
+							rec.getInt("ITEM_MONTHLY_ID"),
+							rec.getInt("USE_ATR") == 1?true:false,
+							new InputControlMonthly(
+									rec.getInt("CHANGED_BY_YOU") == 1 ? true : false,
+									rec.getInt("CHANGED_BY_OTHERS") == 1 ? true : false
+									)
+							);
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		});
+		
 		if(CollectionUtil.isEmpty(data))
 			return Optional.empty();
 		data.sort(Comparator.comparing(DisplayAndInputMonthly::getItemMonthlyId));
-		MonthlyItemControlByAuthority monthlyItemControlByAuthority = new MonthlyItemControlByAuthority(
-				companyID,authorityMonthlyId,data
-				);
-		return Optional.of(monthlyItemControlByAuthority);
+		
+		return Optional.of(new MonthlyItemControlByAuthority(companyID, authorityMonthlyId, data));
 	}
 	
 	
