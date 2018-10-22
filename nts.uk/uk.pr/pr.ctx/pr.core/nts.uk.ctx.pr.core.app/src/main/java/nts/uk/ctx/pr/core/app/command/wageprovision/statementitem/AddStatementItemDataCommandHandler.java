@@ -15,11 +15,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemDisplaySe
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemName;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemNameRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -67,13 +64,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 
 			val paymentItem = command.getPaymentItemSet();
 			if (paymentItem != null) {
-				paymentItemSetRepository.add(new PaymentItemSet(cid, categoryAtr, itemNameCd, paymentItem.getBreakdownItemUseAtr(),
-						paymentItem.getLaborInsuranceCategory(), paymentItem.getSettingAtr(),
-						paymentItem.getEveryoneEqualSet(), paymentItem.getMonthlySalary(), paymentItem.getHourlyPay(),
-						paymentItem.getDayPayee(), paymentItem.getMonthlySalaryPerday(),
-						paymentItem.getAverageWageAtr(), paymentItem.getSocialInsuranceCategory(),
-						paymentItem.getTaxAtr(), paymentItem.getTaxableAmountAtr(), paymentItem.getLimitAmount(),
-						paymentItem.getLimitAmountAtr(), paymentItem.getTaxLimitAmountCode(), paymentItem.getNote()));
+				paymentItemSetRepository.add(command.toPaymentItemSet(cid));
 			}
 			break;
 
@@ -81,9 +72,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			// ドメインモデル「控除項目設定」を新規追加する
 			val deductionItem = command.getDeductionItemSet();
 			if (deductionItem != null) {
-				deductionItemSetRepository
-						.add(new DeductionItemSet(cid, categoryAtr, itemNameCd, deductionItem.getDeductionItemAtr(),
-								deductionItem.getBreakdownItemUseAtr(), deductionItem.getNote()));
+				deductionItemSetRepository.add(command.toDeductionItemSet(cid));
 			}
 			break;
 
@@ -91,8 +80,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			// ドメインモデル「勤怠項目設定」を新規追加する
 			val timeItem = command.getTimeItemSet();
 			if (timeItem != null) {
-				timeItemSetRepository.add(new TimeItemSet(cid, categoryAtr, itemNameCd, timeItem.getAverageWageAtr(),
-						timeItem.getWorkingDaysPerYear(), timeItem.getTimeCountAtr(), timeItem.getNote()));
+				timeItemSetRepository.add(command.toTimeItemSet(cid));
 			}
 			break;
 

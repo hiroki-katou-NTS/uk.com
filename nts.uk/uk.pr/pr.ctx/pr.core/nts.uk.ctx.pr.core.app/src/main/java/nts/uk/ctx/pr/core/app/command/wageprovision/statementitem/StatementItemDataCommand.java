@@ -1,8 +1,11 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.statementitem;
 
-import java.util.List;
-
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
+
+import java.util.List;
 
 @Value
 public class StatementItemDataCommand {
@@ -38,4 +41,16 @@ public class StatementItemDataCommand {
 	 * 廃止区分
 	 */
 	private Integer deprecatedAtr;
+
+    public PaymentItemSet toPaymentItemSet(String cid) {
+        return paymentItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+    }
+
+    public DeductionItemSet toDeductionItemSet(String cid) {
+        return deductionItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+    }
+
+    public TimeItemSet toTimeItemSet(String cid) {
+        return timeItemSet.toDomain(cid, this.categoryAtr, this.itemNameCd);
+    }
 }

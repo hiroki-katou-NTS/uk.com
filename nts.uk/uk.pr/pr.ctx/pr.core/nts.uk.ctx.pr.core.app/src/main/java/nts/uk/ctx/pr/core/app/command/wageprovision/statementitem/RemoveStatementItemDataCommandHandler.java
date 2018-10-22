@@ -43,7 +43,6 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 	protected void handle(CommandHandlerContext<StatementItemDataCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-
 		val statementItem = command.getStatementItem();
 		int categoryAtr = command.getCategoryAtr();
 		String itemNameCd = command.getItemNameCd();
@@ -60,6 +59,7 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 			deductionItemSetRepository.remove(cid, categoryAtr, itemNameCd);
 			setPeriodCycleRepository.remove(cid, categoryAtr, itemNameCd);
 			breakdownItemSetRepository.removeAll(cid, categoryAtr, itemNameCd);
+
 			break;
 		case ATTEND_ITEM:
 			timeItemSetRepository.remove(cid, categoryAtr, itemNameCd);
