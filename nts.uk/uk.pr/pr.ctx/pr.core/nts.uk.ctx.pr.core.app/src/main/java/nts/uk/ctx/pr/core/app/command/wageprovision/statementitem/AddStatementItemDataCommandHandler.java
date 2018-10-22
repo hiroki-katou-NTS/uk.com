@@ -43,7 +43,6 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 		val command = context.getCommand();
 		validateStatementItemData.validate(command);
 		String cid = AppContexts.user().companyId();
-		int categoryAtr = command.getCategoryAtr();
 
 		// ドメインモデル「明細書項目」を新規追加する
 		val statementItem = command.getStatementItem();
@@ -52,6 +51,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 		}
 
 		String itemNameCd = statementItem.getItemNameCd();
+		int categoryAtr = statementItem.getCategoryAtr();
 
 		statementItemRepository
 				.add(new StatementItem(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(),
