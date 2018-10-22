@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.InterimRemainOfMonthProccess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -62,9 +61,6 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	
 	@Inject
 	private ChildTempCareDataRepository childTempCareDataRepository;
-	
-	@Inject
-	private InterimRemainOfMonthProccess interimRemainOfMonthProccess;
 
 	@Override
 	public ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period,

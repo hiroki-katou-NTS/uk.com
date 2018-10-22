@@ -126,5 +126,5 @@ public class HolidayShipmentDto {
 	
 	List<EmployeeInfoImport> employees;
 	
-	public AbsRecRemainMngOfInPeriod absRecMng;
+	public double absRecMng;
 }

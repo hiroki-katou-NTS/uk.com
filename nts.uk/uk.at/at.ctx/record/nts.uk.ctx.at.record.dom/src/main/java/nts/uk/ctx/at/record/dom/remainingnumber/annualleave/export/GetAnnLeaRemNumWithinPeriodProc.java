@@ -632,17 +632,17 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 月次モード
 			
 			// 月別実績用の暫定残数管理データを作成する
-			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
-					this.companyId, this.employeeId, this.aggrPeriod);
+//			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
+//					this.companyId, this.employeeId, this.aggrPeriod);
 			
 			// 受け取った「日別暫定管理データ」を年休のみに絞り込む
-			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
-				if (!dailyInterimRemainMngData.getAnnualHolidayData().isPresent()) continue;
-				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
-				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
-				val data = dailyInterimRemainMngData.getAnnualHolidayData().get();
-				results.add(TmpAnnualLeaveMngWork.of(master, data));
-			}
+//			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
+//				if (!dailyInterimRemainMngData.getAnnualHolidayData().isPresent()) continue;
+//				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
+//				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
+//				val data = dailyInterimRemainMngData.getAnnualHolidayData().get();
+//				results.add(TmpAnnualLeaveMngWork.of(master, data));
+//			}
 		}
 		if (this.mode == InterimRemainMngMode.OTHER){
 			// その他モード
@@ -656,21 +656,21 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val data = tmpAnnualLeaveMngOpt.get();
 				results.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
-		}
-		
-		// 年休フレックス補填分を暫定年休データに反映する
-		{
-			// 「月別実績の勤怠時間」を取得
-			val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(
-					this.employeeId, this.aggrPeriod);
-			for (val attendanceTime : attendanceTimes){
-				
-				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
-				val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
-						attendanceTime, attendanceTime.getDatePeriod().end());
-				
-				// 「暫定年休管理データ」を返す
-				if (compensFlexWorkOpt.isPresent()) results.add(compensFlexWorkOpt.get());
+			
+			// 年休フレックス補填分を暫定年休データに反映する
+			{
+				// 「月別実績の勤怠時間」を取得
+				val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(
+						this.employeeId, this.aggrPeriod);
+				for (val attendanceTime : attendanceTimes){
+					
+					// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
+					val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
+							attendanceTime, attendanceTime.getDatePeriod().end());
+					
+					// 「暫定年休管理データ」を返す
+					if (compensFlexWorkOpt.isPresent()) results.add(compensFlexWorkOpt.get());
+				}
 			}
 		}
 		

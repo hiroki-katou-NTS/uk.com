@@ -38,7 +38,6 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
@@ -278,6 +277,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 					ClosureId.valueOf(closureId), screenDto.getClosureDate().toDomain(), ITEM_ID_ALL,
 					monthlyModifyQueryProcessor).call();
 			
+			// fix bug 
+			if (results.isEmpty()) {
+				String mess = new String("Msg_1452");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
+				return screenDto;
+			}
+
 			// lay lai employeeID cua nhung nhan vien co du lieu
 			employeeIds = results.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
 			
@@ -376,7 +382,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
 				
 				if (approvalRootOfEmloyee == null) {
-					throw new BusinessException("Msg_916");
+					String mess = new String("Msg_1451");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting,mess);
+					return;
 				}
 
 				// 社員(list)に対応する処理締めを取得する
@@ -392,7 +400,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 				}
 				if (employeeIds.isEmpty()) {
-					throw new BusinessException("Msg_916");
+					String mess = new String("Msg_1450");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting, mess);
+					return;
 				}
 
 				// lay thong tin nhan vien theo empID thu duoc
@@ -1012,4 +1022,54 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private String mergeString(String... x) {
 		return StringUtils.join(x);
 	}
+	private void createFixedHeader(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId,
+			ApprovalProcessingUseSetting approvalProcessingUseSetting, String mess) {
+		/**
+		 * Create Grid Sheet DTO
+		 */
+
+		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
+		MonthlyPerformanceParam param = screenDto.getParam();
+		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+//		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+//			throw new BusinessException("Msg_1261");
+//		}
+//
+//		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
+//			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());
+//			for (PAttendanceItem attend : c.getDisplayItems()) {
+//				sh.addColumn(mergeString(ADD_CHARACTER, attend.getId().toString()));
+//			}
+//			return sh;
+//		}).collect(Collectors.toList());
+//		displayItem.createSheets(lstSheets);
+
+		List<MPHeaderDto> lstMPHeaderDto = MPHeaderDto.GenerateFixedHeader();
+		
+		//G7 G8 G9 hidden column identitfy, approval, dailyconfirm
+		for (Iterator<MPHeaderDto> iter = lstMPHeaderDto.listIterator(); iter.hasNext(); ) {
+			MPHeaderDto mpHeaderDto = iter.next();
+			if ("identify".equals(mpHeaderDto.getKey())
+					&& screenDto.getIdentityProcess().getUseMonthSelfCK() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+			if ("approval".equals(mpHeaderDto.getKey())
+					&& approvalProcessingUseSetting.getUseMonthApproverConfirm() == false) {
+				iter.remove();
+				continue;
+			}
+			if ("dailyconfirm".equals(mpHeaderDto.getKey())
+					&& screenDto.getDailySelfChkDispAtr() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+		}
+		List<MPHeaderDto> lstHeader = new ArrayList<>();
+		lstHeader.addAll(lstMPHeaderDto);
+		displayItem.setLstHeader(lstHeader);
+		// Fixed header
+		screenDto.setLstFixedHeader(lstMPHeaderDto);
+		screenDto.setMess(mess);
+		}
 }

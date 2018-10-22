@@ -507,31 +507,31 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//0時跨ぎ計算設定
 		Optional<ZeroTime> overDayEndCalcSet = companyCommonSetting.getZeroTime();
 		
-//		//日別実績の計算区分
-		if(integrationOfDaily.getCalAttr() == null
-				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() == null)
-				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() == null)
-				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() == null)
-				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() == null)
-				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() == null)
-				|| (integrationOfDaily.getCalAttr().getDivergenceTime() == null))
-		{
-			val autoCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS);
-			val calAttr = new CalAttrOfDailyPerformance(employeeId, 
-													targetDate,
-													new AutoCalFlexOvertimeSetting(autoCalcSet),
-													new AutoCalRaisingSalarySetting(true,true),
-													new AutoCalRestTimeSetting(autoCalcSet,autoCalcSet),
-													new AutoCalOvertimeSetting(autoCalcSet, 
-																			   autoCalcSet, 
-																			   autoCalcSet, 
-																			   autoCalcSet, 
-																			   autoCalcSet, 
-																			   autoCalcSet),
-													new AutoCalcOfLeaveEarlySetting(true, true),
-													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
-			integrationOfDaily.setCalAttr(calAttr);
-		}	
+////		//日別実績の計算区分
+//		if(integrationOfDaily.getCalAttr() == null
+//				|| (integrationOfDaily.getCalAttr().getRasingSalarySetting() == null)
+//				|| (integrationOfDaily.getCalAttr().getOvertimeSetting() == null)
+//				|| (integrationOfDaily.getCalAttr().getLeaveEarlySetting() == null)
+//				|| (integrationOfDaily.getCalAttr().getHolidayTimeSetting() == null)
+//				|| (integrationOfDaily.getCalAttr().getFlexExcessTime() == null)
+//				|| (integrationOfDaily.getCalAttr().getDivergenceTime() == null))
+//		{
+//			val autoCalcSet = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT,AutoCalAtrOvertime.CALCULATEMBOSS);
+//			val calAttr = new CalAttrOfDailyPerformance(employeeId, 
+//													targetDate,
+//													new AutoCalFlexOvertimeSetting(autoCalcSet),
+//													new AutoCalRaisingSalarySetting(true,true),
+//													new AutoCalRestTimeSetting(autoCalcSet,autoCalcSet),
+//													new AutoCalOvertimeSetting(autoCalcSet, 
+//																			   autoCalcSet, 
+//																			   autoCalcSet, 
+//																			   autoCalcSet, 
+//																			   autoCalcSet, 
+//																			   autoCalcSet),
+//													new AutoCalcOfLeaveEarlySetting(true, true),
+//													new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.USE));
+//			integrationOfDaily.setCalAttr(calAttr);
+//		}	
 		
 		//自動計算設定
 		CalAttrOfDailyPerformance calcSetinIntegre = integrationOfDaily.getCalAttr();
@@ -1049,7 +1049,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					&&calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
 					&& !attendanceItemIdList.contains(new Integer(559))) {
 				AttendanceTimeOfExistMinus totalWorkTime = new AttendanceTimeOfExistMinus(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime().valueAsMinutes());
-				scheActDiffTime = scheTime.minusMinutes(totalWorkTime.valueAsMinutes());
+				scheActDiffTime = totalWorkTime.minusMinutes(scheTime.valueAsMinutes());
 			}
 		}
 		//不就労時間

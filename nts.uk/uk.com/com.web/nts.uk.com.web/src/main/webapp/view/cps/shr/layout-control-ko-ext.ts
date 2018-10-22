@@ -984,6 +984,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                 name: itemName,
                                 value: value,
+                                type: 'date',
                                 startDate: startDate,
                                 endDate: endDate,
                                 constraint: constraint || nameid,
@@ -1011,6 +1012,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
+                                    type: 'date',
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,
@@ -1034,6 +1036,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
+                                    type: 'date',
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,
@@ -1924,6 +1927,17 @@ module nts.custombinding {
 
                     def.defValue = ko.toJS(def.value);
 
+                    ko.computed({
+                        read: () => {
+                            let editable = ko.toJS(def.editable);
+
+                            if (!editable) {
+                                $('#' + def.nameid).ntsError('clear');
+                            }
+                        },
+                        disposeWhen: () => !def.value
+                    });
+
                     if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let fl = true,
                             val = ko.toJS(def.value),
@@ -2344,6 +2358,17 @@ module nts.custombinding {
                                         textValue: ko.observable(c.textValue),
                                         value: ko.observable(undefined),
                                         defValue: undefined
+                                    });
+
+                                    ko.computed({
+                                        read: () => {
+                                            let editable = ko.toJS(_r.editable);
+
+                                            if (!editable) {
+                                                $('#' + _r.nameid).ntsError('clear');
+                                            }
+                                        },
+                                        disposeWhen: () => !_r.value
                                     });
 
                                     _r.value.subscribe(v => {

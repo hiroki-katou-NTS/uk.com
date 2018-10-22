@@ -128,10 +128,9 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_ID;
-			query = query.replaceAll("rootID", rootID);
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_ID;
+		query = query.replaceAll("rootID", rootID);
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -256,13 +255,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@Override
 	public Optional<AppRootInstance> findByEmpDate(String companyID, String employeeID, GeneralDate recordDate, RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_DATE;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_DATE;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -279,12 +277,11 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@Override
 	public Optional<AppRootInstance> findByEmpDateNewest(String companyID, String employeeID, RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_DATE_NEWEST;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_DATE_NEWEST;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -303,26 +300,25 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			RecordRootType rootType) {
 		String companyID =  AppContexts.user().companyId();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMPS_PERIOD;
-			
-			String employeeIDLstParam = "";
-			if(CollectionUtil.isEmpty(employeeIDLst)){
-				employeeIDLstParam = "''";
-			} else {
-				for(int i = 0; i<employeeIDLst.size(); i++){
-					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
-					if(i<employeeIDLst.size()-1){
-						employeeIDLstParam+=",";	
-					}
+		String query = FIND_BY_EMPS_PERIOD;
+		
+		String employeeIDLstParam = "";
+		if(CollectionUtil.isEmpty(employeeIDLst)){
+			employeeIDLstParam = "''";
+		} else {
+			for(int i = 0; i<employeeIDLst.size(); i++){
+				employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
+				if(i<employeeIDLst.size()-1){
+					employeeIDLstParam+=",";	
 				}
 			}
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
-			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
-			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		}
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeIDLst", employeeIDLstParam);
+		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(!CollectionUtil.isEmpty(listResult)){
@@ -364,8 +360,8 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				PreparedStatement statement = this.connection().prepareStatement(sql.toString());
 				statement.setString(1, compID);
 				statement.setInt(2, rootType.value);
-				statement.setDate(3, Date.valueOf(period.end().localDate()));
-				statement.setDate(4, Date.valueOf(period.start().localDate()));
+				statement.setDate(3, Date.valueOf(period.start().localDate()));
+				statement.setDate(4, Date.valueOf(period.end().localDate()));
 				for (int i = 0; i < employeeIDLst.size(); i++) {
 					statement.setString(i + 5, employeeIDLst.get(i));
 				}
@@ -407,14 +403,13 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			RecordRootType rootType) {
 		String companyID =  AppContexts.user().companyId();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_APPROVER_PERIOD;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("approverID", approverID);
-			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
-			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_APPROVER_PERIOD;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("approverID", approverID);
+		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(!CollectionUtil.isEmpty(listResult)){
@@ -432,13 +427,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	public List<AppRootInstance> findByEmpFromDate(String companyID, String employeeID, GeneralDate recordDate,
 			RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_FROM_DATE;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_FROM_DATE;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -456,13 +450,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	public Optional<AppRootInstance> findByEmpDateNewestBelow(String companyID, String employeeID,
 			GeneralDate recordDate, RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_DATE_NEWEST_BELOW;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_DATE_NEWEST_BELOW;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -480,13 +473,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	public Optional<AppRootInstance> findByContainDate(String companyID, String employeeID, GeneralDate recordDate,
 			RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_CONTAIN_DATE;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_CONTAIN_DATE;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
 			if(CollectionUtil.isEmpty(listResult)){

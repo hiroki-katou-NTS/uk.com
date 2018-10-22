@@ -50,6 +50,8 @@ public class MPHeaderDto {
 	private List<MPHeaderDto> group;
 
 	private Constraint constraint;
+	
+	private Boolean grant;
 
 	private static final String ADD_CHARACTER = "A";
 	private static final String PX = "px";
@@ -66,6 +68,7 @@ public class MPHeaderDto {
 		this.changedByOther = changedByOther;
 		this.changedByYou = changedByYou;
 		this.group = new ArrayList<>();
+		this.grant = false;
 	}
 	public static List<MPHeaderDto> GenerateFixedHeader() {
 		List<MPHeaderDto> lstHeader = new ArrayList<>();
@@ -120,18 +123,23 @@ public class MPHeaderDto {
 			if (attendanceAtr == MonthlyAttendanceItemAtr.AMOUNT.value) {
 				// dto.setNtsControl("TextEditorNumberSeparated");
 				dto.setConstraint(new Constraint("Currency", false, ""));
+				dto.setGrant(true);
 			} else if (attendanceAtr == MonthlyAttendanceItemAtr.TIME.value) {
 				// dto.setNtsControl("TextEditorTimeShortHM");
 				dto.setConstraint(new Constraint("Clock", false, ""));
+				dto.setGrant(true);
 			} else if (attendanceAtr == MonthlyAttendanceItemAtr.NUMBER.value) {
 				dto.setConstraint(new Constraint("Integer", false, ""));
+				dto.setGrant(true);
 			} else if (attendanceAtr == MonthlyAttendanceItemAtr.DAYS.value) {
 				dto.setConstraint(new Constraint("HalfInt", false, ""));
+				dto.setGrant(true);
 			}
 			// else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 			// dto.setConstraint(new Constraint("TimeWithDay", false, ""));
 			// }
 		}
+		setShowZero(item, dto);
 		// Set header text
 		if (null != item.getLineBreakPosition() && item.getLineBreakPosition() > 0) {
 			dto.headerText = item.getName() != null ? item.getName().substring(0, item.getLineBreakPosition()) + "<br/>"
@@ -152,5 +160,18 @@ public class MPHeaderDto {
 	private static String getPrimitiveAllName(Integer primitive) {
 		if(primitive == null) return "";
 		return PrimitiveValueMonthly.mapValuePrimitive.get(primitive);
+	}
+	
+	private static void setShowZero(PAttendanceItem item, MPHeaderDto dto) {
+		int attendanceAtr = item.getAttendanceAtr();
+		if (attendanceAtr == MonthlyAttendanceItemAtr.AMOUNT.value) {
+			dto.setGrant(true);
+		} else if (attendanceAtr == MonthlyAttendanceItemAtr.TIME.value) {
+			dto.setGrant(true);
+		} else if (attendanceAtr == MonthlyAttendanceItemAtr.NUMBER.value) {
+			dto.setGrant(true);
+		} else if (attendanceAtr == MonthlyAttendanceItemAtr.DAYS.value) {
+			dto.setGrant(true);
+		}
 	}
 }

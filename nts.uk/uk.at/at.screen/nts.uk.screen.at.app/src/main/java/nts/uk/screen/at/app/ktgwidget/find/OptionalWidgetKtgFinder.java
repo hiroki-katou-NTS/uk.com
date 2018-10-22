@@ -413,11 +413,12 @@ public class OptionalWidgetKtgFinder {
 					//requestList 208(期間内の特別休暇残を集計する) 
 					List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
 					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
+					DatePeriodDto datePeriodDto = getCurrentMonth();
 					for (SpecialHoliday specialHoliday : specialHolidays) {
 						//get request list 208 rồi trả về
 						//・上書きフラグ ← falseを渡してください(muto)
 						//・上書き用の暫定管理データ ← 空（null or Empty）で渡してください
-						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, datePeriod, false, startDate, specialHoliday.getSpecialHolidayCode().v(), false, false, new ArrayList<>(), new ArrayList<>());
+						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, new DatePeriod(datePeriodDto.getStrCurrentMonth(), datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)), false, datePeriodDto.getStrCurrentMonth(), specialHoliday.getSpecialHolidayCode().v(), false, false, new ArrayList<>(), new ArrayList<>());
 						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
