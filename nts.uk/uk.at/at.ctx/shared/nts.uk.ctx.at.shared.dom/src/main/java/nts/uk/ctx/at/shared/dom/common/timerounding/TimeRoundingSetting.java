@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.common.timerounding;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -136,20 +134,17 @@ public class TimeRoundingSetting extends DomainObject {
 	 * @return
 	 */
 	public int round(int timeAsMinutes) {
-		return roundBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
-	}
-	
-	public BigDecimal roundBigDecimal(BigDecimal timeAsMinutes) {
+		
 		//１分単位の場合はそのまま返す
 		if(this.roundingTime.equals(Unit.ROUNDING_TIME_1MIN))return timeAsMinutes;
 		
 		switch (this.rounding) {
 		case ROUNDING_DOWN_OVER:
-			return this.roundingTime.roundDownOverBigDecimal(timeAsMinutes);
+			return this.roundingTime.roundDownOver(timeAsMinutes);
 		case ROUNDING_DOWN:
-			return this.roundingTime.roundDownBigDecimal(timeAsMinutes);
+			return this.roundingTime.roundDown(timeAsMinutes);
 		case ROUNDING_UP:
-			return this.roundingTime.roundUpBigDecimal(timeAsMinutes);
+			return this.roundingTime.roundUp(timeAsMinutes);
 
 		default:
 			throw new RuntimeException("invalid case: " + this.rounding);

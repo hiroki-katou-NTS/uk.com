@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthly.mergetable;
 
+import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.YearMonth;
 
 /**
  * リポジトリ：残数系
@@ -14,6 +17,14 @@ public interface RemainMergeRepository {
 	 * @return 残数系データ
 	 */
 	Optional<RemainMerge> find(MonthMergeKey key);
+	
+	/**
+	 * 検索
+	 * @param employeeIds list employee ids
+	 * @param yearMonths list yearMonths
+	 * @return 残数系データ
+	 */
+	List<RemainMerge> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 	
 	/**
 	 * 登録および更新

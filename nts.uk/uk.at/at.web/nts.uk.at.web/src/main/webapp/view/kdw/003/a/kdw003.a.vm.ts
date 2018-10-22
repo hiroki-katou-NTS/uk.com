@@ -502,9 +502,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.hasErrorBuss = false;
                 service.startScreen(param).done((data) => {
                     //self.processMapData(data);
-                    if (data.lstEmployee == undefined || data.lstEmployee.length == 0) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_1342" }).then(function() {
-                            self.hasEmployee = false;
+                    if (data.lstEmployee == undefined || data.lstEmployee.length == 0 || data.errorInfomation != 0) {
+                        let messageId = "Msg_1342";
+                        if(data.errorInfomation == DCErrorInfomation.APPROVAL_NOT_EMP){
+                            messageId = "Msg_916";
+                            self.hasErrorBuss = true;
+                        }else if(data.errorInfomation == DCErrorInfomation.ITEM_HIDE_ALL){
+                            messageId = "Msg_1452";
+                            self.hasErrorBuss = true;
+                        }else{
+                               self.hasEmployee = false;
+                        }
+                        nts.uk.ui.dialog.alert({ messageId: messageId }).then(function() {
+                            //self.hasEmployee = false;
                             nts.uk.ui.block.clear();
                             dfd.resolve({ bindDataMap: true, data: data });
                         });
@@ -656,9 +666,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.loadCcg001();
             self.showTighProcess(data.showTighProcess);
             self.indentityMonth(data.indentityMonthResult);
-            if (!self.hasEmployee) return;
+            if (!self.hasEmployee || data.errorInfomation == DCErrorInfomation.APPROVAL_NOT_EMP) return;
             self.loadKcp009();
-            if(!_.isEmpty(data.errors)) return;
+            if(!_.isEmpty(data.errors) || data.errorInfomation != 0) return;
             self.extractionData();
             console.log("khoi tao Object: " + (performance.now() - startTime));
             self.loadGrid();
@@ -1256,7 +1266,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                                 if (itemCalcTemp != undefined) {
                                                     $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
                                                 } else {
-                                                    $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                    if (editedCell && updateAll) {
+                                                        $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                    } else {
+                                                        $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
+                                                    }
                                                 }
                                             }
                                                // $("#dpGrid").mGrid("setState", "_" + row.id, cell.columnKey, ["mgrid-calc"]);
@@ -1695,15 +1709,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.hasErrorBuss = false;
                     } 
                     
-                    if (_.isEmpty(data.lstEmployee) && _.isEmpty(data.lstControlDisplayItem.lstHeader)) {
-                         self.destroyGrid();
-                         self.processFlex(data, true);
-                         //self.hasEmployee = false;
-//                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
-//                            return;
-//                        });
+                    if ((_.isEmpty(data.lstEmployee) && _.isEmpty(data.lstControlDisplayItem.lstHeader)) || data.errorInfomation != 0) {
+                        let messageId = "";
+                        if (data.errorInfomation == DCErrorInfomation.APPROVAL_NOT_EMP) {
+                            messageId = "Msg_916";
+                            self.hasErrorBuss = true;
+                        } else if (data.errorInfomation == DCErrorInfomation.ITEM_HIDE_ALL) {
+                            messageId = "Msg_1452";
+                            self.hasErrorBuss = true;
+                        }
+                        self.destroyGrid();
+                        self.processFlex(data, true);
+
+                        if (messageId != "") nts.uk.ui.dialog.alert({ messageId: messageId }).then(function() {
+                            return;
+                        });
                     } else {
                         self.initScreenSPR = 1;
+                        self.hasErrorBuss = false;
                         //self.lstDomainOld = data.domainOld;
                         //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                         if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
@@ -1723,6 +1746,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.showTighProcess(data.showTighProcess);
                         self.indentityMonth(data.indentityMonthResult);
                         self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
+                        
+                        // combo box
+                        self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
+                        self.comboItemsReason(data.lstControlDisplayItem.comboItemReason);
+                        self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
+                        self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
+                        self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
                         //self.showLock(self.showButton().available12());
                         //self.unLock(false);
                         if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
@@ -4402,7 +4432,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 val190 = dataCalc.value190 == null ? 0 : dataCalc.value190.value,
                 val191 = dataCalc.value191 == null ? 0 : dataCalc.value191.value;
             //フレックス不足(内前月繰越)
-            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21))), self.convertToHours(Number(val21))]));
             //翌月繰越
             self.nextMonthTransferredMoneyTime(getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
         }
@@ -4615,5 +4645,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
          show26: boolean;
          enableButton: boolean;
          hideAll: boolean;
+    }
+    
+    enum DCErrorInfomation {
+
+        NORMAL = 0,
+
+        APPROVAL_NOT_EMP = 1,
+
+        ITEM_HIDE_ALL = 2
     }
 }

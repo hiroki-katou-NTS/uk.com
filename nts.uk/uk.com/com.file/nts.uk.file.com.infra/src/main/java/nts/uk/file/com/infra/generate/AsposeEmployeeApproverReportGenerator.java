@@ -214,65 +214,126 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 		pages = (firstRow + totalMerger -1) / 51;
 		int rowMergered = (51 * pages) - firstRow + 1;
 		if (rowMergered > 0) {//TH sang co ngat trang
-//			int pagesOld = (firstRow - 1) / 51;
-//			//TH phan trang tren 1 lan: 
-//			if(pages - pagesOld > 1){
-//				//TODO
-//			}
-			
-			HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
-			hPageBreaks.add("P" + (51 * pages + 2));
-			VerticalPageBreakCollection vPageBreaks = worksheets.get(0).getVerticalPageBreaks();
-			vPageBreaks.add("P" + (51 * pages + 2));
-			// set employee code - CỘT 1
-			if (rowMergered > 1) {
-				//TH: sang trang
-				cells.merge(firstRow, 1, rowMergered, 1, true);
-			}
+			int pagesOld = (firstRow - 1) / 51 + 1;
+			//TH phan trang tren 1 lan: 
+			if(pages - pagesOld >= 1 && rowMergered >= 51){
+				List<Integer> lstRowMered = new ArrayList<>();
+				int rowNew = firstRow;
+				for(int p = pagesOld; p <= pages; p++){//phan trang
+					HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
+					hPageBreaks.add("P" + (51 * p + 2));
+					VerticalPageBreakCollection vPageBreaks = worksheets.get(0).getVerticalPageBreaks();
+					vPageBreaks.add("P" + (51 * p + 2));
+					int rowMergered1 = (51 * p) - rowNew + 1;
+					// set employee code - CỘT 1
+					if (rowMergered1 > 1) {
+						cells.merge(rowNew, 1, rowMergered1, 1, true);
+					}
+					Cell em_Code = cells.get(rowNew, COLUMN_INDEX[1]);
+					em_Code.setValue(output.getEmployeeInfor().getEmpCD());
+					
+					// set employee name - CỘT 2
+					if (rowMergered1 > 1) {
+						cells.merge(rowNew, 2, rowMergered1, 1, true);
+					}
 
-			Cell em_Code = cells.get(firstRow, COLUMN_INDEX[1]);
-			em_Code.setValue(output.getEmployeeInfor().getEmpCD());
-
-			// set employee name - CỘT 2
-			if (rowMergered > 1) {
-				cells.merge(firstRow, 2, rowMergered, 1, true);
-			}
-
-			Cell em_Name = cells.get(firstRow, COLUMN_INDEX[2]);
-			em_Name.setValue(output.getEmployeeInfor().getEName());
-
-			for (int i = 0; i < totalMerger; i++) {
-				Cell style_Code = cells.get(firstRow + i, COLUMN_INDEX[1]);
-				Cell style_Name = cells.get(firstRow + i, COLUMN_INDEX[2]);
-				//them RIGHT_BORDER
-				if (i < (totalMerger -1)) {
-						setTitleStyleMerge(style_Code);
-						setTitleStyleMerge(style_Name);
+					Cell em_Name = cells.get(rowNew, COLUMN_INDEX[2]);
+					em_Name.setValue(output.getEmployeeInfor().getEName());
+					
+					rowNew = rowNew + rowMergered1;
+					lstRowMered.add(rowNew);
 				}
-				//them BOTTOM_BORDER (TH ket thuc trang ma chua het nv)
-				if ((i == (rowMergered - 1)) || (i == (totalMerger -1)))
-				{
-					setTitleStyle(style_Code);
-					setTitleStyle(style_Name);
+				for (int i = 0; i < totalMerger; i++) {
+					Cell style_Code = cells.get(firstRow + i, COLUMN_INDEX[1]);
+					Cell style_Name = cells.get(firstRow + i, COLUMN_INDEX[2]);
+					//them RIGHT_BORDER
+					if (i < (totalMerger -1)) {
+							setTitleStyleMerge(style_Code);
+							setTitleStyleMerge(style_Name);
+					}
+					
+					//them BOTTOM_BORDER (TH ket thuc trang ma chua het nv)
+					if ((i == (rowMergered - 1)) || (i == (totalMerger -1)) || lstRowMered.contains(firstRow + i + 1))
+					{
+						setTitleStyle(style_Code);
+						setTitleStyle(style_Name);
+					}
+					//merge row(column 1 & 2) + set value (column 1 & 2) : TH sang trang moi ma chua het nv cu
+					if(i == rowMergered || lstRowMered.contains(i)){
+						cells.merge(firstRow + i, 1, (totalMerger - i), 1, true);
+						Cell em_Code1 = cells.get(firstRow + i, COLUMN_INDEX[1]);
+						cells.merge(firstRow + i, 2, (totalMerger - i), 1, true);
+						Cell em_Name1 = cells.get(firstRow + i, COLUMN_INDEX[2]);
+						em_Code1.setValue(output.getEmployeeInfor().getEmpCD());
+						em_Name1.setValue(output.getEmployeeInfor().getEName());
+					}
 				}
-				//merge row(column 1 & 2) + set value (column 1 & 2) : TH sang trang moi ma chua het nv cu
-				if(i == rowMergered){
-					cells.merge(firstRow + i, 1, (totalMerger - rowMergered), 1, true);
-					Cell em_Code1 = cells.get(firstRow + i, COLUMN_INDEX[1]);
-					cells.merge(firstRow + i, 2, (totalMerger - rowMergered), 1, true);
-					Cell em_Name1 = cells.get(firstRow + i, COLUMN_INDEX[2]);
-					em_Code1.setValue(output.getEmployeeInfor().getEmpCD());
-					em_Name1.setValue(output.getEmployeeInfor().getEName());
+				//TODO
+				// IN RA TỪ CỘT THỨ 3 TRỞ RA
+				for (AppTypes appTypes : lstAppTypes) {//in theo list app type da sap xep
+					// LIST CÁC FORM CỦA MỘT NGƯỜI
+					List<ApproverAsAppInfor> appLst = output.getMapAppType().get(appTypes);
+					// TÍNH MAX ĐỂ MERGER CELL
+					int max = this.findMax(appLst);
+					int p = (firstRow -1) / 51 + 1;
+					firstRow = this.printColumns3(cells, max, appTypes, firstRow, appLst, max > (p * 51 + 1 - firstRow) ? (p * 51 + 1 - firstRow) : 0);
 				}
-			}
-
-			// IN RA TỪ CỘT THỨ 3 TRỞ RA
-			for (AppTypes appTypes : lstAppTypes) {//in theo list app type da sap xep
-				// LIST CÁC FORM CỦA MỘT NGƯỜI
-				List<ApproverAsAppInfor> appLst = output.getMapAppType().get(appTypes);
-				// TÍNH MAX ĐỂ MERGER CELL
-				int max = this.findMax(appLst);
-				firstRow = this.printColumns3(cells, max, appTypes, firstRow, appLst, max > (pages * 52 - pages + 1 - firstRow) ? (pages * 52 - pages + 1 - firstRow) : 0);
+			}else{//TH phan trang 1 lan
+				HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
+				hPageBreaks.add("P" + (51 * pages + 2));
+				VerticalPageBreakCollection vPageBreaks = worksheets.get(0).getVerticalPageBreaks();
+				vPageBreaks.add("P" + (51 * pages + 2));
+				// set employee code - CỘT 1
+				if (rowMergered > 1) {
+					//TH: sang trang
+					cells.merge(firstRow, 1, rowMergered, 1, true);
+				}
+	
+				Cell em_Code = cells.get(firstRow, COLUMN_INDEX[1]);
+				em_Code.setValue(output.getEmployeeInfor().getEmpCD());
+	
+				// set employee name - CỘT 2
+				if (rowMergered > 1) {
+					cells.merge(firstRow, 2, rowMergered, 1, true);
+				}
+	
+				Cell em_Name = cells.get(firstRow, COLUMN_INDEX[2]);
+				em_Name.setValue(output.getEmployeeInfor().getEName());
+	
+				for (int i = 0; i < totalMerger; i++) {
+					Cell style_Code = cells.get(firstRow + i, COLUMN_INDEX[1]);
+					Cell style_Name = cells.get(firstRow + i, COLUMN_INDEX[2]);
+					//them RIGHT_BORDER
+					if (i < (totalMerger -1)) {
+							setTitleStyleMerge(style_Code);
+							setTitleStyleMerge(style_Name);
+					}
+					//them BOTTOM_BORDER (TH ket thuc trang ma chua het nv)
+					if ((i == (rowMergered - 1)) || (i == (totalMerger -1)))
+					{
+						setTitleStyle(style_Code);
+						setTitleStyle(style_Name);
+					}
+					//merge row(column 1 & 2) + set value (column 1 & 2) : TH sang trang moi ma chua het nv cu
+					if(i == rowMergered){
+						cells.merge(firstRow + i, 1, (totalMerger - rowMergered), 1, true);
+						Cell em_Code1 = cells.get(firstRow + i, COLUMN_INDEX[1]);
+						cells.merge(firstRow + i, 2, (totalMerger - rowMergered), 1, true);
+						Cell em_Name1 = cells.get(firstRow + i, COLUMN_INDEX[2]);
+						em_Code1.setValue(output.getEmployeeInfor().getEmpCD());
+						em_Name1.setValue(output.getEmployeeInfor().getEName());
+					}
+				}
+	
+				// IN RA TỪ CỘT THỨ 3 TRỞ RA
+				for (AppTypes appTypes : lstAppTypes) {//in theo list app type da sap xep
+					// LIST CÁC FORM CỦA MỘT NGƯỜI
+					List<ApproverAsAppInfor> appLst = output.getMapAppType().get(appTypes);
+					// TÍNH MAX ĐỂ MERGER CELL
+					int max = this.findMax(appLst);
+					int p = (firstRow -1) / 51 + 1;
+					firstRow = this.printColumns3(cells, max, appTypes, firstRow, appLst, max > (p * 51 + 1 - firstRow) ? (p * 51 + 1 - firstRow) : 0);
+				}
 			}
 		} 
 		else {//TH khong ngat trang
@@ -329,8 +390,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 	 */
 	private int printColumns3(Cells cells, int max, AppTypes typeApp, int firstRow,
 			List<ApproverAsAppInfor> appLst, int rowMergered) {
-		if (rowMergered > 0) {//TH ngat trang cua don
-
+		if (rowMergered > 0) {//TH BREAK PAGE
 			// IN RA CỘT THỨ 3
 			if (rowMergered > 1) {
 				cells.merge(firstRow, 3, rowMergered, 1, true);
@@ -371,33 +431,43 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			int j = 4;
 
 			// IN RA CỘT THỨ 4 CỦA PHRASE I
-				for (int k = 1; k <= 5; k++) {//in 5 phase
-					//find phase k
-					ApproverAsAppInfor app = this.findPhaseByOder(appLst, k);
-					//print phase k
-					printEachPhrase(cells, firstRow, max, app, j, rowMergered);
-					//tang column index 2 don vi (chuyen sang vi tri phase ke tiep)
-					if ((j + 2) < 14) {
-						j = j + 2;
-					}
+			for (int k = 1; k <= 5; k++) {//in 5 phase
+				//find phase k
+				ApproverAsAppInfor app = this.findPhaseByOder(appLst, k);
+				//print phase k
+				this.printEachPhrase(cells, firstRow, max, app, j, rowMergered);
+				//tang column index 2 don vi (chuyen sang vi tri phase ke tiep)
+				if ((j + 2) < 14) {
+					j = j + 2;
 				}
+			}
 
-				//column 14
-				String text14 = this.stateColumn14(typeApp.getErr());
-				if (max > 1) {
-					cells.merge(firstRow, 14, max, 1);
-				}
-				Cell notice = cells.get(firstRow, COLUMN_INDEX[14]);
-				notice.setValue(text14);
-				for (int i = 0; i < max; i++) {
-					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
-					if (i == (max - 1)) {
-						setTitleStyle(style_Form);
-					} else {
+			//column 14
+			if (rowMergered > 1) {
+				cells.merge(firstRow, 14, rowMergered, 1, true);
+			}
+			Cell col_14 = cells.get(firstRow, COLUMN_INDEX[14]);
+			String text14 = this.stateColumn14(typeApp.getErr());
+			col_14.setValue(text14);
+			// SET STYLE CHO CỘT THỨ 14
+			for (int i = 0; i < max; i++) {
+				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
+				//them RIGHT_BORDER
+				if (i < max) {
 						setTitleStyleMerge(style_Form);
-					}
 				}
-				firstRow = firstRow + max;
+				//them BOTTOM_BORDER (TH ket thuc trang ma chua het app)
+				if ((i == (rowMergered - 1))){
+					setTitleStyle(style_Form);
+				}
+				//merge row(column 3) + set value (column 3) : TH sang trang moi ma chua het a cu
+				if(i == rowMergered){
+					cells.merge(firstRow + i, 14, (max - rowMergered), 1, true);
+					Cell val_14 = cells.get(firstRow + i, COLUMN_INDEX[14]);
+					val_14.setValue(text14);
+				}
+			}
+			firstRow = firstRow + max;
 		} 
 		else {//TH khong ngat trang
 
@@ -435,7 +505,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					// IN RA CỘT THỨ 4 CỦA PHRASE I
 					for (int k = 1; k<= 5; k++) {
 						ApproverAsAppInfor app = this.findPhaseByOder(appLst, k);
-							printEachPhrase(cells, firstRow, max, app, j, 0);
+							this.printEachPhrase(cells, firstRow, max, app, j, 0);
 							if ((j + 2) < 14) {
 								j = j + 2;
 							}
@@ -463,7 +533,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					for (int k = 1; k<= 5; k++) {
 						ApproverAsAppInfor app = this.findPhaseByOder(appLst, k);
 
-							printEachPhrase(cells, firstRow, max, app, j, 0);
+							this.printEachPhrase(cells, firstRow, max, app, j, 0);
 							if ((j + 2) < 14) {
 								j = j + 2;
 							}
@@ -521,7 +591,6 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 	//in tung phase
 	private void printEachPhrase(Cells cells, int firstRow, int max, ApproverAsAppInfor app, int j, int rowMergered) {
 		if (app != null) {
-//			int mergeApp = (52 * pages) - firstRow - (pages-1);
 			//Check phan trang
 			if(rowMergered > 0 && max > 1){//TH phan trang (column ApprovalForm)
 				//trang cu
@@ -529,7 +598,6 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					cells.merge(firstRow, j, rowMergered, 1, true);
 				}
 				Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
-//				appPhrase.setValue(app.getApprovalForm());
 				if(app.getLstEmpInfo() != null && app.getLstEmpInfo().size() > 0){
 					appPhrase.setValue(app.getApprovalForm());
 				}else{

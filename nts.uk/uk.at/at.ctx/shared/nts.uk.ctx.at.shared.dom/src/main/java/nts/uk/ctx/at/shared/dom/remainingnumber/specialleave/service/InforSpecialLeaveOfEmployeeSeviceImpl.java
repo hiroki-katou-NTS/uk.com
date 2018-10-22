@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,10 +112,12 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		} else if (speHoliday.getGrantRegular().getGrantDate() == GrantDate.GRANT_BASE_HOLIDAY){
 			//ドメインモデル「年休社員基本情報」を取得する
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
-			if(annualLeaveEmpBasicInfo.isPresent()) {
-				//所得したドメインモデル「年休社員基本情報．付与ルール．付与基準日」をパラメータ「付与基準日」にセットする
-				grantDate = annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate();
-			}			
+			if(!annualLeaveEmpBasicInfo.isPresent()) {
+				return new GrantDaysInforByDates(grantDate, Collections.emptyList());
+			}
+			//所得したドメインモデル「年休社員基本情報．付与ルール．付与基準日」をパラメータ「付与基準日」にセットする
+			grantDate = annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate();
+						
 		} else {
 			//取得している「特別休暇基本情報．付与設定．付与基準日」をパラメータ「付与基準日」にセットする
 			grantDate = leaveBasicInfo.getGrantSetting().getGrantDate();

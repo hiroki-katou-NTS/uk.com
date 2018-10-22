@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.app.command.processbatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
@@ -104,6 +105,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant MAX_ERROR_RECORD. */
 	private static final int MAX_ERROR_RECORD = 5;
 	
+	/** The Constant BUSINESSEXCEPTION_ERROR. */
+	private static final String BUSINESSEXCEPTION_ERROR = "businessExceptionのメッセージ";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -201,6 +204,28 @@ public class ScheBatchCorrectExecutionCommandHandler
 						
 						countSuccess++;
 						setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+						List<String> excepErrList = registerBasicScheduleCommandHandler.handle(dataRegisterBasicSchedule);
+						GeneralDate currentDate = currentDateCheck;
+						List<ErrorContentDto> lstErrDto =  excepErrList.stream().map(i->{ 
+							ErrorContentDto errorContentDto = new ErrorContentDto();
+						errorContentDto.setMessage(i);
+						errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
+						errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
+						errorContentDto.setDateYMD(currentDate);
+						return errorContentDto;
+						}).collect(Collectors.toList());
+						
+						// Add to error list (save to DB every 5 error records)
+						if (errorList.size() >= MAX_ERROR_RECORD) {
+							errorRecordCount++;
+							setter.setData(DATA_PREFIX + errorRecordCount, dto);
+							
+							// Clear the list for the new batch of error record
+							errorList.clear();
+						}
+						errorList.addAll(lstErrDto);
+						setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
+						if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
 					}
 					
 					// Add 1 more day to current day
@@ -208,7 +233,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 				}
 			} catch (Exception e) {
 				ErrorContentDto errorContentDto = new ErrorContentDto();
-				errorContentDto.setMessage(e.getMessage());
+				errorContentDto.setMessage(BUSINESSEXCEPTION_ERROR);
 				errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
 				errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
 				errorContentDto.setDateYMD(currentDateCheck);
@@ -225,11 +250,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 				if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
 			}
 		}
-		
-		// Register process
-		if (!lstRegisterBasicScheduleCommand.isEmpty())
-			registerBasicScheduleCommandHandler.handle(dataRegisterBasicSchedule);
-		
 		// Send the last batch of errors if there is still records unsent
 		if (!errorList.isEmpty()) {
 			errorRecordCount++;
