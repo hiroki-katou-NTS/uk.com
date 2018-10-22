@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "CBKMT_BANK_BRANCH")
+@Table(name = "QXXMT_BANK_BRANCH")
 public class QxxmtBankBranch extends UkJpaEntity {
 
 	/**

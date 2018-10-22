@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "CBKMT_BANK")
+@Table(name = "QXXMT_BANK")
 public class QxxmtBank extends UkJpaEntity {
 
 	@EmbeddedId
@@ -27,13 +27,13 @@ public class QxxmtBank extends UkJpaEntity {
 	/**
 	 * 名称
 	 */
-	@Column(name = "BANK_NAME")
+	@Column(name = "NAME")
 	public String bankName;
 
 	/**
 	 * カナ名
 	 */
-	@Column(name = "BANK_KN_NAME")
+	@Column(name = "KANA_NAME")
 	@Basic(optional = true)
 	public String bankNameKana;
 

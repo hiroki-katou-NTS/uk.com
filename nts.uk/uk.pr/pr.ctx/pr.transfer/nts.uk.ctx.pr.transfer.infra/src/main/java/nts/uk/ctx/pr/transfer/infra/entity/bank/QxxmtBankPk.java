@@ -28,7 +28,7 @@ public class QxxmtBankPk {
 	/**
 	 * コード
 	 */
-	@Column(name = "BANK_CD")
+	@Column(name = "CD")
 	public String bankCode;
 
 }
