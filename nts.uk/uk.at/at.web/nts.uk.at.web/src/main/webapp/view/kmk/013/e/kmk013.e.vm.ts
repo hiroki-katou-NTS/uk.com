@@ -157,7 +157,7 @@ module nts.uk.at.view.kmk013.e {
         }
         
         class UnitRoudingClientData {
-            timeItemId: string;
+            timeItemId: number;
             attendanceItemName: string;
             unit: number;
             rounding: number;
@@ -171,12 +171,12 @@ module nts.uk.at.view.kmk013.e {
         }
         
         class UnitRouding {
-            timeItemId: string;
+            timeItemId: number;
             attendanceItemName: string;
             unit: KnockoutObservable<number>;
             rounding: KnockoutObservable<number>;
             list_round: KnockoutObservableArray<any>;
-            constructor(timeItemId: string, attendanceItemName: string, unit: number, rounding: number, list: any) {
+            constructor(timeItemId: number, attendanceItemName: string, unit: number, rounding: number, list: any) {
                 this.timeItemId = timeItemId;
                 this.attendanceItemName = attendanceItemName;
                 this.unit = ko.observable(unit);
