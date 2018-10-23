@@ -29,11 +29,12 @@
 
 div.nts-fixed-body-wrapper {
 	max-width: 411px;
-	height: 230px;
+    max-height: 222px;
 }
 
 div.nts-fixed-body-container.ui-iggrid {
 	padding-right: 0px !important;
+	height: 230px;	
 }
 
 .nts-fixed-table.cf {
@@ -42,6 +43,7 @@ div.nts-fixed-body-container.ui-iggrid {
 
 div.ntsControl.ntsHelpButton {
 	float: right;
+	margin-right: 13px;
 	margin-top: -33px;
 }
 
