@@ -269,10 +269,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	}
 	
 	private List<ApprovalPhase> toDomain(List<FullJoinWwfmtApprovalPhase> listFullJoin){
-		listFullJoin.stream().collect(Collectors.groupingBy(x -> {
-			return new WwfmtApprovalPhasePK(x.companyId, x.branchId, x.approvalPhaseId); }));
-		return listFullJoin.stream().collect(Collectors.groupingBy(k -> {
-				return new WwfmtApprovalPhasePK(k.companyId, k.branchId, k.approvalPhaseId); }))
+		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoinWwfmtApprovalPhase::getApprovalPhaseId))
 						.entrySet().stream().map(x -> {
 					FullJoinWwfmtApprovalPhase first = x.getValue().get(0);
 					String companyId = first.companyId;

@@ -150,7 +150,8 @@ module nts.uk.ui.koExtentions {
 //                    container.data("changed", true);
                     if (typeof result.parsedValue === "string") {
                         if (_.has(data, "type") && ko.toJS(data.type) === "date") {
-                            value(new Date(result.parsedValue));
+                            let momentDate = moment(result.parsedValue);
+                            value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
                         } else {
                             value(result.parsedValue);
                         }
