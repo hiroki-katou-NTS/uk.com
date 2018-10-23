@@ -391,7 +391,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 						.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), 
 								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
 				
-				if (approvalRootOfEmloyee == null) {
+				if (approvalRootOfEmloyee.getApprovalRootSituations().isEmpty()) {
 					String mess = new String("Msg_1451");
 					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting,mess);
 					return;
