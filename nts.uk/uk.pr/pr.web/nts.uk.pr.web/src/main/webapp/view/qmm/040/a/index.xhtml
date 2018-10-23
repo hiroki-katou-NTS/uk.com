@@ -43,7 +43,7 @@
             <div class="sidebar-content-header flex valign-center">
 
                 <span class="title" data-bind="text : titleTab"></span>
-                <button class="proceed" data-bind="click:registerAmount">#{i18n.getText('QMM040_2')}</button>
+                <button class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
                 <a class="goout" style="margin-left: 700px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
@@ -171,8 +171,8 @@
                                         value: amount,
                                         constraint:'AmountOfMoney',
                                         name:'#[QMM040_20]',
+                                        required:true,
                                         option: {
-
                                             grouplength: 3,
                                             currencyformat: 'JPY'}}"/>
                             </td>
