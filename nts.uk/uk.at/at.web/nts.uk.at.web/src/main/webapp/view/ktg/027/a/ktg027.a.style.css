@@ -1,40 +1,76 @@
-#contents-area{padding:0;}
-.widget-table{width:100%; max-width:130px; margin: 0 auto; table-layout: fixed;}
-.widget-table .go-button{width: 40px;}
-.widget-table .go-button button{width: 30px; border: 0; box-shadow: none; padding:0;}
-.widget-table td{padding: 1px 0;overflow: hidden;}
-.widget-table .widget-table{height: 37px;}
-#contents-area.ktg002{overflow-y: hidden;}
-.nts-datepicker-wrapper{margin-left: 30px;}
-div.nts-fixed-body-wrapper{ width: 450px !important; height: 234px ! important;}
-div.nts-fixed-header-container.ui-iggrid.nts-fixed-header{width : 449px ! important;}
-div.nts-fixed-body-container.ui-iggrid{padding-right: 0px !important;}
-.nts-fixed-table.cf{margin-top: 15px;}
-div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90px;}
+.widget-table .go-button {
+	width: 40px;
+}
+
+.widget-table .go-button button {
+	width: 30px;
+	border: 0;
+	box-shadow: none;
+	padding: 0;
+}
+
+.widget-table td {
+	padding: 1px 0;
+	overflow: hidden;
+}
+
+.widget-table .widget-table {
+	height: 37px;
+}
+
+#contents-area.ktg002 {
+	height: calc(100vh - 25px);
+}
+
+.nts-datepicker-wrapper {
+	margin-left: 30px;
+}
+
+
+div.nts-fixed-body-wrapper {
+	max-width: 411px;
+    max-height: 222px;
+}
+
+div.nts-fixed-body-container.ui-iggrid {
+	padding-right: 0px !important;
+	height: 222px;
+}
+
+.nts-fixed-table.cf {
+	margin-top: 15px;
+}
+
+div.ntsControl.ntsHelpButton {
+	float: right;
+	margin-right: 13px;
+	margin-top: -33px;
+}
+
 #fixed-table tbody>tr:last-child {
 	position: absolute;
-	bottom: 3px;
+	bottom: 6px;
 	border-right: 1px solid #CCC;
 	border-top: double;
 }
 
 #fixed-table tbody>tr:last-child>td:first-child {
-	width: 245px;
-	border-top: double solid #CCC ;	
+	width: 226px;
+	border-top: double solid #CCC;
 }
+#fixed-table tbody>tr:last-child>td:nth-child(2) {width: 70px;}
 
-#fixed-table tbody>tr:last-child>td:not(:first-child):not(:last-child) {
-	width: 75px;
+.nts-fixed-table table.fixed-table thead th:last-child {
+	width: 10px;
 }
 
 #fixed-table tbody>tr:last-child>td:last-child {
-	width: 115px;
-}
-#fixed-table tbody>tr>td:not(:first-child) {
-	text-align: right;
+	width: 100px;
 }
 
 #func-notifier-errors.shown {
-    position: absolute;
-    bottom: 380px;
+	position: absolute;
+	bottom: 380px;
 }
+div.nts-fixed-header-container.ui-iggrid.nts-fixed-header {  background: #CFF1A5;}
+div.nts-fixed-body-container.ui-iggrid
