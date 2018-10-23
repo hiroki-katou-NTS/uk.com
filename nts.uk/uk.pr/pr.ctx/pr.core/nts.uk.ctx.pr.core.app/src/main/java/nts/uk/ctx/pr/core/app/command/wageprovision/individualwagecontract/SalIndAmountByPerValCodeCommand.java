@@ -12,10 +12,7 @@ public class SalIndAmountByPerValCodeCommand {
 
     private int salBonusCate;
 
-    private List<EmployeeIdCommand> EmpIDs;
+    private List<String> employeeIds;
 }
 
-@Value
-class EmployeeIdCommand {
-    String employeeId;
-}
+

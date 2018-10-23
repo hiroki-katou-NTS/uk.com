@@ -11,11 +11,11 @@ public class SalIndAmountUpdateCommand{
     /**
      * 履歴ID
      */
-    private String historyID;
+    private String historyId;
 
     /**
      * 金額
      */
-    private String amountOfMoney;
+    private String amount;
 
 }

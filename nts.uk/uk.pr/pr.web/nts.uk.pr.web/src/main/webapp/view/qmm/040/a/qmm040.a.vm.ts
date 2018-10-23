@@ -6,11 +6,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         //SalIndAmountName
 
+
         salIndAmountNames: KnockoutObservableArray<SalIndAmountName>;
         salIndAmountNamesSelectedCode: KnockoutObservable<string>;
 
-        personalAmount: PersonalAmount = new PersonalAmount();
-        salIndAmountUpdateCommandList:KnockoutObservableArray<Amount>=ko.observableArray([]);
+        personalAmount:KnockoutObservableArray<PersonalAmount>;
+        personalDisplay:KnockoutObservableArray<PersonalAmount>;
 
         //onSelected
         cateIndicator: KnockoutObservable<number>;
@@ -18,11 +19,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         //ccg001
         referenceDate: KnockoutObservable<string> = ko.observable('');
         ccgcomponent: GroupOption;
-        employeeList: KnockoutObservableArray<ItemModel>;
         tilteTable: KnockoutObservableArray<any>;
         selectedEmployeeCode: KnockoutObservable<string>;
-        //amount
-        amountList: KnockoutObservableArray<Amount>;
 
 
         yearMonthFilter: KnockoutObservable<number>;
@@ -41,9 +39,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
 
             ]);
+            self.personalAmount =ko.observableArray([]);
+            self.personalDisplay =ko.observableArray([]);
 
-
-            self.yearMonthFilter= ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+            self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.cateIndicator = ko.observable(0);
             self.salBonusCate = ko.observable(0);
 
@@ -51,17 +50,15 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.salIndAmountNamesSelectedCode = ko.observable('');
 
 
-            self.amountList = ko.observableArray([]);
 
             self.selectedEmployeeCode = ko.observable('1');
             self.individualPriceCode = ko.observable('');
             self.individualPriceName = ko.observable('');
             self.onSelectTab(self.onTab);
 
-            self.employeeList = ko.observableArray([]);
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
-
+                self.personalAmount.removeAll();
                 if (!data)
                     return;
                 let temp = _.find(self.salIndAmountNames(), function (o) {
@@ -70,10 +67,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 if (temp) {
                     self.individualPriceCode(temp.individualPriceCode);
                     self.individualPriceName(temp.individualPriceName);
+
                 }
             });
-
-
 
 
         }
@@ -157,6 +153,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                     else {
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
+                        self.individualPriceCode('');
+                        self.individualPriceName('');
                     }
 
 
@@ -165,48 +163,55 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             });
         }
 
-        public onSelected(pelValCode: string) {
-            let self = this;
-            self.personalAmount.periodAndAmountDisplay.removeAll();
-            self.salIndAmountUpdateCommandList.removeAll();
-            $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmountDisplay()).igGrid("dataBind");
-            service.salIndAmountHisByPeValCode(pelValCode, self.cateIndicator(), self.salBonusCate()).done(function (data) {
-
-                self.personalAmount = new PersonalAmount();
-                self.personalAmount.setData(data)
-                console.log(self.personalAmount);
-
-            })
-
-        }
+        // public onSelected(pelValCode: string) {
+        //     let self = this;
+        //     self.personalAmount.periodAndAmountDisplay.removeAll();
+        //     self.salIndAmountUpdateCommandList.removeAll();
+        //     $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmountDisplay()).igGrid("dataBind");
+        //     service.salIndAmountHisByPeValCode(pelValCode, self.cateIndicator(), self.salBonusCate()).done(function (data) {
+        //
+        //         self.personalAmount = new PersonalAmount();
+        //         self.personalAmount.setData(data)
+        //         console.log(self.personalAmount);
+        //
+        //     })
+        //
+        // }
 
 
         filterData(): void {
             let self = this;
             self.yearMonthFilter();
             let temp = new Array();
-            for (let i = 0; i < self.personalAmount.periodAndAmount().length; i++) {
-                if (self.personalAmount.periodAndAmount()[i].periodStartYm <= this.yearMonthFilter() && self.personalAmount.periodAndAmount()[i].periodEndYm >= this.yearMonthFilter())
-                    temp.push(self.personalAmount.periodAndAmount()[i])
+            // for (let i = 0; i < self.personalAmount.periodAndAmount().length; i++) {
+            //     if (self.personalAmount.periodAndAmount()[i].periodStartYm <= this.yearMonthFilter() && self.personalAmount.periodAndAmount()[i].periodEndYm >= this.yearMonthFilter())
+            //         temp.push(self.personalAmount.periodAndAmount()[i])
+            // }
+            // self.personalAmount.periodAndAmountDisplay(temp);
+            // self.salIndAmountUpdateCommandList(temp);
+
+            for(let i=0;i<self.personalAmount().length;i++){
+                if(self.personalAmount()[i].startYearMonth <= this.yearMonthFilter() && self.personalAmount()[i].endYearMonth >= this.yearMonthFilter()){
+                    temp.push(self.personalAmount()[i])
+                }
             }
-            self.personalAmount.periodAndAmountDisplay(temp);
-            self.salIndAmountUpdateCommandList(temp);
 
-            $("#substituteDataGrid").igGrid("dataSourceObject", ko.mapping.toJS(self.personalAmount.periodAndAmountDisplay)).igGrid("dataBind");
+            self.personalDisplay(temp);
 
-            $("#grid").igGrid("dataSourceObject", ko.mapping.toJS(self.personalAmount.periodAndAmountDisplay)).igGrid("dataBind");
+
         }
 
-        registerAmount():void{
-            let self=this;
+        registerAmount(): void {
+            let self = this;
 
-            service.salIndAmountUpdateAll({salIndAmountUpdateCommandList: ko.toJS(self.salIndAmountUpdateCommandList)}).done(function () {
+            service.salIndAmountUpdateAll({
+                salIndAmountUpdateCommandList: ko.toJS(self.personalAmount)}).done(function () {
                 dialog.info({messageId: "Msg_15"});
             })
         }
 
 
-        public reloadCcg001(empExtraRefeDate:string): void {
+        public reloadCcg001(empExtraRefeDate: string): void {
             let self = this;
 
             self.ccgcomponent = {
@@ -249,12 +254,19 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     if (data) {
                         console.log(data.listEmployee);
                         service.salIndAmountHisByPeValCode({
-                        //     self.cateIndicator = ko.observable(0);
-                        // self.salBonusCate = ko.observable(0);
-                            perValCode: self.individualPriceCode,
-                            cateIndicator: self.cateIndicator,
-                            salBonusCate:self.salBonusCate,
-                            EmpIDs:data.listEmployee
+                            //     self.cateIndicator = ko.observable(0);
+                            // self.salBonusCate = ko.observable(0);
+                            perValCode: self.individualPriceCode(),
+                            cateIndicator: self.cateIndicator(),
+                            salBonusCate: self.salBonusCate(),
+                            employeeIds: data.listEmployee.map(x => x.employeeId)
+
+                        }).done(function (datadataPersonalAmount:Array<IPersonalAmount>) {
+                            let arrTemp:Array<PersonalAmount>=new Array();
+                            arrTemp=datadataPersonalAmount.map(x => new PersonalAmount(x));
+
+                            self.personalAmount(arrTemp);
+                            self.personalDisplay(arrTemp);
                         })
                     }
                     self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
@@ -333,35 +345,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     }
 
 
-    export interface IitemModel {
-        employeeCode: string,
-        employeeId: string,
-        employeeName: string,
-        workplaceCode: string,
-        workplaceId: string,
-        workplaceName: string
-    }
-
-    export class ItemModel {
-
-        employeeCode: string;
-        employeeId: string;
-        employeeName: string
-        workplaceCode: string
-        workplaceId: string
-        workplaceName: string;
-
-        constructor(param: IitemModel) {
-            this.employeeCode = param.employeeCode;
-            this.employeeId = param.employeeId;
-            this.employeeName = param.employeeName;
-            this.workplaceCode = param.workplaceCode;
-            this.workplaceId = param.workplaceId;
-            this.workplaceName = param.workplaceName;
-        }
-    }
-
-
     export interface ISalIndAmountName {
         individualPriceCode: string,
         individualPriceName: string
@@ -398,67 +381,40 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         DEDUCTION = 1
     }
 
+    export interface IPersonalAmount {
+        empId: string,
+        historyId: string,
+        employeeCode: string,
+        businessName: string,
+        startYearMonth: number,
+        endYearMonth: number,
+        amount: number
+    }
 
     export class PersonalAmount {
         empId: string;
-        perValCode: string;
-        cateIndicator: number;
-        salBonusCate: number;
-        periodAndAmount: KnockoutObservableArray<Amount> = ko.observableArray([]);
-        periodAndAmountDisplay: KnockoutObservableArray<Amount> = ko.observableArray([]);
+        historyId: string;
+        employeeCode: string;
+        businessName: string;
+        startYearMonth: number;
+        endYearMonth: number;
+        period:string;
+        amount: KnockoutObservable<number>=ko.observable(0);
 
-        constructor() {
+        constructor(param:IPersonalAmount){
+            let self=this;
+            self.empId=param.empId;
+            self.historyId=param.historyId;
+            self.employeeCode=param.employeeCode;
+            self.businessName=param.businessName;
+            self.startYearMonth=param.startYearMonth;
+            self.endYearMonth=param.endYearMonth;
+
+            self.period=nts.uk.time.formatYearMonth(param.startYearMonth) + ' ~ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+            self.amount(param.amount);
         }
 
-        setData(param: IPersonalAmount) {
-            var self = this;
-            if (param) {
-                self.perValCode = param.perValCode;
-                self.empId = param.empId;
-                self.cateIndicator = param.cateIndicator;
-                self.salBonusCate = param.salBonusCate;
-                let temp: Array<Amount> = new Array<Amount>();
-                for (let i = 0; i < param.periodAndAmount.length; i++) {
-                    temp.push(new Amount(param.periodAndAmount[i]));
-                }
-                self.periodAndAmount(temp);
-            }
-        }
 
-    }
-
-    export class Amount {
-        historyID: string;
-        employeeCode: string = '';
-        employeeName: string = '';
-        periodStartYm: number;
-        periodEndYm: number;
-        amountOfMoney: number;
-        period: string;
-
-        constructor(param: IAmount) {
-            this.historyID = param.historyID;
-            this.periodStartYm = param.periodStartYm;
-            this.periodEndYm = param.periodEndYm;
-            this.amountOfMoney = ko.observable(param.amountOfMoney);
-            this.period = nts.uk.time.formatYearMonth(param.periodStartYm) + ' ~ ' + nts.uk.time.formatYearMonth(param.periodEndYm);
-        }
-    }
-
-
-    export interface IPersonalAmount {
-        cateIndicator: number,
-        empId: string,
-        perValCode: string,
-        periodAndAmount: Array<IAmount>,
-        salBonusCate: number
-    }
-
-    interface IAmount {
-        historyID: string,
-        periodStartYm: number,
-        periodEndYm: number,
-        amountOfMoney: number
     }
 
 

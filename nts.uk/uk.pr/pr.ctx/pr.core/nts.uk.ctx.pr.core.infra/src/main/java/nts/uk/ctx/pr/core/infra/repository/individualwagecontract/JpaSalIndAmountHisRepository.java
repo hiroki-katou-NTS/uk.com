@@ -1,28 +1,26 @@
 package nts.uk.ctx.pr.core.infra.repository.individualwagecontract;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.*;
 import nts.uk.ctx.pr.core.infra.entity.individualwagecontract.QpbmtSalIndAmountHis;
 import nts.uk.ctx.pr.core.infra.entity.individualwagecontract.QpbmtSalIndAmountHisPk;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+
+import javax.ejb.Stateless;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIndAmountHisRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountHisPk.historyId =:historyId AND  f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId ";
-
+    private static final String SELECT_BY_KEY_PEL_VAL = SELECT_ALL_QUERY_STRING + "WHERE f.salIndAmountHisPk.perValCode =:perValCode AND WHERE f.salIndAmountHisPk.empId IN :empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
+    private static final String SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT = " SELECT f.salIndAmountHisPk.empId, f.salIndAmountHisPk.historyId, f.periodStartYm , f.periodEndYm , s.amountOfMoney FROM QpbmtSalIndAmountHis f LEFT JOIN QpbmtSalIndAmount s ON s.salIndAmountPk.historyId = f.salIndAmountHisPk.historyId " +
+            "WHERE f.salIndAmountHisPk.perValCode =:perValCode AND f.salIndAmountHisPk.empId IN :empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
 
     private Optional<SalIndAmountHis> toDomain(List<QpbmtSalIndAmountHis> entity) {
         if (entity.size() > 0) {
@@ -43,6 +41,7 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
 
     @Override
     public List<SalIndAmountHis> getAllSalIndAmountHis() {
+
         return null;
     }
 
@@ -55,36 +54,21 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
                 .getList());
     }
 
-    private static final String SELECT_BY_KEY_PEL_VAL = "SELECT f.salIndAmountHisPk.historyId ,f.periodStartYm ,f.periodEndYm  WHERE f.salIndAmountHisPk.perValCode =:perValCode AND WHERE f.salIndAmountHisPk.empId =:empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
 
     @Override
-    public List<GenericHistYMPeriod> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, String empId) {
-       return this.toDomains(
-                this.queryProxy().query(SELECT_BY_KEY_PEL_VAL, QpbmtSalIndAmountHis.class)
-                        .setParameter("perValCode", perValCode)
-                        .setParameter("cateIndicator", cateIndicator)
-                        .setParameter("salBonusCate", salBonusCate)
-                        .setParameter("empId", empId)
-                        .getList()
-        );
+    public List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, List<String> empIds) {
+        List<Object[]> data = this.queryProxy().query(SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT, Object[].class)
+                .setParameter("perValCode", perValCode)
+                .setParameter("cateIndicator", cateIndicator)
+                .setParameter("salBonusCate", salBonusCate)
+                .setParameter("empId", empIds)
+                .getList();
+
+        List<PersonalAmount> personalAmount = data.stream().map(x -> new PersonalAmount(x[0].toString(), x[1].toString(), "", "", (Integer) x[2], (Integer) x[3], (Long) x[4])).collect(Collectors.toList());
+
+        return personalAmount;
+
     }
-
-    private List<GenericHistYMPeriod> toDomains(List<QpbmtSalIndAmountHis> entitys) {
-
-        if (entitys.size() > 0 && entitys != null) {
-            List<GenericHistYMPeriod> genericHistYMPeriods = new ArrayList<>();
-            for (int i = 0; i < entitys.size(); i++) {
-                genericHistYMPeriods.add(new GenericHistYMPeriod(
-                        entitys.get(i).salIndAmountHisPk.historyId,
-                        entitys.get(i).periodStartYm,
-                        entitys.get(i).periodEndYm
-                ));
-            }
-            return genericHistYMPeriods;
-        } else
-            return null;
-    }
-
 
     @Override
     public void add(SalIndAmountHis domain) {
@@ -99,32 +83,6 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     @Override
     public void remove(String historyId, String perValCode, String empId) {
         this.commandProxy().remove(QpbmtSalIndAmountHis.class, new QpbmtSalIndAmountHisPk(historyId, perValCode, empId));
-    }
-
-
-    private Optional<SalIndAmountHis> toDomainListEmpID(List<QpbmtSalIndAmountHis> entity) {
-        if (entity.size() > 0) {
-            String perValCode = entity.get(0).salIndAmountHisPk.perValCode;
-            String empId = entity.get(0).salIndAmountHisPk.empId;
-            int cateIndicator = entity.get(0).cateIndicator;
-            int salBonusCate = entity.get(0).salBonusCate;
-            List<GenericHistYMPeriod> history = entity.stream()
-                    .map(item -> new GenericHistYMPeriod(item.salIndAmountHisPk.historyId,
-                            new YearMonthPeriod(new YearMonth(item.periodStartYm), new YearMonth(item.periodEndYm))))
-                    .collect(Collectors.toList());
-            return Optional.of(new SalIndAmountHis(perValCode, empId, cateIndicator, history, salBonusCate));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-
-    public List<QpbmtSalIndAmountHis> getSalIndAmountHisByPerVal1(String perValCode, int cateIndicator, int salBonusCate) {
-        return this.queryProxy().query(SELECT_BY_KEY_PEL_VAL, QpbmtSalIndAmountHis.class)
-                .setParameter("perValCode", perValCode)
-                .setParameter("cateIndicator", cateIndicator)
-                .setParameter("salBonusCate", salBonusCate)
-                .getList();
     }
 
 

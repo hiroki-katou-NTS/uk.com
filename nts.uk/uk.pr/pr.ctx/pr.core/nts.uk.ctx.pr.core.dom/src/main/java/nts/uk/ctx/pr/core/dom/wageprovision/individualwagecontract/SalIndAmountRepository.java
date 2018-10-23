@@ -22,4 +22,5 @@ public interface SalIndAmountRepository
     void updateAll(List<SalIndAmount> domains);
 
 
+
 }
