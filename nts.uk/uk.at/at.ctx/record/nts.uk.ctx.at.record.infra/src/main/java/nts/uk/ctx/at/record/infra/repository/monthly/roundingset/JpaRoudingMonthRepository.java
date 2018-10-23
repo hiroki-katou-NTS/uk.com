@@ -35,12 +35,12 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KrcstMonItemRound e");
-		builderString.append(" WHERE e.kshstRoundingMonthSetPK.companyId = :companyId");
+		builderString.append(" WHERE e.PK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append(" DELETE FROM KrcstMonItemRound e");
-		builderString.append(" WHERE e.kshstRoundingMonthSetPK.companyId = :companyId");
+		builderString.append(" WHERE e.PK.companyId = :companyId");
 		DELETE_BY_CID = builderString.toString();
 	}
 
