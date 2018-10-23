@@ -125,7 +125,7 @@ public interface DailyPerformanceScreenRepo {
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);
 
 	/** Get list attendance item control */
-	List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem);
+	List<DPAttendanceItemControl> getListAttendanceItemControl(String companyId, List<Integer> lstAttendanceItem);
 
 	/** Get list daily performance error */
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee);

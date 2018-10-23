@@ -151,6 +151,7 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 			this.getEntityManager().createQuery(toDeleteData)
 					.setParameter("targetTaskIds", ids);
 		});
+		this.getEntityManager().flush();
 		
 		this.commandProxy().removeAll(CisdtAsyncTask.class, targetTaskIds);
 	}

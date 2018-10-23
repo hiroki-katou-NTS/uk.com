@@ -139,6 +139,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			lstEntity.add(toEntityPsApR(ps));
 		}
 		this.commandProxy().insertAll(lstEntity);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * update Person Approval Root
@@ -156,6 +157,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		x.setConfirmationRootType(a.confirmationRootType);
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * update All Person Approval Root

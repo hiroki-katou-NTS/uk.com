@@ -154,6 +154,7 @@ module nts.uk.com.view.ccg.share.ccg {
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
             ccg001Tabindex: number;
+            errors: any;
 
             /**
              * Init screen model
@@ -236,10 +237,14 @@ module nts.uk.com.view.ccg.share.ccg {
                     // trigger computing when base date or period changed
                     self.inputBaseDate();
                     self.inputPeriod();
+                    self.retirePeriod();
                     return !($('#inp_baseDate').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsDateRangeComponent').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsStartDate input').ntsError('hasError') ||
-                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError'));
+                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsEndDate input').ntsError('hasError'));
                 });
                 self.isValidEntryDateSearch = ko.computed(() => {
                     self.entryDateTab3();
@@ -886,6 +891,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 if (self.isShow()) {
                     $('#component-ccg001').toggle('slide', () => {
+                        self.errors = $('#component-ccg001 .error').children();
+                        self.errors.ntsError('clear');
                         $('#component-ccg001').css('display', '');
                         $('#component-ccg001').css('visibility', 'hidden');
                     });
@@ -966,6 +973,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (!isSameDate) {
                         self.inputPeriod(new DateRangePickerModel(self.periodStartOfParentScreen(), self.periodEndOfParentScreen()));
                     }
+                }
+
+                // recheck errors
+                if (!_.isEmpty(self.errors)) {
+                    self.errors.ntsError('check');
                 }
             }
 

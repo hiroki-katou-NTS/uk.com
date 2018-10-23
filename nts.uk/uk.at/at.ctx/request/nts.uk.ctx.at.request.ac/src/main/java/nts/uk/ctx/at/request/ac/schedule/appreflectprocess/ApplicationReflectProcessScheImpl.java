@@ -31,9 +31,10 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getGoBackDirectly().getWorkTimeEnd2().isPresent() ? reflectSche.getGoBackDirectly().getWorkTimeEnd2().get().v() : null);
 		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
 				reflectSche.getDatePara(),
-				true,
+				reflectSche.getReflectSetting().isChokochoki(),
 				appInfo, 
-				EnumAdaptor.valueOf(reflectSche.getTimeAtr().value, ApplyTimeAtrPub.class)); 
+				EnumAdaptor.valueOf(reflectSche.getTimeAtr().value,
+						ApplyTimeAtrPub.class)); 
 		return appReflectSchePub.goBackDirectlyReflectSch(dto);
 	}
 

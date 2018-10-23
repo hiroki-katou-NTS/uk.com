@@ -52,6 +52,7 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 			lstEntity.add(approverEntity);
 		}
 		this.commandProxy().insertAll(lstEntity);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * delete All Approver By Approval Phase Id
@@ -76,6 +77,7 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 		WwfmtAppover x = this.queryProxy().find(a.wwfmtAppoverPK, WwfmtAppover.class).get();
 		x.setEmployeeId(a.employeeId);
 		this.commandProxy().update(x);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * convert entity WwfmtAppover to domain Approver
