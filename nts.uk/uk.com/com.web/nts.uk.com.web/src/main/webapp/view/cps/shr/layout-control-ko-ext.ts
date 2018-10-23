@@ -1931,8 +1931,8 @@ module nts.custombinding {
                         read: () => {
                             let editable = ko.toJS(def.editable);
 
-                            if (!editable) {
-                                $('#' + def.nameid).ntsError('clear');
+                            if (!editable && $('#' + def.nameid).ntsError('hasError')) {
+                                $('#' + def.nameid).trigger('change');
                             }
                         },
                         disposeWhen: () => !def.value
@@ -2364,8 +2364,8 @@ module nts.custombinding {
                                         read: () => {
                                             let editable = ko.toJS(_r.editable);
 
-                                            if (!editable) {
-                                                $('#' + _r.nameid).ntsError('clear');
+                                            if (!editable && $('#' + _r.nameid).ntsError('hasError')) {
+                                                $('#' + _r.nameid).trigger('change');
                                             }
                                         },
                                         disposeWhen: () => !_r.value
