@@ -391,10 +391,12 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		for(ApprovalRouteDetails approvalRouteDetails : approverRouteLst){
+			List<AppRootInstance> appRootInstanceLst = approverRouteLst.stream().map(x -> x.getAppRootInstance())
+					.filter(x -> x.getEmployeeID().equals(approvalRouteDetails.getAppRootInstance().getEmployeeID())).collect(Collectors.toList());
 			DatePeriod loopPeriod = period;
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, appRootInstanceLst);
 				if(appRootInstance==null){
 					throw new BusinessException("Msg_1430", "承認者");
 				}
@@ -423,10 +425,12 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		for(ApprovalRouteDetails approvalRouteDetails : agentRouteLst){
+			List<AppRootInstance> appRootInstanceLst = agentRouteLst.stream().map(x -> x.getAppRootInstance())
+					.filter(x -> x.getEmployeeID().equals(approvalRouteDetails.getAppRootInstance().getEmployeeID())).collect(Collectors.toList());
 			DatePeriod loopPeriod = period;
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, appRootInstanceLst);
 				if(appRootInstance==null){
 					throw new BusinessException("Msg_1430", "承認者");
 				}
@@ -583,11 +587,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
 		// 取得した対象者(List)の先頭から最後へループ
 		for(ApprovalRouteDetails approvalRouteDetails : approverRouteLst){
+			List<AppRootInstance> appRootInstanceLst = approverRouteLst.stream().map(x -> x.getAppRootInstance())
+					.filter(x -> x.getEmployeeID().equals(approvalRouteDetails.getAppRootInstance().getEmployeeID())).collect(Collectors.toList());
 			DatePeriod loopPeriod = period;
 			// INPUT．期間の開始日から終了日へループ
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, appRootInstanceLst);
 				if(appRootInstance==null){
 					continue;
 				}
@@ -610,11 +616,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
 		// 取得した対象者(List)の先頭から最後へループ
 		for(ApprovalRouteDetails approvalRouteDetails : agentRouteLst){
+			List<AppRootInstance> appRootInstanceLst = agentRouteLst.stream().map(x -> x.getAppRootInstance())
+					.filter(x -> x.getEmployeeID().equals(approvalRouteDetails.getAppRootInstance().getEmployeeID())).collect(Collectors.toList());
 			DatePeriod loopPeriod = period;
 			// INPUT．期間の開始日から終了日へループ
 			for(GeneralDate loopDate = loopPeriod.start(); loopDate.beforeOrEquals(loopPeriod.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, appRootInstanceLst);
 				if(appRootInstance==null){
 					throw new BusinessException("Msg_1430", "承認者");
 				}
@@ -685,11 +693,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		for(ApprovalRouteDetails approvalRouteDetails : approverRouteLst){
+			List<AppRootInstance> appRootInstanceLst = approverRouteLst.stream().map(x -> x.getAppRootInstance())
+					.filter(x -> x.getEmployeeID().equals(approvalRouteDetails.getAppRootInstance().getEmployeeID())).collect(Collectors.toList());
 			// ドメインモデル「就業実績確認状態」を取得する
 			List<AppRootConfirm> appRootConfirmLst = appRootConfirmRepository.findByEmpYearMonth(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), yearMonth);
 			for(AppRootConfirm appRootConfirmLoop : appRootConfirmLst){
 				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(appRootConfirmLoop.getRecordDate(), Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(appRootConfirmLoop.getRecordDate(), appRootInstanceLst);
 				if(appRootInstance==null){
 					throw new BusinessException("Msg_1430", "承認者");
 				}
@@ -716,11 +726,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		for(ApprovalRouteDetails approvalRouteDetails : agentRouteLst){
+			List<AppRootInstance> appRootInstanceLst = agentRouteLst.stream().map(x -> x.getAppRootInstance())
+					.filter(x -> x.getEmployeeID().equals(approvalRouteDetails.getAppRootInstance().getEmployeeID())).collect(Collectors.toList());
 			// ドメインモデル「就業実績確認状態」を取得する
 			List<AppRootConfirm> appRootConfirmLst = appRootConfirmRepository.findByEmpYearMonth(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), yearMonth);
 			for(AppRootConfirm appRootConfirmLoop : appRootConfirmLst){
 				// 対象日の承認ルート中間データを取得する
-				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(appRootConfirmLoop.getRecordDate(), Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(appRootConfirmLoop.getRecordDate(), appRootInstanceLst);
 				if(appRootInstance==null){
 					throw new BusinessException("Msg_1430", "承認者");
 				}
