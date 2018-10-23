@@ -902,9 +902,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return;
             }
             // insert flex
-            let errorGrid: any = $("#dpGrid").mGrid("errors");
+            if(self.hasErrorGrid()){
+                self.showErrorDialog();
+                return;
+            }
+            
+            //let errorGrid: any = $("#dpGrid").mGrid("errors");
             let checkDataCare: boolean = true;
-            if (errorGrid == undefined || errorGrid.length == 0) {
+            //if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
                 self.listCareError([]);
@@ -1108,7 +1113,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.showErrorDialog();
                     }
                 }
-            }
+        //    }
         }
 
         btnCalculation_Click() {
@@ -1134,9 +1139,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return;
             }
             // insert flex
-            let errorGrid: any = $("#dpGrid").mGrid("errors");
+             if(self.hasErrorGrid()){
+                self.showErrorDialog();
+                return;
+            }
+           // let errorGrid: any = $("#dpGrid").mGrid("errors");
             let checkDataCare: boolean = true;
-            if (errorGrid == undefined || errorGrid.length == 0) {
+//            if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
                 self.listCareError([]);
@@ -1321,7 +1330,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.promise();
 //                } else 
 //                    nts.uk.ui.block.clear();
-            }
+//            }
         }
 
         getItemIdFromColumnKey(columnKey: string): string {
@@ -1874,10 +1883,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.reloadScreen();
         }
 
-        showErrorDialog() {
+        hasErrorGrid() : boolean {
+           let uiErrors: any = $("#dpGrid").mGrid("errors");
+           return !_.isEmpty(uiErrors);
+        }
+        
+        getErrorGrid(): any {
             var self = this;
-            if (!self.hasEmployee || self.hasErrorBuss) return;
-            let lstEmployee = [];
             let uiErrors: any = $("#dpGrid").mGrid("errors");
             let errorValidateScreeen: any = [];
             if (self.displayFormat() === 0) {
@@ -1910,7 +1922,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     object.itemName = (item == undefined) ? "" : item.headerText;
                     errorValidateScreeen.push(object);
                 });
-            };
+            }
+            return errorValidateScreeen;
+        }
+        
+        showErrorDialog() {
+            var self = this;
+            if (!self.hasEmployee || self.hasErrorBuss) return;
+            let lstEmployee = [];
+            let errorValidateScreeen: any = [];
+            errorValidateScreeen = self.getErrorGrid();
             // get error insert , update
             _.each(self.listCareError(), value => {
                 let dateCon = _.find(self.dpData, (item: any) => {
@@ -3544,10 +3565,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 dfd.resolve({ id: rowId, item: columnKey, value: value });
             }
             else {
-                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
-                    return data.rowId == rowId;
-                });
-                if (valueError != undefined || rowError != undefined) {
+//                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
+//                    return data.rowId == rowId && columnKey != "A29";
+//                });
+                if (valueError != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
                     //nts.uk.ui.block.invisible();

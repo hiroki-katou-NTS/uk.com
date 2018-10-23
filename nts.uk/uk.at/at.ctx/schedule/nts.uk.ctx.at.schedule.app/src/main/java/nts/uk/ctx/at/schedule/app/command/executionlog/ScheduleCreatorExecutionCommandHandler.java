@@ -282,6 +282,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					scheduleCreator);
 		});
 		
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+		}
+		
 		// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
 		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
 				.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();

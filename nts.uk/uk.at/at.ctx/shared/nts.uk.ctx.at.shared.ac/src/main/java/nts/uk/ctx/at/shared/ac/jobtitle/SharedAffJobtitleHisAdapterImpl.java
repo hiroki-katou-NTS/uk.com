@@ -37,10 +37,7 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 	@Override
 	public List<SharedAffJobTitleHisImport> findAffJobTitleHisByListSid(List<String> employeeIds,
 			GeneralDate processingDate) {
-		List<EmployeeJobHistExport> listEmployeeJobHis = this.syJobTitlePub.findSJobHistByListSId(employeeIds, processingDate);
-		if(listEmployeeJobHis.isEmpty())
-			return Collections.emptyList();
-		return listEmployeeJobHis.stream().map(c->convertToExport(c)).collect(Collectors.toList());
+		return this.syJobTitlePub.findSJobHistByListSIdV2(employeeIds, processingDate).stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
 	
 	private SharedAffJobTitleHisImport convertToExport (EmployeeJobHistExport export) {
