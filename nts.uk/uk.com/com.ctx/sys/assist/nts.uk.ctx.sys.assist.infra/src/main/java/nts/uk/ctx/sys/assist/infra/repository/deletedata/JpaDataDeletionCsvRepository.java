@@ -344,10 +344,13 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String parentTblName = tableDelData.getParentTblName();
 		buffer.append(" INNER　JOIN " + parentTblName + " ON ");
 		
+		String prefix = "";
 		String fieldChild1 = tableDelData.getFieldChild1();
 		String fieldParent1 = tableDelData.getFieldParent1();
 		if (fieldChild1 != null && !"null".equals(fieldChild1) && !fieldChild1.isEmpty() 
 				&& fieldParent1 != null && !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild1 
 				+ " = " + parentTblName + "." + fieldParent1);
 		}
@@ -356,6 +359,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent2 = tableDelData.getFieldParent2();
 		if (fieldChild2 != null && !"null".equals(fieldChild2) && !fieldChild2.isEmpty() 
 				&& fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild2 
 				+ " = " + parentTblName + "." + fieldParent2);
 		}
@@ -364,6 +369,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent3 = tableDelData.getFieldParent3();
 		if (fieldChild3 != null && !"null".equals(fieldChild3) && !fieldChild3.isEmpty() 
 				&& fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild3 
 				+ " = " + parentTblName + "." + fieldParent3);
 		}
@@ -372,6 +379,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent4 = tableDelData.getFieldParent4();
 		if (fieldChild4 != null && !"null".equals(fieldChild4) && !fieldChild4.isEmpty() 
 				&& fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild4 
 				+ " = " + parentTblName + "." + fieldParent4);
 		}
@@ -380,6 +389,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent5 = tableDelData.getFieldParent5();
 		if (fieldChild5 != null && !"null".equals(fieldChild5) && !fieldChild5.isEmpty() 
 				&& fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild5 
 				+ " = " + parentTblName + "." + fieldParent5);
 		}
@@ -388,6 +399,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent6 = tableDelData.getFieldParent6();
 		if (fieldChild6 != null && !"null".equals(fieldChild6) && !fieldChild6.isEmpty() 
 				&& fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild6 
 				+ " = " + parentTblName + "." + fieldParent6);
 		}
@@ -396,6 +409,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent7 = tableDelData.getFieldParent7();
 		if (fieldChild7 != null && !"null".equals(fieldChild7) && !fieldChild7.isEmpty() 
 				&& fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild7 
 				+ " = " + parentTblName + "." + fieldParent7);
 		}
@@ -404,6 +419,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent8 = tableDelData.getFieldParent8();
 		if (fieldChild8 != null && !"null".equals(fieldChild8) && !fieldChild8.isEmpty() 
 				&& fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild8 
 				+ " = " + parentTblName + "." + fieldParent8);
 		}
@@ -412,6 +429,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent9 = tableDelData.getFieldParent9();
 		if (fieldChild9 != null && !"null".equals(fieldChild9) && !fieldChild9.isEmpty() 
 				&& fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild9 
 				+ " = " + parentTblName + "." + fieldParent9);
 		}
@@ -420,6 +439,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldParent10 = tableDelData.getFieldParent10();
 		if (fieldChild10 != null && !"null".equals(fieldChild10) && !fieldChild10.isEmpty() 
 				&& fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
 			buffer.append(tblName + "." + fieldChild10 
 				+ " = " + parentTblName + "." + fieldParent10);
 		}
@@ -684,51 +705,73 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldChild10 = tableDelData.getFieldChild10();
 		String fieldParent10 = tableDelData.getFieldParent10();
 		
-		buffer.append(" where ");
-		buffer.append(" exists ( ");
-		buffer.append(" select ");
+		buffer.append(" WHERE ");
+		buffer.append(" EXISTS ( ");
+		buffer.append(" SELECT ");
 		
-		if (fieldParent1 != null && fieldParent1.isEmpty()) {
+		String prefix = "";
+		if (fieldParent1 != null && !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent1);
 		}
 		
-		if (fieldParent2 != null && fieldParent2.isEmpty()) {
+		if (fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent2);
 		}
 		
-		if (fieldParent3 != null && fieldParent3.isEmpty()) {
+		if (fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent3);
 		}
 		
-		if (fieldParent4 != null && fieldParent4.isEmpty()) {
+		if (fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent4);
 		}
 		
-		if (fieldParent5 != null && fieldParent5.isEmpty()) {
+		if (fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent5);
 		}
 		
-		if (fieldParent6 != null && fieldParent6.isEmpty()) {
+		if (fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent6);
 		}
 		
-		if (fieldParent7 != null && fieldParent7.isEmpty()) {
+		if (fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent7);
 		}
 		
-		if (fieldParent8 != null && fieldParent8.isEmpty()) {
+		if (fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent8);
 		}
 		
-		if (fieldParent9 != null && fieldParent9.isEmpty()) {
+		if (fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent9);
 		}
 		
-		if (fieldParent10 != null && fieldParent10.isEmpty()) {
+		if (fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
+			buffer.append(prefix);
+			prefix = ",";
 			buffer.append(fieldParent10);
 		}
 		
-		buffer.append(" from " + parentTblName);
+			
+		buffer.append(" FROM " + parentTblName);
 		
 		//where for select
 		buildWherePart(buffer, tableDelData, employeeDeletions, parrams);
@@ -742,56 +785,58 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		
 		if (fieldChild2 != null && !"null".equals(fieldChild2) && !fieldChild2.isEmpty() 
 				&& fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild2 
+			buffer.append(" AND " + tblName + "." + fieldChild2 
 				+ " = " + parentTblName + "." + fieldParent2);
 		}
 		
 		if (fieldChild3 != null && !"null".equals(fieldChild3) && !fieldChild3.isEmpty() 
 				&& fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild3 
+			buffer.append(" AND " + tblName + "." + fieldChild3 
 				+ " = " + parentTblName + "." + fieldParent3);
 		}
 		
 		if (fieldChild4 != null && !"null".equals(fieldChild4) && !fieldChild4.isEmpty() 
 				&& fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild4 
+			buffer.append(" AND " + tblName + "." + fieldChild4 
 				+ " = " + parentTblName + "." + fieldParent4);
 		}
 		
 		if (fieldChild5 != null && !"null".equals(fieldChild5) && !fieldChild5.isEmpty() 
 				&& fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild5 
+			buffer.append(" AND " + tblName + "." + fieldChild5 
 				+ " = " + parentTblName + "." + fieldParent5);
 		}
 		
 		if (fieldChild6 != null && !"null".equals(fieldChild6) && !fieldChild6.isEmpty() 
 				&& fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild6 
+			buffer.append(" AND " + tblName + "." + fieldChild6 
 				+ " = " + parentTblName + "." + fieldParent6);
 		}
 		
 		if (fieldChild7 != null && !"null".equals(fieldChild7) && !fieldChild7.isEmpty() 
 				&& fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild7 
+			buffer.append(" AND " + tblName + "." + fieldChild7 
 				+ " = " + parentTblName + "." + fieldParent7);
 		}
 		
 		if (fieldChild8 != null && !"null".equals(fieldChild8) && !fieldChild8.isEmpty() 
 				&& fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild8 
+			buffer.append(" AND " + tblName + "." + fieldChild8 
 				+ " = " + parentTblName + "." + fieldParent8);
 		}
 		
 		if (fieldChild9 != null && !"null".equals(fieldChild9) && !fieldChild9.isEmpty() 
 				&& fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild9 
+			buffer.append(" AND " + tblName + "." + fieldChild9 
 				+ " = " + parentTblName + "." + fieldParent9);
 		}
 		
 		if (fieldChild10 != null && !"null".equals(fieldChild10) && !fieldChild10.isEmpty() 
 				&& fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
-			buffer.append(tblName + "." + fieldChild10 
+			buffer.append(" AND " + tblName + "." + fieldChild10 
 				+ " = " + parentTblName + "." + fieldParent10);
 		}
+		
+		buffer.append(" )");
 	}
 }
