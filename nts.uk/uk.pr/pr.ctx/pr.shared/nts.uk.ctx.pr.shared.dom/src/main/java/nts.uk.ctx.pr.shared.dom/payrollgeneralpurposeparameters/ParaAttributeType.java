@@ -4,8 +4,7 @@ package nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters;
 /**
 * パラメータ属性区分
 */
-public enum ParaAttributeType
-{
+public enum ParaAttributeType {
     
     TEXT(0, "文字"),
     NUMBER(1, "数値"),

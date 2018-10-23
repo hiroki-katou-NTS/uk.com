@@ -3,95 +3,145 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog  = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import model = qmm001.share.model;
     export class ScreenModel {
-        startYearMonth:         KnockoutObservable<number> = ko.observable();
-        endYearMonth:           KnockoutObservable<number> = ko.observable();
-        startLastYearMonth:     KnockoutObservable<number> = ko.observable();
-        itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
-        methodEditing:          KnockoutObservable<number> = ko.observable(1);
-        insurrance:             KnockoutObservable<number> = ko.observable();
+        startYearMonth: KnockoutObservable<number> = ko.observable();
+        startDate: KnockoutObservable<string> = ko.observable();
+        end: KnockoutObservable<string> = ko.observable();
+        startLastYearMonth: KnockoutObservable<number> = ko.observable();
+        startLastDate: KnockoutObservable<string> = ko.observable();
+        itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
+        methodEditing: KnockoutObservable<number> = ko.observable(1);
+        historyAtr: KnockoutObservable<number> = ko.observable(1);
 
         // validate disable item
-        isFirst:              KnockoutObservable<boolean> = ko.observable(true);
-        insuranceName:          KnockoutObservable<string> = ko.observable('');
-        mPayrollUnitPriceHis : KnockoutObservableArray<PayrollUnitPriceHistoryDto> = ko.observableArray(null);
+        isFirst: KnockoutObservable<boolean> = ko.observable(true);
+        insuranceName: KnockoutObservable<string> = ko.observable('');
         // data
-        name :KnockoutObservable<string> = ko.observable('項目移送');
-        code :KnockoutObservable<string> = ko.observable('項目移送');
-        textResourceRadioFirt :KnockoutObservable<string> = ko.observable('');
+        name : KnockoutObservable<string> = ko.observable('');
+        code : KnockoutObservable<string> = ko.observable('');
+        hisId: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
+            block.invisible();
             let self = this;
-            self.initView();
+            self.initScreen();
+            block.clear();
         }
-        submit(){
+        initScreen() {
+            let self = this;
+            let params: any = getShared('QMM001_PARAMS_TO_SCREEN_C');
+            if (params) {
+                self.code(params.code);
+                self.name(params.name);
+                self.isFirst(params.isFirst);
+                self.historyAtr(params.historyAtr);
+                if (params.historyAtr == 1) {
+                    self.startLastYearMonth(params.start);
+                    self.end(getText('QMM001_31', [self.convertMonthYearToString(params.end)]));
+                    self.startYearMonth(params.start);
+                }
+                if (params.historyAtr == 0) {
+                    self.startLastDate(params.start);
+                    self.end(getText('QMM001_31', [params.end]));
+                    self.startDate(params.start);
+                }
+
+            }
+        }
+        update(){
             let self = this;
             let data: any = {
-                cId: '',
-                hisId: self.mPayrollUnitPriceHis().hisId,
-                code: self.mPayrollUnitPriceHis().code,
-                startYearMonth: Number(self.startYearMonth()),
-                endYearMonth: self.mPayrollUnitPriceHis().endYearMonth,
-                isMode:this.methodEditing()
+                hisId: self.hisId(),
+                code: self.code(),
+                start: Number(self.startYearMonth()),
+                mode: self.methodEditing()
             }
-            if(this.methodEditing() == EDIT_METHOD.DELETE){
-                dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                    service.submitPayrollUnitPriceHis(data).done((data) => {
-                        dialog.info({ messageId: "Msg_16" }).then(function () {
-                            self.cancel();
+            block.invisible();
+            if (self.historyAtr() == PARAHISTORYATR.YMDHIST) {
+                if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                    dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        service.UpdateHistoryDate(param).done(() => {
+                            dialog.info({messageId: "Msg_16"}).then(() => {
+                                setShared('QMM011_F_PARAMS_OUTPUT', {
+                                    methodEditing: self.methodEditing()
+                                });
+                                close();
+                            });
+                        }).fail(function (res: any) {
+                            if (res)
+                                dialog.alertError(res);
+                        });
+                    });
+                } else {
+                    service.updateEmpInsurHis(data).done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
                         });
                     }).fail(function (res: any) {
                         if (res)
                             dialog.alertError(res);
-                    })
-                }).ifCancel(() => {
-                    nts.uk.ui.block.clear();
-                    return ;
-                });
+                    });
+                }
+            } else {
+                if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                    dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        service.updateAccInsurHis(param).done(() => {
+                            dialog.info({messageId: "Msg_16"}).then(() => {
+                                setShared('QMM011_F_PARAMS_OUTPUT', {
+                                    methodEditing: self.methodEditing()
+                                });
+                                close();
+                            });
+                        }).fail(function (res: any) {
+                            if (res)
+                                dialog.alertError(res);
+                        });
+                    });
+                } else {
+                    service.updateAccInsurHis(param).done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
+                        });
+                    }).fail(function (res: any) {
+                        if (res)
+                            dialog.alertError(res);
+                    });
+                }
 
             }
-            else {
-                service.submitPayrollUnitPriceHis(data).done(() => {
-                    self.cancel();
-                }).fail(function (res: any) {
-                    if (res)
-                        dialog.alertError(res);
-                }).always((res:any) => {
-                    if (res)
-                        dialog.alertError(res);
-                });
-            }
+            block.clear();
         }
 
-        initView() {
+
+        hasRequired() {
+            return (this.methodEditing() == EDIT_METHOD.UPDATE);
+        }
+
+        validateYearMonth() {
             let self = this;
-            // start
-            let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
-            let to = getText('QMM011_9');
-            if (!params) {
-                return;
+            if (!(self.startLastYearMonth() < self.startYearMonth())) {
+                dialog.error({messageId: "Msg_79"});
+                return true;
             }
-            self.name(params.name);
-            self.code(params.code);
-            self.startYearMonth(params.startYearMonth);
-            self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
-            self.textResourceRadioFirt(getText('QMM007_42',[self.convertMonthYearToString(self.startYearMonth())]));
-            self.isFirst(params.isFirst);
-            self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
-        }
-        hasRequired(){
-            if(this.methodEditing() != EDIT_METHOD.UPDATE) {
-
-                return false;
-            }
-
-            return true;
+            return false;
         }
 
-        validateYearMonth(){
-
+        validateYearMonthDay(){
+            let self = this;
+            if (!(moment.utc(self.startLastYearMonthDay(), 'YYYY/MM/DD') < moment.utc(self.startYearMonthDay(), 'YYYY/MM/DD'))) {
+                dialog.error({messageId: "Msg_79"});
+                return true;
+            }
+            return false;
         }
 
         cancel(){
@@ -99,12 +149,13 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         }
 
         convertMonthYearToString(yearMonth: any) {
-            let self = this;
-            let year: string, month: string;
-            yearMonth = yearMonth.toString();
-            year = yearMonth.slice(0, 4);
-            month = yearMonth.slice(4, 6);
-            return year + "/" + month;
+            if (yearMonth) {
+                let year: string, month: string;
+                yearMonth = yearMonth.toString();
+                year = yearMonth.slice(0, 4);
+                month = yearMonth.slice(4, 6);
+                return year + "/" + month;
+            }
         }
 
         convertStringToYearMonth(yearMonth: any){
@@ -114,7 +165,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
             return yearMonth;
         }
-        // 「初期データ取得処理
+
     }
 
     export function getHistoryEditMethod(): Array<model.ItemModel> {
@@ -128,88 +179,11 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         UPDATE = 1
     }
 
-    export enum INSURRANCE {
-        EMPLOYMENT_INSURRANCE_RATE = 1,
-        ACCIDENT_INSURRANCE_RATE = 0
+    export enum PARAHISTORYATR {
+        /*年月日履歴*/
+        YMDHIST = 0,
+
+        /*年月履歴*/
+        YMHIST = 1
     }
-    class PayrollUnitPriceHistoryDto{
-        /**
-         * 会社ID
-         */
-        cId:string;
-
-
-        /**
-         * 履歴ID
-         */
-        hisId:string;
-
-        /**
-         * コード
-         */
-        code:string;
-        /**
-         * 開始年月
-         */
-        startYearMonth: number;
-        /**
-         * 終了年月
-         */
-        endYearMonth :number;
-        constructor(cId:string,hisId:string,code:string,startYearMonth: number,endYearMonth :number){
-            this.cId=cId;
-            this.code=code;
-            this.hisId=hisId;
-            this.startYearMonth=startYearMonth;
-            this.endYearMonth = endYearMonth;
-        }
-          endYearMonth :number;
-          constructor(cId:string,hisId:string,code:string,startYearMonth: number,endYearMonth :number){
-                this.cId=cId;
-                this.code=code;
-                this.hisId=hisId;
-                this.startYearMonth=startYearMonth;
-                this.endYearMonth = endYearMonth;
-          }
-    }
-    class AcquiCondiPayrollHis{
-        cId :string;
-        code :string;
-        startYearMonth:number
-
-    }
-
-    class PayrollUnitPriceHisKey {
-        cId: string;
-        code: string;
-        hisId: string;
-        constructor(cId:string,hisId:string,code:string){
-            this.cId=cId;
-            this.code=code;
-            this.hisId=hisId;
-        }
-    }
-
-
-    class PayrollUnitPriceHistoryCommand {
-        cId: string;
-        hisId: string;
-        code: string;
-        startYearMonth: number;
-        endYearMonth: number;
-        isMode: number;
-        constructor(cId: string, hisId: string, code: string, startYearMonth: number, endYearMonth: number, isMode: number) {
-            this.cId = cId;
-            this.hisId = hisId;
-            this.code = code;
-            this.startYearMonth = startYearMonth;
-            this.endYearMonth = endYearMonth;
-            this.isMode = isMode;
-        }
-
-    }
-
-
-
-
 }

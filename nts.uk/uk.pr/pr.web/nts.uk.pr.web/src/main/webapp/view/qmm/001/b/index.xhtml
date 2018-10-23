@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 440, height: 450 };</script>
+			<script>var dialogSize = { width: 440, height: 420 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm001.b.vm.js" />
@@ -82,8 +82,8 @@
 					</div>
 					</com:ko-if>
 					<com:ko-if bind="isFisrtHistory()">
-						<span class="label" style= "display: inline-block;text-align: left; margin-left:37px;">#{i18n.getText('QMM001_32')}</span>
-						<div  class="cell" tabindex="2"
+						<span class="label" >#{i18n.getText('QMM001_32')}</span>
+						<div  class="cell" tabindex="2" style= "display: inline-block;text-align: left; margin-left:32px;"
 							  data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],

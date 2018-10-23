@@ -4,8 +4,7 @@ package nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters;
 /**
 * パラメータ有効区分
 */
-public enum ParaAvailableValue
-{
+public enum ParaAvailableValue {
     
     UNAVAILABLE(0, "無効"),
     AVAILABLE(1, "有効");
