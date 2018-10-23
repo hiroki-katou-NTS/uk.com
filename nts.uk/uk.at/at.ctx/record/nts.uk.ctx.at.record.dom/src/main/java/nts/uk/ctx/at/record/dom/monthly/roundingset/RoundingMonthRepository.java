@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth;
+package nts.uk.ctx.at.record.dom.monthly.roundingset;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public interface RoundingMonthRepository {
 	 * @param itemTimeId the item time id
 	 * @return the list
 	 */
-	List<RoundingMonth> findByCompanyId(String companyId, String itemTimeId);
+	List<RoundingMonth> findByCompanyId(String companyId);
 
 	/**
 	 * Adds the.
@@ -42,7 +42,7 @@ public interface RoundingMonthRepository {
 	 * @param timeItemId the time item id
 	 * @return the optional
 	 */
-	Optional<RoundingMonth> findByCId(String companyId, String timeItemId);
+	Optional<RoundingMonth> findByCId(String companyId, Integer timeItemId);
 
 	/**
 	 * Adds the list.
