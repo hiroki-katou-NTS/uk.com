@@ -1933,9 +1933,6 @@ module nts.custombinding {
 
                             if (!editable) {
                                 $('#' + def.nameid).ntsError('clear');
-                                setTimeout(() => {
-                                    $('#' + def.nameid).ntsEditor('validate');
-                                }, 10);
                             }
                         },
                         disposeWhen: () => !def.value
@@ -2369,9 +2366,6 @@ module nts.custombinding {
 
                                             if (!editable) {
                                                 $('#' + _r.nameid).ntsError('clear');
-                                                setTimeout(() => {
-                                                    $('#' + _r.nameid).ntsEditor('validate');
-                                                }, 10);
                                             }
                                         },
                                         disposeWhen: () => !_r.value
