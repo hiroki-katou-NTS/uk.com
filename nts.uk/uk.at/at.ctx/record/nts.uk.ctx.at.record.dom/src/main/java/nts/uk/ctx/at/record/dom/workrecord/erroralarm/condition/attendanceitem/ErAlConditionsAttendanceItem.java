@@ -79,7 +79,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		this.atdItemConGroupId = atdItemConGroupId;
 	}
 
-	public WorkCheckResult check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+	public WorkCheckResult check(Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		if(isNotUseAll()){
 			return WorkCheckResult.NOT_CHECK;
 		}
@@ -101,7 +101,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		return WorkCheckResult.NOT_ERROR;
 	}
 
-	private Stream<Boolean> checkStream(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+	private Stream<Boolean> checkStream(Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		return lstErAlAtdItemCon.stream().filter(aic -> aic.isUse()).map(aic -> {
 			return aic.checkTarget(getValueFromItemIds);
 		});
