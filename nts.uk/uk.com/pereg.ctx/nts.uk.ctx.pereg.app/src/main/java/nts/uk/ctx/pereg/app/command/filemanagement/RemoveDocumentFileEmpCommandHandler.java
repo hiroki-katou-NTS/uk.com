@@ -38,14 +38,14 @@ public class RemoveDocumentFileEmpCommandHandler extends CommandHandler<RemoveDo
 	protected void handle(CommandHandlerContext<RemoveDocumentFileCommand> context) {
 		
 		// begin process write log
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-		RemoveDocumentFileCommand commmand = context.getCommand();
-		empFileManagementRepo.removebyFileId(commmand.getFileid());
-		setParamPersonLog(commmand);
-		setDataLogCategory(commmand).forEach(cat -> {
-			DataCorrectionContext.setParameter(cat.getHashID(), cat);
+		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+			RemoveDocumentFileCommand commmand = context.getCommand();
+			empFileManagementRepo.removebyFileId(commmand.getFileid());
+			setParamPersonLog(commmand);
+			setDataLogCategory(commmand).forEach(cat -> {
+				DataCorrectionContext.setParameter(cat.getHashID(), cat);
+			});
 		});
-		DataCorrectionContext.transactionFinishing();
 		
 	}
 
