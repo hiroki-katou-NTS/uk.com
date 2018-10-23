@@ -3111,10 +3111,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState1;
 		try {
-			//実行設定.日別実績の作成・計算.対象者区分.異動者を再作成する
-			boolean reCreateWorkType = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
 			//実行設定.日別実績の作成・計算.対象者区分.勤務種別者を再作成
-			boolean reCreateWorkPlace = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
+			boolean reCreateWorkType = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
+			//実行設定.日別実績の作成・計算.対象者区分.異動者を再作成する
+			boolean reCreateWorkPlace = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
 			//実行設定.日別実績の作成・計算.対象者区分.休職者・休業者を再作成
 			boolean reCreateRestTime = false; //TODO : chua lam
 			// ⑤社員の日別実績を作成する
