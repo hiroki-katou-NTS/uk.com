@@ -58,16 +58,23 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
+
+	AnnLeaGrantRemDataRepository grantDataRep;
 	
 	@Override
 	public List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<AnnualBreakManageExport> annualBreakManageExport = new ArrayList<>();
 		for (String emp : employeeId) {
-			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(emp, new DatePeriod(startDate, endDate));
+			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(emp, new DatePeriod(startDate.addDays(-1), endDate.addDays(-1)));
 			// 「年休付与がある社員IDList」に処理中の社員IDを追加
 			if (!nextAnnualLeaveGrant.isEmpty() ) {
 				annualBreakManageExport.add(new AnnualBreakManageExport(emp));
+			}else{
+				List<AnnualLeaveGrantRemainingData> listAnnLeaRemData = grantDataRep.findInDate(emp, startDate, endDate);
+				if(!listAnnLeaRemData.isEmpty()){
+					annualBreakManageExport.add(new AnnualBreakManageExport(emp));
+				}
 			}
 		}
 		return annualBreakManageExport;
