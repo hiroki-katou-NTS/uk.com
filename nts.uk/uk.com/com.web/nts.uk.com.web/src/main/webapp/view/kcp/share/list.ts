@@ -170,6 +170,11 @@ module kcp.share.list {
          * Select all item after reload.
          */
         isSelectAllAfterReload?: boolean;
+        
+        /**
+         * when reload gridList, check to remove filter value
+         */
+        isRemoveFilterWhenReload?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -264,6 +269,7 @@ module kcp.share.list {
         disableSelection : boolean;
         componentOption: ComponentOption;
         isSelectAllAfterReload: boolean;
+        isRemoveFilterWhenReload: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -282,6 +288,8 @@ module kcp.share.list {
             this.searchBoxId = nts.uk.util.randomId();
             this.isSelectAllAfterReload = true;
             disableSelection = false;
+            this.disableSelection = false;
+            this.isRemoveFilterWhenReload = true;
         }
 
         /**
@@ -322,8 +330,11 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
-            self.isSelectAllAfterReload = data.isSelectAllAfterReload;
+            self.isSelectAllAfterReload = _.isNil(data.isSelectAllAfterReload) ? true : data.isSelectAllAfterReload;
             self.disableSelection = data.disableSelection;
+            if (data.isRemoveFilterWhenReload !== undefined) { 
+                self.isRemoveFilterWhenReload = data.isRemoveFilterWhenReload; 
+            }
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
@@ -376,19 +387,23 @@ module kcp.share.list {
             if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 _.defer(() => {
                     // clear search box before update datasource
-                    searchBox.find('.clear-btn').click();
+                    if (self.isRemoveFilterWhenReload) {
+                        searchBox.find('.clear-btn').click();    
+                    }
 
                     // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 
+                    let selectedValues = self.isMultipleSelect ? [] : '';
+
                     // select all items in multi mode
                     if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                        const selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
-                        self.selectedCodes(selectedValues);
-                        gridList.ntsGridList("setSelectedValue", []);
-                        gridList.ntsGridList("setSelectedValue", selectedValues);
+                        selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
                     }
+                    self.selectedCodes(selectedValues);
+                    gridList.ntsGridList("setSelectedValue", []);
+                    gridList.ntsGridList("setSelectedValue", selectedValues);
                 });
             }
         }

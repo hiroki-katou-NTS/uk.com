@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -224,9 +225,9 @@ public class OptionalItem extends AggregateRoot {
         //Listが空だった場合
         if(calcResultAnyItem.isEmpty()) {
             return new CalcResultOfAnyItem(this.optionalItemNo,
-            							   Optional.of(0),
-										   Optional.of(0),
-										   Optional.of(0));
+            							   Optional.of(BigDecimal.valueOf(0)),
+										   Optional.of(BigDecimal.valueOf(0)),
+										   Optional.of(BigDecimal.valueOf(0)));
         }
         //一番最後の計算式の結果を取得
         ResultOfCalcFormula resultOfCalcFormula = calcResultAnyItem.get(calcResultAnyItem.size()-1);
@@ -235,10 +236,48 @@ public class OptionalItem extends AggregateRoot {
 				   											 resultOfCalcFormula.getCount(),
 				   											 resultOfCalcFormula.getTime(),
 				   											 resultOfCalcFormula.getMoney());
+        //小数点以下存在すればif内へ
+        //countの少数点以下の桁数を取得
+    	int decimalCount = getPrecision(result.getCount().get());
+        if(decimalCount > 0) {
+        	result = result.reCreateCalcResultOfAnyItem(controlCountValue(result.getCount().get(),decimalCount), OptionalItemAtr.NUMBER);
+        }
+        
         //上限下限チェック
         result = this.calcResultRange.checkRange(result, this.optionalItemAtr);
         
         return result;
     }
 
+    /**
+     * 回数の0or.5への丸め
+     * @param rawCountValue
+     * @param decimalCount
+     * @return
+     */
+    private BigDecimal controlCountValue(BigDecimal rawCountValue, int decimalCount) {
+
+        //countを2倍する
+    	BigDecimal multipleValue = rawCountValue.multiply(BigDecimal.valueOf(2));
+        //countで四捨五入する
+    	// -1 の意味　→ setScaleは小数点第１→０、第２→１を渡す必要があるため、小数点以下の桁数からマイナス１してる
+    	multipleValue = multipleValue.setScale(decimalCount - 1, BigDecimal.ROUND_HALF_UP);
+        //countを2で割る(元の数値に戻す)
+    	return multipleValue.divide(BigDecimal.valueOf(2));
+    }
+    
+    /**
+     * 小数点以下の桁数チェック
+     * @param value 値
+     * @return 桁数
+     */
+    private int getPrecision(BigDecimal value){
+      String str = String.valueOf(value.stripTrailingZeros());
+      // 文末が ".0"とか".00000"で終わってるやつは全部桁０とする
+      if(str.matches("^.*\\.0+$")){
+        return 0;
+      }
+      int index = str.indexOf(".");
+      return str.substring(index + 1).length();
+   	}
 }

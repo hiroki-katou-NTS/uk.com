@@ -30,6 +30,9 @@ module nts.uk.ui.koExtentions {
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let required = _.isNil(data.required) ? false : ko.unwrap(data.required);
 
+            if (dataName) {
+                dataName = nts.uk.resource.getControlName(dataName);
+            }
             $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
 
             $container.addClass("ntsControl ntsMonthDays_Container");
@@ -96,6 +99,7 @@ module nts.uk.ui.koExtentions {
             
             $container.on("validate", evt => {
                 if (!$container.is(evt.target)) return;
+                let required = $container.data("required");
                 if (required && (monthValueAccessor.value() === 0 || _.isNil(monthValueAccessor.value()))) {
                     $monthPicker.addClass("error").ntsError("set", 
                         resource.getMessage("FND_E_REQ_SELECT", [ dataName + "の月" ]), "FND_E_REQ_SELECT");
@@ -127,6 +131,7 @@ module nts.uk.ui.koExtentions {
                 $container = $(element),
                 value = ko.unwrap(data.value),
                 enable = data.enable === undefined ? true : ko.unwrap(data.enable),
+                required = _.isNil(data.required) ? false : ko.unwrap(data.required),
                 $monthPicker = $container.find(".ntsMonthPicker"),
                 $dayPicker = $container.find(".ntsDayPicker"),
                 bindedVal = $container.data("cusVal");
@@ -140,6 +145,7 @@ module nts.uk.ui.koExtentions {
             //                $dayPicker.igCombo('option', 'disabled', true); 
 
             $container.find("input").attr("tabindex", "-1");
+            $container.data("required", required);
 
             ko.bindingHandlers["ntsComboBox"].update($monthPicker[0], () => bindedVal.month, allBindingsAccessor, viewModel, bindingContext);
 

@@ -41,6 +41,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.month.AttendenceTimeMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
@@ -125,7 +126,7 @@ public interface DailyPerformanceScreenRepo {
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);
 
 	/** Get list attendance item control */
-	List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem);
+	List<DPAttendanceItemControl> getListAttendanceItemControl(String companyId, List<Integer> lstAttendanceItem);
 
 	/** Get list daily performance error */
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee);
@@ -233,4 +234,6 @@ public interface DailyPerformanceScreenRepo {
 	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
 	
 	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);
+	
+	List<AttendenceTimeMonthDto> findAttendenceTimeMonth(List<String> sids, DateRange dateRange);
 }

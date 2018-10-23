@@ -357,7 +357,7 @@ public class DailyModifyResCommandFacade {
 					val errorSign = validatorDataDaily.releaseDivergence(resultIU.getLstDailyDomain());
 					if(!errorSign.isEmpty()) {
 						//resultError.putAll(errorSign);
-						releaseSign(dataParent.getDataCheckSign(), errorSign, dailyEdits, AppContexts.user().employeeId(), false);
+						errorRelease = releaseSign(dataParent.getDataCheckSign(), errorSign, dailyEdits, AppContexts.user().employeeId(), false);
 					}
 					
 					if (!hasError) {
@@ -588,7 +588,7 @@ public class DailyModifyResCommandFacade {
 		val dailyClone = dailys.stream().map(x -> x.clone()).collect(Collectors.toList());
 		val dailyTemps = dailyClone.stream().filter(x -> x.getEmployeeId().equals(employeeId))
 				.sorted((x, y) -> x.getDate().compareTo(y.getDate())).collect(Collectors.toList());
-		if (dailys.isEmpty())
+		if (dailys.isEmpty() || dailyTemps.isEmpty())
 			return itemUi;
 		
 		val lstEmployeeId = dailys.stream().map(x -> x.getEmployeeId()).collect(Collectors.toSet());
