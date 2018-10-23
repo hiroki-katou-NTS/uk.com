@@ -488,7 +488,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//代休振替時間と代休振替日数をクリアする
 		TranferTimeInfor outData = new TranferTimeInfor(createAtr, 0, Optional.of((double) 0));
 		//1日の時間をチェックする
-		if(transferSetting.getDesignatedTime().getOneDayTime().v() < 0) {
+		if(transferSetting.getDesignatedTime().getOneDayTime().v() <= 0) {
 			return outData;
 		}
 		//振替可能時間と1日の時間を比較する
