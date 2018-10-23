@@ -116,9 +116,9 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			
 			AnyItemValueOfDaily optionalItem = d.getAnyItemValue().get();
 			
-			Integer atdStampTime, logonTime, logoffTime,
+			Integer logonTime, logoffTime,
 					leaveGateStartTime = null, leaveGateEndTime = null, 
-					startTime = null, endTime = null; 
+					startTime, endTime = null; 
 			
 			WorkType workType = workTypes.get(d.getWorkInformation().getRecordInfo().getWorkTypeCode());
 			if(workType == null){
@@ -130,14 +130,15 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			if(d.getAttendanceLeave().isPresent()){
 				Optional<TimeLeavingWork> timeLeaveNo1 = d.getAttendanceLeave().get().getAttendanceLeavingWork(1);
 				if(timeLeaveNo1.isPresent()){
-					startTime = atdStampTime = getTimeStamp(timeLeaveNo1.get().getAttendanceStamp());
+					startTime = getTimeStamp(timeLeaveNo1.get().getAttendanceStamp());
 					endTime =  getTimeStamp(timeLeaveNo1.get().getLeaveStamp());
 				} else {
-					atdStampTime = null;
+					startTime = null;
 				}
 			} else {
-				atdStampTime = null;
+				startTime = null;
 			}
+			
 			if(d.getPcLogOnInfo().isPresent()){
 				LogOnInfo logonInfo = d.getPcLogOnInfo().get().getLogOnInfo(new PCLogOnNo(1)).orElse(null);
 				logonTime = logonInfo != null && logonInfo.getLogOn().isPresent() ? logonInfo.getLogOn().get().v() : null;
@@ -160,26 +161,26 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			/** データ準備エンド　*/
 
 			/** 任意項目3: 出勤時刻が入っており、PCログオンログオフがない事が条件 */
-			processOptionalItem(() -> atdStampTime != null && logonTime == null && logoffTime == null, 
+			processOptionalItem(() -> startTime != null && logonTime == null && logoffTime == null, 
 					optionalItem, COUNT_ON, COUNT_OFF, 3);
 			
 			/** 任意項目4: その日にPCログオン = null and ログオフ <> null が条件 */
-			processOptionalItem(() -> atdStampTime != null && logonTime == null && logoffTime != null, 
+			processOptionalItem(() -> startTime != null && logonTime == null && logoffTime != null, 
 					optionalItem, COUNT_ON, COUNT_OFF, 4);
 			
 			/** 任意項目5: その日にPCログオン = null and ログオフ <> null が条件 */
-			processOptionalItem(() -> atdStampTime != null && logonTime != null && logoffTime == null, 
+			processOptionalItem(() -> startTime != null && logonTime != null && logoffTime == null, 
 					optionalItem, COUNT_ON, COUNT_OFF, 5);
 			
 			/** 任意項目14: その日にPCログオン = null が条件 */
-			processOptionalItem(() -> atdStampTime != null && logonTime == null, optionalItem, COUNT_ON, COUNT_OFF, 14);
+			processOptionalItem(() -> startTime != null && logonTime == null, optionalItem, COUNT_ON, COUNT_OFF, 14);
 			
 			/** 任意項目15: その日にPCログオフ = null が条件 */
-			processOptionalItem(() -> atdStampTime != null && logoffTime == null, optionalItem, COUNT_ON, COUNT_OFF, 15);
+			processOptionalItem(() -> startTime != null && logoffTime == null, optionalItem, COUNT_ON, COUNT_OFF, 15);
 			
 			/** TODO: update*/
 			/** 任意項目16: 出勤時刻が入っており、PCログオンログオフのどちらかが無い事が条件 */
-			processOptionalItem(() -> atdStampTime != null && (logonTime == null || logoffTime == null), 
+			processOptionalItem(() -> startTime != null && (logonTime == null || logoffTime == null), 
 					optionalItem, COUNT_ON, COUNT_OFF, 16);
 			
 			/** 任意項目7: 出勤の判断 */
@@ -320,16 +321,16 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 					Optional<OverTimeOfDaily>  ot = d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
 					if(ot.isPresent()){
-						processOverTime(ot.get(), 4, atdStampTime == null ? 0 : 30);
+						processOverTime(ot.get(), 4, startTime == null ? 0 : 30);
 						
-						processOverTime(ot.get(), 5, atdStampTime == null ? 0 : 60);
+						processOverTime(ot.get(), 5, startTime == null ? 0 : 60);
 					} else {
 						OverTimeOfDaily otn = new OverTimeOfDaily(new ArrayList<>(), new ArrayList<>(), 
 								Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(AttendanceTime.ZERO))));
 						
-						processOverTime(otn, 4, atdStampTime == null ? 0 : 30);
+						processOverTime(otn, 4, startTime == null ? 0 : 30);
 						
-						processOverTime(otn, 5, atdStampTime == null ? 0 : 60);
+						processOverTime(otn, 5, startTime == null ? 0 : 60);
 						
 						d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 								.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().updateOverTime(otn);
