@@ -978,8 +978,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode) {
-		return getErrorSettingN(companyId, listErrorCode);
+	public List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode, boolean showError, boolean showAlarm, boolean showOther) {
+		return getErrorSettingN(companyId, listErrorCode, showError, showAlarm, showOther);
 //		List<Object[]> enities = this.queryProxy().query(SEL_ERROR_SETTING, Object[].class).setParameter("companyId", companyId).setParameter("lstCode", listErrorCode)
 //				.getList();
 //		return enities.stream().map(x ->{
@@ -994,7 +994,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //		}).collect(Collectors.toList());
 	}
 	
-	private List<DPErrorSettingDto> getErrorSettingN(String companyId, List<String> listErrorCode){
+	private List<DPErrorSettingDto> getErrorSettingN(String companyId, List<String> listErrorCode, boolean showError, boolean showAlarm, boolean showOther){
 		List<DPErrorSettingDto> dtos = new ArrayList<>();
 		String textIn ="";
 		for(int i =0; i<listErrorCode.size(); i++){
@@ -1005,8 +1005,32 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				textIn += "'" +text+ "'"+ ",";
 			}
 		}
+		
+		List<Integer> atr = new ArrayList<>();
+		if (showError) {
+			atr.add(0);
+		}
+		if (showAlarm) {
+			atr.add(1);
+		}
+
+		if (showOther) {
+			atr.add(2);
+		}
+		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
+		if(atr.isEmpty()) return new ArrayList<>();
+		String typeAtrParam = "AND ERAL_ATR IN ( ";
+		for(int i =0; i< atr.size(); i++){
+			Integer  text = atr.get(i);
+			if(i == (atr.size() -1)){
+				typeAtrParam += "" +text+ " )";
+			}else{
+				typeAtrParam += "" +text + ",";
+			}
+		}
+		query = query.concat(typeAtrParam);
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			pstatement.setString(1, companyId);
 //			Array array = pstatement.getConnection().createArrayOf("ANY ", new Object[]{"A", "B","C"});
