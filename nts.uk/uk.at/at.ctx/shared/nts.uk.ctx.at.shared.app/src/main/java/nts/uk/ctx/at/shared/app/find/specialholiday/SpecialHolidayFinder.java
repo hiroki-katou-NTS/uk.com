@@ -106,28 +106,44 @@ public class SpecialHolidayFinder {
 	private List<SpecialHolidayFrameDto> removeAFromB(Integer selectedShCode, List<SpecialHolidayFrameDto> result,
 			List<SpecialHolidayEventDto> shEs, List<SpecialHolidayDto> shs, List<NursingLeaveSettingDto> nursings) {
 		List<Integer> settingCodes = new ArrayList<Integer>();
+		
 		getDuplicateShEvent(settingCodes, shEs);
-
-		getDuplicateNursings(settingCodes, nursings);
-
-		// remove duplicate SHEvent and Nursing
+		
+		// remove duplicate SHEvent
 		result = result.stream().filter(x -> !(settingCodes.contains(x.getSpecialHdFrameNo())))
 				.collect(Collectors.toList());
 
+		result = removeDuplicateNursings(result, nursings);
+		
 		return removeDuplicateSHoliday(result, selectedShCode, shs);
 
 	}
 
-	private List<Integer> getDuplicateNursings(List<Integer> settingCodes, List<NursingLeaveSettingDto> nursings) {
+	private List<SpecialHolidayFrameDto> removeDuplicateNursings(List<SpecialHolidayFrameDto> result, List<NursingLeaveSettingDto> nursings) {
+		
+		List<Integer> absCodes = new ArrayList<Integer>();
+		List<Integer> shCodes = new ArrayList<Integer>();
 		if (!CollectionUtil.isEmpty(nursings)) {
 			nursings.forEach(x -> {
-				Integer code = x.specialHolidayFrame;
-				if (!settingCodes.contains(code)) {
-					settingCodes.add(code);
+				
+				Integer absCode = x.absenceWorkDay;
+				if (!absCodes.contains(absCode)) {
+					absCodes.add(absCode);
 				}
+				
+				Integer shCode = x.specialHolidayFrame;
+				if (!shCodes.contains(shCode)) {
+					shCodes.add(shCode);
+				}
+				
 			});
 		}
-		return settingCodes;
+		
+		result = result.stream().filter(x -> !isContains(x, shCodes, "a")).collect(Collectors.toList());
+
+		result = result.stream().filter(x -> !isContains(x, absCodes, "b")).collect(Collectors.toList());
+		
+		return result;
 	}
 
 	private List<SpecialHolidayFrameDto> removeDuplicateSHoliday(List<SpecialHolidayFrameDto> result,
