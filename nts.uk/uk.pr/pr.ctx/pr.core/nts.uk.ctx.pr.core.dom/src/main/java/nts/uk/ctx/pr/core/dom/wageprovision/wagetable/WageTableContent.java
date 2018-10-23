@@ -30,10 +30,4 @@ public class WageTableContent extends AggregateRoot {
     */
     private List<QualificationGroupSettingContent> qualificationGroupSetting;
     
-    public WageTableContent(String historyID, String wageTablePaymentAmount, String masterCode, String frameNumber, String lowerFrameLimit, String upperFrameLimit, String masterCode, String frameNumber, String lowerFrameLimit, String upperFrameLimit, String masterCode, String frameNumber, String lowerFrameLimit, String upperFrameLimit, String qualificationGroupCode, Integer paymentMethod, String eligibleQualificationCode) {
-        this.historyID = historyID;
-        this.payment = new ElementsCombinationPaymentAmount(wageTablePaymentAmount);
-        this.qualificationGroupSetting = new QualificationGroupSettingContent(qualificationGroupCode, paymentMethod, eligibleQualificationCode);
-    }
-    
 }
