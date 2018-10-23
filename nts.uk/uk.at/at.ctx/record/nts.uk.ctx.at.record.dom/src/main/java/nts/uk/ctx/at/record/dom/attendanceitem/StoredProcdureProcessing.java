@@ -194,17 +194,17 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			/** 任意項目8: 両方時刻が入っている場合のみ乖離時間を計算する */
 			if(startTime != null && leaveGateStartTime != null){
 				divergenceTime = timeOn = startTime < leaveGateStartTime ? 0 : startTime - leaveGateStartTime;
-				mergeOptionalTimeItemWithNo(optionalItem, timeOn, 8);
+				mergeOptionalItemWithNo(optionalItem, timeOn, 8);
 			} else {
-				updateOptionalTimeItemWithNo(optionalItem, timeOff, 8);
+				updateOptionalItemWithNo(optionalItem, timeOff, 8);
 			}
 			
 			/** 任意項目10 */
 			if(endTime != null && leaveGateEndTime != null){
 				timeOn = leaveGateEndTime - endTime; 
-				mergeOptionalTimeItemWithNo(optionalItem, timeOn < 0 ? 0 : timeOn, 10);
+				mergeOptionalItemWithNo(optionalItem, timeOn < 0 ? 0 : timeOn, 10);
 			} else {
-				updateOptionalTimeItemWithNo(optionalItem, timeOff, 10);
+				updateOptionalItemWithNo(optionalItem, timeOff, 10);
 			}
 			
 			timeOn = 1; timeOff = 0;
@@ -256,10 +256,10 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				processOptionalItem(() -> flexTime >= 0, optionalItem, flexTime, timeOff, 41);
 			} else {
 				/** 任意項目18, 19, 21, 23, 28 */
-				updateOptionalTimesItemWithNo(optionalItem, COUNT_OFF, 18, 19, 21, 23, 28);
+				updateOptionalItemWithNo(optionalItem, COUNT_OFF, 18, 19, 21, 23, 28);
 
 				/** 任意項目40, 41 */
-				updateOptionalTimeItemWithNo(optionalItem, timeOff, 40, 41);
+				updateOptionalItemWithNo(optionalItem, timeOff, 40, 41);
 			}
 			
 			if(d.getPcLogOnInfo().isPresent()){
@@ -274,37 +274,37 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				processOptionalItem(() -> logonTime != null && logoffTime != null, optionalItem, COUNT_ON, COUNT_OFF, 6);
 			} else {
 				/** 任意項目1, 2, 6 */
-				updateOptionalTimesItemWithNo(optionalItem, COUNT_OFF, 1, 2, 6);
+				updateOptionalItemWithNo(optionalItem, COUNT_OFF, 1, 2, 6);
 			}
 			
 			/** 平日か*/
 			timeOn = divergenceTime;
 			if(isWeekday(atr, dailyWork.getOneDay(), dailyWork.getMorning(), dailyWork.getAfternoon())){
 				/** 任意項目12 */
-				mergeOptionalTimesItemWithNo(optionalItem, COUNT_ON, 12);
+				mergeOptionalItemWithNo(optionalItem, COUNT_ON, 12);
 				
 				/** 任意項目17 */
-				mergeOptionalTimeItemWithNo(optionalItem, timeOn, 17);
+				mergeOptionalItemWithNo(optionalItem, timeOn, 17);
 			} else {
 				/** 任意項目12 */
-				updateOptionalTimesItemWithNo(optionalItem, COUNT_OFF, 12);
+				updateOptionalItemWithNo(optionalItem, COUNT_OFF, 12);
 				
 				/** 任意項目17 */
-				updateOptionalTimeItemWithNo(optionalItem, timeOff, 17);
+				updateOptionalItemWithNo(optionalItem, timeOff, 17);
 			}
 			
 			if(startTime != null){
 				/** 任意項目89 */
-				mergeOptionalTimeItemWithNo(optionalItem, startTime, 89);
+				mergeOptionalItemWithNo(optionalItem, startTime, 89);
 				
 				/** 任意項目90 */
-				mergeOptionalTimeItemWithNo(optionalItem, 1, 90);
+				mergeOptionalItemWithNo(optionalItem, COUNT_ON, 90);
 			} else {
 				/** 任意項目89 */
-				updateOptionalTimeItemWithNo(optionalItem, timeOff, 89);
+				updateOptionalItemWithNo(optionalItem, timeOff, 89);
 
 				/** 任意項目90 */
-				updateOptionalTimeItemWithNo(optionalItem, timeOff, 90);
+				updateOptionalItemWithNo(optionalItem, COUNT_OFF, 90);
 			}
 			
 			if(d.getAnyItemValue().get().getItems().isEmpty()){
@@ -552,22 +552,22 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	private void processOptionalItem(Supplier<Boolean> condition, AnyItemValueOfDaily optionalItem,
 			BigDecimal valueOn, BigDecimal valueOff, int... itemNo){
 		if(condition.get()){
-			mergeOptionalTimesItemWithNo(optionalItem, valueOn, itemNo);
+			mergeOptionalItemWithNo(optionalItem, valueOn, itemNo);
 		} else {
-			updateOptionalTimesItemWithNo(optionalItem, valueOff, itemNo);
+			updateOptionalItemWithNo(optionalItem, valueOff, itemNo);
 		}
 	}
 	
 	private void processOptionalItem(Supplier<Boolean> condition, AnyItemValueOfDaily optionalItem,
 			Integer valueOn, Integer valueOff, int... itemNo){
 		if(condition.get()){
-			mergeOptionalTimeItemWithNo(optionalItem, valueOn, itemNo);
+			mergeOptionalItemWithNo(optionalItem, valueOn, itemNo);
 		} else {
-			updateOptionalTimeItemWithNo(optionalItem, valueOff, itemNo);
+			updateOptionalItemWithNo(optionalItem, valueOff, itemNo);
 		}
 	}
 	
-	private void mergeOptionalTimesItemWithNo(AnyItemValueOfDaily d, BigDecimal count, int... itemNo) {
+	private void mergeOptionalItemWithNo(AnyItemValueOfDaily d, BigDecimal count, int... itemNo) {
 		AnyItemTimes val = count == null ? null : new AnyItemTimes(count);
 		for (int no : itemNo) {
 			if(d.getNo(no).isPresent()){
@@ -578,14 +578,14 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		}
 	}
 	
-	private void updateOptionalTimesItemWithNo(AnyItemValueOfDaily d, BigDecimal count, int... itemNo) {
+	private void updateOptionalItemWithNo(AnyItemValueOfDaily d, BigDecimal count, int... itemNo) {
 		AnyItemTimes val = count == null ? null : new AnyItemTimes(count);
 		for (int no : itemNo) {
 			d.getNo(no).ifPresent(oi -> oi.updateTimes(val));
 		}
 	}
 	
-	private void mergeOptionalTimeItemWithNo(AnyItemValueOfDaily d, Integer time, int... itemNo) {
+	private void mergeOptionalItemWithNo(AnyItemValueOfDaily d, Integer time, int... itemNo) {
 		AnyItemTime val = time == null ? null : new AnyItemTime(time);
 		for (int no : itemNo) {
 			if(d.getNo(no).isPresent()){
@@ -596,7 +596,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		}
 	}
 	
-	private void updateOptionalTimeItemWithNo(AnyItemValueOfDaily d, Integer time, int... itemNo) {
+	private void updateOptionalItemWithNo(AnyItemValueOfDaily d, Integer time, int... itemNo) {
 		AnyItemTime val = time == null ? null : new AnyItemTime(time);
 		for (int no : itemNo) {
 			d.getNo(no).ifPresent(oi -> oi.updateTime(val));
