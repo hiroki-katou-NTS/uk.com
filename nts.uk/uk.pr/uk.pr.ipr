@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="Javac"/>
+    <resourceExtensions>
+      <entry name=".+\.(properties|xml|html|dtd|tld)"/>
+      <entry name=".+\.(gif|png|jpeg|jpg)"/>
+    </resourceExtensions>
+    <wildcardResourcePatterns>
+      <entry name="!?*.class"/>
+      <entry name="!?*.scala"/>
+      <entry name="!?*.groovy"/>
+      <entry name="!?*.java"/>
+    </wildcardResourcePatterns>
+    <annotationProcessing enabled="false" useClasspath="true"/>
+    <bytecodeTargetLevel target="1.8"/>
+  </component>
+  <component name="CopyrightManager" default="">
+    <module2copyright/>
+  </component>
+  <component name="DependencyValidationManager">
+    <option name="SKIP_IMPORT_STATEMENTS" value="false"/>
+  </component>
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false"/>
+  <component name="GradleUISettings">
+    <setting name="root"/>
+  </component>
+  <component name="GradleUISettings2">
+    <setting name="root"/>
+  </component>
+  <component name="IdProvider" IDEtalkID="11DA1DB66DD62DDA1ED602B7079FE97C"/>
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY"/>
+    <option name="OPTION_SCOPE" value="protected"/>
+    <option name="OPTION_HIERARCHY" value="true"/>
+    <option name="OPTION_NAVIGATOR" value="true"/>
+    <option name="OPTION_INDEX" value="true"/>
+    <option name="OPTION_SEPARATE_INDEX" value="true"/>
+    <option name="OPTION_DOCUMENT_TAG_USE" value="false"/>
+    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="false"/>
+    <option name="OPTION_DOCUMENT_TAG_VERSION" value="false"/>
+    <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true"/>
+    <option name="OPTION_DEPRECATED_LIST" value="true"/>
+    <option name="OTHER_OPTIONS" value=""/>
+    <option name="HEAP_SIZE"/>
+    <option name="LOCALE"/>
+    <option name="OPEN_IN_BROWSER" value="true"/>
+  </component>
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/uk.pr.iml" filepath="$PROJECT_DIR$/uk.pr.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.ctx.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.ctx.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.file/pr.file.iml" filepath="$PROJECT_DIR$/pr.file/pr.file.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.screen/pr.screen.iml" filepath="$PROJECT_DIR$/pr.screen/pr.screen.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.web/pr.web.iml" filepath="$PROJECT_DIR$/pr.web/pr.web.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/pr.core.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/pr.core.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/pr.report.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/pr.report.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/pr.retire.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/pr.retire.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/pr.shared.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/pr.shared.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/pr.stdremu.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/pr.stdremu.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/pr.transfer.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/pr.transfer.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/pr.yearend.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/pr.yearend.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.file/nts.uk.file.pr.app/nts.uk.file.pr.app.iml" filepath="$PROJECT_DIR$/pr.file/nts.uk.file.pr.app/nts.uk.file.pr.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.file/nts.uk.file.pr.infra/nts.uk.file.pr.infra.iml" filepath="$PROJECT_DIR$/pr.file/nts.uk.file.pr.infra/nts.uk.file.pr.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.file/nts.uk.file.pr.ws/nts.uk.file.pr.ws.iml" filepath="$PROJECT_DIR$/pr.file/nts.uk.file.pr.ws/nts.uk.file.pr.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.screen/nts.uk.screen.pr.app/nts.uk.screen.pr.app.iml" filepath="$PROJECT_DIR$/pr.screen/nts.uk.screen.pr.app/nts.uk.screen.pr.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.screen/nts.uk.screen.pr.infra/nts.uk.screen.pr.infra.iml" filepath="$PROJECT_DIR$/pr.screen/nts.uk.screen.pr.infra/nts.uk.screen.pr.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.screen/nts.uk.screen.pr.ws/nts.uk.screen.pr.ws.iml" filepath="$PROJECT_DIR$/pr.screen/nts.uk.screen.pr.ws/nts.uk.screen.pr.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.web/nts.uk.pr.web/nts.uk.pr.web.iml" filepath="$PROJECT_DIR$/pr.web/nts.uk.pr.web/nts.uk.pr.web.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.ac/nts.uk.ctx.pr.core.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.ac/nts.uk.ctx.pr.core.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.app/nts.uk.ctx.pr.core.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.app/nts.uk.ctx.pr.core.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.dom/nts.uk.ctx.pr.core.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.dom/nts.uk.ctx.pr.core.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.infra/nts.uk.ctx.pr.core.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.infra/nts.uk.ctx.pr.core.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.pub/nts.uk.ctx.pr.core.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.pub/nts.uk.ctx.pr.core.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.pubimp/nts.uk.ctx.pr.core.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.pubimp/nts.uk.ctx.pr.core.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.ws/nts.uk.ctx.pr.core.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.core/nts.uk.ctx.pr.core.ws/nts.uk.ctx.pr.core.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.ac/nts.uk.ctx.pr.report.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.ac/nts.uk.ctx.pr.report.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.app/nts.uk.ctx.pr.report.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.app/nts.uk.ctx.pr.report.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.dom/nts.uk.ctx.pr.report.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.dom/nts.uk.ctx.pr.report.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.infra/nts.uk.ctx.pr.report.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.infra/nts.uk.ctx.pr.report.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.pub/nts.uk.ctx.pr.report.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.pub/nts.uk.ctx.pr.report.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.pubimp/nts.uk.ctx.pr.report.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.pubimp/nts.uk.ctx.pr.report.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.ws/nts.uk.ctx.pr.report.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.report/nts.uk.ctx.pr.report.ws/nts.uk.ctx.pr.report.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.ac/nts.uk.ctx.pr.retire.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.ac/nts.uk.ctx.pr.retire.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.app/nts.uk.ctx.pr.retire.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.app/nts.uk.ctx.pr.retire.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.dom/nts.uk.ctx.pr.retire.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.dom/nts.uk.ctx.pr.retire.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.infra/nts.uk.ctx.pr.retire.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.infra/nts.uk.ctx.pr.retire.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.pub/nts.uk.ctx.pr.retire.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.pub/nts.uk.ctx.pr.retire.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.pubimp/nts.uk.ctx.pr.retire.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.pubimp/nts.uk.ctx.pr.retire.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.ws/nts.uk.ctx.pr.retire.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.retire/nts.uk.ctx.pr.retire.ws/nts.uk.ctx.pr.retire.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.ac/nts.uk.ctx.pr.shared.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.ac/nts.uk.ctx.pr.shared.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.app/nts.uk.ctx.pr.shared.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.app/nts.uk.ctx.pr.shared.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.dom/nts.uk.ctx.pr.shared.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.dom/nts.uk.ctx.pr.shared.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.infra/nts.uk.ctx.pr.shared.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.infra/nts.uk.ctx.pr.shared.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.pub/nts.uk.ctx.pr.shared.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.pub/nts.uk.ctx.pr.shared.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.pubimp/nts.uk.ctx.pr.shared.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.pubimp/nts.uk.ctx.pr.shared.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.ws/nts.uk.ctx.pr.shared.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.shared/nts.uk.ctx.pr.shared.ws/nts.uk.ctx.pr.shared.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.ac/nts.uk.ctx.pr.stdremu.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.ac/nts.uk.ctx.pr.stdremu.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.app/nts.uk.ctx.pr.stdremu.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.app/nts.uk.ctx.pr.stdremu.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.dom/nts.uk.ctx.pr.stdremu.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.dom/nts.uk.ctx.pr.stdremu.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.infra/nts.uk.ctx.pr.stdremu.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.infra/nts.uk.ctx.pr.stdremu.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.pub/nts.uk.ctx.pr.stdremu.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.pub/nts.uk.ctx.pr.stdremu.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.pubimp/nts.uk.ctx.pr.stdremu.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.pubimp/nts.uk.ctx.pr.stdremu.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.ws/nts.uk.ctx.pr.stdremu.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.stdremu/nts.uk.ctx.pr.stdremu.ws/nts.uk.ctx.pr.stdremu.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.ac/nts.uk.ctx.pr.transfer.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.ac/nts.uk.ctx.pr.transfer.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.app/nts.uk.ctx.pr.transfer.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.app/nts.uk.ctx.pr.transfer.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.dom/nts.uk.ctx.pr.transfer.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.dom/nts.uk.ctx.pr.transfer.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.infra/nts.uk.ctx.pr.transfer.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.infra/nts.uk.ctx.pr.transfer.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.pub/nts.uk.ctx.pr.transfer.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.pub/nts.uk.ctx.pr.transfer.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.pubimp/nts.uk.ctx.pr.transfer.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.pubimp/nts.uk.ctx.pr.transfer.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.ws/nts.uk.ctx.pr.transfer.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.transfer/nts.uk.ctx.pr.transfer.ws/nts.uk.ctx.pr.transfer.ws.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.ac/nts.uk.ctx.pr.yearend.ac.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.ac/nts.uk.ctx.pr.yearend.ac.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.app/nts.uk.ctx.pr.yearend.app.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.app/nts.uk.ctx.pr.yearend.app.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.dom/nts.uk.ctx.pr.yearend.dom.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.dom/nts.uk.ctx.pr.yearend.dom.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.infra/nts.uk.ctx.pr.yearend.infra.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.infra/nts.uk.ctx.pr.yearend.infra.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.pub/nts.uk.ctx.pr.yearend.pub.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.pub/nts.uk.ctx.pr.yearend.pub.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.pubimp/nts.uk.ctx.pr.yearend.pubimp.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.pubimp/nts.uk.ctx.pr.yearend.pubimp.iml"/>
+      <module fileurl="file://$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.ws/nts.uk.ctx.pr.yearend.ws.iml" filepath="$PROJECT_DIR$/pr.ctx/pr.yearend/nts.uk.ctx.pr.yearend.ws/nts.uk.ctx.pr.yearend.ws.iml"/>
+    </modules>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" assert-keyword="true" jdk-15="true" project-jdk-type="JavaSDK" assert-jdk-15="true" project-jdk-name="1.8">
+    <output url="file://$PROJECT_DIR$/out"/>
+  </component>
+  <component name="SvnBranchConfigurationManager">
+    <option name="mySupportsUserInfoFilter" value="true"/>
+  </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs=""/>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <UIState>
+          <splitter-proportions>
+            <SplitterProportionsDataImpl/>
+          </splitter-proportions>
+          <settings/>
+        </UIState>
+      </state>
+      <state key="Copyright.UI">
+        <UIState>
+          <splitter-proportions>
+            <SplitterProportionsDataImpl/>
+          </splitter-proportions>
+        </UIState>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <UIState>
+          <splitter-proportions>
+            <SplitterProportionsDataImpl>
+              <option name="proportions">
+                <list>
+                  <option value="0.2"/>
+                </list>
+              </option>
+            </SplitterProportionsDataImpl>
+          </splitter-proportions>
+          <last-edited>1.6</last-edited>
+        </UIState>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <UIState>
+          <splitter-proportions>
+            <SplitterProportionsDataImpl/>
+          </splitter-proportions>
+          <settings/>
+        </UIState>
+      </state>
+    </states>
+  </component>
+</project>
