@@ -94,11 +94,13 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 if (self.isNewMode()) {
                     // create 
                     service.addBreakdownItemSet(ko.toJS(data)).done(() => {
-                        self.getAllData().done(() => {
-                            dialog.info({ messageId: "Msg_15" }).then(() => {
-                                $("#breakdownItemName").focus();
-                                self.isNewMode(false);
-                                self.currentCode(data.breakdownItemCode);
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            $("#breakdownItemName").focus();
+                            self.isNewMode(false);
+                            self.getAllData().done(() => {
+                                _.delay(() => {
+                                    self.currentCode(data.breakdownItemCode);
+                                }, 100, 'later')
                             });
                         });
                     }).fail(function(error) {
@@ -111,10 +113,12 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 } else {
                     // update
                     service.updateBreakdownItemSet(ko.toJS(data)).done(() => {
-                        self.getAllData().done(() => {
-                            dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.isNewMode(false);
-                                self.currentCode(data.breakdownItemCode);
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.isNewMode(false);
+                            self.getAllData().done(() => {
+                                _.delay(() => {
+                                    self.currentCode(data.breakdownItemCode);
+                                }, 100, 'later')
                             });
                         });
                     }).fail(function(error) {
@@ -141,16 +145,20 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                     let index: number = _.findIndex(self.lstBreakdownItemSet(), function(x)
                     { return x.breakdownItemCode == data.breakdownItemCode });
                     service.removeBreakdownItemSet(ko.toJS(data)).done(function() {
-                        self.getAllData().done(() => {
-                            dialog.info({ messageId: "Msg_16" }).then(() => {
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.getAllData().done(() => {
                                 if (self.lstBreakdownItemSet().length == 0) {
                                     self.createItemSet();
                                 } else {
+                                    let code = "";
                                     if (index == self.lstBreakdownItemSet().length) {
-                                        self.currentCode(self.lstBreakdownItemSet()[index - 1].breakdownItemCode);
+                                        code = self.lstBreakdownItemSet()[index - 1].breakdownItemCode;
                                     } else {
-                                        self.currentCode(self.lstBreakdownItemSet()[index].breakdownItemCode);
+                                        code = self.lstBreakdownItemSet()[index].breakdownItemCode;
                                     }
+                                    _.delay(() => {
+                                        self.currentCode(code);
+                                    }, 100, 'later')
                                 }
                             });
                         });
@@ -187,7 +195,6 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["breakdownItemCode"]);
                     self.lstBreakdownItemSet(dataSort);
-                    self.currentCode(self.lstBreakdownItemSet()[0].breakdownItemCode);
                 }
                 else {
                     nts.uk.ui.errors.clearAll();
