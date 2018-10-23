@@ -295,6 +295,43 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
 
         }
+        addHistory(start: number){
+            let self = this;
+            let to :string = getText('QMM001_13');
+            let list: Array<any> = self.listHistory();
+            let newHistory :any = null;
+            if(self.modeHistory() == MODEHISTORY.DATE){
+                newHistory = new SalGenParaDateHistory();
+                newHistory.paraNo = self.selectedSalGenParaIdent();
+                newHistory.cID ='';
+                newHistory.historyId = HIS_ID_TEMP;
+                newHistory.startDate = start;
+                newHistory.endDate = '99991231';
+                newHistory.display= newHistory.startDate+ " " + to + " "+newHistory.endDate;
+                if (list && list.length > 0) {
+                    let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
+                    list[FIRST].display =list[FIRST].startYearMonth + " "+ to + " "+end;
+                }
+
+            }
+            else{
+                newHistory = new SalGenParaYearMonthHistory();
+                newHistory.paraNo = self.selectedSalGenParaIdent();
+                newHistory.cID ='';
+                newHistory.historyId = HIS_ID_TEMP;
+                newHistory.startYearMonth = start;
+                newHistory.endYearMonth = '999912';
+                newHistory.display= this.convertMonthYearToString(newHistory.startYearMonth) + " " + to + " "+this.convertMonthYearToString(newHistory.endYearMonth);
+                if (list && list.length > 0) {
+                    let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
+                    list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " "+ to + " "+ self.convertMonthYearToString((end).toString());
+                }
+            }
+
+
+        self.listHistory().push(newHistory);
+
+        }
         isEnableSwitchButton(){
             let self = this;
             if(MODESCREEN.UPDATE && self.salGenParaIdent()==PARAHISTORYATR.DONOTMANAGE){
@@ -337,6 +374,11 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             };
             setShared('QMM001_PARAMS_TO_SCREEN_B', data);
             modal("/view/qmm/001/b/index.xhtml").onClosed(() => {
+                let params = getShared('QMM011_A');
+                if (params == null || params === undefined) {
+                    return;
+                }
+                self.addHistory(params.startYearMonth);
                 self.modeScreen(MODESCREEN.ADD);
             });
         }
@@ -729,5 +771,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
 
     export const HIS_ID_TEMP = "00000devphuc.tc";
+    export const FIRST = 0;
 
 }
