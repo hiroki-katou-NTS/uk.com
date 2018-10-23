@@ -228,10 +228,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private OptionalItemRepository optionalItemRepo;
 	
 	/** The filename. */
-	private final String filename = "report/KWR001.xlsx";
-
-	/** The Constant NOTCHECK_CONDITION_TEMPLATE. */
-	private static final String NOTCHECK_CONDITION_TEMPLATE = "report/KWR001_NOTCHECK.xlsx";
+	private static final String filename = "report/KWR001.xlsx";
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
@@ -271,29 +268,23 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int ATTENDANCE_ID_OPTIONAL_END = 740;
 	
 	/** The font family. */
-	private final String FONT_FAMILY = "ＭＳ ゴシック";
+	private static final String FONT_FAMILY = "ＭＳ ゴシック";
 	
 	/** The font size. */
-	private final int FONT_SIZE = 9;
+	private static final int FONT_SIZE = 9;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, WorkScheduleOutputQuery query) {
-		AsposeCellsReportContext reportContext = null;
+		AsposeCellsReportContext reportContext = this.createContext(filename);
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
 		// ドメインモデル「日別勤務表の出力項目」を取得する
 		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v());
 		if (!optOutputItemDailyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
-		}
-		Boolean checkOutputItemDailyWork = optOutputItemDailyWork.get().getLstRemarkContent().stream().anyMatch(item ->item.isUsedClassification());
-		if (checkOutputItemDailyWork) {
-			reportContext = this.createContext(filename);
-		} else {
-			reportContext = this.createContext(NOTCHECK_CONDITION_TEMPLATE);
 		}
 		
 		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
@@ -387,7 +378,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			// Delete footer if user doesn't set remark content
-			if (outputItemDailyWork.getLstRemarkContent().stream().filter(remark -> remark.isUsedClassification()).count() > 0) {
+			if (!outputItemDailyWork.getLstRemarkContent().stream().anyMatch(remark -> remark.isUsedClassification())) {
 				hideFooter(sheet);
 			}
 			
