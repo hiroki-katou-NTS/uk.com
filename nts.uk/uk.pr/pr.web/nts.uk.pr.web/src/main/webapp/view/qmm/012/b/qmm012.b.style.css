@@ -1,22 +1,6 @@
-#functions-area {
+#contents-area .table{
 	width: 1200px;
-}
-
-#contents-area {
-	width: 1200px;
-	overflow-y: inherit !important;
-}
-
-.fixed-flex-layout-left {
 	padding: 10px;
-	float: left;
-	width: 460px;
-}
-
-.fixed-flex-layout-right {
-	width: 700px;
-	padding: 10px;
-	float: left;
 }
 
 .space1, .space2, .space3 {
