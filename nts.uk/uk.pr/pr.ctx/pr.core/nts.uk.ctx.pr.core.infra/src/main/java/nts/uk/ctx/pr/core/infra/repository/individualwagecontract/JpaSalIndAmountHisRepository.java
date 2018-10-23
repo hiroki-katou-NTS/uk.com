@@ -21,6 +21,7 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator ORDER BY f.periodStartYm DESC";
+    private static final String SELECT_BY_KEY_STRING_DISPLAY = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator and f.periodStartYm <= :currentProcessYearMonth and f.periodEndYm >= :currentProcessYearMonth ORDER BY f.periodStartYm DESC";
 
 
     private Optional<SalIndAmountHis> toDomain(List<QpbmtSalIndAmountHis> entity) {
@@ -52,6 +53,17 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
                 .setParameter("salBonusCate", salBonusCate)
                 .setParameter("cateIndicator", cateIndicator)
                 .setParameter("empId", empId)
+                .getList());
+    }
+
+    @Override
+    public Optional<SalIndAmountHis> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth) {
+        return this.toDomain(this.queryProxy().query(SELECT_BY_KEY_STRING_DISPLAY, QpbmtSalIndAmountHis.class)
+                .setParameter("perValCode", perValCode)
+                .setParameter("salBonusCate", salBonusCate)
+                .setParameter("cateIndicator", cateIndicator)
+                .setParameter("empId", empId)
+                .setParameter("currentProcessYearMonth", currentProcessYearMonth)
                 .getList());
     }
 

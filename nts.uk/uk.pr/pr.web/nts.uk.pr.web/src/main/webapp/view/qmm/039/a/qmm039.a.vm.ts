@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import MODE = nts.uk.pr.view.qmm039.share.model.MODE;
     import MOFIDY_METHOD = nts.uk.pr.view.qmm039.share.model.MOFIDY_METHOD;
+    import hasError = nts.uk.ui.errors.hasError;
     export class ScreenModel {
         mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
         classificationCategory: KnockoutObservable<number> = ko.observable(PERVALUECATECLS.SUPPLY);
@@ -204,6 +205,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         //TODO SELECT  ITEM CLASSFICATION
         changeItemClass(item_class: number): void {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             service.getPersonalMoneyName(item_class).done(function (data) {
                 if (data.length > 0) {
                     let array = [];
@@ -213,6 +215,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         index++;
                     });
                     self.dataSource(array);
+                    self.singleSelectedCode(data[0].individualPriceCode);
                     self.individualPriceName(data[0].individualPriceName);
                     self.individualPriceCode(data[0].individualPriceCode);
                     self.historyProcess(data[0].individualPriceCode, 0);
@@ -235,6 +238,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         historyProcess(perValCode, selectedIndex): void {
             let self = this;
             self.isAddableHis(true);
+            nts.uk.ui.errors.clearAll();
             let dto = {
                 perValCode: perValCode,
                 empId: self.selectedItem(),
@@ -283,6 +287,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         changeHistory(selectedHis) {
             let self = this;
             self.selectedHis(selectedHis);
+            nts.uk.ui.errors.clearAll();
             self.periodStartYM(self.formatYM(self.selectedHis().periodStartYm));
             self.periodEndYM(self.formatYM(self.selectedHis().periodEndYm));
             self.currencyeditor.value(parseInt(self.selectedHis().amount));
@@ -479,14 +484,24 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         //TODO TO SCREEN D
         public toScreenD(): void {
             let self = this;
+            let empName;
+            let empId;
+            _.forEach(self.employeeInputList(), function (data) {
+                _.forEach(data, function (value, key) {
+                    if(key == 'id' && value == self.selectedItem()){
+                        empName = data.businessName;
+                        empId = data.code;
+                    }
+                });
+            });
             let params = {
+                empCode: empId,
+                empName: empName,
                 empId: self.selectedItem(),
-                personalValcode: self.individualPriceCode(),
-                period: {
-                    periodStartYm: self.selectedHis().periodStartYm,
-                    periodEndYm: self.selectedHis().periodEndYm
-                },
-                itemClass: 2,
+                itemClassification: self.itemClassLabel(),
+                personalValCode: self.individualPriceCode(),
+                personalValName: self.individualPriceCode(),
+                cateIndicator :self.classificationCategory()
             }
             setShared("QMM039_D_PARAMS", params);
             modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {
@@ -497,13 +512,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         registration(): void {
             //TODO REGISTRATION
             let self = this;
+            if(hasError()) return;
             if (self.mode() == MODE.NORMAL) {
                 let command = {
                     historyId: self.selectedHis().historyID,
                     amountOfMoney: parseInt(self.currencyeditor.value())
                 }
                 service.updateHistory(command).done(function (data) {
-                    nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                    nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     self.historyProcess(self.individualPriceCode(), 0);
                 });
             } else if (self.mode() == MODE.ADD_HISTORY) {
@@ -526,7 +542,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     }
                 }
                 service.addHistory(command).done(function (data) {
-                    nts.uk.ui.dialog.info({messageID: "Msg_15"});
+                    nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     self.historyProcess(self.individualPriceCode(), 0);
                     self.isEditableHis(true);
                     self.mode(MODE.NORMAL);
