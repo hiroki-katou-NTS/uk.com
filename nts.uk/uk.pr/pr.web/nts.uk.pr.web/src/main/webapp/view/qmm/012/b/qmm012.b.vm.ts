@@ -203,59 +203,132 @@ module nts.uk.pr.view.qmm012.b {
             public register(): void {
                 let self = this;
                 let categoryAtr = self.statementItemDataSelected().statementItem().categoryAtr();
-                let listMessage: Array<string> = [];
-                let itemRangeSet = self.statementItemDataSelected().itemRangeSet();
+                let itemRangeSet;
                 
                 nts.uk.ui.errors.clearAll();
                 
                 if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
-                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && ((itemRangeSet.errorUpperRangeValueAmount() == null) || (itemRangeSet.errorUpperRangeValueAmount().toString() == ""))) {
+                    itemRangeSet = (categoryAtr == model.CategoryAtr.PAYMENT_ITEM) ? self.statementItemDataSelected().paymentItemSet() : self.statementItemDataSelected().deductionItemSet();
+
+                    if((itemRangeSet.errorUpperLimitSetAtr() == 1) && ((itemRangeSet.errorUpRangeVal() == null) || (itemRangeSet.errorUpRangeVal().toString() == ""))) {
                         $('#C2_12').ntsError('set', { messageId: "MsgQ_14" });
                     }
                     
-                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && ((itemRangeSet.errorLowerRangeValueAmount() == null) || (itemRangeSet.errorLowerRangeValueAmount().toString() == ""))) {
+                    if((itemRangeSet.errorLowerLimitSetAtr() == 1) && ((itemRangeSet.errorLoRangeVal() == null) || (itemRangeSet.errorLoRangeVal().toString() == ""))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_15" });
                     }
                     
-                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorLowerLimitSettingAtr() == 1)
-                            && (itemRangeSet.errorUpperRangeValueAmount() != null) && (itemRangeSet.errorLowerRangeValueAmount() != null)
-                            && (parseInt(itemRangeSet.errorUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.errorLowerRangeValueAmount().toString(), 10))) {
+                    if((itemRangeSet.errorUpperLimitSetAtr() == 1) && (itemRangeSet.errorLowerLimitSetAtr() == 1)
+                            && (itemRangeSet.errorUpRangeVal() != null) && (itemRangeSet.errorLoRangeVal() != null)
+                            && (parseInt(itemRangeSet.errorUpRangeVal().toString(), 10) <= parseInt(itemRangeSet.errorLoRangeVal().toString(), 10))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_1" });
                     }
                     
-                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && ((itemRangeSet.alarmUpperRangeValueAmount() == null) || (itemRangeSet.alarmUpperRangeValueAmount().toString() == ""))) {
+                    if((itemRangeSet.alarmUpperLimitSetAtr() == 1) && ((itemRangeSet.alarmUpRangeVal() == null) || (itemRangeSet.alarmUpRangeVal().toString() == ""))) {
                         $('#C2_19').ntsError('set', { messageId: "MsgQ_16" });
                     }
                     
-                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && ((itemRangeSet.alarmLowerRangeValueAmount() == null) || (itemRangeSet.alarmLowerRangeValueAmount().toString() == ""))) {
+                    if((itemRangeSet.alarmLowerLimitSetAtr() == 1) && ((itemRangeSet.alarmLoRangeVal() == null) || (itemRangeSet.alarmLoRangeVal().toString() == ""))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_17" });
                     }
                     
-                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
-                            && (itemRangeSet.alarmUpperRangeValueAmount() != null) && (itemRangeSet.alarmLowerRangeValueAmount() != null)
-                            && (parseInt(itemRangeSet.alarmUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.alarmLowerRangeValueAmount().toString(), 10))) {
+                    if((itemRangeSet.alarmUpperLimitSetAtr() == 1) && (itemRangeSet.alarmLowerLimitSetAtr() == 1)
+                            && (itemRangeSet.alarmUpRangeVal() != null) && (itemRangeSet.alarmLoRangeVal() != null)
+                            && (parseInt(itemRangeSet.alarmUpRangeVal().toString(), 10) <= parseInt(itemRangeSet.alarmLoRangeVal().toString(), 10))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_2" });
                     }
-                }
-                
-                if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
-                    //TODO phải chơi 2 kiểu time
-                }
-                
-                $(".check-validate").trigger("validate");
-                
-                // clear rangeSet validate if disable
-                if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
-                    $('#C2_12').ntsError('clear');
-                }
-                if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
-                    $('#C2_15').ntsError('clear');
-                }
-                if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
-                    $('#C2_19').ntsError('clear');
-                }
-                if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
-                    $('#C2_22').ntsError('clear');
+
+                    $(".check-validate").trigger("validate");
+
+                    // clear rangeSet validate if disable
+                    if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                        $('#C2_12').ntsError('clear');
+                    }
+                    if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                        $('#C2_15').ntsError('clear');
+                    }
+                    if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                        $('#C2_19').ntsError('clear');
+                    }
+                    if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                        $('#C2_22').ntsError('clear');
+                    }
+                } else if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
+                    itemRangeSet = self.statementItemDataSelected().timeItemSet();
+
+                    if((itemRangeSet.timeCountAtr() == 0) && (itemRangeSet.parameterValue == 2)) {
+                        if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && ((itemRangeSet.errorUpRangeValTime() == null) || (itemRangeSet.errorUpRangeValTime().toString() == ""))) {
+                            $('#E1_20').ntsError('set', {messageId: "MsgQ_14"});
+                        }
+
+                        if ((itemRangeSet.errorLowerLimitSetAtr() == 1) && ((itemRangeSet.errorLoRangeValTime() == null) || (itemRangeSet.errorLoRangeValTime().toString() == ""))) {
+                            $('#E1_23').ntsError('set', {messageId: "MsgQ_15"});
+                        }
+
+                        if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && (itemRangeSet.errorLowerLimitSetAtr() == 1)
+                            && (itemRangeSet.errorUpRangeValTime() != null) && (itemRangeSet.errorLoRangeValTime() != null)
+                            && (parseInt(itemRangeSet.errorUpRangeValTime().toString(), 10) <= parseInt(itemRangeSet.errorLoRangeValTime().toString(), 10))) {
+                            $('#E1_23').ntsError('set', {messageId: "MsgQ_1"});
+                        }
+
+                        if ((itemRangeSet.alarmUpperLimitSetAtr() == 1) && ((itemRangeSet.alarmUpRangeValTime() == null) || (itemRangeSet.alarmUpRangeValTime().toString() == ""))) {
+                            $('#E1_27').ntsError('set', {messageId: "MsgQ_16"});
+                        }
+
+                        if ((itemRangeSet.alarmLowerLimitSetAtr() == 1) && ((itemRangeSet.alarmLoRangeValTime() == null) || (itemRangeSet.alarmLoRangeValTime().toString() == ""))) {
+                            $('#E1_30').ntsError('set', {messageId: "MsgQ_17"});
+                        }
+
+                        if ((itemRangeSet.alarmUpperLimitSetAtr() == 1) && (itemRangeSet.alarmLowerLimitSetAtr() == 1)
+                            && (itemRangeSet.alarmUpRangeValTime() != null) && (itemRangeSet.alarmLoRangeValTime() != null)
+                            && (parseInt(itemRangeSet.alarmUpRangeValTime().toString(), 10) <= parseInt(itemRangeSet.alarmLoRangeValTime().toString(), 10))) {
+                            $('#E1_30').ntsError('set', {messageId: "MsgQ_2"});
+                        }
+                    } else {
+                        if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && ((itemRangeSet.errorUpRangeValNum() == null) || (itemRangeSet.errorUpRangeValNum().toString() == ""))) {
+                            $('#E1_20').ntsError('set', {messageId: "MsgQ_14"});
+                        }
+
+                        if ((itemRangeSet.errorLowerLimitSetAtr() == 1) && ((itemRangeSet.errorLoRangeValNum() == null) || (itemRangeSet.errorLoRangeValNum().toString() == ""))) {
+                            $('#E1_23').ntsError('set', {messageId: "MsgQ_15"});
+                        }
+
+                        if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && (itemRangeSet.errorLowerLimitSetAtr() == 1)
+                            && (itemRangeSet.errorUpRangeValNum() != null) && (itemRangeSet.errorLoRangeValNum() != null)
+                            && (parseInt(itemRangeSet.errorUpRangeValNum().toString(), 10) <= parseInt(itemRangeSet.errorLoRangeValNum().toString(), 10))) {
+                            $('#E1_23').ntsError('set', {messageId: "MsgQ_1"});
+                        }
+
+                        if ((itemRangeSet.alarmUpperLimitSetAtr() == 1) && ((itemRangeSet.alarmUpRangeValNum() == null) || (itemRangeSet.alarmUpRangeValNum().toString() == ""))) {
+                            $('#E1_27').ntsError('set', {messageId: "MsgQ_16"});
+                        }
+
+                        if ((itemRangeSet.alarmLowerLimitSetAtr() == 1) && ((itemRangeSet.alarmLoRangeValNum() == null) || (itemRangeSet.alarmLoRangeValNum().toString() == ""))) {
+                            $('#E1_30').ntsError('set', {messageId: "MsgQ_17"});
+                        }
+
+                        if ((itemRangeSet.alarmUpperLimitSetAtr() == 1) && (itemRangeSet.alarmLowerLimitSetAtr() == 1)
+                            && (itemRangeSet.alarmUpRangeValNum() != null) && (itemRangeSet.alarmLoRangeValNum() != null)
+                            && (parseInt(itemRangeSet.alarmUpRangeValNum().toString(), 10) <= parseInt(itemRangeSet.alarmLoRangeValNum().toString(), 10))) {
+                            $('#E1_30').ntsError('set', {messageId: "MsgQ_2"});
+                        }
+                    }
+
+                    $(".check-validate").trigger("validate");
+
+                    // clear rangeSet validate if disable
+                    if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                        $('#E1_20').ntsError('clear');
+                    }
+                    if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                        $('#E1_23').ntsError('clear');
+                    }
+                    if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                        $('#E1_27').ntsError('clear');
+                    }
+                    if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                        $('#E1_30').ntsError('clear');
+                    }
                 }
                 
                 if(!nts.uk.ui.errors.hasError()) {
@@ -294,150 +367,71 @@ module nts.uk.pr.view.qmm012.b {
 
                     // clear phần thập phân
                     if((command.paymentItemSet.limitAmountAtr == model.LimitAmountClassification.FIXED_AMOUNT) && (command.paymentItemSet.limitAmount != null)) {
-                        let limitAmount = command.paymentItemSet.limitAmount.toString();
-                        let index = limitAmount.indexOf(".");
+                        command.paymentItemSet.limitAmount = clearDecimal(command.paymentItemSet.limitAmount.toString());
+                    }
 
-                        if(index >= 0) {
-                            command.paymentItemSet.limitAmount = limitAmount.substring(0, index);
+                    // clear phần thập phân
+                    if(categoryAtr == model.CategoryAtr.PAYMENT_ITEM) {
+                        if ((command.paymentItemSet.errorUpperLimitSetAtr == 1) && (command.paymentItemSet.errorUpRangeVal != null)) {
+                            command.paymentItemSet.errorUpRangeVal = clearDecimal(command.paymentItemSet.errorUpRangeVal.toString());
+                        }
+
+                        if ((command.paymentItemSet.errorLowerLimitSetAtr == 1) && (command.paymentItemSet.errorLoRangeVal != null)) {
+                            command.paymentItemSet.errorLoRangeVal = clearDecimal(command.paymentItemSet.errorLoRangeVal.toString());
+                        }
+
+                        if ((command.paymentItemSet.alarmUpperLimitSetAtr == 1) && (command.paymentItemSet.alarmUpRangeVal != null)) {
+                            command.paymentItemSet.alarmUpRangeVal = clearDecimal(command.paymentItemSet.alarmUpRangeVal.toString());
+                        }
+
+                        if ((command.paymentItemSet.alarmLowerLimitSetAtr == 1) && (command.paymentItemSet.alarmLoRangeVal != null)) {
+                            command.paymentItemSet.alarmLoRangeVal = clearDecimal(command.paymentItemSet.alarmLoRangeVal.toString());
                         }
                     }
 
-                    if((command.itemRangeSet.errorUpperLimitSettingAtr == 1) || (command.itemRangeSet.errorUpperLimitSettingAtr == "1")) {
-                        if(command.itemRangeSet.errorUpperRangeValueAmount != null) {
-                            let value = command.itemRangeSet.errorUpperRangeValueAmount.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.errorUpperRangeValueAmount = value.substring(0, index);
-                            }
+                    // clear phần thập phân
+                    if(categoryAtr == model.CategoryAtr.DEDUCTION_ITEM) {
+                        if ((command.deductionItemSet.errorUpperLimitSetAtr == 1) && (command.deductionItemSet.errorUpRangeVal != null)) {
+                            command.deductionItemSet.errorUpRangeVal = clearDecimal(command.deductionItemSet.errorUpRangeVal.toString());
                         }
 
-                        if(command.itemRangeSet.errorUpperRangeValueTime != null) {
-                            let value = command.itemRangeSet.errorUpperRangeValueTime.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.errorUpperRangeValueTime = value.substring(0, index);
-                            }
+                        if ((command.deductionItemSet.errorLowerLimitSetAtr == 1) && (command.deductionItemSet.errorLoRangeVal != null)) {
+                            command.deductionItemSet.errorLoRangeVal = clearDecimal(command.deductionItemSet.errorLoRangeVal.toString());
                         }
 
-                        if(command.itemRangeSet.errorUpperRangeValueNum != null) {
-                            let value = command.itemRangeSet.errorUpperRangeValueNum.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.errorUpperRangeValueNum = value.substring(0, index);
-                            }
-                        }
-                    }
-
-                    if((command.itemRangeSet.errorLowerLimitSettingAtr == 1) || (command.itemRangeSet.errorLowerLimitSettingAtr == "1")) {
-                        if(command.itemRangeSet.errorLowerRangeValueAmount != null) {
-                            let value = command.itemRangeSet.errorLowerRangeValueAmount.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.errorLowerRangeValueAmount = value.substring(0, index);
-                            }
+                        if ((command.deductionItemSet.alarmUpperLimitSetAtr == 1) && (command.deductionItemSet.alarmUpRangeVal != null)) {
+                            command.deductionItemSet.alarmUpRangeVal = clearDecimal(command.deductionItemSet.alarmUpRangeVal.toString());
                         }
 
-                        if(command.itemRangeSet.errorLowerRangeValueTime != null) {
-                            let value = command.itemRangeSet.errorLowerRangeValueTime.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.errorLowerRangeValueTime = value.substring(0, index);
-                            }
-                        }
-
-                        if(command.itemRangeSet.errorLowerRangeValueNum != null) {
-                            let value = command.itemRangeSet.errorLowerRangeValueNum.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.errorLowerRangeValueNum = value.substring(0, index);
-                            }
-                        }
-                    }
-
-                    if((command.itemRangeSet.alarmUpperLimitSettingAtr == 1) || (command.itemRangeSet.alarmUpperLimitSettingAtr == "1")) {
-                        if(command.itemRangeSet.alarmUpperRangeValueAmount != null) {
-                            let value = command.itemRangeSet.alarmUpperRangeValueAmount.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.alarmUpperRangeValueAmount = value.substring(0, index);
-                            }
-                        }
-
-                        if(command.itemRangeSet.alarmUpperRangeValueTime != null) {
-                            let value = command.itemRangeSet.alarmUpperRangeValueTime.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.alarmUpperRangeValueTime = value.substring(0, index);
-                            }
-                        }
-
-                        if(command.itemRangeSet.alarmUpperRangeValueNum != null) {
-                            let value = command.itemRangeSet.alarmUpperRangeValueNum.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.alarmUpperRangeValueNum = value.substring(0, index);
-                            }
-                        }
-                    }
-
-                    if((command.itemRangeSet.alarmLowerLimitSettingAtr == 1) || (command.itemRangeSet.alarmLowerLimitSettingAtr == "1")) {
-                        if(command.itemRangeSet.alarmLowerRangeValueAmount != null) {
-                            let value = command.itemRangeSet.alarmLowerRangeValueAmount.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.alarmLowerRangeValueAmount = value.substring(0, index);
-                            }
-                        }
-
-                        if(command.itemRangeSet.alarmLowerRangeValueTime != null) {
-                            let value = command.itemRangeSet.alarmLowerRangeValueTime.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.alarmLowerRangeValueTime = value.substring(0, index);
-                            }
-                        }
-
-                        if(command.itemRangeSet.alarmLowerRangeValueNum != null) {
-                            let value = command.itemRangeSet.alarmLowerRangeValueNum.toString();
-                            let index = value.indexOf(".");
-
-                            if(index >= 0) {
-                                command.itemRangeSet.alarmLowerRangeValueNum = value.substring(0, index);
-                            }
+                        if ((command.deductionItemSet.alarmLowerLimitSetAtr == 1) && (command.deductionItemSet.alarmLoRangeVal != null)) {
+                            command.deductionItemSet.alarmLoRangeVal = clearDecimal(command.deductionItemSet.alarmLoRangeVal.toString());
                         }
                     }
                     
                     // clear rangeSet value if disable
                     if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
-                        command.itemRangeSet.errorUpperRangeValueAmount = null;
-                        command.itemRangeSet.errorUpperRangeValueTime = null;
-                        command.itemRangeSet.errorUpperRangeValueNum = null;
+                        command.paymentItemSet.errorUpRangeVal = null;
+                        command.deductionItemSet.errorUpRangeVal = null;
+                        command.timeItemSet.errorUpRangeValNum = null;
+                        command.timeItemSet.errorUpRangeTime = null;
                     }
                     if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
-                        command.itemRangeSet.errorLowerRangeValueAmount = null;
-                        command.itemRangeSet.errorLowerRangeValueTime = null;
-                        command.itemRangeSet.errorLowerRangeValueNum = null;
+                        command.paymentItemSet.errorLoRangeVal = null;
+                        command.deductionItemSet.errorLoRangeVal = null;
+                        command.timeItemSet.errorLoRangeValNum = null;
+                        command.timeItemSet.errorLoRangeValTime = null;
                     }
                     if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
-                        command.itemRangeSet.alarmUpperRangeValueAmount = null;
-                        command.itemRangeSet.alarmUpperRangeValueTime = null;
-                        command.itemRangeSet.alarmUpperRangeValueNum = null;
+                        command.paymentItemSet.alarmUpRangeVal = null;
+                        command.deductionItemSet.alarmUpRangeVal = null;
+                        command.timeItemSet.alarmUpRangeValNum = null;
+                        command.timeItemSet.alarmUpRangeValTime = null;
                     }
                     if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
-                        command.itemRangeSet.alarmLowerRangeValueAmount = null;
-                        command.itemRangeSet.alarmLowerRangeValueTime = null;
-                        command.itemRangeSet.alarmLowerRangeValueNum = null;
+                        command.paymentItemSet.alarmLoRangeVal = null;
+                        command.deductionItemSet.alarmLoRangeVal = null;
+                        command.timeItemSet.alarmLoRangeValNum = null;
+                        command.timeItemSet.alarmLoRangeValTime = null;
                     }
 
                     // set value cho ValueAtr
@@ -568,7 +562,6 @@ module nts.uk.pr.view.qmm012.b {
             statementItemName: KnockoutObservable<StatementItemName>;
             paymentItemSet: KnockoutObservable<PaymentItemSet>;
             statementItemDisplaySet: KnockoutObservable<StatementItemDisplaySet>;
-            itemRangeSet: KnockoutObservable<ItemRangeSet>;
             deductionItemSet: KnockoutObservable<DeductionItemSet>;
             timeItemSet: KnockoutObservable<TimeItemSet>;
             
@@ -594,7 +587,6 @@ module nts.uk.pr.view.qmm012.b {
                     self.statementItemName = ko.observable(new StatementItemName(data.statementItemName));
                     self.paymentItemSet = ko.observable(new PaymentItemSet(data.paymentItemSet, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(data.statementItemDisplaySet));
-                    self.itemRangeSet = ko.observable(new ItemRangeSet(data.itemRangeSet));
                     self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet, self));
                     self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet, self));
                     
@@ -614,7 +606,6 @@ module nts.uk.pr.view.qmm012.b {
                     self.statementItemName = ko.observable(new StatementItemName(null));
                     self.paymentItemSet = ko.observable(new PaymentItemSet(null, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(null));
-                    self.itemRangeSet = ko.observable(new ItemRangeSet(null));
                     self.deductionItemSet = ko.observable(new DeductionItemSet(null, self));
                     self.timeItemSet = ko.observable(new TimeItemSet(null, self));
                     
@@ -752,6 +743,14 @@ module nts.uk.pr.view.qmm012.b {
             limitAmountAtr: KnockoutObservable<number>;
             taxLimitAmountCode: KnockoutObservable<string>;
             taxExemptionName: KnockoutObservable<string>;
+            errorUpperLimitSetAtr: KnockoutObservable<number>;
+            errorUpRangeVal: KnockoutObservable<number>;
+            errorLowerLimitSetAtr: KnockoutObservable<number>;
+            errorLoRangeVal: KnockoutObservable<number>;
+            alarmUpperLimitSetAtr: KnockoutObservable<number>;
+            alarmUpRangeVal: KnockoutObservable<number>;
+            alarmLowerLimitSetAtr: KnockoutObservable<number>;
+            alarmLoRangeVal: KnockoutObservable<number>;
             note: KnockoutObservable<string>;
             
             // category comboBox
@@ -771,12 +770,28 @@ module nts.uk.pr.view.qmm012.b {
             
             // taxableAmountClassification  switch button
             taxableAmountList: KnockoutObservableArray<model.BoxModel>;
-            
+
+            // option for rangeValue
+            numberEditorOption: any;
+
+            // number -> boolean for checkbox
+            errorUpperLimitSettingAtrCus: KnockoutObservable<boolean>;
+            errorLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
+            alarmUpperLimitSettingAtrCus: KnockoutObservable<boolean>;
+            alarmLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
+
             screenModel: ScreenModel;
             
             constructor(data: IPaymentItemSet, screenModel: ScreenModel) {
                 let self = this;
                 self.screenModel = screenModel;
+
+                self.numberEditorOption = {
+                    grouplength: 3,
+                    width: "150px",
+                    textalign: "right",
+                    currencyformat: "JPY"
+                };
                 
                 self.taxList = ko.observableArray([
                     new model.ItemModel(model.TaxAtr.TAXATION.toString(), getText('Enum_TaxAtr_TAXATION')),
@@ -830,6 +845,14 @@ module nts.uk.pr.view.qmm012.b {
                     self.limitAmountAtr = ko.observable((data.limitAmountAtr != null) ? data.limitAmountAtr : model.LimitAmountClassification.FIXED_AMOUNT);
                     self.taxLimitAmountCode = ko.observable(data.taxLimitAmountCode);
                     self.taxExemptionName = ko.observable(data.taxExemptionName);
+                    self.errorUpperLimitSetAtr= ko.observable(data.errorUpperLimitSetAtr);
+                    self.errorUpRangeVal= ko.observable(data.errorUpRangeVal);
+                    self.errorLowerLimitSetAtr= ko.observable(data.errorLowerLimitSetAtr);
+                    self.errorLoRangeVal= ko.observable(data.errorLoRangeVal);
+                    self.alarmUpperLimitSetAtr= ko.observable(data.alarmUpperLimitSetAtr);
+                    self.alarmUpRangeVal= ko.observable(data.alarmUpRangeVal);
+                    self.alarmLowerLimitSetAtr= ko.observable(data.alarmLowerLimitSetAtr);
+                    self.alarmLoRangeVal= ko.observable(data.alarmLoRangeVal);
                     self.note = ko.observable(data.note);
                 } else {
                     self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
@@ -848,8 +871,21 @@ module nts.uk.pr.view.qmm012.b {
                     self.limitAmountAtr = ko.observable(model.LimitAmountClassification.FIXED_AMOUNT);
                     self.taxLimitAmountCode = ko.observable(null);
                     self.taxExemptionName = ko.observable(null);
+                    self.errorUpperLimitSetAtr= ko.observable(null);
+                    self.errorUpRangeVal= ko.observable(null);
+                    self.errorLowerLimitSetAtr= ko.observable(null);
+                    self.errorLoRangeVal= ko.observable(null);
+                    self.alarmUpperLimitSetAtr= ko.observable(null);
+                    self.alarmUpRangeVal= ko.observable(null);
+                    self.alarmLowerLimitSetAtr= ko.observable(null);
+                    self.alarmLoRangeVal= ko.observable(null);
                     self.note = ko.observable(null);
                 }
+
+                self.errorUpperLimitSettingAtrCus = ko.observable(self.errorUpperLimitSetAtr() == 1);
+                self.errorLowerLimitSettingAtrCus = ko.observable(self.errorLowerLimitSetAtr() == 1);
+                self.alarmUpperLimitSettingAtrCus = ko.observable(self.alarmUpperLimitSetAtr() == 1);
+                self.alarmLowerLimitSettingAtrCus = ko.observable(self.alarmLowerLimitSetAtr() == 1);
                 
                 // mapping 2 thuộc tính của 2 domain từ cùng 1 item
                 self.breakdownItemUseAtr.subscribe(x => {
@@ -876,6 +912,42 @@ module nts.uk.pr.view.qmm012.b {
                     if((x != null) && (x != model.TaxAtr.LIMIT_TAX_EXEMPTION) && (x != model.TaxAtr.COMMUTING_EXPENSES_MANUAL)) {
                         $('#C4_8').ntsError('clear');
                         self.limitAmount(null);
+                    }
+                });
+
+                self.errorUpperLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.errorUpperLimitSetAtr(1);
+                    } else {
+                        self.errorUpperLimitSetAtr(0);
+                        $('#C2_12').ntsError('clear');
+                    }
+                });
+
+                self.errorLowerLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.errorLowerLimitSetAtr(1);
+                    } else {
+                        self.errorLowerLimitSetAtr(0);
+                        $('#C2_15').ntsError('clear');
+                    }
+                });
+
+                self.alarmUpperLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.alarmUpperLimitSetAtr(1);
+                    } else {
+                        self.alarmUpperLimitSetAtr(0);
+                        $('#C2_19').ntsError('clear');
+                    }
+                });
+
+                self.alarmLowerLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.alarmLowerLimitSetAtr(1);
+                    } else {
+                        self.alarmLowerLimitSetAtr(0);
+                        $('#C2_22').ntsError('clear');
                     }
                 });
             }
@@ -936,135 +1008,40 @@ module nts.uk.pr.view.qmm012.b {
             }
         }
         
-        class ItemRangeSet {
-            rangeValueAtr: KnockoutObservable<number>;
-            errorUpperLimitSettingAtr: KnockoutObservable<number>;
-            errorUpperRangeValueAmount: KnockoutObservable<number>;
-            errorUpperRangeValueTime: KnockoutObservable<number>;
-            errorUpperRangeValueNum: KnockoutObservable<number>;
-            errorLowerLimitSettingAtr: KnockoutObservable<number>;
-            errorLowerRangeValueAmount: KnockoutObservable<number>;
-            errorLowerRangeValueTime: KnockoutObservable<number>;
-            errorLowerRangeValueNum: KnockoutObservable<number>;
-            alarmUpperLimitSettingAtr: KnockoutObservable<number>;
-            alarmUpperRangeValueAmount: KnockoutObservable<number>;
-            alarmUpperRangeValueTime: KnockoutObservable<number>;
-            alarmUpperRangeValueNum: KnockoutObservable<number>;
-            alarmLowerLimitSettingAtr: KnockoutObservable<number>;
-            alarmLowerRangeValueAmount: KnockoutObservable<number>;
-            alarmLowerRangeValueTime: KnockoutObservable<number>;
-            alarmLowerRangeValueNum: KnockoutObservable<number>;
-            
+        class DeductionItemSet {
+            deductionItemAtr: KnockoutObservable<number>;
+            breakdownItemUseAtr: KnockoutObservable<number>;
+            errorUpperLimitSetAtr: KnockoutObservable<number>;
+            errorUpRangeVal: KnockoutObservable<number>;
+            errorLowerLimitSetAtr: KnockoutObservable<number>;
+            errorLoRangeVal: KnockoutObservable<number>;
+            alarmUpperLimitSetAtr: KnockoutObservable<number>;
+            alarmUpRangeVal: KnockoutObservable<number>;
+            alarmLowerLimitSetAtr: KnockoutObservable<number>;
+            alarmLoRangeVal: KnockoutObservable<number>;
+            note: KnockoutObservable<string>;
+
+            // option for rangeValue
+            numberEditorOption: any;
+
+            // deductionItemList switch button
+            deductionItemList: KnockoutObservableArray<model.ItemModel>;
+
             // number -> boolean for checkbox
             errorUpperLimitSettingAtrCus: KnockoutObservable<boolean>;
             errorLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
             alarmUpperLimitSettingAtrCus: KnockoutObservable<boolean>;
             alarmLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
             
-            // option for numberEditor binding
-            numberEditorOption: any;
-            
-            constructor(data: IItemRangeSet) {
+            constructor(data: IDeductionItemSet, parent: StatementItemData) {
                 let self = this;
-            
+
                 self.numberEditorOption = {
                     grouplength: 3,
                     width: "150px",
                     textalign: "right",
                     currencyformat: "JPY"
                 };
-                
-                if (data) {
-                    self.rangeValueAtr = ko.observable(data.rangeValueAtr);
-                    self.errorUpperLimitSettingAtr = ko.observable(data.errorUpperLimitSettingAtr);
-                    self.errorUpperRangeValueAmount = ko.observable(data.errorUpperRangeValueAmount);
-                    self.errorUpperRangeValueTime = ko.observable(data.errorUpperRangeValueTime);
-                    self.errorUpperRangeValueNum = ko.observable(data.errorUpperRangeValueNum);
-                    self.errorLowerLimitSettingAtr = ko.observable(data.errorLowerLimitSettingAtr);
-                    self.errorLowerRangeValueAmount = ko.observable(data.errorLowerRangeValueAmount);
-                    self.errorLowerRangeValueTime = ko.observable(data.errorLowerRangeValueTime);
-                    self.errorLowerRangeValueNum = ko.observable(data.errorLowerRangeValueNum);
-                    self.alarmUpperLimitSettingAtr = ko.observable(data.alarmUpperLimitSettingAtr);
-                    self.alarmUpperRangeValueAmount = ko.observable(data.alarmUpperRangeValueAmount);
-                    self.alarmUpperRangeValueTime = ko.observable(data.alarmUpperRangeValueTime);
-                    self.alarmUpperRangeValueNum = ko.observable(data.alarmUpperRangeValueNum);
-                    self.alarmLowerLimitSettingAtr = ko.observable(data.alarmLowerLimitSettingAtr);
-                    self.alarmLowerRangeValueAmount = ko.observable(data.alarmLowerRangeValueAmount);
-                    self.alarmLowerRangeValueTime = ko.observable(data.alarmLowerRangeValueTime);
-                    self.alarmLowerRangeValueNum = ko.observable(data.alarmLowerRangeValueNum);
-                } else {
-                    self.rangeValueAtr = ko.observable(null);
-                    self.errorUpperLimitSettingAtr = ko.observable(null);
-                    self.errorUpperRangeValueAmount = ko.observable(null);
-                    self.errorUpperRangeValueTime = ko.observable(null);
-                    self.errorUpperRangeValueNum = ko.observable(null);
-                    self.errorLowerLimitSettingAtr = ko.observable(null);
-                    self.errorLowerRangeValueAmount = ko.observable(null);
-                    self.errorLowerRangeValueTime = ko.observable(null);
-                    self.errorLowerRangeValueNum = ko.observable(null);
-                    self.alarmUpperLimitSettingAtr = ko.observable(null);
-                    self.alarmUpperRangeValueAmount = ko.observable(null);
-                    self.alarmUpperRangeValueTime = ko.observable(null);
-                    self.alarmUpperRangeValueNum = ko.observable(null);
-                    self.alarmLowerLimitSettingAtr = ko.observable(null);
-                    self.alarmLowerRangeValueAmount = ko.observable(null);
-                    self.alarmLowerRangeValueTime = ko.observable(null);
-                    self.alarmLowerRangeValueNum = ko.observable(null);
-                }
-                
-                self.errorUpperLimitSettingAtrCus = ko.observable(self.errorUpperLimitSettingAtr() == 1);
-                self.errorLowerLimitSettingAtrCus = ko.observable(self.errorLowerLimitSettingAtr() == 1);
-                self.alarmUpperLimitSettingAtrCus = ko.observable(self.alarmUpperLimitSettingAtr() == 1);
-                self.alarmLowerLimitSettingAtrCus = ko.observable(self.alarmLowerLimitSettingAtr() == 1);
-                
-                self.errorUpperLimitSettingAtrCus.subscribe(x => {
-                    if (x) {
-                        self.errorUpperLimitSettingAtr(1);
-                    } else {
-                        self.errorUpperLimitSettingAtr(0);
-                        $('#C2_12').ntsError('clear');
-                    }
-                });
-                
-                self.errorLowerLimitSettingAtrCus.subscribe(x => {
-                    if (x) {
-                        self.errorLowerLimitSettingAtr(1);
-                    } else {
-                        self.errorLowerLimitSettingAtr(0);
-                        $('#C2_15').ntsError('clear');
-                    }
-                });
-                
-                self.alarmUpperLimitSettingAtrCus.subscribe(x => {
-                    if (x) {
-                        self.alarmUpperLimitSettingAtr(1);
-                    } else {
-                        self.alarmUpperLimitSettingAtr(0);
-                        $('#C2_19').ntsError('clear');
-                    }
-                });
-                
-                self.alarmLowerLimitSettingAtrCus.subscribe(x => {
-                    if (x) {
-                        self.alarmLowerLimitSettingAtr(1);
-                    } else {
-                        self.alarmLowerLimitSettingAtr(0);
-                        $('#C2_22').ntsError('clear');
-                    }
-                });
-            }
-        }
-        
-        class DeductionItemSet {
-            deductionItemAtr: KnockoutObservable<number>;
-            breakdownItemUseAtr: KnockoutObservable<number>;
-            note: KnockoutObservable<string>;
-            
-            // deductionItemList switch button
-            deductionItemList: KnockoutObservableArray<model.ItemModel>;
-            
-            constructor(data: IDeductionItemSet, parent: StatementItemData) {
-                let self = this;
                 
                 self.deductionItemList = ko.observableArray([
                     new model.ItemModel(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM.toString(), getText('Enum_DeductionItemAtr_OPTIONAL_DEDUCTION_ITEM')),
@@ -1076,6 +1053,14 @@ module nts.uk.pr.view.qmm012.b {
                 if (data) {
                     self.deductionItemAtr = ko.observable(data.deductionItemAtr);
                     self.breakdownItemUseAtr = ko.observable(data.breakdownItemUseAtr);
+                    self.errorUpperLimitSetAtr= ko.observable(data.errorUpperLimitSetAtr);
+                    self.errorUpRangeVal= ko.observable(data.errorUpRangeVal);
+                    self.errorLowerLimitSetAtr= ko.observable(data.errorLowerLimitSetAtr);
+                    self.errorLoRangeVal= ko.observable(data.errorLoRangeVal);
+                    self.alarmUpperLimitSetAtr= ko.observable(data.alarmUpperLimitSetAtr);
+                    self.alarmUpRangeVal= ko.observable(data.alarmUpRangeVal);
+                    self.alarmLowerLimitSetAtr= ko.observable(data.alarmLowerLimitSetAtr);
+                    self.alarmLoRangeVal= ko.observable(data.alarmLoRangeVal);
                     self.note = ko.observable(data.note);
 
                     // show in screen because use same component
@@ -1084,8 +1069,57 @@ module nts.uk.pr.view.qmm012.b {
                 } else {
                     self.deductionItemAtr = ko.observable(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM);
                     self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
+                    self.errorUpperLimitSetAtr= ko.observable(null);
+                    self.errorUpRangeVal= ko.observable(null);
+                    self.errorLowerLimitSetAtr= ko.observable(null);
+                    self.errorLoRangeVal= ko.observable(null);
+                    self.alarmUpperLimitSetAtr= ko.observable(null);
+                    self.alarmUpRangeVal= ko.observable(null);
+                    self.alarmLowerLimitSetAtr= ko.observable(null);
+                    self.alarmLoRangeVal= ko.observable(null);
                     self.note = ko.observable(null);
                 }
+
+                self.errorUpperLimitSettingAtrCus = ko.observable(self.errorUpperLimitSetAtr() == 1);
+                self.errorLowerLimitSettingAtrCus = ko.observable(self.errorLowerLimitSetAtr() == 1);
+                self.alarmUpperLimitSettingAtrCus = ko.observable(self.alarmUpperLimitSetAtr() == 1);
+                self.alarmLowerLimitSettingAtrCus = ko.observable(self.alarmLowerLimitSetAtr() == 1);
+
+                self.errorUpperLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.errorUpperLimitSetAtr(1);
+                    } else {
+                        self.errorUpperLimitSetAtr(0);
+                        $('#C2_12').ntsError('clear');
+                    }
+                });
+
+                self.errorLowerLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.errorLowerLimitSetAtr(1);
+                    } else {
+                        self.errorLowerLimitSetAtr(0);
+                        $('#C2_15').ntsError('clear');
+                    }
+                });
+
+                self.alarmUpperLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.alarmUpperLimitSetAtr(1);
+                    } else {
+                        self.alarmUpperLimitSetAtr(0);
+                        $('#C2_19').ntsError('clear');
+                    }
+                });
+
+                self.alarmLowerLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.alarmLowerLimitSetAtr(1);
+                    } else {
+                        self.alarmLowerLimitSetAtr(0);
+                        $('#C2_22').ntsError('clear');
+                    }
+                });
             }
         }
         
@@ -1093,17 +1127,54 @@ module nts.uk.pr.view.qmm012.b {
             averageWageAtr: KnockoutObservable<number>;
             workingDaysPerYear: KnockoutObservable<number>;
             timeCountAtr: KnockoutObservable<number>;
+            errorUpperLimitSetAtr: KnockoutObservable<number>;
+            errorUpRangeValTime: KnockoutObservable<number>;
+            errorUpRangeValNum: KnockoutObservable<number>;
+            errorLowerLimitSetAtr: KnockoutObservable<number>;
+            errorLoRangeValTime: KnockoutObservable<number>;
+            errorLoRangeValNum: KnockoutObservable<number>;
+            alarmUpperLimitSetAtr: KnockoutObservable<number>;
+            alarmUpRangeValTime: KnockoutObservable<number>;
+            alarmUpRangeValNum: KnockoutObservable<number>;
+            alarmLowerLimitSetAtr: KnockoutObservable<number>;
+            alarmLoRangeValTime: KnockoutObservable<number>;
+            alarmLoRangeValNum: KnockoutObservable<number>;
             note: KnockoutObservable<string>;
+            parameterValue: number;
+
+            // option for range time Value
+            timeEditorOption: any;
+
+            // option for range number Value
+            numberEditorOption: any;
             
             // timeCountList switch button
             timeCountList: KnockoutObservableArray<model.ItemModel>;
             
             // coveredList switch button
             coveredList: KnockoutObservableArray<model.ItemModel>;
+
+            // number -> boolean for checkbox
+            errorUpperLimitSettingAtrCus: KnockoutObservable<boolean>;
+            errorLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
+            alarmUpperLimitSettingAtrCus: KnockoutObservable<boolean>;
+            alarmLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
             
             constructor(data: ITimeItemSet, parent: StatementItemData) {
                 let self = this;
-                
+
+                self.numberEditorOption = {
+                    grouplength: 3,
+                    decimallength: 2,
+                    width: "150px",
+                    textalign: "right"
+                };
+
+                self.timeEditorOption = {
+                    width: "150px",
+                    textalign: "right"
+                };
+
                 self.timeCountList = ko.observableArray([
                     new model.ItemModel(model.TimeCountAtr.TIME.toString(), getText('QMM012_88')),
                     new model.ItemModel(model.TimeCountAtr.TIMES.toString(), getText('QMM012_89'))
@@ -1118,7 +1189,20 @@ module nts.uk.pr.view.qmm012.b {
                     self.averageWageAtr = ko.observable(data.averageWageAtr);
                     self.workingDaysPerYear = ko.observable(data.workingDaysPerYear);
                     self.timeCountAtr = ko.observable(data.timeCountAtr);
+                    self.errorUpperLimitSetAtr = ko.observable(data.errorUpperLimitSetAtr);
+                    self.errorUpRangeValTime = ko.observable(data.errorUpRangeValTime);
+                    self.errorUpRangeValNum = ko.observable(data.errorUpRangeValNum);
+                    self.errorLowerLimitSetAtr = ko.observable(data.errorLowerLimitSetAtr);
+                    self.errorLoRangeValTime = ko.observable(data.errorLoRangeValTime);
+                    self.errorLoRangeValNum = ko.observable(data.errorLoRangeValNum);
+                    self.alarmUpperLimitSetAtr = ko.observable(data.alarmUpperLimitSetAtr);
+                    self.alarmUpRangeValTime = ko.observable(data.alarmUpRangeValTime);
+                    self.alarmUpRangeValNum = ko.observable(data.alarmUpRangeValNum);
+                    self.alarmLowerLimitSetAtr = ko.observable(data.alarmLowerLimitSetAtr);
+                    self.alarmLoRangeValTime = ko.observable(data.alarmLoRangeValTime);
+                    self.alarmLoRangeValNum = ko.observable(data.alarmLoRangeValNum);
                     self.note = ko.observable(data.note);
+                    self.parameterValue = data.parameterValue;
 
                     // show in screen because use same component
                     parent.paymentItemSet().note(data.note);
@@ -1126,8 +1210,62 @@ module nts.uk.pr.view.qmm012.b {
                     self.averageWageAtr = ko.observable(model.CoveredAtr.COVERED);
                     self.workingDaysPerYear = ko.observable(model.CoveredAtr.COVERED);
                     self.timeCountAtr = ko.observable(model.TimeCountAtr.TIME);
+                    self.errorUpperLimitSetAtr = ko.observable(null);
+                    self.errorUpRangeValTime = ko.observable(null);
+                    self.errorUpRangeValNum = ko.observable(null);
+                    self.errorLowerLimitSetAtr = ko.observable(null);
+                    self.errorLoRangeValTime = ko.observable(null);
+                    self.errorLoRangeValNum = ko.observable(null);
+                    self.alarmUpperLimitSetAtr = ko.observable(null);
+                    self.alarmUpRangeValTime = ko.observable(null);
+                    self.alarmUpRangeValNum = ko.observable(null);
+                    self.alarmLowerLimitSetAtr = ko.observable(null);
+                    self.alarmLoRangeValTime = ko.observable(null);
+                    self.alarmLoRangeValNum = ko.observable(null);
                     self.note = ko.observable(null);
+                    self.parameterValue = 2;
                 }
+
+                self.errorUpperLimitSettingAtrCus = ko.observable(self.errorUpperLimitSetAtr() == 1);
+                self.errorLowerLimitSettingAtrCus = ko.observable(self.errorLowerLimitSetAtr() == 1);
+                self.alarmUpperLimitSettingAtrCus = ko.observable(self.alarmUpperLimitSetAtr() == 1);
+                self.alarmLowerLimitSettingAtrCus = ko.observable(self.alarmLowerLimitSetAtr() == 1);
+
+                self.errorUpperLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.errorUpperLimitSetAtr(1);
+                    } else {
+                        self.errorUpperLimitSetAtr(0);
+                        $('#E1_20').ntsError('clear');
+                    }
+                });
+
+                self.errorLowerLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.errorLowerLimitSetAtr(1);
+                    } else {
+                        self.errorLowerLimitSetAtr(0);
+                        $('#E1_23').ntsError('clear');
+                    }
+                });
+
+                self.alarmUpperLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.alarmUpperLimitSetAtr(1);
+                    } else {
+                        self.alarmUpperLimitSetAtr(0);
+                        $('#E1_27').ntsError('clear');
+                    }
+                });
+
+                self.alarmLowerLimitSettingAtrCus.subscribe(x => {
+                    if (x) {
+                        self.alarmLowerLimitSetAtr(1);
+                    } else {
+                        self.alarmLowerLimitSetAtr(0);
+                        $('#E1_30').ntsError('clear');
+                    }
+                });
             }
         }
 
@@ -1147,7 +1285,6 @@ module nts.uk.pr.view.qmm012.b {
             deductionItemSet: IDeductionItemSet;
             timeItemSet: ITimeItemSet;
             statementItemDisplaySet: IStatementItemDisplaySet;
-            itemRangeSet: IItemRangeSet;
             validityPeriodAndCycleSet: IValidityPeriodAndCycleSet;
             breakdownItemSet: Array<IBreakdownItemSet>;
             
@@ -1193,12 +1330,28 @@ module nts.uk.pr.view.qmm012.b {
             limitAmountAtr: number;
             taxLimitAmountCode: string;
             taxExemptionName: string;
+            errorUpperLimitSetAtr: number;
+            errorUpRangeVal: number;
+            errorLowerLimitSetAtr: number;
+            errorLoRangeVal: number;
+            alarmUpperLimitSetAtr: number;
+            alarmUpRangeVal: number;
+            alarmLowerLimitSetAtr: number;
+            alarmLoRangeVal: number;
             note: string;
         }
         
         interface IDeductionItemSet {
             deductionItemAtr: number;
             breakdownItemUseAtr: number;
+            errorUpperLimitSetAtr: number;
+            errorUpRangeVal: number;
+            errorLowerLimitSetAtr: number;
+            errorLoRangeVal: number;
+            alarmUpperLimitSetAtr: number;
+            alarmUpRangeVal: number;
+            alarmLowerLimitSetAtr: number;
+            alarmLoRangeVal: number;
             note: string;
         }
         
@@ -1206,32 +1359,25 @@ module nts.uk.pr.view.qmm012.b {
             averageWageAtr: number;
             workingDaysPerYear: number;
             timeCountAtr: number;
+            errorUpperLimitSetAtr: number;
+            errorUpRangeValTime: number;
+            errorUpRangeValNum: number;
+            errorLowerLimitSetAtr: number;
+            errorLoRangeValTime: number;
+            errorLoRangeValNum: number;
+            alarmUpperLimitSetAtr: number;
+            alarmUpRangeValTime: number;
+            alarmUpRangeValNum: number;
+            alarmLowerLimitSetAtr: number;
+            alarmLoRangeValTime: number;
+            alarmLoRangeValNum: number;
             note: string;
+            parameterValue: number;
         }
         
         interface IStatementItemDisplaySet {
             zeroDisplayAtr: number;
             itemNameDisplay: number;
-        }
-        
-        interface IItemRangeSet {
-            rangeValueAtr: number;
-            errorUpperLimitSettingAtr: number;
-            errorUpperRangeValueAmount: number;
-            errorUpperRangeValueTime: number;
-            errorUpperRangeValueNum: number;
-            errorLowerLimitSettingAtr: number;
-            errorLowerRangeValueAmount: number;
-            errorLowerRangeValueTime: number;
-            errorLowerRangeValueNum: number;
-            alarmUpperLimitSettingAtr: number;
-            alarmUpperRangeValueAmount: number;
-            alarmUpperRangeValueTime: number;
-            alarmUpperRangeValueNum: number;
-            alarmLowerLimitSettingAtr: number;
-            alarmLowerRangeValueAmount: number;
-            alarmLowerRangeValueTime: number;
-            alarmLowerRangeValueNum: number;
         }
         
         interface IValidityPeriodAndCycleSet {
@@ -1273,6 +1419,16 @@ module nts.uk.pr.view.qmm012.b {
                 default:
                     return "";
             }
+        }
+
+        function clearDecimal(value: string) {
+            let index = value.indexOf(".");
+
+            if(index >= 0) {
+                value = value.substring(0, index);
+            }
+
+            return value;
         }
         
     }  

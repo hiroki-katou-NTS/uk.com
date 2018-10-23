@@ -60,7 +60,6 @@ public class StatementItemDataFinder {
 		DeductionItemSetDto deductionItemSet = null;
 		TimeItemSetDto timeItemSet = null;
 		StatementItemDisplaySetDto statementDisplaySet = null;
-		ItemRangeSetDto itemRangeSet = null;
 		ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet = null;
 		List<BreakdownItemSetDto> breakdownItemSet = null;
 		IntegratedItemDto integratedItem = null; // TODO Chưa tạo domain
@@ -130,7 +129,7 @@ public class StatementItemDataFinder {
 		}
 
 		return new StatementItemDataDto(statementItem, statementItemName, paymentItemSet, deductionItemSet, timeItemSet,
-				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem,
+				statementDisplaySet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem,
 				String.valueOf(categoryAtr) + itemNameCd , categoryAtr, itemNameCd, name, deprecatedAtr);
 	}
 

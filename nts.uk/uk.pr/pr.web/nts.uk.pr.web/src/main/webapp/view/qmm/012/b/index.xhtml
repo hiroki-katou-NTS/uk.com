@@ -11,7 +11,9 @@
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemName
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemShortName
-				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.MonetaryValue
+				nts.uk.ctx.pr.core.dom.monthlysalary.payrolldata.DetailAmountType
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimesValue
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeValue
 				nts.uk.shr.com.primitive.Memo
 				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.LimitAmount
 			</com:ValidatorScript>
@@ -422,9 +424,9 @@
 								</div>
 							</com:ko-if>
 							<br />
-							<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
-							<com:ko-if bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1') || (statementItem().categoryAtr() == '2'))">
-								<div data-bind="with: itemRangeSet">
+							<!-- Range setting for PAYMENT_ITEM -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '0')">
+								<div data-bind="with: paymentItemSet">
 									<div class="valign-center control-group">
 										<!-- エラー範囲 -->
 										<div id="C2_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
@@ -433,8 +435,8 @@
 										<!-- エラー範囲上限入力 -->
 										<input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_57]',
-														value: errorUpperRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: errorUpRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
 														enable: errorUpperLimitSettingAtrCus}" />
 										<!-- を超える場合にエラーとする -->
@@ -447,8 +449,8 @@
 										<!-- エラー範囲下限入力 -->
 										<input id="C2_15" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_59]',
-														value: errorLowerRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: errorLoRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
 														enable: errorLowerLimitSettingAtrCus}" />
 										<!-- 未満の場合にエラーとする -->
@@ -462,8 +464,8 @@
 										<!-- アラーム範囲上限入力 -->
 										<input id="C2_19" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_62]',
-														value: alarmUpperRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: alarmUpRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
 														enable: alarmUpperLimitSettingAtrCus}" />
 										<!-- を超える場合にアラームとする -->
@@ -476,8 +478,8 @@
 										<!-- アラーム範囲下限入力 -->
 										<input id="C2_22" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_64]',
-														value: alarmLowerRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: alarmLoRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
 														enable: alarmLowerLimitSettingAtrCus}" />
 										<!-- 未満の場合にアラームとする -->
@@ -488,6 +490,217 @@
 										<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
 										<div id="C2_24">#{i18n.getText('QMM012_66')}</div>
 									</div>
+								</div>
+							</com:ko-if>
+							<!-- Range setting for DEDUCTION_ITEM -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '1')">
+								<div data-bind="with: deductionItemSet">
+									<div class="valign-center control-group">
+										<!-- エラー範囲 -->
+										<div id="C2_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+										<!-- エラー範囲上限チェック -->
+										<div id="C2_11" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+										<!-- エラー範囲上限入力 -->
+										<input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_57]',
+														value: errorUpRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: errorUpperLimitSettingAtrCus}" />
+										<!-- を超える場合にエラーとする -->
+										<label id="C2_13">#{i18n.getText('QMM012_58')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- エラー範囲下限チェック -->
+										<div id="C2_14" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+										<!-- エラー範囲下限入力 -->
+										<input id="C2_15" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_59]',
+														value: errorLoRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: errorLowerLimitSettingAtrCus}" />
+										<!-- 未満の場合にエラーとする -->
+										<label id="C2_16">#{i18n.getText('QMM012_60')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<!-- アラーム範囲 -->
+										<div id="C2_17" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+										<!-- アラーム範囲上限チェック -->
+										<div id="C2_18" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+										<!-- アラーム範囲上限入力 -->
+										<input id="C2_19" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_62]',
+														value: alarmUpRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: alarmUpperLimitSettingAtrCus}" />
+										<!-- を超える場合にアラームとする -->
+										<label id="C2_20">#{i18n.getText('QMM012_63')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- アラーム範囲下限チェック -->
+										<div id="C2_21" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+										<!-- アラーム範囲下限入力 -->
+										<input id="C2_22" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_64]',
+														value: alarmLoRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: alarmLowerLimitSettingAtrCus}" />
+										<!-- 未満の場合にアラームとする -->
+										<label id="C2_23">#{i18n.getText('QMM012_65')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+										<div id="C2_24">#{i18n.getText('QMM012_66')}</div>
+									</div>
+								</div>
+							</com:ko-if>
+							<!-- Range setting for ATENDENCE_ITEM -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '2')">
+								<div data-bind="with: timeItemSet">
+									<com:ko-if bind="(timeCountAtr() == '0' &amp;&amp; parameterValue == 2)">
+										<div class="valign-center control-group">
+											<!-- エラー範囲 -->
+											<div id="E1_18" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+											<!-- エラー範囲上限チェック -->
+											<div id="E1_19" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+											<!-- エラー範囲上限入力 -->
+											<input id="E1_20" class="check-validate" tabindex="35" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_57]',
+															value: errorUpRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: errorUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にエラーとする -->
+											<label id="E1_21">#{i18n.getText('QMM012_58')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- エラー範囲下限チェック -->
+											<div id="E1_22" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+											<!-- エラー範囲下限入力 -->
+											<input id="E1_23" class="check-validate" tabindex="37" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_59]',
+															value: errorLoRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: errorLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にエラーとする -->
+											<label id="E1_24">#{i18n.getText('QMM012_60')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<!-- アラーム範囲 -->
+											<div id="E1_25" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+											<!-- アラーム範囲上限チェック -->
+											<div id="E1_26" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲上限入力 -->
+											<input id="E1_27" class="check-validate" tabindex="39" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_62]',
+															value: alarmUpRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: alarmUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にアラームとする -->
+											<label id="E1_28">#{i18n.getText('QMM012_63')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- アラーム範囲下限チェック -->
+											<div id="E1_29" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲下限入力 -->
+											<input id="E1_30" class="check-validate" tabindex="41" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_64]',
+															value: alarmLoRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: alarmLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にアラームとする -->
+											<label id="E1_31">#{i18n.getText('QMM012_65')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+											<div id="E1_32">#{i18n.getText('QMM012_66')}</div>
+										</div>
+									</com:ko-if>
+									<com:ko-if bind="(timeCountAtr() == '0' &amp;&amp; parameterValue == 1) || (timeCountAtr() == '1')">
+										<div class="valign-center control-group">
+											<!-- エラー範囲 -->
+											<div id="E1_18" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+											<!-- エラー範囲上限チェック -->
+											<div id="E1_19" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+											<!-- エラー範囲上限入力 -->
+											<input id="E1_20" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_57]',
+															value: errorUpRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: errorUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にエラーとする -->
+											<label id="E1_21">#{i18n.getText('QMM012_58')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- エラー範囲下限チェック -->
+											<div id="E1_22" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+											<!-- エラー範囲下限入力 -->
+											<input id="E1_23" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_59]',
+															value: errorLoRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: errorLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にエラーとする -->
+											<label id="E1_24">#{i18n.getText('QMM012_60')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<!-- アラーム範囲 -->
+											<div id="E1_25" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+											<!-- アラーム範囲上限チェック -->
+											<div id="E1_26" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲上限入力 -->
+											<input id="E1_27" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_62]',
+															value: alarmUpRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: alarmUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にアラームとする -->
+											<label id="E1_28">#{i18n.getText('QMM012_63')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- アラーム範囲下限チェック -->
+											<div id="E1_29" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲下限入力 -->
+											<input id="E1_30" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_64]',
+															value: alarmLoRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: alarmLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にアラームとする -->
+											<label id="E1_31">#{i18n.getText('QMM012_65')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+											<div id="E1_32">#{i18n.getText('QMM012_66')}</div>
+										</div>
+									</com:ko-if>
 								</div>
 							</com:ko-if>
 							<br />
