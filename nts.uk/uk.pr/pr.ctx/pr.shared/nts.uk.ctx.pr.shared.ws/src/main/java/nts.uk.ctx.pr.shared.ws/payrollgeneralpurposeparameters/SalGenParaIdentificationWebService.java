@@ -3,9 +3,9 @@ package nts.uk.ctx.pr.shared.ws.payrollgeneralpurposeparameters;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.AddSalGenParaValueCommandHandler;
-import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.SalGenParaValueCommand;
+import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.SalGenParaYeahMonthValueCommand;
 import nts.uk.ctx.pr.shared.app.find.payrollgeneralpurposeparameters.*;
-
+import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaDateParams;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -69,14 +69,13 @@ public class SalGenParaIdentificationWebService extends WebService {
     }
     @POST
     @Path("addSelectionProcess")
-    public void addSelectionProcess(SalGenParaValueCommand command) {
+    public void addSelectionProcess(SalGenParaYeahMonthValueCommand command) {
         mAddSalGenParaValueCommandHandler.handle(command);
     }
     @POST
     @Path("getListHistory")
-    public void getListHistory(SalGenParaValueCommand command) {
-        mSalGenParaDateHistFinder.getListHistory("2", GeneralDate.fromString("2018-01-06","yyyy-MM-dd"), GeneralDate.fromString("9999-12-31","yyyy-MM-dd"),"000000000000-0001");
-        mAddSalGenParaValueCommandHandler.handle(command);
+    public List<SalGenParaDateHistDto> getListHistory(SalGenParaDateParams params) {
+        return mSalGenParaDateHistFinder.getListHistory(params.getParaNo(), GeneralDate.fromString(params.getStartDate(),"yyyy-MM-dd"), GeneralDate.fromString(params.getEndDate(),"yyyy-MM-dd"));
     }
 //
 //    @POST
