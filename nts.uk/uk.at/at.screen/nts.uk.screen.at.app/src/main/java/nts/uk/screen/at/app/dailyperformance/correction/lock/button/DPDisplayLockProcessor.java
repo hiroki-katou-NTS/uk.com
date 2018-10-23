@@ -87,8 +87,11 @@ public class DPDisplayLockProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo.getErrorSetting(companyId,
-						lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
 				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
 		}
