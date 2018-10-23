@@ -565,8 +565,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			Optional<Integer> startMonthly = Optional.of(Integer.parseInt(tableDelData.getStartMonthOfMonthly()));
 			Optional<Integer> endMonthly = Optional.of(Integer.parseInt(tableDelData.getEndMonthOfMonthly()));
 			
-			parrams.put("startDate", ManualSetDeletion.convertIntToYearStartMonth(startMonthly).get().toString());
-			parrams.put("endDate", ManualSetDeletion.convertIntToYearEndMonth(endMonthly).get().toString());
+			parrams.put("startDate", startMonthly.get());
+			parrams.put("endDate", endMonthly.get());
 			
 		} else if (timeStore == TimeStore.ANNUAL) {
 			parrams.put("startDate", tableDelData.getStartYearOfMonthly());
