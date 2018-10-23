@@ -31,6 +31,7 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCall;
@@ -46,6 +47,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
 import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstFlexShortageLimit;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
@@ -66,6 +68,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorkty
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
@@ -114,6 +117,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.month.AttendenceTimeMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.CalculationStateDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.NotUseAttributeDto;
@@ -126,6 +130,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDt
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -268,6 +273,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final static String GET_EMP_ALL = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
 				+ " h.strDate <= :endDate AND h.endDate >= :startDate AND h.companyId = :companyId AND h.sid IN :sIds";
+	
+	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonMerge a "
+			+ "WHERE a.krcdtMonMergePk.employeeId IN :employeeIds "
+			+ "AND a.endYmd >= :startDate "
+			+ "AND a.endYmd <= :endDate "
+			+ "ORDER BY a.startYmd ";
 	
 	private final static String GET_MONTH_ERROR;
 	
@@ -604,7 +615,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.closeDay = :closeDay");
 		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.isLastDay = :isLastDay");
 		GET_MONTH_ERROR = builderString.toString();
-
+		
 	}
 
 	@Override
@@ -1792,6 +1803,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			e.printStackTrace();
 		}
 		return resultFind;
+	}
+
+	@Override
+	public List<AttendenceTimeMonthDto> findAttendenceTimeMonth(List<String> sids, DateRange dateRange) {
+		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonMerge.class).setParameter("employeeIds", sids)
+				.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
+				.getList(c -> new AttendenceTimeMonthDto(c.krcdtMonMergePk.getEmployeeId(),
+						new YearMonth(c.krcdtMonMergePk.getYearMonth()),
+						ClosureId.valueOf(c.krcdtMonMergePk.getClosureId()),
+						new ClosureDate(c.krcdtMonMergePk.getClosureDay(), c.krcdtMonMergePk.getIsLastDay() == 1)));
 	}
 	
 }
