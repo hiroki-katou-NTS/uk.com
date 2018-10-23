@@ -318,6 +318,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			//アルゴリズム「承認モードで起動する」を実行する
 			this.startUpInApprovalMode(optApprovalProcessingUseSetting, formatPerformance,screenDto,yearMonth, companyId);
+			if(screenDto.getMess() != null && !screenDto.getMess().isEmpty()) {
+				return screenDto;
+			}
 		}
 		
 		// set data of lstControlDisplayItem
