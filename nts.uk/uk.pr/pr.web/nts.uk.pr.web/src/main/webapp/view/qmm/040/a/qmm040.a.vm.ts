@@ -17,6 +17,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         cateIndicator: KnockoutObservable<number>;
         salBonusCate: KnockoutObservable<number>;
         //ccg001
+        employeeList:any;
         referenceDate: KnockoutObservable<string> = ko.observable('');
         ccgcomponent: GroupOption;
         tilteTable: KnockoutObservableArray<any>;
@@ -251,7 +252,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     //self.selectedEmployee(data.listEmployee);
-                    if (data) {
+                    if (data && data.listEmployee.length>0) {
+                        self.employeeList=data.listEmployee;
                         console.log(data.listEmployee);
                         service.salIndAmountHisByPeValCode({
                             //     self.cateIndicator = ko.observable(0);
@@ -267,6 +269,15 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
                             self.personalAmount(arrTemp);
                             self.personalDisplay(arrTemp);
+                            for(let i=0;i<self.personalAmount().length;i++){
+                                let index=_.findIndex(self.employeeList,function (o) {
+                                    return o.employeeId==self.personalAmount()[i].empId
+                                });
+                                if(index != -1){
+                                    self.personalAmount()[i].employeeCode(self.employeeList[index].employeeCode);
+                                    self.personalAmount()[i].businessName(self.employeeList[index].employeeName);
+                                }
+                            }
                         })
                     }
                     self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
@@ -394,8 +405,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     export class PersonalAmount {
         empId: string;
         historyId: string;
-        employeeCode: string;
-        businessName: string;
+        employeeCode:KnockoutObservable<string>=ko.observable('');
+        businessName: KnockoutObservable<string>=ko.observable('');
         startYearMonth: number;
         endYearMonth: number;
         period:string;
@@ -405,8 +416,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self=this;
             self.empId=param.empId;
             self.historyId=param.historyId;
-            self.employeeCode=param.employeeCode;
-            self.businessName=param.businessName;
+            self.employeeCode=ko.observable('');
+            self.businessName=ko.observable('');
             self.startYearMonth=param.startYearMonth;
             self.endYearMonth=param.endYearMonth;
 

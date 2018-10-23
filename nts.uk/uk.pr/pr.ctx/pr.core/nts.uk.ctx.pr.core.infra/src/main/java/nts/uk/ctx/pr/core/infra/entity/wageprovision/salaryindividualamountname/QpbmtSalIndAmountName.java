@@ -32,12 +32,6 @@ public class QpbmtSalIndAmountName extends UkJpaEntity implements Serializable {
     @EmbeddedId
     public QpbmtSalIndAmountNamePk salIndAmountNamePk;
 
-    /**
-     * 個人金額名称
-     */
-    @Basic(optional = false)
-    @Column(name = "CATE_INDICATOR")
-    public int cateIndicator;
 
     /**
      * 個人金額名称
@@ -52,11 +46,11 @@ public class QpbmtSalIndAmountName extends UkJpaEntity implements Serializable {
     }
 
     public SalIndAmountName toDomain() {
-        return new SalIndAmountName(this.salIndAmountNamePk.cid, this.salIndAmountNamePk.individualPriceCode, this.cateIndicator, this.individualPriceName);
+        return new SalIndAmountName(this.salIndAmountNamePk.cid, this.salIndAmountNamePk.individualPriceCode, this.salIndAmountNamePk.cateIndicator, this.individualPriceName);
     }
 
     public static QpbmtSalIndAmountName toEntity(SalIndAmountName domain) {
-        return new QpbmtSalIndAmountName(new QpbmtSalIndAmountNamePk(domain.getCId(), domain.getIndividualPriceCode().v()), domain.getCateIndicator().value, domain.getIndividualPriceName().v());
+        return new QpbmtSalIndAmountName(new QpbmtSalIndAmountNamePk(domain.getCId(), domain.getIndividualPriceCode().v(),domain.getCateIndicator().value),  domain.getIndividualPriceName().v());
     }
 
 }

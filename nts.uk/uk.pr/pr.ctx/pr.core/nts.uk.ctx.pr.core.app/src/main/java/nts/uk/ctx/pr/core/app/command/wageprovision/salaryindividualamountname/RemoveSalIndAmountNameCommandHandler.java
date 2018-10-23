@@ -22,6 +22,7 @@ public class RemoveSalIndAmountNameCommandHandler extends CommandHandler<SalIndA
     protected void handle(CommandHandlerContext<SalIndAmountNameCommand> context) {
         String cid = context.getCommand().getCId();
         String individualPriceCode = context.getCommand().getIndividualPriceCode();
-        repository.remove(cid, individualPriceCode);
+        int cateIndicator=context.getCommand().getCateIndicator();
+        repository.remove(cid, individualPriceCode,cateIndicator);
     }
 }
