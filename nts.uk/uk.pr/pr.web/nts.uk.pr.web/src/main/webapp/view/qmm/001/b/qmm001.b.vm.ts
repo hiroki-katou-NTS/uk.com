@@ -36,14 +36,18 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                     if(params.start) {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [self.convertMonthYearToString(params.start)]));
                         self.isFisrtHistory(false);
+                        self.startYearMonth(params.start);
+                        $('#B1_6').focus();
                     }
                 }
                 if ( params.historyAtr == 0) {
-                    self.startLastYearMonth(params.start);
+                    self.startLastYearMonthDay(params.start);
                     self.end(getText('QMM001_31', ['9999/12/31']));
                     if(params.start) {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [params.start]));
                         self.isFisrtHistory(false);
+                        self.startLastYearMonthDay(self.convertStringToDate(params.start));
+                        $('#B1_7').focus();
                     }
                 }
             }
@@ -61,7 +65,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
 
         validateYearMonthDay(){
             let self = this;
-            if(!(moment.utc(self.startLastYearMonthDay(),'YYYY/MM/DD') < moment.utc(self.startYearMonthDay(), 'YYYY/MM/DD'))) {
+            if(!(Number(self.startLastYearMonthDay()) < Number(self.startYearMonthDay()))) {
                 dialog.error({ messageId: "Msg_79"});
                 return true;
             }
@@ -74,6 +78,13 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
             year = yearMonth.slice(0, 4);
             month = yearMonth.slice(4, 6);
             return year + "/" + month;
+        }
+
+        convertStringToDate(date: any) {
+            let self = this;
+            let year: string, month: string, date: string;
+            date = date.slice(0, 4) + date.slice(5, 7) + date.slice(8,9);
+            return date;
         }
 
 

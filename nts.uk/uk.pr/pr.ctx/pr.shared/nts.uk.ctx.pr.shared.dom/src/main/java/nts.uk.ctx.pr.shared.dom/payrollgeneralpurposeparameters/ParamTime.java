@@ -9,8 +9,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 */
 @IntegerMinValue(-9999)
 @IntegerMaxValue(9999)
-public class ParamTime extends IntegerPrimitiveValue<ParamTime>
-{
+public class ParamTime extends IntegerPrimitiveValue<ParamTime> {
     
     private static final long serialVersionUID = 1L;
     

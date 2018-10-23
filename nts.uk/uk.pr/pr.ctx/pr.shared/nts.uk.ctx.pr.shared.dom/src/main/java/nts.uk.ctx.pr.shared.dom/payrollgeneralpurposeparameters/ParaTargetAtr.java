@@ -4,8 +4,7 @@ package nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters;
 /**
 * パラメータ対象区分
 */
-public enum ParaTargetAtr
-{
+public enum ParaTargetAtr {
     
     TARGET(0, "対象"),
     NOT_COVERED(1, "対象外");

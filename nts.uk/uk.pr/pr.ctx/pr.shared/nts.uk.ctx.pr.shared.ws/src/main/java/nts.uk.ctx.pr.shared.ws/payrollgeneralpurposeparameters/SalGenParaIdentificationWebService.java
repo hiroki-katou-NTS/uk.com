@@ -2,8 +2,7 @@ package nts.uk.ctx.pr.shared.ws.payrollgeneralpurposeparameters;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.AddSalGenParaValueCommandHandler;
-import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.SalGenParaYeahMonthValueCommand;
+import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.*;
 import nts.uk.ctx.pr.shared.app.find.payrollgeneralpurposeparameters.*;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaDateParams;
 
@@ -36,11 +35,11 @@ public class SalGenParaIdentificationWebService extends WebService {
     @Inject
     private SalGenParaValueFinder mSalGenParaValueFinder;
 
-//    @POST
-//    @Path("getOccAccIsPrRate/{hisId}")
-//    public List<OccAccIsPrRateDto> getOccAccIsPrRate(@PathParam("hisId") String hisId) {
-//        return occAccIsPrRateFinder.getAllOccAccIsPrRate(hisId);
-//    }
+    @Inject
+    private UpdateSalGenDateHistoryCommandHandler updateSalGenDateHistoryCommandHandler;
+
+    @Inject
+    private UpdateSalGenYearMonthHistoryCommandHandler updateSalGenYearMonthHistoryCommandHandler;
 
     @POST
     @Path("getAllSalGenParaIdentification")
@@ -72,18 +71,24 @@ public class SalGenParaIdentificationWebService extends WebService {
     public void addSelectionProcess(SalGenParaYeahMonthValueCommand command) {
         mAddSalGenParaValueCommandHandler.handle(command);
     }
+
     @POST
     @Path("getListHistory")
     public List<SalGenParaDateHistDto> getListHistory(SalGenParaDateParams params) {
         return mSalGenParaDateHistFinder.getListHistory(params.getParaNo(), GeneralDate.fromString(params.getStartDate(),"yyyy-MM-dd"), GeneralDate.fromString(params.getEndDate(),"yyyy-MM-dd"));
     }
-//
-//    @POST
-//    @Path("updateOccAccInsurBus")
-//    public void updateOccAccInsurBus(UpdateNameOfEachBusinessCommand command) {
-//        updateNameOfEachBusinessCommandHandler.handle(command);
-//    }
 
+    @POST
+    @Path("UpdateHistoryYearMonth")
+    public void UpdateHistoryYearMonth(SalGenYearMonthHistoryCommand command) {
+        updateSalGenYearMonthHistoryCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("UpdateHistoryDate")
+    public void UpdateHistoryDate(SalGenDateHistoryCommand command) {
+        updateSalGenDateHistoryCommandHandler.handle(command);
+    }
 
 
 

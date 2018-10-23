@@ -7,8 +7,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 * パラメータ文字
 */
 @StringMaxLength(20)
-public class ParamCharacter extends StringPrimitiveValue<ParamCharacter>
-{
+public class ParamCharacter extends StringPrimitiveValue<ParamCharacter> {
     
     private static final long serialVersionUID = 1L;
     
