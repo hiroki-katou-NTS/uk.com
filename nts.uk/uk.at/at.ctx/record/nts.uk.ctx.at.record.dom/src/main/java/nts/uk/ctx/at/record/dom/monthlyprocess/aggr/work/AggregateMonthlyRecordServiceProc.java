@@ -694,14 +694,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val monthResults = this.aggregateAnyItemPeriod(monthPeriod, false);
 		for (val monthResult : monthResults.values()){
 			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
-					this.employeeId,
-					this.yearMonth,
-					this.closureId,
-					this.closureDate,
-					monthResult.getOptionalItemNo(),
-					Optional.ofNullable(monthResult.getAnyTime()),
-					Optional.ofNullable(monthResult.getAnyTimes()),
-					Optional.ofNullable(monthResult.getAnyAmount())));
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthResult));
 		}
 	}
 	
@@ -714,6 +707,7 @@ public class AggregateMonthlyRecordServiceProc {
 	private Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(DatePeriod period, boolean isWeek){
 		
 		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
+		List<AnyItemOfMonthly> anyItems = new ArrayList<>();
 		
 		// 任意項目ごとに集計する
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
@@ -789,7 +783,8 @@ public class AggregateMonthlyRecordServiceProc {
 							.filter(c -> c.getOptionalItemNo().equals(optionalItem.getOptionalItemNo()))
 							.collect(Collectors.toList());
 					val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-					val monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
+					MonthlyRecordToAttendanceItemConverter monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
+					monthlyRecordDto = monthlyRecordDto.withAnyItem(anyItems);
 					val calcResult = optionalItem.caluculationFormula(
 							this.companyId, optionalItem, targetFormulas,
 							Optional.empty(), Optional.of(monthlyRecordDto));
@@ -810,7 +805,10 @@ public class AggregateMonthlyRecordServiceProc {
 				}
 				
 				// 任意項目集計結果を返す
-				results.put(optionalItemNo, AnyItemAggrResult.of(optionalItemNo, anyTime, anyTimes, anyAmount));
+				AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, anyTime, anyTimes, anyAmount);
+				results.put(optionalItemNo, result);
+				anyItems.add(AnyItemOfMonthly.of(
+						this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
 			}
 		}
 		
