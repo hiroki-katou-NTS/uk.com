@@ -229,3 +229,20 @@ button.nts-switch-button {
 	margin: -15px 0px;
 }
 
+.contentE {
+	min-height: 430px;
+}
+
+.contentE+div.btns {
+	width: 682px;
+	text-align: right;
+}
+
+.btns>.proceed {
+	margin-left: 15px;
+}
+
+#wizard-p-3{
+	position: relative !important;
+}
+
