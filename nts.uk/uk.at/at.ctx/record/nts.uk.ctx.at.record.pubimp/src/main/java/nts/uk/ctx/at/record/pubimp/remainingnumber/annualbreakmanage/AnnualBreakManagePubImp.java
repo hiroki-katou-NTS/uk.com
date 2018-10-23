@@ -20,6 +20,8 @@ import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.AnnualBreakMan
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.YearlyHolidaysTimeRemainingExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
@@ -54,15 +56,23 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
 	
+	@Inject
+	AnnLeaGrantRemDataRepository grantDataRep;
+	
 	@Override
 	public List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<AnnualBreakManageExport> annualBreakManageExport = new ArrayList<>();
 		for (String emp : employeeId) {
-			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(emp, new DatePeriod(startDate, endDate));
+			List<NextAnnualLeaveGrant> nextAnnualLeaveGrant = calculateNextHolidayGrant(emp, new DatePeriod(startDate.addDays(-1), endDate.addDays(-1)));
 			// 「年休付与がある社員IDList」に処理中の社員IDを追加
 			if (!nextAnnualLeaveGrant.isEmpty() ) {
 				annualBreakManageExport.add(new AnnualBreakManageExport(emp));
+			}else{
+				List<AnnualLeaveGrantRemainingData> listAnnLeaRemData = grantDataRep.findInDate(emp, startDate, endDate);
+				if(!listAnnLeaRemData.isEmpty()){
+					annualBreakManageExport.add(new AnnualBreakManageExport(emp));
+				}
 			}
 		}
 		return annualBreakManageExport;
