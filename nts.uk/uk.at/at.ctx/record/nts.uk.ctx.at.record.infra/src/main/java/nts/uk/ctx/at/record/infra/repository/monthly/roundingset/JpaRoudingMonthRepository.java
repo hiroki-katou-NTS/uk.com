@@ -138,6 +138,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	public void addList(List<RoundingMonth> lstRoundingMonth) {
 		this.getEntityManager().createQuery(DELETE_BY_CID).setParameter("companyId", AppContexts.user().companyId())
 				.executeUpdate();
+		this.getEntityManager().flush();
 		this.commandProxy().insertAll(
 				lstRoundingMonth.stream().map(domain -> convertToDbType(domain)).collect(Collectors.toList()));
 	}

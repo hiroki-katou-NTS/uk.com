@@ -96,7 +96,7 @@ module nts.uk.at.view.kmk013.e {
                     service.getPossibleItem(arr).done(listName => {
                         service.findByCompanyId().done(listData => {
                             _.forEach(listName, (element) => {
-                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
+                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId]);
                                 let ur;
                                 if (obj) {
                                     ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding, self.itemListRounding());
@@ -165,8 +165,8 @@ module nts.uk.at.view.kmk013.e {
             constructor(unitRouding: UnitRouding){
                 this.timeItemId = unitRouding.timeItemId;
                 this.attendanceItemName = unitRouding.attendanceItemName;
-                this.unit = unitRouding.unit;
-                this.rounding = unitRouding.rounding;
+                this.unit = unitRouding.unit();
+                this.rounding = unitRouding.rounding();
             }
         }
         
