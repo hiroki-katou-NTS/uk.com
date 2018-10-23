@@ -31,17 +31,36 @@ module nts.uk.pr.view.qmm016.share.model {
         N0003 = 9,
     }
 
+    export function getElementItemModel () {
+        return [
+            new ItemModel(ELEMENT_SETTING.FIRST_DIMENSION, '一次元'),
+            new ItemModel(ELEMENT_SETTING.SECOND_DIMENSION, '二次元'),
+            new ItemModel(ELEMENT_SETTING.THIRD_DIMENSION, '三次元'),
+            new ItemModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
+            new ItemModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+        ];
+    }
 
+    export class ItemModel {
+        value: number;
+        name: string;
+
+        constructor(value: number, name: string) {
+            this.value = value;
+            this.name = name;
+        }
+    }
 
 
     // 賃金テーブル
     export interface IWageTable {
-        cid: string;
-        wageTableCode: string;
-        wageTableName: string;
+        cid: string,
+        wageTableCode: string,
+        wageTableName: string,
         elementInformation: IElementInformation,
-        elementSetting: number;
-        remarkInformation: string;
+        elementSetting: number,
+        remarkInformation: string,
+        history: Array<IGenericHistoryYearMonthPeriod>
     }
     // 賃金テーブル
     export class WageTable {
@@ -51,13 +70,37 @@ module nts.uk.pr.view.qmm016.share.model {
         elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
         elementSetting: KnockoutObservable<number> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
+        history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
+        // Item
+        elementSettingItem1: KnockoutObservableArray<ItemModel> = ko.observableArray(getElementItemModel().splice(0, 3));
+        elementSettingItem2: KnockoutObservableArray<ItemModel> = ko.observableArray(getElementItemModel().splice(3, 5));
+        imagePath: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IWageTable) {
+            let self = this;
             this.cid(params ? params.cid : null);
             this.wageTableCode(params ? params.wageTableCode : null);
             this.wageTableName(params ? params.wageTableName : null);
             this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
             this.elementSetting(params ? params.elementSetting : null);
             this.remarkInformation(params ? params.remarkInformation : null);
+            this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
+            this.elementSetting.subscribe(newValue => {
+                self.changeImagePath(newValue);
+            });
+            self.changeImagePath(params ? params.elementSetting : null);
+        }
+        changeImagePath (elementSetting: number) {
+            let self = this;
+            let imgName = "";
+            switch (elementSetting) {
+                case ELEMENT_SETTING.FIRST_DIMENSION: {imgName = "QMM017_1.png"; break;}
+                case ELEMENT_SETTING.SECOND_DIMENSION: {imgName = "QMM017_2.png"; break;}
+                case ELEMENT_SETTING.THIRD_DIMENSION: {imgName = "QMM017_3.png"; break;}
+                case ELEMENT_SETTING.QUALIFICATION: {imgName = "QMM017_4.png"; break;}
+                case ELEMENT_SETTING.FINE_WORK: {imgName = "QMM017_5.png"; break;}
+            }
+            if (imgName) self.imagePath("../resource/" + imgName);
+            else self.imagePath("");
         }
     }
 
@@ -326,20 +369,50 @@ module nts.uk.pr.view.qmm016.share.model {
             self.englishName(param ? param.englishName : '');
         }
     }
+    
+    export interface IWageTableTreeNode {
+        wageTableCode: string,
+        wageTableName: string,
+        nodeText: string,
+        childs: Array<WageTableTreeNode>,
+        identifier: string;
+    }
 
     export class WageTableTreeNode {
-        code: string;
-        name: string;
+        wageTableCode: string;
+        wageTableName: string;
         nodeText: string;
-        childs: any;
+        childs: Array<WageTableTreeNode>;
         identifier: string;
-        constructor(identifier: string, code: string, name: string, nodeText: string, childs: Array<Node>) {
-            var self = this;
-            self.code = code;
-            self.name = name;
-            self.nodeText = nodeText;
-            self.childs = childs;
-            self.identifier =  identifier
+        constructor(params: IWageTableTreeNode) {
+            this.wageTableCode = params ? params.wageTableCode : "";
+            this.wageTableName = params ? params.wageTableName : "";
+            this.nodeText = params ? params.nodeText : "";
+            this.childs = params ? params.childs : [];
+            this.identifier = params ? params.identifier : "";
+        }
+    }
+
+    // 年月期間の汎用履歴項目
+    export interface IGenericHistoryYearMonthPeriod {
+        startMonth: string;
+        endMonth: string;
+        historyID: string;
+    }
+
+    // 年月期間の汎用履歴項目
+    export class GenericHistoryYearMonthPeriod {
+
+        // Item
+        startMonth: KnockoutObservable<string> = ko.observable(null);
+        endMonth: KnockoutObservable<string> = ko.observable(null);
+        historyID: KnockoutObservable<string> = ko.observable(null);
+        displayJapanStartYearMonth: KnockoutObservable<string> = ko.observable(null);
+        constructor(params: IGenericHistoryYearMonthPeriod) {
+            this.startMonth(params ? params.startMonth : "");
+            this.endMonth(params ? params.endMonth : "");
+            this.historyID(params ? params.historyID : "");
+            this.displayJapanStartYearMonth(params ? nts.uk.time.yearmonthInJapanEmpire(params.startMonth).toString().split(' ').join('') : "")
         }
     }
 }

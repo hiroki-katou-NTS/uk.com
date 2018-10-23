@@ -29,5 +29,5 @@ public class WageTableContent extends AggregateRoot {
     * 資格グループ設定
     */
     private List<QualificationGroupSettingContent> qualificationGroupSetting;
-    
+
 }

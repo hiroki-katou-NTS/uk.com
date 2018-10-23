@@ -8,7 +8,10 @@
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
-
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableCode
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableName
+        </com:ValidatorScript>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm016.a.service.js"/>
         <com:scriptfile path="qmm016.a.vm.js"/>
@@ -36,7 +39,7 @@
 
         </div>
         <div id="contents-area" class="fixed-flex-layout">
-            <div style="margin-left: 20px; margin-top: 20px;" class="fixed-flex-layout-left">
+            <div style="margin-left: 10px; margin-top: 20px;" class="fixed-flex-layout-left">
                 <div data-bind="ntsPanel:{width: '335px', height: '440px', direction: 'right', showIcon: true, visible: true}"
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <div style="width: 335px" data-bind="ntsSearchBox: {
@@ -44,20 +47,20 @@
                                 targetKey: 'identifier',
                                 mode:'igTree',
                                 comId:'A2_6',
-                                items: wageTableList,
+                                items: wageTableTreeList,
                                 selected: selectedWageTableIdentifier,
                                 selectedKey: 'identifier',
-                                childField: 'childs',
-                                fields: ['name', 'code']}">
+                                childField: 'history',
+                                fields: ['wageTableCode', 'wageTableName']}">
                     </div>
                     <table id="A2_6" data-bind="ntsTreeGridView:{
                                width: 335,
                                rows: 15,
-                               dataSource: wageTableList,
+                               dataSource: wageTableTreeList,
                                value: selectedWageTableIdentifier,
                                initialExpandDepth: 0,
                                primaryKey: 'identifier',
-                               childDataKey: 'childs',
+                               childDataKey: 'history',
                                primaryText: 'nodeText',
                                multiple: false,
                                enable: true,
@@ -67,9 +70,67 @@
             </div>
             <div id="fixed-flex-layout-right" tabindex="9">
                 <div id="D3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
-                     style="width: 665px;">
-                    <div class="tab-content-1">
-                        ad
+                     style="width: 800px;">
+                    <div class="tab-content-1" data-bind = "with: selectedWageTable">
+                        <span class="label warning tab-row">#{i18n.getText('QMM016_7')}</span>
+                        <div class="flex valign-center tab-row">
+                            <div id="A5_1" class="column-1"
+                                 data-bind="ntsFormLabel: {required: true, constraint: ['WageTableCode', 'WageTableName']}">#{i18n.getText('QMM016_8')}</div>
+                            <input id="A4_2" tabindex="10"
+                                   data-bind="ntsTextEditor: {constraint: 'WageTableCode', value: wageTableCode, name: '#[QMM016_14]', required: true , enable: $vm.screenMode() == 0}"/>
+                            <input style ="margin-left: 15px;" id="A4_3" tabindex="11" width="230px"
+                                   data-bind="ntsTextEditor: {constraint: 'WageTableName',value: wageTableName, name: '#[QMM016_15]', required: true}"/>
+                        </div>
+                        <div class="flex valign-center tab-row" data-bind ="with: $vm.selectedHistory">
+                            <div id="A6_1" class="column-1"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_16')}</div>
+                            <div id ="A6_2"
+                                 data-bind="ntsDatePicker: {
+                                    name: '#[QMM016_16]',
+                                    value: startMonth,
+                                    dateFormat: 'yearmonth',
+                                    valueFormat: 'YYYYMM',
+                                    required: true,
+                                    enable: true}"
+                                 tabindex="1" />
+                            <div style ="margin-left: 10px;" id ="A6_3"
+                                 data-bind="text: displayJapanStartYearMonth" />
+                        </div>
+                        <hr></hr>
+                        <div class="tab-row" >
+                            <div id="A7_1" class="column-1" style="vertical-align: top"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_17')}</div>
+                            <div style = "width: 200px; display: inline-block; vertical-align: top">
+                                <div id ="A7_2">#{i18n.getText('QMM016_18')}</div>
+                                <div class="flex valign-center tab-row">
+                                    <div class="cf" data-bind="ntsSwitchButton: {
+                                name: '#[QMM016_19]',
+                                options: elementSettingItem1,
+                                optionsValue: 'value',
+                                optionsText: 'name',
+                                value: elementSetting,
+                                required: true,
+                                enable: true }"></div>
+                                </div>
+                                <div class="flex valign-center tab-row">
+                                    <div id ="A7_10">#{i18n.getText('QMM016_20')}</div>
+                                </div>
+                                <div class="flex valign-center tab-row">
+                                    <div class="cf" data-bind="ntsSwitchButton: {
+                                name: '#[QMM016_19]',
+                                options: elementSettingItem2,
+                                optionsValue: 'value',
+                                optionsText: 'name',
+                                value: elementSetting,
+                                required: true,
+                                enable: true }"></div>
+                                </div>
+                            </div>
+
+                            <div style = "display: inline-block; height: 165px; width: 330px;" class="panel panel-gray-bg">
+                                <img src = '/' data-bind="attr:{src: imagePath}" />
+                            </div>
+                        </div>
 
                     </div>
                     <div class="tab-content-2">
