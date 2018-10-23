@@ -332,7 +332,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         listattendanceRecExpDailyList.forEach(item => {
 
                             var columnIndex: number = item.columnIndex;
-                            self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition);
+                            self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
                         })
                     }
                     for (var i: number = 1; i <= 9; i++) {
@@ -347,7 +347,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     if (listattendanceRecExpMonthlyList.length > 0) {
                         listattendanceRecExpMonthlyList.forEach(item => {
                             var columnIndex: number = item.columnIndex;
-                            self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition);
+                            self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
                         })
                     }
                     for (var i: number = 1; i <= 12; i++) {

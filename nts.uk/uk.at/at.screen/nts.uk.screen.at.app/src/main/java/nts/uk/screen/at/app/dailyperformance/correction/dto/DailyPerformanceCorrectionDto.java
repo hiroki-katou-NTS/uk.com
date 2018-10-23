@@ -225,7 +225,7 @@ public class DailyPerformanceCorrectionDto {
 					String errorType = getErrorType(lstErrorSetting, error);
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
-						if (!errorType.equals(data.getError())) {
+						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
 							data.setError("ER/AL");
 						}
 					} else {
@@ -233,7 +233,7 @@ public class DailyPerformanceCorrectionDto {
 					}
 					// add error alarm cell state
 					error.getAttendanceItemId().stream().forEach(x ->{
-						setCellStateCheck(data.getId(), x.toString(),
+						if(errorType.contains("ER") || errorType.contains("AL")) setCellStateCheck(data.getId(), x.toString(),
 								errorType.contains("ER") ? "mgrid-error" : "mgrid-alarm", mapDP);
 					});
 				}
@@ -247,7 +247,7 @@ public class DailyPerformanceCorrectionDto {
 		if (setting == null) {
 			return "";
 		}
-		return setting.getTypeAtr() == 0 ? "ER" : "AL";
+		return setting.getTypeAtr() == 0 ? "ER" : setting.getTypeAtr() == 2 ? "" : "AL";
 	}
 
 	/** Set AlarmCell state for Fixed cell */

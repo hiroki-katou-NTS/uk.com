@@ -217,4 +217,13 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public boolean isDataExistMonth(String approverID, DatePeriod period, YearMonth yearMonth);
+	
+	/**
+	 * 日別確認済み検索
+	 * @param companyID
+	 * @param approverID
+	 * @param date
+	 * @return
+	 */
+	public List<String> dailyConfirmSearch(String companyID, String approverID, GeneralDate date);
 }

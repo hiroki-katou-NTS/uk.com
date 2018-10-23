@@ -32,6 +32,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	private static final String DELETE_AFTER_QUERY = "DELETE FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId and a.grantDate > :startDate";
 	
 	private static final String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate DESC";
+	
+	private static final String FIND_BY_EMP_AND_DATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate >= :startDate AND a.grantDate <= : endDate ORDER BY a.grantDate DESC";
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {
@@ -189,6 +191,38 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 				.setParameter("employeeId", employeeId)
 				.setParameter("annLeavID", annLeavID)
 				.setParameter("grantDate", grantDate).getList(e -> toDomain(e));
+	}
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findByPeriod(String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate >= :startDate AND a.grantDate <= :endDate";
+		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(e -> toDomain(e));
+	}
+
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findByGrantDateAndDeadline(String employeeId, GeneralDate grantDate, GeneralDate deadline) {
+		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate < :grantDate AND a.deadline >= :deadline";
+		return this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("grantDate", grantDate)
+				.setParameter("deadline", deadline)
+				.getList(e -> toDomain(e));
+	}
+	/**
+	 * @author yennth
+	 */
+	@Override
+	public List<AnnualLeaveGrantRemainingData> findInDate(String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		List<KRcmtAnnLeaRemain> entities = this.queryProxy().query(FIND_BY_EMP_AND_DATE, KRcmtAnnLeaRemain.class)
+				.setParameter("employeeId", employeeId) 
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList();
+		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 }
