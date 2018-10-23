@@ -11,41 +11,42 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
     export class ScreenModel {
         listTakeOver: KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
         takeOver: KnockoutObservable<number> = ko.observable(0);
-        cId: KnockoutObservale<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
-        endYearMonth: KnockoutObservable<number> = ko.observable(999912);
+        end: KnockoutObservable<number> = ko.observable();
         historyAtr: KnockoutObservable<number> = ko.observable(1);
         startYearMonthDay: KnockoutObservable<string> = ko.observable('');
-        endYearMonthDay: KnockoutObservable<number> = ko.observable(99991231);
+        startLastYearMonthDay: KnockoutObservable<number> = ko.observable();
+        isFisrtHistory: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             block.invisible()
             let self = this;
             let params = getShared('QMM001_PARAMS_TO_SCREEN_B');
-
-            if(params && param.historyAtr == 0) {
-                self.startLastYearMonth(params.startYearMonth);
+            if(params) {
                 self.code(params.code);
                 self.name(params.name);
                 self.historyAtr(params.historyAtr);
-                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(params.startYearMonthDay)]));
+                if ( params.historyAtr == 1) {
+                    self.startLastYearMonth(params.start);
+                    self.historyAtr(params.historyAtr);
+                    self.end(getText('QMM001_31', ['9999/12']));
+                    if(params.start) {
+                        self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [self.convertMonthYearToString(params.start)]));
+                        self.isFisrtHistory(false);
+                    }
+                }
+                if ( params.historyAtr == 0) {
+                    self.startLastYearMonth(params.start);
+                    self.end(getText('QMM001_31', ['9999/12/31']));
+                    if(params.start) {
+                        self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [params.start]));
+                        self.isFisrtHistory(false);
+                    }
+                }
             }
-            if (params && param.historyAtr == 1) {
-                self.startLastYearMonth(params.startYearMonthDay);
-                self.code(params.code);
-                self.name(params.name);
-                self.historyAtr(params.historyAtr);
-                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(params.startYearMonth)]));
-            }
-                self.startLastYearMonth(201212);
-                self.code(003);
-                self.name('OPOTTPT');
-                self.historyAtr(1);
-                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM001_33', [self.convertMonthYearToString(20120912)]));
-                self.endYearMonthDay(getText('QMM001_31', [9999/12/31]));
             block.clear();
         }
 
@@ -60,7 +61,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
 
         validateYearMonthDay(){
             let self = this;
-            if(!(self.startLastYearMonthDay() < self.startYearMonthDay())) {
+            if(!(moment.utc(self.startLastYearMonthDay(),'YYYY/MM/DD') < moment.utc(self.startYearMonthDay(), 'YYYY/MM/DD'))) {
                 dialog.error({ messageId: "Msg_79"});
                 return true;
             }
@@ -68,13 +69,13 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         }
 
         convertMonthYearToString(yearMonth: any) {
-            let self = this;
             let year: string, month: string;
             yearMonth = yearMonth.toString();
             year = yearMonth.slice(0, 4);
             month = yearMonth.slice(4, 6);
             return year + "/" + month;
         }
+
 
         cancel(){
             close();
@@ -88,7 +89,8 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                 }
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     setShared('QMM011_A', {
-                        startYearMonth: self.startYearMonth()
+                        startYearMonth: self.startYearMonth(),
+                        takeOver: self.takeOver()
                     });
                     close();
                 });
@@ -98,7 +100,8 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                 }
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     setShared('QMM011_A', {
-                        startYearMonthDay: self.startYearMonthDay()
+                        startYearMonthDay: self.startYearMonthDay(),
+                        takeOver: self.takeOver()
                     });
                     close();
                 });
