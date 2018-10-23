@@ -225,7 +225,7 @@ public class DailyPerformanceCorrectionDto {
 					String errorType = getErrorType(lstErrorSetting, error);
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
-						if (!errorType.equals(data.getError())) {
+						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
 							data.setError("ER/AL");
 						}
 					} else {
