@@ -6,9 +6,10 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
     import model = nts.uk.pr.view.qmm012.share.model;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import validation = nts.uk.ui.validation;
 
     export class ScreenModel {
-        lstCustomes: KnockoutObservableArray<DataScreen> = ko.observableArray([]);
+        statementItems: Array<IDataScreen> = [];
         currentCode: KnockoutObservable<string> = ko.observable('');
 
         itemNameCd: KnockoutObservable<string> = ko.observable('');
@@ -19,6 +20,8 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
         categoryAtr: KnockoutObservable<number> = ko.observable(0);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
 
+        englishNameValidator = new validation.StringValidator(getText("QMM012_120"), "EnglishName", { required: false });
+        otherLanguageNameValidator = new validation.StringValidator(getText("QMM012_121"), "OtherLanguageName", { required: false });
         constructor() {
             let self = this;
             $("#J2_1").focus();
@@ -48,6 +51,7 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             else if (self.categoryAtr(4)) {
                 self.onSelectTabF();
             }
+            self.loadGrid();
         }
         onSelectTabB() {
             let self = this;
@@ -82,31 +86,18 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             let self = this;
             block.invisible();
             service.getStatementItemAndStatementItemName(self.categoryAtr()).done(function(data: Array<IDataScreen>) {
+                self.statementItems = [];
+                $("#gridStatement").ntsGrid("destroy");
                 if (data && data.length > 0) {
-                    let dataSort = _.sortBy(data, ["itemNameCd"]);
-                    self.lstCustomes(dataSort.map(x => new DataScreen(x)));
-                    self.currentCode(dataSort[0].itemNameCd);
+                    self.statementItems = _.sortBy(data, ["itemNameCd"]);
+                    self.currentCode(self.statementItems[0].itemNameCd);
                     self.isNewMode(false);
-
-                    setTimeout(function () {
-                        if(data.length > 15) {
-                            $('.nts-fixed-body-container').addClass('has-padding');
-                            $('.nts-fixed-table .scroll-header').addClass('scroll_header');
-                        } else {
-                            $('.nts-fixed-body-container').removeClass('has-padding');
-                            $('.nts-fixed-table .scroll-header').removeClass('scroll_header');
-                        }
-                    }, 100);
                 }
                 else{
-                    self.lstCustomes([]);
+                    self.currentCode(null);
                     self.isNewMode(true);
-
-                    setTimeout(function () {
-                        $('.nts-fixed-body-container').removeClass('has-padding');
-                        $('.nts-fixed-table .scroll-header').removeClass('scroll_header');
-                    }, 100);
                 }
+                self.loadGrid();
             }).fail(function(error) {
                 alertError(error);
             }).always(() => {
@@ -116,30 +107,89 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
 
         updateStatelmentItemName() {
             let self = this;
-
-            if(!nts.uk.ui.errors.hasError()) {
-                block.invisible();
-                // update
-                let data: Array<DataScreen> = ([]);
-                _.forEach(self.lstCustomes(), item => {
-                    if (_.isEmpty(item.englishName())) {
-                        item.englishName = null;
-                    }
-                    if (_.isEmpty(item.otherLanguageName())) {
-                        item.otherLanguageName = null;
-                    }
-                    data.push(item);
-                })
-                self.lstCustomes(data);
-                service.updateStatementItemName(ko.toJS(self.lstCustomes())).done(() => {
-                    self.getData();
-                    dialog.info({messageId: "Msg_15"});
-                }).fail(function (error) {
-                    alertError(error);
-                }).always(function () {
-                    block.clear();
-                });
+            let statementItems: Array<IDataScreen> = $("#gridStatement").igGrid("option", "dataSource")
+            // update
+            _.forEach(statementItems, (item: IDataScreen) => {
+                if (_.isEmpty(item.englishName)) {
+                    item.englishName = null;
+                }
+                if (_.isEmpty(item.otherLanguageName)) {
+                    item.otherLanguageName = null;
+                }
+            })
+            self.validateForm(statementItems);
+            if(nts.uk.ui.errors.hasError()) {
+                return;
             }
+            block.invisible();
+
+            service.updateStatementItemName(statementItems).done(() => {
+                self.getData();
+                dialog.info({messageId: "Msg_15"});
+            }).fail(function (error) {
+                alertError(error);
+            }).always(function () {
+                block.clear();
+            });
+        }
+
+        loadGrid(){
+            let self = this;
+            $("#gridStatement").ntsGrid({
+                width: '807px',
+                height: '459px',
+                dataSource: self.statementItems,
+                primaryKey: 'itemNameCd',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    {headerText: getText("QMM012_32"), key: 'itemNameCd', dataType: 'string', width: '50px'},
+                    {headerText: getText("QMM012_33"), key: 'name', dataType: 'string', width: '220px'},
+                    {headerText: getText("QMM012_35"), key: 'shortName', dataType: 'string', width: '140px'},
+                    {
+                        headerText: getText("QMM012_120"), key: 'englishName', dataType: 'string', width: '190px',
+                        ntsControl: 'TextEditor'
+                    },
+                    {
+                        headerText: getText("QMM012_121"), key: 'otherLanguageName', dataType: 'string', width: '207px',
+                        ntsControl: 'TextEditor'
+                    },
+                ],
+                features: [],
+                ntsControls: [
+                    {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}}
+                ],
+            });
+        }
+
+        validateForm(statementItems: Array<IDataScreen>){
+            let self = this,
+                check: any;
+            nts.uk.ui.errors.clearAll();
+            _.each(statementItems, (item: IDataScreen) => {
+                check = self.englishNameValidator.validate(item.englishName);
+                if(!check.isValid) {
+                    self.setErrorEnglishName(item.itemNameCd, check.errorCode, check.errorMessage)
+                }
+                check = self.otherLanguageNameValidator.validate(item.otherLanguageName);
+                if(!check.isValid) {
+                    self.setErrorOtherLanguageName(item.itemNameCd, check.errorCode, check.errorMessage)
+                }
+            })
+        }
+
+        setErrorEnglishName(id: string, messageId: any, message: any) {
+            $("#gridStatement").find(".nts-grid-control-englishName-" + id + " input").ntsError('set', {
+                messageId: messageId,
+                message: message
+            });
+        }
+
+        setErrorOtherLanguageName(id: string, messageId: any, message: any) {
+            $("#gridStatement").find(".nts-grid-control-otherLanguageName-" + id + " input").ntsError('set', {
+                messageId: messageId,
+                message: message
+            });
         }
     }
 
@@ -155,28 +205,5 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
         shortName: string;
         otherLanguageName: string;
         englishName: string;
-    }
-
-    export class DataScreen {
-        categoryAtr: number;
-        itemNameCd: KnockoutObservable<string> = ko.observable('');
-        defaultAtr: KnockoutObservable<number> = ko.observable(0);
-        valueAtr: KnockoutObservable<number> = ko.observable(0);
-        deprecatedAtr: KnockoutObservable<number> = ko.observable(0);
-        socialInsuaEditableAtr: KnockoutObservable<number> = ko.observable(0);
-        intergrateCd: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-        shortName: KnockoutObservable<string> = ko.observable('');
-        otherLanguageName: KnockoutObservable<string> = ko.observable('');
-        englishName: KnockoutObservable<string> = ko.observable('')
-        constructor(params: IDataScreen) {
-            let self = this;
-            self.categoryAtr = params ? params.categoryAtr : null;
-            self.itemNameCd(params ? params.itemNameCd : '');
-            self.name(params ? params.name : '');
-            self.shortName(params ? params.shortName : '');
-            self.englishName(params ? params.englishName : '');
-            self.otherLanguageName(params ? params.otherLanguageName : '');
-        }
     }
 }
