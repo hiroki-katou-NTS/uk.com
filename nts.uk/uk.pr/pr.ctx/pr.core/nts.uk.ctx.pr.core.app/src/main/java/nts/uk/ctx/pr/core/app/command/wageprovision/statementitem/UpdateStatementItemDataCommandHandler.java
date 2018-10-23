@@ -55,7 +55,7 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 			// ドメインモデル「支給項目設定」を新規追加する
 			val paymentItem = command.getPaymentItemSet();
 			if (paymentItem != null) {
-				paymentItemSetRepository.add(command.toPaymentItemSet(cid));
+				paymentItemSetRepository.update(command.toPaymentItemSet(cid));
 			}
 			break;
 
@@ -63,7 +63,7 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 			// ドメインモデル「控除項目設定」を新規追加する
 			val deductionItem = command.getDeductionItemSet();
 			if (deductionItem != null) {
-				deductionItemSetRepository.add(command.toDeductionItemSet(cid));
+				deductionItemSetRepository.update(command.toDeductionItemSet(cid));
 			}
 			break;
 

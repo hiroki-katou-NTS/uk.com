@@ -1,66 +1,60 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-<ui:composition template="../../../../master/base.xhtml">
-    <ui:define name="htmlHead">
-        <com:ValidatorScript>
-            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode
-            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemName
-            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemShortName
-            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.MonetaryValue
-            nts.uk.shr.com.primitive.Memo
-            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.LimitAmount
-        </com:ValidatorScript>
-        <com:stylefile path="qmm012.b.style.css"/>
-        <com:scriptfile set="IGNITE"/>
-        <com:scriptfile path="../share/model.js"/>
-        <com:scriptfile path="qmm012.b.start.js"/>
-        <com:scriptfile path="qmm012.b.service.js"/>
-        <com:scriptfile path="qmm012.b.vm.js"/>
-    </ui:define>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemName
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemShortName
+				nts.uk.ctx.pr.core.dom.monthlysalary.payrolldata.DetailAmountType
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimesValue
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeValue
+				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.LimitAmount
+			</com:ValidatorScript>
+			<com:stylefile path="qmm012.b.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm012.b.start.js" />
+			<com:scriptfile path="qmm012.b.service.js" />
+			<com:scriptfile path="qmm012.b.vm.js" />
+		</ui:define>
 
-    <ui:define name="content">
-        <div id="functions-area">
-            <!-- 新規 -->
-            <button id="B1_1" tabindex="1" class="newBtn"
-                    data-bind="click : create, enable: !statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().categoryAtr() == null)">#{i18n.getText('QMM012_20')}</button>
-            <!-- 登録 -->
-            <button id="B1_2" tabindex="2" class="registerBtn proceed"
-                    data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null)">#{i18n.getText('QMM012_21')}</button>
-            <!-- コピー -->
-            <button id="B1_3" tabindex="3" class="copyBtn"
-                    data-bind="click: copy, enable: false">#{i18n.getText('QMM012_22')}</button>
-            <!-- 削除 -->
-            <button id="B1_4" tabindex="4" class="deleteBtn danger"
-                    data-bind="click: deleteItem,
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- 新規 -->
+				<button id="B1_1" tabindex="1" class="newBtn" data-bind="click : create, enable: !statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().categoryAtr() == null)">#{i18n.getText('QMM012_20')}</button>
+				<!-- 登録 -->
+				<button id="B1_2" tabindex="2" class="registerBtn proceed" data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null)">#{i18n.getText('QMM012_21')}</button>
+				<!-- コピー -->
+				<button id="B1_3" tabindex="3" class="copyBtn" data-bind="click: copy, enable: false">#{i18n.getText('QMM012_22')}</button>
+				<!-- 削除 -->
+				<button id="B1_4" tabindex="4" class="deleteBtn danger" 
+						data-bind="click: deleteItem, 
 								   enable: !(statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().defaultAtr == 1))">
-                #{i18n.getText('QMM012_23')}
-            </button>
-            <!-- Excel出力 -->
-            <button id="B1_5" tabindex="5" class="outputExcelBtn"
-                    data-bind="click: outputExcel, enable: false">#{i18n.getText('QMM012_24')}</button>
-            <!-- マスタ修正ログ -->
-            <button id="B1_6" tabindex="6" class="modifyLogBtn"
-                    data-bind="click: modifyLog, enable: false">#{i18n.getText('QMM012_25')}</button>
-            <!-- 印字名称の登録 -->
-            <button id="B1_7" tabindex="7" class="registerPrintingBtn"
-                    data-bind="click: registerPrintingName, enable: true">#{i18n.getText('QMM012_10')}</button>
-        </div>
-        <div id="contents-area">
-            <div class="table">
-                <div class="cell valign-top">
-                    <!-- 項目一覧パネル -->
-                    <div id="B2_1"
-                         data-bind="ntsPanel:{width: '410px', height: '470px', direction: 'right', showIcon: true, visible: true}">
-                        <div class="valign-center control-group">
-                            <!-- 項目区分 -->
-                            <div id="B2_2" data-bind="ntsFormLabel: { }">#{i18n.getText('QMM012_27')}</div>
-                            <!-- 項目区分リスト -->
-                            <div id="B2_3" tabindex="8" data-bind="ntsComboBox: {name: '#[QMM012_27]',
+					#{i18n.getText('QMM012_23')}
+				</button>
+				<!-- Excel出力 -->
+				<button id="B1_5" tabindex="5" class="outputExcelBtn" data-bind="click: outputExcel, enable: false">#{i18n.getText('QMM012_24')}</button>
+				<!-- マスタ修正ログ -->
+				<button id="B1_6" tabindex="6" class="modifyLogBtn" data-bind="click: modifyLog, enable: false">#{i18n.getText('QMM012_25')}</button>
+				<!-- 印字名称の登録 -->
+				<button id="B1_7" tabindex="7" class="registerPrintingBtn" data-bind="click: registerPrintingName, enable: true">#{i18n.getText('QMM012_10')}</button>
+			</div>
+			<div id="contents-area">
+				<div class="fixed-flex-layout-left">
+					<!-- 項目一覧パネル -->
+					<div id="B2_1" data-bind="ntsPanel:{width: '410px', height: '470px', direction: 'right', showIcon: true, visible: true}">
+						<div class="valign-center control-group">
+							<!-- 項目区分 -->
+							<div id="B2_2" data-bind="ntsFormLabel: { }">#{i18n.getText('QMM012_27')}</div>
+							<!-- 項目区分リスト -->
+							<div id="B2_3" tabindex="8" data-bind="ntsComboBox: {name: '#[QMM012_27]',
 																	options: categoryList,
 																	optionsValue: 'code',
 																	visibleItemsCount: 6,
@@ -71,12 +65,11 @@
 																	columns: [
 																		{ prop: 'name', length: 12 }
 																	]}"></div>
-                            <!-- 廃止も表示する -->
-                            <div id="B2_5" tabindex="9"
-                                 data-bind="ntsCheckBox: { checked: isdisplayAbolition }">#{i18n.getText('QMM012_28')}</div>
-                        </div>
-                        <!-- B2_6, B2_7, B2_8 -->
-                        <div style="width: 410px" tabindex="10" data-bind="ntsSearchBox: {searchMode: 'highlight',
+							<!-- 廃止も表示する -->
+							<div id="B2_5" tabindex="9" data-bind="ntsCheckBox: { checked: isdisplayAbolition }">#{i18n.getText('QMM012_28')}</div>
+						</div>
+						<!-- B2_6, B2_7, B2_8 -->
+						<div style="width: 410px" tabindex="10" data-bind="ntsSearchBox: {searchMode: 'highlight',
 																			label: 'コード/名称',
 																			targetKey: 'key',
 																			comId: 'statementList', 
@@ -85,10 +78,10 @@
 																			selectedKey: 'key',
 																			searchText: '検索',
 																			fields: ['itemNameCd', 'name'], 
-																			mode: 'igGrid'}"/>
-                        <!-- B2_9 -->
-                        <table id="statementList"
-                               data-bind="ntsGridList: { name: '#[QMM012_31]',
+																			mode: 'igGrid'}" />
+						<!-- B2_9 -->
+						<table  id="statementList" 
+							    data-bind="ntsGridList: { name: '#[QMM012_31]',
 								options: statementItemDataList,
 								primaryKey: 'key',
 								columns: gridColumns,
@@ -96,81 +89,76 @@
 								rows: 15,
 								value: currentKey
 							}"></table>
-                    </div>
-                </div>
-                <com:ko-if bind="(statementItemDataSelected().statementItem().categoryAtr() != null)">
-                    <div class="cell valign-top" data-bind="with: statementItemDataSelected">
-                        <div class="valign-center control-group">
-                            <!-- コード/名称 -->
-                            <div id="B3_1"
-                                 data-bind="ntsFormLabel: {required: true, constraint: ['ItemNameCode', 'ItemName'] }">#{i18n.getText('QMM012_29')}</div>
-                            <div data-bind="with: statementItem" style="display: inline-block;">
-                                <!-- 項目名コード -->
-                                <input id="B3_2" class="check-validate" tabindex="12"
-                                       data-bind="ntsTextEditor :{
+					</div>
+					
+				</div>
+				<com:ko-if bind="(statementItemDataSelected().statementItem().categoryAtr() != null)">
+					<div class="fixed-flex-layout-right" data-bind="with: statementItemDataSelected">
+						<div class="valign-center control-group">
+							<!-- コード/名称 -->
+							<div id="B3_1" data-bind="ntsFormLabel: {required: true, constraint: ['ItemNameCode', 'ItemName'] }">#{i18n.getText('QMM012_29')}</div>
+							<div data-bind="with: statementItem" style="display: inline-block;">
+								<!-- 項目名コード -->
+								<input id="B3_2" class="check-validate" tabindex="12"
+										data-bind="ntsTextEditor :{
 											name: '#[QMM012_32]',
 											value: itemNameCd,
 											constraint: 'ItemNameCode',
 											option: {width: '40px'},
 											required: true,
 											enable: $parent.checkCreate,
-											readonly: false}"/>
-                            </div>
-                            <div data-bind="with: statementItemName" style="display: inline-block;">
-                                <!-- 項目名コード -->
-                                <input id="B3_3" class="check-validate" tabindex="13"
-                                       data-bind="ntsTextEditor :{
+											readonly: false}" />
+							</div>
+							<div data-bind="with: statementItemName" style="display: inline-block;">
+								<!-- 項目名コード -->
+								<input id="B3_3" class="check-validate" tabindex="13"
+										data-bind="ntsTextEditor :{
 											name: '#[QMM012_33]',
 											value: name,
 											constraint: 'ItemName',
 											option: {width: '200px'},
 											required: true,
 											enable: ($parent.statementItem().defaultAtr != 1),
-											readonly: false}"/>
-                            </div>
-                            <div data-bind="with: statementItem" style="display: inline-block;">
-                                <!-- この項目名を廃止する -->
-                                <div id="B3_12" tabindex="16" data-bind="ntsCheckBox: { checked: deprecatedAtrCustom, style: 'warnpanel',
+											readonly: false}" />
+							</div>
+							<div data-bind="with: statementItem" style="display: inline-block;">
+								<!-- この項目名を廃止する -->
+								<div id="B3_12" tabindex="16" data-bind="ntsCheckBox: { checked: deprecatedAtrCustom, style: 'warnpanel',
 																						enable: !($parent.checkCreate() || (defaultAtr == 1))}">
-                                    #{i18n.getText('QMM012_38')}
-                                </div>
-                                <!-- 廃止区分について -->
-                                <button id="B3_13" tabindex="17"
-                                        data-bind="ntsHelpButton: {image: '../resource/QMM012_1.png', position: 'bottom right', enable: true }">?
-                                </button>
-                            </div>
-                        </div>
-                        <div class="valign-center control-group" data-bind="with: statementItemName">
-                            <!-- 略名 -->
-                            <div id="B3_4"
-                                 data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_35')}</div>
-                            <!-- 項目名コード -->
-                            <input id="B3_5" class="check-validate" tabindex="14"
-                                   data-bind="ntsTextEditor :{
+									#{i18n.getText('QMM012_38')}
+								</div>
+								<!-- 廃止区分について -->
+								<button id="B3_13" tabindex="17" data-bind="ntsHelpButton: {image: '../resource/QMM012_1.png', position: 'bottom right', enable: true }">?</button>
+							</div>
+						</div>
+						<div class="valign-center control-group" data-bind="with: statementItemName">
+						 	<!-- 略名 -->
+							<div id="B3_4" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_35')}</div>
+							<!-- 項目名コード -->
+							<input id="B3_5" class="check-validate" tabindex="14"
+									data-bind="ntsTextEditor :{
 										name: '#[QMM012_35]',
 										value: shortName,
 										constraint: 'ItemShortName',
 										option: {width: '200px'},
 										required: true,
 										enable: true,
-										readonly: false}"/>
-                        </div>
-                        <div class="valign-center control-group">
-                            <!-- 項目区分 -->
-                            <div id="B3_6"
-                                 data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_27')}</div>
-                            <label data-bind="text: statementItem().categoryName"></label>
-                        </div>
-                        <hr style="margin-bottom: 20px;"/>
-                        <div class="screenCDEFG">
-                            <!-- CategoryAtr is DEDUCTION_ITEM  -->
-                            <com:ko-if bind="(statementItem().categoryAtr() == '1')">
-                                <div class="valign-center control-group" data-bind="with: deductionItemSet">
-                                    <!-- 控除項目 -->
-                                    <div id="D1_1"
-                                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_4')}</div>
-                                    <!-- 控除区分一覧 -->
-                                    <div id="D1_2" tabindex="18" data-bind="ntsComboBox: {name: '#[QMM012_86]',
+										readonly: false}" />
+						</div>
+						<div class="valign-center control-group">
+							<!-- 項目区分 -->
+							<div id="B3_6" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_27')}</div>
+							<label data-bind="text: statementItem().categoryName"></label>
+						</div>
+						<hr style="margin-bottom: 20px;"/>
+						<div class="screenCDEFG">
+							<!-- CategoryAtr is DEDUCTION_ITEM  -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '1')">
+								<div class="valign-center control-group" data-bind="with: deductionItemSet">
+									<!-- 控除項目 -->
+									<div id="D1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_4')}</div>
+									<!-- 控除区分一覧 -->
+									<div id="D1_2" tabindex="18" data-bind="ntsComboBox: {name: '#[QMM012_86]',
 																			options: deductionItemList,
 																			optionsValue: 'code',
 																			visibleItemsCount: 4,
@@ -182,55 +170,54 @@
 																			columns: [
 																				{ prop: 'name', length: 16 }
 																			]}"></div>
-                                </div>
-                            </com:ko-if>
-                            <!-- CategoryAtr is ATTEND_ITEM  -->
-                            <com:ko-if bind="(statementItem().categoryAtr() == '2')">
-                                <div data-bind="with: timeItemSet">
-                                    <div class="valign-center control-group">
-                                        <!-- 時間/回数区分 -->
-                                        <div id="E1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_87')}</div>
-                                        <!-- 時間/回数区分 -->
-                                        <div id="E1_2" tabindex="18" class="cf" data-bind="ntsSwitchButton: {
+								</div>
+							</com:ko-if>
+							<!-- CategoryAtr is ATTEND_ITEM  -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '2')">
+								<div data-bind="with: timeItemSet">
+									<div class="valign-center control-group">
+										<!-- 時間/回数区分 -->
+										<div id="E1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_87')}</div>
+										<!-- 時間/回数区分 -->
+										<div id="E1_2" tabindex="18" class="cf" data-bind="ntsSwitchButton: {
 																					options: timeCountList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: timeCountAtr,
 																					enable: ($parent.statementItem().defaultAtr != 1) }"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <!-- 年間所定労働日数 -->
-                                        <div id="E1_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_90')}</div>
-                                        <!-- 年間所定労働日数区分 -->
-                                        <div id="E1_6" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<!-- 年間所定労働日数 -->
+										<div id="E1_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_90')}</div>
+										<!-- 年間所定労働日数区分 -->
+										<div id="E1_6" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: workingDaysPerYear,
 																					enable: ($parent.statementItem().defaultAtr != 1) &amp;&amp; (timeCountAtr() == 1) }"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <!-- 平均賃金 -->
-                                        <div id="E1_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_51')}</div>
-                                        <!-- 平均賃金対象区分 -->
-                                        <div id="E1_10" tabindex="20" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<!-- 平均賃金 -->
+										<div id="E1_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_51')}</div>
+										<!-- 平均賃金対象区分 -->
+										<div id="E1_10" tabindex="20" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: averageWageAtr,
 																					enable: ($parent.statementItem().defaultAtr != 1) &amp;&amp; (timeCountAtr() == 1) }"></div>
-                                    </div>
-                                </div>
-                            </com:ko-if>
-                            <div data-bind="with: paymentItemSet">
-                                <!-- CategoryAtr is PAYMENT_ITEM  -->
-                                <com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
-                                    <div class="valign-center control-group">
-                                        <!-- 課税 -->
-                                        <div id="C1_1"
-                                             data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_39')}</div>
-                                        <!-- 課税一覧 -->
-                                        <div id="C1_2" tabindex="18" data-bind="ntsComboBox: {name: '#[QMM012_39]',
+									</div>
+								</div>
+							</com:ko-if>
+							<div data-bind="with: paymentItemSet">
+								<!-- CategoryAtr is PAYMENT_ITEM  -->
+								<com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
+									<div class="valign-center control-group">
+										<!-- 課税 -->
+										<div id="C1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_39')}</div>
+										<!-- 課税一覧 -->
+										<div id="C1_2" tabindex="18" data-bind="ntsComboBox: {name: '#[QMM012_39]',
 																				options: taxList,
 																				optionsValue: 'code',
 																				visibleItemsCount: 5,
@@ -242,31 +229,29 @@
 																				columns: [
 																					{ prop: 'name', length: 16 }
 																				]}"></div>
-                                    </div>
-                                    <com:ko-if bind="($parent.statementItem().defaultAtr != 1)">
-                                        <!-- TaxAtr is LIMIT_TAX_EXEMPTION or COMMUTING_EXPENSES_MANUAL  -->
-                                        <com:ko-if bind="((taxAtr() == '1') || (taxAtr() == '3'))">
-                                            <br/>
-                                            <div class="valign-center control-group">
-                                                <!-- 限度金額指定 -->
-                                                <div id="C4_1"
-                                                     data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_76')}</div>
-                                                <!-- 社会保険区分 -->
-                                                <div id="C4_2" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<com:ko-if bind="($parent.statementItem().defaultAtr != 1)">
+										<!-- TaxAtr is LIMIT_TAX_EXEMPTION or COMMUTING_EXPENSES_MANUAL  -->
+										<com:ko-if bind="((taxAtr() == '1') || (taxAtr() == '3'))">
+											<br />
+											<div class="valign-center control-group">
+												<!-- 限度金額指定 -->
+												<div id="C4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_76')}</div>
+												<!-- 社会保険区分 -->
+												<div id="C4_2" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
 																							options: limitAmountList,
 																							optionsValue: 'code',
 																							optionsText: 'name',
 																							value: limitAmountAtr,
 																							enable: true }"></div>
-                                            </div>
-                                            <!-- LimitAmountClassification is FIXED_AMOUNT  -->
-                                            <com:ko-if bind="(limitAmountAtr() == '1')">
-                                                <div class="valign-center control-group">
-                                                    <!-- 限度金額 -->
-                                                    <div id="C4_7"
-                                                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_81')}</div>
-                                                    <!-- 限度金額入力 -->
-                                                    <input id="C4_8" class="check-validate" tabindex="20" data-bind="ntsNumberEditor: {
+											</div>
+											<!-- LimitAmountClassification is FIXED_AMOUNT  -->
+											<com:ko-if bind="(limitAmountAtr() == '1')">
+												<div class="valign-center control-group">
+													<!-- 限度金額 -->
+													<div id="C4_7" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_81')}</div>
+													<!-- 限度金額入力 -->
+													<input id="C4_8" class="check-validate" tabindex="20" data-bind="ntsNumberEditor: {
 																	name: '#[QMM012_81]',
 																	value: limitAmount,
 																	constraint: 'LimitAmount',
@@ -277,317 +262,516 @@
 													                    textalign: 'right',
 													                    currencyformat: 'JPY'
 													                },
-																	enable: true}"/>
-                                                </div>
-                                            </com:ko-if>
-                                            <!-- LimitAmountClassification is TAX_EXEMPTION_LIMIT_MASTER  -->
-                                            <com:ko-if bind="(limitAmountAtr() == '0')">
-                                                <div class="valign-center control-group">
-                                                    <!-- 限度金額 -->
-                                                    <div id="C5_1"
-                                                         data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_81')}</div>
-                                                    <!-- 限度額マスタ参照ボタン -->
-                                                    <button id="C5_2" tabindex="22" class="small"
-                                                            data-bind="enable: true, click: setTaxExemptionLimit">#{i18n.getText('QMM012_37')}</button>
-                                                    <!-- 設定限度額マスタ  -->
-                                                    <label id="C5_3" data-bind="text: taxLimitAmountCode"> </label>
-                                                    <label data-bind="text: taxExemptionName"></label>
-                                                </div>
-                                            </com:ko-if>
-                                            <div class="valign-center control-group">
-                                                <!-- 課税金額区分 -->
-                                                <div id="C4_9"
-                                                     data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_82')}</div>
-                                                <!-- 課税金額区分 -->
-                                                <div id="C4_10" tabindex="21" data-bind="ntsRadioBoxGroup: {
+																	enable: true}" />
+												</div>
+											</com:ko-if>
+											<!-- LimitAmountClassification is TAX_EXEMPTION_LIMIT_MASTER  -->
+											<com:ko-if bind="(limitAmountAtr() == '0')">
+												<div class="valign-center control-group">
+													<!-- 限度金額 -->
+													<div id="C5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_81')}</div>
+													<!-- 限度額マスタ参照ボタン -->
+													<button id="C5_2" tabindex="22" class="small" data-bind="enable: true, click: setTaxExemptionLimit">#{i18n.getText('QMM012_37')}</button>
+													<!-- 設定限度額マスタ  -->
+													<label id="C5_3" data-bind="text: taxLimitAmountCode"> </label>
+													<label data-bind="text: taxExemptionName"></label>
+												</div>
+											</com:ko-if>
+											<div class="valign-center control-group">
+												<!-- 課税金額区分 -->
+												<div id="C4_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_82')}</div>
+												<!-- 課税金額区分 -->
+												<div id="C4_10" tabindex="21" data-bind="ntsRadioBoxGroup: {
 																					options: taxableAmountList,
 																					optionsValue: 'id',
 																					optionsText: 'name',
 																					value: taxableAmountAtr,
 																					enable: true}"></div>
-                                            </div>
-                                        </com:ko-if>
-                                        <!-- TaxAtr is COMMUTING_EXPENSES_USING_COMMUTER  -->
-                                        <com:ko-if bind="(taxAtr() == '4')">
-                                            <div class="valign-center control-group">
-                                                <div class="space1"></div>
-                                                <!-- 定期利用説明 -->
-                                                <span id="C6_1">#{i18n.getText('QMM012_85')}</span>
-                                            </div>
-                                        </com:ko-if>
-                                    </com:ko-if>
-                                    <br/>
-                                    <div class="valign-center control-group">
-                                        <!-- 社会保険区分 -->
-                                        <div id="C1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_40')}</div>
-                                        <!-- 社会保険区分 -->
-                                        <div id="C1_5" tabindex="23" class="cf" data-bind="ntsSwitchButton: {
+											</div>
+										</com:ko-if>
+										<!-- TaxAtr is COMMUTING_EXPENSES_USING_COMMUTER  -->
+										<com:ko-if bind="(taxAtr() == '4')">
+											<div class="valign-center control-group">
+												<div class="space1"></div>
+												<!-- 定期利用説明 -->
+												<span id="C6_1">#{i18n.getText('QMM012_85')}</span>
+											</div>
+										</com:ko-if>
+									</com:ko-if>
+									<br />
+									<div class="valign-center control-group">
+										<!-- 社会保険区分 -->
+										<div id="C1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_40')}</div>
+										<!-- 社会保険区分 -->
+										<div id="C1_5" tabindex="23" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: socialInsuranceCategory,
 																					enable: !(($parent.statementItem().defaultAtr == 1) &amp;&amp; ($parent.statementItem().socialInsuaEditableAtr() == 0)) }"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <!-- 労働保険区分 -->
-                                        <div id="C1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_43')}</div>
-                                        <!-- 労働保険区分区分 -->
-                                        <div id="C1_9" tabindex="24" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<!-- 労働保険区分 -->
+										<div id="C1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_43')}</div>
+										<!-- 労働保険区分区分 -->
+										<div id="C1_9" tabindex="24" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: laborInsuranceCategory,
 																					enable: ($parent.statementItem().defaultAtr != 1) }"></div>
-                                    </div>
-                                    <br/>
-                                    <div class="valign-center control-group">
-                                        <!-- 固定的賃金 -->
-                                        <div id="C1_12" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_44')}</div>
-                                        <!-- 固定的賃金設定区分 -->
-                                        <div id="C1_13" tabindex="25" data-bind="ntsRadioBoxGroup: {
+									</div>
+									<br />
+									<div class="valign-center control-group">
+										<!-- 固定的賃金 -->
+										<div id="C1_12" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_44')}</div>
+										<!-- 固定的賃金設定区分 -->
+										<div id="C1_13" tabindex="25" data-bind="ntsRadioBoxGroup: {
 																			options: settingAtrList,
 																			optionsValue: 'id',
 																			optionsText: 'name',
 																			value: settingAtr,
 																			enable: ($parent.statementItem().defaultAtr != 1)}"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <!-- 固定的賃金対象区分 -->
-                                        <div id="C1_16" tabindex="26" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- 固定的賃金対象区分 -->
+										<div id="C1_16" tabindex="26" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: everyoneEqualSet,
 																					enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 1)) }"></div>
-                                        <!-- 月給者 -->
-                                        <div id="C1_19" class="space3">#{i18n.getText('QMM012_47')}</div>
-                                        <!-- 月給者対象区分 -->
-                                        <div id="C1_20" tabindex="27" class="cf" data-bind="ntsSwitchButton: {
+										<!-- 月給者 -->
+										<div id="C1_19" class="space3">#{i18n.getText('QMM012_47')}</div>
+										<!-- 月給者対象区分 -->
+										<div id="C1_20" tabindex="27" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: monthlySalary,
 																					enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <div class="space2"></div>
-                                        <!-- 日給月給者 -->
-                                        <div id="C1_23" class="space3">#{i18n.getText('QMM012_48')}</div>
-                                        <!-- 日給月給者対象区分 -->
-                                        <div id="C1_24" tabindex="28" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<div class="space2"></div>
+										<!-- 日給月給者 -->
+										<div id="C1_23" class="space3">#{i18n.getText('QMM012_48')}</div>
+										<!-- 日給月給者対象区分 -->
+										<div id="C1_24" tabindex="28" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: hourlyPay,
 																					enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <div class="space2"></div>
-                                        <!-- 日給者 -->
-                                        <div id="C1_27" class="space3">#{i18n.getText('QMM012_49')}</div>
-                                        <!-- 日給者対象区分 -->
-                                        <div id="C1_28" tabindex="29" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<div class="space2"></div>
+										<!-- 日給者 -->
+										<div id="C1_27" class="space3">#{i18n.getText('QMM012_49')}</div>
+										<!-- 日給者対象区分 -->
+										<div id="C1_28" tabindex="29" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: dayPayee,
 																					enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <div class="space2"></div>
-                                        <!-- 時給者 -->
-                                        <div id="C1_31" class="space3">#{i18n.getText('QMM012_50')}</div>
-                                        <!-- 時給者対象区分 -->
-                                        <div id="C1_32" tabindex="30" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<div class="space2"></div>
+										<!-- 時給者 -->
+										<div id="C1_31" class="space3">#{i18n.getText('QMM012_50')}</div>
+										<!-- 時給者対象区分 -->
+										<div id="C1_32" tabindex="30" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: monthlySalaryPerday,
 																					enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
-                                    </div>
-                                </com:ko-if>
-                                <!-- CategoryAtr is PAYMENT_ITEM  -->
-                                <com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
-                                    <div class="valign-center control-group">
-                                        <!-- 平均賃金 -->
-                                        <div id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_51')}</div>
-                                        <!-- 平均賃金対象区分 -->
-                                        <div id="C2_2" tabindex="31" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+								</com:ko-if>
+								<!-- CategoryAtr is PAYMENT_ITEM  -->
+								<com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
+									<div class="valign-center control-group">
+										<!-- 平均賃金 -->
+										<div id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_51')}</div>
+										<!-- 平均賃金対象区分 -->
+										<div id="C2_2" tabindex="31" class="cf" data-bind="ntsSwitchButton: {
 																					options: coveredList,
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: averageWageAtr,
 																					enable: ($parent.statementItem().defaultAtr != 1) }"></div>
-                                    </div>
-                                </com:ko-if>
-                            </div>
-                            <!-- CategoryAtr is not OTHER_ITEM  -->
-                            <com:ko-if bind="(statementItem().categoryAtr() != '4')">
-                                <div class="valign-center control-group" data-bind="with: statementItemDisplaySet">
-                                    <!-- ゼロ表示区分 -->
-                                    <div id="C2_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_52')}</div>
-                                    <!-- 平均賃金対象区分 -->
-                                    <div id="C2_6" tabindex="32" class="cf" data-bind="ntsSwitchButton: {
+									</div>
+								</com:ko-if>
+							</div>
+							<!-- CategoryAtr is not OTHER_ITEM  -->
+							<com:ko-if bind="(statementItem().categoryAtr() != '4')">
+								<div class="valign-center control-group" data-bind="with: statementItemDisplaySet">
+									<!-- ゼロ表示区分 -->
+									<div id="C2_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_52')}</div>
+									<!-- 平均賃金対象区分 -->
+									<div id="C2_6" tabindex="32" class="cf" data-bind="ntsSwitchButton: {
 																				options: zeroDisplayAtrList,
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: zeroDisplayAtr,
 																				enable: true }"></div>
-                                    <!-- 廃止も表示する -->
-                                    <div id="C2_9" tabindex="33"
-                                         data-bind="ntsCheckBox: { checked: itemNameDisplayCustom, enable: (zeroDisplayAtr() == 0) }">#{i18n.getText('QMM012_55')}</div>
-                                </div>
-                            </com:ko-if>
-                            <br/>
-                            <!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
-                            <com:ko-if
-                                    bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1') || (statementItem().categoryAtr() == '2'))">
-                                <div data-bind="with: itemRangeSet">
-                                    <div class="valign-center control-group">
-                                        <!-- エラー範囲 -->
-                                        <div id="C2_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
-                                        <!-- エラー範囲上限チェック -->
-                                        <div id="C2_11" tabindex="34"
-                                             data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
-                                        <!-- エラー範囲上限入力 -->
-                                        <input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
+									<!-- 廃止も表示する -->
+									<div id="C2_9" tabindex="33" data-bind="ntsCheckBox: { checked: itemNameDisplayCustom, enable: (zeroDisplayAtr() == 0) }">#{i18n.getText('QMM012_55')}</div>
+								</div>
+							</com:ko-if>
+							<br />
+							<!-- Range setting for PAYMENT_ITEM -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '0')">
+								<div data-bind="with: paymentItemSet">
+									<div class="valign-center control-group">
+										<!-- エラー範囲 -->
+										<div id="C2_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+										<!-- エラー範囲上限チェック -->
+										<div id="C2_11" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+										<!-- エラー範囲上限入力 -->
+										<input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_57]',
-														value: errorUpperRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: errorUpRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
-														enable: errorUpperLimitSettingAtrCus}"/>
-                                        <!-- を超える場合にエラーとする -->
-                                        <label id="C2_13">#{i18n.getText('QMM012_58')}</label>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <!-- エラー範囲下限チェック -->
-                                        <div id="C2_14" tabindex="36"
-                                             data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
-                                        <!-- エラー範囲下限入力 -->
-                                        <input id="C2_15" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
+														enable: errorUpperLimitSettingAtrCus}" />
+										<!-- を超える場合にエラーとする -->
+										<label id="C2_13">#{i18n.getText('QMM012_58')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- エラー範囲下限チェック -->
+										<div id="C2_14" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+										<!-- エラー範囲下限入力 -->
+										<input id="C2_15" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_59]',
-														value: errorLowerRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: errorLoRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
-														enable: errorLowerLimitSettingAtrCus}"/>
-                                        <!-- 未満の場合にエラーとする -->
-                                        <label id="C2_16">#{i18n.getText('QMM012_60')}</label>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <!-- アラーム範囲 -->
-                                        <div id="C2_17" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
-                                        <!-- アラーム範囲上限チェック -->
-                                        <div id="C2_18" tabindex="38"
-                                             data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
-                                        <!-- アラーム範囲上限入力 -->
-                                        <input id="C2_19" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
+														enable: errorLowerLimitSettingAtrCus}" />
+										<!-- 未満の場合にエラーとする -->
+										<label id="C2_16">#{i18n.getText('QMM012_60')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<!-- アラーム範囲 -->
+										<div id="C2_17" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+										<!-- アラーム範囲上限チェック -->
+										<div id="C2_18" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+										<!-- アラーム範囲上限入力 -->
+										<input id="C2_19" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_62]',
-														value: alarmUpperRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: alarmUpRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
-														enable: alarmUpperLimitSettingAtrCus}"/>
-                                        <!-- を超える場合にアラームとする -->
-                                        <label id="C2_20">#{i18n.getText('QMM012_63')}</label>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <!-- アラーム範囲下限チェック -->
-                                        <div id="C2_21" tabindex="40"
-                                             data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
-                                        <!-- アラーム範囲下限入力 -->
-                                        <input id="C2_22" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
+														enable: alarmUpperLimitSettingAtrCus}" />
+										<!-- を超える場合にアラームとする -->
+										<label id="C2_20">#{i18n.getText('QMM012_63')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- アラーム範囲下限チェック -->
+										<div id="C2_21" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+										<!-- アラーム範囲下限入力 -->
+										<input id="C2_22" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_64]',
-														value: alarmLowerRangeValueAmount,
-														constraint: 'MonetaryValue',
+														value: alarmLoRangeVal,
+														constraint: 'DetailAmountType',
 														option: numberEditorOption,
-														enable: alarmLowerLimitSettingAtrCus}"/>
-                                        <!-- 未満の場合にアラームとする -->
-                                        <label id="C2_23">#{i18n.getText('QMM012_65')}</label>
-                                    </div>
-                                    <div class="valign-center control-group">
-                                        <div class="space1"></div>
-                                        <!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
-                                        <div id="C2_24">#{i18n.getText('QMM012_66')}</div>
-                                    </div>
-                                </div>
-                            </com:ko-if>
-                            <br/>
-                            <!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM -->
-                            <com:ko-if
-                                    bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1'))">
-                                <div class="valign-center control-group">
-                                    <!-- 項目の有効期間とサイクルの設定 -->
-                                    <div id="C3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_67')}</div>
-                                    <!-- 有効期間設定 -->
-                                    <button id="C3_2" tabindex="42" class="small"
-                                            data-bind="click: setValidity,
+														enable: alarmLowerLimitSettingAtrCus}" />
+										<!-- 未満の場合にアラームとする -->
+										<label id="C2_23">#{i18n.getText('QMM012_65')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+										<div id="C2_24">#{i18n.getText('QMM012_66')}</div>
+									</div>
+								</div>
+							</com:ko-if>
+							<!-- Range setting for DEDUCTION_ITEM -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '1')">
+								<div data-bind="with: deductionItemSet">
+									<div class="valign-center control-group">
+										<!-- エラー範囲 -->
+										<div id="C2_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+										<!-- エラー範囲上限チェック -->
+										<div id="C2_11" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+										<!-- エラー範囲上限入力 -->
+										<input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_57]',
+														value: errorUpRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: errorUpperLimitSettingAtrCus}" />
+										<!-- を超える場合にエラーとする -->
+										<label id="C2_13">#{i18n.getText('QMM012_58')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- エラー範囲下限チェック -->
+										<div id="C2_14" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+										<!-- エラー範囲下限入力 -->
+										<input id="C2_15" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_59]',
+														value: errorLoRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: errorLowerLimitSettingAtrCus}" />
+										<!-- 未満の場合にエラーとする -->
+										<label id="C2_16">#{i18n.getText('QMM012_60')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<!-- アラーム範囲 -->
+										<div id="C2_17" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+										<!-- アラーム範囲上限チェック -->
+										<div id="C2_18" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+										<!-- アラーム範囲上限入力 -->
+										<input id="C2_19" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_62]',
+														value: alarmUpRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: alarmUpperLimitSettingAtrCus}" />
+										<!-- を超える場合にアラームとする -->
+										<label id="C2_20">#{i18n.getText('QMM012_63')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- アラーム範囲下限チェック -->
+										<div id="C2_21" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+										<!-- アラーム範囲下限入力 -->
+										<input id="C2_22" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
+														name: '#[QMM012_64]',
+														value: alarmLoRangeVal,
+														constraint: 'DetailAmountType',
+														option: numberEditorOption,
+														enable: alarmLowerLimitSettingAtrCus}" />
+										<!-- 未満の場合にアラームとする -->
+										<label id="C2_23">#{i18n.getText('QMM012_65')}</label>
+									</div>
+									<div class="valign-center control-group">
+										<div class="space1"></div>
+										<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+										<div id="C2_24">#{i18n.getText('QMM012_66')}</div>
+									</div>
+								</div>
+							</com:ko-if>
+							<!-- Range setting for ATENDENCE_ITEM -->
+							<com:ko-if bind="(statementItem().categoryAtr() == '2')">
+								<div data-bind="with: timeItemSet">
+									<com:ko-if bind="(timeCountAtr() == '0' &amp;&amp; parameterValue == 2)">
+										<div class="valign-center control-group">
+											<!-- エラー範囲 -->
+											<div id="E1_18" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+											<!-- エラー範囲上限チェック -->
+											<div id="E1_19" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+											<!-- エラー範囲上限入力 -->
+											<input id="E1_20" class="check-validate" tabindex="35" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_57]',
+															value: errorUpRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: errorUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にエラーとする -->
+											<label id="E1_21">#{i18n.getText('QMM012_58')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- エラー範囲下限チェック -->
+											<div id="E1_22" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+											<!-- エラー範囲下限入力 -->
+											<input id="E1_23" class="check-validate" tabindex="37" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_59]',
+															value: errorLoRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: errorLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にエラーとする -->
+											<label id="E1_24">#{i18n.getText('QMM012_60')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<!-- アラーム範囲 -->
+											<div id="E1_25" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+											<!-- アラーム範囲上限チェック -->
+											<div id="E1_26" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲上限入力 -->
+											<input id="E1_27" class="check-validate" tabindex="39" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_62]',
+															value: alarmUpRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: alarmUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にアラームとする -->
+											<label id="E1_28">#{i18n.getText('QMM012_63')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- アラーム範囲下限チェック -->
+											<div id="E1_29" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲下限入力 -->
+											<input id="E1_30" class="check-validate" tabindex="41" data-bind="ntsTimeEditor: {
+															name: '#[QMM012_64]',
+															value: alarmLoRangeValTime,
+															inputFormat: 'time',
+															mode: 'time',
+															constraint: 'TimeValue',
+															option: timeEditorOption,
+															enable: alarmLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にアラームとする -->
+											<label id="E1_31">#{i18n.getText('QMM012_65')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+											<div id="E1_32">#{i18n.getText('QMM012_66')}</div>
+										</div>
+									</com:ko-if>
+									<com:ko-if bind="(timeCountAtr() == '0' &amp;&amp; parameterValue == 1) || (timeCountAtr() == '1')">
+										<div class="valign-center control-group">
+											<!-- エラー範囲 -->
+											<div id="E1_18" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
+											<!-- エラー範囲上限チェック -->
+											<div id="E1_19" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+											<!-- エラー範囲上限入力 -->
+											<input id="E1_20" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_57]',
+															value: errorUpRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: errorUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にエラーとする -->
+											<label id="E1_21">#{i18n.getText('QMM012_58')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- エラー範囲下限チェック -->
+											<div id="E1_22" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
+											<!-- エラー範囲下限入力 -->
+											<input id="E1_23" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_59]',
+															value: errorLoRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: errorLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にエラーとする -->
+											<label id="E1_24">#{i18n.getText('QMM012_60')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<!-- アラーム範囲 -->
+											<div id="E1_25" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_61')}</div>
+											<!-- アラーム範囲上限チェック -->
+											<div id="E1_26" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲上限入力 -->
+											<input id="E1_27" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_62]',
+															value: alarmUpRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: alarmUpperLimitSettingAtrCus}" />
+											<!-- を超える場合にアラームとする -->
+											<label id="E1_28">#{i18n.getText('QMM012_63')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- アラーム範囲下限チェック -->
+											<div id="E1_29" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
+											<!-- アラーム範囲下限入力 -->
+											<input id="E1_30" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
+															name: '#[QMM012_64]',
+															value: alarmLoRangeValNum,
+															constraint: 'TimesValue',
+															option: numberEditorOption,
+															enable: alarmLowerLimitSettingAtrCus}" />
+											<!-- 未満の場合にアラームとする -->
+											<label id="E1_31">#{i18n.getText('QMM012_65')}</label>
+										</div>
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
+											<div id="E1_32">#{i18n.getText('QMM012_66')}</div>
+										</div>
+									</com:ko-if>
+								</div>
+							</com:ko-if>
+							<br />
+							<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM -->
+							<com:ko-if bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1'))">
+								<div class="valign-center control-group">
+									<!-- 項目の有効期間とサイクルの設定 -->
+									<div id="C3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_67')}</div>
+									<!-- 有効期間設定 -->
+									<button id="C3_2" tabindex="42" class="small" 
+											data-bind="click: setValidity,
 													enable: (!checkCreate() &amp;&amp; (statementItem().defaultAtr != 1))">#{i18n.getText('QMM012_68')}</button>
-                                    <com:ko-if bind="(isSetValidity())">
-                                        <!-- 期間設定有無 -->
-                                        <label id="C3_3">#{i18n.getText('QMM012_69')}</label>
-                                    </com:ko-if>
-                                    <com:ko-if bind="(!isSetValidity())">
-                                        <!-- 期間設定有無 -->
-                                        <label id="C3_3">#{i18n.getText('QMM012_70')}</label>
-                                    </com:ko-if>
-                                </div>
-                                <br/>
-                                <div class="valign-center control-group" data-bind="with: paymentItemSet">
-                                    <!-- 内訳-->
-                                    <div id="C3_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_71')}</div>
-                                    <!-- 内訳利用区分 -->
-                                    <div id="C3_5" tabindex="43" class="cf" data-bind="ntsSwitchButton: {
+									<com:ko-if bind="(isSetValidity())">
+										<!-- 期間設定有無 -->
+										<label id="C3_3">#{i18n.getText('QMM012_69')}</label>
+									</com:ko-if>
+									<com:ko-if bind="(!isSetValidity())">
+										<!-- 期間設定有無 -->
+										<label id="C3_3">#{i18n.getText('QMM012_70')}</label>
+									</com:ko-if>
+								</div>
+								<br />
+								<div class="valign-center control-group" data-bind="with: paymentItemSet">
+									<!-- 内訳-->
+									<div id="C3_4" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_71')}</div>
+									<!-- 内訳利用区分 -->
+									<div id="C3_5" tabindex="43" class="cf" data-bind="ntsSwitchButton: {
 																				options: breakdownItemUseList,
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: breakdownItemUseAtr,
 																				enable: (!$parent.checkCreate() &amp;&amp; ($parent.statementItem().defaultAtr != 1) &amp;&amp; (($parent.statementItem().categoryAtr() == '1') || (($parent.statementItem().categoryAtr() == '0') &amp;&amp; !((taxAtr() == 3) || (taxAtr() == 4))))) }"></div>
-                                </div>
-                                <div class="valign-center control-group">
-                                    <div class="space1"></div>
-                                    <!-- 内訳項目設定 -->
-                                    <button id="C3_8" tabindex="44" class="small"
-                                            data-bind="click: setBreakdownItem,
+								</div>
+								<div class="valign-center control-group">
+									<div class="space1"></div>
+									<!-- 内訳項目設定 -->
+									<button id="C3_8" tabindex="44" class="small" 
+											data-bind="click: setBreakdownItem,
 													enable: (!checkCreate() &amp;&amp; (statementItem().defaultAtr != 1) &amp;&amp; (paymentItemSet().breakdownItemUseAtr() == 1))">#{i18n.getText('QMM012_74')}</button>
-                                    <com:ko-if bind="(isSetBreakdownItem())">
-                                        <!-- 内訳設定有無 -->
-                                        <label id="C3_9">#{i18n.getText('QMM012_69')}</label>
-                                    </com:ko-if>
-                                    <com:ko-if bind="(!isSetBreakdownItem())">
-                                        <!-- 内訳設定有無 -->
-                                        <label id="C3_9">#{i18n.getText('QMM012_70')}</label>
-                                    </com:ko-if>
-                                </div>
-                                <br/>
-                            </com:ko-if>
-                            <!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
-                            <com:ko-if
-                                    bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1') || (statementItem().categoryAtr() == '2'))">
-                                <div class="valign-center control-group" data-bind="with: paymentItemSet">
-                                    <!-- 備考 -->
-                                    <div id="C3_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_75')}</div>
-                                    <!-- 備考欄 -->
-                                    <textarea id="C3_11" class="check-validate" tabindex="45"
-                                              data-bind="ntsMultilineEditor :{
+									<com:ko-if bind="(isSetBreakdownItem())">
+										<!-- 内訳設定有無 -->
+										<label id="C3_9">#{i18n.getText('QMM012_69')}</label>
+									</com:ko-if>
+									<com:ko-if bind="(!isSetBreakdownItem())">
+										<!-- 内訳設定有無 -->
+										<label id="C3_9">#{i18n.getText('QMM012_70')}</label>
+									</com:ko-if>
+								</div>
+								<br />
+							</com:ko-if>
+							<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
+							<com:ko-if bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1') || (statementItem().categoryAtr() == '2'))">
+								<div class="valign-center control-group" data-bind="with: paymentItemSet">
+									<!-- 備考 -->
+									<div id="C3_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_75')}</div>
+									<!-- 備考欄 -->
+									<textarea id="C3_11" class="check-validate" tabindex="45"
+											data-bind="ntsMultilineEditor :{
 												name: '#[QMM012_75]',
 												value: note,
 												constraint: 'Memo',
 												option: {width: '470px'},
 												enable: true,
-												readonly: false}"/>
-                                </div>
-                            </com:ko-if>
-                        </div>
-                    </div>
-                </com:ko-if>
-            </div>
-        </div>
-    </ui:define>
-</ui:composition>
+												readonly: false}" />
+								</div>
+							</com:ko-if>
+						</div>
+					</div>
+				</com:ko-if>
+			</div>
+		</ui:define>
+	</ui:composition>
 </body>
 </html>

@@ -12,7 +12,6 @@ public class StatementItemDataDto {
 	private DeductionItemSetDto deductionItemSet;
 	private TimeItemSetDto timeItemSet;
 	private StatementItemDisplaySetDto statementItemDisplaySet;
-	private ItemRangeSetDto itemRangeSet;
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
 	private List<BreakdownItemSetDto> breakdownItemSet;
 	private IntegratedItemDto integratedItem;
