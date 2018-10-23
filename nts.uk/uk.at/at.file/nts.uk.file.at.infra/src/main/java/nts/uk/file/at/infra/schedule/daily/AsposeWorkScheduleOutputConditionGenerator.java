@@ -41,7 +41,6 @@ import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -78,8 +77,6 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
@@ -138,6 +135,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -231,6 +229,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	/** The filename. */
 	private final String filename = "report/KWR001.xlsx";
+
+	/** The Constant NOTCHECK_CONDITION_TEMPLATE. */
+	private static final String NOTCHECK_CONDITION_TEMPLATE = "report/KWR001_NOTCHECK.xlsx";
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
@@ -280,7 +281,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, WorkScheduleOutputQuery query) {
-		val reportContext = this.createContext(filename);
+		AsposeCellsReportContext reportContext = null;
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
 		// ドメインモデル「日別勤務表の出力項目」を取得する
@@ -288,7 +289,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (!optOutputItemDailyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
-		
+		Boolean checkOutputItemDailyWork = optOutputItemDailyWork.get().getLstRemarkContent().stream().anyMatch(item ->item.isUsedClassification());
+		if (checkOutputItemDailyWork) {
+			reportContext = this.createContext(filename);
+		} else {
+			reportContext = this.createContext(NOTCHECK_CONDITION_TEMPLATE);
+		}
 		
 		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
 		
