@@ -2998,7 +2998,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 								empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 								Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
-										.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
+										.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false, false, false,
 								null);
 			} catch (Exception e) {
 				throw new CreateDailyException();
@@ -3113,7 +3113,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		try {
 			// ⑤社員の日別実績を作成する
 			processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId,
-					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), true, null);
+					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), true, false, false, null);
 		} catch (Exception e) {
 			throw new CreateDailyException();
 		}
