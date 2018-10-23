@@ -659,6 +659,22 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				this.errMessageInfoRepository.addList(errMesInfos);
 				return exitStatus;
 			}
+		} else {
+			// パラメータ「異動時に再作成」を確認する
+			// check reCreateWorkPlace
+			if (reCreateWorkPlace == true) {
+				// ReqL30 :
+				Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
+				
+				Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, day);
+				
+				if (workPlaceHasData.isPresent() && affiliationInfo.isPresent()) {
+					if (!workPlaceHasData.get().getWorkplaceId().equals(affiliationInfo.get().getWplID())) {
+						exitStatus = ExitStatus.RECREATE;
+						return exitStatus;
+					}
+				}
+			}
 		}
 
 		return exitStatus;
