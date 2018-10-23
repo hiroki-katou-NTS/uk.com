@@ -9,19 +9,24 @@ module nts.uk.pr.view.qmm035.a.service {
         deleteOffice: "ctx/pr/core/socialinsurance/socialinsuranceoffice/remove"
     }
     export function defaultData(): JQueryPromise<any> {
-        return ajax("pr",paths.defaultData);
+        return null;
+       /* return ajax("pr",paths.defaultData);*/
     }
     export function findByCode(code : string) : JQueryPromise<any>{
         let _path = format(paths.findByCode, code);
-        return ajax('pr', _path);
+        return null;
+        /*return ajax('pr', _path);*/
     }
     export function update(command) : JQueryPromise<any>{
-        return ajax('pr', paths.update, command);
+        return null;
+        /*return ajax('pr', paths.update, command);*/
     }
     export function create(command) : JQueryPromise<any>{
-        return ajax('pr', paths.create, command);
+        return null;
+        /*return ajax('pr', paths.create, command);*/
     }
     export function deleteOffice(command: any){
-        return ajax('pr', paths.deleteOffice, command);
+        return null;
+        /*return ajax('pr', paths.deleteOffice, command);*/
     }
 }

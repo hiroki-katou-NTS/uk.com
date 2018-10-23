@@ -4,14 +4,14 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- *  住所1
+ * メモ
  */
-@StringMaxLength(120)
-public class Address1 extends StringPrimitiveValue<Address1> {
+@StringMaxLength(500)
+public class Memo extends StringPrimitiveValue<nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.Memo> {
+
     private static final long serialVersionUID = 1L;
 
-    public Address1(String rawValue)
-    {
+    public Memo(String rawValue) {
         super(rawValue);
     }
 }

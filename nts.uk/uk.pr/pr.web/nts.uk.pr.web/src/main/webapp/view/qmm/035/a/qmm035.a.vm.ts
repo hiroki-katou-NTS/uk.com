@@ -20,7 +20,7 @@ module nts.uk.pr.view.qmm035.a {
             // combobox
             itemList: KnockoutObservableArray<ItemModelComBoBox>;
             selectedNoD38: KnockoutObservable<any> = ko.observable('');
-            selectedNoD35: KnockoutObservable<any> = ko.observable('');
+            value: KnockoutObservable<any> = ko.observable('');
             isEnable: KnockoutObservable<boolean>;
             isEditable: KnockoutObservable<boolean>;
 
@@ -35,7 +35,8 @@ module nts.uk.pr.view.qmm035.a {
                 let self = this;
                 self.items = ko.observableArray([]);
                 self.itemList = ko.observableArray([]);
-                nts.uk.pr.view.qmm008.d.service.defaultData().done(function(response) {
+                value: ko.observable(''),
+                /*nts.uk.pr.view.qmm035.a.service.defaultData().done(function(response) {
                     block.invisible();
 
                     for (let i = 0; i < response.listCodeName.length; i++) {
@@ -64,16 +65,16 @@ module nts.uk.pr.view.qmm035.a {
                         });
                     }
                     block.clear();
-                });
+                });*/
 
                 this.columns2 = ko.observableArray([
-                    { headerText: text('QMM008_110'), key: 'code', width: 120, formatter: _.escape},
-                    { headerText: text('QMM008_111'), key: 'name', width: 200, formatter: _.escape }
+                    { headerText: text('QMM035_8'), key: 'code', width: 120, formatter: _.escape},
+                    { headerText: text('QMM035_9'), key: 'name', width: 200, formatter: _.escape }
                 ]);
 
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: text('QMM008_112'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: text('QMM008_113'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-1', title: text('QMM035_10'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: text('QMM035_11'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -82,11 +83,11 @@ module nts.uk.pr.view.qmm035.a {
                 self.isEnableCode(true);
                 self.values = ko.observable('');
 
-                self.currentCode.subscribe(function(codeId) {
+                /*self.currentCode.subscribe(function(codeId) {
                     nts.uk.ui.errors.clearAll();
                     if (codeId) {
                         self.setTabIndex();
-                        nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
+                        nts.uk.pr.view.qmm035.a.service.findByCode(codeId).done(function(response) {
                             self.isEnableBtnDelete(true);
                             self.isEnableBtnCreate(true);
                             self.detail(new SocialOfficeDetail(response));
@@ -114,14 +115,14 @@ module nts.uk.pr.view.qmm035.a {
                         }, 800);
                     }
 
-                });
+                });*/
 
             }
 
             /**
              * update
              */
-            private update(): void {
+            /*private update(): void {
                 let self = this;
                 self.detail().healthInsurancePrefectureNo(self.selectedNoD35);
                 self.detail().welfarePensionPrefectureNo(self.selectedNoD38);
@@ -136,7 +137,7 @@ module nts.uk.pr.view.qmm035.a {
                 }
                 if (self.currentCode() == null) {
 
-                    nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
+                    nts.uk.pr.view.qmm035.a.service.create(ko.toJS(self.detail)).done(function(response) {
 
                         if (response.msg == 'Msg_3') {
                             nts.uk.ui.dialog.error({ messageId: "Msg_3" }).then(function() {
@@ -161,11 +162,11 @@ module nts.uk.pr.view.qmm035.a {
                         block.clear();
                     });
                 } else {
-                    nts.uk.pr.view.qmm008.d.service.update(ko.toJS(self.detail)).done(function(response) {
+                    nts.uk.pr.view.qmm035.a.service.update(ko.toJS(self.detail)).done(function(response) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            /**
+                            /!**
                              *  selected
-                             */
+                             *!/
                             for (let i = 0; i < self.items().length; i++) {
                                 if (self.items()[i].code == response[0]) {
                                     self.items()[i].name = response[1];
@@ -180,12 +181,12 @@ module nts.uk.pr.view.qmm035.a {
                     });
                 }
 
-            }
+            }*/
 
             /**
              * create
              */
-            private create(): void {
+            /*private create(): void {
                 let self = this;
                 nts.uk.ui.errors.clearAll();
                 self.detail(new SocialOfficeDetail());
@@ -197,7 +198,7 @@ module nts.uk.pr.view.qmm035.a {
                 self.isEnableBtnCreate(false);
                 $("#D4_2").focus();
                 self.setTabIndex();
-            }
+            }*/
 
             /**
              *  close dialog
@@ -210,12 +211,12 @@ module nts.uk.pr.view.qmm035.a {
             /**
              * delete
              */
-            private deleteOffice(): void {
+            /*private deleteOffice(): void {
                 block.invisible();
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let self = this;
                     let command = { code: self.currentCode() };
-                    nts.uk.pr.view.qmm008.d.service.deleteOffice(command).done(function(response) {
+                    nts.uk.pr.view.qmm035.a.service.deleteOffice(command).done(function(response) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             for (let i = 0; i < self.items().length; i++) {
                                 if (self.items()[i].code == response[0]) {
@@ -253,7 +254,7 @@ module nts.uk.pr.view.qmm035.a {
                     block.clear();
                 });
 
-            }
+            }*/
 
             public setTabIndex(){
                 let self = this;

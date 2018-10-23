@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.PostalCode;
 
 /**
 * 住所情報
