@@ -139,6 +139,15 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
 					return;
 				}
+			//アラーム抽出を中断する
+			} else if (task.getProcExecTask().value == ProcessExecutionTask.AL_EXTRACTION.value) {
+				if (task.getStatus() == null || !task.getStatus().isPresent()) {
+					if(taskTerminate!=null && !"".equals(taskTerminate)){
+						service.requestToCancel(taskTerminate);
+					}
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
 			} else{
 				if(execType == 1){ 
 					dataSetter.setData("interupt", "true");

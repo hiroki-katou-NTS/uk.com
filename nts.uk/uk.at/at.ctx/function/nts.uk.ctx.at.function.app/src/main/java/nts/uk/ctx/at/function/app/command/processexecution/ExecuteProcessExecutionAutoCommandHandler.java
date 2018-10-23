@@ -1515,7 +1515,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								.get();
 						isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empLeader,
 								new DatePeriod(calculateDate, maxDate), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-								dailyCreateLog);
+								dailyCreateLog,procExec);
 						if (isHasInterrupt) {
 							break;
 						}
@@ -2998,7 +2998,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 								empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 								Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
-										.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
+										.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false, false, false,
 								null);
 			} catch (Exception e) {
 				throw new CreateDailyException();
@@ -3062,7 +3062,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			GeneralDate maxDate = listWorkInfo.stream().map(u -> u.getYmd()).max(GeneralDate::compareTo).get();
 			isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empId,
 					new DatePeriod(calculateDate, maxDate), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-					dailyCreateLog);
+					dailyCreateLog,processExecution);
 			if (isHasInterrupt) {
 				break;
 			}
@@ -3106,14 +3106,20 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	}
 
 	private boolean RedoDailyPerformanceProcessing(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
-			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId, ExecutionLog dailyCreateLog)
+			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId, ExecutionLog dailyCreateLog,ProcessExecution procExec)
 			throws CreateDailyException, DailyCalculateException {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState1;
 		try {
+			//実行設定.日別実績の作成・計算.対象者区分.異動者を再作成する
+			boolean reCreateWorkType = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
+			//実行設定.日別実績の作成・計算.対象者区分.勤務種別者を再作成
+			boolean reCreateWorkPlace = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
+			//実行設定.日別実績の作成・計算.対象者区分.休職者・休業者を再作成
+			boolean reCreateRestTime = false; //TODO : chua lam
 			// ⑤社員の日別実績を作成する
 			processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId,
-					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), true, null);
+					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), reCreateWorkType, reCreateWorkPlace, reCreateRestTime, null);
 		} catch (Exception e) {
 			throw new CreateDailyException();
 		}

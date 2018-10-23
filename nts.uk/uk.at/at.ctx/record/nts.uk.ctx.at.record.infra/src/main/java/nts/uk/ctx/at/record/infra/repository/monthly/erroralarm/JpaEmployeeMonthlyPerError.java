@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.erroralarm;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -19,6 +22,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 public class JpaEmployeeMonthlyPerError extends JpaRepository implements EmployeeMonthlyPerErrorRepository {
 	
 	private final static String REMOVE_EMP;
+	private final static String FIND_ERROR;
 	
 	static{
 		StringBuilder stringBuilder = new StringBuilder();
@@ -29,6 +33,15 @@ public class JpaEmployeeMonthlyPerError extends JpaRepository implements Employe
 		stringBuilder.append("AND f.krcdtEmployeeMonthlyPerErrorPK.closeDay = :closeDay ");
 		stringBuilder.append("AND f.krcdtEmployeeMonthlyPerErrorPK.isLastDay = :isLastDay ");
 		REMOVE_EMP = stringBuilder.toString();
+		
+		stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT f  FROM KrcdtEmployeeMonthlyPerError f ");
+		stringBuilder.append("WHERE f.krcdtEmployeeMonthlyPerErrorPK.employeeID IN :employeeIds ");
+		stringBuilder.append("AND f.krcdtEmployeeMonthlyPerErrorPK.yearMonth = :yearMonth ");
+		stringBuilder.append("AND f.krcdtEmployeeMonthlyPerErrorPK.closureId = :closureId ");
+		stringBuilder.append("AND f.krcdtEmployeeMonthlyPerErrorPK.closeDay = :closeDay ");
+		stringBuilder.append("AND f.krcdtEmployeeMonthlyPerErrorPK.isLastDay = :isLastDay ");
+		FIND_ERROR = stringBuilder.toString();
 				
 	}
 
@@ -68,5 +81,15 @@ public class JpaEmployeeMonthlyPerError extends JpaRepository implements Employe
 		
 		this.getEntityManager().flush();
 	}
-	
+
+	@Override
+	public List<EmployeeMonthlyPerError> findError(List<String> employeeID, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		return this.getEntityManager().createQuery(FIND_ERROR, KrcdtEmployeeMonthlyPerError.class)
+				.setParameter("employeeIds", employeeID).setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0).getResultList().stream()
+				.map(x -> x.convertToDomain()).collect(Collectors.toList());
+	}
+
 }
