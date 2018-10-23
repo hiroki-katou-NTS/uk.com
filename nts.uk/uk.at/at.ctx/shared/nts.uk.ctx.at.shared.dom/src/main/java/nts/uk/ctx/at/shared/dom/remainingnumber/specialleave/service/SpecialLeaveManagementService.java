@@ -124,10 +124,11 @@ public interface SpecialLeaveManagementService {
 	 * @param shukeiDate ・集計開始日 ・ 集計終了日
 	 * @param lstGrantData・特別休暇付与残数データ一覧
 	 * @param interimDataMng ・特別休暇暫定データ一覧
+	 * @param baseDate: 基準日
 	 * @return
 	 */
 	RemainDaysOfSpecialHoliday remainDaysBefore(String cid, String sid, DatePeriod shukeiDate, SpecialLeaveGrantRemainingDataTotal lstGrantData,
-			SpecialHolidayInterimMngData interimDataMng,RemainDaysOfSpecialHoliday useInfor);
+			SpecialHolidayInterimMngData interimDataMng,RemainDaysOfSpecialHoliday useInfor, GeneralDate baseDate);
 	/**
 	 * 付与後の残数情報をまとめる
 	 * @param lstSpeLeaveGrantDetails
