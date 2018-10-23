@@ -158,7 +158,7 @@ public class SpecialHolidayFinder {
 		List<Integer> fillerItemCodes = registedItems.stream().filter(x -> !selectedframes.contains(x))
 				.collect(Collectors.toList());
 
-		return result.stream().filter(x -> !isContains(x, fillerItemCodes, "b")).collect(Collectors.toList());
+		return result.stream().filter(x -> !isContains(x, fillerItemCodes, "a")).collect(Collectors.toList());
 	}
 
 	private List<SpecialHolidayFrameDto> removeAbsFrameItem(Integer selectedShCode, List<SpecialHolidayFrameDto> result,
@@ -180,7 +180,7 @@ public class SpecialHolidayFinder {
 		List<Integer> fillerItemCodes = registedItems.stream().filter(x -> !selectedAbsFrames.contains(x))
 				.collect(Collectors.toList());
 
-		return result.stream().filter(x -> !isContains(x, fillerItemCodes, "a")).collect(Collectors.toList());
+		return result.stream().filter(x -> !isContains(x, fillerItemCodes, "b")).collect(Collectors.toList());
 
 	}
 
