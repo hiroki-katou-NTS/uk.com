@@ -3544,10 +3544,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 dfd.resolve({ id: rowId, item: columnKey, value: value });
             }
             else {
-                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
-                    return data.rowId == rowId;
-                });
-                if (valueError != undefined || rowError != undefined) {
+//                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
+//                    return data.rowId == rowId && columnKey != "A29";
+//                });
+                if (valueError != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
                     //nts.uk.ui.block.invisible();

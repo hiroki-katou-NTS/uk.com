@@ -107,7 +107,6 @@ public class ScheduleCreatorExecutionTransaction {
 		
 		// check is client submit cancel
 		if (asyncTask.hasBeenRequestedToCancel()) {
-			asyncTask.finishedAsCancelled();
 			// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
 			this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
 			return;
@@ -121,38 +120,19 @@ public class ScheduleCreatorExecutionTransaction {
 			DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 			ScheduleCreateContent content = command.getContent();
 			List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
-			// 実施区分を判断, 処理実行区分を判断
-			// EA No2115
-			if (content.getImplementAtr() == ImplementAtr.RECREATE && content.getReCreateContent()
-					.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-				BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
-				commandReset.setCompanyId(command.getCompanyId());
-				commandReset.setConfirm(content.getConfirm());
-				commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
-				commandReset.setExecutionId(exeId);
-				commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
-				commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
-				commandReset.setTargetStartDate(period.start());
-				commandReset.setTargetEndDate(period.end());
-				commandReset.setCompanySetting(companySetting);
-				// スケジュールを再設定する (Thiết lập lại schedule)
-				this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
-						masterCache.getEmpGeneralInfo(), masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
+			
+			if (masterCache.getListWorkingConItem().size() > 1) {
+				// 労働条件が途中で変化するなら、計算キャッシュは利用しない
+				// do not cache result of calculation if working condition of the employee is changed in the period
+				CalculationCache.clear();
 			} else {
-				// 入力パラメータ「作成方法区分」を判断-check parameter
-				// CreateMethodAtr
-				if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-					command.setCompanySetting(companySetting);
-					this.createScheduleBasedPersonWithMultiThread(
-							command,
-							scheduleCreator,
-							scheduleExecutionLog,
-							context,
-							betweenDates,
-							masterCache,
-							listBasicSchedule,
-							registrationListDateSchedule);
-				}
+				CalculationCache.initialize();
+			}
+			try {
+				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
+						companySetting, scheduleCreator, registrationListDateSchedule, content, betweenDates);
+			} finally {
+				CalculationCache.clear();
 			}
 
 			scheduleCreator.updateToCreated();
@@ -175,8 +155,39 @@ public class ScheduleCreatorExecutionTransaction {
 			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
 		});
 	}
-	
 
+	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod period,
+			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule, Object companySetting,
+			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
+			ScheduleCreateContent content, List<GeneralDate> betweenDates) {
+		
+		// 実施区分を判断, 処理実行区分を判断
+		// EA No2115
+		if (content.getImplementAtr() == ImplementAtr.RECREATE
+				&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
+			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(
+					command, period, companySetting, scheduleCreator, content);
+			// スケジュールを再設定する (Thiết lập lại schedule)
+			this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
+					masterCache.getEmpGeneralInfo(), masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
+		} else {
+			// 入力パラメータ「作成方法区分」を判断-check parameter
+			// CreateMethodAtr
+			if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
+				command.setCompanySetting(companySetting);
+				this.createScheduleBasedPersonWithMultiThread(
+						command,
+						scheduleCreator,
+						scheduleExecutionLog,
+						context,
+						betweenDates,
+						masterCache,
+						listBasicSchedule,
+						registrationListDateSchedule);
+			}
+		}
+	}
 
 	/**
 	 * Update status schedule execution log.
@@ -401,7 +412,6 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @param mapFlowWorkSetting
 	 * @param mapDiffTimeWorkSetting
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void createScheduleBasedPersonWithMultiThread(
 			ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator,
@@ -415,33 +425,22 @@ public class ScheduleCreatorExecutionTransaction {
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
 //		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
-		
-		if (masterCache.getListWorkingConItem().size() > 1) {
-			// 労働条件が途中で変化するなら、計算キャッシュは利用しない
-			CalculationCache.clear();
-		} else {
-			CalculationCache.initialize();
-		}
-		try {
-			betweenDates.forEach(dateInPeriod -> {
-	//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-	//					.build(() -> {
-							boolean isEndLoop = this.createScheduleBasedPersonOneDate(
-									command,
-									creator,
-									domain,
-									context,
-									dateInPeriod,
-									masterCache,
-									listBasicSchedule,
-									dateRegistedEmpSche);
-							if(isEndLoop) return;
-							// // Count down latch.
-	//						countDownLatch.countDown();
-			});
-		} finally {
-			CalculationCache.clear();
-		}
+		betweenDates.forEach(dateInPeriod -> {
+//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+//					.build(() -> {
+						boolean isEndLoop = this.createScheduleBasedPersonOneDate(
+								command,
+								creator,
+								domain,
+								context,
+								dateInPeriod,
+								masterCache,
+								listBasicSchedule,
+								dateRegistedEmpSche);
+						if(isEndLoop) return;
+						// // Count down latch.
+//						countDownLatch.countDown();
+		});
 
 		if(dateRegistedEmpSche.getListDate().size() > 0){
 			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);
