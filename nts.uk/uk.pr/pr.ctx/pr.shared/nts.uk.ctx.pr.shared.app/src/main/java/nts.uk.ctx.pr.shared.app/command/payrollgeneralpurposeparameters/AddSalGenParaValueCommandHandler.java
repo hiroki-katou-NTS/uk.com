@@ -1,14 +1,13 @@
 package nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters;
 
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaValue;
+import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaValueRepository;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters.SalGenParaValueCommand;
-import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaValue;
-import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaValueRepository;
 
 @Stateless
 @Transactional
@@ -32,4 +31,5 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaV
         }
 
     }
+
 }

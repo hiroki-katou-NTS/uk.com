@@ -1,17 +1,18 @@
 package nts.uk.ctx.pr.shared.app.find.payrollgeneralpurposeparameters;
 
-import nts.uk.ctx.pr.shared.app.find.payrollgeneralpurposeparameters.SalGenParaDateHistDto;
+import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaDateHistRepository;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaDateHistory;
 import nts.uk.shr.com.context.AppContexts;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 /**
@@ -29,6 +30,18 @@ public class SalGenParaDateHistFinder
         List<SalGenParaDateHistDto> salGenParaDateHisDto = new ArrayList<SalGenParaDateHistDto>();
         if (salGenParaDateHis.isPresent() && salGenParaDateHis.get().getDateHistoryItem() != null) {
             salGenParaDateHisDto = SalGenParaDateHistDto.fromDomain(salGenParaDateHis.get());
+        }
+        return salGenParaDateHisDto;
+    }
+    public List<SalGenParaDateHistDto> getListHistory(String paraNo,GeneralDate startDate,GeneralDate end){
+        String newHistID = IdentifierUtil.randomUniqueId();
+        Optional<SalGenParaDateHistory> objectHis = repository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);
+        SalGenParaDateHistory salGenParaDateHistory = new SalGenParaDateHistory(paraNo,AppContexts.user().companyId(), objectHis.get().getDateHistoryItem());
+        DateHistoryItem dateHistoryItem = new DateHistoryItem(newHistID, new DatePeriod(startDate,end));
+        salGenParaDateHistory.add(dateHistoryItem);
+        List<SalGenParaDateHistDto> salGenParaDateHisDto = new ArrayList<SalGenParaDateHistDto>();
+        if (salGenParaDateHistory.getDateHistoryItem() != null) {
+            salGenParaDateHisDto = SalGenParaDateHistDto.fromDomain(salGenParaDateHistory);
         }
         return salGenParaDateHisDto;
     }

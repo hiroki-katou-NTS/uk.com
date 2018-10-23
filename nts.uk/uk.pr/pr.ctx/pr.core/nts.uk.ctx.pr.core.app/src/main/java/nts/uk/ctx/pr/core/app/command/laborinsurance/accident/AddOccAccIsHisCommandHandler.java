@@ -20,7 +20,8 @@ import java.util.Optional;
 
 @Stateless
 @Transactional
-public class AddOccAccIsHisCommandHandler extends CommandHandler<AccInsurHisCommand> {
+public class
+AddOccAccIsHisCommandHandler extends CommandHandler<AccInsurHisCommand> {
 
     @Inject
     private OccAccIsHisRepository repository;
