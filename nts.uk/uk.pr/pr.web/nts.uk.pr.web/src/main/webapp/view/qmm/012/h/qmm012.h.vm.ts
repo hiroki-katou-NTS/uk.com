@@ -13,13 +13,15 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         validityPeriodAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getValidityPeriodAtr());
         cycleSettingAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCycleSettingAtr());
         categoryAtr: string;
+        categoryAtrName: string;
         itemNameCd: string;
         name: string;
 
         constructor() {
             let self = this;
             let params = getShared("QMM012_B_TO_H_SALARY_ITEM_ID");
-            self.categoryAtr = model.getCategoryAtrText(params.categoryAtr);
+            self.categoryAtr = params.categoryAtr;
+            self.categoryAtrName = model.getCategoryAtrText(params.categoryAtr);
             self.itemNameCd = params.itemNameCd;
             self.name = params.name;
         }
