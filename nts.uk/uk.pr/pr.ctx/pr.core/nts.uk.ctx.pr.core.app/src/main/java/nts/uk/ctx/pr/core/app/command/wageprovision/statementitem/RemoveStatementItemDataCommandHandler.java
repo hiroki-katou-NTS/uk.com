@@ -44,8 +44,8 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
 		val statementItem = command.getStatementItem();
-		int categoryAtr = command.getCategoryAtr();
-		String itemNameCd = command.getItemNameCd();
+		int categoryAtr = statementItem.getCategoryAtr();
+		String itemNameCd = statementItem.getItemNameCd();
 		statementItemRepository.remove(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd());
 		statementItemNameRepository.remove(cid, categoryAtr, itemNameCd);
 

@@ -44,7 +44,7 @@ public class ValidateStatementItemData {
 			return i.getItemNameCd().v();
 		}).collect(Collectors.toList());
 		if (!command.isCheckCreate()) {
-			listCode.removeIf(c -> c.equals(command.getItemNameCd()));
+			listCode.removeIf(c -> c.equals(statementItem.getItemNameCd()));
 		}
 		if (listCode.size() == 0) {
 			return;

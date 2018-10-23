@@ -20,36 +20,16 @@ public class StatementItemDataCommand {
 	private TaxExemptionLimitCommand taxExemptionLimit;
 	private IntegratedItemCommand integratedItem;
 	private boolean checkCreate;
-	
-	/**
-	 * カテゴリ区分
-	 */
-	private int categoryAtr;
-
-	/**
-	 * 項目名コード
-	 */
-	private String itemNameCd;
-
-	/**
-	 * 名称
-	 */
-	private String name;
-
-	/**
-	 * 廃止区分
-	 */
-	private Integer deprecatedAtr;
 
     public PaymentItemSet toPaymentItemSet(String cid) {
-        return paymentItemSet.toDomain(cid, this.categoryAtr, statementItem.getItemNameCd());
+        return paymentItemSet.toDomain(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd());
     }
 
     public DeductionItemSet toDeductionItemSet(String cid) {
-        return deductionItemSet.toDomain(cid, this.categoryAtr, statementItem.getItemNameCd());
+        return deductionItemSet.toDomain(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd());
     }
 
     public TimeItemSet toTimeItemSet(String cid) {
-        return timeItemSet.toDomain(cid, this.categoryAtr, statementItem.getItemNameCd());
+        return timeItemSet.toDomain(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd());
     }
 }

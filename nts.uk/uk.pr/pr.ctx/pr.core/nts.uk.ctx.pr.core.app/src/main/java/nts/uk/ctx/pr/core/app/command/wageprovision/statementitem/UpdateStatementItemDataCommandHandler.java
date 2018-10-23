@@ -38,10 +38,9 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 		validateStatementItemData.validate(command);
 		
 		String cid = AppContexts.user().companyId();
-		String itemNameCd = command.getItemNameCd();
 		val statementItem = command.getStatementItem();
-		
-	
+		String itemNameCd = statementItem.getItemNameCd();
+
 		// ドメインモデル「明細書項目」を新規追加する
 		if (statementItem != null) {
 			statementItemRepository.update(new StatementItem(cid, statementItem.getCategoryAtr(),
