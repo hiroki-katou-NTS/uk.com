@@ -28,7 +28,7 @@ public class UpdateSalGenYearMonthHistoryCommandHandler extends CommandHandler<S
             YearMonth end = new YearMonth(command.getEnd());
             salGenParaYearMonthHistoryService.updateYearMonthHistory(cId, command.getParaNo(), hisId, start, end);
         } else {
-           // salGenParaYearMonthHistoryService.
+            salGenParaYearMonthHistoryService.deleteYearMonthHistory(cId, command.getParaNo(), hisId);
         }
 
     }

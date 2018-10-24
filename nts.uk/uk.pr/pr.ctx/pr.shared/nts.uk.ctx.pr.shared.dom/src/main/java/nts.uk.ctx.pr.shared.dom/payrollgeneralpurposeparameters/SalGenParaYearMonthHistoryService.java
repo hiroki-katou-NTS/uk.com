@@ -27,7 +27,31 @@ public class SalGenParaYearMonthHistoryService {
         }
         yearMonthHistory.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
         salGenParaYMHistRepository.update(itemToBeUpdate.get(), cId, paraNo);
-       // this.updateItemBefore(yearMonthHistory, itemToBeUpdate.get(), cId, paraNo);
+        this.updateItemBefore(yearMonthHistory.get(), itemToBeUpdate.get(), cId, paraNo);
+    }
+    private void updateItemBefore(SalGenParaYearMonthHistory yearMonthHistory, YearMonthHistoryItem item, String cId, String paraNo){
+        Optional<YearMonthHistoryItem> itemToBeUpdated = yearMonthHistory.immediatelyBefore(item);
+        if (!itemToBeUpdated.isPresent()){
+            return;
+        }
+        salGenParaYMHistRepository.update(itemToBeUpdated.get(), cId, paraNo);
+    }
+
+    public void deleteYearMonthHistory(String hisId, String cId, String paraNo){
+        Optional<SalGenParaYearMonthHistory> yearMonthHistory = salGenParaYMHistRepository.getAllSalGenParaYMHist(cId, paraNo);
+        Optional<YearMonthHistoryItem> itemToBeDelete = yearMonthHistory.get().getHistory().stream()
+                .filter(h -> h.identifier().equals(hisId))
+                .findFirst();
+        if (!itemToBeDelete.isPresent()) {
+            return;
+        }
+        yearMonthHistory.get().remove(itemToBeDelete.get());
+        salGenParaYMHistRepository.remove(yearMonthHistory.get().getParaNo(), cId, hisId);
+        if (yearMonthHistory.get().getHistory().size() > 0 ){
+            YearMonthHistoryItem lastestItem = yearMonthHistory.get().getHistory().get(0);
+            yearMonthHistory.get().exCorrectToRemove(lastestItem);
+            salGenParaYMHistRepository.update(lastestItem, cId, yearMonthHistory.get().getParaNo());
+        }
     }
 
 }

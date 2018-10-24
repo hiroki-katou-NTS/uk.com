@@ -89,7 +89,4 @@ public class SalGenParaIdentificationWebService extends WebService {
     public void UpdateHistoryDate(SalGenDateHistoryCommand command) {
         updateSalGenDateHistoryCommandHandler.handle(command);
     }
-
-
-
 }

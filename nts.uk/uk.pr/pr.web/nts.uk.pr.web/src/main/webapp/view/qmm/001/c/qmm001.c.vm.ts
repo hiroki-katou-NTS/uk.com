@@ -53,6 +53,12 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         }
         update(){
             let self = this;
+            if(self.historyAtr == PARAHISTORYATR.YMHIST && self.validateYearMonth()) {
+                return;
+            }
+            if(self.historyAtr == PARAHISTORYATR.YMDHIST && self.validateYearMonthDay()) {
+                return;
+            }
             let data: any = {
                 hisId: self.hisId(),
                 code: self.code(),
@@ -63,10 +69,10 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             if (self.historyAtr() == PARAHISTORYATR.YMDHIST) {
                 if (self.methodEditing() == EDIT_METHOD.DELETE) {
                     dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                        service.UpdateHistoryDate(param).done(() => {
+                        service.updateHistoryDate(data).done(() => {
                             dialog.info({messageId: "Msg_16"}).then(() => {
-                                setShared('QMM011_F_PARAMS_OUTPUT', {
-                                    methodEditing: self.methodEditing()
+                                setShared('QMM001_C_PARAMS_OUTPUT', {
+                                    result: true
                                 });
                                 close();
                             });
@@ -76,10 +82,10 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                         });
                     });
                 } else {
-                    service.updateEmpInsurHis(data).done(() => {
+                    service.updateHistoryDate(data).done(() => {
                         dialog.info({messageId: "Msg_15"}).then(() => {
-                            setShared('QMM011_F_PARAMS_OUTPUT', {
-                                methodEditing: self.methodEditing()
+                            setShared('QMM001_C_PARAMS_OUTPUT', {
+                                result: true
                             });
                             close();
                         });
@@ -91,9 +97,9 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             } else {
                 if (self.methodEditing() == EDIT_METHOD.DELETE) {
                     dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                        service.updateAccInsurHis(param).done(() => {
+                        service.updateHistoryYearMonth(data).done(() => {
                             dialog.info({messageId: "Msg_16"}).then(() => {
-                                setShared('QMM011_F_PARAMS_OUTPUT', {
+                                setShared('QMM001_C_PARAMS_OUTPUT', {
                                     methodEditing: self.methodEditing()
                                 });
                                 close();
@@ -104,9 +110,9 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                         });
                     });
                 } else {
-                    service.updateAccInsurHis(param).done(() => {
+                    service.updateHistoryYearMonth(data).done(() => {
                         dialog.info({messageId: "Msg_15"}).then(() => {
-                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                            setShared('QMM001_C_PARAMS_OUTPUT', {
                                 methodEditing: self.methodEditing()
                             });
                             close();
@@ -137,7 +143,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
 
         validateYearMonthDay(){
             let self = this;
-            if (!(moment.utc(self.startLastYearMonthDay(), 'YYYY/MM/DD') < moment.utc(self.startYearMonthDay(), 'YYYY/MM/DD'))) {
+            if (!(self.startLastDate() < self.startDate())) {
                 dialog.error({messageId: "Msg_79"});
                 return true;
             }

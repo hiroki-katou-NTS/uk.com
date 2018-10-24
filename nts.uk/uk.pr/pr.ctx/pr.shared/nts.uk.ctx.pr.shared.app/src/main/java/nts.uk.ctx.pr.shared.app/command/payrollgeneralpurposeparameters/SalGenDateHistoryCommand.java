@@ -1,25 +1,22 @@
 package nts.uk.ctx.pr.shared.app.command.payrollgeneralpurposeparameters;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 
 @Value
 public class SalGenDateHistoryCommand {
 
-    /**
-     * パラメータNo
-     */
     private String paraNo;
 
-    /**
-     * 会社ID
-     */
     private String cId;
 
-    private int start;
+    private GeneralDate start;
 
-    private int end;
+    private GeneralDate end;
     
     private int mode;
+
+    private String hisId;
     
 
 }
