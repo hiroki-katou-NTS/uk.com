@@ -257,7 +257,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 	
-	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Function<List<Integer>, List<Integer>> getValueFromItemIds){
+	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Function<List<Integer>, List<Double>> getValueFromItemIds){
 		/** 勤務種類をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&

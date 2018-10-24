@@ -169,6 +169,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		.setParameter("companyId", companyId)
 		.setParameter("branchId", branchId)
 		.executeUpdate();
+		this.getEntityManager().flush();
 	}	
 	/**
 	 * delete All Approval Phase By Branch Id

@@ -212,7 +212,14 @@ module nts.uk.ui {
                     }
                 }
                 
-                $div.html($label.val());
+                let text;
+                if ($label[0].nodeName === "DIV") { 
+                    text = $label.html();
+                } else {
+                    text = $label.val();
+                }
+                
+                $div.html(text);
                 let width = $div.outerWidth();
                 let scrollWidth = $div[0].scrollWidth;
                 $div.remove();

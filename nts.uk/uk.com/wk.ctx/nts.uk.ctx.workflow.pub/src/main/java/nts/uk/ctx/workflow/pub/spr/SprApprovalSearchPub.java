@@ -28,7 +28,7 @@ public interface SprApprovalSearchPub {
 	
 	public List<ApprovalPhaseSprExport> getAllIncludeApprovers(String companyId, String branchId);
 	
-	public List<ApprovalRootStateSprExport> getRootStateByDateAndType(GeneralDate date, Integer rootType);
+	public List<ApprovalRootStateSprExport> getAppByApproverDate(String companyID, String approverID, GeneralDate date);
 	
 	/**
 	 * 3.指定した社員が承認できるかの判断

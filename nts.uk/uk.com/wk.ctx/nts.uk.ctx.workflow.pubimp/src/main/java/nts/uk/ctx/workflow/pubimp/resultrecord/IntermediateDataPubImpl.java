@@ -18,6 +18,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.agent.Agent;
+import nts.uk.ctx.workflow.dom.agent.AgentRepository;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
@@ -28,7 +33,9 @@ import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
 import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
+import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
+import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootConfirmService;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstancePeriod;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstanceService;
@@ -44,12 +51,15 @@ import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppFrameInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppPhaseInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationMonthExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -80,6 +90,15 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
 	private AppRootInstanceRepository appRootInstanceRepository;
+	
+	@Inject
+	private AgentRepository agentRepository;
+	
+	@Inject
+	private JudgmentApprovalStatusService judgmentApprovalStatusService;
+	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
@@ -128,6 +147,13 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				approvalRootStateStatus.getDate(), 
 				approvalRootStateStatus.getEmployeeID(), 
 				approvalRootStateStatus.getDailyConfirmAtr().value);
+	}
+	
+	private AppRootSttMonthExport convertSttToMonthFromDomain(ApprovalRootStateStatus approvalRootStateStatus, YearMonth yearMonth, Integer closureID, ClosureDate closureDate){
+		return new AppRootSttMonthExport(
+				approvalRootStateStatus.getEmployeeID(), 
+				approvalRootStateStatus.getDailyConfirmAtr().value,
+				yearMonth, closureID, closureDate);
 	}
 
 	@Override
@@ -389,7 +415,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
+	public List<AppRootSttMonthExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
 		String companyID = AppContexts.user().employeeId();
 		// ドメインモデル「就業実績確認状態」を取得する
 		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
@@ -400,14 +426,15 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 		// 承認ルート状況を取得する
 		return approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState))
-				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+				.stream().map(x -> convertSttToMonthFromDomain(x, appRootConfirm.getYearMonth().get(), appRootConfirm.getClosureID().get(), appRootConfirm.getClosureDate().get()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsMonth(
+	public List<AppRootSttMonthExport> getAppRootStatusByEmpsMonth(
 			List<EmpPerformMonthParam> empPerformMonthParamLst) {
 		String companyID = AppContexts.user().companyId();
-		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<>();
+		List<AppRootSttMonthExport> appRootSttMonthLst = new ArrayList<>();
 		// INPUT．対象者社員IDの先頭から最後へループ
 		empPerformMonthParamLst.forEach(employee -> {
 			// 対象者と期間から承認ルート中間データを取得する
@@ -427,13 +454,18 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			// 中間データから承認ルートインスタンスに変換する
 			ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 			// 承認ルート状況を取得する
-			appRootStatusLst.addAll(approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState)));
+			List<ApprovalRootStateStatus> approvalRootStateStatusLst = approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState));
+			if(!CollectionUtil.isEmpty(approvalRootStateStatusLst)){
+			appRootSttMonthLst.add(this.convertSttToMonthFromDomain(
+					approvalRootStateStatusLst.get(0),
+					employee.getYearMonth(), employee.getClosureID(), employee.getClosureDate()));
+			}
 		});
-		return appRootStatusLst.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+		return appRootSttMonthLst;
 	}
 
 	@Override
-	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+	public AppEmpSttMonthExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
 			ClosureDate closureDate, GeneralDate baseDate) {
 		DatePeriod period = new DatePeriod(baseDate, baseDate);
 		// 承認者(承認代行を含め)と期間から承認ルート中間データを取得する
@@ -459,11 +491,13 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		List<RouteSituation> mergeLst = appRootInstanceService.mergeRouteSituationLst(approverRouteLst, agentRouteLst);
 		// 「ルート状況」リスト整合処理後をoutput「基準社員の承認対象者」に追加する
 		approvalEmpStatus.getRouteSituationLst().addAll(mergeLst);
-		return new AppEmpStatusExport(
+		return new AppEmpSttMonthExport(
 				approvalEmpStatus.getEmployeeID(), 
-				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationExport(
-						x.getDate(), 
+				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationMonthExport(
 						x.getEmployeeID(), 
+						yearMonth,
+						closureID,
+						closureDate,
 						x.getApproverEmpState().value, 
 						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
 				.collect(Collectors.toList()));
@@ -487,6 +521,48 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> dailyConfirmSearch(String companyID, String approverID, GeneralDate date) {
+		List<String> result = new ArrayList<>();
+		List<AppRootInstance> appRootInstanceLst = new ArrayList<>();
+		// ドメインモデル「承認ルート中間データ」を取得する
+		List<AppRootInstance> approverInstLst = appRootInstanceRepository.findByApproverDateCID(companyID, approverID, date, RecordRootType.CONFIRM_WORK_BY_DAY);
+		appRootInstanceLst.addAll(approverInstLst);
+		// ドメインモデル「代行承認」を取得する
+		List<Agent> agentInfoOutputs = agentRepository.findByApproverAndDate(companyID, approverID, date, date);
+		agentInfoOutputs.forEach(agent -> {
+			// ドメインモデル「承認ルート中間データ」を取得する
+			List<AppRootInstance> agentInstLst = appRootInstanceRepository.findByApproverDateCID(companyID, agent.getEmployeeId(), date, RecordRootType.CONFIRM_WORK_BY_DAY);
+			appRootInstanceLst.addAll(agentInstLst);
+		});
+		if(CollectionUtil.isEmpty(appRootInstanceLst)){
+			return Collections.emptyList();
+		}
+		// 取得した「承認ルート中間データ」をループする
+		appRootInstanceLst.forEach(appRootInstance -> {
+			// 対象日の就業実績確認状態を取得する
+			Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, appRootInstance.getEmployeeID(), date, RecordRootType.CONFIRM_WORK_BY_DAY);
+			if(!opAppRootConfirm.isPresent()){
+				return;
+			}
+			AppRootConfirm appRootConfirm = opAppRootConfirm.get();
+			// 中間データから承認ルートインスタンスに変換する
+			ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+			// 3.指定した社員が承認できるかの判断(NoDBACCESS)
+			ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState, approverID);
+			if(!(approverPersonOutput.getAuthorFlag()&&approverPersonOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED&&!approverPersonOutput.getExpirationAgentFlag())){
+				return;
+			}
+			// （基幹・社員Export）アルゴリズム「社員IDから個人社員基本情報を取得」を実行する　RequestList No.1
+			PersonImport personImport = employeeAdapter.getEmployeeInformation(approvalRootState.getEmployeeID());
+			if(personImport==null || Strings.isBlank(personImport.getEmployeeCode())){
+				return;
+			}
+			result.add(personImport.getEmployeeCode());
+		});
+		return result;
 	}
 	
 }

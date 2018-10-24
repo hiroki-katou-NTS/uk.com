@@ -75,5 +75,6 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 	@Override
 	public void deleteBranch(String companyId, String branchId) {
 		this.commandProxy().remove(WwfmtBranch.class, new WwfmtBranchPK(companyId,branchId));
+		this.getEntityManager().flush();
 	}
 }
