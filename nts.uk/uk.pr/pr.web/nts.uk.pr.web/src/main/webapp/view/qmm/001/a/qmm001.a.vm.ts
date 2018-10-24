@@ -160,6 +160,13 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 }
             }
         }
+        isEnableSubmit(){
+            if(this.listHistory().length == 0 ){
+                return false;
+
+            }
+            return true;
+        }
         isOpenDialogB(){
             let self = this;
             if(self.modeScreen() == MODESCREEN.ADD || self.salGenParaIdent().historyAtr == PARAHISTORYATR.DONOTMANAGE){
