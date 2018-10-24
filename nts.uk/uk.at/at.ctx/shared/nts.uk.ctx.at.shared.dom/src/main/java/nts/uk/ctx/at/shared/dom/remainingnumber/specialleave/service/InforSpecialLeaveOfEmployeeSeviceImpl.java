@@ -344,6 +344,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
 				GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
 				dealineDate.addMonths(speDeadline.getMonths().v());
+				dealineDate.addDays(-1);
 				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
 				lstOutput.add(output);
 			});	
@@ -356,10 +357,10 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 				SpecialHolidayInfor output = new SpecialHolidayInfor();
 				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
 					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null 
-							? Optional.of(grantDaysInfor.getGrantDate()) : Optional.empty());
+							? Optional.of(grantDaysInfor.getGrantDate().addDays(-1)) : Optional.empty());
 				} else {
 					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
-					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd()));
+					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd().addDays(-1)));
 				}
 				lstOutput.add(output);
 				i += 1;
