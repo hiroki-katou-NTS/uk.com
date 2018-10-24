@@ -246,7 +246,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     self.value(Number(item.timeValue));
                     self.selectedSwitchParaAvai(item.availableAtr);
                     self.selectedSwitchParaTargetAtr(item.targetAtr);
-                    self.valueComboBox(item.selection);
+                    self.valueComboBox((item.selection == null)? 0 : item.selection);
                 }).fail(error => {
                     dialog.alertError(error);
                 });
@@ -261,7 +261,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         numValue :null,
                         charValue :null ,
                         timeValue :null,
-                        targetAtr: PARATARGETATR.TARGET
+                        targetAtr: null
                     };
                     self.value(null);
                 }
@@ -288,7 +288,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             if(errors.hasError()){
                 return;
             }
-            self.salGenParaValue().selection = self.valueComboBox();
+
             switch (self.salGenParaIdent().attributeType){
                 case PARAATTRITYPE.NUMBER:{
                     self.salGenParaValue().numValue = self.value();
@@ -323,6 +323,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 mSalGenParaValueCommand: dataValue
             };
             if(self.modeScreen() == MODESCREEN.ADD){
+                self.valueComboBox(FIRST);
                 if(self.modeHistory() == MODEHISTORY.YEARMONTH){
                     dataHisValue = {
                         paraNo: self.listHistory()[0].paraNo,
@@ -488,15 +489,25 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             }
             setShared('QMM001_PARAMS_TO_SCREEN_C', data);
             modal("/view/qmm/001/c/index.xhtml").onClosed(() => {
-                self.modeScreen(MODESCREEN.ADD);
                 let params = getShared('QMM001_C_PARAMS_OUTPUT');
                 if (params == null || params === undefined) {
                     return;
                 }
-                if(params && params.result){
-                    self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                if(params && params.methodEditing){
+                    if(params.methodEditing == 0) /*xóa*/
+                    {
+                        let paraNo : number =  self.selectedSalGenParaIdent();
+                        self.itemSelectionProcess(paraNo);
+                        self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
+                        self.modeScreen(MODESCREEN.ADD);
+                        return;
+                    }
+                    let paraNo : number =  self.selectedSalGenParaIdent();
+                    self.itemSelectionProcess(paraNo);
+                    self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
+                    self.modeScreen(MODESCREEN.ADD);
                 }
-                self.modeScreen(MODESCREEN.ADD);
+
 
             });
         }
@@ -730,9 +741,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         numValue: KnockoutObservable<string>= ko.observable('');
         charValue: KnockoutObservable<string>= ko.observable('');
 
-        selection: KnockoutObservable<number>= ko.observable(0);
+        selection: KnockoutObservable<number>= ko.observable(null);
         availableAtr: KnockoutObservable<number>= ko.observable(0);
-        timeValue: KnockoutObservable<number>= ko.observable(0);
+        timeValue: KnockoutObservable<number>= ko.observable(null);
         targetAtr: KnockoutObservable<number>= ko.observable(0);
 
         constructor() {

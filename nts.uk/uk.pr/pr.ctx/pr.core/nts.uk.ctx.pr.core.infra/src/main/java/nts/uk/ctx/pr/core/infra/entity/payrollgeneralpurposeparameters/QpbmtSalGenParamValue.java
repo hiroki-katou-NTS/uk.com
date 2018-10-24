@@ -7,7 +7,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Optional;
 
 /**
 * 給与汎用給与汎用パラメータ識別パラメータ値
@@ -81,10 +80,10 @@ public class QpbmtSalGenParamValue extends UkJpaEntity implements Serializable
                 domain.getAvailableAtr().value,
                 domain.getNumValue().map(i->i.v()).orElse(null),
                 domain.getCharValue().map(i->i.v()).orElse(null),
-                domain.getTimeValue().map(i -> {
-                    return i.v();
-                }).orElse(Optional.of(0).get()), domain.getTargetAtr().map(i->i.value).orElse(null),
-                domain.getSelection().get());
+                domain.getTimeValue().map(i ->i.v()).orElse(null),
+                domain.getTargetAtr().map(i->i.value).orElse(null),
+                domain.getSelection().map(i->i.intValue()).orElse(null)
+        );
     }
 
 }
