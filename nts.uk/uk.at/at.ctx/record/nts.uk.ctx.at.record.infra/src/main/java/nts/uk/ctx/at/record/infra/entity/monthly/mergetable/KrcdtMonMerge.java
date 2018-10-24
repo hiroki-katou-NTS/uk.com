@@ -4699,7 +4699,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
 	private void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
-		this.excessTime_1_1 = domain == null ? 0 : domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork2(ExcessOutsideWork domain) {
@@ -6112,7 +6112,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** PCログオフ乖離 */
 		AggrPCLogonDivergence logonDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOnDivDays), new AttendanceTimeMonth(this.logOnDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
 		/** PCログオフ乖離 */
-		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
+		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOffDivAveTime));
 		val workClock = WorkClockOfMonthly.of(endClock,
 				PCLogonOfMonthly.of(logOnClock, PCLogonDivergenceOfMonthly.of(logonDivergence, logoffDivergence)));
 		
