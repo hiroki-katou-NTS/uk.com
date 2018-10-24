@@ -466,16 +466,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 承認状況メールテンプレート.URL日別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlDayEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)) {
+			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.equals(mailType)) {
+				// アルゴリズム「埋込URL情報登録」を実行する
+				String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW004", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
+				listUrl.add(url2);
+			} else if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)){
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "normal"));
-			} else {
-				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "approval"));
+				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
+				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
+				// アルゴリズム「埋込URL情報登録」を実行する
+				String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
+				listUrl.add(url2);
 			}
-			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
-			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
-			// アルゴリズム「埋込URL情報登録」を実行する
-			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
-			listUrl.add(url2);
 		}
 		// 承認状況メールテンプレート.URL月別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
