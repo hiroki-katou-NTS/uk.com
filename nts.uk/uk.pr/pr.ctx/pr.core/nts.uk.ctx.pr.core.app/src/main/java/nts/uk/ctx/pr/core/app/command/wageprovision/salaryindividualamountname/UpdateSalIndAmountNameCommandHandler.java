@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountName;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountNameRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -20,7 +21,8 @@ public class UpdateSalIndAmountNameCommandHandler extends CommandHandler<SalIndA
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountNameCommand> context) {
         SalIndAmountNameCommand command = context.getCommand();
-        repository.update(new SalIndAmountName(command.getCId(), command.getIndividualPriceCode(), command.getCateIndicator(), command.getIndividualPriceName()));
+        String cid = AppContexts.user().companyId();
+        repository.update(new SalIndAmountName(cid, command.getIndividualPriceCode(), command.getCateIndicator(), command.getIndividualPriceName()));
     
     }
 }
