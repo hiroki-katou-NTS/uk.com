@@ -18,6 +18,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         salBonusCate: KnockoutObservable<number>;
         //ccg001
         employeeList:any;
+        employeeInfoImports:any;
         referenceDate: KnockoutObservable<string> = ko.observable('');
         ccgcomponent: GroupOption;
         tilteTable: KnockoutObservableArray<any>;
@@ -34,7 +35,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         constructor() {
             var self = this;
-            $("#A5_9").ntsFixedTable({height: 350, width: 700});
+            $("#A5_9").ntsFixedTable({height: 350, width: 720});
             self.tilteTable = ko.observableArray([
                 {headerText: getText('QMM040_8'), key: 'individualPriceCode', width: 100},
                 {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
@@ -42,6 +43,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             ]);
             self.personalAmount =ko.observableArray([]);
             self.personalDisplay =ko.observableArray([]);
+
+
 
             self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.cateIndicator = ko.observable(0);
@@ -60,6 +63,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
                 self.personalAmount.removeAll();
+                self.personalDisplay.removeAll();
                 if (!data)
                     return;
                 let temp = _.find(self.salIndAmountNames(), function (o) {
@@ -71,6 +75,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
                 }
             });
+
+            $("#A5_7").focus();
 
 
         }
@@ -164,32 +170,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             });
         }
 
-        // public onSelected(pelValCode: string) {
-        //     let self = this;
-        //     self.personalAmount.periodAndAmountDisplay.removeAll();
-        //     self.salIndAmountUpdateCommandList.removeAll();
-        //     $("#substituteDataGrid").igGrid("dataSourceObject", self.personalAmount.periodAndAmountDisplay()).igGrid("dataBind");
-        //     service.salIndAmountHisByPeValCode(pelValCode, self.cateIndicator(), self.salBonusCate()).done(function (data) {
-        //
-        //         self.personalAmount = new PersonalAmount();
-        //         self.personalAmount.setData(data)
-        //         console.log(self.personalAmount);
-        //
-        //     })
-        //
-        // }
+
 
 
         filterData(): void {
             let self = this;
             self.yearMonthFilter();
             let temp = new Array();
-            // for (let i = 0; i < self.personalAmount.periodAndAmount().length; i++) {
-            //     if (self.personalAmount.periodAndAmount()[i].periodStartYm <= this.yearMonthFilter() && self.personalAmount.periodAndAmount()[i].periodEndYm >= this.yearMonthFilter())
-            //         temp.push(self.personalAmount.periodAndAmount()[i])
-            // }
-            // self.personalAmount.periodAndAmountDisplay(temp);
-            // self.salIndAmountUpdateCommandList(temp);
 
             for(let i=0;i<self.personalAmount().length;i++){
                 if(self.personalAmount()[i].startYearMonth <= this.yearMonthFilter() && self.personalAmount()[i].endYearMonth >= this.yearMonthFilter()){
@@ -198,6 +185,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             }
 
             self.personalDisplay(temp);
+            if(self.personalDisplay().length<=10){
+                if (/Edge/.test(navigator.userAgent)) {
+                    $('.scroll-header').removeClass('edge_scroll_header');
+                } else {
+                    $('.scroll-header').removeClass('ci_scroll_header');
+                }
+            }
 
 
         }
@@ -249,6 +243,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 showJobTitle: false,
                 showWorktype: false,
                 isMutipleCheck: true,
+                tabindex: 2,
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     //self.selectedEmployee(data.listEmployee);
@@ -263,21 +258,36 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                             salBonusCate: self.salBonusCate(),
                             employeeIds: data.listEmployee.map(x => x.employeeId)
 
-                        }).done(function (datadataPersonalAmount:Array<IPersonalAmount>) {
-                            let arrTemp:Array<PersonalAmount>=new Array();
-                            arrTemp=datadataPersonalAmount.map(x => new PersonalAmount(x));
-
-                            self.personalAmount(arrTemp);
-                            self.personalDisplay(arrTemp);
+                        }).done(function (dataNameAndAmount) {
+                            self.employeeInfoImports=dataNameAndAmount.employeeInfoImports;
+                            let personalAmountData:Array<any>=new Array();
+                            personalAmountData=dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
+                            console.log(dataNameAndAmount);
+                            self.personalAmount(personalAmountData);
+                            self.personalDisplay(personalAmountData);
                             for(let i=0;i<self.personalAmount().length;i++){
-                                let index=_.findIndex(self.employeeList,function (o) {
-                                    return o.employeeId==self.personalAmount()[i].empId
+                                let index=_.findIndex(self.employeeInfoImports,function (o) {
+                                    return o.sid==self.personalAmount()[i].empId
                                 });
                                 if(index != -1){
-                                    self.personalAmount()[i].employeeCode(self.employeeList[index].employeeCode);
-                                    self.personalAmount()[i].businessName(self.employeeList[index].employeeName);
+                                    self.personalAmount()[i].employeeCode(self.employeeInfoImports[index].scd);
+                                    self.personalAmount()[i].businessName(self.employeeInfoImports[index].businessName);
                                 }
                             }
+
+                            setTimeout(function () {
+                                if( self.personalDisplay().length > 10) {
+                                    if (/Edge/.test(navigator.userAgent)) {
+                                        $('.scroll-header').addClass('edge_scroll_header');
+                                        $('.nts-fixed-body-container').addClass('edge_scroll_body');
+                                    } else {
+                                        $('.scroll-header').addClass('ci_scroll_header');
+                                        $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                                    }
+
+                                }
+                            }, 100);
+
                         })
                     }
                     self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
@@ -289,6 +299,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
 
     export interface GroupOption {
+
         /** Common properties */
         showEmployeeSelection?: boolean; // 検索タイプ
         systemType: number; // システム区分

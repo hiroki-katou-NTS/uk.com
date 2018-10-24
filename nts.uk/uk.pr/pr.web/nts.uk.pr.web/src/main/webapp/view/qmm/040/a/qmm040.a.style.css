@@ -24,3 +24,19 @@
 
 }
 
+.ci_scroll_header {
+    width: 17px !important;
+}
+
+.ci_scroll_body {
+    padding-right: 0px !important;
+}
+
+.edge_scroll_body {
+    padding-right: 0px !important;
+}
+
+.edge_scroll_header {
+    width: 16px !important;
+}
+

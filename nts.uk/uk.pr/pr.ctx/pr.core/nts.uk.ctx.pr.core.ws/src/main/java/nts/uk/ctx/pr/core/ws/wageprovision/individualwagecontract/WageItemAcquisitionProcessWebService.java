@@ -21,7 +21,7 @@ public class WageItemAcquisitionProcessWebService extends WebService {
     @POST
     @Path("allSalIndAmountNameflowCateIndicator/{cateIndicator}")
     public List<SalIndAmountNameDto> getAllSalIndAmountNameflowCateIndicator(@PathParam("cateIndicator") int cateIndicator ){
-        return salIndAmountNameFinder.getAllSalIndAmountName(cateIndicator);
+        return salIndAmountNameFinder.getAllSalIndAmountNameByCateIndi(cateIndicator);
 
     }
 }

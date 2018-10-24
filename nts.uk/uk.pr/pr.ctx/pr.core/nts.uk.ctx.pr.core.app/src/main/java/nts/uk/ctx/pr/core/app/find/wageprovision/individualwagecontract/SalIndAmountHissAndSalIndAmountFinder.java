@@ -2,31 +2,31 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
 
 import nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract.SalIndAmountByPerValCodeCommand;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.PersonalAmount;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Stateless
 public class SalIndAmountHissAndSalIndAmountFinder {
 
     @Inject
-    SalIndAmountHisRepository salIndAmountHisRepository;
+    private SalIndAmountHisRepository salIndAmountHisRepository;
+
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+
+    public EmployeeInfoImportDto getPersonalAmounts(SalIndAmountByPerValCodeCommand command) {
+        List<EmployeeInfoImport> employeeInfoImports   = employeeInfoAdapter.getByListSid(command.getEmployeeIds());
+        List<PersonalAmount> personalAmount = this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(command.getPerValCode(), command.getCateIndicator(), command.getSalBonusCate(), command.getEmployeeIds());
 
 
 
-    public List<PersonalAmount> getPersonalAmounts(SalIndAmountByPerValCodeCommand command) {
-        return this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(command.getPerValCode(),command.getCateIndicator(),command.getSalBonusCate(),command.getEmployeeIds());
+        return new EmployeeInfoImportDto(employeeInfoImports,personalAmount);
     }
-
 
 //    public List<SalIndAmountHissDto> getSalIndAmountHissDto(SalIndAmountByPerValCodeCommand command) {
 //        //Optional<SalIndAmountHis> salIndAmountHis = this.salIndAmountHisRepository.getSalIndAmountHisByPerVal(perValCode, cateIndicator, salBonusCate);

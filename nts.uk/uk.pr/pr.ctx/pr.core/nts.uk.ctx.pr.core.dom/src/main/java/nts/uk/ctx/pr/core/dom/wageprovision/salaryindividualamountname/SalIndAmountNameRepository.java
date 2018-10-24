@@ -22,6 +22,5 @@ public interface SalIndAmountNameRepository
     void remove(String cid, String individualPriceCode,int cateIndicator);
 
 
-    public List<SalIndAmountName> getAllSalIndAmountName(String cid,int cateIndicator);
 
 }

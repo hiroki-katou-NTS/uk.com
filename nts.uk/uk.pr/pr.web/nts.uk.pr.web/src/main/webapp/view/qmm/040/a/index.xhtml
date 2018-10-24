@@ -25,13 +25,13 @@
 
     <ui:define name="sidebar">
         <ul class="navigator">
-            <li><a data-bind="click: function (){$vm.onSelectTab(0)}" href="#tabpanel-1"
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(0)}" href="#tabpanel-1"
                    role="tab-navigator">#{i18n.getText('QMM040_3')}</a></li>
-            <li><a data-bind="click: function (){$vm.onSelectTab(1)}" href="#tabpanel-2"
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(1)}" href="#tabpanel-2"
                    role="tab-navigator">#{i18n.getText('QMM040_4')}</a></li>
-            <li><a data-bind="click: function (){$vm.onSelectTab(2)}" href="#tabpanel-3"
+            <li><a tabindex="-1"  data-bind="click: function (){$vm.onSelectTab(2)}" href="#tabpanel-3"
                    role="tab-navigator">#{i18n.getText('QMM040_5')}</a></li>
-            <li><a data-bind="click: function (){$vm.onSelectTab(3)}" href="#tabpanel-4"
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(3)}" href="#tabpanel-4"
                    role="tab-navigator">#{i18n.getText('QMM040_6')}</a></li>
 
 
@@ -43,13 +43,13 @@
             <div class="sidebar-content-header flex valign-center">
 
                 <span class="title" data-bind="text : titleTab"></span>
-                <button class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
-                <a class="goout" style="margin-left: 700px"
+                <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
+                <a tabindex="9" class="goout" style="margin-left: 700px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
             </div>
             <div class="contents-area fixed-flex-layout">
-                <div id="com-ccg001"></div>
+                <div  id="com-ccg001"></div>
                 <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
                     <div style="float: left;width: 335px;">
                         <!--<div style=" margin-top: 15px"-->
@@ -75,17 +75,17 @@
 
 
                         <!--</div>-->
-                        <div  class="panel" style=" margin-top: 15px"
+                        <div tabindex="-1" class="panel" style=" margin-top: 15px"
                              data-bind="ntsPanel:{width: '280px', height: '470px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
-                            <div style="width: 280px"
+                            <div tabindex="3" style="width: 280px"
                                  data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'individualPriceCode', comId: 'treegrid',items: salIndAmountNames, searchText: '検索', selected: salIndAmountNamesSelectedCode, selectedKey: 'individualPriceCode', fields: ['individualPriceName', 'individualPriceCode'], mode: 'igGrid'}"/>
                             <!--A4_4 項目リスト-->
                             <!--A4_5 コード-->
                             <!--A4_6 名称-->
                             <!--A4_7 コード-->
                             <!--A4_8 名称-->
-                            <table id="treegrid"
+                            <table tabindex="4" id="treegrid"
                                    data-bind="ntsGridList:{
                                    name: '#[QMM039_12]',
                                 width: 280,
@@ -136,15 +136,15 @@
                         <!--A5_6 基準年月-->
                         <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
                         <!--A5_7 基準年月-->
-                        <div class="margin-left-item"
+                        <div id="A5_7" tabindex="5" class="margin-left-item"
                              data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM040_13]',required: true}"></div>
                         <!--A5_8 抽出-->
-                        <button class="caret-bottom" data-bind="click: filterData"
+                        <button tabindex="6" class="caret-bottom" data-bind="click: filterData"
                                 style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
 
                     </div>
 
-                    <table id="A5_9">
+                    <table tabindex="7" id="A5_9">
                         <colgroup>
                             <col width="130px"/>
                             <col width="120px"/>
@@ -167,7 +167,7 @@
                             <td data-bind="text: businessName()"></td>
                             <td data-bind="text: period"></td>
                             <td>
-                                <input style="width: 120px" data-bind="ntsNumberEditor: {
+                                <input tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
                                         value: amount,
                                         constraint:'AmountOfMoney',
                                         name:'#[QMM040_20]',
