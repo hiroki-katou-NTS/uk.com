@@ -256,7 +256,7 @@ module nts.uk.pr.view.qmm012.b {
                 } else if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
                     itemRangeSet = self.statementItemDataSelected().timeItemSet();
 
-                    if((itemRangeSet.timeCountAtr() == 0) && (itemRangeSet.parameterValue == 2)) {
+                    if(itemRangeSet.timeCountAtr() == 0) {
                         if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && ((itemRangeSet.errorUpRangeValTime() == null) || (itemRangeSet.errorUpRangeValTime().toString() == ""))) {
                             $('#E1_20').ntsError('set', {messageId: "MsgQ_14"});
                         }
