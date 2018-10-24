@@ -401,9 +401,20 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private void createOptionalItems(ExportData exportData, YearMonthPeriod yearMonthPeriod, List<String> employeeIds,
 			List<ItemOutTblBook> listItemOut, YearMonth startYm) {
+		List<Integer> allItemIds = new ArrayList<>();
+		for(ItemOutTblBook itemOut: listItemOut){
+			List<Integer> itemIds = itemOut.getListOperationSetting().stream().map(os -> os.getAttendanceItemId())
+					.collect(Collectors.toList());
+			allItemIds.addAll(itemIds);
+		}
+		allItemIds = allItemIds.stream().distinct().collect(Collectors.toList());
+		// アルゴリズム「対象期間の月次データの取得」を実行する
+		List<MonthlyAttendanceResultImport> allMonthlyAtt = monthlyAttendanceItemAdapter
+				.getMonthlyValueOf(employeeIds, yearMonthPeriod, allItemIds);
+
 		listItemOut.forEach(itemOut -> {
 			// アルゴリズム「出力項目の値の算出」を実行する
-			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem(yearMonthPeriod, employeeIds, itemOut,
+			Map<String, AnnualWorkScheduleData> empData = this.createOptionalItem(allMonthlyAtt, employeeIds, itemOut,
 					startYm);
 			employeeIds.forEach(empId -> {
 				AnnualWorkScheduleData data = empData.get(empId);
@@ -414,25 +425,13 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
 	/**
 	 * 出力項目の値の算出
-	 * 
-	 * @param yearMonthPeriod
-	 *            対象期間
-	 * @param employeeId
-	 *            社員ID
-	 * @param itemOutTblBook
-	 * @return
 	 */
-	private Map<String, AnnualWorkScheduleData> createOptionalItem(YearMonthPeriod yearMonthPeriod,
+	private Map<String, AnnualWorkScheduleData> createOptionalItem(List<MonthlyAttendanceResultImport> allMonthlyAtt,
 			List<String> employeeIds, ItemOutTblBook itemOut, YearMonth startYm) {
-		// アルゴリズム「対象期間の月次データの取得」を実行する
-		List<Integer> itemIds = itemOut.getListOperationSetting().stream().map(os -> os.getAttendanceItemId())
-				.collect(Collectors.toList());
-		List<MonthlyAttendanceResultImport> monthlyAttendanceResult = monthlyAttendanceItemAdapter
-				.getMonthlyValueOf(employeeIds, yearMonthPeriod, itemIds);
 		// アルゴリズム「月平均の算出」を実行する
 		Map<String, AnnualWorkScheduleData> empData = new HashMap<>();
 		employeeIds.forEach(empId -> {
-			List<MonthlyAttendanceResultImport> listMonthly = monthlyAttendanceResult.stream()
+			List<MonthlyAttendanceResultImport> listMonthly = allMonthlyAtt.stream()
 					.filter(x -> x.getEmployeeId().equals(empId)).collect(Collectors.toList());
 			// アルゴリズム「月平均の算出」を実行する
 			empData.put(empId,

@@ -17,7 +17,7 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @param complileDate
 	 * @return
 	 */
-	InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
+	InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode, DatePeriod complileDate, SpecialHoliday specialHoliday);
 	/**
 	 * 付与日数情報を取得する
 	 * @param employeeId

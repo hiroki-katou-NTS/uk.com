@@ -17,7 +17,7 @@ public class OptionalUtil {
 	 * @return
 	 */
 	public static String convertToString(Object obj){
-		return obj == null ? "" : obj.toString();
+		return obj == null ? null : obj.toString();
 	}
 	/**
 	 * Convert value to int
@@ -53,7 +53,7 @@ public class OptionalUtil {
 		try {
 			return new BigDecimal(convertToString(obj));
 		} catch (Exception e) {
-			return new BigDecimal("0");
+			return null;
 		}
 	}
 	

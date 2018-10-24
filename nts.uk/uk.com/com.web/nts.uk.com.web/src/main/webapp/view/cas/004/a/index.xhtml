@@ -37,23 +37,23 @@
 				<!-- A2 -->
 				<div class="fixed-flex-layout-left"
 					style="margin: 0px; margin-right: 35px;">
-					<div style="margin: 10px"
-						data-bind="ntsPanel: {direction: 'right',width: '405px', height: '415px', showIcon: true}">
+					<div style="margin: 10px;"
+						data-bind="ntsPanel: {direction: 'right',width: '415px', height: '425px', showIcon: true}">
 						<!-- A2_002 -->
-						<div style="float: left"
+						<div style="display:flex; width: 410px; align-items: center;">
+						<div 
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
 						<!-- A2_003 -->
-						<div id="companies-cbbx" tabindex="4" style="float: left"
+						<div id="companies-cbbx" tabindex="4" style="width: 100%"
 							data-bind="ntsComboBox: {
 										options: comList,
 										optionsValue: 'companyCode',
 										optionsText: 'companyName',
 										value: companyCode,
 										visibleItemsCount: 10,
-										width: 350,
-										selectFirstIfNull: true,}"></div>
-						<div style="padding-left: 50px">
-							<div tabindex="5" style="width: 350px; margin-top: 40px;"
+										selectFirstIfNull: true,}"></div></div>
+						<div style="padding-left: 60px;">
+							<div tabindex="5" style="width: 350px; margin-top: 10px;"
 								data-bind="ntsSearchBox:
 		                    	       {targetKey: 'loginID',
 		                    	        comId: 'single-user-list',

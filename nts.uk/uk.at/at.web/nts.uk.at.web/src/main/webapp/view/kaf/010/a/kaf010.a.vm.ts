@@ -340,10 +340,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
-            // 休憩時間
-            for (let i = 1; i < 11; i++) {
-                self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i, null, null, null,""));
-            }
+           
             // 残業時間
             if (data.holidayWorkInputDtos != null) {
                 for (let i = 0; i < data.holidayWorkInputDtos.length; i++) {
@@ -373,6 +370,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             if(self.uiType() == 1){
                 self.enbAppDate(false);
             }
+           // 休憩時間
+           self.setTimeZones(data.timeZones);
         }
         
         checkRequiredBreakTimes() {
@@ -417,6 +416,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
+            if(self.displayCaculationTime()){
+                if(!appcommon.CommonProcess.checkWorkTypeWorkTime(self.workTypeCd(), self.siftCD(), "kaf010-workType-workTime-div")){
+                    return;    
+                }
+            }
             $('#kaf010-pre-post-select').ntsError('check');
             if(self.displayCaculationTime()){
                 $("#inpStartTime1").trigger("validate");
@@ -642,6 +646,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 dialog.alertError({messageId : "Msg_959"});
                 return;    
             }
+            $(".breakTimesCheck").ntsError('clear');
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             //return if has error
@@ -750,6 +755,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+                $("#kaf010-workType-workTime-div").ntsError('clear');
+                $("#kaf010-workType-workTime-div").css("border","none");
                 //view all code of selected item 
                 var childData = nts.uk.ui.windows.getShared('childData');
                 if (childData) {
@@ -763,6 +770,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     self.timeEnd1(childData.first.end);
                     self.timeStart2(childData.second.start);
                     self.timeEnd2(childData.second.end);
+                    let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
+                    service.getBreakTimes(param).done((data) => {
+                        self.setTimeZones(data);
+                    });
 //                    service.getRecordWork(
 //                        {
 //                            employeeID: self.employeeID(), 
@@ -780,6 +791,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 //                    });
                 }
             })
+        }
+        
+        setTimeZones(timeZones){
+            let self = this;
+            if (timeZones) {
+                let times = [];
+                for (let i = 1; i < 11; i++) {
+                    times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
+                }
+                self.restTime(times);
+            }
+        }
+        
+        getStartTime(data) {
+            return data ? data.start : null;
+        }
+
+        getEndTime(data) {
+            return data ? data.end : null;
         }
         /**
          * Jump to CMM018 Screen

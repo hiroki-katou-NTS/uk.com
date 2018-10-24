@@ -142,7 +142,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				// tại thời điểm xác định」)
 				List<YearlyHolidaysTimeRemainingImport> yearlyHolidaysTimeRemainingImport = annualBreakManageAdapter
 						.getYearHolidayTimeAnnualRemaining(employeeListResult.get(i).getEmployeeId(),
-								command.getDate());
+								command.getDate(), command.getStartTime(), command.getEndTime());
 				if (yearlyHolidaysTimeRemainingImport.isEmpty()) {
 					// 取得失敗
 					// パラメータ.処理人数に＋１加算する
@@ -187,6 +187,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				}
 				// 取得した情報をもとにExcel 出力情報Listに設定する
 				ExcelInforCommand excelInforCommand = new ExcelInforCommand();
+				excelInforCommand.setEmployeeCode(employeeRecordImport.getEmployeeCode());
 				excelInforCommand.setName(employeeRecordImport.getBusinessName());
 				excelInforCommand.setDateStart(employeeRecordImport.getEntryDate().toString());
 				excelInforCommand.setDateEnd("9999/12/31".equals(employeeRecordImport.getRetiredDate().toString()) ? ""

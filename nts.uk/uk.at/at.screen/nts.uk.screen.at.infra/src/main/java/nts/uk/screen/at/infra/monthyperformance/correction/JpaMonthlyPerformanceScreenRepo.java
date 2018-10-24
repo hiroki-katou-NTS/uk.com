@@ -1,5 +1,6 @@
 package nts.uk.screen.at.infra.monthyperformance.correction;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +10,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPerPK;
-import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
@@ -90,25 +92,30 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 				.collect(Collectors.toList());
 
 		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
-		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
+		CollectionUtil.split(workPlaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.queryProxy().query(query, BsymtWorkplaceInfo.class)
+				.setParameter("wkpId", subList)
 				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().forEach(w -> {
 					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
+		});
 		return lstWkp;
 	}
 
 	@Override
 	public List<MonthlyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy()
-				.query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
-				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList();
+		List<BsymtEmployeeDataMngInfo> lstEmployee = new ArrayList<>();
+		CollectionUtil.split(lstWorkplace.keySet().stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstEmployee.addAll(this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
+								.setParameter("lstWkp", subList).getList());
+		});
 		List<String> ids = lstEmployee.stream().map((employee) -> {
 			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
 		}).collect(Collectors.toList());
 
 		List<BpsmtPerson> lstPerson = new ArrayList<>();
-		CollectionUtil.split(ids, 1000, (subList) -> {
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			lstPerson.addAll(this.queryProxy().query(SEL_PERSON, BpsmtPerson.class).setParameter("lstPersonId", subList)
 					.getList());
 		});
@@ -136,7 +143,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		// dateRange.getEndDate())
 		// .getList();
 		List<String> result = new ArrayList<>();
-		CollectionUtil.split(lstEmployee, 1000, (subList) -> {
+		CollectionUtil.split(lstEmployee, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			result.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", subList)
 					.setParameter("startYmd", dateRange.getStartDate()).setParameter("endYmd", dateRange.getEndDate())
 					.getList());
@@ -146,19 +153,28 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 
 	@Override
 	public List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT b");
-		builderString.append(" FROM KrcmtMonAttendanceItem b");
-		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
-		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
-
-		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
-				.setParameter("attendanceItemIds", attendanceItemIds).setParameter("companyId", companyId).getList()
-				.stream()
-				.map(c -> new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(),
-						c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(), c.getDispNo(),
-						c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName(), c.getPrimitiveValue()))
-				.collect(Collectors.toList());
+		List<MonthlyAttendanceItemDto> data = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from KRCMT_MON_ATTENDANCE_ITEM h"
+						+ " WHERE h.CID = ? AND h.M_ATD_ITEM_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setString(1, companyId);
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setInt(i + 2, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new MonthlyAttendanceItemDto(companyId,
+							rec.getInt("M_ATD_ITEM_ID"), rec.getString("M_ATD_ITEM_NAME"), rec.getInt("DISP_NO"),
+							rec.getInt("IS_ALLOW_CHANGE"), rec.getInt("M_ATD_ITEM_ATR"), rec.getInt("LINE_BREAK_POS_NAME"), 
+							rec.getInt("PRIMITIVE_VALUE"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 
 	@Override
@@ -172,8 +188,8 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		builderString.append(" AND b.krcdtEditStateOfMothlyPerPK.processDate = :processingDate");
 
 		List<EditStateOfMonthlyPerformanceDto> list = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, (subList) -> {
-			CollectionUtil.split(attendanceItemIds, 1000, (attdItemIds) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (attdItemIds) -> {
 				list.addAll(this.queryProxy().query(builderString.toString(), KrcdtEditStateOfMothlyPer.class)
 						.setParameter("employeeIds", subList).setParameter("attendanceItemIds", attdItemIds)
 						.setParameter("processingDate", processingDate.v()).getList().stream()

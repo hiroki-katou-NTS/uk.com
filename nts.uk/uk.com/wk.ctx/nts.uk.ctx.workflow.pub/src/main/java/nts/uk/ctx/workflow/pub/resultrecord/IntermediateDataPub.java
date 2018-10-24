@@ -43,6 +43,8 @@ public interface IntermediateDataPub {
 	 */
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
 	
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriodV2(List<String> employeeIDLst, DatePeriod period, Integer rootType);
+	
 	/**
 	 * RequestList 172
 	 * [No.172](中間データ版)承認対象者の特定日の日別確認が承認済かチェックする
@@ -215,4 +217,13 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public boolean isDataExistMonth(String approverID, DatePeriod period, YearMonth yearMonth);
+	
+	/**
+	 * 日別確認済み検索
+	 * @param companyID
+	 * @param approverID
+	 * @param date
+	 * @return
+	 */
+	public List<String> dailyConfirmSearch(String companyID, String approverID, GeneralDate date);
 }

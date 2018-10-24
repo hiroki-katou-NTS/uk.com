@@ -1,9 +1,13 @@
 package nts.uk.ctx.sys.portal.infra.repository.flowmenu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenu;
@@ -88,8 +92,12 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 
 	@Override
 	public List<FlowMenu> findByCodes(String companyID, List<String> toppagePartID) {
-		return this.queryProxy().query(SELECT_IN, Object[].class)
-				.setParameter("topPagePartID", toppagePartID)
-				.getList(c -> joinObjectToDomain(c));
+		List<FlowMenu> resultList = new ArrayList<>();
+		CollectionUtil.split(toppagePartID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", subList)
+				.getList(c -> joinObjectToDomain(c)));
+		});
+		return resultList;
 	}
 }

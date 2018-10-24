@@ -247,6 +247,23 @@ module nts.uk.at.view.kaf000.shr{
         }
         
         export class CommonProcess {
+            public static checkWorkTypeWorkTime(workTypeCD: string, workTimeCD: string, itemID: string): boolean{
+                let itemTarget = "#"+itemID;
+                let workTypeCDFlg = nts.uk.util.isNullOrUndefined(workTypeCD)||nts.uk.util.isNullOrEmpty(workTypeCD);
+                let workTimeCDFlg = nts.uk.util.isNullOrUndefined(workTimeCD)||nts.uk.util.isNullOrEmpty(workTimeCD);
+                if(workTypeCDFlg){
+                    $(itemTarget).ntsError('set', '勤務種類を選択ください');   
+                    $(itemTarget).css("border","1px solid red");
+                    return false;         
+                }
+                if(workTimeCDFlg){
+                    $(itemTarget).ntsError('set', '就業時間を選択ください');   
+                    $(itemTarget).css("border","1px solid red");
+                    return false;    
+                }        
+                return true;
+            }
+            
             public static getComboBoxReason(selectID: string, listID: Array<string>, displaySet: boolean): string{
                 if(!displaySet){
                     return "";    

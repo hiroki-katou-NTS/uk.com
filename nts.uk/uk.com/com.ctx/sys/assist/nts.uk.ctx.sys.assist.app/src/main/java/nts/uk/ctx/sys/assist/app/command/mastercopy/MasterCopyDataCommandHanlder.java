@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.assist.app.command.mastercopy;
 
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.assist.dom.mastercopy.InitValueAuthManagementAdapter;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategory;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
@@ -47,13 +52,21 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 
 	/** The Constant MAX_ERROR_RECORD. */
 	private static final int MAX_ERROR_RECORD = 5;
+	
+	/** The Constant AUTHORITY_CATEGORY. */
+	private static final int AUTHORITY_CATEGORY = 1;
 
 	/** The master copy data finder. */
 	@Inject
 	private MasterCopyDataRepository repository;
 
+	/** The copy data repository. */
 	@Inject
-	CopyDataRepository copyDataRepository;
+	private CopyDataRepository copyDataRepository;
+	
+	/** The init value auth. */
+	@Inject
+	private InitValueAuthManagementAdapter initValueAuth;
 
 	@Override
 	protected void handle(CommandHandlerContext<MasterCopyDataCommand> context) {
@@ -132,7 +145,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 					MasterCopyCategoryDto categoryDto = new MasterCopyCategoryDto();
 					categoryDto.setCategoryName(copyCategory.getCategoryName().v());
 					categoryDto.setOrder(copyCategory.getOrder().v());
-					categoryDto.setSystemType(copyCategory.getSystemType().nameId);
+					categoryDto.setSystemType(TextResource.localize(copyCategory.getSystemType().nameId));
 					ErrorContentDto errorContentDto = createErrorReport(categoryDto);
 
 					// Add to error list (save to DB every 5 error records)
@@ -155,6 +168,10 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 			}
 			countSuccess++;
 			setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
+			
+			if (AUTHORITY_CATEGORY == masterCopyData.getCategoryNo().v()) {
+				initValueAuth.initValueAuth(companyId);
+			}
 		}
 
 		if (!errorList.isEmpty()) {

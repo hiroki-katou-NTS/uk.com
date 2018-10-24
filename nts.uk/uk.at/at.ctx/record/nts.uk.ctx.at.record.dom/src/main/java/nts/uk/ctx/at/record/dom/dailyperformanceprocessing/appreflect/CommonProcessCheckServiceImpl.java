@@ -44,7 +44,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			return dailyInfor;
 		}
 		//予定勤種の反映		
-		ReflectParameter para = new ReflectParameter(commonPara.getEmployeeId(), commonPara.getBaseDate(), commonPara.getWorkTimeCode(), commonPara.getWorkTypeCode());
+		ReflectParameter para = new ReflectParameter(commonPara.getEmployeeId(), commonPara.getBaseDate(), commonPara.getWorkTimeCode(), 
+				commonPara.getWorkTypeCode(), false);
 		return workTimeUpdate.updateWorkTimeType(para, true, dailyInfor);
 	}
 
@@ -52,11 +53,11 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre) {
 		//INPUT．予定反映区分をチェックする
 		if((commonPara.isScheTimeReflectAtr() == true && isPre)
-				|| commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY) {
+				|| commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//ドメインモデル「日別実績の勤務情報」を取得する
 			Optional<WorkInfoOfDailyPerformance> optWorkInfor = workInforRepos.find(commonPara.getEmployeeId(), commonPara.getBaseDate());
 			if(!optWorkInfor.isPresent()) {

@@ -472,16 +472,12 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			dividedDayMap.get(nextDayOfDeadline).setLapsedAtr(true);
 		}
 		
-		// 「次回積立年休付与リスト」を「処理単位分割日リスト」に追加
+		// 「次回積立年休付与リスト」を全て「処理単位分割日リスト」に追加
 		for (val nextReserveLeaveGrant : nextReserveLeaveGrantList){
 			val grantDate = nextReserveLeaveGrant.getGrantYmd();
-			if (grantDate.beforeOrEquals(period.start().addDays(1))) continue;
+			if (grantDate.beforeOrEquals(period.start())) continue;
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 			
-			if (dividedDayMap.containsKey(grantDate)){
-				dividedDayMap.get(grantDate).setGrantAtr(true);
-				continue;
-			}
 			dividedDayMap.putIfAbsent(grantDate, new RsvLeaDividedDay(grantDate));
 			dividedDayMap.get(grantDate).setGrantAtr(true);
 			dividedDayMap.get(grantDate).setNextReserveLeaveGrant(Optional.of(NextReserveLeaveGrant.of(
@@ -568,17 +564,17 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			// 月次モード
 			
 			// 「月次処理用の暫定残数管理データを作成する」を実行する
-			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
-					param.getCompanyId(), param.getEmployeeId(), param.getAggrPeriod());
+//			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
+//					param.getCompanyId(), param.getEmployeeId(), param.getAggrPeriod());
 			
 			// 受け取った「日別暫定管理データ」を積立年休のみに絞り込む
-			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
-				if (!dailyInterimRemainMngData.getResereData().isPresent()) continue;
-				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
-				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
-				val data = dailyInterimRemainMngData.getResereData().get();
-				results.add(TmpReserveLeaveMngWork.of(master, data));
-			}
+//			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
+//				if (!dailyInterimRemainMngData.getResereData().isPresent()) continue;
+//				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
+//				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
+//				val data = dailyInterimRemainMngData.getResereData().get();
+//				results.add(TmpReserveLeaveMngWork.of(master, data));
+//			}
 		}
 		if (param.getMode() == InterimRemainMngMode.OTHER){
 			// その他モード

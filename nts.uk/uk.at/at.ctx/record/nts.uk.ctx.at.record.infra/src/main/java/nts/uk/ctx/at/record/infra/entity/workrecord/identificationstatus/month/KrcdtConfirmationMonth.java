@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.Confirmati
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -42,7 +43,7 @@ public class KrcdtConfirmationMonth extends UkJpaEntity implements Serializable 
 	public ConfirmationMonth toDomain(){
 		return new ConfirmationMonth(new CompanyId(this.krcdtConfirmationMonthPK.companyID),
 				this.krcdtConfirmationMonthPK.employeeId, ClosureId.valueOf(this.krcdtConfirmationMonthPK.closureId),
-				new Day(this.krcdtConfirmationMonthPK.closureDay), new YearMonth(this.krcdtConfirmationMonthPK.processYM), this.indentifyYmd);
+				new ClosureDate(this.krcdtConfirmationMonthPK.closureDay, (this.krcdtConfirmationMonthPK.isLastDay == 1)), new YearMonth(this.krcdtConfirmationMonthPK.processYM), this.indentifyYmd);
 	}
 	
 	@Override

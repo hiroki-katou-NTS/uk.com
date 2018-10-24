@@ -128,7 +128,6 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		//休出枠No
 		BreakFrameNo breakFrameNo = holidayWorkFrameTimeSheet.decisionBreakFrameNoByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr());
 		/*加給*/
-		/*加給*/
 		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 											 
 		/*特定日*/
@@ -180,17 +179,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param autoCalcSet 
 	 */
 	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet,DeductionAtr dedAtr) {
-		
-		//区分をみて、計算設定を設定
-		//一旦、打刻から計算する場合　を入れとく
-		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
-		
-		AttendanceTime calcTime = this.calcTotalTime(dedAtr);
-		
-		if(!forceAtr.isCalculateEmbossing()) {
-			calcTime = new AttendanceTime(0);
-		}
-		return calcTime;
+		return this.calcTotalTime(dedAtr);
 	}
 
 	
@@ -214,7 +203,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	
 	/**
-	 * 控除時間を考慮して終了時刻を求める
+	 * 控除時間を考慮して終了時刻を求める(流動勤務時に使用)
 	 * @return
 	 */
 	public HolidayWorkFrameTimeSheet collectHolidayWorkFrameTimeSheet(

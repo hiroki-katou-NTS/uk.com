@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstPersonalBPSetting;
@@ -30,8 +33,13 @@ public class JpaPSBPSettingRepository extends JpaRepository implements PSBonusPa
 
 	@Override
 	public List<PersonalBonusPaySetting> getListSetting(List<String> lstEmployeeId) {
-		return queryProxy().query(SELECT_BY_LIST_ID, KbpstPersonalBPSetting.class)
-				.setParameter("employeeIds", lstEmployeeId).getList(m -> toDomain(m));
+		List<PersonalBonusPaySetting> resultList = new ArrayList<>();
+		CollectionUtil.split(lstEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(queryProxy().query(SELECT_BY_LIST_ID, KbpstPersonalBPSetting.class)
+				.setParameter("employeeIds", subList)
+				.getList(m -> toDomain(m)));
+		});
+		return resultList;
 	}
 
 	@Override

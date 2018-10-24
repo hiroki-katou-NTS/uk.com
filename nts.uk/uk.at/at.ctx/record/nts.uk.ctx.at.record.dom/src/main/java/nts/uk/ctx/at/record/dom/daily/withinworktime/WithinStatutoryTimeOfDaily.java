@@ -134,9 +134,7 @@ public class WithinStatutoryTimeOfDaily {
 										:new AttendanceTime(0);
 		}
 		//就業時間の計算
-		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = recordReget.getWorkTimezoneCommonSet().isPresent() && recordReget.getWorkTimezoneCommonSet().get().getLateEarlySet().getCommonSet().isDelFromEmTime()
-							?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
-							:recordReget.getWorkTimezoneCommonSet();
+
 			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
@@ -153,15 +151,13 @@ public class WithinStatutoryTimeOfDaily {
 														  recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 														  recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
 														  recordReget.getDailyUnit(),
-														  leaveLatesetForWorkTime,conditionItem,
+														  recordReget.getWorkTimezoneCommonSet(),
+														  conditionItem,
 														  predetermineTimeSetByPersonInfo,
 														  Optional.empty());
 			
 
 		//実働時間の計算
-			Optional<WorkTimezoneCommonSet> leaveLatesetForActual = recordReget.getWorkTimezoneCommonSet().isPresent() && recordReget.getWorkTimezoneCommonSet().get().getLateEarlySet().getCommonSet().isDelFromEmTime()
-								?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
-								:recordReget.getWorkTimezoneCommonSet();
 			actualTime =  calcActualWorkTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
@@ -187,7 +183,7 @@ public class WithinStatutoryTimeOfDaily {
 					  							recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					  							recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
 					  							recordReget.getDailyUnit(),
-					  							leaveLatesetForActual,
+					  							recordReget.getWorkTimezoneCommonSet(),
 					  							conditionItem,
 					  							predetermineTimeSetByPersonInfo,
 					  							Optional.of(new DeductLeaveEarly(0, 1)));
@@ -242,6 +238,10 @@ public class WithinStatutoryTimeOfDaily {
 					leaveLateset = flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 				}
 			}
+			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime() && coreTimeSetting.isPresent() && coreTimeSetting.get().isUseTimeSheet()
+					  												  ?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
+					  												  :commonSetting;
+			
 			return changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
 															 flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  									 vacationClass,
@@ -263,7 +263,7 @@ public class WithinStatutoryTimeOfDaily {
 						  									 preFlexTime,
 						  									coreTimeSetting,
 						  									dailyUnit,
-						  									commonSetting,
+						  									leaveLatesetForWorkTime,
 						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									conditionItem,
 						  									predetermineTimeSetByPersonInfo,
@@ -280,6 +280,9 @@ public class WithinStatutoryTimeOfDaily {
 					leaveLateset = regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 				}
 			}
+			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()
+																	 ?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
+																	 :commonSetting;
 			return withinTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
 																				  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  														  vacationClass,
@@ -295,7 +298,8 @@ public class WithinStatutoryTimeOfDaily {
 						  														  regularAddSetting,
 						  														  holidayAddtionSet,
 						  														  holidayCalcMethodSet,
-						  														  dailyUnit,commonSetting,
+						  														  dailyUnit,
+						  														  leaveLatesetForWorkTime,
 						  														  conditionItem,
 						  														  predetermineTimeSetByPersonInfo,coreTimeSetting,
 						  														  HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
@@ -414,7 +418,9 @@ public class WithinStatutoryTimeOfDaily {
 					leaveLateset = flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 				}
 			}
-			
+			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime() && coreTimeSetting.isPresent() && coreTimeSetting.get().isUseTimeSheet()
+																	  ?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
+																	  :commonSetting;
 			
 			return changedFlexTimeSheet.calcActualWorkTime(PremiumAtr.RegularWork,
 															 flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
@@ -437,7 +443,7 @@ public class WithinStatutoryTimeOfDaily {
 						  									 preFlexTime,
 						  									coreTimeSetting,
 						  									dailyUnit,
-						  									commonSetting,
+						  									leaveLatesetForWorkTime,
 						  									TimeLimitUpperLimitSetting.NOUPPERLIMIT,
 						  									conditionItem,
 						  									predetermineTimeSetByPersonInfo,
@@ -454,6 +460,9 @@ public class WithinStatutoryTimeOfDaily {
 					leaveLateset = regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 				}
 			}
+			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()
+																	?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
+																	:commonSetting;
 			return withinTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
 																				  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 						  														  vacationClass,
@@ -476,7 +485,8 @@ public class WithinStatutoryTimeOfDaily {
 						  									  					  ), 
 						  														  holidayAddtionSet,
 						  														  holidayCalcMethodSet,
-						  														  dailyUnit,commonSetting,
+						  														  dailyUnit,
+						  														  leaveLatesetForWorkTime,
 						  														  conditionItem,
 						  														  predetermineTimeSetByPersonInfo,coreTimeSetting,
 						  														  //HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
@@ -496,17 +506,18 @@ public class WithinStatutoryTimeOfDaily {
 	/**
 	 * 所定内休憩未取得時間を計算
 	 * @param unUseBreakTime 休憩未取得時間
+	 * @param withinBreakTime 就業時間帯に設定されている所定内の休憩時間
 	 * @param attendanceTime 
 	 * @return 休憩未取得時間
 	 */
-	public AttendanceTime calcUnUseWithinBreakTime(AttendanceTime unUseBreakTime, AttendanceTime predTime) {
+	public AttendanceTime calcUnUseWithinBreakTime(AttendanceTime unUseBreakTime, AttendanceTime predTime, AttendanceTime withinBreakTime) {
 		//所定内時間
-		AttendanceTime withinPredTime = predTime.minusMinutes(this.getActualWorkTime().valueAsMinutes());
+		AttendanceTime withinPredTime = predTime.addMinutes(withinBreakTime.valueAsMinutes()).minusMinutes(this.getActualWorkTime().valueAsMinutes());
 		if(withinPredTime.greaterThan(unUseBreakTime.valueAsMinutes())) {
-			return withinPredTime;
+			return unUseBreakTime;
 		}
 		else {
-			return unUseBreakTime;
+			return withinPredTime;
 		}
 	}
 }

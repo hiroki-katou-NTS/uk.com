@@ -1,20 +1,25 @@
 package nts.uk.shr.infra.arc.task.persist;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.task.AsyncTaskError;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
@@ -26,7 +31,6 @@ import nts.gul.text.StringLength;
 import nts.gul.util.Nullable;
 
 @Stateless
-@Transactional(value = TxType.REQUIRES_NEW)
 public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTaskInfoRepository {
 	private static final String DELETE_ALL_TASK_DATA = "DELETE FROM CisdtAsyncTaskData e where e.pk.taskId =:taskId";
 	private static final String SELECT_ALL_TASK_DATA = "SELECT e FROM CisdtAsyncTaskData e where e.pk.taskId =:taskId";
@@ -151,8 +155,26 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 			this.getEntityManager().createQuery(toDeleteData)
 					.setParameter("targetTaskIds", ids);
 		});
+		this.getEntityManager().flush();
 		
 		this.commandProxy().removeAll(CisdtAsyncTask.class, targetTaskIds);
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@SneakyThrows
+	@Override
+	public AsyncTaskStatus getStatus(String taskId) {
+
+		String sql = "select TASK_ID, TASK_STS from CISDT_ASYNC_TASK"
+				+ " where TASK_ID = ?";
+		
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, taskId);
+			
+			return new NtsResultSet(stmt.executeQuery())
+					.getSingle(r -> AsyncTaskStatus.of(r.getInt("TASK_STS")))
+					.get();
+		}
 	}
 
 }

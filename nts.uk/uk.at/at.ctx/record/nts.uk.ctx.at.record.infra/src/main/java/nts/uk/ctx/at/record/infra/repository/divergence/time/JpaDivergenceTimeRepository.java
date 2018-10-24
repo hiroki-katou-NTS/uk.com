@@ -103,6 +103,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository#
 	 * getDivTimeListByNo(java.lang.String, java.util.List)
 	 */
+	// Pls don't use this method, will be removed
 	@Override
 	public List<DivergenceTime> getDivTimeListByNo(String companyId, List<Integer> divTimeNo) {
 

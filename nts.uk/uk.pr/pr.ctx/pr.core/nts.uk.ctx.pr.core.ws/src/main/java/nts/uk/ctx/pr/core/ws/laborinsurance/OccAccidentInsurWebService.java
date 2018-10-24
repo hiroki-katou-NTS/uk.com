@@ -23,6 +23,7 @@ public class OccAccidentInsurWebService extends WebService {
 
     @Inject
     private OccAccIsHisFinder occAccIsHisFinder ;
+
     @Inject
     private OccAccIsPrRateFinder occAccIsPrRateFinder;
 

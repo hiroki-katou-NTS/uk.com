@@ -574,23 +574,6 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 各深夜時間の算出結果から深夜時間の合計を算出する
-	 * 
-	 * @return 深夜時�?
-	 */
-	public ExcessOfStatutoryTimeOfDaily calcMidNightTime(ExcessOfStatutoryTimeOfDaily excessOfDaily) {
-		// ExcessOverTimeWorkMidNightTime excessHolidayWorkMidNight =
-		// excessOfDaily.getOverTimeWork().get().calcMidNightTimeIncludeOverTimeWork();
-		// HolidayMidnightWork excessMidNight =
-		// excessOfDaily.getWorkHolidayTime().get().calcMidNightTimeIncludeHolidayWorkTime(autoCalcSet);
-		int beforeTime = 0;
-		int totalTime = 0/* 残業深夜と休�?深夜�?合計算�? */;
-		excessOfDaily.setExcessOfStatutoryMidNightTime(
-				new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(totalTime)), new AttendanceTime(beforeTime)));
-		return excessOfDaily;
-	}
-
-	/**
 	 * 加給時間を計算する(就内・残業・休出時間帯の
 	 */
 	public List<BonusPayTime> calcBonusPayTime(AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
@@ -945,7 +928,7 @@ public class CalculationRangeOfOneDay {
 	 			 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList,flowRestTimezone,flowRestSetting, shortTimeSheets,
 	 			 workTimeShortTimeSet,commonSetting,holidayCalcMethodSet,predetermineTimeSetForCalc,worktype,fixWoSetting);
 	 
-	 	return new DeductionTimeSheet(dedTimeSheet,recordTimeSheet); 
+	 	return new DeductionTimeSheet(dedTimeSheet,recordTimeSheet,breakTimeOfDailyList,goOutTimeSheetList,shortTimeSheets); 
 	 }
 	 
 	 /**

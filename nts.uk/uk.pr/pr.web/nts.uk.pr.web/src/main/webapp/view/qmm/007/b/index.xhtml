@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 470, height: 380 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm007.b.vm.js" />
+			<com:scriptfile path="qmm007.b.start.js" />
+			<com:scriptfile path="qmm007.b.service.js" />
+			<com:stylefile path="qmm007.b.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<!-- B1 新たに作成する履歴の、作成情報を入力してください。 -->
+				<div id="title" style="margin: 10px 20px 10px 10px">
+					<span id="B1_1" class="label">#{i18n.getText('QMM007_31')}</span>
+				</div>
+				<!-- B1_2 コード/名称 -->
+				<div id="B1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px">
+					<span class="label">#{i18n.getText('QMM007_5')}</span>
+					<!-- B2_3 会社単価コード -->
+					<span id="B1_3" class="label" style="margin-left: 40px" data-bind = "text: code"></span>
+					<!-- B1_4 会社単価名称 -->
+					<span id="B1_4" class="label" style="margin-left: 60px" data-bind = "text: name"></span>
+				</div>
+				<!-- B1_5 期間 -->
+				<div class="control-group">
+					<div id="B1_5" style="margin: 0px 10px 10px 10px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM007_32')}</div>
+					<div id = "B1_6"  style="margin-left: 60px" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM007_11')}',
+																value: startYearMonth,
+																dateFormat: 'yearmonth',
+																valueFormat: 'YYYYMM',
+																required: true
+																}" tabindex="1"></div>
+					<!-- B1_7 開始年月和暦 -->
+					<span id="B1_7" class="label"  data-bind = "text: monthlyCalendar"></span>
+					<!-- B1_8 9999/12 -->
+					<span class="label">#{i18n.getText('QMM007_33')}</span>
+				</div>
+				<!-- B1_9 開始年月和暦 -->
+				<div id="B1_9" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM007_44')}</span>
+
+					<div id = "B1_10" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
+							<div  class="cell"  tabIndex = "-1"
+							 	data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[0],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+							</div>
+							<br/>
+							<div  class="cell" tabIndex = "-1"
+							 	data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+							</div>
+					</div>
+			</div>
+			</div>
+			<div id="functions-area-bottom" style="z-index: auto">
+				<!-- E2_1 登録 -->
+				<button id="B2_1" tabindex="3" class="proceed large"
+					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_36')}</button>
+				<!-- E2_2 削除 -->
+				<button id="B2_2" tabindex="4"
+					data-bind="click: cancel">#{i18n.getText('QMM007_37')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

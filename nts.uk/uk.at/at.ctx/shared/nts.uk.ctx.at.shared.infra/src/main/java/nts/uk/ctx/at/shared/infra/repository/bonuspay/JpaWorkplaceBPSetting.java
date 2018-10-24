@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -15,12 +18,18 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWPBonusPaySettingPK;
 @Stateless
 public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySettingRepository {
 
-	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstWPBonusPaySetting c WHERE c.kbpstWPBonusPaySettingPK.workplaceId IN :workplaceIds";
+	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstWPBonusPaySetting c WHERE c.kbpstWPBonusPaySettingPK.workplaceId IN :workplaceIds AND c.kbpstWPBonusPaySettingPK.companyId = :companyId";
 
 	@Override
 	public List<WorkplaceBonusPaySetting> getListSetting(String companyId, List<WorkplaceId> ids) {
-		return queryProxy().query(SELECT_BY_LIST_ID, KbpstWPBonusPaySetting.class).setParameter("workplaceIds", ids)
-				.getList(m -> toDomain(m));
+		List<WorkplaceBonusPaySetting> resultList = new ArrayList<>();
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(queryProxy().query(SELECT_BY_LIST_ID, KbpstWPBonusPaySetting.class)
+										  .setParameter("companyId", companyId)
+										  .setParameter("workplaceIds", subList)
+										  .getList(m -> toDomain(m)));
+		});
+		return resultList;
 	}
 
 	@Override

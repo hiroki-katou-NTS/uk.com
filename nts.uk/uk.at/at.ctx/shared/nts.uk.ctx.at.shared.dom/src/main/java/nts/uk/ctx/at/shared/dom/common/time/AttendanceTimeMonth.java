@@ -21,4 +21,12 @@ public class AttendanceTimeMonth extends TimeDurationPrimitiveValue<AttendanceTi
 		
 		super(minutes);
 	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(0);
+		if (rawValue > 999 * 60 + 59) rawValue = 999 * 60 + 59;
+		if (rawValue < 0) rawValue = 0;
+		return super.reviseRawValue(rawValue);
+	}
 }
