@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import java.util.List;
@@ -9,8 +13,7 @@ import javax.persistence.EntityManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pereg.dom.mastercopy.*;
+import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
 import nts.uk.ctx.pereg.infra.entity.person.info.groupitem.PpemtPInfoItemGroup;
 import nts.uk.ctx.pereg.infra.entity.person.info.groupitem.PpemtPInfoItemGroupPk;
@@ -18,11 +21,25 @@ import nts.uk.ctx.pereg.infra.entity.person.info.groupitem.definition.PpemtPInfo
 import nts.uk.ctx.pereg.infra.entity.person.info.groupitem.definition.PpemtPInfoItemGroupDfPk;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class PpemtPInfoItemGroupDataCopyHandler.
+ */
 @Getter
 @Setter
+
+/**
+ * Instantiates a new ppemt P info item group data copy handler.
+ */
 @NoArgsConstructor
 public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
+	/**
+	 * Instantiates a new ppemt P info item group data copy handler.
+	 *
+	 * @param copyMethod the copy method
+	 * @param companyId the company id
+	 * @param em the em
+	 */
 	public PpemtPInfoItemGroupDataCopyHandler(int copyMethod, String companyId, EntityManager em) {
 		super();
 		this.copyMethod = copyMethod;
@@ -30,11 +47,21 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 		this.entityManager = em;
 	}
 
+	/** The Constant QUERY_DATA_BY_COMPANYID. */
 	private static final String QUERY_DATA_BY_COMPANYID = "SELECT p FROM PpemtPInfoItemGroup p WHERE p.companyId = :companyId";
+	
+	/** The Constant GET_ITEM_GROUP. */
 	private static final String GET_ITEM_GROUP = "SELECT p FROM PpemtPInfoItemGroupDf p WHERE p.ppemtPInfoItemGroupDfPk.groupItemId = :groupItemId";
+	
+	/** The Constant DELETE_DATA. */
 	private static final String DELETE_DATA = "DELETE FROM PpemtPInfoItemGroup p WHERE p.companyId = :companyId";
+	
+	/** The Constant DELETE_ITEM_GROUP. */
 	private static final String DELETE_ITEM_GROUP = "DELETE FROM PpemtPInfoItemGroupDf p WHERE p.ppemtPInfoItemGroupDfPk.groupItemId= :groupItemId";
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler#doCopy()
+	 */
 	@Override
 	public void doCopy() {
 
@@ -96,14 +123,11 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 				// set layoutID and insert
 				itemList.forEach(item -> {
-					// item.ppemtPInfoItemGroupDfPk.groupItemId = groupItemId;
-					// item.companyId = companyId;
-
+					String groupItemDfId = UUID.randomUUID().toString();
 					PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(groupItemId,
-							item.ppemtPInfoItemGroupDfPk.itemDefId);
+							groupItemDfId);
 					PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
 					this.entityManager.persist(itemEntity);
-
 				});
 
 			});
@@ -132,8 +156,9 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 					// set layoutID and insert
 					itemList.forEach(item -> {
+						String groupItemDfId = UUID.randomUUID().toString();
 						PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(groupItemId,
-								item.ppemtPInfoItemGroupDfPk.itemDefId);
+								groupItemDfId);
 						PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
 						this.entityManager.persist(itemEntity);
 					});
@@ -162,8 +187,9 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 						// set layoutID and insert
 						itemList.forEach(item -> {
+							String groupItemDfId = UUID.randomUUID().toString();
 							PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(ItemId,
-									item.ppemtPInfoItemGroupDfPk.itemDefId);
+									groupItemDfId);
 							PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
 							this.entityManager.persist(itemEntity);
 						});
@@ -187,16 +213,17 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 								.collect(Collectors.toList());
 						
 						itemZeroList.forEach(item -> {
-							if (!defineIdDesList.contains(item.ppemtPInfoItemGroupDfPk.itemDefId.trim())) {
+							if (!defineIdDesList
+									.contains(item.ppemtPInfoItemGroupDfPk.itemDefId.trim())) {
+								String groupItemDfId = UUID.randomUUID().toString();
 								PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(
 										desDataItem.ppemtPinfoItemGroupPk.groupItemId,
-										item.ppemtPInfoItemGroupDfPk.itemDefId);
-								PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
+										groupItemDfId);
+								PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk,
+										companyId);
 								this.entityManager.persist(itemEntity);
 							}
-
 						});
-
 					}
 				});
 
@@ -206,18 +233,22 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 			// Do nothing
 		default:
 			break;
-
 		}
 
 	}
 
+	/**
+	 * Check contain group name.
+	 *
+	 * @param groupList the group list
+	 * @param item the item
+	 * @return the ppemt P info item group
+	 */
 	private PpemtPInfoItemGroup checkContainGroupName(List<PpemtPInfoItemGroup> groupList, PpemtPInfoItemGroup item) {
-		List<String> groupNameList = groupList.stream().map(e -> e.groupName.trim()).collect(Collectors.toList());
 		for (PpemtPInfoItemGroup info : groupList) {
 			if (info.groupName.trim().equals(item.groupName.trim()))
 				return info;
 		}
-
 		return null;
 	}
 
