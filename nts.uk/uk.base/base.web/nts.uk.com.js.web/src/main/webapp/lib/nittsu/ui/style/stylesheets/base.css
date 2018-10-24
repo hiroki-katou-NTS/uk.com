@@ -4745,7 +4745,7 @@ div .ex-area-line.x-stay {
 *****************************/
 /* line 4, ../sass/components/_limitedlabel.scss */
 .limited-label {
-  width: 100%;
+  width: 99%;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
