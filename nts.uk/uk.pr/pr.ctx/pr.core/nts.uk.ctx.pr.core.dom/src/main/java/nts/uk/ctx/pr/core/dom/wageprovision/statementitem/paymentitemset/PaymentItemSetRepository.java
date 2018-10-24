@@ -20,6 +20,6 @@ public interface PaymentItemSetRepository {
 
 	void updateAll(List<String> lstSalaryId);
 
-	void remove(String cid, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }
