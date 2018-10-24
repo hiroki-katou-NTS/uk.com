@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype.absenceframe;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrameRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktype.absenceframe.KshmtAbsenceFrame;
@@ -83,9 +86,13 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 	public List<AbsenceFrame> findAbsenceFrameByListFrame(String companyId, List<Integer> frameNos) {
 		if(frameNos.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(GET_ALL_BY_LIST_FRAME_NO, KshmtAbsenceFrame.class)
-				.setParameter("companyId", companyId)
-				.setParameter("frameNos", frameNos)
-				.getList(a -> toDomain(a));
+		List<AbsenceFrame> resultList = new ArrayList<>();
+		CollectionUtil.split(frameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_ALL_BY_LIST_FRAME_NO, KshmtAbsenceFrame.class)
+								.setParameter("companyId", companyId)
+								.setParameter("frameNos", subList)
+								.getList(a -> toDomain(a)));
+		});
+		return resultList;
 	}
 }

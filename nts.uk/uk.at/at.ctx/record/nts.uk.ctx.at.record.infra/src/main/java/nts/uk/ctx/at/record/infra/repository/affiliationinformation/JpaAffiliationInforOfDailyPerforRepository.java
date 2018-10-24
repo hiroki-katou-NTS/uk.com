@@ -147,7 +147,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
-		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
+		List<KrcdtDaiAffiliationInf> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
 		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiAffiliationInfPK.ymd <= :end AND af.krcdtDaiAffiliationInfPK.ymd >= :start");
@@ -155,14 +155,14 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 				KrcdtDaiAffiliationInf.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
-					.setParameter("end", ymd.end()).getList(af -> af.toDomain()));
+					.setParameter("end", ymd.end()).getList());
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<AffiliationInforOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
-		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
+		List<KrcdtDaiAffiliationInf> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
 		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiAffiliationInfPK.ymd IN :date");
@@ -173,8 +173,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
 					.filter(c -> p.get(c.krcdtDaiAffiliationInfPK.employeeId).contains(c.krcdtDaiAffiliationInfPK.ymd))
-					.map(af -> af.toDomain()).collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 }

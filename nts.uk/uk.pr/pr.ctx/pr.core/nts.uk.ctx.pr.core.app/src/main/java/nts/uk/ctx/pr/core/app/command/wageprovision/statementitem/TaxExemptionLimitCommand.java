@@ -18,6 +18,6 @@ public class TaxExemptionLimitCommand {
 	/**
 	 * 非課税限度額
 	 */
-	private int taxExemption;
+	private long taxExemption;
 
 }

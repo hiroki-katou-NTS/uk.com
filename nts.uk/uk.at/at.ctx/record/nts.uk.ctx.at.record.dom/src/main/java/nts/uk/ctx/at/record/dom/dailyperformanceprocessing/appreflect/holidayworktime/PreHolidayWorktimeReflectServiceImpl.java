@@ -71,7 +71,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			ReflectParameter reflectInfo = new ReflectParameter(holidayWorkPara.getEmployeeId(), 
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
-					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode()); 
+					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(),
+					false); 
 			daily = workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, false, daily);
 			
 			//予定開始時刻の反映
@@ -117,13 +118,13 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		}
 		WorkInfoOfDailyPerformance workInformation = daily.getWorkInformation();
 		workInformation.setRecordInfo(new WorkInformation(workTimeCode, workTypeCode));
-		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(startTime),
-				new TimeWithDayAttr(startTime),
+		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(startTime == null ? 0 : startTime),
+				new TimeWithDayAttr(startTime == null ? 0 : startTime),
 				new WorkLocationCD("01"), 
 				StampSourceInfo.CORRECTION_RECORD_SET );
 
-		WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(endTime),
-				new TimeWithDayAttr(endTime),
+		WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(endTime == null ? 0 : endTime),
+				new TimeWithDayAttr(endTime == null ? 0 : endTime),
 				new WorkLocationCD("01"),
 				StampSourceInfo.CORRECTION_RECORD_SET );
 

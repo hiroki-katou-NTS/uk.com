@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,19 +57,22 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 	private GrantDateTblRepository grantTableRepos;
 	@Override
 	public InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode,
-			DatePeriod complileDate) {
+			DatePeriod complileDate,SpecialHoliday specialHoliday) {
 		InforSpecialLeaveOfEmployee outputData = new InforSpecialLeaveOfEmployee(InforStatus.NOTUSE, Optional.empty(), new ArrayList<>(), false);
 		//ドメインモデル「特別休暇基本情報」を取得する
 		Optional<SpecialLeaveBasicInfo> optBasicInfor = leaveBasicInfoRepo.getBySidLeaveCdUser(sid, specialLeaveCode, UseAtr.USE);
 		if(!optBasicInfor.isPresent()) {
 			return outputData;
 		}
-		//ドメインモデル「特別休暇」を取得する
-		Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
-		if(!optSpecialHoliday.isPresent()) {
-			return outputData;
+		if(specialHoliday == null) {
+			//ドメインモデル「特別休暇」を取得する
+			Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
+			if(!optSpecialHoliday.isPresent()) {
+				return outputData;
+			}
+			specialHoliday = optSpecialHoliday.get();	
 		}
-		SpecialHoliday specialHoliday = optSpecialHoliday.get();		
+			
 		SpecialLeaveBasicInfo leaverBasicInfo = optBasicInfor.get();
 		//付与日数情報を取得する
 		GrantDaysInforByDates grantDayInfors = this.getGrantDays(cid, sid, complileDate, specialHoliday, leaverBasicInfo);
@@ -108,10 +112,12 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		} else if (speHoliday.getGrantRegular().getGrantDate() == GrantDate.GRANT_BASE_HOLIDAY){
 			//ドメインモデル「年休社員基本情報」を取得する
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
-			if(annualLeaveEmpBasicInfo.isPresent()) {
-				//所得したドメインモデル「年休社員基本情報．付与ルール．付与基準日」をパラメータ「付与基準日」にセットする
-				grantDate = annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate();
-			}			
+			if(!annualLeaveEmpBasicInfo.isPresent()) {
+				return new GrantDaysInforByDates(grantDate, Collections.emptyList());
+			}
+			//所得したドメインモデル「年休社員基本情報．付与ルール．付与基準日」をパラメータ「付与基準日」にセットする
+			grantDate = annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate();
+						
 		} else {
 			//取得している「特別休暇基本情報．付与設定．付与基準日」をパラメータ「付与基準日」にセットする
 			grantDate = leaveBasicInfo.getGrantSetting().getGrantDate();

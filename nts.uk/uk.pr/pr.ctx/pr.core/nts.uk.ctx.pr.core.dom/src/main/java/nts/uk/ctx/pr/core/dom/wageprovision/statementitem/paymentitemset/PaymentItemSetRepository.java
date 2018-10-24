@@ -18,6 +18,8 @@ public interface PaymentItemSetRepository {
 
 	void update(PaymentItemSet domain);
 
+	void updateAll(List<String> lstSalaryId);
+
 	void remove(String cid, String salaryItemId);
 
 }

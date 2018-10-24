@@ -13,4 +13,8 @@ public class ApproverStateForAppDto {
 	private String representerID;
 	
 	private String representerName;
+	
+	private String approverMail;
+	
+	private String representerMail;
 }

@@ -15,4 +15,12 @@ public class MonChildHdMinutes extends TimeDurationPrimitiveValue<MonChildHdMinu
 	public MonChildHdMinutes(Integer rawValue){
 		super(rawValue);
 	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 999 * 60 + 59) rawValue = 999 * 60 + 59;
+		if (rawValue < 0) rawValue = 0;
+		return super.reviseRawValue(rawValue);
+	}
 }

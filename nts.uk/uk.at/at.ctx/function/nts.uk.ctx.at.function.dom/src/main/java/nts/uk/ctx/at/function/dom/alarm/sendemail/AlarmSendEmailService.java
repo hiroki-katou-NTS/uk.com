@@ -24,6 +24,7 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.MailDestinationAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 
@@ -83,27 +84,37 @@ public class AlarmSendEmailService implements SendEmailService {
 		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = new ArrayList<>();
-			Map<String, String> mapCheck = new HashMap<>();
+			Map<String, List<ValueExtractAlarmDto>> mapCheckAlarm = new HashMap<>();
+			List<ValueExtractAlarmDto> listTemp = null;
+			// Get list workplace to send
+			List<String> workplaceIds = new ArrayList<>();
 			for (ValueExtractAlarmDto obj : valueExtractAlarmDtos) {
 				if(managerTagetIds.contains(obj.getEmployeeID())){
-					valueExtractAlarmManagerDtos.add(obj);
+					String workplaceID = obj.getWorkplaceID();
 					// 管理者送信対象のアラーム抽出結果を職場でグループ化する
-					String key = obj.getWorkplaceID()+obj.getEmployeeID();
-					if(!mapCheck.containsKey(key)){
-						mapCheck.put(key, obj.getWorkplaceID());
+					if(!mapCheckAlarm.containsKey(workplaceID)){
+						workplaceIds.add(workplaceID);
+						// New list alarm to send
+						listTemp = new ArrayList<>();
+					}else{
+						listTemp = mapCheckAlarm.get(workplaceID);
 					}
+					listTemp.add(obj);
+					mapCheckAlarm.put(workplaceID, listTemp);
 				}
 			}
-			// Get list workplace to send
-			List<String> workplaceIds = new ArrayList<String>(mapCheck.values());
+			
 			for (String workplaceId : workplaceIds) {
 				// call request list 218 return list employee Id
 				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
-
+				// 抽出結果：ループ中の職場単位のアラーム抽出結果 
+				valueExtractAlarmManagerDtos = mapCheckAlarm.get(workplaceId);
 				if (!CollectionUtil.isEmpty(listEmployeeId)) {
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
+							
+							
 							// Get subject , body mail
 							boolean isError = sendMail(companyID, employeeId, functionID,
 									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
@@ -158,12 +169,13 @@ public class AlarmSendEmailService implements SendEmailService {
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
 		if (mailDestinationAlarmImport != null) {
-			String subject = subjectEmail;
-			String body = bodyEmail;
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (CollectionUtil.isEmpty(emails) || StringUtils.isEmpty(subject) || StringUtils.isEmpty(body)) {
+			if (CollectionUtil.isEmpty(emails)) {
 				return true;
 			} else {
+				if(StringUtils.isEmpty(subjectEmail)){
+					subjectEmail = TextResource.localize("KAL010_300");
+				}
 				// Genarate excel
 				AlarmExportDto alarmExportDto = alarmListGenerator.generate(generatorContext, listDataAlarmExport);
 				// Get all mail address
@@ -171,7 +183,7 @@ public class AlarmSendEmailService implements SendEmailService {
 					List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
 					attachedFiles
 							.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
-					MailContents mailContent = new MailContents(subject, body, attachedFiles);
+					MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
 					try {
 						if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
 							return true;

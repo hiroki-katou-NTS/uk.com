@@ -21,13 +21,6 @@
 	width: 350px;
 }
 
-#number_Info tr>* {
-	height: 20px;
-	padding: 5px;
-	border: 1px solid black;
-	text-align: center;
-	width: 100px;
-}
 
 #content_left {
 	width: 1000px;
@@ -48,4 +41,13 @@
 
 .nts-switch-button {
 	min-width: 100px;
+}
+#swb_app_com .nts-switch-button{
+	min-width: 124px;
+}
+#number_Info{
+	margin-left: 20px;
+}
+#fixed-table * {
+	text-align: center;
 }

@@ -103,6 +103,11 @@ public class JpaMonChildHdRemainRepository extends JpaRepository implements MonC
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> c.toDomainMonChildHdRemain()));
 		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
 		return results;
 	}
 
@@ -113,10 +118,17 @@ public class JpaMonChildHdRemainRepository extends JpaRepository implements MonC
 		
 		List<MonChildHdRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomainMonChildHdRemain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList(c -> c.toDomainMonChildHdRemain()));
+			});
+		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
 		});
 		return results;
 	}

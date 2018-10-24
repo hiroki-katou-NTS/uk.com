@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.CompanyUnitPriceCode
+            nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.SalaryUnitPriceName
+            nts.uk.shr.com.primitive.Memo
+            nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.SalaryUnitPrice
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm007.a.vm.js" />
+        <com:scriptfile path="qmm007.a.start.js" />
+        <com:scriptfile path="qmm007.a.service.js" />
+        <com:stylefile path="qmm007.a.style.css" />
+    </ui:define>
+
+    <ui:define name="content" >
+        <div id="functions-area">
+            <!-- A1_1 登録 -->
+            <button id="A1_1" tabindex="1"
+                    data-bind="click: create,enable: $root.errors.isEmpty &amp;&amp; enableButtonNew()">#{i18n.getText('QMM007_1')}</button>
+
+            <button id="A1_2" tabindex="2" class="proceed"
+                    data-bind="click: register,enable: $root.errors.isEmpty() &amp;&amp; enableButtonRegistration()">#{i18n.getText('QMM007_2')}</button>
+
+            <button id="A1_3" tabindex="3"
+                    data-bind="enable: false">#{i18n.getText('QMM007_3')}</button>
+
+            <button id="A1_4" tabindex="4"
+                    data-bind=" enable: false">#{i18n.getText('QMM007_4')}</button>
+
+        </div>
+        <div  class="fixed-flex-layout" style="margin-top: 10px">
+        <div id="left" class="fixed-flex-layout-left">
+            <div id="A2_1" data-bind="ntsPanel:{width: '350px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                <div class="cf">
+                    <div style="float:left">
+                        <div id="A2_3" style="width: 350px" data-bind="ntsSearchBox: {label: '#{i18n.getText('QMM007_5')}', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
+			searchText: '検索',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['searchCode', 'searchName']}" tabindex="5" />
+                        <button id="A2_4" tabindex="6" data-bind="click: openBscreen,enable: $root.errors.isEmpty() &amp;&amp; enableAddHistoryButton()">#{i18n.getText('QMM007_6')}</button>
+                        <button id="A2_5" tabindex="7" data-bind="click: openCscreen,enable: $root.errors.isEmpty() &amp;&amp; enableEditHistoryButton()">#{i18n.getText('QMM007_7')}</button>
+                        <table id="treegrid1" tabindex="8"
+                               data-bind="ntsTreeGridView:{
+                                                width: 350,
+                                                height: 390,
+                                                name: '#{i18n.getText('QMM007_7')}',
+                                                options: dataSource,
+                                                value: singleSelectedCode,
+                                                optionsValue: 'code',
+                                                optionsChild: 'childs',
+                                                optionsText: 'nodeText',
+                                                multiple: false,
+                                                enable: true,
+                                                showCheckBox: false}">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="right"  class="fixed-flex-layout-right" style="margin-top: 17px">
+            <div class="valign-center control-group flex">
+            <!-- A3_1 -->
+            <div id="A3_1" class = "cell valign-center" data-bind="ntsFormLabel: { constraint: ['CompanyUnitPriceCode', 'SalaryUnitPriceName'], required: true }">#{i18n.getText('QMM007_5')}</div>
+            <!-- A3_2 -->
+                <input id="A3_2" tabindex="9" data-bind="ntsTextEditor: {
+                                                    value: code,
+                                                    name: '#{i18n.getText('QMM007_9')}',
+                                                    constraint: 'CompanyUnitPriceCode',
+                                                    option: {},
+                                                    required: enableCode,
+                                                    enable: enableCode,
+                                                    readonly: false
+                                                    }" />
+
+
+            <!-- A3_3 -->
+                <input id="A3_3" tabindex="10" data-bind="ntsTextEditor: {
+                                                    value: name,
+                                                    name: '#{i18n.getText('QMM007_10')}',
+                                                    constraint: 'SalaryUnitPriceName',
+                                                    option: {},
+                                                    required: enableName,
+                                                    enable:  enableName,
+                                                    readonly: false
+                                                    }" />
+
+            </div>
+            <div class="valign-center control-group flex" style="min-width: 500px">
+                <div id="A3_4" class="valign-center" data-bind="ntsFormLabel: { inline: inline, required: true }">#{i18n.getText('QMM007_11')}</div>
+                <div id = "A3_5" tabindex="11"  data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM007_11')}',
+																value: yearMonth,
+																dateFormat: 'yearmonth',
+																valueFormat: 'YYYYMM',
+																enable: enableYearMonth,
+																required: enableYearMonth
+																}" ></div>
+                <span id="A3_6" data-bind="text: monthlyCalendar"></span>
+            </div>
+            <div class="valign-center control-group flex">
+                <div id="A3_7" class="cell valign-center" data-bind="ntsFormLabel: { constraint: 'SalaryUnitPrice', required: true }">#{i18n.getText('QMM007_13')}</div>
+                <div id="A3_8" data-bind="with: currencyeditor">
+                    <input  tabindex="12" data-bind="ntsNumberEditor: {
+                                        value: $parent.amountOfMoney,
+                                        name:'#{i18n.getText('QMM007_14')}',
+                                        constraint: constraint,
+                                        option: option,
+                                        required: $parent.enableAmountOfMoney,
+                                        enable: $parent.enableAmountOfMoney,
+                                        readonly: readonly,
+                                        immediate: false}" />
+                </div>
+            </div>
+            <div class="valign-center control-group flex" style ="min-width: 750px">
+                <div id="A3_9"  data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_15')}</div>
+                <div id="A3_10"  tabindex="13" data-bind="ntsRadioBoxGroup: {
+                                options: fixedWageClassList,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: selectedId,
+                                name: '#{i18n.getText('QMM007_16')}',
+                                enable: enableFixedWageClassList}"></div>
+            </div>
+                <div class="valign-center control-group flex" style ="min-width: 750px">
+                    <div class="space1"></div>
+                <div id="A3_11" tabindex="14" class="cf" data-bind="ntsSwitchButton: {
+                            name: '#{i18n.getText('QMM007_19')}',
+                            options: targetClassification,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedTargetClass,
+                            required: required,
+                            enable: selectedId() == 0  ? (enableTargetClassification() ? false : true)  : (enableTargetClassification() ? true : false)   }"></div>
+                    <div  id="A3_12" class="space3" style="margin-left: 124px;width: 117px">#{i18n.getText('QMM007_22')}</div>
+
+                    <div id="A3_13" tabindex="15" class="cf" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QMM007_23')}',
+                                options: targetClassification,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedMonthlySalary,
+                                required: required,
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
+                </div>
+            <div class="valign-center control-group flex" style ="min-width: 750px">
+                <div class="space2"></div>
+                <div id="A3_14">#{i18n.getText('QMM007_24')}</div>
+
+                <div id="A3_15" tabindex="16"  class="cf" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QMM007_25')}',
+                                options: targetClassification,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedMonthSalaryPerDay,
+                                required: required,
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
+            </div>
+            <div class="valign-center control-group flex" style ="min-width: 750px">
+                <div class="space2"></div>
+                <div id="A3_16" >#{i18n.getText('QMM007_26')}</div>
+
+                <div id="A3_17" tabindex="17" class="cf" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QMM007_27')}',
+                                options: targetClassification,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedADayPayee,
+                                required: required,
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
+            </div>
+
+            <div class="valign-center control-group flex" style ="min-width: 750px">
+                <div class="space2"></div>
+                <div id="A3_18" >#{i18n.getText('QMM007_28')}</div>
+
+                <div id="A3_19" tabindex="18" class="cf" data-bind="ntsSwitchButton: {
+                                name: '#{i18n.getText('QMM007_29')}',
+                                options: targetClassification,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedHourlyPay,
+                                required: required,
+                                enable: selectedId() == 1 &amp;&amp; enableSalary ? false : true  }"></div>
+            </div>
+            <div id="A3_20" class="set-row" style="width: 695px;">
+                <hr/>
+            </div>
+            <div>
+                <div id="A3_21" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('QMM007_30')}</div>
+
+                <!-- Full Options -->
+                <div data-bind="with: multilineeditor">
+                    <textarea id="A3_22" tabindex="19" data-bind="ntsMultilineEditor: {
+                        value: value,
+                        name: '#{i18n.getText('QMM007_30')}',
+                        constraint: constraint,
+                        option: option,
+                        enable: $parent.enableNotes,
+                        readonly: readonly,
+                        immediate: false}" />
+                      </div>
+
+            </div>
+            <div style="clear:both"></div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

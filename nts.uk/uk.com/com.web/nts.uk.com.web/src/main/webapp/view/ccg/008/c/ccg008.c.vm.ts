@@ -71,7 +71,7 @@ module nts.uk.com.view.ccg008.c {
                 let test = self.find(self.selectedCode());
                 //khong co item nao duoc chon
                 if(!test){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_218"});
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_218",  messageParams: nts.uk.resource.getText("CCG008_1")});
                 }else{
                     //co item duoc chon
                     let data = new model.TopPageSelfSet(self.selectedCode());

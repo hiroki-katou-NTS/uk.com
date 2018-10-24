@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -35,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 
 	@Override

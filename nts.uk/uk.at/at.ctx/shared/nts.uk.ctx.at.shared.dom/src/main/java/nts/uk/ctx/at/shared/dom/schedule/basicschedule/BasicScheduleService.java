@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -69,6 +70,8 @@ public interface BasicScheduleService {
 	 * @return WorkStyle
 	 */
 	WorkStyle checkWorkDay(String workTypeCode);
+	
+	WorkStyle checkWorkDay(Optional<WorkType> workTypeOpt);
 	
 	WorkStyle checkWorkDayByList(String workTypeCode, List<WorkType> listWorkType);
 	

@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
@@ -28,13 +30,6 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 												+ "AND c.ccgmtTopPagePartPK.topPagePartID IN :topPagePartIDs "
 												+ "AND c.topPagePartType IN :topPagePartTypes";
 	private static final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
-
-	@Override
-	public Optional<TopPagePart> find(String topPagePartID) {
-		return this.queryProxy().query(SELECT_SINGLE, CcgmtTopPagePart.class)
-				.setParameter("topPagePartID", topPagePartID)
-				.getSingle(c -> toDomain(c));
-	}
 
 	@Override
 	public List<TopPagePart> findAll(String companyID) {
@@ -63,10 +58,14 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 
 	@Override
 	public List<TopPagePart> findByTypes(String companyID, List<Integer> topPagePartTypes) {
-		 return this.queryProxy().query(SELECT_BY_TYPES, CcgmtTopPagePart.class)
+		List<TopPagePart> results = new ArrayList<>();
+		CollectionUtil.split(topPagePartTypes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_BY_TYPES, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)
-					.setParameter("topPagePartTypes", topPagePartTypes)
-					.getList(c -> toDomain(c));
+					.setParameter("topPagePartTypes", subList)
+					.getList(c -> toDomain(c)));
+		});
+		return results;
 	}
 	
 	@Override
@@ -75,11 +74,17 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 		if(topPagePartTypes.size()==0 || topPagePartIDs.size()==0){
 			return new ArrayList<>();
 		}
-		 return this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
+		List<TopPagePart> results = new ArrayList<>();
+		CollectionUtil.split(topPagePartTypes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstTypes -> {
+			CollectionUtil.split(topPagePartIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIDs -> {
+				results.addAll(this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)
-					.setParameter("topPagePartIDs", topPagePartIDs)
-					.setParameter("topPagePartTypes", topPagePartTypes)
-					.getList(c -> toDomain(c));
+					.setParameter("topPagePartIDs", lstIDs)
+					.setParameter("topPagePartTypes", lstTypes)
+					.getList(c -> toDomain(c)));
+			});
+		});
+		return results;
 	}
 	
 	@Override

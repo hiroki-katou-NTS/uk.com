@@ -53,6 +53,7 @@ module nts.uk.com.view.cdl002.a {
                     selectedClosureId: ko.observable(null),
                     isShowNoSelectRow: self.isDisplayUnselect(),
                     maxRows: 10,
+                    isSelectAllAfterReload: false,
                     tabindex: 1
                 };
                 if (self.isMultiSelect()) {

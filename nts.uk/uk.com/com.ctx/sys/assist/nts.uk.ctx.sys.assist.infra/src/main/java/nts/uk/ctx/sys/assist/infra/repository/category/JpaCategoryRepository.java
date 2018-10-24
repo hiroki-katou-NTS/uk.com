@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.Category;
@@ -116,64 +117,99 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 
 	@Override
 	public List<Category> findByAttendanceSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
-			return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategory.class)
-					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", categoriesIgnore)
+			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategory.class)
+					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value)
+					.getList(c -> c.toDomain()));
+			});
+			resultList.sort((o1, o2) -> {
+				int tmp = o1.getAttendanceSystem().value - o2.getAttendanceSystem().value;
+				if (tmp != 0) return tmp;
+				return o1.getCategoryId().compareTo(o2.getCategoryId());
+			});
 		}
+		return resultList;
 	}
 
 	@Override
 	public List<Category> findByPaymentAvailabilityAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
-			return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategory.class)
-					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", categoriesIgnore)
+			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategory.class)
+					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
+			});
+			resultList.sort((o1, o2) -> {
+				int tmp = o1.getPaymentAvailability().value - o2.getPaymentAvailability().value;
+				if (tmp != 0) return tmp;
+				return o1.getCategoryId().compareTo(o2.getCategoryId());
+			});
 		}
+		return resultList;
 	}
 
 	@Override
 	public List<Category> findByPossibilitySystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
-
+		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
-			return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategory.class)
-					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", categoriesIgnore)
-					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategory.class)
+						.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
+						.setParameter("timeStore", TimeStore.FULL_TIME.value)
+						.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
+			});
+			resultList.sort((o1, o2) -> {
+				int tmp = o1.getPossibilitySystem().value - o2.getPossibilitySystem().value;
+				if (tmp != 0) return tmp;
+				return o1.getCategoryId().compareTo(o2.getCategoryId());
+			});
 		}
-
+		return resultList;
 	}
 
 	@Override
 	public List<Category> findBySchelperSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
+		List<Category> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategory.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
-			return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategory.class)
-					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", categoriesIgnore)
+			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategory.class)
+					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
-					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
+					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
+			});
+			resultList.sort((o1, o2) -> {
+				int tmp = o1.getPossibilitySystem().value - o2.getPossibilitySystem().value;
+				if (tmp != 0) return tmp;
+				return o1.getCategoryId().compareTo(o2.getCategoryId());
+			});
 		}
+		return resultList;
 	}
 
 	/*
@@ -192,7 +228,7 @@ public class JpaCategoryRepository extends JpaRepository implements CategoryRepo
 		}
 
 		List<Category> lstCategory = new ArrayList<>();
-		CollectionUtil.split(categoryIds, 1000, subIdList -> {
+		CollectionUtil.split(categoryIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			lstCategory.addAll(this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategory.class)
 					.setParameter("lstCID", subIdList).getList(f -> f.toDomain()));
 		});
