@@ -37,7 +37,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [self.convertMonthYearToString(params.start)]));
                         self.isFisrtHistory(params.isFirst);
                         self.startYearMonth(params.start);
-                        $('#B1_6').focus();
+                        $('#B1_7').focus();
                     }
                 }
                 if ( params.historyAtr == 0) {
@@ -47,9 +47,12 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                         self.isFisrtHistory(false);
                         self.startYearMonthDay(self.convertStringToDate(params.start));
                         self.startLastYearMonthDay(self.convertStringToDate(params.start));
-                        $('#B1_7').focus();
+                        $('#B1_6').focus();
                     }
                 }
+            }
+            if(self.isFisrtHistory()){
+                self.takeOver(1);
             }
             block.clear();
         }
@@ -57,7 +60,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         validateYearMonth(){
             let self = this;
             if(!(self.startLastYearMonth() < self.startYearMonth())) {
-                dialog.error({ messageId: "Msg_79"});
+                $('#B1_7').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }
             return false;
@@ -66,7 +69,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         validateYearMonthDay(){
             let self = this;
             if(!(Number(self.startLastYearMonthDay()) < Number(self.startYearMonthDay()))) {
-                dialog.error({ messageId: "Msg_79"});
+                $('#B1_6').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }
             return false;
