@@ -76,8 +76,7 @@ public class AnyItemValueOfDaily {
 					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v.intValue())),
 					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v.intValue()))));
     	}
-        MaxRemainingDay test = new MaxRemainingDay(99.0);
-        test.validate();
+
         return result;
     }
 

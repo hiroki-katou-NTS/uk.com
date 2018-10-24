@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1020, height: 760 };</script>
+				<script>var dialogSize = { width: 1020, height: 560 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kdl005.a.start.js" />
 				<com:scriptfile path="kdl005.a.vm.js" />
@@ -94,7 +94,7 @@
 							<div data-bind="text:expirationDateText"
 								style="display: inline-block;"></div>
 						</div>
-						<div>#{i18n.getText('KDL005_32')}</div>
+						<div id="description">#{i18n.getText('KDL005_32')}</div>
 						<table class="summary-table">
 								<tr>
 									<td width="100px">#{i18n.getText('KDL005_13')}</td>
