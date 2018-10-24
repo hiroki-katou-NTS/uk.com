@@ -37,7 +37,7 @@ public class SalGenParaYearMonthHistoryService {
         salGenParaYMHistRepository.update(itemToBeUpdated.get(), cId, paraNo);
     }
 
-    public void deleteYearMonthHistory(String hisId, String cId, String paraNo){
+    public void deleteYearMonthHistory(String cId, String hisId, String paraNo){
         Optional<SalGenParaYearMonthHistory> yearMonthHistory = salGenParaYMHistRepository.getAllSalGenParaYMHist(cId, paraNo);
         Optional<YearMonthHistoryItem> itemToBeDelete = yearMonthHistory.get().getHistory().stream()
                 .filter(h -> h.identifier().equals(hisId))
@@ -50,7 +50,7 @@ public class SalGenParaYearMonthHistoryService {
         if (yearMonthHistory.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = yearMonthHistory.get().getHistory().get(0);
             yearMonthHistory.get().exCorrectToRemove(lastestItem);
-            salGenParaYMHistRepository.update(lastestItem, cId, yearMonthHistory.get().getParaNo());
+            salGenParaYMHistRepository.update(lastestItem, yearMonthHistory.get().getParaNo(), cId);
         }
     }
 

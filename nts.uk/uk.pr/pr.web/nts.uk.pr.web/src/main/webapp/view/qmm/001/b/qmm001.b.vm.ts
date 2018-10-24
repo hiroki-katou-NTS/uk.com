@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         name: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
-        end: KnockoutObservable<number> = ko.observable();
+        end: KnockoutObservable<string> = ko.observable('');
         historyAtr: KnockoutObservable<number> = ko.observable(1);
         startYearMonthDay: KnockoutObservable<string> = ko.observable('');
         startLastYearMonthDay: KnockoutObservable<number> = ko.observable();
@@ -35,17 +35,17 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                     self.end(getText('QMM001_31', ['9999/12']));
                     if(params.start) {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [self.convertMonthYearToString(params.start)]));
-                        self.isFisrtHistory(false);
+                        self.isFisrtHistory(params.isFirst);
                         self.startYearMonth(params.start);
                         $('#B1_6').focus();
                     }
                 }
                 if ( params.historyAtr == 0) {
-                    self.startLastYearMonthDay(params.start);
                     self.end(getText('QMM001_31', ['9999/12/31']));
                     if(params.start) {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [params.start]));
                         self.isFisrtHistory(false);
+                        self.startYearMonthDay(self.convertStringToDate(params.start));
                         self.startLastYearMonthDay(self.convertStringToDate(params.start));
                         $('#B1_7').focus();
                     }
@@ -81,10 +81,8 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         }
 
         convertStringToDate(date: any) {
-            let self = this;
-            let year: string, month: string, date: string;
-            date = date.slice(0, 4) + date.slice(5, 7) + date.slice(8,9);
-            return date;
+            date = date.slice(0, 4) + date.slice(5, 7) + date.slice(8,10);
+            return Number(date);
         }
 
 

@@ -73,7 +73,7 @@
                 <com:ko-if bind ="historyAtr() == 0">
                 <div id = "C1_12" tabindex = "2" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM011_30')}',
-												value: startYearMonth,
+												value: startDate,
 												required: hasRequired(),
 												enable: hasRequired(),
 												dateFormat: 'YYYY/MM/DD',
@@ -81,11 +81,11 @@
 												}">
                 </div>
                 </com:ko-if>
-                <span id="C1_13" class="label" style="margin-left: 10px;">#{i18n.getText('QMM001_31')}</span>
+                <span id="C1_13" class="label" style="margin-left: 10px;" data-bind=" text:end"></span>
             </div>
 
         </div>
-        <div id= "functions-area-bottom">
+        <div id= "functions-area-bottom" style="z-index: auto;">
             <!-- C2_1 登録 -->
             <button id="C2_1" tabindex="3" class="proceed large"
                     data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_43')}</button>

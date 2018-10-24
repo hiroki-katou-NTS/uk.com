@@ -8,10 +8,10 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
     import model = qmm001.share.model;
     export class ScreenModel {
         startYearMonth: KnockoutObservable<number> = ko.observable();
-        startDate: KnockoutObservable<string> = ko.observable();
-        end: KnockoutObservable<string> = ko.observable();
+        startDate: KnockoutObservable<string> = ko.observable('');
+        end: KnockoutObservable<string> = ko.observable('');
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
-        startLastDate: KnockoutObservable<string> = ko.observable();
+        startLastDate: KnockoutObservable<string> = ko.observable('');
         itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         methodEditing: KnockoutObservable<number> = ko.observable(1);
         historyAtr: KnockoutObservable<number> = ko.observable(1);
@@ -36,6 +36,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             if (params) {
                 self.code(params.code);
                 self.name(params.name);
+                self.hisId(params.hisId);
                 self.isFirst(params.isFirst);
                 self.historyAtr(params.historyAtr);
                 if (params.historyAtr == 1) {
@@ -62,6 +63,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             let data: any = {
                 hisId: self.hisId(),
                 code: self.code(),
+                paraNo: self.code(),
                 start: Number(self.startYearMonth()),
                 mode: self.methodEditing()
             }
