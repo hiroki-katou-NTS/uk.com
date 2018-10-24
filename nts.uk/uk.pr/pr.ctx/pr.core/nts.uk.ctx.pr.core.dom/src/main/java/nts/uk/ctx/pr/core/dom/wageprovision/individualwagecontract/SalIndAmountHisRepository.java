@@ -11,7 +11,9 @@ public interface SalIndAmountHisRepository
 
     List<SalIndAmountHis> getAllSalIndAmountHis();
 
-    Optional<SalIndAmountHis> getSalIndAmountHisById(String historyId, String perValCode, String empId);
+    Optional<SalIndAmountHis> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator);
+
+    Optional<SalIndAmountHis> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth);
 
     List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode,int cateIndicator,int salBonusCate,List<String> empIds);
 

@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIndAmountHisRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountHis f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountHisPk.historyId =:historyId AND  f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId ";
-    private static final String SELECT_BY_KEY_PEL_VAL = SELECT_ALL_QUERY_STRING + "WHERE f.salIndAmountHisPk.perValCode =:perValCode AND WHERE f.salIndAmountHisPk.empId IN :empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator ORDER BY f.periodStartYm DESC";
+    private static final String SELECT_BY_KEY_STRING_DISPLAY = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator and f.periodStartYm <= :currentProcessYearMonth and f.periodEndYm >= :currentProcessYearMonth ORDER BY f.periodStartYm DESC";
     private static final String SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT = " SELECT f.salIndAmountHisPk.empId, f.salIndAmountHisPk.historyId, f.periodStartYm , f.periodEndYm , s.amountOfMoney FROM QpbmtSalIndAmountHis f LEFT JOIN QpbmtSalIndAmount s ON s.salIndAmountPk.historyId = f.salIndAmountHisPk.historyId " +
             "WHERE f.salIndAmountHisPk.perValCode =:perValCode AND f.salIndAmountHisPk.empId IN :empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
 
@@ -46,14 +46,26 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     }
 
     @Override
-    public Optional<SalIndAmountHis> getSalIndAmountHisById(String historyId, String perValCode, String empId) {
+    public Optional<SalIndAmountHis> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator) {
         return this.toDomain(this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSalIndAmountHis.class)
-                .setParameter("historyId", historyId)
                 .setParameter("perValCode", perValCode)
+                .setParameter("salBonusCate", salBonusCate)
+                .setParameter("cateIndicator", cateIndicator)
                 .setParameter("empId", empId)
                 .getList());
     }
 
+
+    @Override
+    public Optional<SalIndAmountHis> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth) {
+        return this.toDomain(this.queryProxy().query(SELECT_BY_KEY_STRING_DISPLAY, QpbmtSalIndAmountHis.class)
+                .setParameter("perValCode", perValCode)
+                .setParameter("salBonusCate", salBonusCate)
+                .setParameter("cateIndicator", cateIndicator)
+                .setParameter("empId", empId)
+                .setParameter("currentProcessYearMonth", currentProcessYearMonth)
+                .getList());
+    }
 
     @Override
     public List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, List<String> empIds) {

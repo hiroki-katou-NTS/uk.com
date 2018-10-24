@@ -7,6 +7,9 @@
 <body>
 <ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.AmountOfMoney
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
@@ -25,61 +28,69 @@
     <ui:define name="sidebar">
         <ul class="navigator">
             <!--A2_2 給与支給-->
-            <li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('QMM039_6')}</a></li>
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(0)}" href="#tabpanel-1"
+                   role="tab-navigator" class="active">#{i18n.getText('QMM039_6')}</a>
+            </li>
             <!--A2_3 給与控除-->
-            <li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('QMM039_7')}</a></li>
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(1)}" href="#tabpanel-2"
+                   role="tab-navigator">#{i18n.getText('QMM039_7')}</a></li>
             <!--A2_4 賞与支給-->
-            <li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('QMM039_8')}</a></li>
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(2)}" href="#tabpanel-3"
+                   role="tab-navigator">#{i18n.getText('QMM039_8')}</a></li>
             <!--A2_5 賞与控除-->
-            <li><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('QMM039_9')}</a></li>
+            <li><a tabindex="-1" data-bind="click: function (){$vm.onSelectTab(3)}" href="#tabpanel-4"
+                   role="tab-navigator">#{i18n.getText('QMM039_9')}</a></li>
         </ul>
     </ui:define>
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel">
+        <div id="tabpanel-1">
             <div class="sidebar-content-header">
-                <span class="title">の間</span>
+                <span class="title" data-bind="text : titleTab"></span>
                 <!--A1_1 登録-->
-                <button tabindex="1" class="proceed">#{i18n.getText('QMM039_5')}</button>
+                <button tabindex="1" data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
+                        class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
                 <a tabindex="11" class="goout" style="margin-left: 720px;"
                    data-bind="ntsLinkButton: { },enable: false">#{i18n.getText('QMM039_45')}</a>
             </div>
             <div class="contents-area">
                 <!--A3_3 社員検索-->
-                <div tabindex="4" id="com-ccg001"></div>
-                <div style="display: flex">
+                <div style="display: table; margin: 15px 0px 15px 65px;">
                     <!--A3_1 対象者-->
-                    <div tabindex="2" id="emp-component" style="float: left;"></div>
+                    <div tabindex="2" id="emp-component" style="display: table-cell;"></div>
                     <!--A3_2 金額の一覧を表示する-->
-                    <div tabindex="3" style="float: left; margin: auto 0">
-                        <button>#{i18n.getText('QMM039_11')}</button>
+                    <div style="display: table-cell; vertical-align: middle;">
+                        <button tabindex="3" data-bind="click: toScreenD">#{i18n.getText('QMM039_11')}</button>
                     </div>
                 </div>
+                <div id="com-ccg001"></div>
                 <div class="row">
                     <div class="cell group-master">
                         <!--A4_1 項目選択パネル-->
                         <div class="panel" style="margin-left: 30px"
-                             data-bind="ntsPanel:{width: '220px', height: '220px',showIcon: true, direction: 'bottom', visible: true}">
+                             data-bind="ntsPanel:{width: '220px', height: '260px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
-                            <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
-			                    searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
+                            <div tabindex="5" style="width: 220px"
+                                 data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',          items: dataSource, searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
                             <!--A4_4 項目リスト-->
                             <!--A4_5 コード-->
                             <!--A4_6 名称-->
                             <!--A4_7 コード-->
                             <!--A4_8 名称-->
-                            <table tabindex="6" id="treegrid1"
-                                   data-bind="ntsTreeGridView:{
+                            <table tabindex="6" id="treegrid"
+                                   data-bind="ntsGridList:{
+                                   name: '#[QMM039_12]',
                                 width: 220,
-                                height: 150,
-                                options: dataSource,
+                                height: 210,
+                                dataSource: dataSource,
                                 columns: [
-                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 3},
-                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 3}
+                                    {key:'index', length: 0, hidden: true},
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', width: 60},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', width: 100}
                                 ],
                                 value: singleSelectedCode,
+                                primaryText: 'name',
                                 optionsValue: 'code',
-                                optionsText: 'nodeText',
                                 multiple: false,
                                 enable: true,
                                 showCheckBox: false}">
@@ -87,15 +98,17 @@
                         </div>
                         <!--A5_1 履歴選択パネル-->
                         <div class="panel"
-                             data-bind="ntsPanel:{width: '270px', height: '160px', direction: 'none', visible: true}">
+                             data-bind="ntsPanel:{width: '270px', height: '185px', direction: 'none', visible: true}">
                             <div class="row margin-bottom-12">
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
-                                    <button tabindex="7" data-bind="click: toScreenB">#{i18n.getText('QMM039_15')}</button>
+                                    <button id="A5_2" tabindex="7"
+                                            data-bind="click: toScreenB, enable: isAddableHis()">#{i18n.getText('QMM039_15')}</button>
                                 </div>
                                 <div class="cell right">
                                     <!--A5_3 履歴編集-->
-                                    <button tabindex="8" data-bind="click: toScreenC, enable: isEnableHis()">#{i18n.getText('QMM039_16')}</button>
+                                    <button id="A5_3" tabindex="8"
+                                            data-bind="click: toScreenC, enable: isEditableHis()">#{i18n.getText('QMM039_16')}</button>
                                 </div>
                             </div>
                             <!--A5_4 履歴リスト-->
@@ -103,14 +116,14 @@
                             <!--A5_6 金額-->
                             <div id="list-box" tabindex="9" data-bind="ntsListBox: {
                                     options: itemList,
-                                    optionsValue: 'historyID',
+                                    optionsValue: 'index',
                                     optionsText: 'period',
                                     multiple: false,
-                                    value: singleSelectedCode,
-                                    enable: isEnableHis(),
-                                    rows: 4,
+                                    value: selectedHisCode,
+                                    enable: true,
+                                    rows: 5,
                                     columns: [
-                                        { key: 'historyID', length: 0, hidden: true},
+                                        { key: 'index', length: 0, hidden: true},
                                         { key: 'period', length: 8 },
                                         { key: 'amount', length: 6 }
                                     ]}"></div>
@@ -129,7 +142,7 @@
                             </div>
                             <div class="cell">
                                 <!--A7_2 項目区分-->
-                                <div class="label">#{i18n.getText('QMM039_21')}</div>
+                                <div class="label" data-bind="text: itemClassLabel"></div>
                             </div>
                         </div>
 
@@ -140,9 +153,9 @@
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_22')}</div>
                             </div>
                             <div class="cell">
-                                <div class="label"></div>
+                                <span class="label" data-bind="text: individualPriceCode"></span>
                                 <!--A7_4 コード-->
-                                <div class="label"></div>
+                                <span class="label" data-bind="text: individualPriceName"></span>
                                 <!--A7_5 名称-->
                             </div>
                         </div>
@@ -153,11 +166,11 @@
                             </div>
                             <div class="cell">
                                 <!--A7_7 履歴開始年月-->
-                                <span class="label"></span>
+                                <span class="label" data-bind="text: periodStartYM"></span>
                                 <!--A7_8 ～-->
                                 <span class="label">#{i18n.getText('QMM039_24')}</span>
                                 <!--A7_9 履歴開始年月-->
-                                <span class="label"></span>
+                                <span class="label" data-bind="text: periodEndYM"></span>
                             </div>
                         </div>
                         <div class="row">
@@ -170,7 +183,7 @@
                                 <div data-bind="with: currencyeditor">
                                     <input tabindex="10" data-bind="ntsNumberEditor: {
                                             value: value,
-                                            constraint: constraint,
+                                            constraint: 'AmountOfMoney',
                                             option: option,
                                             required: required,
                                             enable: enable,
@@ -184,8 +197,6 @@
             </div>
         </div>
     </ui:define>
-
-
 </ui:composition>
 </body>
 </html>

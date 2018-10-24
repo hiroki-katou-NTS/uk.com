@@ -21,6 +21,5 @@ public class AddSalIndAmountCommandHandler extends CommandHandler<SalIndAmountCo
     protected void handle(CommandHandlerContext<SalIndAmountCommand> context) {
         SalIndAmountCommand command = context.getCommand();
         repository.add(new SalIndAmount(command.getHistoryId(), command.getAmountOfMoney()));
-    
     }
 }

@@ -43,11 +43,13 @@ public class SalIndAmountHis extends AggregateRoot {
     private SalBonusCate salBonusCate;
 
     public SalIndAmountHis(String perValCode, String empId, int cateIndicator, List<GenericHistYMPeriod> period, int salBonusCate) {
+        super();
         this.empId = empId;
-        this.period = period;
         this.perValCode = perValCode;
         this.salBonusCate = EnumAdaptor.valueOf(salBonusCate, SalBonusCate.class);
         this.cateIndicator = EnumAdaptor.valueOf(cateIndicator, CategoryIndicator.class);
+        this.period = period;
     }
+
 
 }

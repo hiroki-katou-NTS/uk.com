@@ -1,24 +1,16 @@
 package nts.uk.ctx.pr.core.infra.entity.individualwagecontract;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 給与個人別金額履歴
@@ -78,12 +70,17 @@ public class QpbmtSalIndAmountHis extends UkJpaEntity implements Serializable {
         return new SalIndAmountHis(perValCode, empId, cateIndicator, period, salBonusCate);
     }
 
-    public static List<QpbmtSalIndAmountHis> toEntity(SalIndAmountHis domain) {
-        return domain.getPeriod().stream().map(item -> new QpbmtSalIndAmountHis(new QpbmtSalIndAmountHisPk(
-                item.getHistoryID(),
-                domain.getPerValCode(),
-                domain.getEmpId()
-        ), domain.getCateIndicator().value, item.getPeriodYearMonth().start().v(), item.getPeriodYearMonth().end().v(), domain.getSalBonusCate().value)).collect(Collectors.toList());
+    public static QpbmtSalIndAmountHis toEntity(SalIndAmountHis domain) {
+        return new QpbmtSalIndAmountHis(
+                new QpbmtSalIndAmountHisPk(
+                        domain.getPeriod().get(0).getHistoryID(),
+                        domain.getPerValCode(),
+                        domain.getEmpId()
+                ),
+                domain.getCateIndicator().value,
+                domain.getPeriod().get(0).getPeriodYearMonth().start().v(),
+                domain.getPeriod().get(0).getPeriodYearMonth().end().v(),
+                domain.getSalBonusCate().value);
     }
 
 }

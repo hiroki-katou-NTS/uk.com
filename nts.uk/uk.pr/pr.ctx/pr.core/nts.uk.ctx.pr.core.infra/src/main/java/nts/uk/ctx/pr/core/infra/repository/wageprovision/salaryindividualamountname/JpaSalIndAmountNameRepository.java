@@ -12,34 +12,41 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.salaryindividualamountname.
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.salaryindividualamountname.QpbmtSalIndAmountNamePk;
 
 @Stateless
-public class JpaSalIndAmountNameRepository extends JpaRepository implements SalIndAmountNameRepository
-{
+public class JpaSalIndAmountNameRepository extends JpaRepository implements SalIndAmountNameRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountName f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.individualPriceCode =:individualPriceCode ";
-    private static final String SELECT_BY_INDIVIDUAL = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND f.salIndAmountNamePk.cateIndicator =:cateIndicator ";
+    private static final String SELECT_ALL_BY_CATEINDICATOR = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.cateIndicator =:cateIndicator ";
 
     @Override
-    public List<SalIndAmountName> getAllSalIndAmountName(){
+    public List<SalIndAmountName> getAllSalIndAmountName() {
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSalIndAmountName.class)
                 .getList(item -> item.toDomain());
     }
 
     @Override
-    public Optional<SalIndAmountName> getSalIndAmountNameById(String cid, String individualPriceCode){
+    public Optional<SalIndAmountName> getSalIndAmountNameById(String cid, String individualPriceCode) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSalIndAmountName.class)
-        .setParameter("cid", cid)
-        .setParameter("individualPriceCode", individualPriceCode)
-        .getSingle(c->c.toDomain());
+                .setParameter("cid", cid)
+                .setParameter("individualPriceCode", individualPriceCode)
+                .getSingle(c -> c.toDomain());
     }
 
     @Override
-    public void add(SalIndAmountName domain){
+    public List<SalIndAmountName> getAllSalIndAmountNameByCateIndi(String cid, int cateIndicator) {
+        return this.queryProxy().query(SELECT_ALL_BY_CATEINDICATOR, QpbmtSalIndAmountName.class)
+                .setParameter("cid", cid)
+                .setParameter("cateIndicator", cateIndicator)
+                .getList(c -> c.toDomain());
+    }
+
+    @Override
+    public void add(SalIndAmountName domain) {
         this.commandProxy().insert(QpbmtSalIndAmountName.toEntity(domain));
     }
 
     @Override
-    public void update(SalIndAmountName domain){
+    public void update(SalIndAmountName domain) {
         this.commandProxy().update(QpbmtSalIndAmountName.toEntity(domain));
     }
 
