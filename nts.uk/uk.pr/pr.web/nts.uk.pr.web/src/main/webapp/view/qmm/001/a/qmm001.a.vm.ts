@@ -500,8 +500,18 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             let historyId : string = self.selectedSalGenParaHistory();
             let isFirst :boolean = (_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; }) == 0 && self.listHistory().length > 1 ) ? true :false ;
             let index : number =_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; });
+            let startLastYearMonth : any = 0;
+            let startLastDate : any = 0;
+
+
             let data:any = null ;
             if(self.modeHistory() == MODEHISTORY.YEARMONTH){
+                if(self.listHistory().length ==1 ){
+                    startLastYearMonth = 0;
+                }
+                else {
+                    startLastYearMonth = self.listHistory()[index+1].startYearMonth;
+                }
                 data = {
                     start : self.listHistory()[index].startYearMonth ,
                     end : self.listHistory()[index].endYearMonth ,
@@ -509,11 +519,18 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     name: self.salGenParaIdent().name,
                     historyAtr : self.salGenParaIdent().historyAtr,
                     hisId : historyId,
-                    isFirst : isFirst
+                    isFirst : isFirst,
+                    startLastYearMonth : startLastYearMonth
 
                 };
             }
             else{
+                if(self.listHistory().length ==1 ){
+                    startLastDate = 0;
+                }
+                else {
+                    startLastDate = self.listHistory()[index+1].startDate;
+                }
                 data  = {
                     start : self.listHistory()[index].startDate ,
                     end : self.listHistory()[index].endDate ,
@@ -521,7 +538,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     name: self.salGenParaIdent().name,
                     historyAtr : self.salGenParaIdent().historyAtr,
                     hisId : historyId,
-                    isFirst : isFirst
+                    isFirst : isFirst,
+                    startLastDate : startLastDate
 
                 };
             }
