@@ -27,11 +27,11 @@ public class SalGenParaDateHistoryService {
             return;
         }
         dateHistory.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(start, end));
-        salGenParaDateHistRepository.update(itemToBeUpdate.get(), cId, paraNo);
+        salGenParaDateHistRepository.update(itemToBeUpdate.get(), paraNo, cId);
         this.updateItemBefore(dateHistory.get(), itemToBeUpdate.get(), paraNo, cId);
     }
 
-    private void updateItemBefore(SalGenParaDateHistory dateHistory, DateHistoryItem item, String cId, String paraNo){
+    private void updateItemBefore(SalGenParaDateHistory dateHistory, DateHistoryItem item, String paraNo, String cId){
         Optional<DateHistoryItem> itemToBeUpdated = dateHistory.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
             return;

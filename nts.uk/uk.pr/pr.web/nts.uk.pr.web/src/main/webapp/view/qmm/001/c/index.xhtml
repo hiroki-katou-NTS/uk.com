@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 580, height: 450 };</script>
+        <script>var dialogSize = { width: 580, height: 470 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm001.c.vm.js" />
@@ -61,7 +61,7 @@
 
                 <div id = "C1_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM001_29')}</div>
                 <com:ko-if bind ="historyAtr() == 1">
-                <div id = "C1_11" tabindex = "2" data-bind="ntsDatePicker: {
+                <div id = "C1_12" tabindex = "2" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM011_30')}',
 												value: startYearMonth,
 												required: hasRequired(),
@@ -71,7 +71,7 @@
                 </div>
                 </com:ko-if>
                 <com:ko-if bind ="historyAtr() == 0">
-                <div id = "C1_12" tabindex = "2" data-bind="ntsDatePicker: {
+                <div id = "C1_11" tabindex = "2" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM011_30')}',
 												value: startDate,
 												required: hasRequired(),

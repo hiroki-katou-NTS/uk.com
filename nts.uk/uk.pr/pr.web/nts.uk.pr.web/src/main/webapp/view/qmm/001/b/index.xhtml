@@ -34,7 +34,7 @@
 					<span class="label">#{i18n.getText('QMM001_29')}</span>
 					<!-- B1_6 開始年月 -->
 					<com:ko-if bind ="historyAtr() == 1">
-					<div id = "B1_6"  style="margin-left: 80px" data-bind="ntsDatePicker: {
+					<div id = "B1_7"  style="margin-left: 80px" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM001_30')}',
 																value: startYearMonth, 
 																dateFormat: 'yearmonth',
@@ -44,7 +44,7 @@
 					</com:ko-if>
 					<!-- B1_7 開始年月和暦 -->
 					<com:ko-if bind ="historyAtr() == 0"><!-- B1_7 開始年月和暦 -->
-					<div id = "B1_7"  style="margin-left: 80px" data-bind="ntsDatePicker: {
+					<div id = "B1_6"  style="margin-left: 80px" data-bind="ntsDatePicker: {
 																name: '#{i18n.getText('QMM001_30')}',
 																value: startYearMonthDay,
 																dateFormat: 'YYYY/MM/DD',
