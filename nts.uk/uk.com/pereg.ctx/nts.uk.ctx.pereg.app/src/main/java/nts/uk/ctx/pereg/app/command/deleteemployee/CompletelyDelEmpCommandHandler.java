@@ -35,26 +35,26 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 		List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(sid);
 		if (!listEmpData.isEmpty()) {
 			// begin process write log
-			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			EmployeeDataMngInfo empInfo = listEmpData.get(0);
-			empInfo.setDeletedStatus(EmployeeDeletionAttr.PURGEDELETED);
-			empDataMngRepo.updateRemoveReason(empInfo);
-			
-			//get User From RequestList486 Doctor Hieu
-			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(sid));
-			UserAuthDto user = new UserAuthDto("", "", "", sid , "", "");
-			if(userAuth.size() > 0) {
-				 user = userAuth.get(0);
-			}
-			// set PeregCorrectionLogParameter
-			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
-					user != null ? user.getUserID() : "",
-					user != null ? user.getEmpID() : "", 
-					user != null ?user.getUserName(): "",
-				    PersonInfoProcessAttr.COMPLETE_DELETE, null);
-			
-			DataCorrectionContext.setParameter(target.getHashID(), target);
-			DataCorrectionContext.transactionFinishing();
+			DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+				EmployeeDataMngInfo empInfo = listEmpData.get(0);
+				empInfo.setDeletedStatus(EmployeeDeletionAttr.PURGEDELETED);
+				empDataMngRepo.updateRemoveReason(empInfo);
+				
+				//get User From RequestList486 Doctor Hieu
+				List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(sid));
+				UserAuthDto user = new UserAuthDto("", "", "", sid , "", "");
+				if(userAuth.size() > 0) {
+					 user = userAuth.get(0);
+				}
+				// set PeregCorrectionLogParameter
+				PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
+						user != null ? user.getUserID() : "",
+						user != null ? user.getEmpID() : "", 
+						user != null ?user.getUserName(): "",
+					    PersonInfoProcessAttr.COMPLETE_DELETE, null);
+				
+				DataCorrectionContext.setParameter(target.getHashID(), target);
+			});
 		}
 	}
 }

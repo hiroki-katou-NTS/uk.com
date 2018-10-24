@@ -84,27 +84,37 @@ public class AlarmSendEmailService implements SendEmailService {
 		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = new ArrayList<>();
-			Map<String, String> mapCheck = new HashMap<>();
+			Map<String, List<ValueExtractAlarmDto>> mapCheckAlarm = new HashMap<>();
+			List<ValueExtractAlarmDto> listTemp = null;
+			// Get list workplace to send
+			List<String> workplaceIds = new ArrayList<>();
 			for (ValueExtractAlarmDto obj : valueExtractAlarmDtos) {
 				if(managerTagetIds.contains(obj.getEmployeeID())){
-					valueExtractAlarmManagerDtos.add(obj);
+					String workplaceID = obj.getWorkplaceID();
 					// 管理者送信対象のアラーム抽出結果を職場でグループ化する
-					String key = obj.getWorkplaceID()+obj.getEmployeeID();
-					if(!mapCheck.containsKey(key)){
-						mapCheck.put(key, obj.getWorkplaceID());
+					if(!mapCheckAlarm.containsKey(workplaceID)){
+						workplaceIds.add(workplaceID);
+						// New list alarm to send
+						listTemp = new ArrayList<>();
+					}else{
+						listTemp = mapCheckAlarm.get(workplaceID);
 					}
+					listTemp.add(obj);
+					mapCheckAlarm.put(workplaceID, listTemp);
 				}
 			}
-			// Get list workplace to send
-			List<String> workplaceIds = new ArrayList<String>(mapCheck.values());
+			
 			for (String workplaceId : workplaceIds) {
 				// call request list 218 return list employee Id
 				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
-
+				// 抽出結果：ループ中の職場単位のアラーム抽出結果 
+				valueExtractAlarmManagerDtos = mapCheckAlarm.get(workplaceId);
 				if (!CollectionUtil.isEmpty(listEmployeeId)) {
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
+							
+							
 							// Get subject , body mail
 							boolean isError = sendMail(companyID, employeeId, functionID,
 									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
