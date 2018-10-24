@@ -345,8 +345,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			SpecialVacationDeadline speDeadline = specialHoliday.getGrantPeriodic().getExpirationDate();
 			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
 				GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
-				dealineDate.addMonths(speDeadline.getMonths().v());
-				dealineDate.addDays(-1);
+				dealineDate = dealineDate.addMonths(speDeadline.getMonths().v());
+				dealineDate = dealineDate.addDays(-1);
 				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
 				lstOutput.add(output);
 			});	
