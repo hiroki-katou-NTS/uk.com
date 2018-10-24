@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.dom.application.realitystatus;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,6 +23,7 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.dto.RealityStatusEmp
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
@@ -471,21 +475,18 @@ public class RealityStatusService {
 	 * @return 結果（あり/なし)
 	 */
 	private List<String> checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
-		String cId = AppContexts.user().companyId();
 		List<String> listEmpId = new ArrayList<>();
-		// imported（ワークフロー）「承認ルート状況」を取得する
-		// RequestList113
-		List<ApproveRootStatusForEmpImport> listAppRootStatus = approvalStatusAdapter
-				.getApprovalByEmplAndDate(startDate, endDate, sId, cId, 1);
-		// 承認ルートの状況
-		for (ApproveRootStatusForEmpImport appRoot : listAppRootStatus) {
-			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRoot.getApprovalStatus())
-					|| ApprovalStatusForEmployee.DURING_APPROVAL.equals(appRoot.getApprovalStatus())) {
-				// 上司社員ID（リスト）に承認ルートの承認者を追加する
-				listEmpId.add(appRoot.getEmployeeID());
-			}
+		List<GeneralDate> dateLst = new ArrayList<>();
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+			dateLst.add(loopDate);
 		}
-		// 上司社員ID（リスト）の存在状態を確認
+		// imported（ワークフロー）「社員」を取得する
+		List<ApproverApproveImport> listResult = approvalStatusAdapter.getApproverByDateLst(Arrays.asList(sId), dateLst, 1);
+		listResult.stream().forEach(x -> {
+			x.getAuthorList().stream().forEach(y -> {
+				listEmpId.add(y.getEmployeeID());
+			});
+		});
 		return listEmpId;
 	}
 

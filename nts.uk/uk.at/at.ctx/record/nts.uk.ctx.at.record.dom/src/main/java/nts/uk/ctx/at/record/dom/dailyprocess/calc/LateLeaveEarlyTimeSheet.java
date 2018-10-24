@@ -22,14 +22,14 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 	}
 	
 	//遅刻再度補正
-	public LateLeaveEarlyTimeSheet collectionAgainOfLate(LateLeaveEarlyTimeSheet calcTime, DeductionTimeSheet deductionTimeSheet) {
+	public LateLeaveEarlyTimeSheet collectionAgainOfLate(LateLeaveEarlyTimeSheet calcTime, List<TimeSheetOfDeductionItem> breakTimeList) {
 		//休憩取得範囲分の時間帯
 		//TimeSpanForCalc calcTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().forwardByMinutes(calcTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()+calcTime.calcDedTimeByAtr(DeductionAtr.Deduction).valueAsMinutes()));
 		//丸め後の遅刻時間帯
 		TimeSpanForCalc lateTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().forwardByMinutes(calcTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()));
 		List<TimeSheetOfDeductionItem> hasList = new ArrayList<>();
 				
-		List<TimeSheetOfDeductionItem> deductionTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().sorted((time1,time2) -> time1.getTimeSheet().getStart().compareTo(time2.getTimeSheet().getStart())).collect(Collectors.toList());
+		List<TimeSheetOfDeductionItem> deductionTimeSheetList = breakTimeList.stream().sorted((time1,time2) -> time1.getTimeSheet().getStart().compareTo(time2.getTimeSheet().getStart())).collect(Collectors.toList());
 		//控除時間帯分ループ
 		for(TimeSheetOfDeductionItem deduTimeSheet:deductionTimeSheetList) {
 			//int deductTime = lateTimeSheet.getDuplicatedWith(deductionTimeSheet.getTimeSheet().getTimeSpan()).isPresent()?lateTimeSheet.getDuplicatedWith(deductionTimeSheet.getTimeSheet().getTimeSpan()).get().lengthAsMinutes():0;

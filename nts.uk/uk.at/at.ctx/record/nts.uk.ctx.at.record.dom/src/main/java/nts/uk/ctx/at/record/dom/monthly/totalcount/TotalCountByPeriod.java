@@ -91,10 +91,12 @@ public class TotalCountByPeriod implements Cloneable {
 				companyId,
 				period,
 				new ArrayList<>(monthlyCalcDailys.getAttendanceTimeOfDailyMap().values()),
+				monthlyCalcDailys.getAnyItemValueOfDailyList(),
 				new ArrayList<>(monthlyCalcDailys.getTimeLeaveOfDailyMap().values()),
 				new ArrayList<>(monthlyCalcDailys.getWorkInfoOfDailyMap().values()),
 				companySets.getAllWorkTypeMap(),
-				repositories.getWorkType());
+				repositories.getWorkType(),
+				companySets.getOptionalItemMap());
 		
 		// 回数集計マスタを取得
 		val totalTimesList = companySets.getTotalTimesList();

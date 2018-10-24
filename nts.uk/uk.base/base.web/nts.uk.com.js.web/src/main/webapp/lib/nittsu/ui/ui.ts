@@ -192,12 +192,16 @@ module nts.uk.ui {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();
                     });
+                    
+                    $label.on('remove', function() {
+                        $view.remove();
+                    });
                 }
             });
         });
         
         function isOverflow($label) {
-            if ($label[0].nodeName === "INPUT" 
+            if ( ($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")  
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
                 || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));
@@ -208,7 +212,14 @@ module nts.uk.ui {
                     }
                 }
                 
-                $div.html($label.val());
+                let text;
+                if ($label[0].nodeName === "DIV") { 
+                    text = $label.html();
+                } else {
+                    text = $label.val();
+                }
+                
+                $div.html(text);
                 let width = $div.outerWidth();
                 let scrollWidth = $div[0].scrollWidth;
                 $div.remove();

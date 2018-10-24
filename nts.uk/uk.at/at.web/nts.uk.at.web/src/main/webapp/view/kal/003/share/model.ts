@@ -342,10 +342,66 @@ module nts.uk.at.view.kal003.share.model {
                     return con.typeCheckItem() === v;
                 }));
                 if(!self.init){
-                    current[0].clearInput();
-                    current[0].group1().lstErAlAtdItemCon()[0].countableAddAtdItems([]); 
-                    current[0].group1().lstErAlAtdItemCon()[0].countableSubAtdItems([]);
-                    current[0].selectText("");
+                    if(v>3){
+                        if(v<8){
+                            current[0].clearInput();
+                            current[0].group1().lstErAlAtdItemCon()[0].countableAddAtdItems([]); 
+                            current[0].group1().lstErAlAtdItemCon()[0].countableSubAtdItems([]);
+                            current[0].selectText("");
+                            current[0].operator = 0
+                            current[0].extractType(0);
+                        }else{ // = 8
+                            for(let i = 0;i<current[0].group1().lstErAlAtdItemCon().length;i++){
+                                current[0].group1().lstErAlAtdItemCon()[i].compareEndValue(null);
+                                current[0].group1().lstErAlAtdItemCon()[i].compareOperator(0);
+                                current[0].group1().lstErAlAtdItemCon()[i].compareStartValue(null);
+                                current[0].group1().lstErAlAtdItemCon()[i].conditionAtr(0);
+                                current[0].group1().lstErAlAtdItemCon()[i].conditionType(0);
+                                current[0].group1().lstErAlAtdItemCon()[i].countableAddAtdItems([]); 
+                                current[0].group1().lstErAlAtdItemCon()[i].countableSubAtdItems([]);
+                                current[0].group1().lstErAlAtdItemCon()[i].displayCenter = "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayLeft= "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayLeftCompare= "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayLeftOperator= "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayRight= "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayRightCompare= "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayRightOperator= "";
+                                current[0].group1().lstErAlAtdItemCon()[i].displayTarget= "";
+                            }
+                            
+                            for(let i = 0;i<current[0].group2().lstErAlAtdItemCon().length;i++){
+                                current[0].group2().lstErAlAtdItemCon()[i].compareEndValue(null);
+                                current[0].group2().lstErAlAtdItemCon()[i].compareOperator(0);
+                                current[0].group2().lstErAlAtdItemCon()[i].compareStartValue(null);
+                                current[0].group2().lstErAlAtdItemCon()[i].conditionAtr(0);
+                                current[0].group2().lstErAlAtdItemCon()[i].conditionType(0);
+                                current[0].group2().lstErAlAtdItemCon()[i].countableAddAtdItems([]); 
+                                current[0].group2().lstErAlAtdItemCon()[i].countableSubAtdItems([]);
+                                current[0].group2().lstErAlAtdItemCon()[i].displayCenter= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayLeft= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayLeftCompare= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayLeftOperator= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayRight= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayRightCompare= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayRightOperator= "";
+                                current[0].group2().lstErAlAtdItemCon()[i].displayTarget= "";
+                            }
+                        }
+                    }else if(v==0){
+                        current[0].inputs()[0].value(0);
+                        current[0].inputs()[1].value(null);
+                        current[0].inputs()[1].enable(false);
+                        current[0].operator = 0
+                        current[0].extractType(0);
+                    }else if(v==3){
+                        current[0].inputs()[0].value(null);
+                        current[0].inputs()[2].value(null);
+                        current[0].inputs()[2].enable(false);
+                        current[0].operator = 0;
+                        current[0].extractType(0);
+                    }else{
+                        
+                    }
                 }else{
                     if(current[0].inputs()[1].enable){
                         current[0].inputs()[1].value(null);                        
@@ -727,13 +783,13 @@ module nts.uk.at.view.kal003.share.model {
                 this.errorAlarmCheckID=ko.observable(data.errorAlarmCheckID);
                 this.extractType(data.compareOperator);
                 this.numberDayDiffHoliday1=ko.observable(data.numberDayDiffHoliday1 || 0);
-                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || 0); 
+                this.numberDayDiffHoliday2=ko.observable(data.numberDayDiffHoliday2 || null); 
                 this.setupScrible();  
             }else{
                 this.errorAlarmCheckID=ko.observable("");
 //                this.operator=ko.observable(0);
                 this.numberDayDiffHoliday1=ko.observable(0);
-                this.numberDayDiffHoliday2=ko.observable(0);
+                this.numberDayDiffHoliday2=ko.observable(null);
                 this.setupScrible();
             }
         }
@@ -749,7 +805,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.inputs()[1].required(true);
                 } else {
                     self.inputs()[1].enable(false);
-                    self.inputs()[1].value(0);
+                    self.inputs()[1].value(null);
                     self.inputs()[1].required(false);
                 }
             });  

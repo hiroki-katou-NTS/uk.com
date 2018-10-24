@@ -1,17 +1,23 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonth;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonthPK;
-import nts.uk.ctx.at.shared.dom.common.Day;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -73,13 +79,33 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 	@Override
 	public List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDate, boolean isLastDayOfMonth,
 			int closureId) {
-		return this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
-				.setParameter("employeeIds", employeeIds)
-				.setParameter("processYM", processYM)
-				.setParameter("closureDay", closureDate)
-				.setParameter("isLastDayOfMonth", isLastDayOfMonth ? 1 : 0)
-				.setParameter("closureId", closureId)
-				.getList(x -> x.toDomain());
+		List<ConfirmationMonth> data = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from KRCDT_CONFIRMATION_MONTH h WHERE h.CLOSURE_DAY = ? AND h.IS_LAST_DAY = ? AND h.PROCESS_YM = ?"
+						+ " AND h.CLOSURE_ID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setInt(1, closureDate);
+				statement.setInt(2, isLastDayOfMonth ? 1 : 0);
+				statement.setInt(3, processYM);
+				statement.setInt(4, closureId);
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 5, subList.get(i));
+				}
+				ClosureDate cloDate = new ClosureDate(closureDate, isLastDayOfMonth);
+				YearMonth ym = new YearMonth(processYM);
+				ClosureId cloId = ClosureId.valueOf(closureId);
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new ConfirmationMonth(new CompanyId(rec.getString("CID")),
+							rec.getString("SID"), cloId, cloDate, ym, 
+							rec.getGeneralDate("IDENTIFY_DATE"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 
 }

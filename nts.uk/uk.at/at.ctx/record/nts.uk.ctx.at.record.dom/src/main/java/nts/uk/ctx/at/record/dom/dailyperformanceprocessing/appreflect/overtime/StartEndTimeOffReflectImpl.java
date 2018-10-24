@@ -45,7 +45,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 				param.getDateInfo(),
 				workInfo.getRecordInfo().getWorkTypeCode().v(),
 				param.isAutoClearStampFlg(),
-				0);
+				param.getOvertimePara());
 		//開始終了時刻の反映(事前)
 		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(param.getEmployeeId(), param.getDateInfo(), param.getOvertimePara().getStartTime1(), 
 				param.getOvertimePara().getEndTime1(), param.getOvertimePara().getStartTime2(), 
@@ -56,7 +56,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 
 	@Override
 	public void clearAutomaticEmbossing(String employeeId, GeneralDate dateData, String worktypeCode,
-			boolean isClearAuto, Integer timeData) {
+			boolean isClearAuto, OvertimeAppParameter overInfor) {
 		// INPUT．自動セット打刻をクリアフラグをチェックする
 		if(!isClearAuto) {
 			return;
@@ -100,7 +100,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 						|| workStampEnd.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT)) {
 			isEnd = true;
 		}
-		TimeReflectPara timeReflectData = new TimeReflectPara(employeeId, dateData, timeData, timeData, 1, isStart, isEnd);
+		TimeReflectPara timeReflectData = new TimeReflectPara(employeeId, dateData, overInfor.getStartTime1(), overInfor.getEndTime1(), 1, isStart, isEnd);
 		scheWorkUpdate.updateRecordStartEndTimeReflect(timeReflectData);
 	}
 

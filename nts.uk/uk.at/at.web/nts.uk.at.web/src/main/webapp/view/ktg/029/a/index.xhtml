@@ -189,21 +189,21 @@
 						<td data-bind="with:dataRecord()"><span data-bind="text: lateRetreat"></span>#{i18n.getText('KTG029_35')} <span data-bind="text: earlyRetreat"></span>#{i18n.getText('KTG029_36')}</td>
 					</tr>
 					<!-- A17 -->
-					<tr data-bind="visible: displayYearlyHoliDay">
+					<!-- <tr data-bind="visible: displayYearlyHoliDay">
 						<td>#{i18n.getText('KTG029_23')}</td>
 						<td>
 							<table class="detail" data-bind="">
 								<tr>
 									<td></td>
 									<td class="go-button">
-										<!-- <button data-bind="click: openKDL020Dialog.bind($vm)">
+										<button data-bind="click: openKDL020Dialog.bind($vm)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
-										</button> -->
+										</button>
 									</td>
 								</tr>
 							</table>	
 						</td>
-					</tr>
+					</tr> -->
 				</table>
 				<!-- <table class="widget-table fix">
 					A17_1
@@ -215,20 +215,20 @@
 				<table class="widget-table">
 					<!-- A17_2 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
-						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_23')}</td>
+						<td data-bind="visible: !yearlyHoliday.calculationMethod" >#{i18n.getText('KTG029_23')}</td>
 						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="limited-label"><span data-bind="text: yearlyHoliday.nextTimeInfo.day"></span>#{i18n.getText('KTG029_60')}<span data-bind="visible: yearlyHoliday.nextTimeInfo.displayHours">#{i18n.getText('KTG029_42')}<span data-bind="text: yearlyHoliday.nextTimeInfo.hours"></span></span></td>
 					</tr>
 				</table>
 				<table class="widget-table fix3">
 					<!-- A17_3 -->
-					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
+					<tr data-bind="visible: displayHaftDayOff, with:dataRecord()">
 						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_43')}</td>
 						<td data-bind="visible: !yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.nextTimeInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
 				</table>
 				<table class="widget-table fix">
 					<!-- A17_4 -->
-					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
+					<tr data-bind="visible: displayHoursOfHoliday, with:dataRecord()">
 						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_46')}</td>
 						<td data-bind="visible: !yearlyHoliday.calculationMethod">#{i18n.getText('KTG029_47')}<span data-bind="text: yearlyHoliday.nextTimeInfo.timeYearLimit"></span>#{i18n.getText('KTG029_48')}</td>
 					</tr>
@@ -301,7 +301,7 @@
 				<!-- A18 -->
 				<table class="widget-table" data-bind="with:dataRecord(),visible: displayYearRemainNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_24')}<span data-bind="visible:reservedYearsRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
+						<td>#{i18n.getText('KTG029_24')}<!-- <span data-bind="visible:reservedYearsRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span> --></td>
 						<td>
 							<table class="detail">
 								<tr>
@@ -315,7 +315,7 @@
 							</table>	
 						</td>
 					</tr>
-					<tr data-bind="visible: reservedYearsRemainNo.showAfter">
+					<!-- <tr data-bind="visible: reservedYearsRemainNo.showAfter">
 						<td>#{i18n.getText('KTG029_67')}</td>
 						<td>
 							<span data-bind="text: reservedYearsRemainNo.after"></span>#{i18n.getText('KTG029_60')}
@@ -324,7 +324,7 @@
 					<tr data-bind="visible: reservedYearsRemainNo.showAfter">
 						<td class="tab">#{i18n.getText('KTG029_64')}</td>
 						<td data-bind="text: reservedYearsRemainNo.grantDate"></td>
-					</tr>
+					</tr> -->
 				</table>
 				<table class="widget-table">
 					<!-- A20 -->
@@ -402,7 +402,7 @@
 				<table class="widget-table" data-bind="with:dataRecord()">
 					<tbody data-bind="foreach: sPHDRamainNo">
 						<tr>
-							<td class="tab limited-label"><span data-bind="text: name"></span><span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span></td>
+							<td class="tab limited-label"><span data-bind="text: name"></span><!-- <span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span> --></td>
 							<td class="tab"><span data-bind="text: before"></span>#{i18n.getText('KTG029_60')}</td>
 						</tr>	
 						<!-- <tr data-bind="visible: showAfter">

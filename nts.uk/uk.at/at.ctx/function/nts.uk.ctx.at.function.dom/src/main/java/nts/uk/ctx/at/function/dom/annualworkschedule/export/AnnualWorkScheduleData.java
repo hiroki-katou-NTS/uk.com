@@ -413,6 +413,7 @@ public class AnnualWorkScheduleData {
 				} catch (Exception e) {
 					continue;
 				}
+				if (!operationMap.containsKey(attendanceItem.getItemId())) continue;
 				// 0: subtract, 1: plus
 				if (operationMap.get(attendanceItem.getItemId()) == 0) {
 					sum = sum.subtract(val);

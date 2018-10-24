@@ -211,7 +211,7 @@ public class FormulaSetting extends DomainObject {
 			return calcItem.getLeftItemValue().multiply(calcItem.getRightItemValue());
 		case DIVIDE:
 			if (calcItem.getRightItemValue().signum() == 0) return BigDecimal.valueOf(0);
-			return calcItem.getLeftItemValue().divide(calcItem.getRightItemValue());
+			return calcItem.getLeftItemValue().divide(calcItem.getRightItemValue(),6,BigDecimal.ROUND_HALF_UP);
 		default:
 			throw new RuntimeException("unknown operator:"+operator);
 		}

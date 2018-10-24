@@ -1,14 +1,22 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
@@ -60,11 +68,31 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	@Override
 	public List<Identification> findByListEmployeeID(List<String> employeeIDs, GeneralDate startDate,
 			GeneralDate endDate) {
-		String companyID = AppContexts.user().companyId();
-
-		return this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
-				.setParameter("companyID", companyID).setParameter("employeeIds", employeeIDs)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(c -> c.toDomain());
+		List<Identification> data = new ArrayList<>();
+		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from KRCDT_CONFIRMATION_DAY h"
+						+ " WHERE h.PROCESSING_YMD <= ? and h.PROCESSING_YMD >= ? AND h.CID = ?  AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(startDate.localDate()));
+				statement.setDate(2, Date.valueOf(startDate.localDate()));
+				statement.setString(3, AppContexts.user().companyId());
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 4, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new Identification(
+							rec.getString("CID"),
+							rec.getString("SID"),
+							rec.getGeneralDate("PROCESSING_YMD"),
+							rec.getGeneralDate("INDENTIFICATION_YMD"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 
 	@Override
@@ -119,9 +147,14 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 
 	@Override
 	public List<Identification> findByEmployeeID(String employeeID, List<GeneralDate> dates) {
-		return this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
-				.setParameter("companyID", AppContexts.user().companyId()).setParameter("employeeId", employeeID)
-				.setParameter("dates", dates).getList(c -> c.toDomain());
+		if (CollectionUtil.isEmpty(dates)) return Collections.emptyList();
+		List<KrcdtIdentificationStatus> entities = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_EMPLOYEE_ID_DATE, KrcdtIdentificationStatus.class)
+					.setParameter("companyID", AppContexts.user().companyId()).setParameter("employeeId", employeeID)
+					.setParameter("dates", subList).getList());
+		});
+		return entities.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 }

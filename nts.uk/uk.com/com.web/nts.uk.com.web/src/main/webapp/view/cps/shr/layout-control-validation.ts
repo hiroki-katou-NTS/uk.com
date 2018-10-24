@@ -1655,6 +1655,10 @@ module nts.layout {
                     wokPlace = CS00017_IS00084 ? CS00017_IS00084.data.value() : undefined,
                     empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                     realBaseDate = undefined;
+
+                    if (!(startDate && !(startDate instanceof Date) && moment.utc(startDate, _.indexOf(startDate, "Z") > -1 ? "YYYY-MM-DD" : "YYYY/MM/DD").isValid() && !!(ko.toJS(startDate) || '').match(/((19|[2-9][0-9])\d{2})(-|\/)(\d{2}|\d{1})(-|\/)(\d{2}|\d{1})/))) {
+                        return;
+                    }
                 
                     if (!startDate){
                         startDate = CS00070_IS00781 ? CS00070_IS00781.data.value() : undefined;

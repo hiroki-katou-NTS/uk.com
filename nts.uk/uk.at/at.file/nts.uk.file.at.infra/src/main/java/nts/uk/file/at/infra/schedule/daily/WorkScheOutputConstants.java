@@ -146,4 +146,7 @@ public class WorkScheOutputConstants {
 	
 	/** The Constant RANGE_DAILY_WORKPLACE_ROW. */
 	public static final String RANGE_DAILY_WORKPLACE_ROW = "DailyWorkplaceRow";
+	
+	public static final String PERIOD_SYMBOL = "～";
+	
 }

@@ -38,7 +38,7 @@ public class AmountRoundingSetting extends DomainObject{
 	
 	
 	public BigDecimal round(BigDecimal timeAsMinutes) {
-				
+		
 		BigDecimal calctime = timeAsMinutes;
 		
 		switch (this.rounding) {
@@ -92,5 +92,4 @@ public class AmountRoundingSetting extends DomainObject{
 			throw new RuntimeException("invalid case: " + this.rounding);
 		}
 	}
-	
 }

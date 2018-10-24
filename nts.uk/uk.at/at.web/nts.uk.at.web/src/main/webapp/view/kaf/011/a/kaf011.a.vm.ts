@@ -177,9 +177,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                if (data.absRecMng) {
-                    self.remainDays(data.absRecMng.remainDays);
-                }
+                self.remainDays(data.absRecMng);
                 self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);

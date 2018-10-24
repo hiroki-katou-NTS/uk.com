@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionRepository;
@@ -113,7 +115,7 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public MailDestinationFunction findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use) {
+	public List<MailDestinationFunction> findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -131,6 +133,9 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(SevstMailDestinFunc_.sevstMailDestinFuncPK).get(SevstMailDestinFuncPK_.functionId),
 				functionID));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(SevstMailDestinFunc_.sendSet),
+				use.value));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -140,8 +145,20 @@ public class JpaMailDestinationFunctionRepository extends JpaRepository implemen
 		if (CollectionUtil.isEmpty(listSevstMailDestinFunc)) {
 			return null;
 		}
-		// Return
-		return new MailDestinationFunction(new JpaMailDestinationFunctionGetMemento(listSevstMailDestinFunc),use);
+		List<Integer> keys = new ArrayList<Integer>();
+		listSevstMailDestinFunc.forEach(x -> {
+			if (!keys.contains(x.getSevstMailDestinFuncPK().getSettingItem())) {
+				keys.add(x.getSevstMailDestinFuncPK().getSettingItem());
+			}
+		});
+		List<MailDestinationFunction> result = new ArrayList<MailDestinationFunction>();
+		keys.forEach(x -> {
+			List<SevstMailDestinFunc> entity = listSevstMailDestinFunc.stream()
+					.filter(item -> item.getSevstMailDestinFuncPK().getSettingItem().equals(x))
+					.collect(Collectors.toList());
+			result.add(new MailDestinationFunction(new JpaMailDestinationFunctionGetMemento(entity), use));
+		});
+		return result;
 
 	}
 

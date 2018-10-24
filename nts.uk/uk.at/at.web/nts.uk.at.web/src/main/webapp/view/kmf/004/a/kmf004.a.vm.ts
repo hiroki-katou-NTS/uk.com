@@ -148,7 +148,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                         
                         let text = "";
-                        _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
+                        _.forEach(_.orderBy(temp, ['itemType','frameNo'], ['asc']), function(item) {
                             text += item.name + " + " ;                    
                         });
                         
@@ -372,6 +372,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             self.ageSelected.subscribe(function(value) {
+                $("#startAge").ntsError('clear');
+                $("#endAge").ntsError('clear');
                 if(value) {
                     self.startAgeEnable(true);
                     self.endAgeEnable(true);
@@ -483,7 +485,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
                 
                 let text = "";
-                _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
+                _.forEach(_.orderBy(temp, ['itemType','frameNo'], ['asc']), function(item) {
                     text += item.name + " + " ;                    
                 });
                 
@@ -643,7 +645,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
             $(".period-date-inp").trigger("validate");
-            
+            $("#ageBaseDate").trigger("validate");
+            $("#startDate").trigger("validate");
+            $("#endDate").trigger("validate");
+            $("#startAge").trigger("validate");
+            $("#endAge").trigger("validate");
             let dataItem = self.preData();
             
             if(self.yearReq() && self.dayReq()) {
@@ -870,11 +876,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
     }
     
      class ItemFrame {
-        code: string;
-        name: string;
+         code: string;
+         itemType: string;
+         frameNo: number;
+         name: string;
         constructor(data) {
             if (data) {
                 this.code = data.itemType+data.specialHdFrameNo;
+                this.itemType = data.itemType;
+                this.frameNo = data.specialHdFrameNo;
                 this.name = data.specialHdFrameName;
             }
         }

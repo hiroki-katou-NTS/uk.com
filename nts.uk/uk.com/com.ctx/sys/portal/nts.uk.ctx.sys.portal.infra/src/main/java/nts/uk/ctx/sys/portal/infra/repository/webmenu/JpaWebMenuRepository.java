@@ -1,13 +1,17 @@
 package nts.uk.ctx.sys.portal.infra.repository.webmenu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.jws.WebMethod;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
@@ -76,11 +80,17 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		if (webMenuCodes == null)
 			return null;
 		queryStr.append(" AND a.ccgstWebMenuPK.webMenuCd IN :codes");
-		TypedQueryWrapper<CcgstWebMenu> typedQuery = this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class);
-		typedQuery.getQuery().setHint("eclipselink.batch", "a.menuBars.titleMenus.treeMenus");
-		return typedQuery.setParameter("companyId", companyId).setParameter("codes", webMenuCodes).getList(w -> {
-			return toDomain(companyId, w);
+		
+		List<WebMenu> results = new ArrayList<>();
+		CollectionUtil.split(webMenuCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			TypedQueryWrapper<CcgstWebMenu> typedQuery = this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class);
+			typedQuery.getQuery().setHint("eclipselink.batch", "a.menuBars.titleMenus.treeMenus");
+			results.addAll(typedQuery.setParameter("companyId", companyId).setParameter("codes", subList).getList(w -> {
+				return toDomain(companyId, w);
+			}));
 		});
+		
+		return results;
 	}
 
 	@Override

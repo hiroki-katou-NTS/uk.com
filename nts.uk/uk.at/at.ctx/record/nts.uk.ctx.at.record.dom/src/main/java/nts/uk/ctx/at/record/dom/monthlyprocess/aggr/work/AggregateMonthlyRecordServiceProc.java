@@ -7,13 +7,19 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
+
+import javax.enterprise.concurrent.ManagedExecutorService;
 
 import lombok.Getter;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -101,6 +107,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
+@Slf4j
 public class AggregateMonthlyRecordServiceProc {
 	
 	/** 月別集計が必要とするリポジトリ */
@@ -170,6 +177,8 @@ public class AggregateMonthlyRecordServiceProc {
 	private Map<GeneralDate, DailyInterimRemainMngData> dailyInterimRemainMngs;
 	/** 暫定残数データ上書きフラグ */
 	private boolean isOverWriteRemain;
+	/** 並列処理用 */
+	private ManagedExecutorService executerService;
 	
 	public AggregateMonthlyRecordServiceProc(
 			RepositoriesRequiredByMonthlyAggr repositories,
@@ -184,7 +193,8 @@ public class AggregateMonthlyRecordServiceProc {
 			SpecialHolidayRepository specialHolidayRepo,
 			SpecialLeaveManagementService specialLeaveMng,
 			CreatePerErrorsFromLeaveErrors createPerErrorFromLeaveErrors,
-			EditStateOfMonthlyPerRepository editStateRepo){
+			EditStateOfMonthlyPerRepository editStateRepo,
+			ManagedExecutorService executerService){
 
 		this.repositories = repositories;
 		this.interimRemOffMonth = interimRemOffMonth;
@@ -199,6 +209,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.specialLeaveMng = specialLeaveMng;
 		this.createPerErrorFromLeaveErrors = createPerErrorFromLeaveErrors;
 		this.editStateRepo = editStateRepo;
+		this.executerService = executerService;
 	}
 	
 	/**
@@ -284,7 +295,115 @@ public class AggregateMonthlyRecordServiceProc {
 			return this.aggregateResult;
 		}
 		this.aggregateResult.setAffiliationInfo(Optional.of(affiliationInfo));
+		
+		// 残数と集計の処理を並列で実行
+		{
+			CountDownLatch cdlAggregation = new CountDownLatch(1);
+			MutableValue<RuntimeException> excepAggregation = new MutableValue<>();
+			
+			// 日別修正等の画面から実行されている場合、集計処理を非同期で実行
+			Runnable asyncAggregation = () -> {
+				try {
+					this.aggregationProcess(monthPeriod);
+				} catch (RuntimeException ex) {
+					excepAggregation.set(ex);
+				} finally {
+					cdlAggregation.countDown();
+				}
+			};
+			
+			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
+				this.executerService.submit(AsyncTask.builder()
+						.withContexts()
+						.threadName("Aggregation")
+						.build(asyncAggregation));
+			} else {
+				// バッチなどの場合は非同期にせずそのまま実行
+				asyncAggregation.run();
+			}
+			
+			// 残数処理
+			// こちらはDB書き込みをしているので非同期化できない
+			this.remainingProcess(monthPeriod);
+	
+			// 非同期実行中の集計処理と待ち合わせ
+			try {
+				cdlAggregation.await();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+			
+			// 集計処理で例外が起きていたらここでthrow
+			if (excepAggregation.optional().isPresent()) {
+				throw excepAggregation.get();
+			}
+		}
+		
+		// 月別実績の編集状態　取得
+		this.editStates = this.editStateRepo.findByClosure(
+				this.employeeId, this.yearMonth, this.closureId, this.closureDate);
+		
+		if (this.aggregateResult.getAttendanceTime().isPresent()){
+			AttendanceTimeOfMonthly attendanceTime = this.aggregateResult.getAttendanceTime().get();
+			
+			// 手修正された項目を元に戻す　（勤怠時間用）
+			attendanceTime = this.undoRetouchValuesForAttendanceTime(attendanceTime, this.monthlyOldDatas);
+				
+			// 手修正を戻してから計算必要な項目を再度計算
+			if (this.isRetouch){
+				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
+			}
+		}
+		
+		ConcurrentStopwatches.start("12300:36協定時間：");
+		
+		// 基本計算結果を確認する
+		Optional<MonthlyCalculation> basicCalced = Optional.empty();
+		if (this.aggregateResult.getAttendanceTime().isPresent()){
+			basicCalced = Optional.of(this.aggregateResult.getAttendanceTime().get().getMonthlyCalculation());
+		}
+		
+		// 36協定時間の集計
+		MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
+		val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
+				this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+				monthPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+				this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
+		if (agreementTimeOpt.isPresent()){
+			val agreementTime = agreementTimeOpt.get();
+			this.aggregateResult.setAgreementTime(Optional.of(agreementTime));
+		}
 
+		ConcurrentStopwatches.stop("12300:36協定時間：");
+		ConcurrentStopwatches.start("12500:任意項目：");
+		
+		// 月別実績の任意項目を集計
+		this.aggregateAnyItem(monthPeriod);
+		
+		// 手修正された項目を元に戻す　（任意項目用）
+		this.undoRetouchValuesForAnyItems(this.monthlyOldDatas);
+
+		ConcurrentStopwatches.stop("12500:任意項目：");
+		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
+		
+		// 大塚カスタマイズ
+		this.customizeForOtsuka();
+
+		ConcurrentStopwatches.stop("12600:大塚カスタマイズ：");
+		
+		// 戻り値にエラー情報を移送
+		for (val errorInfo : this.errorInfos.values()){
+			this.aggregateResult.getErrorInfos().putIfAbsent(errorInfo.getResourceId(), errorInfo);
+		}
+		
+		return this.aggregateResult;
+	}
+
+	/**
+	 * 集計処理
+	 * @param monthPeriod
+	 */
+	private void aggregationProcess(DatePeriod monthPeriod) {
 		ConcurrentStopwatches.stop("12100:集計期間ごと準備：");
 		
 		// 項目の数だけループ
@@ -350,43 +469,14 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 合算後のチェック処理
 		this.checkAfterSum(monthPeriod);
-		
-		// 月別実績の編集状態　取得
-		this.editStates = this.editStateRepo.findByClosure(
-				this.employeeId, this.yearMonth, this.closureId, this.closureDate);
-		
-		if (this.aggregateResult.getAttendanceTime().isPresent()){
-			AttendanceTimeOfMonthly attendanceTime = this.aggregateResult.getAttendanceTime().get();
-			
-			// 手修正された項目を元に戻す　（勤怠時間用）
-			attendanceTime = this.undoRetouchValuesForAttendanceTime(attendanceTime, this.monthlyOldDatas);
-				
-			// 手修正を戻してから計算必要な項目を再度計算
-			if (this.isRetouch){
-				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
-			}
-		}
-		
-		ConcurrentStopwatches.start("12300:36協定時間：");
-		
-		// 基本計算結果を確認する
-		Optional<MonthlyCalculation> basicCalced = Optional.empty();
-		if (this.aggregateResult.getAttendanceTime().isPresent()){
-			basicCalced = Optional.of(this.aggregateResult.getAttendanceTime().get().getMonthlyCalculation());
-		}
-		
-		// 36協定時間の集計
-		MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
-		val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(
-				this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-				monthPeriod, Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
-				this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced, this.repositories);
-		if (agreementTimeOpt.isPresent()){
-			val agreementTime = agreementTimeOpt.get();
-			this.aggregateResult.setAgreementTime(Optional.of(agreementTime));
-		}
+	}
 
-		ConcurrentStopwatches.stop("12300:36協定時間：");
+	/**
+	 * 残数処理
+	 * @param monthPeriod
+	 */
+	private void remainingProcess(DatePeriod monthPeriod) {
+		
 		ConcurrentStopwatches.start("12400:残数処理：");
 		
 		// 集計開始日を締め開始日をする時だけ、残数処理を実行する　（集計期間の初月（＝締めの当月）だけ実行する）
@@ -395,30 +485,8 @@ public class AggregateMonthlyRecordServiceProc {
 			// 残数処理
 			this.remainingProcess(monthPeriod, InterimRemainMngMode.MONTHLY, true);
 		}
-
+		
 		ConcurrentStopwatches.stop("12400:残数処理：");
-		ConcurrentStopwatches.start("12500:任意項目：");
-		
-		// 月別実績の任意項目を集計
-		this.aggregateAnyItem(monthPeriod);
-		
-		// 手修正された項目を元に戻す　（任意項目用）
-		this.undoRetouchValuesForAnyItems(this.monthlyOldDatas);
-
-		ConcurrentStopwatches.stop("12500:任意項目：");
-		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
-		
-		// 大塚カスタマイズ
-		this.customizeForOtsuka();
-
-		ConcurrentStopwatches.stop("12600:大塚カスタマイズ：");
-		
-		// 戻り値にエラー情報を移送
-		for (val errorInfo : this.errorInfos.values()){
-			this.aggregateResult.getErrorInfos().putIfAbsent(errorInfo.getResourceId(), errorInfo);
-		}
-		
-		return this.aggregateResult;
 	}
 	
 	/**
@@ -626,14 +694,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val monthResults = this.aggregateAnyItemPeriod(monthPeriod, false);
 		for (val monthResult : monthResults.values()){
 			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(
-					this.employeeId,
-					this.yearMonth,
-					this.closureId,
-					this.closureDate,
-					monthResult.getOptionalItemNo(),
-					Optional.ofNullable(monthResult.getAnyTime()),
-					Optional.ofNullable(monthResult.getAnyTimes()),
-					Optional.ofNullable(monthResult.getAnyAmount())));
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthResult));
 		}
 	}
 	
@@ -646,6 +707,7 @@ public class AggregateMonthlyRecordServiceProc {
 	private Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(DatePeriod period, boolean isWeek){
 		
 		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
+		List<AnyItemOfMonthly> anyItems = new ArrayList<>();
 		
 		// 任意項目ごとに集計する
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
@@ -721,7 +783,8 @@ public class AggregateMonthlyRecordServiceProc {
 							.filter(c -> c.getOptionalItemNo().equals(optionalItem.getOptionalItemNo()))
 							.collect(Collectors.toList());
 					val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-					val monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
+					MonthlyRecordToAttendanceItemConverter monthlyRecordDto = monthlyConverter.withAttendanceTime(attendanceTime);
+					monthlyRecordDto = monthlyRecordDto.withAnyItem(anyItems);
 					val calcResult = optionalItem.caluculationFormula(
 							this.companyId, optionalItem, targetFormulas,
 							Optional.empty(), Optional.of(monthlyRecordDto));
@@ -742,7 +805,10 @@ public class AggregateMonthlyRecordServiceProc {
 				}
 				
 				// 任意項目集計結果を返す
-				results.put(optionalItemNo, AnyItemAggrResult.of(optionalItemNo, anyTime, anyTimes, anyAmount));
+				AnyItemAggrResult result = AnyItemAggrResult.of(optionalItemNo, anyTime, anyTimes, anyAmount);
+				results.put(optionalItemNo, result);
+				anyItems.add(AnyItemOfMonthly.of(
+						this.employeeId, this.yearMonth, this.closureId, this.closureDate, result));
 			}
 		}
 		

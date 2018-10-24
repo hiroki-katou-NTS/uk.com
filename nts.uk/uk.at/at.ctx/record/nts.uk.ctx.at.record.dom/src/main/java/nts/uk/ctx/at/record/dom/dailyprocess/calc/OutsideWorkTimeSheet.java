@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -88,6 +89,7 @@ public class OutsideWorkTimeSheet {
 	 * @param statutorySet
 	 * @param prioritySet
 	 * @param createWithinWorkTimeSheet 
+	 * @param workTimeDailyAtr 
 	 * @param integrationOfDaily 
 	 * @return
 	 */
@@ -103,7 +105,7 @@ public class OutsideWorkTimeSheet {
     		boolean late, boolean leaveEarly, WorkDeformedLaborAdditionSet illegularAddSetting, WorkFlexAdditionSet flexAddSetting, 
     		WorkRegularAdditionSet regularAddSetting, HolidayAddtionSet holidayAddtionSet,Optional<WorkTimezoneCommonSet> commonSetting,WorkingConditionItem conditionItem,
     		Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,
-    		Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
+    		Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, WorkTimeDailyAtr workTimeDailyAtr) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -115,7 +117,7 @@ public class OutsideWorkTimeSheet {
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
 					predetermineTimeSet, siftCode, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,conditionItem,
-					predetermineTimeSetByPersonInfo,coreTimeSetting, specificDateAttrSheets);
+					predetermineTimeSetByPersonInfo,coreTimeSetting, specificDateAttrSheets,workTimeDailyAtr);
 
 			/* 0時跨ぎ処理 */
 			if(overDayEndCalcSet.isPresent()) {
@@ -146,50 +148,6 @@ public class OutsideWorkTimeSheet {
 				   );
 	}
 
-	/**
-	 * 法定外深夜時間の計算
-	 */
-	// public ExcessOfStatutoryTimeOfDaily
-	// calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeWorkSheet>
-	// overTimeWorkSheet,Optional<HolidayWorkTimeSheet> holidayWorkSheet
-	// ,AutoCalculationOfOverTimeWork
-	// autoCalculationOfOverTimeWork,AutoCalcSetOfHolidayWorkTime
-	// autoCalcSetOfHolidayWorkTime) {
-	public void calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeSheet> overTimeWorkSheet,
-			Optional<HolidayWorkTimeSheet> holidayWorkSheet,
-			AutoCalOvertimeSetting autoCalculationOfOverTimeWork,
-			AutoCalRestTimeSetting autoCalcSetOfHolidayWorkTime) {
-		Optional<OverTimeSheet> overTimeWork = Optional.empty();
-		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
-		if (overTimeWorkSheet.isPresent()) {
-//			overTimeWork = Optional.of(overTimeWorkSheet.get().calcMidNightTime(overTimeWorkSheet.get(),
-//					autoCalculationOfOverTimeWork));
-
-		}
-		if (holidayWorkSheet.isPresent()) {
-			// holidayWorkSheet =
-			// Optional.of(holidayWorkSheet.get().reCreateToCalcExcessWork(holidayWorkSheet.get(),autoCalcSetOfHolidayWorkTime));
-		}
-
-		// ExcessOfStatutoryMidNightTime totalExcessTime = new
-		// ExcessOfStatutoryMidNightTime(midNightExcessTime.getTime().addMinutes(holidayWorkExcessTime.getTiem().getTime(),
-		// holidayWorkExcessTime.getTiem().getCalcTime()));
-
-		// return new
-		// ExcessOfStatutoryTimeOfDaily(totalExcessTime,Optional.empty(),Optional.empty());
-	}
-
-//	public void addtimesheet(OutsideWorkTimeSheet outsideSheet) {
-//		if(this.overTimeWorkSheet.isPresent()) {
-//			
-//		}
-//		else {
-//			this.overTimeWorkSheet = outsideSheet.getOverTimeWorkSheet();
-//		}
-//			
-//	}
-//	
-//	private void addoverTimesheet(OverTime)
 	
 	/**
 	 * 残業時間の中にある控除時間を算出する

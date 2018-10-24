@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.infra.repository.scherec.dailyattendanceitem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
@@ -124,7 +126,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 	public Optional<DailyAttendanceItemAuthority> getDailyAttdItemByUse(String companyId,
 			String roleId,List<Integer> attendanceItemIds,int toUse) {
 		List<DisplayAndInputControl> data = new  ArrayList<>();
-		CollectionUtil.split(attendanceItemIds, 1000, subIdList -> {
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			data.addAll(
 					this.queryProxy().query(SELECT_BY_AUTHORITY_DAILY_LIST_ID,KshstDailyServiceTypeControl.class)
 					.setParameter("companyID", companyId)
@@ -136,6 +138,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 		});
 		if(CollectionUtil.isEmpty(data))
 			return Optional.empty();
+		data.sort(Comparator.comparing(DisplayAndInputControl::getItemDailyID));
 		DailyAttendanceItemAuthority dailyItemControlByAuthority = new DailyAttendanceItemAuthority(
 				companyId,roleId,data
 				);
@@ -161,15 +164,19 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 			List<Integer> attendanceItemIds) {
 		List<DisplayAndInputControl> data = new ArrayList<>();
 		if (attendanceItemIds == null || attendanceItemIds.isEmpty()) {
-			data = this.queryProxy().query(SELECT_BY_KEY, KshstDailyServiceTypeControl.class)
+			data.addAll(this.queryProxy().query(SELECT_BY_KEY, KshstDailyServiceTypeControl.class)
 					.setParameter("companyID", companyID).setParameter("authorityDailyID", authorityDailyId)
 					.setParameter("toUse", NotUseAtr.USE.value)
-					.getList(c -> c.toDomain());
+					.getList(c -> c.toDomain()));
 		} else {
-			data = this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KshstDailyServiceTypeControl.class)
-					.setParameter("companyID", companyID).setParameter("authorityDailyID", authorityDailyId)
-					.setParameter("toUse", NotUseAtr.USE.value).setParameter("itemDailyIDs", attendanceItemIds)
-					.getList(c -> c.toDomain());
+			CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				data.addAll(this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KshstDailyServiceTypeControl.class)
+					.setParameter("companyID", companyID)
+					.setParameter("authorityDailyID", authorityDailyId)
+					.setParameter("toUse", NotUseAtr.USE.value)
+					.setParameter("itemDailyIDs", subList)
+					.getList(c -> c.toDomain()));
+			});
 		}
 		if (data.isEmpty())
 			return Optional.empty();

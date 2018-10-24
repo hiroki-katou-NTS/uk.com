@@ -288,25 +288,27 @@ module nts.uk.ui.koExtentions {
         public createStartBinding(parentBinding: any, name, format: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.name, 
+                     name: parentBinding.startName ? self.startName : parentBinding.name, 
                      value: self.startValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled, 
-                     endDate: self.endValue };
+                     disabled: parentBinding.disabled 
+                     //,endDate: self.endValue 
+                   };
         }
         
         public createEndBinding(parentBinding: any, name: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.name, 
+                     name: parentBinding.endName ? self.endName : parentBinding.name, 
                      value: self.endValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled, 
-                     startDate: self.startValue };
+                     disabled: parentBinding.disabled 
+                     //,startDate: self.startValue 
+                   };
         }
     }
 }

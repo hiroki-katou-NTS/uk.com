@@ -601,10 +601,12 @@ module cmm045.a.viewmodel {
             //超過した場合
             let a1 = getText('CMM045_282') + self.convertTime_Short_HM(timeNo417.totalOv) + '、' + getText('CMM045_283') + getText('CMM045_284', [timeNo417.numOfYear36Over]);
             let lstMonth: Array<number> = [];
-            _.each(timeNo417.lstOverMonth, function(month){
+            //#102100
+            let listMY = _.sortBy(timeNo417.lstOverMonth);
+            _.each(listMY, function(month){
                 lstMonth.push(month % 100);
             });
-            lstMonth = _.sortBy(lstMonth);
+//            lstMonth = _.sortBy(lstMonth);
             let a2 = '';
             _.each(lstMonth, function(mon){
                 a2 = a2 == '' ? getText('CMM045_285', [mon]) : a2 + '、' + getText('CMM045_285', [mon]);
@@ -662,7 +664,7 @@ module cmm045.a.viewmodel {
             });
             let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = framName + otherInfo;
+            let result = framName + '　' + otherInfo;
             return result;
         }
         sortFrameTime(lstFrame: Array<vmbase.OverTimeFrame>, appType: number): any {
@@ -743,16 +745,17 @@ module cmm045.a.viewmodel {
             let lstSort = self.sortFrameTime(lstFrame, 6);
             _.each(lstSort, function(item, index) {
                 if (item.applicationTime != 0) {
-                    if (count <= 1) {
+                    if (count < 3) {
                         framName += '　' + item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
                     time += item.applicationTime;
                     count += 1;
                 }
             });
-            let other = count > 2 ? count - 2 : 0;
+            let other = count > 3 ? count - 3 : 0;
             let otherInfo = other > 0 ? getText('CMM045_231', [other]) : '';
-            let result = framName + otherInfo;
+            //#102010
+            let result = framName + '　' + otherInfo;
             return result;
         }
         /**

@@ -30,7 +30,7 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(List<String> employeeId, DatePeriod baseDate) {
-		List<RemarksOfDailyPerform> remarks = new ArrayList<>();
+		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
 		String query = new StringBuilder("SELECT r FROM KrcdtDayRemarksColumn r")
 								.append(" WHERE r.krcdtDayRemarksColumnPK.sid IN :sid")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd >= :start")
@@ -40,14 +40,14 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 																		.setParameter("start", baseDate.start())
 																		.setParameter("end", baseDate.end());
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			remarks.addAll(tpQuery.setParameter("sid", sub).getList(c -> c.toDomain()));
+			remarks.addAll(tpQuery.setParameter("sid", sub).getList());
 		});
-		return remarks;
+		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(Map<String, List<GeneralDate>> param) {
-		List<RemarksOfDailyPerform> remarks = new ArrayList<>();
+		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
 		String query = new StringBuilder("SELECT r FROM KrcdtDayRemarksColumn r")
 								.append(" WHERE r.krcdtDayRemarksColumnPK.sid IN :sid")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd IN :date")
@@ -58,14 +58,14 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
 					.filter(c -> p.get(c.krcdtDayRemarksColumnPK.sid).contains(c.krcdtDayRemarksColumnPK.ymd))
-					.map(c -> c.toDomain()).collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 		});
-		return remarks;
+		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<RemarksOfDailyPerform> getRemarks(String employeeId, List<GeneralDate> baseDate) {
-		List<RemarksOfDailyPerform> remarks = new ArrayList<>();
+		List<KrcdtDayRemarksColumn> remarks = new ArrayList<>();
 		String query = new StringBuilder("SELECT r FROM KrcdtDayRemarksColumn r")
 								.append(" WHERE r.krcdtDayRemarksColumnPK.sid = :sid")
 								.append(" AND r.krcdtDayRemarksColumnPK.ymd IN ymd")
@@ -73,9 +73,9 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 		TypedQueryWrapper<KrcdtDayRemarksColumn> tpQuery = queryProxy().query(query, KrcdtDayRemarksColumn.class)
 				.setParameter("sid", employeeId);
 		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			remarks.addAll(tpQuery.setParameter("ymd", sub).getList(c -> c.toDomain()));
+			remarks.addAll(tpQuery.setParameter("ymd", sub).getList());
 		});
-		return remarks;
+		return remarks.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
