@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -30,7 +32,7 @@ import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
-
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorrectCommand> {
 	
@@ -43,32 +45,27 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 	@Override
 	protected void handle(CommandHandlerContext<BasicScheCorrectCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.SCHEDULE);
-		
-		// Get all attendanceItemId from domain BasicSchedule
-		List<Integer> attItemIds = new ArrayList<>();
-		for(int i =1; i<=66; i++){
-			attItemIds.add(Integer.valueOf(i));
-		}
-		
-		// Get Name of attendanceItemId
-		List<ScheduleItem> itemIdNameList = this.scheduleItemManagementRepository.findAllScheduleItem(companyId);
-		
-		List<ScheduleItem> newItemIdNameList = itemIdNameList.stream().filter(item -> attItemIds.contains(Integer.valueOf(item.getScheduleItemId()))).collect(Collectors.toList());
-		
-		Map<String, String> itemNameIdMap  = newItemIdNameList.stream().collect(Collectors.toMap(ScheduleItem :: getScheduleItemId, x -> x.getScheduleItemName()));
-		
-		val correctionLogParameter = new BasicScheduleCorrectionParameter(
-				mapToScheduleCorrection(convertToItemValue(context.getCommand().getDomainNew()),
-						convertToItemValue(context.getCommand().getDomainOld()), itemNameIdMap));
-		DataCorrectionContext.setParameter(correctionLogParameter);
-		AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
-	}
-
-	@Override
-	protected void postHandle(CommandHandlerContext<BasicScheCorrectCommand> context) {
-		super.postHandle(context);
-		DataCorrectionContext.transactionFinishing();
+		DataCorrectionContext.transactional(CorrectionProcessorId.SCHEDULE, () -> {
+			
+			// Get all attendanceItemId from domain BasicSchedule
+			List<Integer> attItemIds = new ArrayList<>();
+			for(int i =1; i<=103; i++){
+				attItemIds.add(Integer.valueOf(i));
+			}
+			
+			// Get Name of attendanceItemId
+			List<ScheduleItem> itemIdNameList = this.scheduleItemManagementRepository.findAllScheduleItem(companyId);
+			
+			List<ScheduleItem> newItemIdNameList = itemIdNameList.stream().filter(item -> attItemIds.contains(Integer.valueOf(item.getScheduleItemId()))).collect(Collectors.toList());
+			
+			Map<String, String> itemNameIdMap  = newItemIdNameList.stream().collect(Collectors.toMap(ScheduleItem :: getScheduleItemId, x -> x.getScheduleItemName()));
+			
+			val correctionLogParameter = new BasicScheduleCorrectionParameter(
+					mapToScheduleCorrection(convertToItemValue(context.getCommand().getDomainNew()),
+							convertToItemValue(context.getCommand().getDomainOld()), itemNameIdMap));
+			DataCorrectionContext.setParameter(correctionLogParameter);
+			AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
+		});
 	}
 	
 	/**
@@ -91,27 +88,10 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap,
 			Map<String, String> itemNameIdMap) {
 		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
-//		itemNewMap.forEach((key, value) -> {
-//			val itemOldValueMap = itemOldMap.get(key);
-//			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
-//			value.forEach((valueItemKey, valueItemNew) -> {
-//				val itemOld = itemOldValueMap.get(valueItemKey);
-//				if (valueItemNew.getValue() != null && itemOld.getValue() != null
-//						&& !valueItemNew.getValue().equals(itemOld.getValue())) {
-//					ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
-//							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
-//							// TODO : convert Type ???
-//							convertType(valueItemNew.getValueType()), null,
-//							itemEdit.contains(valueItemNew.getItemId())
-//									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
-//					daiTarget.getCorrectedItems().add(item);
-//				}
-//			});
-//			targets.add(daiTarget);
-//		});
 
 		// set correctionAttr
-		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,38,39,43,44,45,46,47,48,49,50,51,52);
+		// attendanceItemId lien quan den SCHE_TIME (lien quan den tinh toan- CALCULATE)
+		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,39,43,44,45,46,47,48,49,50,51,52,102,103);
 		itemNewMap.forEach((key, value) -> {
 			val itemOldValueMap = itemOldMap.get(key);
 			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
@@ -145,7 +125,12 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		});
 		return targets;
 	}
-
+	
+	/**
+	 * Convert type ValueType from to DataValueAttribute
+	 * @param valueType
+	 * @return
+	 */
 	private Integer convertType(ValueType valueType) {
 		switch (valueType.value) {
 
@@ -155,6 +140,9 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 
 		case 13:
 			return DataValueAttribute.MONEY.value;
+			
+		case 15:
+			return DataValueAttribute.CLOCK.value;
 
 		default:
 			return DataValueAttribute.STRING.value;

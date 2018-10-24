@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 
 /**
@@ -18,7 +19,8 @@ public interface InterimRemainOffPeriodCreateData {
 	 * @param inputParam
 	 * @return
 	 */
-	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(InterimRemainCreateDataInputPara inputParam);
+	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(InterimRemainCreateDataInputPara inputParam
+			, CompanyHolidayMngSetting comHolidaySetting);
 	/**
 	 * 対象日のデータを抽出する
 	 * @param baseDate
@@ -33,4 +35,10 @@ public interface InterimRemainOffPeriodCreateData {
 	 * @return
 	 */
 	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<AffPeriodEmpCodeImport> lstEmployment);
+	/**
+	 * 指定期間の暫定残数管理データを作成する（差分のみ）
+	 * @param param
+	 * @return
+	 */
+	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainByScheRecordApp(InterimRemainCreateDataInputPara param);
 }

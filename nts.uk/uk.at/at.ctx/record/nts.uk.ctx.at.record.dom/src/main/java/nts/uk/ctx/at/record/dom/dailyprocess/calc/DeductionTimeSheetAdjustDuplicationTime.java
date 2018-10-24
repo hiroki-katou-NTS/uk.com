@@ -34,30 +34,29 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
 		List<TimeSheetOfDeductionItem> originCopyList = timeSpanList;
 		int processedListNumber = 0;
-		//
+		//分割処理などを行っている現在処理中の時間帯中でどの時間帯を処理しているかチェック(末尾までいったらこの処理を終える) 
 		while(originCopyList.size() - 1 > processedListNumber) {
-			
+			//手前の時間帯の位置
 			for(int number = 0 ;  number < originCopyList.size()  ; number++) {
+				//現在、どのリストNoまで処理が進んでいるかの位置を保持
 				processedListNumber = number;
+				//手前の時間帯の位置を保持
 				int beforeCorrectSize = originCopyList.size();
-				
+				//比較対象の時間帯の位置
 				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
-					/*isDeplicatedはTimeSpanForCalcへ持っていく*/
 					if(originCopyList.get(number).calcrange.checkDuplication(originCopyList.get(nextNumber).calcrange).isDuplicated()){
 						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage,workTimeDailyAtr);
 						if(originCopyList.size()>beforeCorrectSize)
-							/*追加された*/
 							break;
 					}
 				}
+				//分割などで元の時間帯より数が増えたらループを頭からやり直す
 				if(originCopyList.size()>beforeCorrectSize) {
-					/*追加された*/
-					
 					break;
 				}
 			}
 		}
-		timeSpanList = originCopyList;
+		this.timeSpanList = originCopyList;
 		return originCopyList;
 	}
 	
@@ -71,8 +70,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 */
 	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,WorkTimeDailyAtr workTimeDailyAtr){
 		return replaceListItem(originList,
-							   originList.get(number)
-							   .DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true,FluidFixedAtr.FixedWork,workTimeDailyAtr)
+							   originList.get(number).DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true,FluidFixedAtr.FixedWork,workTimeDailyAtr)
 							   ,number,nextNumber);
 	}
 	

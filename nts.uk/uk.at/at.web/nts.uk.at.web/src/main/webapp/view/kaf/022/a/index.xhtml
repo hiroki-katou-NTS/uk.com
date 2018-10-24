@@ -75,7 +75,7 @@
 				<com:ko-if bind="currentTab()==='l'">
 					<div class="center-content-kaf022l">
                         <button  id="btn_001" class="button proceed separate-button fix-button"
-                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}, enable: $parent.viewmodelL.allowRegister()">#{i18n.getText('KAF022_1')}</button>
                         <button  id="btn_002" class="button separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
@@ -87,7 +87,7 @@
 				<com:ko-if bind="currentTab()==='m'">
 					<div class="center-content-kaf022l">
 						<button id="btn_001" class="button proceed separate-button fix-button"
-								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM)">#{i18n.getText('KAF022_1')}</button>
+								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM), enable: $vm.viewmodelM.allowRegister()">#{i18n.getText('KAF022_1')}</button>
 						<button id="btn_002" class="button separate-button fix-button"
 								data-bind="click: $vm.viewmodelM.openDialogCopy.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()">#{i18n.getText('KAF022_274')}</button>
 						<button id="btn_004" class="button danger separate-button fix-button"
@@ -606,7 +606,7 @@
 													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
-													visibleItemsCount: 2,
+													visibleItemsCount: 3,
 													value: displayInitialSegment,
 													optionsText: 'name',
 													editable: $parent.isEditable,
@@ -662,7 +662,7 @@
 													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
-													visibleItemsCount: 2,
+													visibleItemsCount: 3,
 													value: displayInitialSegment,
 													optionsText: 'name',
 													editable: $parent.isEditable,
@@ -1094,7 +1094,6 @@
 													value: value,
 													constraint: 'MailTitle',
 													option: option,
-													required: true,
 													enable: enable,
 													readonly: false}" ></input>  
 											</div>
@@ -1110,7 +1109,6 @@
 													value: value,
 													constraint: 'MailBody',
 													option: option,
-													required: true,
 													enable: true,
 													readonly: false}" ></textarea>
 											</div>

@@ -23,6 +23,9 @@ public class DetailedMonthlyPerformanceReportData {
 	/** The error detail. */
 	public String errorDetail;
 	
+	/** Closure date */
+	public String closureDate;
+	
 	/** The actual value. */
 	public List<ActualValue> actualValue;
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -18,16 +17,15 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -177,7 +175,14 @@ public class AggregateTotalWorkingTime implements Cloneable {
 			roleHolidayWorkFrameMap = settingsByDefo.getRoleHolidayWorkFrameMap();
 			autoExceptOverTimeFrames = settingsByDefo.getAutoExceptOverTimeFrames();
 			autoExceptHolidayWorkFrames = settingsByDefo.getAutoExceptHolidayWorkFrames();
-			excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet();
+			
+			// 「割増集計方法」を取得する
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+				excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet();
+			}
+			else {
+				excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getAggregateTimeSet();
+			}
 		}
 		else {
 			// 通常勤務の時
@@ -186,13 +191,21 @@ public class AggregateTotalWorkingTime implements Cloneable {
 			roleHolidayWorkFrameMap = settingsByReg.getRoleHolidayWorkFrameMap();
 			autoExceptOverTimeFrames = settingsByReg.getAutoExceptOverTimeFrames();
 			autoExceptHolidayWorkFrames = settingsByReg.getAutoExceptHolidayWorkFrames();
-			excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet();
+			
+			// 「割増集計方法」を取得する
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+				excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet();
+			}
+			else {
+				excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getAggregateTimeSet();
+			}
 		}
 		
 		// 残業時間を集計する　（通常・変形労働時間勤務用）
 		this.overTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
 				workingSystem, workInfo, legalTransferOrderSet.getLegalOverTimeTransferOrder(),
-				roleOverTimeFrameMap, autoExceptOverTimeFrames, companySets, employeeSets, repositories);
+				excessOutsideTimeSet, roleOverTimeFrameMap, autoExceptOverTimeFrames,
+				companySets, employeeSets, repositories);
 		
 		// 休出時間を集計する　（通常・変形労働時間勤務用）
 		this.holidayWorkTime.aggregateForRegAndIrreg(attendanceTimeOfDaily, companyId, workplaceId, employmentCd,
@@ -209,26 +222,24 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * @param employmentCd 雇用コード
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
-	 * @param flexAggrSet フレックス時間勤務の月の集計設定
-	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
+	 * @param settingsByFlex フレックス勤務が必要とする設定
 	 * @return フレックス時間　（当日分のみ）
 	 */
 	public FlexTime aggregateDailyForFlex(
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
-			FlexMonthWorkTimeAggrSet flexAggrSet,
-			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt){
+			SettingRequiredByFlex settingsByFlex){
 		
 		FlexTime flexTime = new FlexTime();
 		
 		// 残業時間を集計する　（フレックス時間勤務用）
 		flexTime = this.overTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr,
-				flexAggrSet, monthlyAggrSetOfFlexOpt, flexTime);
+				flexTime, settingsByFlex);
 		
 		// 休出時間を集計する　（フレックス時間勤務用）
 		flexTime = this.holidayWorkTime.aggregateForFlex(attendanceTimeOfDaily, companyId, aggregateAtr,
-				flexAggrSet, monthlyAggrSetOfFlexOpt, flexTime);
+				flexTime, settingsByFlex);
 		
 		return flexTime;
 	}

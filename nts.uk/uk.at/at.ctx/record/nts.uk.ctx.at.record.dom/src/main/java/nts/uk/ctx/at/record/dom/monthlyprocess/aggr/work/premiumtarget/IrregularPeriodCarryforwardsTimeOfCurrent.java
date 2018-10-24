@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
@@ -18,7 +21,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 当月の変形期間繰越時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class IrregularPeriodCarryforwardsTimeOfCurrent {
@@ -27,6 +30,8 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 	private AttendanceTimeMonthWithMinus time;
 	/** 加算した休暇使用時間 */
 	private AttendanceTimeMonth addedVacationUseTime;
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -35,6 +40,7 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 		
 		this.time = new AttendanceTimeMonthWithMinus(0);
 		this.addedVacationUseTime = new AttendanceTimeMonth(0);
+		this.errorInfos = new ArrayList<>();
 	}
 	
 	/**
@@ -57,6 +63,9 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 		
 		// 加算設定　取得　（割増用）
 		val addSet = GetAddSet.get(WorkingSystem.VARIABLE_WORKING_TIME_WORK, PremiumAtr.PREMIUM, holidayAdditionMap);
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		// 「変形労働勤務の加算設定」を取得する
 		switch (this.getAddMethod(holidayAdditionMap)){
@@ -77,6 +86,9 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 				// 加算設定　取得　（不足時用）
 				val addSetWhenShortage = GetAddSet.get(
 						WorkingSystem.VARIABLE_WORKING_TIME_WORK, PremiumAtr.WHEN_SHORTAGE, holidayAdditionMap);
+				if (addSetWhenShortage.getErrorInfo().isPresent()){
+					this.errorInfos.add(addSetWhenShortage.getErrorInfo().get());
+				}
 				
 				// 加算する休暇時間を取得する
 				AttendanceTimeMonth vacationAddTime = GetVacationAddTime.getTime(

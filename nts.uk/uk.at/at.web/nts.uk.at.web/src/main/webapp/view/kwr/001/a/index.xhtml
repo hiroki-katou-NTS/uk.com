@@ -50,7 +50,8 @@
 										enable: enableDatePicker, 
 										showNextPrevious: true, 
 										value: datepickerValue, 
-										maxRange: 'oneMonth'}"/>
+										maxRange: 'oneMonth',
+										name: '#[KWR001_7]' }"/>
 								</div>
 							
 							<!-- A3_1 -->
@@ -89,12 +90,14 @@
 										<span class="label A7_2">#{i18n.getText('KWR001_13')}</span>
 										<!-- A7_3 -->
 										<div tabindex="7" id="combo-box" data-bind="ntsComboBox: {
-											name: '#[KWR001_13]',
+											name: '#{i18n.getText('KWR001_13')}',
 											options: itemListCodeTemplate,
 											optionsValue: 'code',
 											visibleItemsCount: 10,
 											value: selectedCodeA7_3,
 											optionsText: 'name',
+											width: 240,
+											required: true,
 											columns: [
 												{ prop: 'code', length: 2 },
 												{ prop: 'name', length: 6 },
@@ -107,7 +110,7 @@
 										<!-- A9_1 -->
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_18')}</div>
 										<!-- A9_2 -->
-										<div tabindex="9" class="type-page-brake" id="combo-box" data-bind="ntsComboBox: {
+										<div tabindex="9" class="type-page-brake" id="combo-box-typebreak" data-bind="ntsComboBox: {
 											name: '#[KWR001_18]',
 											options: itemListTypePageBrake,
 											optionsValue: 'code',
@@ -134,13 +137,14 @@
 												<!-- A10_4 -->
 												<div tabindex="12" data-bind="ntsCheckBox: { checked: checkedA10_4 }">#{i18n.getText('KWR001_22')}</div>
 												<!-- A10_5 -->
-												<div tabindex="13" data-bind="ntsCheckBox: { checked: checkedA10_5, enable: enableByOutputFormat }">#{i18n.getText('KWR001_23')}</div>
+												<!-- update spec ver 25, only hidden temporary -->
+												<!-- <div tabindex="13" data-bind="ntsCheckBox: { checked: checkedA10_5, enable: enableByOutputFormat }">#{i18n.getText('KWR001_23')}</div> -->
 												<!-- A10_6 -->
 												<div tabindex="14" data-bind="ntsCheckBox: { checked: checkedA10_6 }">#{i18n.getText('KWR001_24')}</div>
 											</td>
 											<td>
 												<!-- A10_7 -->
-												<div tabindex="15" data-bind="ntsCheckBox: { checked: checkedA10_7 }">#{i18n.getText('KWR001_25')}</div>
+												<div tabindex="15" id="checkedA10_7" data-bind="ntsCheckBox: { checked: checkedA10_7 }">#{i18n.getText('KWR001_25')}</div>
 												<!-- A10_8 -->
 												<div class="panel panel-frame">
 													<!-- A10_9 -->
@@ -172,15 +176,15 @@
 									</table>
 									
 									<!-- A11_1 -->
-									<hr/>
+									<!-- <hr/> -->
 								
 									<!-- A12_1 -->
-									<div class="label">#{i18n.getText('KWR001_37')}</div>
+									<!-- <div class="label">#{i18n.getText('KWR001_37')}</div>
 									
 									<table>
 										<tr>
 											<td>
-												<!-- A13_1 -->
+												A13_1
 												<div tabindex="25" class="A13_1" data-bind="ntsRadioBoxGroup: {
 														name: '#[KWR001_37]',
 														options: itemListConditionSet,
@@ -190,11 +194,11 @@
 														value: selectedCodeA13_1}"></div>
 											</td>
 											<td class="td-center">
-												<!-- A13_4 -->
+												A13_4
 												<button id="btnSetErrorAlarmCd" tabindex="27" data-bind="click: openScreenB, enable: enableConfigErrCode">#{i18n.getText('KWR001_14')}</button>
 											</td>
 										</tr>
-									</table>
+									</table> -->
 								</div>
 							</div>
 						</td>
@@ -206,4 +210,4 @@
 		</ui:define>
 	</ui:composition>
 </body>
-</html>
+</html> 

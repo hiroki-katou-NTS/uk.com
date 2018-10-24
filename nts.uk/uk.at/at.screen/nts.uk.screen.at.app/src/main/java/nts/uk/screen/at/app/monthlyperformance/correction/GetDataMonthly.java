@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 
 public class GetDataMonthly {
@@ -38,7 +38,14 @@ public class GetDataMonthly {
 	public List<MonthlyModifyResult> call() {
 		if(sids.isEmpty()|| itemIds.isEmpty()) return new ArrayList<>();
 		List<MonthlyModifyResult> results  = monthlyModifyQueryProcessor.initScreen(new MonthlyMultiQuery(sids), itemIds, yearMonth, closureId, closureDate);
-		return results;
+		List<MonthlyModifyResult> resultsToClosureId = new ArrayList<>();
+		for(MonthlyModifyResult monthlyModifyResult : results) {
+			if(monthlyModifyResult.getClosureId() == closureId.value) {
+				resultsToClosureId.add(monthlyModifyResult);
+			}
+		}
+		
+		return resultsToClosureId;
 	}
 
 }

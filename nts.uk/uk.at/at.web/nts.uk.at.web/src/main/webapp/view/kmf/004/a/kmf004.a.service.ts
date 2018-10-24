@@ -10,19 +10,21 @@ module nts.uk.at.view.kmf004.a.service {
         getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
         getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
         findEmpByCodes: "bs/employee/employment/findByCodes",
-        findClsByCodes: "bs/employee/classification/getClsNameByCds"
+        findClsByCodes: "bs/employee/classification/getClsNameByCds",
+        findAllItemFrame: "shared/specialholiday/findAllItemFrame",
     }
+
+    export function findAllItemFrame(selectedCode): JQueryPromise<Array<any>> {
+        var path = paths.findAllItemFrame;
+        return nts.uk.request.ajax("at", path);
+    }
+    
  
     export function findByCid(): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.findByCid);
         return nts.uk.request.ajax("at", path);
     }
     
-    export function findByCid(): JQueryPromise<any> {
-        var path = nts.uk.text.format(paths.findByCid);
-        return nts.uk.request.ajax("at", path);
-    }
-
     export function getSpecialHoliday(specialHolidayCode: number): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.getSpecialHoliday, specialHolidayCode);
         return nts.uk.request.ajax("at", path);

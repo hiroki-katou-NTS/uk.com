@@ -9,59 +9,76 @@ module nts.uk.com.view.cmf002.t.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import error = nts.uk.ui.errors;
-    
+
     export class ScreenModel {
-        systemType: model.ItemModel;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-        checked: KnockoutObservable<boolean>;
-        newCondCode: KnockoutObservable<string>;
-        newCondName: KnockoutObservable<string>;
-        selectionType : string;
-        conditionCode: KnockoutObservable<string>;
-        conditionName: KnockoutObservable<string>;
-        targetType: string;
-        
+        sourceCode: KnockoutObservable<string> = ko.observable('');
+        sourceName: KnockoutObservable<string> = ko.observable('');
+        standardType: KnockoutObservable<string> = ko.observable('');
+        copySourceName: KnockoutObservable<string> = ko.observable('');
+        destinationCategory: KnockoutObservable<string> = ko.observable('');
+        conditionSetCd: KnockoutObservable<string> = ko.observable('');
+        conditionName: KnockoutObservable<string> = ko.observable('');
+        overWrite: KnockoutObservable<boolean> = ko.observable(false);
+        copyDestinationCode: KnockoutObservable<string> = ko.observable('');
+        destinationName: KnockoutObservable<string> = ko.observable('');
+        result: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
-            var self = this; 
-            self.required = ko.observable(true)
-            self.enable = ko.observable(true);
-            self.checked = ko.observable(true);
-            self.newCondCode = ko.observable('');
-            self.newCondName = ko.observable('');
-            let params = getShared('CMF001mParams'); 
-            self.selectionType = params.systemType;
-            self.conditionCode = ko.observable(params.conditionCode);
-            self.conditionName = ko.observable(params.conditionName);
+            let self = this;
+            self.initScreen();
         }
-         /**
-         * Close dialog.
-         */
+
+        public initScreen(): void {
+            block.invisible();
+            let self = this,
+                info = getShared("CMF002_T_PARAMS");
+            if (info) {
+                self.conditionSetCd(info.conditionSetCd);
+                self.conditionName(info.conditionName);
+            }
+            self.overWrite(false);
+            block.clear();
+        }
+
+        excuteCopy() {
+            error.clearAll();
+            $("#T3_2").trigger("validate");
+            $("#T3_3").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                let self = this;
+                let data = {
+                    conditionSetCd: self.conditionSetCd(),
+                    conditionName: self.conditionName(),
+                    overWrite: self.overWrite(),
+                    destinationName: self.destinationName(),
+                    copyDestinationCode: self.copyDestinationCode()
+                };
+                service.excuteCopy(data).done(function(res) {
+                    if (res) {
+                        let dataOut = {
+                            result: res.result,
+                            destinationName: res.destinationName,
+                            copyDestinationCode: res.destinationCode,
+                            overWrite: res.overWrite
+                        }
+                        setShared('CMF002_T_Output', dataOut);
+                    }
+
+                    nts.uk.ui.windows.close();
+                }).fail(function(res) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    block.clear();
+                });
+            }
+        }
+
+        /**
+        * Close dialog.
+        */
         cancelSetting(): void {
             nts.uk.ui.windows.close();
-        }
-        
-        //設定
-        saveData() {
-            var self = this;
-            $(".nts-editor").trigger("validate");
-//            if (!nts.uk.ui.errors.hasError()) {
-//                service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
-//                    if(result && !self.checked()){
-//                        nts.uk.ui.dialog.alertError({ messageId: "Msg_3", messageParams: [nts.uk.resource.getText("T3_2")] }).then(() => {
-//                            $("#T4").focus();  
-//                        });
-//                    } else {
-//                        setShared('CMF001mOutput', {
-//                            checked: self.checked(),
-//                            code: self.newCondCode(),
-//                            name: self.newCondName()
-//                        }, true);  
-//                        nts.uk.ui.windows.close();
-//                    }
-//                });
-//                
-//            }
         }
     }
 }

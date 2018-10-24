@@ -7,9 +7,12 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -27,7 +30,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 @Value
 public class LeaveEarlyDecisionClock {
+	//早退判断時刻
 	private  TimeWithDayAttr leaveEarlyDecisionClock;
+	//勤務No
 	private int workNo;
 	
 	
@@ -37,7 +42,7 @@ public class LeaveEarlyDecisionClock {
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting leaveEarlyGraceTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType) {
+			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType, List<TimeSheetOfDeductionItem> breakTimeList) {
 		
 		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
@@ -54,13 +59,17 @@ public class LeaveEarlyDecisionClock {
 				// 猶予時間帯の作成
 				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getEnd().backByMinutes(leaveEarlyGraceTime.getGraceTime().valueAsMinutes()),
 																	 calｃRange.get().getEnd());
+				// 重複している控除分をずらす(短時間・休憩)
+				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
+				breakTimeSheetList = breakTimeSheetList.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
+
 				
-				// 重複している控除分をずらす
-				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
-				for(TimeZoneRounding breakTime:breakTimeSheetList) {
-					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getStart(),breakTime.getEnd());
-					if(deductTime.contains(graceTimeSheet.getEnd())){
-						graceTimeSheet = new TimeSpanForCalc(breakTime.getStart(), graceTimeSheet.getEnd());
+				for(TimeSheetOfDeductionItem breakTime:breakTimeSheetList) {
+					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getTimeSheet().getStart(),breakTime.getTimeSheet().getEnd());
+					val dupRange = deductTime.getDuplicatedWith(graceTimeSheet);
+					if(dupRange.isPresent()) {
+						graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart().backByMinutes(breakTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
+															,graceTimeSheet.getEnd());
 					}
 				}
 				decisionClock = graceTimeSheet.getStart();
@@ -103,7 +112,6 @@ public class LeaveEarlyDecisionClock {
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
-//				if(leave.lessThanOrEqualTo(coreTimeSetting.get().getCoreTimeSheet().getStartTime())) {
 				val coreTime = coreTimeSetting.get().getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
 				if(leave.lessThanOrEqualTo(coreTime.getStartTime())) {
 					return Optional.of(new TimeSpanForCalc(coreTime.getStartTime(),coreTime.getEndTime()));

@@ -322,28 +322,40 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
 
         sendMail(msg, data) {
-            let self = this;
-                if (data.processDone) {
-                    nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
-                        if (data.autoSendMail) {
-                            appcommon.CommonProcess.displayMailResultKAF000(data);
-                        }
-                    });
-                    if(!nts.uk.util.isNullOrEmpty(data.reflectAppId)){//TH goi xu ly phan anh
-                        service.reflectAppSingle([data.reflectAppId]).done(function(){
-                            self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
-                                nts.uk.ui.block.clear();        
-                            });
-                        });
-                    }else{
-                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
-                                nts.uk.ui.block.clear();        
-                            });
+            let self = this,
+            vm: nts.uk.at.view.kaf011.b.viewmodel.ScreenModel = __viewContext['viewModel'];
+            if (data.processDone) {
+                nts.uk.ui.dialog.info({ messageId: msg }).then(function() {
+                    if (data.autoSendMail) {
+                        appcommon.CommonProcess.displayMailResultKAF000(data);
                     }
-                    
-                } else {
-                    nts.uk.ui.block.clear();
+                });
+                if(!nts.uk.util.isNullOrEmpty(data.reflectAppId)){//TH goi xu ly phan anh
+                    let lstIdRef = [data.reflectAppId];
+                    if(self.appType() == 10){//kaf011
+                        let absAppID = vm.absWk().appID();
+                        let recAppID = vm.recWk().appID();
+                        if(data.reflectAppId == absAppID && recAppID != null){
+                            lstIdRef.push(recAppID);
+                        }
+                        if(data.reflectAppId == recAppID && absAppID != null){
+                            lstIdRef.push(absAppID);
+                        }
+                    }
+                    service.reflectAppSingle(lstIdRef).done(function(){
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear();        
+                        });
+                    });
+                }else{
+                    self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
+                            nts.uk.ui.block.clear();        
+                        });
                 }
+                
+            } else {
+                nts.uk.ui.block.clear();
+            }
             
         }
 
@@ -451,9 +463,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
                             //kiểm tra list người xác nhận, nếu khác null thì show info 392
                             if (data.autoSendMail) {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: data.autoSuccessMail }).then(() => {
-                                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                                });
+                                appcommon.CommonProcess.displayMailDeleteRs(data);
                             } else {
                                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
                             }

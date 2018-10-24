@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absenceleave.AbsenceLeaveReflectService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -42,6 +43,8 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	private EditStateOfDailyPerformanceRepository editDailyPerforRespository;
 	@Inject
 	private WorkInformationRepository workInforRepository;
+	@Inject
+	private AbsenceLeaveReflectService absService;
 	@Override
 	public WorkInfoOfDailyPerformance reflectScheStartEndTime(OvertimeParameter para,
 			WorkTimeTypeOutput timeTypeData, WorkInfoOfDailyPerformance dailyInfor) {
@@ -335,6 +338,20 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			}
 		}
 		
+		return false;
+	}
+
+	@Override
+	public boolean checkRecordStartEndTimereflect(String employeeId, GeneralDate datadata, Integer frameNo,
+			String workTypeCode, OverTimeRecordAtr overTimeAtr, boolean isPre) {
+		if((overTimeAtr == OverTimeRecordAtr.REGULAROVERTIME && isPre)
+				|| overTimeAtr == OverTimeRecordAtr.PREOVERTIME && !isPre) {
+			return false;
+		}
+		//打刻自動セット区分を取得する
+		if(workTypeService.checkStampAutoSet(workTypeCode, AttendanceOfficeAtr.ATTENDANCE)) {
+			return absService.checkReflectRecordStartEndTime(employeeId, datadata, frameNo, isPre);
+		}
 		return false;
 	}
 

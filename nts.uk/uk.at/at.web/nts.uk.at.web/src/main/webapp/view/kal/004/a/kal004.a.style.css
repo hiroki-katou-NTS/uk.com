@@ -1,9 +1,9 @@
 #left-content {
 	padding: 27px 0px 0px 7px;
 	float: left;
-	width: 250px;
+	width: 260px;
     height: 410px;
-    margin-top: 40px;
+    margin-top: 12px;
 	border-radius: 7px;
     box-sizing: border-box;
 }
@@ -28,7 +28,7 @@
 }
 #selected-text{
 	float: right;
-    margin-right: 0px;
+    margin-right: 20px;
     border-bottom: 1px solid;
     width: 380px;
     padding-bottom: 3px;
@@ -45,4 +45,17 @@
 #tab-panel{
 	 width: 921px;
 	
+}
+
+ #swap-list-grid1_horizontalScrollContainer {
+	overflow: hidden !important; 
+}
+
+#swap-list-grid1_displayContainer {
+	min-height: 210.6px !important;
+	
+} 
+
+#swap-list-grid1_scrollContainer {
+	min-height: 212.6px !important;
 }

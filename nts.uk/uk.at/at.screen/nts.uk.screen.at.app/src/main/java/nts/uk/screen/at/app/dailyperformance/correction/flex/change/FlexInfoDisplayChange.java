@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
@@ -61,8 +62,14 @@ public class FlexInfoDisplayChange {
 	// <<Public>> フレックス情報を表示する
 	public FlexShortageDto flexInfo(String companyId, String employeeId, GeneralDate baseDate, String roleId,
 			Optional<PresentClosingPeriodExport> closingPeriod, List<MonthlyModifyResult> results) {
-		CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId,
-				closingPeriod.get().getClosureEndDate());
+		return flexInfo(companyId, employeeId, baseDate, roleId, closingPeriod, results, Optional.empty());
+	}
+	
+	// <<Public>> フレックス情報を表示する
+	public FlexShortageDto flexInfo(String companyId, String employeeId, GeneralDate baseDate, String roleId,
+			Optional<PresentClosingPeriodExport> closingPeriod, List<MonthlyModifyResult> results, 
+			Optional<ClosureEmployment> closureEmployment) {
+		CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId, closingPeriod.get().getClosureEndDate());
 		// 取得しているドメインモデル「日別実績の修正の機能．フレックス勤務者のフレックス不足情報を表示する」をチェックする
 		Optional<DaiPerformanceFun> daiFunOpt = findData.getDailyPerformFun(companyId);
 		if (!daiFunOpt.isPresent() || daiFunOpt.get().getFlexDispAtr() == 0) {
@@ -70,12 +77,10 @@ public class FlexInfoDisplayChange {
 		}
 		// 対応するドメインモデル「月別実績の勤怠時間」を取得する
 		FlexShortageDto dataMonth = new FlexShortageDto();
-		List<WorkingConditionItem> workConditions = new ArrayList<>();
 
 		List<WorkingConditionItem> workingConditionItems = workingConditionItemRepository.getBySidAndPeriodOrderByStrD(
-				employeeId,
-				new DatePeriod(closingPeriod.get().getClosureStartDate(), closingPeriod.get().getClosureEndDate()));
-		workConditions = workingConditionItems.stream()
+				employeeId, new DatePeriod(closingPeriod.get().getClosureStartDate(), closingPeriod.get().getClosureEndDate()));
+		List<WorkingConditionItem> workConditions = workingConditionItems.stream()
 				.filter(x -> x.getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)).collect(Collectors.toList());
 		if (workConditions.isEmpty())
 			return new FlexShortageDto().createShowFlex(false);
@@ -87,23 +92,22 @@ public class FlexInfoDisplayChange {
 		}
 
 		// 社員のフレックス繰越上限時間を求める
-//		String hist = dailyPerformanceScreenRepo.findWorkConditionLastest(
-//				workConditions.stream().map(x -> x.getHistoryId()).collect(Collectors.toList()), employeeId);
-//		Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist))
-//				.findFirst();
+//			String hist = dailyPerformanceScreenRepo.findWorkConditionLastest(
+//					workConditions.stream().map(x -> x.getHistoryId()).collect(Collectors.toList()), employeeId);
+//			Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist))
+//					.findFirst();
 		calcFlex.createWCItem(workConditions);
-		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex);
+		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex, closureEmployment, closingPeriod);
 		dataMonth.createRedConditionMessage(condition);
 		dataMonth.createNotForward("");
-		if (!condition.equals("0:00")) {
-			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
-		}
 
 		// TODO フレックス不足の相殺が実施できるかチェックする
 		CheckShortage checkShortage = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
-		boolean checkFlex = checkShortage.isCheckShortage();
+		boolean checkFlex = checkShortage.isCheckShortage() && employeeId.equals(AppContexts.user().employeeId());
 		//checkShortage.createRetiredFlag(checkShortage.isRetiredFlag());
-		
+		if (condition.equals("0:00") && !checkFlex) {
+			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
+		}
 		return dataMonth.createCanFlex(checkFlex).createShowFlex(showFlex()).createCalcFlex(calcFlex);
 	}
 

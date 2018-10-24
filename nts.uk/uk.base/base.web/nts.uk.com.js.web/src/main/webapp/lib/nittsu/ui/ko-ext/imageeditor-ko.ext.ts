@@ -21,8 +21,9 @@ module nts.uk.ui.koExtentions {
             let extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
             let msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
             let croppable = false;
+			let maxSize = nts.uk.util.isNullOrUndefined(data.maxSize) ? undefined : ko.unwrap(data.maxSize);
             
-            let helper: ImageEditorHelper = new ImageEditorHelper(extension, msgIdForUnknownFile);
+            let helper: ImageEditorHelper = new ImageEditorHelper(extension, msgIdForUnknownFile, undefined, maxSize);
 
             let $container = $("<div>", { 'class': 'image-editor-container' }),
                 $element = $(element).append($container);
@@ -45,6 +46,7 @@ module nts.uk.ui.koExtentions {
             } 
 
             constructSite.buildActionArea();
+            constructSite.$imageInfomation.width(width - 110);
 
             constructSite.buildUploadAction();
 
@@ -89,6 +91,7 @@ module nts.uk.ui.koExtentions {
         $root: JQuery;
         $previewArea: JQuery;
         $imagePreview: JQuery;
+        $imageInfomation: JQuery;
         $imageSizeLbl: JQuery;
         $imageNameLbl: JQuery;
         $inputFile: JQuery;
@@ -97,7 +100,6 @@ module nts.uk.ui.koExtentions {
 
         helper: ImageEditorHelper;
         cropper: Cropper;
-
         constructor($root: JQuery, helper: ImageEditorHelper) {
             this.$root = $root;
             this.helper = helper;
@@ -132,19 +134,23 @@ module nts.uk.ui.koExtentions {
         }
 
         buildActionArea() {
-            this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
+            let self = this;
+            self.$uploadBtn = $("<button>", { "class": "upload-btn" })
+                .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+            
+            self.$imageInfomation = $("<div>", { "class": "image-editor-component inline-container" });
+            self.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label limited-label" })
+                .appendTo(self.$imageInfomation);
+            self.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
+                .appendTo(self.$imageInfomation);
+            
+            self.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": self.helper.toStringExtension() })
                 .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
-            this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
-                .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-            this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
-                .appendTo(this.$imageNameLbl.parent());
-            this.$uploadBtn = $("<button>", { "class": "upload-btn" })
-                .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-
-            let $uploadArea = this.$root.find(".image-upload-container");
-            $uploadArea.append(this.$uploadBtn.parent());
-            $uploadArea.append(this.$imageNameLbl.parent());
-            $uploadArea.append(this.$inputFile.parent());
+            
+            let $uploadArea = self.$root.find(".image-upload-container");
+            $uploadArea.append(self.$uploadBtn.parent());
+            $uploadArea.append(self.$imageInfomation);
+            $uploadArea.append(self.$inputFile.parent());
         }
 
         buildImagePreviewArea() {
@@ -186,7 +192,8 @@ module nts.uk.ui.koExtentions {
 
         buildImageLoadedHandler(zoomble: boolean, customOption: any) {
             let self = this;
-            self.$root.data("img-status", self.buildImgStatus("not init", 0));
+            //self.$root.data("img-status", self.buildImgStatus("not init", 0));
+            self.changeStatus(ImageStatus.NOT_INIT);
             self.$imagePreview.on('load', function() {
                 var image = new Image();
                 image.src = self.$imagePreview.attr("src");
@@ -214,7 +221,8 @@ module nts.uk.ui.koExtentions {
                     jQuery.extend(option, customOption);
                     self.cropper = new Cropper(self.$imagePreview[0], option);
                     self.$root.data("cropper", self.cropper);
-                    self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                    //self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                    self.changeStatus(ImageStatus.LOADED);
                     let evtData = {
                         size: self.$root.data("size"), 
                         height: this.height, 
@@ -225,22 +233,41 @@ module nts.uk.ui.koExtentions {
                     self.$root.trigger("imgloaded", evtData);
                 };
             }).on("error", function(){
-                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                self.changeStatus(ImageStatus.FAIL);
             });
         }
         
-        buildImgStatus(status: string, statusCode: number){
-            return {
-                imgOnView: statusCode === 4 ? true : false,
-                imgStatus: status,
-                imgStatusCode: statusCode    
-            };
+        changeStatus(status: ImageStatus) {
+            let self = this;
+            let dataStatus = self.$root.data("img-status");
+            let imgOnView = false;
+            if (dataStatus) {
+                imgOnView = dataStatus.imgOnView;    
+            }  
+            
+            if (status == ImageStatus.LOADED) {
+                imgOnView = true;    
+            }
+            self.$root.data("img-status", {
+                imgOnView : imgOnView,
+                status : status 
+            });
         }
+        
+//        buildImgStatus(status: string, statusCode: number, imgOnView: boolean){
+//            return {
+//                imgOnView: imgOnView,
+//                imgStatus: status,
+//                imgStatusCode: statusCode    
+//            };
+//        }
 
         buildSrcChangeHandler() {
             let self = this;
             self.$root.bind("srcchanging", function(evt, query?: SrcChangeQuery) {
-                self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
+                self.changeStatus(ImageStatus.lOADING);
                 let target = self.helper.getUrl(query);
                 var xhr = self.getXRequest();
                 if(xhr === null){
@@ -279,7 +306,8 @@ module nts.uk.ui.koExtentions {
         destroyImg(query?: SrcChangeQuery){
             let self = this;
             nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function(){
-                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                self.changeStatus(ImageStatus.FAIL);
                 self.backupData(null, "", "", 0);
                 self.$imagePreview.attr("src", "");
                 self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
@@ -300,24 +328,50 @@ module nts.uk.ui.koExtentions {
         buildFileChangeHandler() {
             let self = this;
             self.$inputFile.change(function() {
-                self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                //self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                self.changeStatus(ImageStatus.lOADING);
+                
                 if (nts.uk.util.isNullOrEmpty(this.files)) {
-                    self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                    self.changeStatus(ImageStatus.FAIL);
+                    return;
+                }
+                
+                let firstImageFile = self.helper.getFirstFile(this.files);
+                
+                if (!self.validateFile(firstImageFile)) {
+                    // remove file
+                    $(this).val('');    
+                    self.changeStatus(ImageStatus.FAIL);
                     return;
                 }
                     
-                self.validateFile(this.files);
+                self.assignImageToView(firstImageFile);
+                
             });
         }
-                
-        validateFile(files: File[]){
+        
+        validateFile(firstImageFile: File): boolean {
             let self = this;
-            let firstImageFile = self.helper.getFirstFile(files);
-            if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                self.assignImageToView(firstImageFile);
-            } else {
-                nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });    
-            }    
+
+            if (nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), 
+                                                messageParams: [self.helper.toStringExtension()] });
+                return false;
+            }
+
+            let MAX_SIZE = self.helper.maxSize;
+
+            // if MAX_SIZE == undefined => do not check size
+            if (!MAX_SIZE) {
+                return true;
+            }
+
+            if (firstImageFile.size > MAX_SIZE * 1048576) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
+                return false;
+            }
+
+            return true;
         }
 
         assignImageToView(file) {
@@ -351,8 +405,9 @@ module nts.uk.ui.koExtentions {
         BYTE_SIZE: number = 1024;
         SIZE_UNITS: Array<string> = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
         msgIdForUnknownFile: string;
+		maxSize : number;
 
-        constructor(extensions?: Array<string>, msgIdForUnknownFile?: string, query?: SrcChangeQuery) {
+        constructor(extensions?: Array<string>, msgIdForUnknownFile?: string, query?: SrcChangeQuery, maxSize: number) {
             let self = this;
             self.data = query;
             self.msgIdForUnknownFile = msgIdForUnknownFile;
@@ -363,6 +418,7 @@ module nts.uk.ui.koExtentions {
                     self.IMAGE_EXTENSION.push(ex.toUpperCase());
                 });
             }
+			self.maxSize = maxSize;
         }
 
         toStringExtension() {
@@ -426,6 +482,13 @@ module nts.uk.ui.koExtentions {
         private isOutSiteUrl(url: string): boolean {
             return url.indexOf(nts.uk.request.location.siteRoot.rawUrl) < 0;
         }
+    }
+
+    enum ImageStatus {
+        NOT_INIT,
+        lOADING,
+        FAIL,
+        LOADED,
     }
 
     interface SrcChangeQuery {

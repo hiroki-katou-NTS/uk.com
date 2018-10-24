@@ -30,12 +30,12 @@ public class Kal003bWebService extends WebService{
 	public List<EnumConstant> getEnumSingleValueCompareType(){
 
 	    return EnumAdaptor.convertToValueNameList(SingleValueCompareType.class, 
-	            SingleValueCompareType.EQUAL,
 	            SingleValueCompareType.NOT_EQUAL,
-	            SingleValueCompareType.GREATER_THAN,
+	            SingleValueCompareType.EQUAL,
+	            SingleValueCompareType.LESS_OR_EQUAL,
 	            SingleValueCompareType.GREATER_OR_EQUAL,
 	            SingleValueCompareType.LESS_THAN,
-	            SingleValueCompareType.LESS_OR_EQUAL);
+	            SingleValueCompareType.GREATER_THAN);
 	} 
 	
 	@POST
@@ -73,17 +73,21 @@ public class Kal003bWebService extends WebService{
 
         return EnumAdaptor.convertToValueNameList(TypeCheckWorkRecordMultipleMonth.class, 
         		TypeCheckWorkRecordMultipleMonth.TIME,
-        		TypeCheckWorkRecordMultipleMonth.TIMES,
+        		TypeCheckWorkRecordMultipleMonth.DAYS,
         		TypeCheckWorkRecordMultipleMonth.AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.TIMES,
         		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME,
-        		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_DAYS,
         		TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES,
         		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME,
-        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS,
         		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT, 
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES,
         		TypeCheckWorkRecordMultipleMonth.NUMBER_TIME,
-        		TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES,
-        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT);
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES);
 
     }
 	

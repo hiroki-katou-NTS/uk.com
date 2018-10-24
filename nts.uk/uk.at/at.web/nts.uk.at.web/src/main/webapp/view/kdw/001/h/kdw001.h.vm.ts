@@ -41,8 +41,7 @@ module nts.uk.at.view.kdw001.h {
                     }else{
                         self.processingMonthEnable= true;
                     }
-                    
-                    if(nts.uk.util.isNullOrUndefined(param.objectPeriod.startDate)){
+                    if(nts.uk.util.isNullOrUndefined(param.objectPeriod.startDate) || param.executionContent == 3){
                         self.feriodEnable = false;
                     }else{
                         self.feriodEnable = true;
@@ -77,7 +76,6 @@ module nts.uk.at.view.kdw001.h {
                     self.listTargetPerson = ko.observableArray([]);
                     
 
-
                 }
                 //list
                 self.currentSelectedRow = ko.observable(null);
@@ -101,7 +99,6 @@ module nts.uk.at.view.kdw001.h {
                 let dfdGetAllErrMessageInfoByEmpID = self.getAllErrMessageInfoByEmpID(self.empCalAndSumExecLogID);
                 $.when(dfdGetAllErrMessageInfoByEmpID)
                     .done((dfdGetAllErrMessageInfoByEmpIDData) => {
-
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -163,6 +160,7 @@ module nts.uk.at.view.kdw001.h {
                             });
                         }); 
                     self.listErrMessageInfo.valueHasMutated();
+                    self.listErrMessageInfo(_.orderBy(self.listErrMessageInfo(), ["personCode", "disposalDay"], ["asc", "asc"]));
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();

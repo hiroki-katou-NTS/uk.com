@@ -193,7 +193,7 @@ module nts.uk.at.view.kbt002.c {
                 var listSize = self.curExecSetting().repeatMonthDateList().length;
                 _.each(self.curExecSetting().repeatMonthDateList(), (value, index) => {
                     if (value == 32) {
-                        monthDaysText += '最終日';
+                        monthDaysText += '最終';
                     } else {
                         monthDaysText += value;
                     }
@@ -434,10 +434,10 @@ module nts.uk.at.view.kbt002.c {
                     self.repeatMonthDateList([]);
                 }
             //fixed release 14/6
-            self.endTimeCls(0);
-            self.endDateCls(0);
-            self.oneDayRepInterval(0);
-            self.oneDayRepCls(0);
+//            self.endTimeCls(0);
+//            self.endDateCls(0);
+//            self.oneDayRepInterval(0);
+//            self.oneDayRepCls(0);
             }
         }
         export class ItemModel {

@@ -1,3 +1,15 @@
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
+
 module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
@@ -37,7 +49,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
             roleType: 8,
             multiple: false,
             isResize: true,
-            rows: 5
+            rows: 5,
+            tabindex:4
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         ctgColumns: KnockoutObservableArray<any> = ko.observableArray([
@@ -576,10 +589,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
                                         optionsValue:'code',
                                         optionsText: 'name',
                                         value: {0},
-                                        enable: {1} }"></div>
+                                        enable: {1} }" tabindex={2}></div>
                                 <span id='selected_all_caret' class='caret-bottom outline'></span>`,
-                selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', '!!allowOtherRef'),
-                selfSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef');
+                selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', '!!allowOtherRef','22'),
+                selfSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef', '23');
             
 
             let array2E = [{
@@ -706,6 +719,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         }
                     });
                 });
+                 $("#item_role_table_body_isChecked > span > div > label > span").attr("tabindex", 21);
 
             });
 

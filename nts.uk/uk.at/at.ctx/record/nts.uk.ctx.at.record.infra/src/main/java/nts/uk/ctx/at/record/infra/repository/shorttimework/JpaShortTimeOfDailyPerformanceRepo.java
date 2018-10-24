@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.shorttimework;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -26,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements ShortTimeOfDailyPerformanceRepository {
 
@@ -65,8 +70,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 					.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
 			List<KrcdtDaiShortWorkTime> krcdtShortTimes = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
 			List<KrcdtDaiShortWorkTime> toRemove = krcdtShortTimes.stream()
-					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo
-																&& tu.childCareAtr == c.childCareAtr)
+					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo)
 										.findFirst().isPresent())
 					.collect(Collectors.toList());
 			
@@ -128,11 +132,21 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		return result;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_SHORTTIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override

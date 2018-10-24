@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
-import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
-public class AnyItemTime extends TimeAsMinutesPrimitiveValue<AnyItemTime>{
+@TimeRange(min = "-99:59", max = "99:59")
+public class AnyItemTime extends TimeDurationPrimitiveValue<AnyItemTime>{
 
 	private static final long serialVersionUID = 1L;
 	

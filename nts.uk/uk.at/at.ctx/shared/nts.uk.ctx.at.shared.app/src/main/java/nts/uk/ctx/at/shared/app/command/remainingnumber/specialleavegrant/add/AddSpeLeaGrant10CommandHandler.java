@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -52,7 +50,8 @@ public class AddSpeLeaGrant10CommandHandler
 				command.getNumberDaysOver(),
 				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
 				command.getNumberDayRemain(),
-				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null);
+				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
+				command.grantDateItemName, command.deadlineDateItemName);
 
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
 	}

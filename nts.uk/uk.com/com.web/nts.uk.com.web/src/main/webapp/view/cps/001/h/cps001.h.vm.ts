@@ -267,6 +267,7 @@ module cps001.h.vm {
                     service.create(employeeId, grantDate, deadline, item.expirationStatus(),
                         item.grantDays(), item.useDays(), item.overLimitDays(), item.remainingDays()).done((result: Array<IResvLeaGrantRemNum>) => {
                             service.getAll(self.sid(), self.ckbAll()).done((data: Array<IResvLeaGrantRemNum>) => {
+                                self.isCreate(false);
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     if (data && data.length > 0) {
                                         self.items(data);
@@ -290,7 +291,8 @@ module cps001.h.vm {
                                 unblock();
                             });
 
-                        }).fail((mes) => {
+                        }).fail((mes) => { 
+                            nts.uk.ui.dialog.alertError({ messageId: mes.messageId });
                             unblock();
                         });
                 } else {
@@ -314,6 +316,7 @@ module cps001.h.vm {
                             });
 
                         }).fail((mes) => {
+                            nts.uk.ui.dialog.alertError({ messageId: mes.messageId });
                             unblock();
                         });
                 }

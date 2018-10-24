@@ -11,11 +11,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopyCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemDetail;
@@ -48,23 +51,32 @@ public class InitValueSetItemFinder {
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002 , boolean getCombobox) {
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+		
+		String cid = AppContexts.user().companyId();
 
 		String categoryCd = command.getCategoryCd();
 
 		GeneralDate baseDate = command.getBaseDate();
 
 		String employeeId = AppContexts.user().employeeId();
+		
+		PersonInfoCategory ctg = getCategory(categoryCd, cid);
 
-		List<PerInfoInitValueSetItemDetail> itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(),
-				categoryCd);
+		List<PerInfoInitValueSetItemDetail> itemList = new ArrayList<>();
+		if (getCombobox) {
+			itemList = this.settingItemRepo.getAllInitItemForComboBox(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		} else {
+			itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		}
+		
 
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
 		// set item SAMEASLOGIN
 
-		setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId);
+		setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId, isRegisFrLayoutCPS002);
 
 		// set item
 
@@ -76,7 +88,7 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASSYSTEMDATE, GeneralDate.today());
 
-		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId);
+		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId, isRegisFrLayoutCPS002);
 
 		if (isScreenC) {
 			// Get perInfoCategory
@@ -91,7 +103,7 @@ public class InitValueSetItemFinder {
 			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
 			for (SettingItemDto settingItemDto : result) {
 				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
-					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					comboBoxStandardDate = settingItemDto.getSaveData().getValue().toString().isEmpty()? comboBoxStandardDate :(GeneralDate) settingItemDto.getSaveData().getValue();
 					break;
 				}
 			}
@@ -124,12 +136,12 @@ public class InitValueSetItemFinder {
 	}
 
 	private boolean setItemSameLogin(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
-			String categoryCd, GeneralDate baseDate, String employeeId) {
+			String categoryCd, GeneralDate baseDate, String employeeId , boolean isRegisFrLayoutCPS002) {
 		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
 			if (categoryCd.charAt(1) == 'S') {
 
-				return setSystemCtgData(itemList, result, categoryCd, baseDate, employeeId);
+				return setSystemCtgData(itemList, result, categoryCd, baseDate, employeeId, isRegisFrLayoutCPS002);
 
 			}
 
@@ -200,7 +212,7 @@ public class InitValueSetItemFinder {
 	}
 
 	private boolean setSystemCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
-			String categoryCd, GeneralDate baseDate, String employeeId) {
+			String categoryCd, GeneralDate baseDate, String employeeId, boolean isRegisFrLayoutCPS002) {
 		PeregQuery query = PeregQuery.createQueryLayout(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
@@ -215,9 +227,18 @@ public class InitValueSetItemFinder {
 									.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
 							if (itemDtoOpt.isPresent()) {
 								Object value = dataMap.get(itemDtoOpt.get().getItemCode());
-								if (value != null) {
-									itemDtoOpt.get().setData(value);
+								if(isRegisFrLayoutCPS002) {
+									if (value == null) {
+										result.remove(itemDtoOpt.get());
+									}else {
+										itemDtoOpt.get().setData(value);
+									}
+								}else {
+									if (value != null) {
+										itemDtoOpt.get().setData(value);
+									}
 								}
+								
 							}
 						});
 
@@ -253,5 +274,17 @@ public class InitValueSetItemFinder {
 	}
 
 	// sonnlb
+	
+	private PersonInfoCategory getCategory(String categoryCd, String companyId) {
+		// Get perInfoCategory
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(categoryCd,
+				companyId);
+		
+		if (!perInfoCategory.isPresent()) {
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
+		
+		return perInfoCategory.get();
+	}
 
 }

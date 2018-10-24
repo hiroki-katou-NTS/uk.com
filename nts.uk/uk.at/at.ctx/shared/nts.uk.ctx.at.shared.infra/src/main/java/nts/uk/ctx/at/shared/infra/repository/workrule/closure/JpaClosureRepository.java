@@ -17,7 +17,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -214,28 +217,29 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 		// select root
 		cq.select(root);
-
+		
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal company id
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
 
 		// in closure id
-		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId).in(closureIds));
+		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)
+				.in(closureIds));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by closure id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
 
-		// create query
-		TypedQuery<KclmtClosure> query = em.createQuery(cq);
+		List<KclmtClosure> resultList = em.createQuery(cq).getResultList();
 
 		// exclude select
-		return query.getResultList().stream()
+		return resultList.stream()
 				.map(entity -> this.toDomain(entity,
 						this.findHistoryByClosureId(companyId, entity.getKclmtClosurePK().getClosureId())))
 				.collect(Collectors.toList());
@@ -364,42 +368,26 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 *            the closure id
 	 * @return the list
 	 */
+	@SneakyThrows
 	private List<KclmtClosureHist> findHistoryByClosureId(String companyId, int closureId) {
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KCLMT_CLOSURE_HIST (KclmtClosureHist SQL)
-		CriteriaQuery<KclmtClosureHist> cq = criteriaBuilder.createQuery(KclmtClosureHist.class);
-
-		// root data
-		Root<KclmtClosureHist> root = cq.from(KclmtClosureHist.class);
-
-		// select root
-		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal company id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid), companyId));
-
-		// equal closure id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId), closureId));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// order by end date
-		cq.orderBy(criteriaBuilder.desc(root.get(KclmtClosureHist_.endYM)));
-
-		// create query
-		TypedQuery<KclmtClosureHist> query = em.createQuery(cq);
-
-		// exclude select
-		return query.getResultList();
+		
+		try (val statement = this.connection().prepareStatement(
+				"select * from KCLMT_CLOSURE_HIST where CID = ? and CLOSURE_ID = ?")) {
+			statement.setString(1, companyId);
+			statement.setInt(2, closureId);
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				KclmtClosureHist entity = new KclmtClosureHist();
+				entity.setKclmtClosureHistPK(new KclmtClosureHistPK(
+						rec.getString("CID"),
+						rec.getInt("CLOSURE_ID"),
+						rec.getInt("STR_YM")));
+				entity.setName(rec.getString("CLOSURE_NAME"));
+				entity.setEndYM(rec.getInt("END_YM"));
+				entity.setCloseDay(rec.getInt("CLOSURE_DAY"));
+				entity.setIsLastDay(rec.getInt("IS_LAST_DAY"));
+				return entity;
+			});
+		}
 	}
 
 	/*
@@ -826,10 +814,9 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		
-		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid)
-				.in(companyId));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid),companyId));
 		
-		lstpredicateWhere.add(root.get(KclmtClosure_.useClass).in(UseClassification.UseClass_Use.value));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosure_.useClass),UseClassification.UseClass_Use.value));
 		
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

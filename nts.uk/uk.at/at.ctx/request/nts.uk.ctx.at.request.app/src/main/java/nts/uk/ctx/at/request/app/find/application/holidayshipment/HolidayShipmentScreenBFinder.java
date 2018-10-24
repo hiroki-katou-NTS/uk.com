@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -34,7 +35,11 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class HolidayShipmentScreenBFinder {
@@ -60,6 +65,8 @@ public class HolidayShipmentScreenBFinder {
 	private EmployeeRequestAdapter empAdaptor;
 	@Inject
 	private RequestSettingRepository reqSetRepo;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -89,7 +96,7 @@ public class HolidayShipmentScreenBFinder {
 		if (appOutputOpt.isPresent()) {
 			Application_New appOutput = appOutputOpt.get();
 
-			setEmployeeDisplayText(employeeID, appOutput, screenInfo);
+			setEmployeeDisplayText(appOutput, screenInfo);
 
 			screenInfo.setApplication(ApplicationDto_New.fromDomain(appOutput));
 
@@ -140,7 +147,9 @@ public class HolidayShipmentScreenBFinder {
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
-
+				//[No.506]振休残数を取得する
+				double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
+				screenInfo.setAbsRecMng(absRecMng);
 			}
 		}
 
@@ -148,19 +157,17 @@ public class HolidayShipmentScreenBFinder {
 
 	}
 
-	private void setEmployeeDisplayText(String employeeID, Application_New appOutput, HolidayShipmentDto screenInfo) {
-		String resultName = "", appEmployeeID = appOutput.getEnteredPersonID(), loginEmployeeID = employeeID;
+	private void setEmployeeDisplayText(Application_New appOutput, HolidayShipmentDto screenInfo) {
+		String resultName = "", enterEmployeeID = appOutput.getEnteredPersonID(), targetEmployeeID = appOutput.getEmployeeID();
 
-		boolean isSameLogin = loginEmployeeID.equals(appEmployeeID);
+		boolean isSameLogin = targetEmployeeID.equals(enterEmployeeID);
 		if (isSameLogin) {
-
-			resultName = empAdaptor.getEmployeeName(employeeID);
-
+			resultName = empAdaptor.getEmployeeName(enterEmployeeID);
 		} else {
 
-			String appEmployeeName = empAdaptor.getEmployeeName(appEmployeeID);
-			String loginEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(loginEmployeeID) + ")";
-			resultName = appEmployeeName + loginEmployeeName;
+			String targetEmployeeName = empAdaptor.getEmployeeName(targetEmployeeID);
+			String enterEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(enterEmployeeID) + ")";
+			resultName = targetEmployeeName + enterEmployeeName;
 
 		}
 		screenInfo.setEmployeeName(resultName);

@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.shr.com.time.TimeWithDayAttr
-				nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime
+				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 			</com:ValidatorScript>
 
 			<!-- COMPONENT CCG001 -->
@@ -43,7 +43,7 @@
 				<div id="functions-area">
 					<button id="saveData" tabindex="1" class="proceed"
 						data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_1')}</button>
-					<button tabindex="2" class="done" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_2')}</button>
+					<!-- <button tabindex="2" class="done" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_2')}</button>
 					<button tabindex="3" class="create" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_3')}</button>
 					<button tabindex="7" class="check" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_4')}</button>
 					<button tabindex="10" class="confirm"
@@ -51,10 +51,10 @@
 					<button tabindex="11" class="release">#{i18n.getText('KSU001_6')}</button>
 					<button tabindex="12" class="output">#{i18n.getText('KSU001_7')}</button>
 					<button tabindex="13" class="hope">#{i18n.getText('KSU001_8')}</button>
-					<!-- <button tabindex="14" class="vacation" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_9')}</button> -->
+					<button tabindex="14" class="vacation" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_9')}</button> -->
 					<button tabindex="20" class="revision"
                         data-bind="click: openCDL027, enable: hasEmployee">#{i18n.getText('KSU001_10')}</button>
-					<button tabindex="21" class="setting">#{i18n.getText('KSU001_11')}</button>
+					<!-- <button tabindex="21" class="setting">#{i18n.getText('KSU001_11')}</button> -->
 				</div>
 
 				<div id="popup-area2" class="popup-area popup-panel">
@@ -181,7 +181,7 @@
 									value: selectedTypeHeightExTable,
 									enable: true}"></div>
 							<input id="input-heightExtable"
-								data-bind="ntsTextEditor: {value: ko.observable(''), enable: isEnableInputHeight, required: isEnableInputHeight }" />
+								data-bind="ntsNumberEditor: {value: ko.observable(''), constraint: 'ItemGridHeight', enable: isEnableInputHeight, required: isEnableInputHeight, name: '#[KSU001_91]' }" />
 						</div>
 					</div>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_92')}</div>
@@ -300,14 +300,14 @@
 								<div class="square bg-daily-reflect-application"></div>
 								<span>#{i18n.getText('KSU001_313')}</span>
 							</div>
-							<div class="popup-div">
+							<!-- <div class="popup-div">
 								<div class="square bg-schedule-fixed"></div>
 								<span>#{i18n.getText('KSU001_5')}</span>
 							</div>
 							<div class="popup-div">
 								<div class="square bg-schedule-support"></div>
 								<span>#{i18n.getText('KSU001_314')}</span>
-							</div>
+							</div> -->
 						</div>
 					</div>
 
@@ -324,7 +324,7 @@
 						</div>
 						<div class="popup-div">
 							<div id="color-9" class="square"></div>
-							<span>#{i18n.getText('KSU001_317')}</span>
+							<span>#{i18n.getText('KSU001_349')}</span>
 						</div>
 					</div>
 
@@ -340,20 +340,24 @@
 								<div class="square bg-schedule-sunday"></div>
 								<span>#{i18n.getText('KSU001_319')}</span>
 							</div>
-						</div>
-						<div class="div-popup">
 							<div class="popup-div">
 								<div class="square bg-schedule-that-day"></div>
 								<span>#{i18n.getText('KSU001_320')}</span>
 							</div>
+						</div>
+						<!-- <div class="div-popup">
 							<div class="popup-div">
+								<div class="square bg-schedule-that-day"></div>
+								<span>#{i18n.getText('KSU001_320')}</span>
+							</div>
+							 <div class="popup-div">
 								<div class="square bg-schedule-specific-date"></div>
 								<span>#{i18n.getText('KSU001_321')}</span>
-							</div>
-						</div>
+							</div> 
+						</div> -->
 					</div>
 
-					<span>#{i18n.getText('KSU001_309')}</span>
+					<!-- <span>#{i18n.getText('KSU001_309')}</span>
 					<hr />
 					<div class="ml-2">
 						<div>
@@ -376,7 +380,7 @@
 								<span>#{i18n.getText('KSU001_314')}</span>
 							</div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 
 				<div id="ccgcomponent_contents">
@@ -391,21 +395,21 @@
 							</div>
 							<div id="top-area-right">
 								<button tabindex="-1" id="prevMonth" class="size-image-button1"
-									data-bind="click: backMonth"></button>
+									data-bind="click: backMonth, timeClick: -1"></button>
 								<span id="date-time-prev" data-bind="text: dateTimePrev"></span><span
 									id="special">#{i18n.getText('KSU001_66')}</span> <span
 									id="date-time-after" data-bind="text: dateTimeAfter"></span>
 								<button tabindex="-1" id="nextMonth" class="size-image-button1"
-									data-bind="click: nextMonth"></button>
+									data-bind="click: nextMonth, timeClick: -1"></button>
 
-								<label class="ml-2">#{i18n.getText('KSU001_38')}:</label>
+								<!-- <label class="ml-2">#{i18n.getText('KSU001_38')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: timePeriod,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedTimePeriod}">
-								</div>
+								</div> -->
 								<label class="ml-2">#{i18n.getText('KSU001_42')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
@@ -414,7 +418,7 @@
 										optionsText: 'name',
 										value: selectedModeDisplay}">
 								</div>
-								<label class="ml-2">#{i18n.getText('KSU001_46')}:</label>
+								<!-- <label class="ml-2">#{i18n.getText('KSU001_46')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: modeDisplayObject,
@@ -424,7 +428,9 @@
 								</div>
 								<button tabindex="-1"
 									class="color-button ml-2 size-image-button1"></button>
-								<button tabindex="-1" class="setting-button size-image-button1"></button>
+								<button tabindex="-1" class="setting-button size-image-button1"></button> -->
+								<button tabindex="-1"
+									class="color-button ml-2 size-image-button1"></button>
 							</div>
 						</div>
 						<div id="contain-view">
@@ -435,7 +441,7 @@
 									data-bind="click: copyData"></button>
 								<br />
 								<button id="undo" class="size-image-button2"
-									data-bind="click: undoData"></button>
+									data-bind="click: undoData, timeClick: -1"></button>
 							</div>
 							<div id="oViewModel">
 								<div data-bind="with: $parent.viewO">

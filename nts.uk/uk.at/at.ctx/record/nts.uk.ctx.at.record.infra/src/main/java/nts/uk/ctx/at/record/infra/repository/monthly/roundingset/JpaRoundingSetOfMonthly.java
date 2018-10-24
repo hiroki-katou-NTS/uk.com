@@ -14,12 +14,13 @@ import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingProcessOfExcessOutsi
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.TimeRoundingOfExcessOutsideTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonExcoutRound;
+import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonExcOutRound;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRound;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonRoundSetPK;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * リポジトリ実装：月別実績の丸め設定
@@ -44,12 +45,14 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 	@Override
 	public Optional<RoundingSetOfMonthly> find(String companyId) {
 
-		val excoutRound = this.queryProxy().find(new KrcstMonRoundSetPK(companyId), KrcstMonExcoutRound.class);
+		val excoutRound = this.queryProxy().find(new KrcstMonRoundSetPK(companyId), KrcstMonExcOutRound.class);
 		
 		val itemRoundList = this.queryProxy()
 				.query(FIND_BY_CID_FOR_ITEM, KrcstMonItemRound.class)
 				.setParameter("companyId", companyId)
 				.getList();
+		
+		if (!excoutRound.isPresent() && itemRoundList.size() == 0) return Optional.empty();
 		
 		return Optional.of(toDomain(companyId, excoutRound, itemRoundList));
 	}
@@ -62,7 +65,7 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 	 * @return ドメイン：月別実績の丸め設定
 	 */
 	private static RoundingSetOfMonthly toDomain(String companyId,
-			Optional<KrcstMonExcoutRound> excoutRoundOpt, List<KrcstMonItemRound> itemRoundList){
+			Optional<KrcstMonExcOutRound> excoutRoundOpt, List<KrcstMonItemRound> itemRoundList){
 		
 		// 時間外超過の時間丸め
 		Optional<TimeRoundingOfExcessOutsideTime> timeRounding = Optional.empty();
@@ -98,10 +101,10 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 		if (excoutRoundSetOpt.isPresent()){
 			val excoutRoundSet = excoutRoundSetOpt.get();
 			boolean isNeedPersist = false;
-			KrcstMonExcoutRound entityExcoutRound = this.getEntityManager().find(KrcstMonExcoutRound.class, key);
+			KrcstMonExcOutRound entityExcoutRound = this.getEntityManager().find(KrcstMonExcOutRound.class, key);
 			if (entityExcoutRound == null){
 				isNeedPersist = true;
-				entityExcoutRound = new KrcstMonExcoutRound();
+				entityExcoutRound = new KrcstMonExcOutRound();
 				entityExcoutRound.PK = key;
 			}
 			entityExcoutRound.roundUnit = excoutRoundSet.getRoundingUnit().value;
@@ -155,5 +158,66 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
 			this.getEntityManager().persist(entityItemRound);
 		}
+	}
+	
+	/** 検索 */
+	@Override
+	public Optional<TimeRoundingOfExcessOutsideTime> findExcout(String companyId) {
+
+		Optional<KrcstMonExcOutRound> excoutRound = this.queryProxy().find(new KrcstMonRoundSetPK(companyId), KrcstMonExcOutRound.class);
+		
+		return toDomain(companyId, excoutRound);
+	}
+	
+	/**
+	 * エンティティ→ドメイン
+	 * @param companyId 会社ID
+	 * @param excoutRoundOpt エンティティ：時間外超過の時間丸め
+	 * @param itemRoundList エンティティ：月別実績の項目丸め設定
+	 * @return ドメイン：月別実績の丸め設定
+	 */
+	private static Optional<TimeRoundingOfExcessOutsideTime> toDomain(String companyId,
+			Optional<KrcstMonExcOutRound> excoutRoundOpt){
+		
+		// 時間外超過の時間丸め
+		Optional<TimeRoundingOfExcessOutsideTime> timeRounding = Optional.empty();
+		if (excoutRoundOpt.isPresent()) {
+			val excoutRound = excoutRoundOpt.get();
+			timeRounding = Optional
+					.of(TimeRoundingOfExcessOutsideTime.of(EnumAdaptor.valueOf(excoutRound.roundUnit, Unit.class),
+							EnumAdaptor.valueOf(excoutRound.roundProc, RoundingProcessOfExcessOutsideTime.class)));
+		}
+		return timeRounding;
+	}
+	
+	/** 登録および更新 */
+	@Override
+	public void persistAndUpdate(TimeRoundingOfExcessOutsideTime roundingSetOfMonthly) {
+
+		// キー
+		val companyId = AppContexts.user().companyId();
+		val key = new KrcstMonRoundSetPK(companyId);
+
+		// 時間外超過の時間丸め
+		boolean isNeedPersist = false;
+		KrcstMonExcOutRound entityExcoutRound = this.getEntityManager().find(KrcstMonExcOutRound.class, key);
+		if (entityExcoutRound == null){
+			isNeedPersist = true;
+			entityExcoutRound = new KrcstMonExcOutRound();
+			entityExcoutRound.PK = key;
+		}
+		
+		entityExcoutRound.roundUnit = roundingSetOfMonthly.getRoundingUnit().value;
+		entityExcoutRound.roundProc = roundingSetOfMonthly.getRoundingProcess().value;
+		if (isNeedPersist) this.getEntityManager().persist(entityExcoutRound);
+	}
+	
+	/** 削除 */
+	@Override
+	public void removeExcout(String companyId) {
+
+		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_EXCOUT)
+				.setParameter("companyId", companyId)
+				.executeUpdate();
 	}
 }

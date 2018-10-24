@@ -8,6 +8,7 @@
 
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico" />
 	<com:stylefile set="BASIC" />
 	<com:viewcontext />
 	<com:scriptfile set="BASIC" />
@@ -21,6 +22,7 @@
 		</com:ko>
 	</div>
 	
+	<div id="ver" style="position: fixed; right: 10px; bottom: 10px; color: red;"></div>
 	
 	<div data-bind="with: kiban.errorDialogViewModel">
 		<div

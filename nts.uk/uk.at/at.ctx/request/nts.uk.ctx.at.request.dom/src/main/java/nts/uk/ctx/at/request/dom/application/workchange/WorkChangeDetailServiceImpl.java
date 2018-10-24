@@ -9,16 +9,24 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
+import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -57,6 +65,16 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	
 	@Inject
 	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private IWorkChangeRegisterService workChangeRegisterService;
+	@Inject
+	private BasicScheduleService bacsicService;
+	@Inject
+	private IDataWorkService dataWorkService;
+	@Inject
+	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
+	
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
@@ -85,7 +103,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 			appWorkChange.setWorkTypeName(workType.get().getName().v());
 		}
 		workChangeDetail.setAppWorkChange(appWorkChange);
-		
+		workChangeDetail.setTimeRequired(workChangeRegisterService.isTimeRequired(appWorkChange.getWorkTypeCd()));
 		//アルゴリズム「14-3.詳細画面の初期モード」を実行する
 		workChangeDetail.setDetailScreenInitModeOutput(initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value));
 		// Setting application property
@@ -107,14 +125,29 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		while(basicDate.beforeOrEquals(endDate)){
 			//13.実績を取得する
 			AchievementOutput achievement  = collectAchievement.getAchievement(cid, application.getEmployeeID(), basicDate);
-			workTypes.add(achievement.getWorkType().getWorkTypeCode());
-			workTimes.add(achievement.getWorkTime().getWorkTimeCD());
+			String wkTypeCd = achievement.getWorkType().getWorkTypeCode();
+			String wkTimeCd = achievement.getWorkTime().getWorkTimeCD();
+			if (!StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+				workTypes.add(wkTypeCd);
+			}
+			if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
+				workTimes.add(wkTimeCd);
+			}
 			//基準日　＝　基準日＋１
 			basicDate = basicDate.addDays(1);
 		}
 		workChangeDetail.setWorkTimeCodes(workTimes);
 		workChangeDetail.setWorkTypeCodes(workTypes);
-		
+		GeneralDate appDate = application.getAppDate();
+		String sID = application.getEmployeeID();
+		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(cid,
+				sID, 1, ApplicationType.WORK_CHANGE_APPLICATION, appDate);
+		//勤務就業ダイアログ用データ取得
+		DataWork dataWork =  dataWorkService.getDataWork(cid, sID, appDate, appCommonSetting, ApplicationType.WORK_CHANGE_APPLICATION.value);
+		//就業時間帯の必須チェック
+		SetupType setupType = this.bacsicService
+				.checkNeededOfWorkTimeSetting(workChangeDetail.getAppWorkChange().getWorkTypeCd());
+		workChangeDetail.setDataWork(dataWork);
 		return workChangeDetail;
 	}
 

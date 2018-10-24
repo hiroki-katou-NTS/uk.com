@@ -4,13 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.dailyattendanceitem;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
@@ -84,8 +88,14 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	public List<DailyAttendanceItem> getListById(String companyId, List<Integer> dailyAttendanceItemIds) {
 		if(dailyAttendanceItemIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND_BY_ID, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyAttendanceItemIds", dailyAttendanceItemIds).getList(f -> toDomain(f));
+		List<DailyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(dailyAttendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_ID, KrcmtDailyAttendanceItem.class)
+								.setParameter("companyId", companyId)
+								.setParameter("dailyAttendanceItemIds", subList)
+								.getList(f -> toDomain(f)));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -99,10 +109,12 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 				krcmtDailyAttendanceItem.krcmtDailyAttendanceItemPK.companyId,
 				krcmtDailyAttendanceItem.krcmtDailyAttendanceItemPK.attendanceItemId,
 				krcmtDailyAttendanceItem.attendanceItemName,
-				krcmtDailyAttendanceItem.displayNumber.intValue(),
-				krcmtDailyAttendanceItem.userCanSet.intValue(),
-				krcmtDailyAttendanceItem.dailyAttendanceAtr.intValue(),
-				krcmtDailyAttendanceItem.nameLineFeedPosition.intValue());
+				krcmtDailyAttendanceItem.displayNumber,
+				krcmtDailyAttendanceItem.userCanSet,
+				krcmtDailyAttendanceItem.dailyAttendanceAtr,
+				krcmtDailyAttendanceItem.nameLineFeedPosition,
+				krcmtDailyAttendanceItem.typeOfMaster,
+				krcmtDailyAttendanceItem.primitiveValue);
 		return dailyAttendanceItem;
 	}
 
@@ -132,7 +144,62 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	 */
 	@Override
 	public List<DailyAttendanceItem> findByAtr(String companyId, List<Integer> dailyAttendanceAtrs) {
-		return this.queryProxy().query(FIND_BY_ATRS, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyAttendanceAtrs", dailyAttendanceAtrs).getList(f -> toDomain(f));
+		List<DailyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(dailyAttendanceAtrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_ATRS, KrcmtDailyAttendanceItem.class)
+					.setParameter("companyId", companyId)
+					.setParameter("dailyAttendanceAtrs", subList)
+					.getList(f -> toDomain(f)));
+		});
+		return resultList;
 	}
+
+	/**
+	 * add by HoiDD
+	 */
+	@Override
+	public List<DailyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds,
+			List<Integer> dailyAttendanceAtr) {
+		
+		List<Integer> listAttIds = new ArrayList<>(Optional.ofNullable(attendanceItemIds).orElse(Collections.emptyList()));
+		List<Integer> listAttAtrs = new ArrayList<>(Optional.ofNullable(dailyAttendanceAtr).orElse(Collections.emptyList()));
+		
+		boolean checkAttId = !CollectionUtil.isEmpty(listAttIds);
+		boolean checkAttAtr = !CollectionUtil.isEmpty(listAttAtrs);
+		if (!checkAttId) listAttIds.add(0);
+		if (!checkAttAtr) listAttAtrs.add(0);
+		
+		StringBuilder builderString = new StringBuilder();	
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtDailyAttendanceItem b");
+		builderString.append(" WHERE");
+		builderString.append(" b.krcmtDailyAttendanceItemPK.companyId = :companyId");
+		if (checkAttId) {
+			builderString.append(" AND b.krcmtDailyAttendanceItemPK.attendanceItemId IN :attendanceItemIds");
+		}
+		if (checkAttAtr) {
+			builderString.append(" AND b.dailyAttendanceAtr IN :itemAtrs");
+		}
+		List<DailyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(listAttIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIds -> {
+			CollectionUtil.split(listAttAtrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAtrs -> {
+				TypedQueryWrapper<KrcmtDailyAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtDailyAttendanceItem.class);
+				query.setParameter("companyId", companyId);
+				if (checkAttId) {
+					query.setParameter("attendanceItemIds", lstIds);
+				}
+				if (checkAttAtr) {
+					query.setParameter("itemAtrs", lstAtrs);
+				}
+				resultList.addAll(query.getList(f -> toDomain(f)));
+			});
+		});
+		return resultList;
+	}
+
+	@Override
+	public void update(DailyAttendanceItem domain) {
+		this.commandProxy().update(KrcmtDailyAttendanceItem.toEntity(domain));
+	}
+
 }

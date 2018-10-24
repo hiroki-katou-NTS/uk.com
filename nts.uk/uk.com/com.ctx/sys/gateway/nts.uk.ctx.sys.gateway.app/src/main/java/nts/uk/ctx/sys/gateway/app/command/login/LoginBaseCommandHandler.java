@@ -27,6 +27,9 @@ import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.employee.StatusOfEmployment;
+import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusEmploymentAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusOfEmploymentImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
@@ -45,6 +48,8 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
@@ -74,6 +79,7 @@ import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstallationType;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class LoginBaseCommandHandler.
@@ -154,6 +160,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The service. */
 	@Inject
 	private LoginRecordRegistService service;
+	
+	@Inject
+	private EmployeeGeneralInfoAdapter employeeGeneralInfoAdapter;
+	
+	@Inject
+	private StatusEmploymentAdapter statusEmploymentAdapter;
+	
+	private static final boolean IS_EMPLOYMENT = true;
+	private static final boolean IS_CLASSIFICATION = false;
+	private static final boolean IS_JOBTITLE = true;
+	private static final boolean IS_WORKPLACE = true;
+	private static final boolean IS_DEPARTMENT = false;
 	
 	/*
 	 * (non-Javadoc)
@@ -237,7 +255,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"));
+					TextResource.localize("Msg_301"), null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -303,8 +321,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-					null, null, null, null);
+			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
@@ -318,15 +335,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(lstCompanyId.get(FIST_COMPANY));
-			if (opEm.isPresent()) {
-				// set info to session if em # null
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
 						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
 			} else {
 				// set info to session
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode(), null, null);
+				manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
+						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
 			}
 		}
 		this.setRoleId(user.getUserId());
@@ -570,7 +586,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (!opWindowAccount.isPresent()) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_876"));
+					TextResource.localize("Msg_876"), null);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -587,7 +603,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (windows.isEmpty()? true : windows.get(0).getUseAtr() == UseAtr.NotUse ? true : false) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_876"));
+					TextResource.localize("Msg_876"), null);
 
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -612,7 +628,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			if (optUserImport.get().getExpirationDate().before(GeneralDate.today())) {
 				
 				ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
-						TextResource.localize("Msg_316"));
+						TextResource.localize("Msg_316"), null);
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
@@ -646,11 +662,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
 			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_281"));
+					TextResource.localize("Msg_1419"), null);
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
-			throw new BusinessException("Msg_281");
+			throw new BusinessException("Msg_1419");
 		}
 
 		String message = this.checkAccoutLock(contractCode, userId, " ", isSignOn).v();
@@ -668,7 +684,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the company id
 	 */
 	// ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
-	public void errorCheck2(String companyId, String contractCode, String userId, boolean isSignon) {
+	public void errorCheck2(String companyId, String contractCode, String userId, boolean isSignon, String employeeId) {
 
 		// ドメインモデル「会社」の使用区分をチェックする (Check usage classification of domain model
 		// "company")
@@ -680,21 +696,70 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 			}
 			ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
-					TextResource.localize("Msg_281"));
+					TextResource.localize("Msg_281"), employeeId);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 
 			throw new BusinessException("Msg_281");
 		}
+		if (employeeId != null) {
+		//アルゴリズム「在職状態を取得」を実行する
+		//Request No.280
+		StatusOfEmploymentImport employmentStatus = this.statusEmploymentAdapter.getStatusOfEmployment(employeeId,
+				GeneralDate.today());
+
+		// check status = before_join
+		if (employmentStatus == null
+				|| employmentStatus.getStatusOfEmployment() == StatusOfEmployment.BEFORE_JOINING.value) {
+			Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+			if (isSignon) {
+				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+			}
+			ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
+					TextResource.localize("Msg_286"), employeeId);
+
+			// アルゴリズム「ログイン記録」を実行する１
+			this.service.callLoginRecord(param);
+
+			throw new BusinessException("Msg_286");
+			}
+		}
+		
 		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
+		
 		if (!message.isEmpty()) {
 			// return messageError
 			throw new BusinessException(message);
 		}
+		
+		List<String> lstEmployeeId = new ArrayList<>();
+		DatePeriod periodEmployee = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		
+		if (employeeId != null) { // employeeId = null when single sign on
+			boolean isEmployeeHis;
+			lstEmployeeId.add(employeeId);
+			// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)
+			EmployeeGeneralInfoImport importPub = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, periodEmployee, IS_EMPLOYMENT, IS_CLASSIFICATION, IS_JOBTITLE, IS_WORKPLACE, IS_DEPARTMENT);
+			// 職場履歴一覧がEmpty or 雇用履歴一覧がEmpty or 職位履歴一覧がEmpty
+			isEmployeeHis = importPub.isLstWorkplace() || importPub.isLstEmployment() || importPub.isLstJobTitle();
+			
+			if (isEmployeeHis) {
+				Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+				if (isSignon){
+					loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+				}
+				ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
+						TextResource.localize("Msg_1420"), employeeId);
+				
+				// アルゴリズム「ログイン記録」を実行する２ (Execute algorithm "login recording")
+				this.service.callLoginRecord(param);
 
+				throw new BusinessException("Msg_1420");
+			}
+		}
 	}
-
+	
 	/**
 	 * Gets the list company.
 	 *
@@ -731,16 +796,20 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		if (!user.get().getAssociatePersonId().get().isEmpty()) {
 			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId().get()));
-
-			employees.forEach(empItem -> {
-				// アルゴリズム「社員が削除されたかを取得」を実行する (Execute the algorithm
-				// "社員が削除されたかを取得")
-				if (this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted()) {
-					// 社員（List）から当該社員を除く (Remove the employee from the employee
-					// (List))
-					employees.remove(empItem);
-				}
-			});
+			
+			List<String> lstEmployeeId = employees.stream().map(dto -> dto.getEmployeeId()).collect(Collectors.toList());
+			DatePeriod periodEmployee = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+			
+			employees = employees.stream()
+				.filter(empItem -> {
+					boolean isEmployeeHis; 
+					// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)
+					EmployeeGeneralInfoImport importPub = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, periodEmployee, IS_EMPLOYMENT, IS_CLASSIFICATION, IS_JOBTITLE, IS_WORKPLACE, IS_DEPARTMENT);
+					// 職場履歴一覧がEmpty or 雇用履歴一覧がEmpty or 職位履歴一覧がEmpty
+					isEmployeeHis = importPub.isLstWorkplace() || importPub.isLstEmployment() || importPub.isLstJobTitle();
+					return !this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted() && isEmployeeHis;
+				})
+				.collect(Collectors.toList());
 		}
 
 		// imported（権限管理）「会社」を取得する (imported (authority management) Acquire
@@ -811,7 +880,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 						loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
 					}
 					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
-							accountLockPolicy.getLockOutMessage().v());
+							accountLockPolicy.getLockOutMessage().v(), null);
 					
 					// アルゴリズム「ログイン記録」を実行する１
 					this.service.callLoginRecord(param);

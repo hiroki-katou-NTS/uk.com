@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.editstate;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -21,6 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSetPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		implements EditStateOfDailyPerformanceRepository {
@@ -55,16 +60,33 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		DEL_BY_LIST_ITEM_ID = builderString.toString();
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
 	}
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> processingYmds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("processingYmds", processingYmds).executeUpdate();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmployeeIds -> {
+			CollectionUtil.split(processingYmds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ymds -> {
+				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
+					.setParameter("employeeIds", lstEmployeeIds)
+					.setParameter("processingYmds", ymds)
+					.executeUpdate();
+			});
+		});
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -176,16 +198,43 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :items ");
-		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
-				.setParameter("employeeId", employeeId).setParameter("ymd", ymd).setParameter("items", ids)
-				.getList(c -> toDomain(c));
+		
+		List<EditStateOfDailyPerformance> resultList = new ArrayList<>();
+		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+					.setParameter("employeeId", employeeId)
+					.setParameter("ymd", ymd)
+					.setParameter("items", subList)
+					.getList(c -> toDomain(c)));
+		});
+		
+		return resultList;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByListItemId(String employeeId, GeneralDate ymd, List<Integer> itemIdList) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_ITEM_ID).setParameter("employeeId", employeeId)
-		.setParameter("ymd", ymd).setParameter("itemIdList", itemIdList).executeUpdate();
-		this.getEntityManager().flush();
+//		this.getEntityManager().createQuery(DEL_BY_LIST_ITEM_ID).setParameter("employeeId", employeeId)
+//		.setParameter("ymd", ymd).setParameter("itemIdList", itemIdList).executeUpdate();
+//		this.getEntityManager().flush();
+		
+		CollectionUtil.split(itemIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String listItemIdString = "(";
+			for(int i = 0; i < subList.size(); i++){
+				listItemIdString += "'"+ subList.get(i) +"',";
+			}
+			// remove last , in string and add )
+			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+			
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"
+					+ " and ATTENDANCE_ITEM_ID IN " + listItemIdString;
+			try {
+				con.createStatement().executeUpdate(sqlQuery);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 }

@@ -2,26 +2,28 @@
 	width: 1200px;
 }
 
-#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
-	#btnExtraction {
+#btnComfirmAttendance {
 	vertical-align: text-bottom;
 }
 
 #btnVacationRemaining {
 	margin-left: 50px;
+	top: -12px;
 }
 
 #dislayFormatLbl {
 	margin-left: 20px;
+	top: -12px;
+    position: relative;
 }
 
 #right-content {
 	margin-left: 80px;
-	width: 1200px;
+	width: auto;
 }
 
 #cbListDate {
-	margin-top: 10px;
+	/* margin-top: 10px; */
 }
 
 #cbListDate {
@@ -43,10 +45,10 @@
 	margin-left: 200px;
 }
 
-.grid-container {
+#gid {
 	margin: 15px 0 0 0px;
-    margin-top: -36px;
-   /*  float: left; */
+    margin-top: -6px;
+    height: 700px;
 }
 
 .setting-container {
@@ -92,16 +94,18 @@
 	position: absolute;
 	z-index: 2;
 	background-color: white;
-	margin-left: -50px;
-	margin-top: 34px;
+    margin-left: 816px;
+    margin-top: 45px;
 	padding: 15px;
 	visibility: hidden;
-	top: -9999px;
-	left: -9999px;
 }
 
 #vacationRemaining-content button {
 	width: 110px;
+}
+
+#vacationRemaining-content table td {
+	padding: 2px 2px
 }
 
 .nts-legendbutton-panel {
@@ -137,7 +141,9 @@
 	border: 1px solid #CCC;
 	text-align: center;
 	height: 29px;
-	width: 50px;
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
@@ -151,18 +157,29 @@
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
-	/* width: 400px; */
+	width: auto; 
 }
+
 #numberHoliday {
 	/* margin-left: 5px;
 	height: 80px;
-	margin-top: 4px; */
-	float: right;
-	margin-left: 120px;
-	}
+	 */
+	float: left;
+	margin-left: 10px;
+	margin-top: -20px;
+	height: 80px;
+}
+	
+#fixed-table tr td {
+	border: none !important;
+	border-right: 1px solid #CCC !important;
+}
+
 #emp-component{
-	margin-top: -33px;
+	margin-top: -20px;
 	margin-left: -10px;
+    width: 820px;
+    height: 30px !important;
 }
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
     background-color: white;
@@ -190,7 +207,7 @@
 }
 #right-content {
     margin-left: 80px;
-     width: 1400px !IMPORTANT;
+     width: auto;
 }
 .nts-grid-sheet-buttons{
 /* 	margin-top:32px; */
@@ -208,6 +225,7 @@
     z-index: 999;
     position: fixed;
     overflow-x: inherit;
+    margin-top: -16px;
 }
 
 #flex-table .ui-widget-header{
@@ -230,7 +248,7 @@
 #text-flex {
 	left: 400px;
 	position: relative;
-	top: -58px;
+	top: -103px;
 	width: 216px;}
 	
 .italic-text{
@@ -248,10 +266,10 @@
 
 .image-icon{
 	background: url('../a/image/icon.png');
-	display: block;
-    float: left;
-    margin: 3px 9px;
-    padding: 10px 10px;
+/* 	display: block;
+    float: left; */
+    margin: 3px -3px;
+    padding: 9px 19px;
 }
 #short-time{
 	background-color: #CCC;
@@ -281,10 +299,12 @@
 
 #agree-time, #agree-excess {
 	height: inherit;
+	text-align: center;
+	border: 1px solid #CCC;
 }
 
 .state-exception {
-	background-color: #FCD5B4;
+	background-color: #EB9152;
 }
 
 .state-alarm {
@@ -295,20 +315,112 @@
 	background-color: #FD4D4D;
 }
 
+.text-alarm{
+	color: #ff0000;
+}
+
+.text-error{
+	color: #ffffff;
+}
+
 .Row {
 	display: table;
 	width: 100%; /*Optional*/
 	table-layout: fixed; /*Optional*/
 	border-spacing: 10px; /*Optional*/
-	margin-left: -10px;
+	margin: -10px;
 }
 
 .Column {
 	display: table-cell;
 }
+
+.mgrid-saturday{
+	color: #4F81BD;
+}
+
+.mgrid-sunday{
+	color: #e51010;
+}
+
+.ui-iggrid .ui-iggrid-tablebody td {
+    height: 29px;
+}
+
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */
 
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */
+
+#functions-area {
+    height: auto;}
+    
+#contents-area {
+    /* margin-top: -15px; */
+    padding: 5px !important;
+}
+#employ_view{
+	margin: 1px !important;
+    margin-left: 12px !important;
+}
+/* #functions-area button {
+	height: 25px !important;
+} */
+/* button next/pre datetime */
+button.auto-height {
+    height: 23px !important;
+}
+button {
+    height: 25px !important;
+    min-width: 10px !important;
+}
+/* .mgrid :not(.mgrid-header) table tr td {
+    font-size: 10px !important;
+} */
+/* .mgrid-fixed-table table tr {
+    height: 19px !important;
+} */
+.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
+   /*  height: 10px !important; */
+} 
+#contents-area * {
+    font-size: 0.8rem;
+}
+#functions-area * {
+    font-size: 0.8rem;
+    height: 30px;
+}
+table#employ_view tr{
+	height: 25px !important;
+}
+#ccg001 * {
+    font-size: 0.8rem;
+}
+#cbDisplayFormat{
+	height: 27px;
+}
+/* #dislayFormatLbl{
+	height: 25px;
+} */
+.mgrid .mbutton {
+	height: 20px !important;	
+}
+.ccg-lbl-vertical {
+    font-size: 18pt !important; 
+}
+#functions-area button {
+	margin-left: 4px;
+	margin-right: 4px
+}
+#functions-area button.danger {
+	margin-left: 4px;
+	margin-right: 4px
+}
+.nts-datepicker-wrapper .ntsDatepicker {
+    width: 67px;
+}
+.btn_show_list {
+    width: auto !important;
+}

@@ -64,7 +64,7 @@ public interface JudgmentApprovalStatusService {
 	 * @param approvalPhaseState
 	 * @param employeeID
 	 */
-	public ApprovalStatusOutput judmentApprovalStatusNodataDatabaseAcess(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID,List<Agent> agents);
+	public ApprovalStatusOutput judmentApprovalStatusNodataDatabaseAcess(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID,List<String> agents);
 	
 	/**
 	 * 2.指定した社員が指定した承認者リストの代行承認者かの判断
@@ -83,4 +83,11 @@ public interface JudgmentApprovalStatusService {
 	 * @return true/false
 	 */
 	public Boolean judgmentLoopApprovalPhase(ApprovalRootState approvalRootState, ApprovalPhaseState currentPhase, Boolean pastPhaseFlg);
+	
+	/**
+	 * 3.指定した社員が承認できるかの判断(NoDBACCESS)
+	 * @param approvalRootState
+	 * @return
+	 */
+	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID);
 }

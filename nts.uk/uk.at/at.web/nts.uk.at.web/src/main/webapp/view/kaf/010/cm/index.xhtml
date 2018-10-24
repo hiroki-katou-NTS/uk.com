@@ -8,11 +8,11 @@
 			<div class="pull-left">
 				<table id="kaf010_overtimeAgreement_table">
 					<colgroup>
-						<col width="109px" />
-						<col width="109px" />
-						<col width="109px" />
-						<col width="109px" />
-						<col width="109px" />
+						<col width="85px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
 					</colgroup>
 					<thead>
 						<tr>
@@ -39,6 +39,53 @@
 							<!--A2_17  当月申請時間-->
 							<td data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_18  当月合計時間-->
+							<td data-bind="text: totalTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>		
+	</div>
+	<div data-bind="if: (!screenModeNew())&amp;&amp;indicationOvertimeFlg()" >
+		<div class="cf valign-center control-group"
+			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
+			style = "margin-left: -2px; background: #f8efd4;width: 800px;">
+			<!--A2_7 時間外労働ラベル--> 			
+			<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
+			<div class="pull-left">
+				<table id="kaf005_overtimeAgreement_table">
+					<colgroup>
+						<col width="85px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+						<col width="70px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<!--A2_9 年月ラベル-->
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_24')}</th>
+							<!--A2_10  限度ラベル-->						
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_25')}</th>
+							<!--A2_11 実績ラベル--> 						
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_26')}</th>
+							<!--A2_12  申請ラベル-->	
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_27')}</th>
+							<!--A2_13  合計ラベル-->
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_28')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: overtimeWork">
+						<tr>
+							<!--A2_14 年月ラベル--> 						
+							<td data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_15  限度ラベル--> 						
+							<td data-bind="text: limitTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_16 実績ラベル--> 						
+							<td data-bind="text: actualTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_17  申請ラベル-->
+							<td data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_18  合計ラベル-->
 							<td data-bind="text: totalTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 						</tr>
 					</tbody>
@@ -128,17 +175,19 @@
 				<div class="cell valign-center">
 					<!--A4_7 選択ボタン-->
 					<button tabindex="7" class="workSelect"
-						data-bind="enable: true,click : openDialogKdl003">#{i18n.getText('KAF010_36')}</button>
+						data-bind="enable: $vm.editable,click : openDialogKdl003">#{i18n.getText('KAF010_36')}</button>
 				</div>
 				<div class="cell valign-center">
-					<!--A4_2 勤務種類コード-->
-					<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
-					<!--A4_3 勤務種類名称-->
-					<LABEL data-bind="text: workTypeName"></LABEL> <BR />
-					<!--A4_5 就業時間コード-->
-					<label class="lblSiftCd" data-bind="text: siftCD"></label>
-					<!--A4_6 就業時間名称-->
-					<LABEL data-bind="text: siftName"></LABEL>
+					<div id="kaf010-workType-workTime-div" style="padding-right: 10px;margin-left: 10px;">
+						<!--A4_2 勤務種類コード-->
+						<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
+						<!--A4_3 勤務種類名称-->
+						<LABEL data-bind="text: workTypeName"></LABEL> <BR />
+						<!--A4_5 就業時間コード-->
+						<label class="lblSiftCd" data-bind="text: siftCD"></label>
+						<!--A4_6 就業時間名称-->
+						<LABEL data-bind="text: siftName"></LABEL>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -155,7 +204,13 @@
 						<!--A4_9 勤務時間From1-->
 						<input tabindex="8" class="row-cell-margin inputTime-kaf010 right-content"
 							id="inpStartTime1"
-							data-bind="ntsTimeWithDayEditor: { name: '#[KAF010_333]', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
+							data-bind="ntsTimeWithDayEditor: { 
+								name: '#[KAF010_333]', 
+								constraint:'TimeWithDayAttr',
+								value: timeStart1, 
+								enable: $vm.editable, 
+								readonly: false, 
+								required: true }" />
 						<!--A4_10 ~1-->
 						<label class="valign-center link-label-kaf010">#{i18n.getText('KAF010_38')}</label>
 					</div>
@@ -164,12 +219,18 @@
 					<div class="row-cell-margin">
 						<!--A4_11 勤務時間To1-->
 						<input tabindex="9" id="inpEndTime1" class="right-content inputTime-kaf010"
-							data-bind="ntsTimeWithDayEditor: {name: '#[KAF010_334]', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
+							data-bind="ntsTimeWithDayEditor: {
+								name: '#[KAF010_334]', 
+								constraint:'TimeWithDayAttr', 
+								value: timeEnd1, 
+								enable: $vm.editable, 
+								readonly: false, 
+								required: true}" />
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="valign-center control-group" data-bind ="if: screenModeNew()">
+		<div class="valign-center control-group" data-bind ="if: screenModeNew() &amp;&amp; displayCaculationTime()">
 			<div class="table">
 				<div class="cell valign-top cm-column2">
 				<div class="lblTitle"></div>
@@ -198,7 +259,7 @@
 			</div>
 		</div>
 		<div class="valign-center control-group"
-			data-bind="if: !screenModeNew()">
+			data-bind="if: !screenModeNew() &amp;&amp; displayCaculationTime()">
 			<div class="table" style = "margin-bottom: 9px;">
 				<div class="cell valign-top cm-column2">
 					<div class="lblTitle"></div>
@@ -318,7 +379,7 @@
 		</div>
 		<div data-bind="if: displayCaculationTime">
 			<!--A5_8 計算ボタン--> 			
-			<button data-bind="click: CaculationTime" tabindex="18" style="margin: 15px 0px 10px 290px;" class="caret-bottom">#{i18n.getText('KAF010_43')}</button>
+			<button data-bind="click: CaculationTime, enable: $vm.editable" tabindex="18" style="margin: 15px 0px 10px 290px;" class="caret-bottom">#{i18n.getText('KAF010_43')}</button>
 		</div>
 		<div class="cf valign-top control-group" data-bind ="if: prePostSelected() == 0">
 			<!--A6_1 休出時間ラベル--> 		
@@ -344,8 +405,16 @@
 							<!--A6_7 休出時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()},text: frameName"></td>
 							<!--A6_8 休出申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="19" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},style: { 'background-color' : color },ntsTimeEditor: {name: '#[KAF010_56]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="19" class="right-content breakTimesCheck"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},style: { 'background-color' : color },
+								ntsTimeEditor: {
+									name: '#[KAF010_56]', 
+									value: applicationTime, 
+									option: {width: '80px'}, 
+									inputFormat: 'time', 
+									mode: 'time',
+									constraint:'OvertimeAppPrimitiveTime',
+									enable: $vm.editable }" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -381,8 +450,16 @@
 							<!--A6_7 休出時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()},text: frameName"></td>
 							<!--A6_8 休出申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="19" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},style: { 'background-color' : color },ntsTimeEditor: {name: '#[KAF010_56]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="19" class="right-content breakTimesCheck"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},style: { 'background-color' : color },
+								ntsTimeEditor: {
+									name: '#[KAF010_56]', 
+									value: applicationTime, 
+									option: {width: '80px'}, 
+									inputFormat: 'time', 
+									mode: 'time',
+									constraint:'OvertimeAppPrimitiveTime',
+									enable: $vm.editable }" /></td>
 							<!--A6_9 休出事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 休出実績時間--> 						
@@ -422,7 +499,15 @@
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
 							<td data-bind="attr: { id: 'hoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
-								data-bind="attr: { id: 'hoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+								data-bind="attr: { id: 'hoursCheck_'+attendanceID()+'_'+frameNo()}, 
+								ntsTimeEditor: {
+									name: nameID ,
+									value: applicationTime, 
+									option: {width: '80px'}, 
+									inputFormat: 'time', 
+									mode: 'time',
+									constraint:'OvertimeAppPrimitiveTime',
+									enable: $vm.editable}" /></td>
 							<!--A6_9 残業事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 実績時間--> 						
@@ -465,7 +550,12 @@
 							<input tabindex="17" class="right-content"
 								data-bind="ntsTimeEditor: {
 								name:itemName,
-								value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+								value: applicationTime, 
+								option: {width: '80px'}, 
+								inputFormat: 'time', 
+								mode: 'time',
+								constraint:'OvertimeAppPrimitiveTime',
+								enable: $vm.editable}" /></td>
 							<!--A8_8 事前申請時間--> 
 							<td class="right-content" data-bind="text: preAppTime"></td>
 						</tr>
@@ -485,7 +575,7 @@
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
-								enable: true,
+								enable: $vm.editable,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
@@ -505,7 +595,7 @@
 			                    	width: '500',
 			                    	required: requiredReason()
 			                   	},
-			                   	enable:displayAppReasonContentFlg
+			                   	enable:displayAppReasonContentFlg() &amp;&amp; $vm.editable()
 							}" />
 			</div>
 		</div>
@@ -521,7 +611,7 @@
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason2,
-								enable: true,
+								enable: $vm.editable,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
@@ -541,6 +631,7 @@
 			                    	width: '500',
 			                    	required: requiredReason2()
 			                   	},
+			                   	enable: $vm.editable
 							}" />
 			</div>
 		</div>

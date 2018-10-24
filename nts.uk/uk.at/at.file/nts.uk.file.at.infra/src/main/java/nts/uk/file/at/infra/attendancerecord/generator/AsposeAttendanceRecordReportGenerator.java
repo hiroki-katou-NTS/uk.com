@@ -27,6 +27,7 @@ import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDat
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -62,9 +63,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant REPORT_PAGE_ADDR. */
 	private static final String REPORT_PAGE_ADDR = "A1:AO";
 
-	/** The Constant PAGE_NUMBER_ADDR. */
-	private static final String PAGE_NUMBER_ADDR = "AD%d:AO%d";
-
 	/** The Constant MONTHLY_DATA_ADDR. */
 	private static final String MONTHLY_DATA_ADDR = "C%d:Z%d";
 
@@ -82,7 +80,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant SEAL_COL_ADDR. */
 	private static final List<String> SEAL_COL_ADDR = Arrays
-			.asList(new String[] { "AN6", "AL6", "AJ6", "AH6", "AF6", "AD6" });
+			.asList(new String[] { "AN1", "AL1", "AJ1", "AH1", "AF1", "AD1" });
 	
 	/** The Constant END_REPORT_COL2. */
 	private static final String END_REPORT_PAGE_BREAK= "AP";
@@ -92,15 +90,18 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant REPORT_RIGHT_COL_ADDR. */
 	private static final String REPORT_RIGHT_COL_ADDR = "V%d:AO%d";
+	
+	/** The Constant PRINT_TITLE_ROW. */
+	private static final String PRINT_TITLE_ROW = "$6:$7";
 
 	/** The Constant START_EMPLOYEE_DATA_ROW. */
-	private static final int START_EMPLOYEE_DATA_ROW = 11;
+	private static final int START_EMPLOYEE_DATA_ROW = 5;
 
 	/** The Constant START_REPORT_DATA_ROW. */
-	private static final int START_REPORT_DATA_ROW = 14;
+	private static final int START_REPORT_DATA_ROW = 8;
 
 	/** The Constant MAX_ROW_PER_EMPL. */
-	private static final int MAX_ROW_PER_EMPL = 51;
+	private static final int MAX_ROW_PER_EMPL = 45;
 
 	/** The Constant EMPL_INVIDUAL_INDEX. */
 	private static final int EMPL_INVIDUAL_INDEX = 0;
@@ -120,11 +121,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The Constant EMPL_YEARMONTH_INDEX. */
 	private static final int EMPL_YEARMONTH_INDEX = 16;
 
-	/** The Constant PAGE_NUMBER_START_ROW. */
-	private static final int PAGE_NUMBER_START_ROW = 3;
-
 	/** The Constant MONTHLY_DATA_START_ROW. */
-	private static final int MONTHLY_DATA_START_ROW = 8;
+	private static final int MONTHLY_DATA_START_ROW = 3;
 
 	/** The Constant REPORT_ROW_BG_WHITE. */
 	private static final int REPORT_ROW_BG_WHITE = 1;
@@ -207,11 +205,23 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
 					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-					pageSetup.setFitToPagesTall(1);
-					pageSetup.setFitToPagesWide(1);
-
+					
+					// Set header value
+					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + dataSource.getData().getReportName());
+					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9&D　&T\npage&P");
+					
 					// Delete template column
 					worksheet.getCells().deleteColumns(42, 20, true);
+					
+					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
+					if (dataSource.getMode() == EXPORT_EXCEL) {
+						pageSetup.setZoom(100);
+					} else if (dataSource.getMode() == EXPORT_PDF) {
+						pageSetup.setFitToPagesTall(1);
+						pageSetup.setFitToPagesWide(1);
+					}
+					
 				}
 			}
 
@@ -280,11 +290,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			AttendanceRecordReportEmployeeData employeeData, int page, Range pageTmpl, Range dailyWTmpl,
 			Range dailyBTmpl, Range weeklyRangeTmpl) throws Exception {
 
-		// Add page number
-		Range pageNumberRange = worksheet.getCells().createRange(String.format(PAGE_NUMBER_ADDR,
-				(startNewPage + PAGE_NUMBER_START_ROW), (startNewPage + PAGE_NUMBER_START_ROW + 1)));
-		pageNumberRange.get(0, 0).setValue(page + "" + pageNumberRange.get(0, 0).getValue());
-
 		// Add monthly data
 		Range monththDataRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
 				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
@@ -301,17 +306,17 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				(startNewPage + START_EMPLOYEE_DATA_ROW), (startNewPage + START_EMPLOYEE_DATA_ROW)));
 
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
-				.setValue(employeeInfoL.get(0, EMPL_INVIDUAL_INDEX).getValue() + " " + employeeData.getInvidual());
+				.setValue(TextResource.localize("KWR002_212") + " " + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
-				.setValue(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX).getValue() + " " + employeeData.getWorkplace());
+				.setValue(TextResource.localize("KWR002_213", "#Com_Workplace") + " " + employeeData.getWorkplace());
 		employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX).getValue() + " " + employeeData.getEmployment());
+				.setValue(TextResource.localize("KWR002_214", "#Com_Employment") + " " + employeeData.getEmployment());
 		employeeInfoR.get(0, EMPL_TITLE_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_TITLE_INDEX).getValue() + " " + employeeData.getTitle());
+				.setValue(TextResource.localize("KWR002_215", "#Com_Jobtitle") + " " + employeeData.getTitle());
 		employeeInfoR.get(0, EMPL_WORKTYPE_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_WORKTYPE_INDEX).getValue() + " " + employeeData.getWorkType());
+				.setValue(TextResource.localize("KWR002_216") + " " + employeeData.getWorkType());
 		employeeInfoR.get(0, EMPL_YEARMONTH_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_YEARMONTH_INDEX).getValue() + " " + employeeData.getYearMonth());
+				.setValue(TextResource.localize("KWR002_217") + " " + employeeData.getYearMonth());
 
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();

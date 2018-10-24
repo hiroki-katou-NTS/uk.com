@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +25,12 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
@@ -39,7 +44,9 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 控除時間帯
@@ -55,22 +62,33 @@ public class DeductionTimeSheet {
 	// 計上用
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 
+	//休憩
+	private final List<BreakTimeOfDailyPerformance> breakTimeOfDailyList;
+	//外出
+	private final Optional<OutingTimeOfDailyPerformance> dailyGoOutSheet;
+	//短時間
+	private final List<ShortWorkingTimeSheet> shortTimeSheets;
+	
+	
 	public static DeductionTimeSheet createTimeSheetForFixBreakTime(WorkTimeMethodSet setMethod,
 			RestClockManageAtr clockManage,  Optional<OutingTimeOfDailyPerformance> dailyGoOutSheet, TimeSpanForCalc oneDayRange,
 			CommonRestSetting CommonSet, TimeLeavingOfDailyPerformance attendanceLeaveWork,
 			Optional<FixedRestCalculateMethod> fixedCalc, WorkTimeDivision workTimeDivision,
 			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,List<ShortWorkingTimeSheet> shortTimeSheets,
 			WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkTimezoneCommonSet> commonSetting
-			,HolidayCalcMethodSet holidayCalcMethodSet) {
+			,HolidayCalcMethodSet holidayCalcMethodSet,PredetermineTimeSetForCalc predetermineTimeSetForCalc,WorkType workType, List<EmTimeZoneSet> fixWoSetting) {
 		// 計上用
 		val record = createDedctionTimeSheet(DeductionAtr.Appropriate, setMethod, clockManage, dailyGoOutSheet,
 				oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, Optional.empty(),
-				Optional.empty(), breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet);
+				Optional.empty(), breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
+				,predetermineTimeSetForCalc,workType,fixWoSetting);
 		// 控除用
 		val ded = createDedctionTimeSheet(DeductionAtr.Deduction, setMethod, clockManage, dailyGoOutSheet, oneDayRange,
 				CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, Optional.empty(), Optional.empty(),
-				breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet);
-		return new DeductionTimeSheet(ded,record);
+				breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
+				,predetermineTimeSetForCalc,workType,fixWoSetting);
+		
+		return new DeductionTimeSheet(ded,record,breakTimeOfDailyList,dailyGoOutSheet,shortTimeSheets);
 	}
 
 	/**
@@ -94,6 +112,7 @@ public class DeductionTimeSheet {
 	 *            固定休憩の計算方法
 	 * @param workTimeDivision
 	 *            就業時間帯勤務区分
+	 * @param fixWoSetting 
 	 * @param noStampSet
 	 *            休憩未打刻時の休憩設定
 	 * @param fluidSet
@@ -106,7 +125,8 @@ public class DeductionTimeSheet {
 			Optional<FixedRestCalculateMethod> fixedCalc, WorkTimeDivision workTimeDivision,
 			Optional<FlowWorkRestSettingDetail> flowDetail, Optional<FlowWorkRestTimezone> fluRestTime,
 			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,List<ShortWorkingTimeSheet> shortTimeSheets,
-			WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkTimezoneCommonSet> commonSetting,HolidayCalcMethodSet holidayCalcMethodSet) {
+			WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkTimezoneCommonSet> commonSetting,HolidayCalcMethodSet holidayCalcMethodSet
+			,PredetermineTimeSetForCalc predetermineTimeSetForCalc,WorkType workType, List<EmTimeZoneSet> fixWoSetting) {
 
 		/* 控除時間帯取得 控除時間帯リストへコピー */
 		List<TimeSheetOfDeductionItem> useDedTimeSheet = collectDeductionTimes(goOutTimeSheetList, oneDayRange, CommonSet,
@@ -129,7 +149,11 @@ public class DeductionTimeSheet {
 		/* 丸め処理(未完成)*/
 		if(commonSetting.isPresent()) {
 			if(commonSetting.get().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
-				goOutDeletedList = rounding(dedAtr,goOutDeletedList,commonSetting.get().getGoOutSet());
+				val mostFastOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == 1).findFirst();
+				val mostLateOclock = fixWoSetting.stream().filter(tc -> tc.getEmploymentTimeFrameNo().v() == fixWoSetting.size()).findFirst();
+				if(mostFastOclock.isPresent() && mostLateOclock.isPresent())
+					goOutDeletedList = rounding(dedAtr,goOutDeletedList,commonSetting.get().getGoOutSet().getTotalRoundingSet(),mostFastOclock.get().getTimezone().getStart(),mostLateOclock.get().getTimezone().getEnd(),
+												predetermineTimeSetForCalc.getOneDayTimeSpan());
 			}
 		}
 		return goOutDeletedList;
@@ -165,11 +189,11 @@ public class DeductionTimeSheet {
 		/* 短時間勤務時間帯を取得 */
 		//育児
 		List<ShortWorkingTimeSheet> chilCare = shortTimeSheets.stream().filter(tc -> tc.getChildCareAttr().isChildCare()).collect(Collectors.toList());
-		if(dedAtr.isDeduction()
-				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getCalculateIncludCareTime()==NotUseAtr.USE) {
-			chilCare = new ArrayList<>();
-		}
+//		if(dedAtr.isDeduction()
+//				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
+//				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getCalculateIncludCareTime()==NotUseAtr.USE) {
+//			chilCare = new ArrayList<>();
+//		}
 		List<TimeSheetOfDeductionItem> list = getShortTime(attendanceLeaveWork,chilCare,workTimeShortTimeSet.isChildCareWorkUse());
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list) {
 			sheetList.add(timeSheetOfDeductionItem);
@@ -208,9 +232,10 @@ public class DeductionTimeSheet {
 				Optional<TimeSpanForCalc> duplicateGoOutSheet = oneDayRange.getDuplicatedWith(timeSheet.calcrange);
 				if (duplicateGoOutSheet.isPresent()) {
 					/* ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む */
-					sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(timeSheet.timeSheet,
+					sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(timeSheet.timeSheet,
 							duplicateGoOutSheet.get(), timeSheet.recordedTimeSheet, timeSheet.deductionTimeSheet,
 							timeSheet.bonusPayTimeSheet, timeSheet.specBonusPayTimesheet, timeSheet.midNightTimeSheet,
+							timeSheet.getWorkingBreakAtr(),
 							timeSheet.getGoOutReason(), timeSheet.getBreakAtr(), 
 							timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
 
@@ -224,14 +249,15 @@ public class DeductionTimeSheet {
 				if (!duplicateBreakSheet.isEmpty()) {
 					duplicateBreakSheet.forEach(tc -> {
 						/* ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む */
-						sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
+						sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 								new TimeZoneRounding(tc.getStart(), tc.getEnd(),
 										timeSheet.getTimeSheet().getRounding()),
 								tc.getSpan(), timeSheet.recordedTimeSheet, timeSheet.deductionTimeSheet,
 								timeSheet.bonusPayTimeSheet, timeSheet.specBonusPayTimesheet,
-								timeSheet.midNightTimeSheet, timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
+								timeSheet.midNightTimeSheet, timeSheet.getWorkingBreakAtr(),timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
 								timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
 					});
+				
 				}
 				break;
 			default:
@@ -252,7 +278,7 @@ public class DeductionTimeSheet {
 
 		/* stream.collect.summingInt() */
 		for (TimeSheetOfDeductionItem dedItem : duplicatitedworkTime) {
-			sumTime = sumTime.addMinutes(dedItem.calcTotalTime().valueAsMinutes());
+			sumTime = sumTime.addMinutes(dedItem.calcTotalTime(dedAtr).valueAsMinutes());
 		}
 		return sumTime;
 	}
@@ -263,10 +289,10 @@ public class DeductionTimeSheet {
 	 * @param deductionTimeSheetList
 	 * @return
 	 */
-	public AttendanceTime calcDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionItemTimeSheetList) {
+	public AttendanceTime calcDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionItemTimeSheetList,DeductionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
 		for (TimeSheetOfDeductionItem deductionItemTimeSheet : deductionItemTimeSheetList) {
-			totalTime.addMinutes(deductionItemTimeSheet.calcTotalTime().valueAsMinutes());
+			totalTime.addMinutes(deductionItemTimeSheet.calcTotalTime(atr).valueAsMinutes());
 		}
 		return totalTime;
 	}
@@ -291,11 +317,11 @@ public class DeductionTimeSheet {
 		switch (dedAtr) {
 		case Appropriate:
 			dedTotalTime = getDeductionTotalTime(forDeductionTimeZoneList.stream()
-					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()),dedAtr);
 			break;
 		case Deduction:
 			dedTotalTime = getDeductionTotalTime(forRecordTimeZoneList.stream()
-					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()),dedAtr);
 			break;
 		default:
 			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
@@ -315,30 +341,30 @@ public class DeductionTimeSheet {
 		case Appropriate:
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList())));
+																		   .filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList()),dedAtr));
 			break;
 		case Deduction:
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList()),dedAtr));
 			break;
 		default:
 			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
@@ -352,13 +378,13 @@ public class DeductionTimeSheet {
 	 * @param deductionTimeSheetList
 	 * @return
 	 */
-	public DeductionTotalTime getDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionTimeSheetList) {
+	public DeductionTotalTime getDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionTimeSheetList,DeductionAtr atr) {
 		AttendanceTime statutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
 				// .filter(tc -> tc) 一時的に
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList()),atr);
 		AttendanceTime excessOfStatutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
 				// .filter(tc -> tc.getWithinStatutoryAtr().isExcessOfStatutory()) 一時的に
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList()),atr);
 		return DeductionTotalTime.of(
 				TimeWithCalculation
 						.sameTime(statutoryTotalTime.addMinutes(excessOfStatutoryTotalTime.valueAsMinutes())),
@@ -524,7 +550,8 @@ public class DeductionTimeSheet {
 			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList, FlowWorkRestTimezone flowRestTimezone,
 			FlowWorkRestSetting flowRestSetting,List<ShortWorkingTimeSheet> shortTimeSheets,
 			WorkTimezoneShortTimeWorkSet workTimeShortTimeSet,Optional<WorkTimezoneCommonSet> commonSetting
-			,HolidayCalcMethodSet holidayCalcMethodSet) {
+			,HolidayCalcMethodSet holidayCalcMethodSet,PredetermineTimeSetForCalc predetermineTimeSetForCalc,WorkType worktype,
+			List<EmTimeZoneSet> fixWoSetting) {
 
 		// 固定休憩か流動休憩か確認する
 		if (flowRestTimezone.isFixRestTime()) {// 固定休憩の場合
@@ -536,7 +563,8 @@ public class DeductionTimeSheet {
 						goOutTimeSheetList, oneDayTimeSpan, flowRestSetting.getCommonRestSetting(),
 						attendanceLeaveWork, Optional.empty(), workTimeDivision,
 						Optional.of(flowRestSetting.getFlowRestSetting()), Optional.of(flowRestTimezone),
-						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet);
+						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
+						,predetermineTimeSetForCalc,worktype,fixWoSetting);
 			// 予定を参照する
 			case REFER_SCHEDULE:
 				return createDedctionTimeSheet(dedAtr, WorkTimeMethodSet.FLOW_WORK,
@@ -544,7 +572,8 @@ public class DeductionTimeSheet {
 						goOutTimeSheetList, oneDayTimeSpan, flowRestSetting.getCommonRestSetting(),
 						attendanceLeaveWork, Optional.empty(), workTimeDivision,
 						Optional.of(flowRestSetting.getFlowRestSetting()), Optional.of(flowRestTimezone),
-						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet);
+						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
+						,predetermineTimeSetForCalc,worktype,fixWoSetting);
 			// 参照せずに打刻する
 			case STAMP_WHITOUT_REFER:
 				return createDedctionTimeSheet(dedAtr, WorkTimeMethodSet.FLOW_WORK,
@@ -552,7 +581,8 @@ public class DeductionTimeSheet {
 						goOutTimeSheetList, oneDayTimeSpan, flowRestSetting.getCommonRestSetting(),
 						attendanceLeaveWork, Optional.empty(), workTimeDivision,
 						Optional.of(flowRestSetting.getFlowRestSetting()), Optional.of(flowRestTimezone),
-						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet);
+						breakTimeOfDailyList, shortTimeSheets,workTimeShortTimeSet,commonSetting,holidayCalcMethodSet
+						,predetermineTimeSetForCalc,worktype,fixWoSetting);
 			}
 		} else {// 流動休憩の場合
 			// switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod())
@@ -677,18 +707,15 @@ public class DeductionTimeSheet {
 		for (TimeSheetOfDeductionItem timeSheet : dedList) {
 			val dupCalcRange = timeSheet.calcrange.getDuplicatedWith(timeSpan);
 			if (dupCalcRange.isPresent()) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
-						new TimeZoneRounding(dupCalcRange.get().getStart(), dupCalcRange.get().getEnd(),
-								timeSheet.timeSheet.getRounding()),
-						dupCalcRange.get(), timeSheet.getDeductionTimeSheet(), timeSheet.getRecordedTimeSheet(),
-						timeSheet.getBonusPayTimeSheet(), timeSheet.getSpecBonusPayTimesheet(),
-						timeSheet.getMidNightTimeSheet(), timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
-						timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
+				TimeSheetOfDeductionItem divideStartTime = timeSheet.reCreateOwn(dupCalcRange.get().getStart(), false);
+				TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(dupCalcRange.get().getEnd(), true);
+				returnList.add(correctAfterTimeSheet);
 			}
 		}
 		return returnList;
 	}
 
+	//public void 
 	/**
 	 * 控除区分に従って控除リスト取得
 	 * 
@@ -714,33 +741,35 @@ public class DeductionTimeSheet {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for(ShortWorkingTimeSheet sts:shortTimeSheet) {
 			if(sts.getStartTime() == null || sts.getEndTime() == null) continue;
-			//出退勤と重複している部分削除
-			val notDupRange = attendanceLeaveWork.getNotDuplicateSpan(new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()));
+
 			if(isCalcShortTime) {
-				if(notDupRange.isPresent()) {
-					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(new TimeZoneRounding(notDupRange.get().getStart(), notDupRange.get().getEnd(), null), 
-																							  notDupRange.get(),
+				//出退勤と重複している部分削除
+				val notDupSpanList = attendanceLeaveWork.getNotDuplicateSpan(new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()));
+				for(TimeSpanForCalc notDupRange : notDupSpanList)
+					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(notDupRange.getStart(), notDupRange.getEnd(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)), 
+																							  notDupRange,
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  Optional.empty(),
+																							  WorkingBreakTimeAtr.NOTWORKING,
 																							  Finally.empty(),
 																							  Finally.empty(),
 																							  decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
 																							  DeductionClassification.CHILD_CARE,
 																							  Optional.of(getChildCareAtr(sts.getChildCareAttr()))
 																							  ));
-				}
 			}
 			else {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(new TimeZoneRounding(sts.getStartTime(), sts.getEndTime(), null), 
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(sts.getStartTime(), sts.getEndTime(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)), 
 																							  new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  Optional.empty(),
+																							  WorkingBreakTimeAtr.NOTWORKING,
 																							  Finally.empty(),
 																							  Finally.empty(),
 																							  decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
@@ -785,15 +814,182 @@ public class DeductionTimeSheet {
 		}
 		return returnEnum;
 	}
-	
+
 	/**
 	 * 丸め処理
 	 * @return
 	 */
-	public static List<TimeSheetOfDeductionItem> rounding(DeductionAtr dedAtr,List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,WorkTimezoneGoOutSet goOutSet){
-		
+	public static List<TimeSheetOfDeductionItem> rounding(DeductionAtr dedAtr,List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,TotalRoundingSet goOutSet,
+														 TimeWithDayAttr mostFastWithinFrameOclock,TimeWithDayAttr mostLateWithinFrameOclock,
+														 TimeSpanForCalc oneDayRange){
+		//if(goOutSet.ge){
+		if(false) {
+			val correctList = perRounding(timeSheetOfDeductionItemList,mostFastWithinFrameOclock,mostLateWithinFrameOclock,oneDayRange);
+			return correctList;
+		}
 		return timeSheetOfDeductionItemList;
 	}
 	
+	/**
+	 * 計上時間の丸め設定.丸め方法 = 個別丸め　の分岐後処理は
+	 * ここで行う。
+	 * @param timeSheetOfDeductionItemList
+	 * @param mostFastWithinFrameOclock　一番前の就業時間の開始時刻
+	 * @param mostLateWithinFrameOclock 一番後ろの就業時間の終了時刻
+	 * @return
+	 */
+	public static List<TimeSheetOfDeductionItem> perRounding(List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,TimeWithDayAttr mostFastWithinFrameOclock,TimeWithDayAttr mostLateWithinFrameOclock,
+															 TimeSpanForCalc oneDayRange){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		//早出と就業時間帯.開始を跨いでる物の分割
+		List<TimeSheetOfDeductionItem> containedMostFast = timeSheetOfDeductionItemList.stream().filter(tc -> tc.getTimeSheet().timeSpan().contains(mostFastWithinFrameOclock)).collect(Collectors.toList());
+		//↑のリストに対して独自丸め実行
+		returnList.addAll(ownRounding(containedMostFast, mostFastWithinFrameOclock));
+		
+		//就業時間帯.終了と残業を跨いでる物の分割
+		List<TimeSheetOfDeductionItem> containedMostLate = timeSheetOfDeductionItemList.stream().filter(tc -> tc.getTimeSheet().timeSpan().contains(mostLateWithinFrameOclock)).collect(Collectors.toList());
+		//↑のリストに対して独自丸め実行
+		returnList.addAll(ownRounding(containedMostLate, mostLateWithinFrameOclock));
+		
+		List<TimeSheetOfDeductionItem> recreateList = new ArrayList<>();
+		for(TimeSheetOfDeductionItem item : timeSheetOfDeductionItemList) {
+			if(!containedMostFast.contains(item) && !containedMostLate.contains(item) ) {
+				recreateList.add(item);
+			}
+		}
+		recreateList.addAll(returnList);
+		recreateList = recreateList.stream().sorted((first,second) -> first.getTimeSheet().getStart().compareTo(second.getTimeSheet().getEnd())).collect(Collectors.toList());
+		
+		
+		//休憩・外出時間帯の抜き出し & 各控除時間帯を丸め処理
+		//recreateList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()).;
+		
+		//各控除時間帯を丸目後時刻補正
+		List<TimeSheetOfDeductionItem> correctedTimeList = correctTimeAfterCorrect(returnList,oneDayRange,mostFastWithinFrameOclock,mostLateWithinFrameOclock);
+		//外出・休憩丸め設定をクリア
+		correctedTimeList.forEach(tc -> {
+			if(tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isGoOut())
+				tc.getTimeSheet().roudingReset();
+		});
+		return correctedTimeList;
+	}
+	
+	/**
+	 * 対象の時間帯を基準点の前後時間帯へと切り離す 
+	 * @param containedList　対象時間帯
+	 * @param baseOclock　基準時間
+	 * @return　前後時間帯
+	 */
+	private static List<TimeSheetOfDeductionItem> ownRounding(List<TimeSheetOfDeductionItem> containedList,TimeWithDayAttr baseOclock){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		containedList.forEach(tc ->{
+			//残業と就業時間帯を跨いでいる物の分割(開始～基準点)
+			val devidedTimeSheet1 = divideBaseTime(tc,baseOclock,true);
+			//残業と就業時間帯を跨いでいる物の分割(基準点～終了)
+			val devidedTimeSheet2 = divideBaseTime(tc,baseOclock,false);
+			
+			returnList.add(devidedTimeSheet1);
+			returnList.add(devidedTimeSheet2);
+		});
+		return returnList;
+	}
+	
+	/**
+	 * 基準点を基に、分割
+	 * @param baseTimeSheet　分割する時間帯
+	 * @param baseTime　基準時間
+	 * @param isBefore　基準時間より前に変換する
+	 * @return　変換後時間帯
+	 */
+	private static TimeSheetOfDeductionItem divideBaseTime(TimeSheetOfDeductionItem baseTimeSheet,TimeWithDayAttr baseTime,boolean isBefore) {
+		//isBeforeを基に、開始～基準　or 基準～終了　の時間帯へ変換
+		val devideTimeSheet = baseTimeSheet.reCreateOwn(baseTime, isBefore);
+		//丸め(↑の開始からの距離を丸める)
+		val roundingValue1 = devideTimeSheet.getTimeSheet().getRounding().round(devideTimeSheet.getTimeSheet().getTimeSpan().lengthAsMinutes());
+		//丸め後に再作成(開始 + ↑の丸め後の値を基準点とし、開始～開始＋丸め後値で再作成する)
+		return devideTimeSheet.reCreateOwn(devideTimeSheet.getTimeSheet().getStart().forwardByMinutes(roundingValue1), isBefore);
+	}
+
+	
+	
+	/**
+	 * 丸め後の重複部分を補正
+	 * @param returnList
+	 * @param oneDayRange
+	 * @return
+	 */
+	private static List<TimeSheetOfDeductionItem> correctTimeAfterCorrect(List<TimeSheetOfDeductionItem> returnList,TimeSpanForCalc oneDayRange,TimeWithDayAttr startOclock, TimeWithDayAttr endOclock) {
+		//returnListの末尾1個手前までループ
+		for(int beforeNo = 0 ; beforeNo < returnList.size() - 1 ; beforeNo++) {
+			TimeSpanForCalc maxCorrectRange = getMaxCorrectRange(returnList.get(beforeNo),oneDayRange,startOclock,endOclock);
+			TimeWithDayAttr baseTime = maxCorrectRange.getStart();
+			if(returnList.get(beforeNo).getTimeSheet().getTimeSpan().contains(baseTime)) {
+				
+				//最大範囲を超えている分手前にずらす & 控除時間帯リストを更新
+				returnList = moveBack(returnList,beforeNo,maxCorrectRange);
+			}
+			val nextTimeSheet = returnList.get(beforeNo + 1);
+			//重複の判断処理
+			if(returnList.get(beforeNo).getTimeSheet().getTimeSpan().getDuplicatedWith(nextTimeSheet.getCalcrange()).isPresent()) {
+				//重複している分次の時間帯を後ろにずらす
+				returnList.set(beforeNo + 1, nextTimeSheet.replaceTimeSpan(Optional.of(returnList.get(beforeNo).getTimeSheet().getTimeSpan().reviseToAvoidDuplicatingWith(nextTimeSheet.getCalcrange()))));
+			}
+		}
+		return returnList;
+	}
+
+	/**
+	 * 手前にずらす処理
+	 * @param returnList　処理対象となる控除項目時間帯リスト
+	 * @param listNo 処理対象のリスト番号
+	 * @param maxCorrectRange 最大補正時間
+	 * @return　補正後時間
+	 */
+	private static List<TimeSheetOfDeductionItem> moveBack(List<TimeSheetOfDeductionItem> returnList, int listNo,TimeSpanForCalc maxCorrectRange) {
+		TimeSheetOfDeductionItem targetTimeSheet = returnList.get(listNo);
+		Optional<TimeSpanForCalc> dupTimeSpan = targetTimeSheet.getTimeSheet().getTimeSpan().getDuplicatedWith(maxCorrectRange);
+		//手前にずらす
+		targetTimeSheet = targetTimeSheet.replaceTimeSpan(Optional.of(targetTimeSheet.getTimeSheet().getTimeSpan().shiftBack(dupTimeSpan.orElse(new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0))).lengthAsMinutes()))); 
+		returnList.set(listNo, targetTimeSheet);
+		//手前件数分ループ
+		for(int nowListNo = listNo - 1 ; 0 <= nowListNo ; nowListNo--) {
+			//手前の時間帯取得
+			val duplicateRange = targetTimeSheet.getTimeSheet().getTimeSpan().getDuplicatedWith(returnList.get(nowListNo).getTimeSheet().getTimeSpan());
+			//一様Optionalチェック(EAには無し)
+			if(duplicateRange.isPresent()) {
+				//手前にずらす
+				TimeSpanForCalc afterMoveTimeSpan = returnList.get(nowListNo).getTimeSheet().getTimeSpan().shiftBack(duplicateRange.get().lengthAsMinutes());
+				//↑でずらした結果、最大範囲を含んでいるか
+				if(afterMoveTimeSpan.contains(maxCorrectRange)) {
+					//時間帯補正
+					afterMoveTimeSpan = new TimeSpanForCalc(maxCorrectRange.getStart(), afterMoveTimeSpan.getEnd());
+				}
+				//時間帯のセット
+				returnList.set(nowListNo, returnList.get(nowListNo).replaceTimeSpan(Optional.of(afterMoveTimeSpan)));
+			}
+		}
+		
+		return returnList;
+	}
+
+	/**
+	 * 最大補正範囲を取得
+	 * @param oneDayRange 1日の範囲
+	 * @return 最大補正範囲
+	 */
+	private static TimeSpanForCalc getMaxCorrectRange(TimeSheetOfDeductionItem deductionTimeSheet ,TimeSpanForCalc oneDayRange,TimeWithDayAttr startOclock, TimeWithDayAttr endOclock) {
+		//就業時間内.開始 > 控除時間帯.開始
+		if(startOclock.greaterThan(deductionTimeSheet.getTimeSheet().getTimeSpan().getStart())) {
+			return new TimeSpanForCalc(oneDayRange.getStart(), startOclock);
+		}
+		//>就業時間内.終了 > 控除時間帯.開始
+		if(endOclock.greaterThan(deductionTimeSheet.getTimeSheet().getStart())){
+			return new TimeSpanForCalc(oneDayRange.getStart(),startOclock);
+		}
+		else {
+			return new TimeSpanForCalc(endOclock, oneDayRange.getEnd());
+		}
+	}
+
 		
 }

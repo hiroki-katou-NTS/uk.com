@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
@@ -22,6 +23,8 @@ public interface WorkTimeSettingRepository {
 	 * @return the list
 	 */
 	public List<WorkTimeSetting> findByCompanyId(String companyId);
+	
+	public Map<String, String> getCodeNameByListWorkTimeCd(String companyId, List<String> listWorkTimeCode);
 
 	/**
 	 * Find by codes.
@@ -100,4 +103,5 @@ public interface WorkTimeSettingRepository {
 	 * @return the optional
 	 */
 	public Optional<WorkTimeSetting> findByCodeAndAbolishCondition(String companyId, String workTimeCode,AbolishAtr abolishAtr);
+	
 }

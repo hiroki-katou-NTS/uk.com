@@ -43,6 +43,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var transferData = __viewContext.transferred.value;
             var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+            //var fromScreen = "login"; 
             self.topPageCode(code);
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 //console.log(data);

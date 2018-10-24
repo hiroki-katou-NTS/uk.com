@@ -14,10 +14,10 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.annualleave.KrcdtMonAnnleaRemain;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.annualleave.KrcdtMonAnnleaRemainPK;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -27,40 +27,40 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRemNumEachMonthRepository {
 
-	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonAnnleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
+	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
 			+ "ORDER BY a.startDate ";
 
-	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonAnnleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
+	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
+			+ "AND a.krcdtMonRemainPk.closureId = :closureId "
 			+ "ORDER BY a.startDate ";
 
-	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonAnnleaRemain a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay "
-			+ "ORDER BY a.PK.employeeId, a.startDate ";
+	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
+			+ "AND a.krcdtMonRemainPk.closureId = :closureId "
+			+ "AND a.krcdtMonRemainPk.closureDay = :closureDay "
+			+ "AND a.krcdtMonRemainPk.isLastDay = :isLastDay "
+			+ "ORDER BY a.krcdtMonRemainPk.employeeId, a.startDate ";
 
-	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonAnnleaRemain a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.startDate ";
+	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
+			+ "AND a.krcdtMonRemainPk.yearMonth IN :yearMonths "
+			+ "ORDER BY a.krcdtMonRemainPk.employeeId, a.startDate ";
 
-	private static final String FIND_BY_CLOSURE_PERIOD = "SELECT a FROM KrcdtMonAnnleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
+	private static final String FIND_BY_CLOSURE_PERIOD = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
 			+ "AND a.startDate >= :startDate "
 			+ "AND a.endDate <= :endDate "
 			+ "AND a.closureStatus = 1 "
 			+ "ORDER BY a.startDate ";
 	
-	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAnnleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+//	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRemain a "
+//			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+//			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth ";
 
 	/** 検索 */
 	@Override
@@ -68,24 +68,24 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 			ClosureDate closureDate) {
 		
 		return this.queryProxy()
-				.find(new KrcdtMonAnnleaRemainPK(
+				.find(new KrcdtMonMergePk(
 						employeeId,
 						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)),
-						KrcdtMonAnnleaRemain.class)
-				.map(c -> c.toDomain());
+						KrcdtMonRemain.class)
+				.map(c -> c.toDomainAnnLeaRemNumEachMonth());
 	}
 	
 	/** 検索　（年月） */
 	@Override
 	public List<AnnLeaRemNumEachMonth> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 		
-		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonAnnleaRemain.class)
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainAnnLeaRemNumEachMonth());
 	}
 	
 	/** 検索　（年月と締めID） */
@@ -93,11 +93,11 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 	public List<AnnLeaRemNumEachMonth> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
 		
-		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonAnnleaRemain.class)
+		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainAnnLeaRemNumEachMonth());
 	}
 	
 	/** 検索　（社員IDリスト） */
@@ -105,17 +105,22 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 	public List<AnnLeaRemNumEachMonth> findbyEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
 		
-		List<AnnLeaRemNumEachMonth> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS, KrcdtMonAnnleaRemain.class)
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS, KrcdtMonRemain.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> c.toDomain()));
+					.getList());
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainAnnLeaRemNumEachMonth()).collect(Collectors.toList());
 	}
 	
 	/** 検索　（社員IDリストと年月リスト） */
@@ -124,25 +129,32 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<AnnLeaRemNumEachMonth> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnnleaRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainAnnLeaRemNumEachMonth()).collect(Collectors.toList());
 	}
 
 	/** 検索　（社員IDと締め期間、条件＝締め済み） */
 	@Override
 	public List<AnnLeaRemNumEachMonth> findByClosurePeriod(String employeeId, DatePeriod closurePeriod) {
 		
-		return this.queryProxy().query(FIND_BY_CLOSURE_PERIOD, KrcdtMonAnnleaRemain.class)
+		return this.queryProxy().query(FIND_BY_CLOSURE_PERIOD, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", closurePeriod.start())
 				.setParameter("endDate", closurePeriod.end())
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainAnnLeaRemNumEachMonth());
 	}
 	
 	/** 登録および更新 */
@@ -150,7 +162,7 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 	public void persistAndUpdate(AnnLeaRemNumEachMonth domain) {
 		
 		// キー
-		val key = new KrcdtMonAnnleaRemainPK(
+		val key = new KrcdtMonMergePk(
 				domain.getEmployeeId(),
 				domain.getYearMonth().v(),
 				domain.getClosureId().value,
@@ -158,14 +170,15 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 				(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
 		
 		// 登録・更新
-		KrcdtMonAnnleaRemain entity = this.getEntityManager().find(KrcdtMonAnnleaRemain.class, key);
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
 		if (entity == null){
-			entity = new KrcdtMonAnnleaRemain();
-			entity.fromDomainForPersist(domain);
+			entity = new KrcdtMonRemain();
+			entity.setKrcdtMonRemainPk(key);
+			entity.toEntityMonAnnleaRemain(domain);
 			this.getEntityManager().persist(entity);
 		}
 		else {
-			entity.fromDomainForUpdate(domain);
+			entity.toEntityMonAnnleaRemain(domain);
 		}
 	}
 	
@@ -173,22 +186,40 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonAnnleaRemain.class,
-				new KrcdtMonAnnleaRemainPK(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+//		this.commandProxy().remove(KrcdtMonRemain.class,
+//				new KrcdtMonMergePk(
+//						employeeId,
+//						yearMonth.v(),
+//						closureId.value,
+//						closureDate.getClosureDay().v(),
+//						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 削除
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
+		if (entity != null) entity.deleteMonAnnleaRemain();
 	}
 	
 	/** 削除　（年月） */
 	@Override
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+//		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+//				.setParameter("employeeId", employeeId)
+//				.setParameter("yearMonth", yearMonth.v())
+//				.executeUpdate();
+		
+		val entitys = this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.executeUpdate();
+				.getList();
+		for (val entity : entitys) entity.deleteMonAnnleaRemain();
 	}
 }

@@ -38,10 +38,14 @@ module nts.uk.com.view.ccg.share.ccg {
             showAllClosure: boolean; // 全締め表示
             showPeriod: boolean; // 対象期間利用
             showPeriodYM: boolean; // 対象期間精度
-            maxPeriodRange: string; // 最長期間
+            maxPeriodRange: string; // 最長期間 
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
+            baseDateOfParentScreen: KnockoutObservable<any>;
+            periodStartOfParentScreen: KnockoutObservable<any>;
+            periodEndOfParentScreen: KnockoutObservable<any>;
+            dateRangeOfParentScreen: KnockoutObservable<DateRangePickerModel>;
             inputPeriod: KnockoutObservable<DateRangePickerModel>;
             baseDate: KnockoutComputed<moment.Moment>;
             periodStart: KnockoutComputed<moment.Moment>;
@@ -72,6 +76,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isInDialog: boolean;
             isApplySearchDone: boolean = true;
             hasShownErrorDialog: boolean = false;
+            isFocusAdvancedSearchTab: KnockoutComputed<boolean>;
 
             // tabs
             tabs: KnockoutObservableArray<any>;
@@ -98,10 +103,9 @@ module nts.uk.com.view.ccg.share.ccg {
             referenceRange: number;
             
             //params Status Of Employee
-            inputStatusPeriodStart: KnockoutObservable<string>;
-            inputStatusPeriodEnd: KnockoutObservable<string>;
-            statusPeriodStart: KnockoutComputed<moment.Moment>;
-            statusPeriodEnd: KnockoutComputed<moment.Moment>;
+            retireStart: KnockoutComputed<string>;
+            retireEnd: KnockoutComputed<string>;
+            retirePeriod: KnockoutObservable<DateRangePickerModel>;
 
             incumbentDatasource: KnockoutObservableArray<any>;
             selectedIncumbent: KnockoutObservable<boolean>; // 在職区分
@@ -130,7 +134,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isValidEntryDateSearch: KnockoutComputed<boolean>;
             isValidRetirementDateSearch: KnockoutComputed<boolean>;
             tab2HasLoaded = false;
-            isTab2Lazy = false;
+            isTab2Lazy = true;
 
             // reserved list employee for KCP005
             reservedEmployees: KnockoutObservableArray<EmployeeSearchDto>;
@@ -150,6 +154,7 @@ module nts.uk.com.view.ccg.share.ccg {
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
             ccg001Tabindex: number;
+            errors: any;
 
             /**
              * Init screen model
@@ -178,8 +183,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 // date picker
                 self.inputBaseDate = ko.observable('');
                 self.inputPeriod = ko.observable(new DateRangePickerModel(moment().toISOString(), moment().toISOString()));
-                self.inputStatusPeriodStart = ko.observable(moment.utc("1900/01/01", "YYYY/MM/DD").toISOString());
-                self.inputStatusPeriodEnd = ko.observable(moment().toISOString());
+                self.retirePeriod = ko.observable(new DateRangePickerModel('1900/01/01', moment().format(CcgDateFormat.YMD)));
+                self.retireStart = ko.computed(() => {
+                    return _.replace(self.retirePeriod().startDate, /\//g, '-');
+                });
+                self.retireEnd = ko.computed(() => {
+                    return _.replace(self.retirePeriod().endDate, /\//g, '-');
+                });
 
                 // flags
                 self.isShow = ko.observable(false);
@@ -189,6 +199,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenJoptitleList = ko.observable(false);
                 self.isOpenWorkplaceList = ko.observable(false);
                 self.isOpenWorkTypeList = ko.observable(false);
+                self.isFocusAdvancedSearchTab = ko.pureComputed(() => {
+                    return self.selectedTab() == 'tab-2';
+                });
 
                 // search reference date & period
                 self.acquiredBaseDate = ko.observable('');
@@ -222,20 +235,18 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.periodEnd = ko.computed(() => {
                     return moment.utc(self.inputPeriod().endDate, CcgDateFormat.YMD);
                 });
-                self.statusPeriodStart = ko.computed(() => {
-                    return moment.utc(self.inputStatusPeriodStart());
-                });
-                self.statusPeriodEnd = ko.computed(() => {
-                    return moment.utc(self.inputStatusPeriodEnd());
-                });
                 self.isValidInput = ko.computed(() => {
                     // trigger computing when base date or period changed
                     self.inputBaseDate();
                     self.inputPeriod();
+                    self.retirePeriod();
                     return !($('#inp_baseDate').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsDateRangeComponent').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsStartDate input').ntsError('hasError') ||
-                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError'));
+                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-retire-period .ntsEndDate input').ntsError('hasError'));
                 });
                 self.isValidEntryDateSearch = ko.computed(() => {
                     self.entryDateTab3();
@@ -272,21 +283,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.inputPeriod.subscribe(value => {
                     if (!$('.ntsDatepicker').ntsError('hasError')) {
                         _.defer(() => self.applyDataSearch());
-                    }
-                });
-
-                self.statusPeriodStart.subscribe(startDate => {
-                    if (startDate.isAfter(self.statusPeriodEnd())) {
-                        let CCG001_94 = nts.uk.resource.getText("CCG001_94");
-                        $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
-                    }
-                });
-
-                self.statusPeriodEnd.subscribe(endDate => {
-                    $("#ccg001-partg-start").ntsError("clear");
-                    if (endDate.isBefore(self.statusPeriodStart())) {
-                        let CCG001_94 = nts.uk.resource.getText("CCG001_94");
-                        $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
                     }
                 });
 
@@ -537,42 +533,45 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set component properties
                 self.setProperties(data);
-
-                // start component
-                nts.uk.ui.block.invisible(); // block ui
-                self.startComponent().done(() => {
-                    self.setShowHideByReferenceRange();
-
-                    // Initial tab panel
-                    self.tabs(self.updateTabs());
-                    self.selectedTab(self.updateSelectedTab());
-
-                    // init view
-                    let webserviceLocator = nts.uk.request.location.siteRoot
-                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                        .mergeRelativePath('/view/ccg/share/index.xhtml').serialize();
-                    $input.load(webserviceLocator, function() {
-                        ko.cleanNode($input[0]);
-                        ko.applyBindings(self, $input[0]);
-                        // Set tabindex
-                        self.initNextTabFeature();
-                        let tabindex = $input.attr('tabindex');
-                        $input.attr('tabindex', -1);
-                        $input.find('.btn_showhide').attr('tabindex', tabindex);
-
-                        // init ccg show/hide event
-                        self.initCcgEvent();
-                        // set component height
-                        self.setComponentHeight();
-
-                        if (data.showOnStart) {
-                            self.showComponent().done(() => dfd.resolve());
-                        } else {
-                            dfd.resolve();
-                        }
-
+                
+                const initComponent = () => {
+                    // start component
+                    nts.uk.ui.block.invisible(); // block ui
+                    self.startComponent().done(() => {
+                        self.setShowHideByReferenceRange();
+    
+                        // Initial tab panel
+                        self.tabs(self.updateTabs());
+                        self.selectedTab(self.updateSelectedTab());
+    
+                        // init view
+                        $input.html(CCG001_HTML);
+                        _.defer(() => {
+                            ko.cleanNode($input[0]);
+                            ko.applyBindings(self, $input[0]);
+                            // Set tabindex
+                            self.initNextTabFeature();
+                            $('#ccg001-btn-search-drawer').attr('tabindex', self.ccg001Tabindex);
+                            // init ccg show/hide event
+                            self.initCcgEvent();
+                            // set component height
+                            self.setComponentHeight();
+    
+                            if (data.showOnStart) {
+                                self.showComponent().done(() => dfd.resolve());
+                            } else {
+                                dfd.resolve();
+                            }
+    
+                        });
                     });
-                });
+                };
+
+                if (_.isNil(ko.dataFor(document.body))) {
+                    nts.uk.ui.viewModelApplied.add(initComponent);
+                } else {
+                    initComponent();
+                }
 
                 return dfd.promise();
             }
@@ -635,8 +634,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.includeWorkersOnLeave = self.selectedLeave();
                 param.includeOccupancy = self.selectedClosed();
                 param.includeRetirees = self.selectedRetirement();
-                param.retireStart = self.statusPeriodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                param.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                param.retireStart = self.retireStart();
+                param.retireEnd = self.retireEnd();
                 param.systemType = self.systemType;
 
                 self.queryParam.employmentCodes = self.showEmployment ? self.selectedCodeEmployment() : [];
@@ -658,6 +657,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.systemType = _.isNil(options.systemType) ? ConfigEnumSystemType.PERSONAL_INFORMATION : options.systemType;
                 self.showQuickSearchTab = _.isNil(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
                 self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? true : options.showAdvancedSearchTab;
+              
                 // showBaseDate and showPeriod can not hide at the same time
                 const isBaseDateAndPeriodHidden = !options.showBaseDate && !options.showPeriod;
                 self.showBaseDate = _.isNil(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
@@ -670,10 +670,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
-                self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
-                const periodStart = _.isNil(options.periodStartDate) ? moment().toISOString() : options.periodStartDate;
-                const periodEnd = _.isNil(options.periodEndDate) ? moment().toISOString() : options.periodEndDate;
-                self.inputPeriod(new DateRangePickerModel(periodStart, periodEnd));
+                self.setBaseDateAndPeriodOnInit(options);
+
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
@@ -727,7 +725,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
-                $('#hor-scroll-button-hide').outerHeight(componentHeight);
                 $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
@@ -770,6 +767,7 @@ module nts.uk.com.view.ccg.share.ccg {
                                     self.inputPeriod(new DateRangePickerModel(period.startDate, period.endDate));
                                     self.isApplySearchDone = true;
 
+                                    this.saveEmployeeRangeSelection();
                                     // apply data search
                                     self.applyDataSearch();
                                 });
@@ -894,6 +892,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 if (self.isShow()) {
                     $('#component-ccg001').toggle('slide', () => {
+                        self.errors = $('#component-ccg001 .error').children();
+                        self.errors.ntsError('clear');
                         $('#component-ccg001').css('display', '');
                         $('#component-ccg001').css('visibility', 'hidden');
                     });
@@ -909,9 +909,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 if (self.isFirstTime) {
                     // Apply data search & load Kcp components
+                    self.synchronizeDate();
                     self.toggleSlide().done(() => $.when(self.applyDataSearch(), self.loadKcp005()).always(() => {
                         // Set acquired base date to status period end date
-                        self.inputStatusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
+                        self.retirePeriod(new DateRangePickerModel('1900/01/01', self.queryParam.baseDate));
 
                         // init subscribers
                         self.initSubscribers();
@@ -922,10 +923,46 @@ module nts.uk.com.view.ccg.share.ccg {
                     }));
                 } else {
                     // toggle slide ccg001
-                    self.toggleSlide();
+                    self.toggleSlide().done(() => self.synchronizeDate());
                     dfd.resolve();
                 }
                 return dfd.promise();
+            }
+
+            /**
+             * Synchronize date with parent screen
+             */
+            private synchronizeDate(): void {
+                let self = this;
+                // synchronize baseDate
+                if (self.baseDateOfParentScreen) {
+                    const isSameDate = moment.isMoment(self.baseDateOfParentScreen()) ?
+                        self.baseDateOfParentScreen().isSame(self.inputBaseDate()) : self.inputBaseDate() == self.baseDateOfParentScreen();
+                    if (!isSameDate) {
+                        self.inputBaseDate(self.baseDateOfParentScreen())
+                    }
+                }
+
+                // synchronize period
+                if (self.dateRangeOfParentScreen) {
+                    const dateRangeOfParentScreen = _.clone(self.dateRangeOfParentScreen());
+                    const isSameDate = DateRangePickerModel.isSamePeriod(dateRangeOfParentScreen, self.inputPeriod());
+                    if (!isSameDate) {
+                        self.inputPeriod(dateRangeOfParentScreen);
+                    }
+                } else if (self.periodStartOfParentScreen) {
+                    const isSameDate = moment.isMoment(self.periodStartOfParentScreen()) ?
+                        self.periodStartOfParentScreen().isSame(self.inputPeriod().startDate) && self.periodEndOfParentScreen().isSame(self.inputPeriod().endDate) :
+                        self.periodStartOfParentScreen() == self.inputPeriod().startDate && self.periodEndOfParentScreen() == self.inputPeriod().endDate;
+                    if (!isSameDate) {
+                        self.inputPeriod(new DateRangePickerModel(self.periodStartOfParentScreen(), self.periodEndOfParentScreen()));
+                    }
+                }
+
+                // recheck errors
+                if (!_.isEmpty(self.errors)) {
+                    self.errors.ntsError('check');
+                }
             }
 
             /**
@@ -1045,7 +1082,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
                     // Fix component width if screen width is smaller than component
-                    const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
+                    const componentWidth = window.innerWidth - $('#ccg001-btn-search-drawer').offset().left;
                     if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
                         const margin = 20;
                         // fix width and show scrollbar
@@ -1135,10 +1172,10 @@ module nts.uk.com.view.ccg.share.ccg {
             private loadAdvancedSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                if ((!self.isTab2Lazy || !self.isFirstTime) && self.showAdvancedSearchTab) {
-                    self.reloadAdvanceSearchTab().done(() => dfd.resolve());
-                } else {
+                if (self.isTab2Lazy && !self.isFocusAdvancedSearchTab()) {
                     dfd.resolve();
+                } else {
+                    self.reloadAdvanceSearchTab().done(() => dfd.resolve());
                 }
                 return dfd.promise();
             }
@@ -1153,8 +1190,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.tab2HasLoaded = true;
                 }
                 // set advanced search param
-                self.queryParam.retireStart = self.statusPeriodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                self.queryParam.retireStart = self.retireStart();
+                self.queryParam.retireEnd = self.retireEnd();
 
                 // reload advanced search tab.
                 if (_.isEmpty($('.blockUI.blockOverlay'))) {
@@ -1287,7 +1324,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 let inputCDL008 = {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
                     isMultiple: true,
-                    selectedCodes: self.selectedCodeWorkplace()
+                    selectedSystemType: self.systemType,
+                    selectedCodes: self.selectedCodeWorkplace(),
+                    isShowBaseDate :false
                 };
                 nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
                 nts.uk.ui.windows.sub.modal('com',"/view/cdl/008/a/index.xhtml").onClosed(() => {
@@ -1398,13 +1437,10 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             getEmployeeLogin(): void {
                 let self = this;
-                if (!self.isValidInput() || self.isInvalidBaseDate()) {
-                    return;
-                }
                 nts.uk.ui.block.grayout(); // block ui
-                service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                service.searchEmployeeByLogin(moment.utc().toDate())
                     .done(data => {
-                        self.returnDataFromCcg001(self.combineData(data));
+                        self.returnDataFromCcg001(self.combineData([data]));
                         self.hideComponent();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -1439,8 +1475,9 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set period
                 if (self.showPeriod) {
+                    const periodEnd = self.showPeriodYM ? self.periodEnd().endOf("month") : self.periodEnd();
                     self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                    self.queryParam.periodEnd = self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                    self.queryParam.periodEnd = periodEnd.format(CcgDateFormat.DEFAULT_FORMAT);
                     if (!self.showBaseDate) {
                         self.acquiredBaseDate(self.queryParam.periodEnd);
                     }
@@ -1465,6 +1502,35 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 return dfd.promise();
+            }
+
+            /**
+             * Set baseDate & period on init component
+             */
+            private setBaseDateAndPeriodOnInit(options: GroupOption): void {
+                let self = this;
+                // set baseDate
+                if (_.isFunction(options.baseDate)) {
+                    self.baseDateOfParentScreen = options.baseDate;
+                    self.inputBaseDate(options.baseDate());
+                } else {
+                    self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                }
+
+                // set period
+                if (options.dateRangePickerValue) {
+                    self.dateRangeOfParentScreen = options.dateRangePickerValue;
+                    self.inputPeriod(_.clone(self.dateRangeOfParentScreen()));
+                }
+                else if (_.isFunction(options.periodStartDate) && _.isFunction(options.periodEndDate)) {
+                    self.periodStartOfParentScreen = options.periodStartDate;
+                    self.periodEndOfParentScreen = options.periodEndDate;
+                    self.inputPeriod(new DateRangePickerModel(options.periodStartDate(), options.periodEndDate()));
+                } else {
+                    const periodStart = _.isNil(options.periodStartDate) ? moment().toISOString() : options.periodStartDate;
+                    const periodEnd = _.isNil(options.periodEndDate) ? moment().toISOString() : options.periodEndDate;
+                    self.inputPeriod(new DateRangePickerModel(periodStart, periodEnd));
+                }
             }
 
             /**
@@ -1536,6 +1602,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.setAdvancedSearchParam();
 
                 nts.uk.ui.block.grayout(); // block ui
+                self.findAndReturnListEmployee(true);
+            }
+
+            /**
+             * Save employeeRangeSelection
+             */
+            private saveEmployeeRangeSelection(): void {
+                let self = this;
                 if (self.showClosure) { // save EmployeeRangeSelection if show closure
                     // check data exist
                     let empRangeSelection = self.employeeRangeSelection ?
@@ -1556,11 +1630,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             break;
                         default: break; // systemType not found
                     }
-                    service.saveEmployeeRangeSelection(empRangeSelection).done(() => {
-                        self.findAndReturnListEmployee(true);
-                    });
-                } else {
-                    self.findAndReturnListEmployee(true);
+                    service.saveEmployeeRangeSelection(empRangeSelection);
                 }
             }
 
@@ -1668,6 +1738,32 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 self.queryParam.referenceRange = SearchReferenceRange.ALL_EMPLOYEE;
                 self.quickSearchEmployee();
+            }
+
+            /**
+             * Search current login employee
+             */
+            public searchCurrentLoginEmployee(): void {
+                let self = this;
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
+                    return;
+                }
+
+                // A：締め状態更新
+                if (self.systemType == ConfigEnumSystemType.EMPLOYMENT && self.showClosure) {
+                    service.getClosureByCurrentEmployee(self.queryParam.baseDate).done(id => {
+                        if (_.isNil(id)) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1434' });
+                            return;
+                        }
+                        if (self.selectedClosure() != id) {
+                            self.selectedClosure(id);
+                        }
+                        self.getEmployeeLogin();
+                    });
+                } else {
+                    self.getEmployeeLogin();
+                }
             }
             
             /**
@@ -1977,8 +2073,410 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.startDate = startDate;
                 self.endDate = endDate;
             }
+
+            public static isSamePeriod(a: DateRangePickerModel, b: DateRangePickerModel): boolean {
+                return a.startDate === b.startDate && a.endDate === b.endDate
+            }
         }
 
+        export class CCG001TextResource {
+            static CCG001_2 = nts.uk.resource.getText('CCG001_2');
+            static CCG001_21 = nts.uk.resource.getText('CCG001_21');
+            static CCG001_22 = nts.uk.resource.getText('CCG001_22');
+            static CCG001_23 = nts.uk.resource.getText('CCG001_23');
+            static CCG001_24 = nts.uk.resource.getText('CCG001_24');
+            static CCG001_25 = nts.uk.resource.getText('CCG001_25');
+            static CCG001_26 = nts.uk.resource.getText('CCG001_26');
+            static CCG001_27 = nts.uk.resource.getText('CCG001_27');
+            static CCG001_28 = nts.uk.resource.getText('CCG001_28');
+            static CCG001_29 = nts.uk.resource.getText('CCG001_29');
+            static CCG001_34 = nts.uk.resource.getText('CCG001_34');
+            static CCG001_35 = nts.uk.resource.getText('CCG001_35');
+            static CCG001_38 = nts.uk.resource.getText('CCG001_38');
+            static CCG001_39 = nts.uk.resource.getText('CCG001_39');
+            static CCG001_42 = nts.uk.resource.getText('CCG001_42');
+            static CCG001_43 = nts.uk.resource.getText('CCG001_43');
+            static CCG001_45 = nts.uk.resource.getText('CCG001_45');
+            static CCG001_47 = nts.uk.resource.getText('CCG001_47');
+            static CCG001_49 = nts.uk.resource.getText('CCG001_49');
+            static CCG001_55 = nts.uk.resource.getText('CCG001_55');
+            static CCG001_58 = nts.uk.resource.getText('CCG001_58');
+            static CCG001_98 = nts.uk.resource.getText('CCG001_98');
+            static CCG001_99 = nts.uk.resource.getText('CCG001_99');
+            static CCG001_104 = nts.uk.resource.getText('CCG001_104');
+            static CCG001_105 = nts.uk.resource.getText('CCG001_105');
+            static CCG001_108 = nts.uk.resource.getText('CCG001_108');
+            static CCG001_109 = nts.uk.resource.getText('CCG001_109');
+            static Com_Employment = nts.uk.resource.getText('Com_Employment');
+            static Com_Workplace = nts.uk.resource.getText('Com_Workplace');
+            static Com_Class = nts.uk.resource.getText('Com_Class');
+            static Com_Jobtitle = nts.uk.resource.getText('Com_Jobtitle');
+        }
+
+var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="visibility: hidden;">
+        <div class="pull-left ccg001-content">
+            <div id="ccg001-header" class="ccg001-table">
+                <div class="ccg001-cell">
+                    <!-- ko if: showBaseDate -->
+                        <div class="control-group ccg001-control-group">
+                            <div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">`+CCG001TextResource.CCG001_27+`</div>
+                            <div id="inp_baseDate"
+                                data-bind="attr: {tabindex: ccg001Tabindex}, ntsDatePicker: {
+                                name: '#[CCG001_27]',
+                                dateFormat: 'YYYY/MM/DD',
+                                value: inputBaseDate,
+                                required: true }"></div>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko if: showClosure -->
+                        <div class="control-group ccg001-control-group">
+                            <div class="ccg001-cell">
+                                <div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">`+CCG001TextResource.CCG001_28+`</div>
+                            </div>
+                            <div class="ccg001-cell mid">
+                                <div id="cbb-closure" style="margin-left: 4px;"
+                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsComboBox: {
+                                        name: '#[CCG001_28]',
+                                        options: closureList,
+                                        optionsValue: 'closureId',
+                                        value: selectedClosure,
+                                        optionsText: 'closureName',
+                                        editable: false,
+                                        enable: true,
+                                        columns: [
+                                            { prop: 'closureId', length: 1 },
+                                            { prop: 'closureName', length: 5 },
+                                        ]}"></div>
+                            </div>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko if: showPeriod -->
+                        <div class="control-group ccg001-control-group">
+                            <div class="ccg001-cell">
+                                <div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">`+CCG001TextResource.CCG001_29+`</div>
+                            </div>
+                            <div class="ccg001-cell mid">
+                                <div id="ccg001-search-period" data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                    type: showPeriodYM ? 'yearmonth' : 'fullDate',
+                                    maxRange: maxPeriodRange,
+                                    required: true,
+                                    enable: true,
+                                    showNextPrevious: true,
+                                    value: inputPeriod}"/>
+                            </div>
+                        </div>
+                    <!-- /ko -->
+                </div>
+                <div class="ccg001-cell bot">
+                    <button id="ccg001-btn-apply-search-condition"
+                        class="proceed caret-bottom" data-bind="attr: {tabindex: ccg001Tabindex},
+                            enable: isValidInput, click: applyDataSearch">`+CCG001TextResource.CCG001_2+`</button>
+                </div>
+            </div>
+        <div id="tab-panel" class="cf ccg-tabpanel pull-left"
+            data-bind="attr: {tabindex: ccg001Tabindex}, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+            <!-- ko if: showQuickSearchTab -->
+                <div tabindex="-1" class="tab-content-1">
+                    <!-- ko if: showAllReferableEmployee -->
+                        <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                            <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                                data-bind="click: searchAllListEmployee">
+                                <i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
+                                <label class="labelBigButton">`+CCG001TextResource.CCG001_34+`</label> 
+                            </div>
+                            <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko if: showOnlyMe -->
+                        <div id="ccg001-btn-only-me" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                            <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
+                                data-bind="click: searchCurrentLoginEmployee">
+                                <i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
+                                <label class="labelBigButton">`+CCG001TextResource.CCG001_35+`</label> 
+                            </div>
+                            <span class="ccg001-caret ccg001-caret-quick-big caret-right"></span>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko if: showSameWorkplace -->
+                        <div id="ccg001-btn-same-workplace" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                                data-bind="click: searchEmployeeOfDepOnly">
+                                <i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
+                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_38+`</label> 
+                            </div>
+                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                        </div>
+                    <!-- /ko -->
+                    <!-- ko if: showSameWorkplaceAndChild -->
+                        <div id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
+                            <div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
+                                data-bind="click: searchEmployeeOfDepAndChild">
+                                <i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
+                                <label class="labelSmallButton">`+CCG001TextResource.CCG001_39+`</label> 
+                            </div>
+                            <span class="ccg001-caret ccg001-caret-quick-small caret-right"></span>
+                        </div>
+                    <!-- /ko -->
+                </div>
+            <!-- /ko -->
+            <!-- ko if: showAdvancedSearchTab -->
+                <div tabindex="-1" class="tab-content-2 height-maximum">
+                        <div id="ccg001-tab-content-2" class="height-maximum">
+                            <div class="pull-left height-maximum" style="padding-right: 20px; overflow-y: scroll;">
+                                <div>
+                                    <label>`+CCG001TextResource.CCG001_24+`</label>
+                                </div>
+                                <div class="accordion" id="StatusOfEmployeeList"
+                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                    <h3>
+                                        <label>`+CCG001TextResource.CCG001_42+`</label>
+                                    </h3>
+                                    <div class="contentkcp">
+                                        <div style="padding-bottom: 20px;">
+                                            <label>`+CCG001TextResource.CCG001_43+`</label>
+                                            <div class="pull-right" id="switch-buttons" data-bind="attr: {tabindex: ccg001Tabindex}, ntsSwitchButton: {
+                                                name: '#[CCG001_44]',
+                                                options: incumbentDatasource,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: selectedIncumbent,
+                                                enable: true }">
+                                            </div>
+                                        </div>
+                                        <div style="padding-bottom: 20px;">
+                                            <label>`+CCG001TextResource.CCG001_47+`</label>
+                                            <div class="pull-right" id="switch-buttons" data-bind="attr: {tabindex: ccg001Tabindex}, ntsSwitchButton: {
+                                                name: '#[CCG001_48]',
+                                                options: closedDatasource,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: selectedClosed,
+                                                enable: true }">
+                                            </div>
+                                        </div>
+                                        <div style="padding-bottom: 20px;">
+                                            <label>`+CCG001TextResource.CCG001_45+`</label>
+                                            <div class="pull-right" id="switch-buttons" data-bind="attr: {tabindex: ccg001Tabindex}, ntsSwitchButton: {
+                                                name: '#[CCG001_46]',
+                                                options: leaveOfAbsenceDatasource,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: selectedLeave,
+                                                enable: true }">
+                                            </div>
+                                        </div>
+                                        <div style="padding-bottom: 20px;">
+                                            <label>`+CCG001TextResource.CCG001_49+`</label>
+                                            <div class="pull-right" id="switch-buttons" data-bind="attr: {tabindex: ccg001Tabindex}, ntsSwitchButton: {
+                                                name: '#[CCG001_50]',
+                                                options: retirementDatasource,
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: selectedRetirement,
+                                                enable: true }">
+                                            </div>
+                                        </div>
+                                        <div class="pull-right" style="padding-top: 10px;">
+                                            <div id="ccg001-retire-period"
+                                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                                            name: '#[CCG001_92]',
+                                                            required: true,
+                                                            enable: true,
+                                                            showNextPrevious: false,
+                                                            value: retirePeriod }"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ko if: showEmployment -->
+                                    <div class="accordion" id="EmploymentList"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                        <h3>
+                                            <label>`+CCG001TextResource.Com_Employment+`</label>
+                                        </h3>
+                                        <div class="contentkcp">
+                                            <div id="employmentList" style="width: 352px"></div>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
+                                <!-- ko if: showWorkplace -->
+                                    <div class="accordion" id="WorkplaceList"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                        <h3>
+                                            <label>`+CCG001TextResource.Com_Workplace+`</label>
+                                        </h3>
+                                        <div class="contentkcpWorkplace">
+                                            <div id="workplaceList"></div><br/>
+                                            <button id="btnDetailWorkplace"
+                                                data-bind="attr: {tabindex: ccg001Tabindex}, click: detailWorkplace">`+CCG001TextResource.CCG001_55+`</button>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
+                                <!-- ko if: showClassification -->
+                                    <div class="accordion" id="ClassificationList"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                        <h3>
+                                            <label>`+CCG001TextResource.Com_Class+`</label>
+                                        </h3>
+                                        <div class="contentkcp">
+                                            <div id="classificationList"></div>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
+                                <!-- ko if: showJobTitle -->
+                                    <div class="accordion" id="JoptitleList"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                        <h3>
+                                            <label>`+CCG001TextResource.Com_Jobtitle+`</label>
+                                        </h3>
+                                        <div class="contentkcp">
+                                            <div id="jobtitleList"></div>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
+                                <!-- ko if: showWorktype -->
+                                    <div class="accordion" id="WorkTypeList"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, ntsAccordion: {enable: true}">
+                                        <h3>
+                                            <label>`+CCG001TextResource.CCG001_58+`</label>
+                                        </h3>
+                                        <div class="contentkcp">
+                                            <div style="width: 340px" data-bind="attr: {tabindex: ccg001Tabindex}, ntsSearchBox: {
+                                                searchMode: 'filter',
+                                                targetKey: 'businessTypeCode',
+                                                comId: 'list-worktype', 
+                                                items: listWorkType,
+                                                selectedKey: 'businessTypeCode',
+                                                fields: ['businessTypeCode', 'businessTypeName'],
+                                                mode: 'listbox'}" />
+                                            <table id="list-worktype"
+                                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsGridList: {
+                                                name: '#[CCG001_59]',
+                                                height: 235,
+                                                options: listWorkType,
+                                                optionsValue: 'businessTypeCode',
+                                                columns: workTypeColumns,
+                                                multiple: true,
+                                                value: selectedWorkTypeCode
+                                            }"></table>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
+                            </div>
+                            <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
+                                <div class="ccg001-cell mid">
+                                    <div id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
+                                        data-bind="attr: {tabindex: ccg001Tabindex}, click: advancedSearchEmployee">
+                                        <div class="ccg001-cell mid">
+                                            <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_25+`</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ccg001-cell mid">
+                                    <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+                                </div>
+                            </div>
+                            
+                            <!-- ko if: showEmployeeSelection -->
+                                <div class="pull-left height-maximum margin-left-10">
+                                    <div id="employeeinfo"></div>
+                                </div>
+                                <div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
+                                    <div class="ccg001-cell mid">
+                                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
+                                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployees">
+                                            <div class="ccg001-cell mid">
+                                                <i class="icon icon-47-white-check-mark"></i>
+                                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ccg001-cell mid">
+                                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+                                    </div>
+                                </div>
+                            <!-- /ko -->
+                            <div class="cf"></div>
+                        </div>
+                        <div class="cf"></div>
+                    </div>
+            <!-- /ko -->
+            <div id="ccg001-tab-content-3" class="height-maximum">
+                <div id="ccg001-part-g" class="pull-left height-maximum">
+                    <div class="control-group ccg001-control-group">
+                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_104+`</div>
+                        <input class="ccg001-inp" id="ccg001-input-code"
+                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
+                                    name: '#[CCG001_106]',
+                                    value: inputCodeTab3,
+                                    required: false
+                                    }" />
+                        <button class="proceed caret-bottom pull-right"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
+                    </div>
+                    <div class="control-group ccg001-control-group">
+                        <div data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_105+`</div>
+                        <input class="ccg001-inp" id="ccg001-inp-name"
+                                    data-bind="attr: {tabindex: ccg001Tabindex}, ntsTextEditor: {
+                                    name: '#[CCG001_107]',
+                                    value: inputNameTab3,
+                                    required: false
+                                    }" />
+                        <button class="proceed caret-bottom pull-right"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">`+CCG001TextResource.CCG001_108+`</button>
+                    </div>
+                    <div class="cf control-group ccg001-control-group">
+                        <div class="pull-left" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_98+`</div>
+                        <div id="ccg001-date-entry" class="ccg001-date-range pull-left"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                name: '#[CCG001_100]',
+                                required: false,
+                                enable: true,
+                                showNextPrevious: false,
+                                value: entryDateTab3 }"/>
+                        <button class="proceed caret-bottom pull-right"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">`+CCG001TextResource.CCG001_108+`</button>
+                    </div>
+                    <div class="cf control-group ccg001-control-group">
+                        <div class="pull-left" data-bind="ntsFormLabel: {}">`+CCG001TextResource.CCG001_99+`</div>
+                        <div id="ccg001-date-retirement" class="ccg001-date-range pull-left"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, ntsDateRangePicker: {
+                                name: '#[CCG001_100]',
+                                required: false,
+                                enable: true,
+                                showNextPrevious: false,
+                                value: retirementDateTab3 }"/>
+                        <button class="proceed caret-bottom pull-right"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">`+CCG001TextResource.CCG001_108+`</button>
+                    </div>
+                    <div id="tab3kcp005"></div>
+                </div>
+                <div class="pull-right height-maximum ccg001-table has-state">
+                    <div class="ccg001-cell mid">
+                        <div id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
+                            data-bind="attr: {tabindex: ccg001Tabindex}, click: extractSelectedEmployeesInTab3">
+                            <div class="ccg001-cell mid">
+                                <i class="icon icon-47-white-check-mark"></i>
+                                <div class="ccg-lbl-vertical ccg-lbl-extract-emp">`+CCG001TextResource.CCG001_26+`</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ccg001-cell mid">
+                        <span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div id="hor-scroll-button-hide">
+        <span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
+        <div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical" data-bind="click: showComponent">
+            <div class="ccg001-cell mid">
+            <i class="icon icon-01-searchmode"></i>
+            <div class="ccg-lbl-vertical ccg-lbl-search-drawer">`+CCG001TextResource.CCG001_21+`</div>
+            </div>
+        </div>
+    </div>`;
     }
 }
 /**
@@ -1991,8 +2489,11 @@ interface JQuery {
 
 (function($: any) {
     $.fn.ntsGroupComponent = function(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void> {
-
-        // Return.
-        return new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option).done(() => nts.uk.ui.block.clear());
+        let dfd = $.Deferred<void>();
+        new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option).done(() => {
+            nts.uk.ui.block.clear();
+            dfd.resolve();
+        });
+        return dfd.promise();
     }
 } (jQuery));

@@ -10,20 +10,15 @@ module nts.uk.at.view.kdw003.a {
         screenModel.startPage().done((data) => {
             //this.bind(screenModel, dialogOptions);
             //cursor move direction 
-            screenModel.selectedDirection.subscribe((value) => {
-                if (value == 0) {
-                    $("#dpGrid").ntsGrid("directEnter", "below");
-                } else {
-                    $("#dpGrid").ntsGrid("directEnter", "right");
-                }
-            });
             if (data.bindDataMap) {
                 screenModel.processMapData(data.data);
+                //screenModel.loadKcp009();
+                nts.uk.ui.block.clear();
             }
-             screenModel.loadKcp009();
             __viewContext.bind(screenModel);
             if (data.bindDataMap) {
-                screenModel.processFlex(data.data);
+                screenModel.setSprFromItem(data.data);
+                screenModel.processFlex(data.data, true);
             }
             
         });

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.dailyperformanceformat.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,11 +13,13 @@ public interface AuthorityFormatMonthlyRepository {
 	
 	List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId, List<String> listDailyPerformanceFormatCode);
 	
+	List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId, Collection<String> listDailyPerformanceFormatCode);
+	
 	void update(AuthorityFomatMonthly authorityFomatMonthly);
 	
 	void updateColumnsWidth(String companyId, Map<Integer, Integer> lstHeaderMIGrid, List<String> formatCodes);
 
-	void deleteExistData(List<Integer> attendanceItemIds);
+	void deleteExistData(String companyId, String dailyPerformanceFormatCode,List<Integer> attendanceItemIds);
 	
 	void add(List<AuthorityFomatMonthly> authorityFomatMonthlies);
 	

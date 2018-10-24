@@ -13,6 +13,7 @@ import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImp
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -30,8 +31,10 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 	public SpecialVacationImported complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate,
 			boolean mode, GeneralDate baseDate, int specialLeaveCode, boolean mngAtr) {
 		// requestList273
-		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(cid, sid,
-				complileDate, mode, baseDate, specialLeaveCode, mngAtr);
+		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(cid, sid,
+				complileDate, mode, baseDate, specialLeaveCode, mngAtr,
+				false, new ArrayList<>(), new ArrayList<>());//TODO can them thong tin cho 3 bien nay
+		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 		if (specialLeave == null)
 			return null;
 		return new SpecialVacationImported(specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 0.0,
@@ -58,4 +61,23 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		return lstSpecialHoliday;
 	}
 
+	@Override
+	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
+			YearMonth endMonth, List<Integer> listSpeCode) {
+		
+		// requestList263 with speCode
+				List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = specialHolidayRemainDataSevice
+						.getSpeHoliOfPeriodAndCodes(sid, startMonth, endMonth, listSpeCode);
+
+				if (lstSpeHoliOfConfirmedMonthly == null)
+					return null;
+				List<SpecialHolidayImported> lstSpecialHoliday = new ArrayList<>();
+				lstSpeHoliOfConfirmedMonthly.forEach(item -> {
+					SpecialHolidayImported specialHoliday = new SpecialHolidayImported(item.getYm(), item.getUseDays(),
+							item.getUseTimes(), item.getRemainDays(), item.getRemainTimes());
+					lstSpecialHoliday.add(specialHoliday);
+				});
+				return lstSpecialHoliday;
+	}
+	
 }

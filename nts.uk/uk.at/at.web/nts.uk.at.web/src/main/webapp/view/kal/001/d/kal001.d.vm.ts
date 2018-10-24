@@ -8,7 +8,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
 
     export class ScreenModel {
         // dialog mode
-        dialogMode: KnockoutObservable<boolean>;
+        dialogMode: KnockoutObservable<number>;
         isInterrupt: KnockoutObservable<boolean>;
         isExtracting: KnockoutObservable<boolean>;
         extractingFlg: KnockoutObservable<boolean>;
@@ -40,6 +40,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         listAlarmExtraValueWkReDto: KnockoutObservableArray<AlarmExtraValueWkReDto>;
         countLoop: number = 0;
         taskId : KnockoutObservable<string> = ko.observable("");
+        processExtraId : KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -50,7 +51,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.timeStartStr = ko.observable("");
             self.totalEmployees = params.totalEmpProcess;
             self.numberEmpSuccess = ko.observable(0);
-            self.dialogMode = ko.observable(true);
+            self.dialogMode = ko.observable(AlarmExtraStatus.PROCESSING);
             
             self.timeStartStr = ko.observable(moment(new Date()).format("YYYY/MM/DD H:mm"));
 
@@ -62,7 +63,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.isInterrupt = ko.observable(false);
             self.extractingFlg = ko.observable(false);
             self.isExtracting = ko.observable(false);
-
+            self.processExtraId = ko.observable("");
             //process alam list 
             //code process screen A
             let start = performance.now();
@@ -70,23 +71,31 @@ module nts.uk.com.view.kal001.d.viewmodel {
             service.isExtracting().done((isExtracting: boolean) => {
                 if (isExtracting) {
                     self.extractingFlg = ko.observable(isExtracting);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });
-                    self.setFinished();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_993" }).then(function() {
+                        nts.uk.ui.windows.close();
+                    });
                     block.clear();
                     return;
                 }
                 service.extractStarting().done((statusId: string) => {
                     console.log("time service 2  : "+(performance.now() -start).toString());
-                    service.extractAlarm(self.taskId,self.numberEmpSuccess, self.listSelectedEmpployee, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                    self.processExtraId(statusId);
+                    service.extractAlarm(self.taskId, self.numberEmpSuccess, statusId, self.listSelectedEmpployee, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                         console.log("time service 3  : "+(performance.now() -start).toString());
-
-                        service.extractFinished(statusId);
+                        let status =  dataExtractAlarm.extracting == true ? AlarmExtraStatus.END_ABNORMAL : AlarmExtraStatus.END_NORMAL;
+                        // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
+                        let extraParams = {
+                            processStatusId: statusId,
+                            status: status
+                        };
+                        service.extractFinished(extraParams);
                         if(dataExtractAlarm.extracting) {
                            self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
                         } 
                         if (!dataExtractAlarm.nullData) {
                             self.listAlarmExtraValueWkReDto = dataExtractAlarm.extractedAlarmData;
                         }
+                        self.dialogMode(status);
                         self.setFinished();
                     }).fail((errorExtractAlarm)=>{
                         alertError(errorExtractAlarm);
@@ -111,19 +120,16 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process 
-            
-            self.interval = setInterval(() => self.countTime(), 1000);
+            self.interval = setInterval(self.countTime, 1000, self);
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
         }
         
-         public countTime(): void {
-            let self = this;
-                
+         public countTime(self): void {
             // F2_1_2 set time over 
-            self.timeNow = new Date();
-            let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+            let timeNow = new Date();
+            let over = (timeNow.getSeconds()+timeNow.getMinutes()*60+ timeNow.getHours()*60*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60*60); 
             let time = new Date(null);
             time.setSeconds(over); // setting value for SECONDS here
             let result = time.toISOString().substr(11, 8);
@@ -133,9 +139,16 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // process when click button interrupt
         public interrupt(): void {
             let self = this;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_835" })
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
                     nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                    // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
+                    let extraParams = {
+                        processStatusId: self.processExtraId(),
+                        status: AlarmExtraStatus.INTERRUPT
+                    };
+                    service.extractFinished(extraParams);
+                    self.dialogMode(AlarmExtraStatus.INTERRUPT);
                     self.setFinished();
                 })
                 .ifNo(() => {
@@ -151,19 +164,20 @@ module nts.uk.com.view.kal001.d.viewmodel {
             }
             window.clearInterval(self.interval);
             self.timeEnd(moment(new Date()).format("YYYY/MM/DD H:mm"));
-            self.dialogMode(false);
         }
-
-        //  process when click button closePopup 
-        closePopup() {
+        //  Process when click button Confirm process 
+        confirmProcess() {
             let self = this;
-            
             let params = {
                 extractingFlg : self.extractingFlg(),
                 isExtracting : self.isExtracting(),
                 listAlarmExtraValueWkReDto : self.listAlarmExtraValueWkReDto
             };
             nts.uk.ui.windows.setShared("KAL001_D_PARAMS",params);
+            close();
+        }
+        //  process when click button closePopup 
+        closePopup() {
             close();
         }
     }
@@ -311,7 +325,12 @@ module nts.uk.com.view.kal001.d.viewmodel {
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
-
+    export enum AlarmExtraStatus {
+        END_NORMAL = 0,   /**正常終了*/
+        END_ABNORMAL = 1, /**異常終了*/
+        PROCESSING = 2,   /**処理中*/
+        INTERRUPT = 3,    /**中断*/
+    }
 }
 
 

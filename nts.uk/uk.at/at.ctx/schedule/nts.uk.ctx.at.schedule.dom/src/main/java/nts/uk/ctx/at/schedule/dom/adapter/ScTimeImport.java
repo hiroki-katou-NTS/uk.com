@@ -2,10 +2,13 @@ package nts.uk.ctx.at.schedule.dom.adapter;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
  * RequestList No91 
@@ -13,7 +16,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author chinhbv
  *
  */
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder
 public class ScTimeImport {
 
@@ -38,8 +43,14 @@ public class ScTimeImport {
 	//休憩時間
 	AttendanceTime breakTime;
 	
-	//育児介護時間
-	AttendanceTime childCareTime;
+	//育児時間
+	AttendanceTime childTime;
+	
+	//介護時間
+	AttendanceTime careTime;
+	
+	//フレックス時間
+	AttendanceTimeOfExistMinus flexTime;
 	
 	//人件費時間
 	List<AttendanceTime> personalExpenceTime;

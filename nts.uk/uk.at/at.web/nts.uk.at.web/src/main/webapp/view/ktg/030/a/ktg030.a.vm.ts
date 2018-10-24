@@ -17,8 +17,8 @@ module nts.uk.at.view.ktg030.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.getData().done((data) => {
-                console.log(data);
                 if (data) {
                     self.text = ko.observable(getText('KTG030_4'));
                     self.visible = ko.observable(true);
@@ -34,7 +34,9 @@ module nts.uk.at.view.ktg030.a.viewmodel {
         }
 
         monthPerformanceConfirm() {
-           window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
+           window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml?initmode=2';
         }
+        
+       
     }
 }

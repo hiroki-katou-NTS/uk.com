@@ -28,6 +28,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSe
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -72,6 +73,10 @@ public class RegisterLayoutFinder {
 	
 	private static final String END_DATE_NAME = "終了日";
 	
+	// biến này dùng để tính baseDate là ngày nào, 
+	// là ngày vào công ty hay là ngày start date của category, ko cần dùng static
+	private GeneralDate baseDate = null;
+	
 	/**
 	 * get Layout Dto by create type
 	 * 
@@ -89,24 +94,32 @@ public class RegisterLayoutFinder {
 
 		NewLayout _layout = layout.get();
 
-		List<LayoutPersonInfoClsDto> itemCls = getClassItemList(command, _layout);
+		StringBuilder wrkPlaceStartDate = new StringBuilder();
+		List<LayoutPersonInfoClsDto> itemCls = getClassItemList(command, _layout,wrkPlaceStartDate);
 		
-		return NewLayoutDto.fromDomain(_layout, itemCls);
+		return NewLayoutDto.fromDomain(_layout, itemCls, wrkPlaceStartDate.toString());
 
 	}
 
-	private List<LayoutPersonInfoClsDto> getClassItemList(AddEmployeeCommand command, NewLayout _layout) {
+	private List<LayoutPersonInfoClsDto> getClassItemList(AddEmployeeCommand command, NewLayout _layout, StringBuilder wrkPlaceStartDate) {
 
 		List<LayoutPersonInfoClsDto> classItemList = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
 		List<SettingItemDto> dataServer = new ArrayList<>();
 		if (command.getCreateType() != 3) {
 			// get data from server
-			dataServer = this.getSetItems(command);
+			dataServer = this.getSetItems(command, false);
 		}
-		
+		String workPlaceId = null;
+		List<SettingItemDto> workPlace = dataServer.stream()
+				.filter(i -> i.getCategoryCode().equals("CS00017") && (i.getItemCode().equals("IS00084") || i.getItemCode().equals("IS00082")) ).collect(Collectors.toList());
+		if (!workPlace.isEmpty()){
+			workPlaceId = workPlace.stream().filter(i -> i.getItemCode().equals("IS00084")).findFirst()
+					.map(v -> v.getSaveData().getValue().toString()).orElse(null);
+			wrkPlaceStartDate = wrkPlaceStartDate.append(workPlace.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst()
+			.map(v -> v.getSaveData().getValue().toString()).orElse(""));
+		}
 		// set to layout's item
-		mapToLayoutItems(classItemList, dataServer, command.getHireDate());;
-		
+		mapToLayoutItems(classItemList, dataServer, command.getHireDate(),workPlaceId, command.getCreateType());;
 		
 		// check and set 9999/12/31 to endDate
 		classItemList.forEach(classItem -> {
@@ -139,10 +152,12 @@ public class RegisterLayoutFinder {
 		return classItemList;
 	}
 	
-	private void mapToLayoutItems(List<LayoutPersonInfoClsDto> classItemList, List<SettingItemDto> dataServer, GeneralDate hireDate) {
+	private void mapToLayoutItems(List<LayoutPersonInfoClsDto> classItemList, List<SettingItemDto> dataServer, GeneralDate hireDate, String workPlaceId, int createType) {
 		Map<String, List<LayoutPersonInfoClsDto>> mapByCategory = classItemList.stream()
 				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
 				.collect(Collectors.groupingBy(LayoutPersonInfoClsDto::getPersonInfoCategoryID));
+		List<DateRangeDto> ctgCode = perInfoCategoryRepositoty.dateRangeCode();
+		GeneralDate hireDateOld = hireDate;
 		for (Map.Entry<String, List<LayoutPersonInfoClsDto>>  entry : mapByCategory.entrySet()) {
 			
 			Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty
@@ -150,12 +165,23 @@ public class RegisterLayoutFinder {
 			if (!perInfoCategory.isPresent()) {
 				throw new RuntimeException("invalid PersonInfoCategory");
 			}
-			
+			if(createType == 2 || createType == 1) {
+				Optional<DateRangeDto> dateRangeOp = ctgCode.stream().filter(c -> c.getCtgCode().equals(perInfoCategory.get().getCategoryCode().toString())).findFirst();
+				if(dateRangeOp.isPresent()) {
+					DateRangeDto period = dateRangeOp.get();
+					Optional<SettingItemDto> settingItemDto = dataServer.stream()
+							.filter(item -> item.getItemCode().equals(period.getStartDateCode())).findFirst();
+					if(settingItemDto.isPresent()) {
+						hireDate = GeneralDate.fromString(settingItemDto.get().getSaveData().getValue().toString(), "yyyy/MM/dd");
+					}
+				}
+			}
+			baseDate = hireDate;
 			for (LayoutPersonInfoClsDto classItem : entry.getValue()) {
 				List<LayoutPersonInfoValueDto> items = classItem.getListItemDf().stream().map(itemDef -> {
 					Optional<SettingItemDto> dataServerItemOpt = dataServer.stream()
 							.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
-					return createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, hireDate, perInfoCategory.get());
+					return createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, baseDate, perInfoCategory.get(),workPlaceId);
 				}).collect(Collectors.toList());
 				
 				// clear definitionItem's list
@@ -163,15 +189,20 @@ public class RegisterLayoutFinder {
 
 				classItem.setItems(items);
 			}
+			hireDate = hireDateOld;
 		}
 	}
 
 	private LayoutPersonInfoValueDto createLayoutItemByDef(Optional<SettingItemDto> dataServerItemOpt,
 			PerInfoItemDefDto itemDef, LayoutPersonInfoClsDto classItem, GeneralDate hireDate,
-			PersonInfoCategory perInfoCategory) {
+			PersonInfoCategory perInfoCategory, String workPlaceId) {
+		
 		// initial basic info from definition item
 		LayoutPersonInfoValueDto item = LayoutPersonInfoValueDto.createFromDefItem(perInfoCategory, itemDef);
-
+		
+		item.setCategoryName(perInfoCategory.getCategoryName().toString());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
+		
 		// get value
 		if (dataServerItemOpt.isPresent()) {
 			item.setValue(dataServerItemOpt.get().getSaveData().getValue());
@@ -193,7 +224,7 @@ public class RegisterLayoutFinder {
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				List<ComboBoxObject> comboValues = cbbfact.getComboBox(selectionItemDto, null, hireDate,
 						item.isRequired(), perInfoCategory.getPersonEmployeeType(), isDataType6,
-						perInfoCategory.getCategoryCode().v());
+						perInfoCategory.getCategoryCode().v(), workPlaceId, false);
 				item.setLstComboBoxValue(comboValues);
 
 				// value of item in comboBox is string
@@ -220,7 +251,7 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> getSetItems(AddEmployeeCommand command) {
+	public List<SettingItemDto> getSetItems(AddEmployeeCommand command , boolean isRegisFrLayoutCPS002) {
 
 		// Copy Type
 		if (command.getCreateType() == 1) {
@@ -230,13 +261,13 @@ public class RegisterLayoutFinder {
 		} else {
 			// Init Value Type
 
-			return getInitItemsBySetId(command);
+			return getInitItemsBySetId(command , isRegisFrLayoutCPS002);
 
 		}
 	}
 	// sonnlb code end
 
-	public List<SettingItemDto> getInitItemsBySetId(AddEmployeeCommand command) {
+	public List<SettingItemDto> getInitItemsBySetId(AddEmployeeCommand command , boolean isRegisFrLayoutCPS002) {
 		List<PeregQuery> querys = new ArrayList<PeregQuery>();
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
@@ -249,7 +280,7 @@ public class RegisterLayoutFinder {
 
 			FindInitItemDto findInitCommand = new FindInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
-			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand));
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand, isRegisFrLayoutCPS002 , false));
 		});
 		return result;
 	}

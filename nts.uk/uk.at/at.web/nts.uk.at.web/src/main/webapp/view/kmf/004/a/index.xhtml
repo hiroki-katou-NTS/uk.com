@@ -66,7 +66,7 @@
 								<div data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td width="70">
-								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' , required: true, enable: isDisable, name: '#[KMF004_5]'} " />
+								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' ,option: {  }, required: true, enable: isDisable, name: '#[KMF004_5]'} " />
 							</td>
 							<td>
 								 <input tabindex="6" id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
@@ -167,10 +167,10 @@
 								</tr>
 								<tr>
 									<td>
-										<div class="check-allow">
+									<!-- 	<div class="check-allow">
 											<div tabindex="15" data-bind="ntsCheckBox: { checked: allowDisappear }">#{i18n.getText('KMF004_25')}</div>
 											<div class="allow-hint">#{i18n.getText('KMF004_26')}</div>
-										</div>
+										</div> -->
 									</td>
 								</tr>
 							</table>
@@ -242,28 +242,16 @@
 									<td></td>
 								</tr>
 								<tr>
-									<td>
-										<div class="start-date">
-											<div tabindex="20" id="period-date-inp" data-bind="ntsDatePicker: { 
-												value: startDate, 
-												dateFormat: 'YYYY/MM/DD', 
-												constraint: 'StartDate', 
-												name: '#[KMF004_44]', 
-												enable: startDateEnable }"></div>
+									<td colspan="2">
+									<div>
+											<div id="startDate" style="float: left;"
+												data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: startYM , required: startDateEnable , enable: startDateEnable }" />
+											<div
+												style="float: left; line-height: 30px; margin-left: 5px;">#{i18n.getText('KMF004_45')}</div>
+											<div id="endDate" style="float: left; margin-left: 15px;"
+												data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: endYM , required: startDateEnable , enable: startDateEnable }" />
 										</div>
 									</td>
-									<td>
-										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
-										<div class="end-date">
-											<div tabindex="21" id="period-date-inp" data-bind="ntsDatePicker: { 
-												value: endDate, 
-												dateFormat: 'YYYY/MM/DD', 
-												constraint: 'EndDate', 
-												name: '#[KMF004_46]', 
-												enable: endDateEnable }"></div>
-										</div>
-									</td>
-									<td></td>
 								</tr>
 							</table>
 						</div>
@@ -311,6 +299,7 @@
 													unitID: 'AGE',
 													width: '60'
 												}),
+												required: ageBaseDateReq,
 												enable: startAgeEnable }" />
 										</div>
 												
@@ -325,6 +314,7 @@
 													unitID: 'AGE',
 													width: '60'
 												}),
+												required: ageBaseDateReq,
 												enable: endAgeEnable }" />
 										</div>
 									</td>
@@ -346,7 +336,7 @@
 													{ prop: 'name', length: 5 }
 												]}"></div>
 											
-											<div tabindex="32" class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { 
+											<div tabindex="32" id="ageBaseDate" data-bind="ntsMonthDays: { 
 												value: ageBaseDate, 
 												name: '#[KMF004_52]', 
 												required: ageBaseDateReq,

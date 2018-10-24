@@ -28,14 +28,14 @@ import nts.uk.shr.com.history.DateHistoryItem;
 public interface ReflectWorkInforDomainService {
 
 	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, boolean reCreateWorkPlace,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
 
 	void reflectWorkInformationWithNoInfoImport(String companyID, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr , boolean reCreateWorkType , boolean reCreateWorkPlace, 
 			Optional<StampReflectionManagement> stampReflectionManagement);
 
 	AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
@@ -70,7 +70,7 @@ public interface ReflectWorkInforDomainService {
 	 * @param day
 	 * @return
 	 */
-	WorkTypeOfDailyPerformance reflectWorkType(String employeeId, GeneralDate day, String empCalAndSumExecLogID);
+	WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID);
 
 	/**
 	 * 計算区分を日別実績に反映する
@@ -99,4 +99,14 @@ public interface ReflectWorkInforDomainService {
 	 */
 	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
 			GeneralDate day, String empCalAndSumExecLogID, EmployeeGeneralInfoImport employeeGeneralInfoImport);
+	
+	void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
+			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
+	
+	void reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			Optional<StampReflectionManagement> stampReflectionManagement);
 }

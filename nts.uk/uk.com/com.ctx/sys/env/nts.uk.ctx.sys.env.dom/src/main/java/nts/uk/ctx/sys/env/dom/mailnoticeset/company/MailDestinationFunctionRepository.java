@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
+import java.util.List;
+
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -46,6 +48,6 @@ public interface MailDestinationFunctionRepository {
 	 * @param use
 	 * @return メール送信先機能
 	 */
-	public MailDestinationFunction findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use);
+	public List<MailDestinationFunction> findByCidSettingItemAndUse(String cID, Integer functionID, NotUseAtr use);
 
 }

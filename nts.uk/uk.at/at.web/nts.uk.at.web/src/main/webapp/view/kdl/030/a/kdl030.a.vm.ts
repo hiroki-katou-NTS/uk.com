@@ -96,9 +96,14 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             });
             //送信対象者リストの「メール送信」をチェックする
             if(listSendMail.length == 0){//「送信する」の承認者が０人の場合
-                //エラーメッセージ（Msg_14）
-                dialog.alertError({ messageId: "Msg_14" });
-                return;
+//            EA修正履歴 No.2819
+//            #101767
+                //申請者にメール送信かチェックする
+                if(!self.isSendToApplicant()){
+                    //エラーメッセージ（Msg_14）
+                    dialog.alertError({ messageId: "Msg_14" });
+                    return;
+                }
             }
             //申請者にメール送信かチェックする
             let applicantID = '';
@@ -111,7 +116,8 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 'mailContent': ko.toJS(self.mailContent),
                 'application': ko.toJS(self.application),
                 'sendMailOption': listSendMail,
-                'applicantID' : applicantID
+                'applicantID' : applicantID,
+                'sendMailApplicaint': self.isSendToApplicant()
             };
             nts.uk.ui.block.invisible();
             service.sendMail(command).done(function(result) {

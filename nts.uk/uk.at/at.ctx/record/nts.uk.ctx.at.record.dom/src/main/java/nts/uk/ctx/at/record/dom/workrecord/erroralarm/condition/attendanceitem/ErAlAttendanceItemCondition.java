@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -130,17 +131,17 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		return this;
 	}
 
-	public boolean checkTarget(Function<List<Integer>, List<Integer>> getItemValue) {
-		if (!this.useAtr) {
+	public boolean checkTarget(Function<List<Integer>, List<Double>> getItemValue) {
+		if (!isUse()) {
 			return false;
 		}
-		Integer targetValue = calculateTargetValue(getItemValue);
+		Double targetValue = calculateTargetValue(getItemValue);
 
 		if(this.inputCheck != null){
 			if(this.inputCheck.getInputCheckCondition() == InputCheckCondition.INPUT_DONE){
-				return targetValue == null;
+				return targetValue != null;
 			}
-			return targetValue != null;
+			return targetValue == null;
 		} else if (this.compareRange != null) {
 			return this.compareRange.checkRange(targetValue, c -> getVValue(c));
 		} else {
@@ -152,9 +153,17 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		return this.useAtr;
 	}
 
-	private Integer calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {
+	private Double calculateTargetValue(Function<List<Integer>, List<Double>> getItemValue) {
 		if (this.uncountableTarget != null) {
-			return getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
+			List<Integer> items = Arrays.asList(this.uncountableTarget.getAttendanceItem());
+			if(items.isEmpty()){
+				throw new RuntimeException("チェック対象（不可算）の項目が不正です。");
+			}
+			List<Double> values = getItemValue.apply(items);
+			if(values.isEmpty()){
+				throw new RuntimeException("チェック対象（不可算）の項目の値が不正です。");
+			}
+			return values.get(0);
 		} else {
 			return this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
 		}
@@ -162,24 +171,28 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		// return toCheckValue(target);
 	}
 
-	private Integer getVValue(V target) {
+	private Double getVValue(V target) {
 		if (this.compareRange == null && this.compareSingleValue.isAttendanceItem()) {
-			return ((AttendanceItemId) target).v();
+			return toDoubleValue(((AttendanceItemId) target).v());
 		}
 		switch (this.conditionAtr) {
 		case AMOUNT_VALUE:
-			return ((CheckedAmountValue) target).v();
+			return toDoubleValue(((CheckedAmountValue) target).v());
 		case TIME_DURATION:
-			return ((CheckedTimeDuration) target).valueAsMinutes();
+			return toDoubleValue(((CheckedTimeDuration) target).valueAsMinutes());
 		case TIME_WITH_DAY:
-			return ((TimeWithDayAttr) target).valueAsMinutes();
+			return toDoubleValue(((TimeWithDayAttr) target).valueAsMinutes());
 		case TIMES:
-			return ((CheckedTimesValue) target).v();
+			return toDoubleValue(((CheckedTimesValue) target).v());
 		case DAYS:
-			return ((CheckedTimesValue) target).v();
+			return ((CheckedTimesValueDay) target).v();
 		default:
 			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 		}
+	}
+
+	private Double toDoubleValue(Integer target) {
+		return Double.valueOf(target);
 	}
 
 	public void setTargetNO(int targetNO) {

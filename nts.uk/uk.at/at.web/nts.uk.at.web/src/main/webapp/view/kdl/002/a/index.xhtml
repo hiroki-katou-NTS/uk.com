@@ -14,18 +14,15 @@
 			<com:scriptfile path="kdl002.a.start.js" />
 			<com:scriptfile path="kdl002.a.service.js" />
 			<com:scriptfile path="kdl002.a.vm.js" />
-			<script>var dialogSize = { width: 620 , height: 630};</script>
+			<script>var dialogSize = { width: 620 , height: 480};</script>
 		</ui:define>
 		<ui:define name="content">
-			<div id="total">
+			<div id="contents-area">
 				<!-- A1_1 -->
-				<div id="label">
-					<label style="margin-left: 20px">#{i18n.getText('KDL002_2')}</label>
-				</div>
+				<label style="margin-left: 20px; width: 500px">#{i18n.getText('KDL002_2')}</label>
+				<br/><br/>
 				<!-- A1_2 -->
-				<div style="margin-bottom: 20px;">
-					<div>
-						<div id="boxSearch" style="width: 400px; margin-bottom: 15px;" tabindex="1"
+				<div id="boxSearch" style="width: 400px; margin-bottom: 15px;" tabindex="1"
 							data-bind="ntsSearchBox: {
 									searchMode: 'filter',
 									targetKey: 'workTypeCode',
@@ -35,31 +32,28 @@
 									selectedKey: 'workTypeCode', 
 									fields: ['name', 'workTypeCode'],
 									mode: 'igGrid'}" />
-					</div>
 					<div style="margin-left: 20px">
 						<!-- A1_3 -->
 						<table id="multi-list" 
 							data-bind="ntsGridList: {
-										height: 390,
-										width: 580,
+										height: 200,
+										width: 560,
 										options: items,
 										optionsValue: 'workTypeCode',
 										columns: columns,
 										multiple: isMulti,
+										rows: 10,
 										value: currentCodeList}">
 						</table>
 					</div>
-				</div>
-				<div id="functions-area-bottom" >
-					<div id="process">
-						<!-- A1_10 -->
-						<button id="btnSetting" class="x-large proceed"
-							data-bind="click: register" tabindex="3">#{i18n.getText('KDL002_6')}</button>
-						<!-- A1_11 -->
-						<button id="btnCancel" class="large" data-bind="click: close"
-							tabindex="4">#{i18n.getText('KDL002_7')}</button>
-					</div>
-				</div>
+			</div>
+			<div id="functions-area-bottom" >
+				<!-- A1_10 -->
+				<button id="btnSetting" class="x-large proceed"
+					data-bind="click: register" tabindex="3">#{i18n.getText('KDL002_6')}</button>
+				<!-- A1_11 -->
+				<button id="btnCancel" class="large" data-bind="click: close"
+					tabindex="4">#{i18n.getText('KDL002_7')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

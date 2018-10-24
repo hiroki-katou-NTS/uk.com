@@ -74,11 +74,13 @@ public class CopySettingItemFinder {
 		// get employee-copy-category
 		EmployeeCopyCategory empCopyCategory = getEmpCopyCategory(companyId, perInfoCategory.getPersonInfoCategoryId());
 		
-		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListIdForCPS002B(
 				empCopyCategory.getItemDefIdList(), AppContexts.user().contractCode(), companyId, Arrays.asList(categoryCd));
 		
+		List<String> itemIdList =itemDefList.stream().map(i -> i.getPerInfoItemDefId()).collect(Collectors.toList());
 		// get data
-		Map<String, Object> dataMap = getCategoryData(Arrays.asList(categoryCd), selectedEmployeeId, baseDate);
+		// Map ItemDfId- Value
+		Map<String, Object> dataMap = getCategoryData(Arrays.asList(categoryCd), selectedEmployeeId, baseDate, itemIdList);
 		
 		List<SettingItemDto> copyItemList = convertToSettingItemDtoOfCategory(itemDefList, dataMap, categoryCd);
 		
@@ -134,7 +136,7 @@ public class CopySettingItemFinder {
 				AppContexts.user().contractCode(), companyId, categoryCodes);
 		
 		// get data
-		Map<String, Object> dataMap = getCategoryData(categoryCodes, employeeId, baseDate);
+		Map<String, Object> dataMap = getCategoryData(categoryCodes, employeeId, baseDate, copySettingItemIdList);
 		
 		
 		List<SettingItemDto> copyItemList = convertToSettingItemDto(itemDefList, dataMap, categoryDetails);
@@ -204,8 +206,12 @@ public class CopySettingItemFinder {
 					|| dataType == DataTypeValue.RELATE_CATEGORY) {
 				continue;
 			}
-			
-			Object value  = dataMap.get(itemDef.getItemCode().v());
+			Object value = null;
+			if(itemDef.getItemCode().toString().charAt(1) == 'S') {
+				value = dataMap.get(itemDef.getItemCode().v());
+			}else if(itemDef.getItemCode().toString().charAt(1) == '0') {
+				value = dataMap.get(itemDef.getPerInfoItemDefId());
+			}
 			
 			copyItemList.add(SettingItemDto.createFromJavaType1(categoryCd,
 					itemDef.getPerInfoItemDefId(), itemDef.getItemCode().v(), itemDef.getItemName().v(),
@@ -218,12 +224,12 @@ public class CopySettingItemFinder {
 	}
 	
 	
-	private Map<String, Object> getCategoryData(List<String> categoryCodes, String employeeId, GeneralDate baseDate) {
+	private Map<String, Object> getCategoryData(List<String> categoryCodes, String employeeId, GeneralDate baseDate, List<String> copySettingItemIdList) {
 		Map<String, Object> dataMap = new HashMap<>();
 		categoryCodes.forEach(categoryCode -> {
 			PeregDto dto = this.layoutProcessor.findSingle(PeregQuery.createQueryLayout(categoryCode, employeeId, null, baseDate));
 			if ( dto != null ) {
-				dataMap.putAll(MappingFactory.getFullDtoValue(dto));
+				dataMap.putAll(MappingFactory.getFullDtoValue2(dto));
 			}
 		});
 		return dataMap;
@@ -252,8 +258,13 @@ public class CopySettingItemFinder {
 			if (dataType == DataTypeValue.READONLY || dataType == DataTypeValue.RELATE_CATEGORY) {
 				continue;
 			}
-
-			Object value = dataMap.get(itemDef.getItemCode().v());
+			
+			Object value = null;
+			if(itemDef.getItemCode().toString().charAt(1) == 'S') {
+				value = dataMap.get(itemDef.getItemCode().v());
+			}else if(itemDef.getItemCode().toString().charAt(1) == '0'){
+				value = dataMap.get(itemDef.getPerInfoItemDefId());
+			}
 
 			copyItemList.add(SettingItemDto.createFromJavaType1(categoryIdvsCodeMap.get(itemDef.getPerInfoCategoryId()),
 					itemDef.getPerInfoItemDefId(), itemDef.getItemCode().v(), itemDef.getItemName().v(),

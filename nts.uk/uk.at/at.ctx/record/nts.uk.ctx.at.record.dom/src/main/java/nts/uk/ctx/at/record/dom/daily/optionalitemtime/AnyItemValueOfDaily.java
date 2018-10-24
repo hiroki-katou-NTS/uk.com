@@ -3,20 +3,22 @@ package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay;
 
 /** 日別実績の任意項目*/
 @Getter
@@ -47,7 +49,7 @@ public class AnyItemValueOfDaily {
     											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt,
     											   		  Optional<AnyItemValueOfDaily> anyItemValueOfDaily) {
     	
-               
+    	Optional<AnyItemValueOfDaily> dailyAnyItem = dailyRecordDto.get().anyItems();
         //任意項目分ループ
         List<CalcResultOfAnyItem> anyItemList = new ArrayList<>();
         
@@ -63,8 +65,36 @@ public class AnyItemValueOfDaily {
         	if(optionalItem.checkTermsOfUse(empCondition,bsEmploymentHistOpt)) {
         		List<Formula> test = formulaList.stream().filter(t -> t.getOptionalItemNo().equals(optionalItem.getOptionalItemNo())).collect(Collectors.toList());
         		//計算処理
-                anyItemList.add(optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty()));
+        		val calcResult = optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty());
+                anyItemList.add(calcResult);
+                //------
+            	if(dailyAnyItem.isPresent()) {
+            		List<AnyItemValue> forcsItem = dailyAnyItem.get().items;
+            		Optional<AnyItemValue> getAnyItem = forcsItem.stream().filter(tc -> tc.getItemNo().v().equals(calcResult.getOptionalItemNo().v())).findFirst();
+        			//存在する(上書き)
+            		if(getAnyItem.isPresent()) {
+
+            			//AnyItemValue updateItem = new AnyItemValue(calcResult.getOptionalItemNo(), times, amount, time);
+            			 val numberList = forcsItem.stream().map(tc -> tc.getItemNo().v().intValue()).collect(Collectors.toList());
+            			 int indexNumber = numberList.indexOf(calcResult.getOptionalItemNo().v().intValue());
+            			 forcsItem.set(indexNumber, new AnyItemValue(new AnyItemNo(calcResult.getOptionalItemNo().v()),
+								 												   calcResult.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
+								 												   calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
+								 												   calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
+            		}
+            		else {
+            			//コンバーター内には存在しない任意項目No
+            			forcsItem.add(new AnyItemValue(new AnyItemNo(calcResult.getOptionalItemNo().v()),
+            														 calcResult.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
+            														 calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
+            														 calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
+            		}
+            		dailyAnyItem.get().items = forcsItem;
+            		dailyRecordDto.get().withAnyItems(dailyAnyItem.get());
+            	}
+            	//-------
         	}
+
         }
         
         AnyItemValueOfDaily result = new AnyItemValueOfDaily(employeeId,ymd,new ArrayList<>());
@@ -72,12 +102,15 @@ public class AnyItemValueOfDaily {
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
         	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
-					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v))),
-					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v)),
-					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v))));
+					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
+					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v.intValue())),
+					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v.intValue()))));
     	}
-        
+
         return result;
     }
-    
+
+    public Optional<AnyItemValue> getNo(int no) {
+    	return items.stream().filter(i -> i.getItemNo().v() == no).findFirst();
+    }
 }

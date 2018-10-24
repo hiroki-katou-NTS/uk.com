@@ -101,6 +101,15 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
+	
+	/**
+	 * Req No.18
+	 * deletedStatus = 0
+	 * @param cId
+	 * @param sCd
+	 * @return
+	 */
+	Optional<EmployeeDataMngInfo> getEmployeeNotDel(String cId, String sCd);
 
 	/**
 	 * @param companyId
@@ -117,6 +126,8 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	List<EmployeeDataMngInfo> getAllByCid(String cid);
 	
+	int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate);
+
 	/**
 	 * Find by cid employee code and deleted status.
 	 *
@@ -126,5 +137,15 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return the optional
 	 */
 	Optional<EmployeeDataMngInfo> findByCidEmployeeCodeAndDeletedStatus(String cid, String pid, EmployeeDeletionAttr deletedStatus);
-
+	// request list 515
+	List<EmployeeDataMngInfo> findBySidNotDel(List<String> sid);
+	/**
+	 * @author lanlt
+	 * getAllEmpNotDeleteByCid phục vụ một phần cho request 120-1
+	 * @param companyId
+	 * @param companyId
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId);
+	
 }

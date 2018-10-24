@@ -6,8 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
-import lombok.Data;
+import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.CheckBeforeRegisterHolidayWork;
@@ -25,6 +24,8 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDat
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 
 @Path("at/request/application/holidaywork")
 @Produces("application/json")
@@ -60,8 +61,8 @@ public class HolidayWorkWebService extends WebService{
 															param.getInputDate() == null ? null :GeneralDateTime.fromString(param.getInputDate(), "yyyy/MM/dd HH:mm"),
 															param.getStartTime(),
 															param.getEndTime(),
-															param.getStartTimeRest(),
-															param.getEndTimeRest());
+															param.getStartTimeRests(),
+															param.getEndTimeRests());
 	}
 	@POST
 	@Path("create")
@@ -94,4 +95,16 @@ public class HolidayWorkWebService extends WebService{
 		return this.appHolidayWorkFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getBreakTimeHours());
 	}
 	
+	@POST
+	@Path("getBreakTimes")
+	public List<DeductionTimeDto> getBreakTimes(GetBreakTimeParam param) {
+		return this.appHolidayWorkFinder.getBreakTimes(param.getWorkTypeCD(), param.getWorkTimeCD());
+	}
+	
+}
+
+@Value
+class GetBreakTimeParam {
+	String workTypeCD;
+	String workTimeCD;
 }

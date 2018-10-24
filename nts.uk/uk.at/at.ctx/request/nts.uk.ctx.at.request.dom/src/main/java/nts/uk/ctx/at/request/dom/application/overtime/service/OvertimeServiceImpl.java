@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
@@ -17,19 +19,31 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneService;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class OvertimeServiceImpl implements OvertimeService {
@@ -49,6 +63,17 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
+	@Inject
+	private BasicScheduleService basicService;
+	@Inject
+	private BreakTimeZoneService timeService;
+	
 	@Override
 	public int checkOvertimeAtr(String url) {
 		if(url == null){
@@ -93,15 +118,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 				&& !CollectionUtil.isEmpty(appEmploymentSettings)) {
 			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
 			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
-			if(CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
+				List<String> workTypeCodes = new ArrayList<>();
+				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
+				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
+						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
 				return result;
 			}
-			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-			List<String> workTypeCodes = new ArrayList<>();
-			lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
-			result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
-					.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
-			return result;
 		}
 		List<Integer> allDayAtrs = allDayAtrs();
 		List<Integer> halfAtrs = halfAtrs();
@@ -195,6 +219,18 @@ public class OvertimeServiceImpl implements OvertimeService {
 		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
 		WorkTypeOvertime workTypeOvertime = new  WorkTypeOvertime();
 		SiftType siftType = new SiftType();
+		if (baseDate != null) {
+			AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
+			if(Strings.isNotBlank(achievementOutput.getWorkType().getWorkTypeCode())){
+				workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
+				workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
+				String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();
+				String siftCD = workTypeAndSiftType.getSiftType().getSiftCode();
+				BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID, workTypeCode, siftCD);
+				workTypeAndSiftType.setBreakTimes(breakTime.getLstTimezone());
+				return workTypeAndSiftType;
+			}
+		}
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 		
@@ -206,13 +242,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeAndSiftType.setSiftType(siftTypes.get(0));
 			}
 		}else{
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			workTypeOvertime.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			if(workType.isPresent()){
-				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
-			}
+			WorkType workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().get().v().toString())
+					.orElseGet(()->{
+						return workTypeRepository.findByCompanyId(companyID).get(0);
+					});
+			workTypeOvertime.setWorkTypeCode(workType.getWorkTypeCode().toString());
+			workTypeOvertime.setWorkTypeName(workType.getName().toString());
 			workTypeAndSiftType.setWorkType(workTypeOvertime);
-			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
+			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v().toString())
 					.orElseGet(()->{
 						return workTimeRepository.findByCompanyId(companyID).get(0);
 					});
@@ -220,6 +257,55 @@ public class OvertimeServiceImpl implements OvertimeService {
 			siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 			workTypeAndSiftType.setSiftType(siftType);
 		}
+		//休憩時間帯を取得する
+		if (workTypeAndSiftType.getWorkType() != null && workTypeAndSiftType.getSiftType() != null) {
+			String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();
+			String siftCD = workTypeAndSiftType.getSiftType().getSiftCode();
+			BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID, workTypeCode, siftCD);
+			workTypeAndSiftType.setBreakTimes(breakTime.getLstTimezone());
+		}
 		return workTypeAndSiftType;
+	}
+	
+	
+	@Override
+	//休憩時間帯を取得する
+	public BreakTimeZoneSharedOutPut getBreakTimes(String companyID, String workTypeCode, String workTimeCode) {
+		// 1日半日出勤・1日休日系の判定
+		WorkStyle workStyle = this.basicService.checkWorkDay(workTypeCode);
+		// 平日か休日か判断する
+		WeekdayHolidayClassification weekDay = checkHolidayOrNot(workTypeCode);
+		// 休憩時間帯の取得
+		return this.timeService.getBreakTimeZone(companyID, workTimeCode, weekDay.value, workStyle);
+	}
+
+	private WeekdayHolidayClassification checkHolidayOrNot(String workTypeCd) {
+		String companyId =  AppContexts.user().companyId();
+		Optional<WorkType> WorkTypeOptional = this.workTypeRepository.findByPK(companyId, workTypeCd);
+		if (!WorkTypeOptional.isPresent()) {
+			return WeekdayHolidayClassification.WEEKDAY;
+		}
+		// check null?
+		WorkType workType = WorkTypeOptional.get();
+		DailyWork dailyWork = workType.getDailyWork();
+		WorkTypeClassification oneDay = dailyWork.getOneDay();
+		// 休日出勤
+		if (oneDay.value == 11) {
+			return WeekdayHolidayClassification.HOLIDAY;
+		}
+		return WeekdayHolidayClassification.WEEKDAY;
+	}
+
+	@Override
+	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
+		if(appOvertimeDetail.getLimitErrorTime().v() <= 0){
+			return null;
+		}
+		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
+				new AttendanceTimeMonth(appOvertimeDetail.getApplicationTime().v()+appOvertimeDetail.getActualTime().v()), 
+				appOvertimeDetail.getLimitAlarmTime(), 
+				appOvertimeDetail.getLimitErrorTime(), 
+				appOvertimeDetail.getExceptionLimitAlarmTime(), 
+				appOvertimeDetail.getExceptionLimitErrorTime()).value;
 	}
 }

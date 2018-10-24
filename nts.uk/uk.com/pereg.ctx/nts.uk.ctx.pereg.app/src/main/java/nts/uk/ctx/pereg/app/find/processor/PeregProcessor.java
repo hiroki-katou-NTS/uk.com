@@ -153,7 +153,7 @@ public class PeregProcessor {
 		// combo-box sẽ lấy dựa theo các ngày startDate của từng category
 		GeneralDate comboBoxStandardDate = GeneralDate.today();
 		
-		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef, perInfoCtg.getCategoryName().v());
+		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef, perInfoCtg);
 
 		if (perInfoCtg.isFixed()) {
 
@@ -164,7 +164,7 @@ public class PeregProcessor {
 				MappingFactory.mapListItemClass(peregDto, classItemList);
 				
 				Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(peregDto);
-				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
 				for (String itemCode : standardDateItemCodes) {
 					if (itemValueMap.containsKey(itemCode)) {
 						comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
@@ -214,7 +214,7 @@ public class PeregProcessor {
 		});
 	}
 
-	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, String categoryName) {
+	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
 		return lstClsItem.stream().map(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
 			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
@@ -222,11 +222,11 @@ public class PeregProcessor {
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, categoryName));
+			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, perInfoCtg));
 			if (item.getItemTypeState().getItemType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, categoryName));
+					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, perInfoCtg));
 				});
 			}
 			return layoutPerInfoClsDto;

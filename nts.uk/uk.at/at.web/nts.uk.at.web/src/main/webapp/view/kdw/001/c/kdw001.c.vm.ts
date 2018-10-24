@@ -29,6 +29,8 @@ module nts.uk.at.view.kdw001.c {
             dateValue: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
+            // startDate for validate
+            startDateValidate: KnockoutObservable<string>;
 
             //Declare employee filter component
             ccg001ComponentOption: any;
@@ -40,7 +42,7 @@ module nts.uk.at.view.kdw001.c {
             //close period
             periodStartDate: any;
 
-
+            closureId: KnockoutObservable<any> = ko.observable(1);
 
             constructor() {
 
@@ -64,7 +66,7 @@ module nts.uk.at.view.kdw001.c {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.isShowWorkPlaceName = ko.observable(true);
-                self.isShowSelectAllButton = ko.observable(false);
+                self.isShowSelectAllButton = ko.observable(true);
 
                 this.employeeList = ko.observableArray<UnitModel>([]);
 
@@ -79,7 +81,8 @@ module nts.uk.at.view.kdw001.c {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton()
+                    isShowSelectAllButton: false,
+                    maxRows: 10
                 };
 
 
@@ -89,18 +92,25 @@ module nts.uk.at.view.kdw001.c {
                 self.required = ko.observable(true);
 
                 let today = new Date;
-                self.dateValue = ko.observable({});
-                self.dateValue().startDate = "2017/11/08";
-                self.dateValue().endDate = today;
+//                self.dateValue = ko.observable({});
+//                self.dateValue().startDate = ko.observable("");
+//                self.dateValue().endDate = ko.observable("");
+                self.dateValue = ko.observable({startDate : new Date() , endDate : new Date()});
+                self.startDateValidate = ko.observable("");
 
 
                 //var closureID = __viewContext.transferred.value.closureID;
-                var closureID = '1';
+                //self.closureId = ko.observable(1);
+                let closureID = '1';
                 service.findPeriodById(Number(closureID)).done((data) => {
-                    self.periodStartDate = data.startDate.toString();
-                    self.dateValue().startDate = data.startDate.toString();
-                    self.dateValue().endDate = data.endDate.toString();
+                    self.startDateValidate = data.startDate;
+                    self.periodStartDate = data.startDate;
+                    self.dateValue().startDate = data.startDate;
+                    self.dateValue().endDate = data.endDate;
                     self.dateValue.valueHasMutated();
+                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -114,113 +124,64 @@ module nts.uk.at.view.kdw001.c {
                         self.dateValue().endDate = value;
                         self.dateValue.valueHasMutated();
                     });
-
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 });
+
+                self.closureId.subscribe(function(value) {
+                    service.findPeriodById(Number(value)).done((data) => {
+                        self.startDateValidate = data.startDate;
+                        self.periodStartDate = data.startDate.toString();
+                        self.dateValue().startDate = data.startDate.toString();
+                        self.dateValue().endDate = data.endDate.toString();
+                        self.dateValue.valueHasMutated();
+//                        self.reloadCcg001();
+//                        $('#ccgcomponent').focus();
+//                        $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+                    }).always(() => {
+                        self.startDateString = ko.observable("");
+                        self.endDateString = ko.observable("");
+
+                        self.startDateString.subscribe(function(value) {
+                            self.dateValue().startDate = value;
+                            self.dateValue.valueHasMutated();
+                        });
+
+                        self.endDateString.subscribe(function(value) {
+                            self.dateValue().endDate = value;
+                            self.dateValue.valueHasMutated();
+                        });
+//                        self.reloadCcg001();
+//                        $('#ccgcomponent').focus();
+//                        $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+                    });
+                });
+                
+//                if(self.dateValue().startDate != "2017/11/08" && self.dateValue().endDate != today){
+//                    
+//                    self.dateValue.subscribe(function(value){
+//                        self.reloadCcg001();
+//                        $('#ccgcomponent').focus();
+//                        $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    });
+//                }
+
+                //                self.dateValue.subscribe(function(value){
+                //                    if(self.startDateValidate() != "" && (value.startDate < self.startDateValidate())) {
+                //                        $('#daterangepicker').ntsError('set', {messageId:"Msg_1349"});
+                //                    } else {
+                //                        $('#daterangepicker').ntsError('clear');   
+                //                    }
+                //                });
 
 
                 //Init employee filter component
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
-//                self.ccgcomponent = {
-//                    baseDate: self.baseDate,
-//                    //Show/hide options
-//                    isQuickSearchTab: true,
-//                    isAdvancedSearchTab: true,
-//                    isAllReferableEmployee: true,
-//                    isOnlyMe: true,
-//                    isEmployeeOfWorkplace: true,
-//                    isEmployeeWorkplaceFollow: true,
-//                    isMutipleCheck: true,
-//                    isSelectAllEmployee: true,
-//                    /**
-//                    * @param dataList: list employee returned from component.
-//                    * Define how to use this list employee by yourself in the function's body.
-//                    */
-//                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataList);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataList, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataList, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-//                        self.showinfoSelectedEmployee(true);
-//                        var dataEmployee: EmployeeSearchDto[] = [];
-//                        dataEmployee.push(data);
-//                        self.selectedEmployee(dataEmployee);
-//
-//                        //Bug self fix
-//                        let unitModel = new UnitModel(data);
-//                        let listUnitModel: UnitModel[] = [];
-//                        listUnitModel.push(unitModel);
-//                        self.employeeList(listUnitModel);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList: any = [];
-//                        selectList.push(data.employeeCode);
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataList);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataList, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataList, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataList);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataList, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataList, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    },
-//                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-//                        self.showinfoSelectedEmployee(true);
-//                        self.selectedEmployee(dataEmployee);
-//
-//                        //Convert list Object from server to view model list
-//                        let items = _.map(dataEmployee, item => {
-//                            return new UnitModel(item);
-//                        });
-//                        self.employeeList(items);
-//
-//                        //Fix bug 42, bug 43
-//                        let selectList = _.map(dataEmployee, item => {
-//                            return item.employeeCode;
-//                        });
-//                        self.multiSelectedCode(selectList);
-//                    }
-//
-//                }
-              self.reloadCcg001();      
+
+                self.reloadCcg001();
 
             }
 
@@ -229,11 +190,14 @@ module nts.uk.at.view.kdw001.c {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
+                //self.dateValue().startDate = self.inputPeriod().startDate;
+                //self.dateValue().endDate = self.inputPeriod().endDate;
                 //                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
                 //                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
                 //                    return;
                 //                }
                 self.ccg001ComponentOption = {
+
                     /** Common properties */
                     systemType: 2, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
@@ -241,12 +205,15 @@ module nts.uk.at.view.kdw001.c {
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
                     showClosure: true, // 就業締め日利用
-                    showAllClosure: true, // 全締め表示
+                    showAllClosure: false, // 全締め表示
                     showPeriod: true, // 対象期間利用
                     periodFormatYM: false, // 対象期間精度
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
+                    //periodStartDate: self.dateValue().startDate,
+                    //periodEndDate: self.dateValue().endDate,
+                    dateRangePickerValue: self.dateValue,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
@@ -264,12 +231,13 @@ module nts.uk.at.view.kdw001.c {
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
                     showWorktype: true, // 勤種条件
-                    isMutipleCheck: false, // 選択モード
+                    isMutipleCheck: true, // 選択モード
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(data.listEmployee);
+                        self.closureId(data.closureId);
 
                         //Convert list Object from server to view model list
                         let items = _.map(data.listEmployee, item => {
@@ -286,23 +254,27 @@ module nts.uk.at.view.kdw001.c {
                 }
 
                 // Start component
-//                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+                //                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             opendScreenBorJ() {
                 let self = this;
-                //var closureID = __viewContext["viewmodel"].closureID;
                 var closureID = '1';
+                if (moment.utc(self.dateValue().startDate).format("YYYY/MM/DD") < self.startDateValidate) {
+                    //                    $('#daterangepicker  input[id$=-startInput],#daterangepicker  input[id$=-endInput]'').ntsError('clear');
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1349" });
+                    return;
+                }
                 if (!nts.uk.ui.errors.hasError()) {
-                    service.findPeriodById(Number(closureID)).done((data) => {
+                    service.findPeriodById(Number(self.closureId())).done((data) => {
                         if (data) {
                             let listEmpSelected = self.listComponentOption.selectedCode();
                             if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
                                 return;
                             }
-                            let startDateS = self.dateValue().startDate.split("/");
-                            let endDateS = self.dateValue().endDate.split("/");
+                            let startDateS = self.dateValue().startDate.toString().split("/");
+                            let endDateS = self.dateValue().endDate.toString().split("/");
                             let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
                             let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
                             let startDate_unixtime = parseInt(startDate.getTime() / 1000);
@@ -312,17 +284,17 @@ module nts.uk.at.view.kdw001.c {
                             var timeDifferenceInDays = timeDifferenceInHours / 24;
 
                             if (timeDifferenceInDays > 31) {
-                                nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
-                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
-                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
-                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
-                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
-                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
-                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
-                                        return;
-                                    }
+                                nts.uk.ui.dialog.confirm({ messageId: "Msg_1170" }).ifYes(() => {
+//                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+//                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+//                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+//                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+//                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+//                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+//                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+//                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+//                                        return;
+//                                    }
 
 
                                     let listEmpSelectedId = [];
@@ -336,9 +308,11 @@ module nts.uk.at.view.kdw001.c {
 
 
                                     __viewContext["viewmodel"].params.setParamsScreenC({
+                                        closureID: self.closureId(),
                                         lstEmployeeID: listEmpSelectedId,
-                                        periodStartDate: self.dateValue().startDate,
-                                        periodEndDate: self.dateValue().endDate
+                                        periodStartDate: moment.utc(self.dateValue().startDate).format("YYYY/MM/DD"),
+                                        periodEndDate: moment.utc(self.dateValue().endDate).format("YYYY/MM/DD"),
+                                        processingMonth : self.startDateValidate.toString().split("/")[0]+self.startDateValidate.toString().split("/")[1]
                                     });
                                     $("#wizard").ntsWizard("next").done(function() {
                                         $('#checkBox1').focus();
@@ -348,7 +322,7 @@ module nts.uk.at.view.kdw001.c {
 
                             } else {
                                 let monthNow = data.month; // thieu thang hien tai cua  domain 締め
-                                let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                                let monthStartDate = Number(self.dateValue().startDate.toString().split("/")[1]);
                                 if (monthStartDate < monthNow) {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
@@ -362,9 +336,11 @@ module nts.uk.at.view.kdw001.c {
                                 });
 
                                 __viewContext["viewmodel"].params.setParamsScreenC({
+                                    closureID: self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
-                                    periodStartDate: self.dateValue().startDate,
-                                    periodEndDate: self.dateValue().endDate
+                                    periodStartDate: moment.utc(self.dateValue().startDate).format("YYYY/MM/DD"),
+                                        periodEndDate: moment.utc(self.dateValue().endDate).format("YYYY/MM/DD"),
+                                    processingMonth : self.startDateValidate.toString().split("/")[0]+self.startDateValidate.toString().split("/")[1]
                                 });
                                 $("#wizard").ntsWizard("next").done(function() {
                                     $('#checkBox1').focus();
@@ -379,8 +355,13 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
+                $('#ccgcomponent').focus();
                 $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
+                $('#ccgcomponent').attr('tabindex',1);
+                $("#com-kcp-searchbox *").attr('tabindex', -1);
+                $("table").attr('tabindex', 4);
+                $('#ccg001-btn-search-drawer').focus();
             }
 
         }
@@ -443,7 +424,7 @@ module nts.uk.at.view.kdw001.c {
 
             // 詳細検索タブ
             isAdvancedSearchTab: boolean;
-            //複数選択 
+            //複数選択
             isMutipleCheck: boolean;
 
             //社員指定タイプ or 全社員タイプ

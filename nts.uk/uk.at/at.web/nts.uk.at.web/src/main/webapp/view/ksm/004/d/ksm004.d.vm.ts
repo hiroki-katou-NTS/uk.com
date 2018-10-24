@@ -92,6 +92,7 @@ module ksm004.d.viewmodel {
          */
         decition() {
             var self = this;
+            nts.uk.ui.block.invisible();
             self.startMonth(self.dateValue().startDate);
             self.endMonth(self.dateValue().endDate);
             let startYM = moment(self.startMonth(), 'YYYYMM');
@@ -103,7 +104,6 @@ module ksm004.d.viewmodel {
             //$('.nts-input').trigger("validate");
             _.defer(() => {
                 if (!$('.nts-editor').ntsError("hasError")) {
-                    nts.uk.ui.block.invisible();
                     // startYM < endYM
                         while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11
                         {
@@ -143,7 +143,6 @@ module ksm004.d.viewmodel {
                             self.list().push(objTest);
                             startYM.add(1, 'd');
                         }//end while
-                        nts.uk.ui.block.clear();
                         //if calendar company
                         if (self.typeClass() == 0) {
                             //if check overwrite = true
@@ -209,6 +208,7 @@ module ksm004.d.viewmodel {
                 });
                 
             }).fail(function(res) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
             });
         }
@@ -223,6 +223,7 @@ module ksm004.d.viewmodel {
                     nts.uk.ui.windows.close();  
                 });   
             }).fail(function(res) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
             });
         }
@@ -237,6 +238,7 @@ module ksm004.d.viewmodel {
                     nts.uk.ui.windows.close();  
                 });   
             }).fail(function(res) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
             });
         }
@@ -251,6 +253,7 @@ module ksm004.d.viewmodel {
                     nts.uk.ui.windows.close();  
                 });   
             }).fail(function(res) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
             });
         }
@@ -265,6 +268,7 @@ module ksm004.d.viewmodel {
                     nts.uk.ui.windows.close();  
                 });   
             }).fail(function(res) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
             });
         }
@@ -279,6 +283,7 @@ module ksm004.d.viewmodel {
                     nts.uk.ui.windows.close();  
                 });   
             }).fail(function(res) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
             });
 

@@ -9,6 +9,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
@@ -28,7 +30,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 
  * @author sonnh1
  *
- */
+ */	
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class DefaultBasicScheduleService implements BasicScheduleService {
 
@@ -46,7 +49,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
 
 		if (!workType.isPresent()) {
-			throw new RuntimeException("NOT FOUND WORK TYPE");
+			return SetupType.OPTIONAL;
 		}
 		DailyWork dailyWork = workType.get().getDailyWork();
 		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
@@ -109,7 +112,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 				.filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
 
 		if (!workType.isPresent()) {
-			throw new RuntimeException("NOT FOUND WORK TYPE");
+			return SetupType.OPTIONAL;
 		}
 		DailyWork dailyWork = workType.get().getDailyWork();
 		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
@@ -219,6 +222,41 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 	
 	@Override
+	public WorkStyle checkWorkDay(Optional<WorkType> workTypeOpt) {
+
+		if (!workTypeOpt.isPresent()) {
+			return null;
+		}
+
+		WorkType workType = workTypeOpt.get();
+		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+
+		// All day
+		if (workType.isOneDay()) {
+			if (dailyWork.IsLeaveForADay()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.ONE_DAY_WORK;
+		}
+
+		// Half day
+		if (dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.AFTERNOON_WORK;
+		}
+
+		if (dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		}
+
+		return WorkStyle.ONE_DAY_WORK;
+	}
+	
+	@Override
 	public WorkStyle checkWorkDayByList(String workTypeCode, List<WorkType> listWorkType) {
 		Optional<WorkType> workTypeOpt = listWorkType.stream()
 				.filter(workType -> workType.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
@@ -278,8 +316,6 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 
 	/*
-	 * 勤務種類と職業時間帯のペアチェック
-	 * 
 	 * (non-Javadoc)
 	 * 
 	 * 
@@ -290,6 +326,27 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	@Override
 	public void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode) {
 		SetupType setupType = this.checkNeededOfWorkTimeSetting(workTypeCode);
+
+		// In case of Required and work time is not set.
+		if (setupType == SetupType.REQUIRED && !this.isWorkTimeValid(workTimeCode)) {
+			throw new BusinessException("Msg_435");
+		}
+
+		// In case of Not Required and work time is set.
+		if (setupType == SetupType.NOT_REQUIRED && this.isWorkTimeValid(workTimeCode)) {
+			throw new BusinessException("Msg_434");
+		}
+	}
+	
+	/**
+	 * check Pair WorkType and WorkTime With List WorkType
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param listWorkType
+	 */
+	@Override
+	public void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType) {
+		SetupType setupType = this.checkNeedWorkTimeSetByList(workTypeCode, listWorkType);
 
 		// In case of Required and work time is not set.
 		if (setupType == SetupType.REQUIRED && !this.isWorkTimeValid(workTimeCode)) {

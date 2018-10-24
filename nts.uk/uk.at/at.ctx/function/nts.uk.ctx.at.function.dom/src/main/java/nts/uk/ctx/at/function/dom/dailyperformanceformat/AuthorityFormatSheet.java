@@ -44,5 +44,14 @@ public class AuthorityFormatSheet {
 		return new AuthorityFormatSheet(companyId, new DailyPerformanceFormatCode(dailyPerformanceFormatCode), sheetNo,
 				sheetName);
 	}
+	
+	public AuthorityFormatSheet clone() {
+		return new AuthorityFormatSheet(companyId, dailyPerformanceFormatCode,sheetNo,sheetName);
+	}
+
+	public void setSheetNo(BigDecimal sheetNo) {
+		this.sheetNo = sheetNo;
+	}
+	
 
 }

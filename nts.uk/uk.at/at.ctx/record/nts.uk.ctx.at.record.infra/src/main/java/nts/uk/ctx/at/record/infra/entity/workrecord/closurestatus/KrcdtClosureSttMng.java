@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -56,6 +56,10 @@ public class KrcdtClosureSttMng extends UkJpaEntity {
 	public ClosureStatusManagement toDomain() {
 		return new ClosureStatusManagement(new YearMonth(this.pk.yearMonth), this.pk.employeeId, this.pk.closureId,
 				new ClosureDate(this.pk.closeDay, this.pk.isLastDay == 1), new DatePeriod(this.start, this.end));
+	}
+	
+	public static ClosureStatusManagement toDomain(KrcdtClosureSttMng entity) {
+		return entity.toDomain();
 	}
 
 	@Override

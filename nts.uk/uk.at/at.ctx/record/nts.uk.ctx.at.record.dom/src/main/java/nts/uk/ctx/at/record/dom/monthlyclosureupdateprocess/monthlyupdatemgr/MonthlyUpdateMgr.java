@@ -23,9 +23,9 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClo
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -89,7 +89,7 @@ public class MonthlyUpdateMgr {
 			AttendanceTimeOfMonthly attTimeMontly = getAttendanceTimeOfMonthly(monthlyClosureLogId, empId, p);
 			if (attTimeMontly == null)
 				continue;
-			monthlyClosureUpdateProc(p, empId);
+			monthlyClosureUpdateProc(p, empId, attTimeMontly);
 			// アルゴリズム「月別実績バックアップ」を実行する: not cover this time
 		}
 	}
@@ -112,8 +112,9 @@ public class MonthlyUpdateMgr {
 	}
 
 	// 月締め更新処理
-	private void monthlyClosureUpdateProc(AggrPeriodEachActualClosure period, String empId) {
-		remainNumberProc.remainNumberProcess(period, empId);
+	private void monthlyClosureUpdateProc(AggrPeriodEachActualClosure period, String empId,
+			AttendanceTimeOfMonthly attTimeMonthly) {
+		remainNumberProc.remainNumberProcess(period, empId, attTimeMonthly);
 		closureSttMng.closureStatusManage(period, empId);
 	}
 

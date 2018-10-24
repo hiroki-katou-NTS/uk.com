@@ -27,15 +27,15 @@ module nts.uk.at.view.kmf002.e {
             
             public save(): void {
                 let _self = this;
-                
                 if (!nts.uk.ui.errors.hasError()) {
+                    blockUI.invisible();
                     _self.enableSave(false);
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()).done((data) => {
                         _self.enableDelete(true);
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             _self.enableSave(true);
                         });
-                    });
+                    }).always(()=> blockUI.clear());
                 }
             }
             

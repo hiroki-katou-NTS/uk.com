@@ -72,14 +72,14 @@ public class LayoutControlComBoBox {
 				return mapComboInRefCode.get(isRequired);
 			} else {
 				List<ComboBoxObject> returnList = comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-						comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode);
+						comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode,null, false);
 				mapComboInRefCode.put(isRequired, returnList);
 				combobox.put(referenceCode, mapComboInRefCode);
 				return returnList;
 			}
 		} else {
 			List<ComboBoxObject> returnList = comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-					comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode);
+					comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode,null, false);
 			Map<Boolean, List<ComboBoxObject>> mapComboInRefCode = new HashMap<>();
 			mapComboInRefCode.put(isRequired, returnList);
 			combobox.put(referenceCode, mapComboInRefCode);

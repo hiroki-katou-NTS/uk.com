@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -121,5 +122,18 @@ public interface JobTitleInfoRepository {
 	 * @return the list
 	 */
 	List<JobTitleInfo> findByIds(String companyId, List<String> jobIds, GeneralDate baseDate);
+	
+	List<JobTitleInfo> findByIds(List<String> jobIds, GeneralDate baseDate);
+	
+	/**
+	 * Find by ids.
+	 *
+	 * @param companyId the company id
+	 * @param jobIds the job ids
+	 * @param baseDates the base dates
+	 * @return the map
+	 */
+	Map<GeneralDate, List<JobTitleInfo>> findByIds(String companyId, List<String> jobIds,
+			List<GeneralDate> baseDates);
 	
 }

@@ -20,6 +20,9 @@ public class AddSpecialLeaveGrant4Command {
 	// 付与日
 	@PeregItem("IS00454")
 	private GeneralDate grantDate;
+	
+	public String grantDateItemName;
+	public String deadlineDateItemName;
 
 	// 期限日
 	@PeregItem("IS00455")

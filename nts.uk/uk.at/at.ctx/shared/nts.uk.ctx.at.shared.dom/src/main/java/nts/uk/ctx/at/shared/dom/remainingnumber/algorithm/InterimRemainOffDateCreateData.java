@@ -1,4 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
@@ -43,7 +45,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param workTypeCode
 	 * @return
 	 */
-	public WorkTypeRemainInfor createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode);
+	public List<WorkTypeRemainInfor> createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode);
 	/**
 	 * 残数発生使用明細を作成する
 	 * @param workType
@@ -89,7 +91,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param timeOverSetting: 実績残業振替時間
 	 * @return
 	 */
-	DayoffTranferInfor createDayoffFromWorkTime(String cid, WorkTypeRemainInfor remainInfor, String workTimeCode,
+	List<DayoffTranferInfor> createDayoffFromWorkTime(String cid, List<WorkTypeRemainInfor> remainInfor, String workTimeCode,
 			Integer timeSetting, CreateAtr createAtr, Integer timeOverSetting, boolean dayOffTimeIsUse);
 	/**
 	 * 代休振替時間を算出する
@@ -114,8 +116,8 @@ public interface InterimRemainOffDateCreateData {
 	 * @param appInfor
 	 * @return
 	 */
-	DayoffTranferInfor tranferInforFromHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
-			WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
+	List<DayoffTranferInfor> tranferInforFromHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
+			List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr);
 	/**
 	 * 休日出勤以外の申請から代休振替情報を作成する
 	 * @param dayOffTimeIsUse
@@ -123,13 +125,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param remainInfor
 	 * @return
 	 */
-	DayoffTranferInfor transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
-			InterimRemainCreateInfor createInfo, WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
-	/**
-	 * 特別休暇枠NOから特別休暇を取得する
-	 * @param cid
-	 * @param holidayFrame
-	 * @return
-	 */
-	String specialHolidayCode(String cid, String holidayFrame);
+	List<DayoffTranferInfor> transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
+			InterimRemainCreateInfor createInfo, List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr);
+
 }

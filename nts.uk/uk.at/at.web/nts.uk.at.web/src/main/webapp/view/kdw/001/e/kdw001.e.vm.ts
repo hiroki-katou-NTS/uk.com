@@ -4,15 +4,16 @@ module nts.uk.at.view.kdw001.e.viewmodel {
     import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
 
     export class ScreenModel {
-        
+
         numberEmployee: KnockoutObservable<number> = ko.observable(0);
-        
+
         // Time data
         isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
         startTime: KnockoutObservable<string> = ko.observable("");
         endTime: KnockoutObservable<string> = ko.observable("");
-        elapseTime: kibanTimer = new kibanTimer('elapseTime');
+        endTimeTemp : KnockoutObservable<string> = ko.observable("");
+        elapseTime: kibanTimer = new kibanTimer('elapseTime', 100);
         empCalAndSumExecLogID: KnockoutObservable<string> = ko.observable("");
 
         // dailyCreate data
@@ -20,16 +21,21 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         dailyCreateTotal: KnockoutObservable<number> = ko.observable(0);
         dailyCreateStatus: KnockoutObservable<string> = ko.observable("");
         dailyCreateHasError: KnockoutObservable<string> = ko.observable("");
-        
+
         // daily calculation
-        dailyCalculateCount : KnockoutObservable<number> = ko.observable(0);
-        dailyCalculateStatus : KnockoutObservable<string> = ko.observable("");
-        dailyCalculateHasError : KnockoutObservable<string> = ko.observable("");
-        
+        dailyCalculateCount: KnockoutObservable<number> = ko.observable(0);
+        dailyCalculateStatus: KnockoutObservable<string> = ko.observable("");
+        dailyCalculateHasError: KnockoutObservable<string> = ko.observable("");
+
         // monthly aggregation data
         monthlyAggregateCount: KnockoutObservable<number> = ko.observable(0);
         monthlyAggregateStatus: KnockoutObservable<string> = ko.observable("");
         monthlyAggregateHasError: KnockoutObservable<string> = ko.observable("");
+
+        //承認反映
+        reflectApprovalCount: KnockoutObservable<number> = ko.observable(0);
+        reflectApprovalStatus: KnockoutObservable<string> = ko.observable("");
+        reflectApprovalHasError: KnockoutObservable<string> = ko.observable("");
 
         // Period Date
         startPeriod: KnockoutObservable<string> = ko.observable("");
@@ -41,7 +47,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         contents: any;
 
         // GridList
-        errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]);
+        errorMessageInfo: KnockoutObservableArray<any> = ko.observableArray([]);
+        dataExport: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]); 
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
 
@@ -54,23 +61,57 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         visibleApproval: KnockoutObservable<boolean> = ko.observable(false);
         visibleMonthly: KnockoutObservable<boolean> = ko.observable(false);
 
+        closureId: KnockoutObservable<number> = ko.observable(1);
+        
+        // endTime
+        // dailyCreate
+        dailyCreateStartTime : KnockoutObservable<string> = ko.observable("");
+        dailyCreateEndTime : KnockoutObservable<string> = ko.observable("");
+        
+        // dailyCalculate
+        dailyCalculateStartTime : KnockoutObservable<string> = ko.observable("");
+        dailyCalculateEndTime : KnockoutObservable<string> = ko.observable("");
+        
+        // approval
+        reflectApprovalStartTime : KnockoutObservable<string> = ko.observable("");
+        reflectApprovalEndTime : KnockoutObservable<string> = ko.observable("");
+        
+        // monthly
+        monthlyAggregateStartTime : KnockoutObservable<string> = ko.observable("");
+        monthlyAggregateEndTime : KnockoutObservable<string> = ko.observable("");
+        employeeIDS : KnockoutObservableArray<any> = ko.observableArray([]);
+
         constructor() {
             var self = this;
             self.elapseTime.start();
-            
+
             self.numberEmployee(0);
+
+            self.closureId(1);
 
             self.columns = ko.observableArray([
                 { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
                 { headerText: getText('KDW001_35'), key: 'personName', width: 150 },
                 { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
-                { headerText: getText('KDW001_37'), key: 'messageError', width: 290 },
-                { headerText: '', key: 'GUID', width: 1, hirren: true },
+                { headerText: getText('KDW001_37'), key: 'messageError', class: "limited-label", width: 290 },
+                { headerText: '', key: 'id', width: 1, hidden: true },
             ]);
 
             self.selectedExeContent.subscribe((value) => {
-                self.getLogData();
+                if(value != undefined && value.length == undefined) {
+                    self.getLogData();    
+                }
             });
+            
+            self.employeeIDS.subscribe(value => {
+                if(value != null && value.length > 0) {
+                    self.getLogDataAgain(value).done(employeeIDS => {
+                        if(employeeIDS.length > 0) {
+                             self.employeeIDS(employeeIDS);
+                            } 
+                        });
+                    }
+                });
         }
 
         startPage(): JQueryPromise<any> {
@@ -80,7 +121,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.startPeriod(params.periodStartDate);
             self.endPeriod(params.periodEndDate);
             self.numberEmployee(params.lstEmployeeID.length);
+            self.closureId(params.closureID);
 
+            $('#closeDialogButton').focus();
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
                 if (params.dailyCreation == false) {
@@ -111,7 +154,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 self.contents = res.enumComboBox;
                 //self.executionContents(res.enumComboBox);
                 self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
-                self.startAsyncTask();
+                self.startAsyncTask(res.empCalAndSumExecLogID);
+
                 dfd.resolve();
             });
 
@@ -120,22 +164,25 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         exportLog(): void {
             var self = this;
-            if (self.errorMessageInfo().length > 0)
-                service.saveAsCsv(self.errorMessageInfo());
+            if (self.dataExport().length > 0)
+                service.saveAsCsv(self.dataExport());
         }
 
         cancelTask(): void {
             var self = this;
             nts.uk.request.asyncTask.requestToCancel(self.taskId());
             self.enableCancelTask(false);
-            self.elapseTime.end();
+            service.updateLogState(self.empCalAndSumExecLogID()).done(result =>{
+               self.endTimeTemp(result); 
+               self.elapseTime.end(); 
+            });
         }
 
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
 
-        private startAsyncTask(): void {
+        private startAsyncTask(empCalAndSumExecLogID): void {
             var self = this;
             var data: shareModel.CheckProcessCommand = {
                 empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
@@ -144,28 +191,47 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             };
             service.checkTask(data).done(res => {
                 self.taskId(res.id);
-                self.repeatCheckAsyncResult();
+                self.repeatCheckAsyncResult(empCalAndSumExecLogID);
             });
         }
 
-        private repeatCheckAsyncResult(): void {
+        private repeatCheckAsyncResult(empCalAndSumExecLogID): void {
             var self = this;
-            
-                        self.enableCancelTask(true);
+
+            self.enableCancelTask(true);
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
                         // DailyCreate
                         self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
-                        
+
                         // daily calculation
                         self.dailyCalculateCount(self.getAsyncData(info.taskDatas, "dailyCalculateCount").valueAsNumber);
-                        
+
                         // monthly aggregation 
-                        self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);                        
+                        self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);
+
+                        self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                        self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                        self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+
+                        //承認反映
+                        self.reflectApprovalCount(self.getAsyncData(info.taskDatas, "reflectApprovalCount").valueAsNumber);
+                        self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+
 
                         if (!info.pending && !info.running) {
+                            
+                            let stopped = 0;
+                                if(info.status === "CANCELLED"){
+                                    self.endTime(self.endTimeTemp());
+                                    stopped = 1;
+                                } else {
+                                   // Get EndTime from server, fallback to client
+                                    self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString); 
+                                }
+                            
                             self.isComplete(true);
                             self.executionContents(self.contents);
                             self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
@@ -173,32 +239,93 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // End count time
                             self.elapseTime.end();
                             
-                            // Get EndTime from server, fallback to client
-                            self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString);
-//                            if (nts.uk.text.isNullOrEmpty(endTime))
-//                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
-//                            self.endTime(endTime);
-
+                            //                            if (nts.uk.text.isNullOrEmpty(endTime))
+                            //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
+                            //                            self.endTime(endTime);
+                            //9: {key: "monthlyAggregateStatus", valueAsString: "処理中
                             // DailyCreate
-                            self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString === "処理中") {
+                                self.dailyCreateStatus("実行中止");
+                            } else {
+                                self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                            }
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
-                            
+
                             // daily calculation
-                            self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString === "処理中") {
+                                self.dailyCalculateStatus("実行中止");
+                            } else {
+                                self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                            }
                             self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
-                            
+
                             // monthly aggregation
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString === "処理中") {
+                                self.monthlyAggregateStatus("実行中止");
+                            } else {
+                                self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                            }
                             self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
-                            self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+
+                            //承認反映
+                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString === "処理中") {
+                                self.reflectApprovalStatus("実行中止");
+                            } else {
+                                self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                            }
+                            self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString);
+
+                            //daily create
+                            self.dailyCreateStartTime(self.getAsyncData(info.taskDatas, "dailyCreateStartTime").valueAsString);                            
+                            self.dailyCreateEndTime(self.getAsyncData(info.taskDatas, "dailyCreateEndTime").valueAsString);
+                            
+                            // daily calculate
+                            self.dailyCalculateStartTime(self.getAsyncData(info.taskDatas, "dailyCalculateStartTime").valueAsString);
+                            self.dailyCalculateEndTime(self.getAsyncData(info.taskDatas, "dailyCalculateEndTime").valueAsString);
+                            
+                            // approval
+                            self.reflectApprovalStartTime(self.getAsyncData(info.taskDatas, "reflectApprovalStartTime").valueAsString);
+                            self.reflectApprovalEndTime(self.getAsyncData(info.taskDatas, "reflectApprovalEndTime").valueAsString);
+                            
+                            // monthly
+                            self.monthlyAggregateStartTime(self.getAsyncData(info.taskDatas, "monthlyAggregateStartTime").valueAsString);
+                            self.monthlyAggregateEndTime(self.getAsyncData(info.taskDatas, "monthlyAggregateEndTime").valueAsString);
                             
                             // Get Log data
-                            self.getLogData();
+                            //self.getLogData();
+                            self.enableCancelTask(false);
+                            
+                            if (self.endTime() != null && self.endTime() != undefined && self.endTime() != "") {
+                                
+                                var paramsUpdate = {
+                                    empCalAndSumExecLogID: empCalAndSumExecLogID,
+                                    executionStartDate: self.startTime(),
+                                    executionEndDate: self.endTime(),
+                                    dailyCreateStartTime : self.dailyCreateStartTime(),
+                                    dailyCreateEndTime : self.dailyCreateEndTime(),
+                                    dailyCalculateStartTime : self.dailyCalculateStartTime(),
+                                    dailyCalculateEndTime : self.dailyCalculateEndTime(),
+                                    reflectApprovalStartTime : self.reflectApprovalStartTime(),
+                                    reflectApprovalEndTime : self.reflectApprovalEndTime(),
+                                    monthlyAggregateStartTime : self.monthlyAggregateStartTime(),
+                                    monthlyAggregateEndTime : self.monthlyAggregateEndTime(),
+                                    stopped : stopped
+                                };
+                                service.updateExcutionTime(paramsUpdate);
+                            }
                         }
                     });
                 })
                 .while(info => info.pending || info.running)
                 .pause(1000)
             );
+
+            //                var paramsUpdate = {
+            //                    empCalAndSumExecLogID : empCalAndSumExecLogID,
+            //                    executionStartDate: moment.utc(self.startTime()).toISOString(),
+            //                    executionEndDate: self.endTime()
+            //                };
+            //                service.updateExcutionTime(paramsUpdate);
         }
 
         private getAsyncData(data: Array<any>, key: string): any {
@@ -215,8 +342,47 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 executionContent: self.selectedExeContent()
             };
             service.getErrorMessageInfo(params).done((res) => {
-                self.errorMessageInfo(res);
+                let i = 0;
+                let data = _.map(res.listResult,function(item:any){
+                   return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
+                });
+                self.errorMessageInfo(data);
+                self.errorMessageInfo.valueHasMutated();
+                self.dataExport(data);
+                self.dataExport.valueHasMutated();
+                if(res.listEmployee.length > 0) {
+                   self.employeeIDS(res.listEmployee);
+                   self.errorMessageInfo.valueHasMutated();
+//                   LabelGetLogDataAgain : getLogDataAgain(res.listEmployee).done((EmpIDS) => {
+//                       if(EmpIDS.lenght > 0){
+//                           self.employeeIDS(EmpIDS);
+//                           continue LabelGetLogDataAgain;
+//                       } 
+//                    });
+                }
             });
+        }
+
+        getLogDataAgain(employeeIDS : any) : JQueryPromise<any> {
+            var self = this;
+            let dfd = $.Deferred<any>();
+            var params = {
+                empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
+                executionContent: self.selectedExeContent(),
+                employeeID : self.employeeIDS()
+            };
+            service.getErrorMessageInfo(params).done((res) => {
+                let i = self.errorMessageInfo().length;
+                let data = _.map(res.listResult,function(item:any){
+                   return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
+                });
+                ko.utils.arrayPushAll(self.errorMessageInfo, data);
+                self.errorMessageInfo.valueHasMutated();
+                self.dataExport.push(data);
+                self.dataExport.valueHasMutated();
+                dfd.resolve(res.listEmployee);
+            });
+            return dfd.promise();
         }
 
     }

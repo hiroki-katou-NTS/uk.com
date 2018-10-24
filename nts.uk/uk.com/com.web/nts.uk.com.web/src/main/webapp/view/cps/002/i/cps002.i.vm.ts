@@ -33,15 +33,19 @@ module cps002.i.vm {
 
         }
         start() {
-            let self = this;
-            let dImageId = getShared("CPS002A");
-
+            let self = this,
+                dImageId = getShared("CPS002A"),
+                dataShare = getShared("imageId");
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
-                $(".ntsCheckBox-label input:checkbox").prop('checked', false);
-                $(".ntsCheckBox-label input:checkbox").trigger("change");
+                //$(".ntsCheckBox-label input:checkbox").prop('checked', false);
+                //$(".ntsCheckBox-label input:checkbox").trigger("change");
+                $('input[type=checkbox]').prop('checked', false);
+                $(".comfirm-checkbox").hide();
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                    $(".checkbox-holder").show();
+                    $('input[type=checkbox]').prop('checked', true);
                     if (!self.isInit) {
                         self.isChange(true);
                         return;
@@ -68,7 +72,12 @@ module cps002.i.vm {
                         $("#test").ntsImageEditor("uploadOriginal", { stereoType: "avatarfile" }).done(function(data2) {
                             self.imageId().defaultImgId = data2.id;
                             nts.uk.ui.block.clear();
-
+                            let dataShare = {
+                               imageCropedId : data.id,
+                               imageOriginalId : data2.id,
+                               fileName : data2.originalName,
+                            }
+                            setShared("imageId", dataShare);
                             self.close();
                         });
 
@@ -78,16 +87,13 @@ module cps002.i.vm {
             } else self.close();
         }
         getImage() {
-            let self = this;
-            let id = self.imageId().defaultImgId;
+            let self = this,
+                id = self.imageId().defaultImgId;
             $("#test").ntsImageEditor("selectByFileId", id);
         }
         close() {
             let self = this;
             nts.uk.ui.block.clear();
-            let result = self.imageId().cropImgId ? self.imageId() : undefined;
-
-            setShared("imageId", result);
             close();
         }
 

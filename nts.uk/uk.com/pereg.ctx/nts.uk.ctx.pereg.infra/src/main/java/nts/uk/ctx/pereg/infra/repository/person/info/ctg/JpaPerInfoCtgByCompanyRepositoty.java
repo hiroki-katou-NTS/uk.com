@@ -1,18 +1,25 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,6 +54,18 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
+	
+	private final static String SELECT_CTG_ORDER_BY_IDS = String.join(" ", 
+			"SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.disporder",
+			"FROM PpemtPerInfoCtgOrder c",
+			"WHERE c.ppemtPerInfoCtgPK.perInfoCtgId IN :ctgIds",
+			"AND c.cid = :cid");
+
+	private final static String SELECT_ITEMS_ORDER_BY_IDS = String.join(" ", 
+			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.disporder",
+			"FROM PpemtPerInfoItemOrder i",
+			"WHERE i.perInfoCtgId IN :ctgIds",
+			"AND i.ppemtPerInfoItemPK.perInfoItemDefId IN :itIds");
 
 	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
 		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
@@ -163,5 +182,43 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		return entities.stream().map(entity -> PersonInfoCtgOrder.createCategoryOrder(companyId,
 				entity.ppemtPerInfoCtgPK.perInfoCtgId, entity.disporder)).collect(Collectors.toList());
 	}
+	
+	public HashMap<Integer, HashMap<String, Integer>> getOrderList(List<String> categoryIds, List<String> itemDefinitionIds) {
+		HashMap<String, Integer> ctgs = new HashMap<>();
+		HashMap<String, Integer> items = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
+		
+		if (categoryIds == null || categoryIds.isEmpty()) {
+			categoryIds = Arrays.asList(IdentifierUtil.randomUniqueId());
+		}
+		
+		CollectionUtil.split(categoryIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, _catIds -> {
+			this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, Object[].class).setParameter("cid", companyId)
+					.setParameter("ctgIds", _catIds).getList().stream().forEach(ctg -> {
+						ctgs.putIfAbsent(ctg[0].toString(), ctg[1] == null ? -1 : new Integer(ctg[1].toString()));
+					});
 
+			if (!CollectionUtil.isEmpty(itemDefinitionIds)) {
+				CollectionUtil.split(itemDefinitionIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, _itemIds -> {
+					this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", _catIds)
+							.setParameter("itIds", _itemIds).getList().forEach(it -> {
+								items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
+							});
+				});
+			} else {
+				this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", _catIds)
+						.setParameter("itIds", Arrays.asList(IdentifierUtil.randomUniqueId())).getList().forEach(it -> {
+							items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
+						});
+			}
+		});
+
+		return new HashMap<Integer, HashMap<String, Integer>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(0, ctgs);
+				put(1, items);
+			}
+		};
+	}
 }

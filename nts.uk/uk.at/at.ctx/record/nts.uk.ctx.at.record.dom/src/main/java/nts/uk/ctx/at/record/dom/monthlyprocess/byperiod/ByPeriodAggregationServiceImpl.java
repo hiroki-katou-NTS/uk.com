@@ -64,7 +64,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	private AggrPeriodInforRepository inforRepo;
 	
 	/** 任意期間集計Mgrクラス */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public <C> void manager(String companyId, String executeId, AsyncCommandHandlerContext<C> async) {
 
@@ -127,14 +127,16 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 
 			if (coStatus == ProcessState.SUCCESS){
 				
-				dataSetter.setData("aggCreateCount", stateHolder.count());
+				// ログ情報（実行内容の完了状態）を更新する
+				this.targetRepo.updateExcution(target);
+				dataSetter.updateData("aggCreateCount", stateHolder.count());
 			}
 			if (coStatus == ProcessState.INTERRUPTION){
 				
 				// 中断時
 				this.executionRepo.updateExe(executionPeriod, ExecutionStatus.END_OF_INTERRUPTION.value, GeneralDateTime.now());
 				dataSetter.updateData("aggCreateStatus", ExecutionStatus.END_OF_INTERRUPTION.name);
-				async.finishedAsCancelled();
+				//async.finishedAsCancelled();
 				return;
 			}
 		}
@@ -151,7 +153,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	}
 	
 	/** 社員の任意期間別実績を集計する */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public ProcessState aggregate(
 			AsyncCommandHandlerContext async, String companyId, String employeeId, DatePeriod period,
@@ -161,7 +163,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		
 		// 中断依頼が出されているかチェックする
 		if (async.hasBeenRequestedToCancel()) {
-			async.finishedAsCancelled();
+			//async.finishedAsCancelled();
 			return ProcessState.INTERRUPTION;
 		}
 		

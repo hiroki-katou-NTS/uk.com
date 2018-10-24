@@ -4,20 +4,20 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
+		<span tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-		<button class="proceed" tabindex="3" data-bind="click: addUpdateWorkPlace, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
-		<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-		<button class="danger" tabindex="5" data-bind="click: removeDataWorkPlace, enable: isRemove">#{i18n.getText('KMK008_16')}</button>
+		<button class="proceed" tabindex="2" data-bind="click: addUpdateWorkPlace, enable: $root.errors.isEmpty, timeClick: 1000">#{i18n.getText('KMK008_14')}</button>
+		<button tabindex="2">#{i18n.getText('KMK008_15')}</button>
+		<button class="danger" tabindex="2" data-bind="click: removeDataWorkPlace, enable: isRemove">#{i18n.getText('KMK008_16')}</button>
 
 	</div>
 	<div class="contents-area">
-		<div class="tabpanel-1-contents-area-left" id="tabpanel-1-contents-area-left-e">
+		<div tabindex="-1" class="tabpanel-1-contents-area-left" id="tabpanel-1-contents-area-left-e">
 
-			<div id="tree-grid-screen-e" style="width: 450px;"></div>
+			<div tabindex="-1" id="tree-grid-screen-e" style="width: 450px;"></div>
 
 		</div>
-		<div class="tabpanel-1-contents-area-right" id="tabpanel-1-contents-area-right-e">
+		<div tabindex="-1" class="tabpanel-1-contents-area-right" id="tabpanel-1-contents-area-right-e">
 			<div class="lbl-title-employeer-name">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Workplace'])}</div>
 				<span class="label" data-bind="text: currentWorkplaceName"></span>
@@ -34,9 +34,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_22')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="6"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_22, KMK008_42]',
+						name: $parent.nameErrorWeek,
 						constraint: 'ErrorWeek',
 						value: errorWeek,
 						inputFormat: 'time',
@@ -45,9 +45,9 @@
 						readonly: false,
 						required: false }" />
 					</td>
-					<td><input class= "time-editor-custom-width" tabindex="7"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_22, KMK008_43]', 
+						name: $parent.nameAlarmWeek, 
 						constraint: 'AlarmWeek', 
 						value: alarmWeek, 
 						inputFormat: 'time', 
@@ -56,9 +56,9 @@
 						readonly: false, 
 						required: false }" />
 					</td>
-					<td><input class= "time-editor-custom-width" tabindex="8"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_22, KMK008_44]', 
+						name: $parent.nameLimitWeek, 
 						constraint: 'LimitWeek', 
 						value: limitWeek, 
 						inputFormat: 'time', 
@@ -70,9 +70,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_23')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="9"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_23, KMK008_42]', 
+						name: $parent.nameErrorTwoWeeks, 
 						constraint: 'ErrorTwoWeeks', 
 						value: errorTwoWeeks, 
 						inputFormat: 'time', 
@@ -81,9 +81,9 @@
 						readonly: false, 
 						required: false }" />
 					</td>
-					<td><input class= "time-editor-custom-width" tabindex="10"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_23, KMK008_43]', 
+						name: $parent.nameAlarmTwoWeeks, 
 						constraint: 'AlarmTwoWeeks', 
 						value: alarmTwoWeeks, 
 						inputFormat: 'time', 
@@ -91,9 +91,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="11"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_23, KMK008_44]', 
+						name: $parent.nameLimitTwoWeeks, 
 						constraint: 'LimitTwoWeeks', 
 						value: limitTwoWeeks, 
 						inputFormat: 'time', 
@@ -104,9 +104,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_24')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="12"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_24, KMK008_42]', 
+						name: $parent.nameErrorFourWeeks, 
 						constraint: 'ErrorFourWeeks', 
 						value: errorFourWeeks, 
 						inputFormat: 'time', 
@@ -114,9 +114,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="13"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_24, KMK008_43]',
+						name: $parent.nameAlarmFourWeeks,
 						constraint: 'AlarmFourWeeks', 
 						value: alarmFourWeeks, 
 						inputFormat: 'time', 
@@ -124,9 +124,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td> 
-					<td><input class= "time-editor-custom-width" tabindex="14"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_24, KMK008_44]',
+						name: $parent.nameLimitFourWeeks,
 						constraint: 'LimitFourWeeks', 
 						value: limitFourWeeks, 
 						inputFormat: 'time', 
@@ -137,9 +137,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_25')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="15"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_25, KMK008_42]',
+						name: $parent.nameErrorOneMonth,
 						constraint: 'ErrorOneMonth', 
 						value: errorOneMonth, 
 						inputFormat: 'time', 
@@ -147,9 +147,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="16"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_25, KMK008_43]', 
+						name: $parent.nameAlarmOneMonth, 
 						constraint: 'AlarmOneMonth', 
 						value: alarmOneMonth, 
 						inputFormat: 'time', 
@@ -157,9 +157,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="17"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_25, KMK008_44]', 
+						name: $parent.nameLimitOneMonth, 
 						constraint: 'LimitOneMonth', 
 						value: limitOneMonth, 
 						inputFormat: 'time', 
@@ -170,9 +170,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_26')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="18"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_26, KMK008_42]', 
+						name: $parent.nameErrorTwoMonths, 
 						constraint: 'ErrorTwoMonths', 
 						value: errorTwoMonths, 
 						inputFormat: 'time', 
@@ -180,9 +180,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="19"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_26, KMK008_43]',
+						name: $parent.nameAlarmTwoMonths,
 						constraint: 'AlarmTwoMonths', 
 						value: alarmTwoMonths, 
 						inputFormat: 'time', 
@@ -190,9 +190,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="20"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_26, KMK008_44]', 
+						name: $parent.nameLimitTwoMonths, 
 						constraint: 'LimitTwoMonths', 
 						value: limitTwoMonths, 
 						inputFormat: 'time', 
@@ -203,9 +203,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_27')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="21"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_27, KMK008_42]', 
+						name: $parent.nameErrorThreeMonths, 
 						constraint: 'ErrorThreeMonths', 
 						value: errorThreeMonths, 
 						inputFormat: 'time', 
@@ -213,9 +213,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="22"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_27, KMK008_43]',
+						name: $parent.nameAlarmThreeMonths,
 						constraint: 'AlarmThreeMonths', 
 						value: alarmThreeMonths, 
 						inputFormat: 'time', 
@@ -223,9 +223,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="23"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_27, KMK008_44]',
+						name: $parent.nameLimitThreeMonths,
 						constraint: 'LimitThreeMonths', 
 						value: limitThreeMonths, 
 						inputFormat: 'time', 
@@ -236,9 +236,9 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_28')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="24"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_28, KMK008_42]', 
+						name: $parent.nameErrorOneYear, 
 						constraint: 'ErrorOneYear', 
 						value: errorOneYear, 
 						inputFormat: 'time', 
@@ -246,9 +246,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="25"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_28, KMK008_43]',  
+						name: $parent.nameAlarmOneYear,  
 						constraint: 'AlarmOneYear', 
 						value: alarmOneYear, 
 						inputFormat: 'time', 
@@ -256,9 +256,9 @@
 						enable: true, 
 						readonly: false, 
 						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="26"
+					<td><input class= "time-editor-custom-width" tabindex="3"
 						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_28, KMK008_44]',  
+						name: $parent.nameLimitOneYear,  
 						constraint: 'LimitOneYear', 
 						value: limitOneYear, 
 						inputFormat: 'time', 

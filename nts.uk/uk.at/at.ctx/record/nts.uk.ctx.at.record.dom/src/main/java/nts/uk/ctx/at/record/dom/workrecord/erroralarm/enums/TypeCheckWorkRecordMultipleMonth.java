@@ -24,7 +24,18 @@ public enum TypeCheckWorkRecordMultipleMonth {
 	
 	NUMBER_TIMES (10,"該当月数回数"),
 	
-	NUMBER_AMOUNT (11,"該当月数金額");
+	NUMBER_AMOUNT (11,"該当月数金額"),
+	
+	DAYS (12,"日数"),
+	
+	AVERAGE_DAYS(13,"平均日数"),
+	
+	CONTINUOUS_DAYS(14,"連続日数"),
+	
+	NUMBER_DAYS(15,"該当月数日数");
+	
+	
+	
 	
 	
 

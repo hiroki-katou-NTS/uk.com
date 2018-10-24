@@ -5,9 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 540 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.Memo
 				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
@@ -99,8 +98,8 @@
 														                 	width: '80',
 														                    unitID: 'DAYS'
 														                	}, 
-														                required: false,
-														                enable: maxNumberDay()==1}" />
+														                required: dayGrantUse  ,
+														                enable: dayGrantUse }" />
 										</div>
 										<div class="div_line">
 											<div class="div_line">
@@ -135,20 +134,20 @@
 									</div>
 								</div>
 							</div>
-							<div class="tab-content-2">
+							<!-- <div class="tab-content-2">
 								<div class="div_line">
-									<!-- I9_1 -->
+									I9_1
 									<label style="width: 310px; line-height: 25px;">#{i18n.getText('KMF004_47')}</label>
 								</div>
 								<div
 									style="margin-left: 20px; display: inline-block; margin-top: 20px;">
-									<!-- I10_1 -->
+									I10_1
 									<div class="div_line">
 										<div class="div_line_col_1">
 											<div data-bind="ntsCheckBox: { checked: genderRestrict }">#{i18n.getText('KMF004_53')}</div>
 										</div>
 										<div class="float_left">
-											<!-- I10_2 -->
+											I10_2
 											<div class="cf"
 												data-bind="ntsSwitchButton: {
 																		name: '#{i18n.getText('KMF004_54')}',
@@ -163,14 +162,14 @@
 									</div>
 									<div class="div_line">
 										<div class="div_line_col_1">
-											<!-- I11_1 -->
+											I11_1
 											<div data-bind="ntsCheckBox: { checked: restrictEmployment }">#{i18n.getText('Com_Employment')}</div>
 										</div>
 										<div class="float_left">
-											<!-- I11_2 -->
+											I11_2
 											<button
 												data-bind="enable: restrictEmployment , click:openCDL002 ">#{i18n.getText('KMF004_9')}</button>
-											<!-- I11_3 -->
+											I11_3
 											<input style="margin-left: 20px"
 												data-bind="ntsTextEditor: {
 														value: employmentTxt ,
@@ -187,15 +186,15 @@
 
 									<div class="div_line">
 										<div class="div_line_col_1">
-											<!-- I12_1 -->
+											I12_1
 											<div
 												data-bind="ntsCheckBox: { checked: restrictClassification }">#{i18n.getText('Com_Class')}</div>
 										</div>
 										<div class="float_left">
-											<!-- I12_2 -->
+											I12_2
 											<button
 												data-bind="enable:restrictClassification , click:openCDL003">#{i18n.getText('KMF004_9')}</button>
-											<!-- I12_3 -->
+											I12_3
 											<input style="margin-left: 20px"
 												data-bind="ntsTextEditor: {
 														value: classificationTxt ,
@@ -212,12 +211,12 @@
 
 									<div class="div_line">
 										<div class="div_line_col_1">
-											<!-- I13_1 -->
+											I13_1
 											<div data-bind="ntsCheckBox: { checked: ageLimit }">#{i18n.getText('KMF004_48')}</div>
 										</div>
 										<div class="float_left" data-bind="with:ageRange">
-											<!-- I13_2 -->
-											<input
+											I13_2
+											<input id="lowerLimit"
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
 																			name:'#{i18n.getText('KMF004_49')}',
 																			value: ageLowerLimit ,
@@ -225,10 +224,10 @@
 																			option:{width:'60',unitID:'AGE'},
 																			 required:$parent.ageLimit
 																			}" />
-											<!-- I13_3 -->
+											I13_3
 											#{i18n.getText('KMF004_45')}
-											<!-- I13_4 -->
-											<input
+											I13_4
+											<input id="higherLimit"
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
 																			name:'#{i18n.getText('KMF004_50')}',
 																			value: ageHigherLimit ,
@@ -240,10 +239,10 @@
 									</div>
 									<div class="div_line">
 										<div id="standardArena">
-											<!-- I13_5 -->
+											I13_5
 											<label style="vertical-align: top;">
 												#{i18n.getText('KMF004_51')} </label>
-											<!-- I13_6 -->
+											I13_6
 											<div id="combo-box" style="margin-left: 20px;"
 												data-bind="ntsComboBox: {
 													name: '#{i18n.getText('KMF004_51')}',
@@ -259,7 +258,7 @@
 														{ prop: 'name', length: 4 },
 													]}"></div>
 
-											<!-- I13_8 -->
+											I13_8
 											<div style="margin-left: 20px;"
 												data-bind="ntsMonthDays: {
 												name:'#{i18n.getText('KMF004_52')}',
@@ -270,14 +269,9 @@
 										</div>
 									</div>
 								</div>
-
-							</div>
-
+							</div> -->
 						</div>
-
 					</div>
-
-
 				</div>
 			</div>
 		</ui:define>

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.weekly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,11 +35,11 @@ import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekA
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * リポジトリ実装：週別実績の勤怠時間
@@ -47,26 +48,39 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 @Stateless
 public class JpaAttendanceTimeOfWeekly extends JpaRepository implements AttendanceTimeOfWeeklyRepository {
 
-	private static final String FIND_BY_CLOSURE_ID = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
+	private static final String WHERE_YM = "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+
+	private static final String WHERE_SIDS_AND_YM = "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+
+	private static final String WHERE_CLOSURE = WHERE_YM
 			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
+
+	private static final String WHERE_SIDS_AND_CLOSURE = WHERE_SIDS_AND_YM
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
+	
+	private static final String WHERE_PK = WHERE_CLOSURE
+			+ "AND a.PK.weekNo = :weekNo ";
+	
+	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtWekAttendanceTime a "
+			+ WHERE_CLOSURE
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_YEARMONTH = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
+			+ WHERE_YM
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
+			+ WHERE_SIDS_AND_CLOSURE
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ WHERE_SIDS_AND_YM
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtWekAttendanceTime a "
@@ -74,14 +88,21 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			+ "AND a.startYmd <= :endDate "
 			+ "AND a.endYmd >= :startDate ";
 	
-	private static final String DELETE_BY_CLOSURE_ID = "DELETE FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId ";
-	
-	private static final String DELETE_BY_YEARMONTH = "DELETE FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+	private static final List<String> DELETE_TABLES = Arrays.asList(
+			"DELETE FROM KrcdtWekAttendanceTime a ",
+			"DELETE FROM KrcdtWekAggrOverTime a ",
+			"DELETE FROM KrcdtWekAggrHdwkTime a ",
+			"DELETE FROM KrcdtWekAggrAbsnDays a ",
+			"DELETE FROM KrcdtWekAggrSpecDays a ",
+			"DELETE FROM KrcdtWekAggrSpvcDays a ",
+			"DELETE FROM KrcdtWekAggrBnspyTime a ",
+			"DELETE FROM KrcdtWekAggrDivgTime a ",
+			"DELETE FROM KrcdtWekAggrGoout a ",
+			"DELETE FROM KrcdtWekAggrPremTime a ",
+			"DELETE FROM KrcdtWekMedicalTime a ",
+			"DELETE FROM KrcdtWekExcoutTime a ",
+			"DELETE FROM KrcdtWekTotalTimes a ",
+			"DELETE FROM KrcdtWekAnyItemValue a ");
 
 	/** 検索 */
 	@Override
@@ -100,14 +121,17 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 				.map(c -> c.toDomain());
 	}
 
-	/** 検索　（締めID） */
+	/** 検索　（締め） */
 	@Override
-	public List<AttendanceTimeOfWeekly> findByClosureId(String employeeId, YearMonth yearMonth, ClosureId closureId) {
+	public List<AttendanceTimeOfWeekly> findByClosure(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
 		
-		return this.queryProxy().query(FIND_BY_CLOSURE_ID, KrcdtWekAttendanceTime.class)
+		return this.queryProxy().query(FIND_BY_CLOSURE, KrcdtWekAttendanceTime.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 				.getList(c -> c.toDomain());
 	}
 
@@ -121,9 +145,10 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 				.getList(c -> c.toDomain());
 	}
 	
-	/** 検索　（社員IDリストと締めID） */
+	/** 検索　（社員IDリストと締め） */
 	@Override
-	public List<AttendanceTimeOfWeekly> findBySids(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId) {
+	public List<AttendanceTimeOfWeekly> findBySids(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
 		
 		List<AttendanceTimeOfWeekly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
@@ -131,6 +156,8 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> c.toDomain()));
 		});
 		return results;
@@ -144,10 +171,12 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		List<AttendanceTimeOfWeekly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtWekAttendanceTime.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtWekAttendanceTime.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList(c -> c.toDomain()));
+			});
 		});
 		return results;
 	}
@@ -463,34 +492,43 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
 			int weekNo) {
 		
-		this.commandProxy().remove(KrcdtWekAttendanceTime.class,
-				new KrcdtWekAttendanceTimePK(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0),
-						weekNo));
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_PK)
+					.setParameter("employeeId", employeeId)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.setParameter("weekNo", weekNo)
+					.executeUpdate();
+		}
 	}
 
-	/** 削除　（締めID） */
+	/** 削除　（締め） */
 	@Override
-	public void removeByClosureId(String employeeId, YearMonth yearMonth, ClosureId closureId) {
+	public void removeByClosure(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_CLOSURE_ID)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.setParameter("closureId", closureId.value)
-				.executeUpdate();
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_CLOSURE)
+					.setParameter("employeeId", employeeId)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.executeUpdate();
+		}
 	}
 	
 	/** 削除　（年月） */
 	@Override
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_YEARMONTH)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.executeUpdate();
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_YM)
+					.setParameter("employeeId", employeeId)
+					.setParameter("yearMonth", yearMonth.v())
+					.executeUpdate();
+		}
 	}
 }

@@ -26,7 +26,7 @@ public class SpecBonusPayTimesheet {
 	private int timeSheetId;
 
 	private UseAtr useAtr;
-
+	//特定加給時間項目No
 	private int timeItemId;
 
 	private AttendanceClock startTime;
@@ -38,7 +38,7 @@ public class SpecBonusPayTimesheet {
 	private RoundingAtr roundingAtr;
 	
 	private int dateCode;
-	
+	//特定日項目No
 	private SpecBonusPayNumber specBonusPayNumber;
 
 	public SpecBonusPayTimesheet(

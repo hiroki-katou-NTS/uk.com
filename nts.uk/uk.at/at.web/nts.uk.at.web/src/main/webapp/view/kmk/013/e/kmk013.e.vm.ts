@@ -84,8 +84,6 @@ module nts.uk.at.view.kmk013.e {
             }
             initData(): void {
                 let self = this;
-                service.findByCompanyId().done(arr => {
-                });
                 service.getOTCalc().done(data => {
                     if (data.calculationMethod == 0) {
                         self.isVisibleE22(false);
@@ -98,7 +96,7 @@ module nts.uk.at.view.kmk013.e {
                     service.getPossibleItem(arr).done(listName => {
                         service.findByCompanyId().done(listData => {
                             _.forEach(listName, (element) => {
-                                let obj = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
+                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId]);
                                 let ur;
                                 if (obj) {
                                     ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding, self.itemListRounding());
@@ -124,7 +122,7 @@ module nts.uk.at.view.kmk013.e {
                 let self = this;
                 blockUI.invisible();
                 service.save(ko.toJS(self.gatherData())).done(() => {
-                    let data = {};
+                    let data:any = {};
                     data.roundingUnit = self.excRoundingUnit();
                     data.roundingProcess = self.excRoundingProc();
                     service.saveExcOut(data).done(() => {
@@ -159,7 +157,7 @@ module nts.uk.at.view.kmk013.e {
         }
         
         class UnitRoudingClientData {
-            timeItemId: string;
+            timeItemId: number;
             attendanceItemName: string;
             unit: number;
             rounding: number;
@@ -167,18 +165,18 @@ module nts.uk.at.view.kmk013.e {
             constructor(unitRouding: UnitRouding){
                 this.timeItemId = unitRouding.timeItemId;
                 this.attendanceItemName = unitRouding.attendanceItemName;
-                this.unit = unitRouding.unit;
-                this.rounding = unitRouding.rounding;
+                this.unit = unitRouding.unit();
+                this.rounding = unitRouding.rounding();
             }
         }
         
         class UnitRouding {
-            timeItemId: string;
+            timeItemId: number;
             attendanceItemName: string;
             unit: KnockoutObservable<number>;
             rounding: KnockoutObservable<number>;
             list_round: KnockoutObservableArray<any>;
-            constructor(timeItemId: string, attendanceItemName: string, unit: number, rounding: number, list: any) {
+            constructor(timeItemId: number, attendanceItemName: string, unit: number, rounding: number, list: any) {
                 this.timeItemId = timeItemId;
                 this.attendanceItemName = attendanceItemName;
                 this.unit = ko.observable(unit);

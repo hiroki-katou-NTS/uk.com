@@ -34,12 +34,12 @@ module nts.uk.at.view.kbt002.f {
                     { headerText: getText("KBT002_143"), key: 'overallStatus', width: 100, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" id="A${execItemCd}" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
                     },
                     { headerText: getText("KBT002_131"), key: 'nextExecDateTime', width: 180, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 85, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { execute(data, event)}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} != 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_132") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { execute(data, event, ${execItemCd})}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} != 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_132") + '</button>',
                     },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
@@ -47,7 +47,7 @@ module nts.uk.at.view.kbt002.f {
                     },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { openDialogH(data, event)}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
+                        template: '<button tabindex="-1" class="setting small" onclick="kbt002FModel.openDialogH(${execItemCd})" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
                     },
                 ]);
                 
@@ -75,9 +75,8 @@ module nts.uk.at.view.kbt002.f {
             private getProcExecLogList(savedExecItemCd? : string) : JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                
-                self.execLogList([]);
-                service.getProcExecLogList().done(function(execLogList) {
+                self.execLogList([]); 
+                service.getProcExecLogList().done(function(execLogList) {  
                     if (execLogList && execLogList.length > 0) {
                         self.execLogList(execLogList);
                         if (nts.uk.text.isNullOrEmpty(savedExecItemCd)) {
@@ -104,11 +103,14 @@ module nts.uk.at.view.kbt002.f {
                     block.clear();
                 });    
             }
-            openDialogH(data, event){
+            openDialogH(execItemCd){
                 let self = this;
                 block.grayout();
-                var execItemCd = $(event.target).data("code");
-                setShared('inputDialogH', {execItemCd: execItemCd});
+                let cd = execItemCd;
+                if(execItemCd<10)
+                    cd = "0"+cd;
+                    
+                setShared('inputDialogH', {execItemCd: cd});
                 modal("/view/kbt/002/h/index.xhtml").onClosed(function(){
                     block.clear();
                 });    
@@ -122,9 +124,13 @@ module nts.uk.at.view.kbt002.f {
                 });
             }
             
-             execute(data, event){
+             execute(data, event, idd){
                 let self = this;
 //                var dfd = $.Deferred();
+                 let cd =""+idd;
+                 if(idd<10)
+                    cd = "0"+cd;
+                //$("#A"+cd).prop('disabled',true);
                 block.grayout();
                 let command: any = self.toJsonObject();
                 service.execute(command).done(function(x) {
@@ -170,9 +176,10 @@ module nts.uk.at.view.kbt002.f {
   
                 });
                  
-                 ko.cleanNode(igrid);
-                 self.execLogList(newExecLogList);
-                 ko.applyBindings(self,igrid);
+                ko.cleanNode(igrid);
+                self.execLogList(newExecLogList);
+                ko.applyBindings(self,igrid);
+                $("#A"+cd).prop('disabled',true);
 
 //                return dfd.promise();
             }

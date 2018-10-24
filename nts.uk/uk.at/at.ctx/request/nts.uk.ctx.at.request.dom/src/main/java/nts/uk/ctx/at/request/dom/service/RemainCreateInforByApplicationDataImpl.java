@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
@@ -18,6 +19,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -33,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -48,17 +54,35 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private RecruitmentAppRepository recAppRepo;
 	@Inject
-	private AppAbsenceRepository absAppRepo;
+	private AbsenceLeaveAppRepository absAppRepo;
 	@Inject
 	private OvertimeRepository overtimeRepo;
 	@Inject
 	private AppHolidayWorkRepository holidayWorkRepo; 
+	@Inject
+	private CompltLeaveSimMngRepository compltLeaveRepo;
+	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {
-		List<AppRemainCreateInfor> lstOutputData = new ArrayList<>();
+		
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		List<Integer> lstAppType = this.lstAppType();
+		List<Application_New> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		return this.lstResult(cid, sid, lstAppData);
+	}
+	@Override
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, List<GeneralDate> dates) {
+		List<Integer> lstReflect = new ArrayList<>();
+		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		List<Integer> lstAppType = this.lstAppType();
+		List<Application_New> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
+		return this.lstResult(cid, sid, lstAppData);
+	}
+
+	private List<Integer> lstAppType(){
 		List<Integer> lstAppType = new ArrayList<>();
 		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
 		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
@@ -68,27 +92,37 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
 		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
 		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
-		List<Application_New> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		return lstAppType;
+	}
+	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application_New> lstAppData){
+		List<AppRemainCreateInfor> lstOutputData = new ArrayList<>();
 		for (Application_New appData : lstAppData) {
 			AppRemainCreateInfor outData = new AppRemainCreateInfor();
 			outData.setSid(sid);
 			outData.setAppDate(appData.getAppDate());
-			outData.setAppId(appData.getAppID());
+			outData.setAppId(appData.getAppID());			
 			outData.setAppType(EnumAdaptor.valueOf(appData.getAppType().value, ApplicationType.class));
 			outData.setPrePosAtr(EnumAdaptor.valueOf(appData.getPrePostAtr().value, PrePostAtr.class));
+			outData.setInputDate(appData.getInputDate());
+			outData.setWorkTimeCode(Optional.empty());
+			outData.setWorkTypeCode(Optional.empty());
+			outData.setStartDate(appData.getStartDate());
+			outData.setEndDate(appData.getEndDate());
 			switch(outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
 				Optional<AppWorkChange> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());
 				workChange.ifPresent(x -> {
-					outData.setWorkTimeCode(Optional.of(x.getWorkTimeCd()));
-					outData.setWorkTypeCode(Optional.of(x.getWorkTypeCd()));
+					outData.setWorkTimeCode(x.getWorkTimeCd() == null ? Optional.empty() : Optional.of(x.getWorkTimeCd()));
+					outData.setWorkTypeCode(x.getWorkTypeCd() == null ? Optional.empty() : Optional.of(x.getWorkTypeCd()));
 				});
+				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				Optional<GoBackDirectly> goBack = goBackRepo.findByApplicationID(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
 					outData.setWorkTimeCode(x.getSiftCD().isPresent() ? Optional.of(x.getSiftCD().get().v()) : Optional.empty());
 					outData.setWorkTypeCode(x.getWorkTypeCD().isPresent() ? Optional.of(x.getWorkTypeCD().get().v()) : Optional.empty());
 				});
+				break;
 			case ABSENCE_APPLICATION:
 				Optional<AppAbsence> absence = absenceRepo.getAbsenceByAppId(cid, appData.getAppID());
 				absence.ifPresent(x -> {
@@ -97,20 +131,23 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));
 					}
 				});
+				break;
 			case COMPLEMENT_LEAVE_APPLICATION:
-				Optional<AppAbsence> absApp = absAppRepo.getAbsenceByAppId(cid, appData.getAppID());
-				absApp.ifPresent(x -> {
-					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
-					if(x.isChangeWorkHour()) {
-						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));						
+				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
+				optAbsApp.ifPresent(x -> {
+					outData.setWorkTypeCode(x.getWorkTypeCD() == null ? Optional.empty() : Optional.of(x.getWorkTypeCD().v()));
+					if(x.getChangeWorkHoursType() == NotUseAtr.USE) {
+						outData.setWorkTimeCode(x.getWorkTimeCD() == null ? Optional.empty() : Optional.of(x.getWorkTimeCD()));						
 					}
-				});
+				});	
 				
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
 					outData.setWorkTimeCode(Optional.of(y.getWorkTimeCD().v()));
 					outData.setWorkTypeCode(Optional.of(y.getWorkTypeCD().v()));
-				});
+				});	
+				
+				break;
 			case OVER_TIME_APPLICATION:
 				Optional<AppOverTime> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
 				Integer appBreakTimeTotal = 0;
@@ -136,6 +173,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				}
 				outData.setAppBreakTimeTotal(Optional.of(appBreakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(appOvertimeTimeTotal));
+				break;
 			case BREAK_TIME_APPLICATION:
 				Optional<AppHolidayWork> holidayWork = holidayWorkRepo.getAppHolidayWorkFrame(cid, appData.getAppID());
 				Integer breakTimeTotal = 0;
@@ -160,6 +198,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				}
 				outData.setAppBreakTimeTotal(Optional.of(breakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(overtimeTimeTotal));
+				break;
 			default:
 				break;
 			}
@@ -167,5 +206,4 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		}
 		return lstOutputData;
 	}
-
 }

@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.DisplayTimeItemDto;
@@ -33,16 +33,25 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDi
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.AcquireActualStatus;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.EmploymentFixedStatus;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationOutput;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationStatus;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
@@ -117,10 +126,10 @@ public class MonthlyPerformanceDisplay {
 		// 勤務種別の場合
 		else {
 			// 社員の勤務種別に対応する表示項目を取得する
-			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param);
+			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param, screenDto);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
-		if (param.getSheets() == null || param.getSheets().isEmpty()) {
+		if (CollectionUtil.isEmpty(param.getSheets())) {
 			throw new BusinessException("Msg_1261");
 		}
 		param.getSheets().forEach(item -> {
@@ -136,20 +145,27 @@ public class MonthlyPerformanceDisplay {
 		// Filter param 「表示する項目一覧」 by domain 「権限別月次項目制御」
 		screenDto.setAuthDto(monthlyItemAuthDto);
 		Map<Integer, PAttendanceItem> lstAtdItemUnique = new HashMap<>();
+		List<PSheet> listSheet = new ArrayList<>();
 		if (monthlyItemAuthDto != null) {
 			for (PSheet sheet : param.getSheets()) {
 				sheet.getDisplayItems().retainAll(monthlyItemAuthDto.getListDisplayAndInputMonthly());
-				if (sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0)
+				if (sheet.getDisplayItems() != null && sheet.getDisplayItems().size() > 0) {
+					listSheet.add(sheet);
 					lstAtdItemUnique.putAll(sheet.getDisplayItems().stream()
 							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
+				}
 			}
-		} else {
-			for (PSheet sheet2 : param.getSheets()) {
-				if (sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
-					lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream()
-							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
-			}
-		}
+		} 
+//		else {
+//			for (PSheet sheet2 : param.getSheets()) {
+//				if (sheet2.getDisplayItems() != null && sheet2.getDisplayItems().size() > 0)
+//					lstAtdItemUnique.putAll(sheet2.getDisplayItems().stream()
+//							.collect(Collectors.toMap(PAttendanceItem::getId, x -> x, (x, y) -> x)));
+//			}
+//		}
+		
+		// set lai sheet
+		param.setSheets(listSheet);
 
 		// 絞り込んだ勤怠項目の件数をチェックする
 		if (lstAtdItemUnique.size() > 0) {
@@ -161,8 +177,7 @@ public class MonthlyPerformanceDisplay {
 			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
 			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
 			// Update Attendance Name
-			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds,
-					2);
+			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds, 2);
 			lstAttendanceData.forEach(c -> {
 				PAttendanceItem item = lstAtdItemUnique.get(c.getAttendanceItemId());
 				item.setDisplayNumber(c.getDisplayNumber());
@@ -171,6 +186,8 @@ public class MonthlyPerformanceDisplay {
 				item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
 				item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
 			});
+			param.setLstAtdItemUnique(lstAtdItemUnique);
+		} else {
 			param.setLstAtdItemUnique(lstAtdItemUnique);
 		}
 		// アルゴリズム「ロック状態をチェックする」を実行する
@@ -285,7 +302,7 @@ public class MonthlyPerformanceDisplay {
 	 * @return
 	 */
 	private void getDisplayItemBussiness(String cId, List<String> lstEmployeeId, DateRange dateRange,
-			MonthlyPerformanceParam param) {
+			MonthlyPerformanceParam param, MonthlyPerformanceCorrectionDto screenDto) {
 		// 表示する項目一覧
 		List<PSheet> resultSheets = new ArrayList<>();
 		if (CollectionUtil.isEmpty(lstEmployeeId)) {
@@ -298,14 +315,20 @@ public class MonthlyPerformanceDisplay {
 		// Create header & sheet
 		// 取得したImported「（就業機能）勤務種別」の件数をチェックする
 		if (lstBusinessTypeCode.size() == 0) {
-			// エラーメッセージ（#）を表示する
-			// TODO missing message ID
-			throw new BusinessException("エラーメッセージ（#）を表示する");
+			// エラーメッセージ（#Msg_1403）を表示する(hiển thị error message （#Msg_1403）)
+			BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
+			screenDto.getLstEmployee().stream().forEach(x ->{
+				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
+			});
+			throw bundleExeption;
 		}
 		param.setFormatCodes(lstBusinessTypeCode);
 		// 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
 		List<MonthlyRecordWorkTypeDto> monthlyRecordWorkTypeDtos = monthlyRecordWorkTypeFinder
 				.getMonthlyRecordWorkTypeByListCode(cId, lstBusinessTypeCode);
+		if(CollectionUtil.isEmpty(monthlyRecordWorkTypeDtos)){
+			throw new BusinessException("Msg_1402");
+		}
 
 		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository.getColumnWidtgByMonthly(cId);
 		// 取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
@@ -350,6 +373,7 @@ public class MonthlyPerformanceDisplay {
 		// Merge Attendance Item in sheet
 		for (Integer sheet : sheetNos) {
 			PSheet pSheet = new PSheet(sheet.toString(), Strings.EMPTY, null);
+			List<PAttendanceItem> displayItemsTmp = new ArrayList<>();
 			List<PAttendanceItem> displayItems = new ArrayList<>();
 			monthlyRecordWorkTypeDtos.forEach(format -> {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
@@ -358,12 +382,15 @@ public class MonthlyPerformanceDisplay {
 					pSheet.setSheetName(sheetDto.getSheetName());
 					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
 
-					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
+					displayItemsTmp.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
 							.collect(Collectors.toList()));
 					// displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
+			// xoa nhung column trung nhau
+			displayItems = displayItemsTmp.stream().distinct().collect(Collectors.toList());
+			
 			pSheet.setDisplayItems(displayItems);
 			resultSheets.add(pSheet);
 		}
@@ -409,6 +436,22 @@ public class MonthlyPerformanceDisplay {
 	 * 
 	 *            ロック状態一覧：List＜月の実績のロック状態＞
 	 */
+	
+	@Inject
+	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
+	
+	@Inject
+	private IdentityProcessRepository identityProcessRepo;
+	
+	@Inject
+	private IdentificationRepository identificationRepository;
+	
+	@Inject 
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+	
+	@Inject 
+	private ApprovalProcessRepository approvalRepo;
+	
 	public List<MonthlyPerformaceLockStatus> checkLockStatus(String cid, List<String> empIds, Integer processDateYM,
 			Integer closureId, DatePeriod closureTime, int intScreenMode) {
 		List<MonthlyPerformaceLockStatus> monthlyLockStatusLst = new ArrayList<MonthlyPerformaceLockStatus>();
@@ -425,12 +468,48 @@ public class MonthlyPerformanceDisplay {
 		}
 		// 「List＜所属職場履歴項目＞」の件数ループしてください
 		MonthlyPerformaceLockStatus monthlyLockStatus = null;
+		
+		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(empIds, closureTime.end());
+		
+		Optional<IdentityProcess> identityOp = identityProcessRepo.getIdentityProcessById(cid);
+		boolean checkIdentityOp = true;
+		//対応するドメインモデル「本人確認処理の利用設定」を取得する
+		if(identityOp.isPresent()) {
+			//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
+			if(identityOp.get().getUseDailySelfCk() != 0){
+				checkIdentityOp = false;
+			}
+		}
+		
+		List<Identification> listIdentification = identificationRepository.findByListEmployeeID(empIds, closureTime.start(), closureTime.end());
+		
+		List<EmployeeDailyPerError> listEmployeeDailyPerError =  employeeDailyPerErrorRepo.finds(empIds, new DatePeriod(closureTime.start(), closureTime.end()));
+		
+		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(cid);
+		
 		for (AffAtWorkplaceImport affWorkplaceImport : affWorkplaceLst) {
+			
+			List<Identification> listIdenByEmpID = new ArrayList<>();
+			for(Identification iden : listIdentification) {
+				if(iden.getEmployeeId().equals(affWorkplaceImport.getEmployeeId())) {
+					listIdenByEmpID.add(iden);
+				}
+			}
+			
+			boolean checkExistRecordErrorListDate = false;
+			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
+				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
+					checkExistRecordErrorListDate = true;
+					break;
+				}
+			}
+			
 			// 月の実績の状況を取得する
 			AcquireActualStatus param = new AcquireActualStatus(cid, affWorkplaceImport.getEmployeeId(), processDateYM,
 					closureId, closureTime.end(), closureTime, affWorkplaceImport.getWorkplaceId());
+			/** TODO: */
 			MonthlyActualSituationOutput monthlymonthlyActualStatusOutput = monthlyActualStatus
-					.getMonthlyActualSituationStatus(param);
+					.getMonthlyActualSituationStatus(param,approvalProcOp,listShareAff,checkIdentityOp,listIdenByEmpID,checkExistRecordErrorListDate);
 			// Output「月の実績の状況」を元に「ロック状態一覧」をセットする
 			monthlyLockStatus = new MonthlyPerformaceLockStatus(
 					monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),

@@ -92,7 +92,7 @@ public class LogBasicInfoAllDto {
 
 	public static LogBasicInfoAllDto fromDomain(LogBasicInformation domain) {
 		return new LogBasicInfoAllDto(domain.getOperationId(), domain.getUserInfo().getUserName(), null, null, null,
-				null, null, null, domain.getModifiedDateTime().toString("yyyy/MM/dd HH:ss"), null, null, null, null,
+				null, null, null, domain.getModifiedDateTime().toString(), null, null, null, null,
 				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,null,
 				null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 	}

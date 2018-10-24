@@ -1,12 +1,15 @@
 package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetperson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedPerson;
@@ -30,6 +33,16 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 			+ " WHERE c.companyId = :companyId"
 			+ " AND c.employeeId = :employeeId"
 			+ " AND c.roleSetCd IN :roleCDLst"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	
+	private static final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
+			+ " WHERE c.employeeId = :employeeId"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	//hoatt - RQ139
+	private static final String GET_SID_BY_ROLE_DATE = "SELECT c.employeeId FROM SacmtRoleSetGrantedPerson c"
+			+ " WHERE c.companyId = :companyID"
+			+ " AND c.employeeId IN :lstSid"
+			+ " AND c.roleSetCd IN :roleSetCDLst"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
 	@Override
@@ -82,6 +95,43 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 				.setParameter("employeeId", employeeID)
 				.setParameter("roleCDLst", roleSetCDLst)
 				.setParameter("date", date).getSingle( c  -> c.toDomain());
+	}
+
+	@Override
+	public Optional<RoleSetGrantedPerson> getByEmployeeDate(String employeeId, GeneralDate baseDate) {
+		return this.queryProxy().query(SELECT_BY_DATE ,SacmtRoleSetGrantedPerson.class)
+		.setParameter("employeeId", employeeId)
+		.setParameter("date", baseDate).getSingle( c  -> c.toDomain());
+	}
+
+	/**
+	 * @author hoatt
+	 * phuc vu RQ139
+	 * get list employeeId by:
+	 * @param companyID 会社ID←ログイン会社ID
+	 * @param lstSid 社員ID←取得した社員ID（list）（１）
+	 * @param roleSetCDLst ロールセットコード←取得したロールセット．コード(list)
+	 * @param baseDate 期間From <= 基準日 <= 期間To
+	 * @return ロールセット個人別付与．社員ID（list）・・・（２）
+	 */
+	@Override
+	public List<String> getSidByRoleSidDate(String companyID, List<String> lstSid, List<String> roleSetCDLst,
+			GeneralDate date) {
+		if(lstSid.isEmpty() || roleSetCDLst.isEmpty()){
+			return new ArrayList<>();
+		}
+		List<String> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListS -> {
+			CollectionUtil.split(roleSetCDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListCD -> {
+				resultList.addAll(this.queryProxy().query(GET_SID_BY_ROLE_DATE ,String.class)
+				.setParameter("companyID", companyID)
+				.setParameter("lstSid", subListS)
+				.setParameter("roleSetCDLst", subListCD)
+				.setParameter("date", date)
+				.getList());
+			});
+		});
+		return resultList;
 	}
 
 }

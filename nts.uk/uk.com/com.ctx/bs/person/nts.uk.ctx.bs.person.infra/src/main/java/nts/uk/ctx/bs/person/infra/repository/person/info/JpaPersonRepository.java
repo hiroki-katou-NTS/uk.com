@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -111,8 +112,9 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		entity.birthday = domain.getBirthDate();
 		entity.bloodType = domain.getBloodType() == null ? null :domain.getBloodType().value;
 		entity.gender = domain.getGender() == null ? 0 : domain.getGender().value;
-		entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
-		
+		if(domain.getPersonNameGroup().getPersonName().getFullName().v() != "") {
+			entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
+		}
 		entity.personNameKana = domain.getPersonNameGroup().getPersonName().getFullNameKana().v();
 		
 		entity.businessEnglishName = domain.getPersonNameGroup().getBusinessEnglishName() == null ? null
@@ -167,7 +169,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		}
 
 		List<Person> lstPerson = new ArrayList<>();
-		CollectionUtil.split(personIds, 1000, subIdList -> {
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			lstPerson.addAll(this.queryProxy().query(SELECT_BY_PERSON_IDS, BpsmtPerson.class)
 				.setParameter("pids", subIdList).getList(f -> toDomain(f)));
 		});

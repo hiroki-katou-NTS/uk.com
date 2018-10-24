@@ -45,11 +45,13 @@ module nts.uk.at.view.kdw001 {
         export class executionProcessingCommand implements paramScreenA, paramScreenB, paramScreenC, paramScreenJ {
             private screen: string;
             // Screen A
-            closure: number;
+            closureID: number;
             // Screen C
             lstEmployeeID: Array<string>;
             periodStartDate: string;
             periodEndDate: string;
+             // 当月
+            processingMonth: string;
             // Screen B
             dailyCreation: boolean;
             creationType: number;
@@ -77,13 +79,15 @@ module nts.uk.at.view.kdw001 {
             }
 
             setParamsScreenA(params: paramScreenA): void {
-                this.closure = params.closure;
+                this.closureID = params.closureID;
             }
 
             setParamsScreenC(params: paramScreenC): void {
+                this.closureID = params.closureID;
                 this.lstEmployeeID = params.lstEmployeeID;
                 this.periodStartDate = params.periodStartDate;
                 this.periodEndDate = params.periodEndDate;
+                this.processingMonth = params.processingMonth;
             }
 
             setParamsScreenB(params: paramScreenB): void {
@@ -115,7 +119,7 @@ module nts.uk.at.view.kdw001 {
         }
 
         export interface paramScreenA {
-            closure: number;
+            closureID: number;
         }
 
         export interface paramScreenB {
@@ -158,11 +162,13 @@ module nts.uk.at.view.kdw001 {
         }
 
         export interface paramScreenC {
+            closureID : number;
             lstEmployeeID: Array<string>;
             /** 対象期間開始日 */
             periodStartDate: string;
             /** 対象期間終了日 */
             periodEndDate: string;
+            processingMonth : string;
         }
 
         export interface paramScreenJ {

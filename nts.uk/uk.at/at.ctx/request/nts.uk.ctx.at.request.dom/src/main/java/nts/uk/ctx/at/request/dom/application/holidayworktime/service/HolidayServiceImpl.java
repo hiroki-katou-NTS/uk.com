@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +14,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.BusinessDayCalendarAdapter;
@@ -22,17 +25,22 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
 	@Inject
@@ -51,7 +59,14 @@ public class HolidayServiceImpl implements HolidayService {
 	private BusinessDayCalendarAdapter businessDayCalendarAdapter;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
-	
+	@Inject 
+	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	@Inject
+	private OvertimeService overtimeService;
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
 			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition) {
@@ -84,22 +99,22 @@ public class HolidayServiceImpl implements HolidayService {
 			// 「申請日－法定外・法定内休日区分」をチェック　→Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する - req 253
 			Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
 			if(buOptional.isPresent()){
-				String workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTypeCode().toString();
+				String workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTypeCode().get().toString();
 				if(buOptional.get().holidayCls.equals(HolidayClsImport.STATUTORY_HOLIDAYS)){
 					// 申請日＝＞法定内休日
 					if(personalLablorCodition.get().getWorkCategory().getInLawBreakTime().isPresent()){
-						workTypeCode = personalLablorCodition.get().getWorkCategory().getInLawBreakTime().get().getWorkTypeCode().toString();
+						workTypeCode = personalLablorCodition.get().getWorkCategory().getInLawBreakTime().get().getWorkTypeCode().get().toString();
 					}
 					
 				}else if(buOptional.get().holidayCls.equals(HolidayClsImport.NON_STATUTORY_HOLIDAYS)){
 					// 申請日＝＞法定外休日
 					if(personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().isPresent()){
-						workTypeCode = personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().get().getWorkTypeCode().toString();
+						workTypeCode = personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().get().getWorkTypeCode().get().toString();
 					}
 				}else if(buOptional.get().holidayCls.equals(HolidayClsImport.PUBLIC_HOLIDAY)){
 					// 申請日＝＞祝日
 					if(personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().isPresent()){
-						workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().get().getWorkTypeCode().toString();
+						workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().get().getWorkTypeCode().get().toString();
 					}
 				}
 				workTypes.setWorkTypeCode(workTypeCode);
@@ -174,18 +189,19 @@ public class HolidayServiceImpl implements HolidayService {
 					workTypeCodes.add(x.getWorkTypeCode());
 					});
 				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
+				return workTypeHolidayWorks;
 			}
-		}else{
-			////休出
-			int breakDay = 11;
-			// ドメインモデル「勤務種類」を取得
-			List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
-			if(!CollectionUtil.isEmpty(workrTypes)){
-				workrTypes.forEach(x -> {
-					workTypeCodes.add(x.getWorkTypeCode().toString());
-				});
-				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
-			}
+		}
+		////休出
+		int breakDay = 11;
+		// ドメインモデル「勤務種類」を取得
+		List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
+		if(!CollectionUtil.isEmpty(workrTypes)){
+			workrTypes.forEach(x -> {
+				workTypeCodes.add(x.getWorkTypeCode().toString());
+			});
+			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
+			return workTypeHolidayWorks;
 		}
 		return workTypeHolidayWorks;
 	}
@@ -275,5 +291,31 @@ public class HolidayServiceImpl implements HolidayService {
 			workTypeHoliday.setWorkTypeName(workType.get().getName().toString());
 		}
 		return workTypeHoliday;
+	}
+	@Override
+	public void delHdWorkByAbsLeaveChange(String appID) {
+		String companyID = AppContexts.user().companyId();
+		
+		// ドメインモデル「振休申請休出変更管理」を取得する
+		Optional<BrkOffSupChangeMng> opBrkOffSupChangeMng = brkOffSupChangeMngRepository.findHolidayAppID(appID);
+		if(!opBrkOffSupChangeMng.isPresent()){
+			return;
+		}
+		BrkOffSupChangeMng brkOffSupChangeMng = opBrkOffSupChangeMng.get();
+		
+		// アルゴリズム「振休申請復活」を実行する (9.振休申請復活)
+		Application_New application = applicationRepository.findByID(companyID, appID).get();
+		// 「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
+		application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+		applicationRepository.update(application);
+		
+		// ドメインモデル「振休申請休出変更管理」を削除する
+		brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyID, 
+				application.getEmployeeID(), 
+				Arrays.asList(application.getAppDate()));
 	}
 }

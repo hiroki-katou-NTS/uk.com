@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYear
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 
@@ -39,6 +40,7 @@ public interface CalcAnnLeaAttendanceRate {
 	 * @param annualLeaveEmpBasicInfoOpt 年休社員基本情報
 	 * @param grantHdTblSetOpt 年休付与テーブル設定
 	 * @param lengthServiceTblsOpt 勤続年数テーブル
+	 * @param operationStartSetParam 日別実績の運用開始設定
 	 * @return 出勤率計算結果
 	 */
 	Optional<CalYearOffWorkAttendRate> algorithm(String companyId, String employeeId, GeneralDate grantDate,
@@ -47,5 +49,6 @@ public interface CalcAnnLeaAttendanceRate {
 			Optional<EmployeeImport> employeeOpt,
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
 			Optional<GrantHdTblSet> grantHdTblSetOpt,
-			Optional<List<LengthServiceTbl>> lengthServiceTblsOpt);
+			Optional<List<LengthServiceTbl>> lengthServiceTblsOpt,
+			Optional<OperationStartSetDailyPerform> operationStartSetParam);
 }

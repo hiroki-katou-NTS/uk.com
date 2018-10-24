@@ -32,7 +32,7 @@
 					<a class="goback" tabindex="4" data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW007_17')}</a>
 					<button tabindex="1" data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
 					<button id="register-button" class="proceed" tabindex="2"  data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
-					<button id = "delete-button" class="danger" tabindex="3" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
+					<button id = "delete-button" class="danger" tabindex="3" data-bind="click: remove, enable: !isNewMode() &amp;&amp; showTypeAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">
@@ -59,26 +59,14 @@
 					
 					<div class="fixed-flex-layout-right">
 						<div class="valign-center control-group">
-							<com:ko-if bind="!isNewMode()">
-								<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true}">#{i18n.getText('KDW007_6')}</div>
-								<input id="errorAlarmWorkRecordCode" class="need-check" tabindex="7"  data-bind="ntsTextEditor: {
-									name: '#[KDW007_6]',
-									value: selectedErrorAlarm().code,
-									constraint: 'ErrorAlarmWorkRecordCode',
-									required: true,
-									enable: isNewMode
-									}" />
-							</com:ko-if>
-							<com:ko-if bind="isNewMode">
-								<div  data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true}">#{i18n.getText('KDW007_6')}</div>
-								<input id="errorAlarmWorkRecordCode" class="need-check" tabindex="7" data-bind="ntsTextEditor: {
-									name: '#[KDW007_6]',
-									value: selectedErrorAlarm().code,
-									constraint: 'ErrorAlarmWorkRecordCodeNewMode',
-									required: true,
-									enable: isNewMode
-									}" />
-							</com:ko-if>
+							<div  data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true}">#{i18n.getText('KDW007_6')}</div>
+							<input id="errorAlarmWorkRecordCode" class="need-check" tabindex="7" data-bind="ntsTextEditor: {
+								name: '#[KDW007_6]',
+								value: selectedErrorAlarm().code,
+								constraint: 'ErrorAlarmWorkRecordCodeNewMode',
+								required: true,
+								enable: isNewMode
+								}" />
 							<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName', required: true}">#{i18n.getText('KDW007_7')}</div>
 							<input id="errorAlarmWorkRecordName" tabindex="8" class="need-check" data-bind="ntsTextEditor: {
 							    name: '#[KDW007_7]',
@@ -119,7 +107,7 @@
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedErrorAlarm().remarkCancelErrorInput,
-										enable: true }"></div>
+										enable: selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().typeAtr() != 2  }"></div>
 									<div id="remark-no-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_106')}</div>
 									<div id="remarkColumnNo" data-bind="ntsComboBox: {
 										options: listRemarkColumnNo,
@@ -129,7 +117,7 @@
 										width: '150px',
 										optionsText: 'name',
 										selectFirstIfNull: true,
-										enable: selectedErrorAlarm().remarkCancelErrorInput() == 1,
+										enable: selectedErrorAlarm().remarkCancelErrorInput() == 1 &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().typeAtr() != 2 ,
 										columns: [
 											{ prop: 'name', length: 10 }
 										]}"></div>
@@ -520,7 +508,9 @@
 		                            <tr>
 		                            	<td>
 		                            		<span>#{i18n.getText('KDW007_79')}</span>
-		                            		<div tabindex="33" class="cf" data-bind="ntsSwitchButton: {
+		                            	</td>
+		                            	<td>	
+		                            		<div tabindex="33" class="switchEnd" data-bind="ntsSwitchButton: {
 												options: enumLogicalOperator,
 												optionsValue: 'code',
 												optionsText: 'name',

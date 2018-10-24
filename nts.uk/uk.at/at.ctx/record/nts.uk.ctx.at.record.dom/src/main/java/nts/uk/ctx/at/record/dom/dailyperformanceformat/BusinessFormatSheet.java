@@ -44,5 +44,15 @@ public class BusinessFormatSheet {
 			String sheetName) {
 		return new BusinessFormatSheet(companyId, new BusinessTypeCode(businessTypeCode), sheetNo, sheetName);
 	}
+	
+	public BusinessFormatSheet clone() {
+		return new BusinessFormatSheet(companyId, businessTypeCode,sheetNo,sheetName);
+	}
 
+	public void setSheetNo(BigDecimal sheetNo) {
+		this.sheetNo = sheetNo;
+	}
+	
+
+	
 }

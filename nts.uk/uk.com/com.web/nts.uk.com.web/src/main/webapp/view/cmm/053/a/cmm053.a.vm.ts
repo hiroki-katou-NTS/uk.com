@@ -113,6 +113,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     if (!self.isInitdailyApproval && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     }
+                } else {
+                    self.settingManager().dailyApproverId("");  
+                    self.settingManager().dailyApprovalName("");
                 }
                 self.isInitdailyApproval = false;
             });
@@ -137,8 +140,12 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //起動する
         initScreen() {
             let self = this;
+            if (!self.selectedItem()) {
+                return;
+            }
             _.defer(() => {nts.uk.ui.errors.clearAll()});
             self.settingManager().employeeId(self.selectedItem());
+            var dfd = $.Deferred();
             service.getSettingManager(self.selectedItem()).done(result => {
                 if (result) {
                     self.isInitDepartment = true;
@@ -162,7 +169,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                         $('#A2_7').focus();
                     }
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         //新規する
@@ -256,7 +265,10 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             service.insertHistoryByManagerSetting(command).done(result => {
                 //情報メッセージMsg_15
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.initScreen();
+                    self.initScreen().done(()=>{
+                        self.isInitDepartment = false;
+                        self.isInitdailyApproval = false;    
+                    });
                 });
             }).fail(error => {
                 dialog.alertError({ messageId: error.messageId });
@@ -270,7 +282,10 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             service.updateHistoryByManagerSetting(command).done(result => {
                 //情報メッセージMsg_15
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.initScreen();
+                    self.initScreen().done(()=>{
+                        self.isInitDepartment = false;
+                        self.isInitdailyApproval = false;    
+                    });
                 });
             }).fail(error => {
                 dialog.alertError({ messageId: error.messageId });
@@ -308,6 +323,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                         self.settingManager().dailyApproverId(result.employeeID);
                     }
                 }
+                block.clear();
             }).fail(error => {
                 if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                     self.settingManager().departmentName('');
@@ -316,7 +332,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     self.settingManager().dailyApprovalName('');
                     $('#A2_10').ntsError('set', { messageId: error.messageId});
                 }
-            }).always(() => {
                 block.clear();
             });
         }

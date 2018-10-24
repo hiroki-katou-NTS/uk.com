@@ -1,21 +1,27 @@
 <div id="container">
 	<div id="content_left">
-		<!-- 	<div class="div_line" id='number_Info'>
+		<div class="div_line" id='number_Info'>
 			<div class="div_line_col_1">
 				<label data-bind="text : '#{i18n.getText('KAF011_64')}'"></label>
 			</div>
 			<div class="div_line_col_2">
-				<table id="number_Info">
-					<tr>
-						<th class="bg-green">謖ｯ莨第ｮ区焚</th>
-					</tr>
-					<tr>
-						<td>CELL1</td>
-					</tr>
+				<table id="fixed-table">
+					<colgroup>
+						<col width="100px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAF006_71')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td data-bind="text:remainDays() +'日'"></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
-			<div></div>
-		</div> -->
+		</div>
 
 		<div class="div_line">
 			<div class="div_line_col_1">
@@ -48,8 +54,9 @@
 				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
 			</div>
 			<div class="div_line_col_2">
-				<div id="swb_pre_post_type" class="cf"
-					data-bind="ntsSwitchButton: {
+				<div data-bind="if:screenModeNew()==true">
+					<div id="swb_pre_post_type" class="cf"
+						data-bind="ntsSwitchButton: {
 							name: '#{i18n.getText('KAF011_13')}',
 							options: prePostTypes ,
 							optionsValue: 'code',
@@ -57,8 +64,12 @@
 							value: prePostSelectedCode ,
 							enable: enablePrepost(),
 							required:displayPrePostFlg()!=0
-							 }"></div>
-
+							 }
+							 "></div>
+				</div>
+				<div data-bind="if:screenModeNew()==false">
+					<label class="text_line" data-bind="text:prePostText"></label>
+				</div>
 			</div>
 
 		</div>
@@ -205,11 +216,11 @@
 					</div>
 					<div data-bind="if:$parent.screenModeNew() ==false">
 						<div class="div_line_col_3">
-							<div data-bind="if:$parent.appComSelectedCode() ==0"
+							<!-- <div data-bind="if:$parent.appComSelectedCode() ==0"
 								style="display: inline-block;">
 								<button data-bind="click:$parent.removeAbs" class="danger">#{i18n.getText('KAF011_24')}</button>
 								<button data-bind="click:$parent.cancelAbs">#{i18n.getText('KAF011_25')}</button>
-							</div>
+							</div> -->
 							<button style="display: inline-block;"
 								data-bind="click:openCDialog">#{i18n.getText('KAF011_26')}</button>
 							<div style="display: inline-block;"
@@ -267,12 +278,12 @@
 							<div>
 								<div class="div_line_col_2 working_hour"
 									data-bind='with: wkTime1 '>
-									<input
+									<input class="absWkingTime"
 										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
 							value: startTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType ,option: timeOption }" />
 									<div>#{i18n.getText('KAF011_37')}</div>
-									<input
-										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+									<input class="absWkingTime"
+										data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_33')}', 
 							value: endTime , enable:$parent.enableWkTime()==true , readonly: false , required: $parent.changeWorkHoursType  ,option: timeOption}" />
 								</div>
 							</div>
@@ -304,7 +315,6 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
-										dropDownAttachedToBody:true,
 										columns:[
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
@@ -319,7 +329,7 @@
 					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<textarea style="height: 100px" id="appReason"
+					<textarea style="height: 100px ;position: relative;" id="appReason"
 						data-bind="ntsMultilineEditor: {
 									constraint: 'AppReason',
 									value: reason ,

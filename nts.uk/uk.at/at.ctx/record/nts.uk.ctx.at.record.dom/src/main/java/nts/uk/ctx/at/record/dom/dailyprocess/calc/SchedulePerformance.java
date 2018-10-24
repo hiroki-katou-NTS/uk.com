@@ -32,11 +32,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-//import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
-//import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
-//import nts.uk.ctx.at.shared.dom.worktime.flexworkset.FlexWorkSetting;
-//import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
-//import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowWorkRestSetting;
 
 /**
  * 予定実績
@@ -45,17 +40,16 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
  */
 @Getter
 public class SchedulePerformance {
+	//勤務情報
 	private WorkInformation workInformation;
+	//日別実績の予定時間
 	private WorkScheduleTimeOfDaily actualTime;
-	//private  出退勤
 	
 	public static IntegrationOfDaily createScheduleTimeSheet(IntegrationOfDaily integrationOfDaily) {
 		/*勤務予定を日別実績に変換*/
 		val changedShedule = convertScheduleToRecord(integrationOfDaily);
 		/*計算区分を変更*/
 		val changedCalcAtr = changeCalcAtr(changedShedule);
-		/*休憩情報を変更*/
-		//changeBreakSet(fixRestSetting ,flowWorkRestSetting);
 		return changedCalcAtr;
 	}
 	
@@ -64,7 +58,7 @@ public class SchedulePerformance {
 	 * @param 日別実績の勤務情報
 	 * @param 日別実績の出退勤
 	 */
-	public static IntegrationOfDaily convertScheduleToRecord(IntegrationOfDaily integrationOfDaily) {
+	private static IntegrationOfDaily convertScheduleToRecord(IntegrationOfDaily integrationOfDaily) {
 		
 		IntegrationOfDaily copyIntegration = integrationOfDaily;
 		//勤務情報を移す
@@ -89,7 +83,7 @@ public class SchedulePerformance {
 	 * 計算区分を変更する
 	 * @return 計算区分変更後の日別実績(WORK)
 	 */
-	public static IntegrationOfDaily changeCalcAtr(IntegrationOfDaily integrationOfDaily){
+	private static IntegrationOfDaily changeCalcAtr(IntegrationOfDaily integrationOfDaily){
 		
 		CalAttrOfDailyPerformance calAttr = new CalAttrOfDailyPerformance(integrationOfDaily.getWorkInformation().getEmployeeId(), 
 																		  integrationOfDaily.getWorkInformation().getYmd(),

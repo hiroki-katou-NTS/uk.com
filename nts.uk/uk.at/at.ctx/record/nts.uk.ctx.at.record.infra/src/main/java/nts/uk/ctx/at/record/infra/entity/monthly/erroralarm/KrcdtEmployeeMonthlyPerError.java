@@ -10,7 +10,15 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -25,7 +33,7 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 	/**
 	 * フレックス: フレックスエラー
 	 */
-	@Column(name = "IS_LAST_DAY")
+	@Column(name = "FLEX")
 	public Integer flex;
 	/**
 	 * 年休: 年休エラー
@@ -43,22 +51,28 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 		return krcdtEmployeeMonthlyPerErrorPK;
 	}
 
-	public KrcdtEmployeeMonthlyPerError convertToEntity(EmployeeMonthlyPerError domain, Optional<KrcdtEmployeeMonthlyPerErrorPK> entityKey){
-		
-		KrcdtEmployeeMonthlyPerError entity = new KrcdtEmployeeMonthlyPerError();
-		if (!entityKey.isPresent()) {
-			val key = new KrcdtEmployeeMonthlyPerErrorPK(domain.getErrorType().value, domain.getYearMonth().v(),
+	public KrcdtEmployeeMonthlyPerError convertToEntity(EmployeeMonthlyPerError domain, boolean update){
+	
+		if (!update) {
+			this.krcdtEmployeeMonthlyPerErrorPK =  new KrcdtEmployeeMonthlyPerErrorPK(domain.getNo(), domain.getErrorType().value, domain.getYearMonth().v(),
 					domain.getEmployeeID(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
-					(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
-			entity.krcdtEmployeeMonthlyPerErrorPK = key;
-
-		}else{
-			entity.krcdtEmployeeMonthlyPerErrorPK = entityKey.get();
+					domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
 		}
-		entity.flex = domain.getFlex().isPresent() ? domain.getFlex().get().value : null;
-		entity.annualHoliday = domain.getAnnualHoliday().isPresent() ? domain.getAnnualHoliday().get().value : null;
-		entity.yearlyReserved = domain.getYearlyReserved().isPresent() ? domain.getYearlyReserved().get().value : null;
 		
-		return entity;
+		this.flex = domain.getFlex().isPresent() ? domain.getFlex().get().value : null;
+		this.annualHoliday = domain.getAnnualHoliday().isPresent() ? domain.getAnnualHoliday().get().value : null;
+		this.yearlyReserved = domain.getYearlyReserved().isPresent() ? domain.getYearlyReserved().get().value : null;
+		
+		return this;
+	}
+	
+	public EmployeeMonthlyPerError convertToDomain() {
+		val key = this.krcdtEmployeeMonthlyPerErrorPK;
+		EmployeeMonthlyPerError domain = new EmployeeMonthlyPerError(key.no, ErrorType.valueOf(key.errorType),
+				new YearMonth(key.yearMonth), key.employeeID, ClosureId.valueOf(key.closureId),
+				new ClosureDate(key.closeDay, key.isLastDay == 1), flex == null ? null : Flex.valueOf(flex),
+				annualHoliday == null ? null : EnumAdaptor.valueOf(annualHoliday, AnnualLeaveError.class),
+				yearlyReserved == null ? null : EnumAdaptor.valueOf(yearlyReserved, ReserveLeaveError.class));
+		return domain;
 	}
 }

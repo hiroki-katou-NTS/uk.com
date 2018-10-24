@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の縦計
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class VerticalTotalOfMonthly {
@@ -33,7 +33,7 @@ public class VerticalTotalOfMonthly {
 	/** 勤務日数 */
 	private WorkDaysOfMonthly workDays;
 	/** 勤務時間 */
-	private WorkTimeOfMonthly workTime;
+	private WorkTimeOfMonthlyVT workTime;
 	/** 勤務時刻 */
 	private WorkClockOfMonthly workClock;
 	
@@ -43,7 +43,7 @@ public class VerticalTotalOfMonthly {
 	public VerticalTotalOfMonthly(){
 		
 		this.workDays = new WorkDaysOfMonthly();
-		this.workTime = new WorkTimeOfMonthly();
+		this.workTime = new WorkTimeOfMonthlyVT();
 		this.workClock = new WorkClockOfMonthly();
 	}
 	
@@ -56,7 +56,7 @@ public class VerticalTotalOfMonthly {
 	 */
 	public static VerticalTotalOfMonthly of(
 			WorkDaysOfMonthly workDays,
-			WorkTimeOfMonthly workTime,
+			WorkTimeOfMonthlyVT workTime,
 			WorkClockOfMonthly workClock){
 		
 		val domain = new VerticalTotalOfMonthly();
@@ -88,7 +88,7 @@ public class VerticalTotalOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計結果の初期化
-		this.workTime = new WorkTimeOfMonthly();
+		this.workTime = new WorkTimeOfMonthlyVT();
 		this.workDays = new WorkDaysOfMonthly();
 		this.workClock = new WorkClockOfMonthly();
 		
@@ -173,7 +173,7 @@ public class VerticalTotalOfMonthly {
 			this.workTime.aggregate(workType, attendanceTimeOfDaily);
 			
 			// 勤務時刻集計
-			this.workClock.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
+			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
 			
 			procYmd = procYmd.addDays(1);
 		}

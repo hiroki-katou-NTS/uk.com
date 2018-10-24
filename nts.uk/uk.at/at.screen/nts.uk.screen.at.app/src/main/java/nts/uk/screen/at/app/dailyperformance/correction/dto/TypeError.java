@@ -8,6 +8,8 @@ public enum TypeError {
 	COUPLE(1), 
 	CONTINUOUS(2), 
 	ITEM28(3),
-	DEVIATION_REASON(4);
+	DEVIATION_REASON(4),
+	ERROR_MONTH(5),
+	RELEASE_CHECKBOX(6);
 	public final int value;
 }

@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
@@ -167,28 +169,31 @@ public class JpaClassificationRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
+		
+		List<BsymtClassification> resultList = new ArrayList<>();
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// eq company id
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(BsymtClassification_.bsymtClassificationPK)
-						.get(BsymtClassificationPK_.cid), companyId));
-		lstpredicateWhere.add(root.get(BsymtClassification_.bsymtClassificationPK)
-				.get(BsymtClassificationPK_.clscd).in(codes));
+			// eq company id
+			lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(BsymtClassification_.bsymtClassificationPK)
+							.get(BsymtClassificationPK_.cid), companyId));
+			lstpredicateWhere.add(root.get(BsymtClassification_.bsymtClassificationPK)
+					.get(BsymtClassificationPK_.clscd).in(splitData));
 
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		// order by no id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtClassification_.bsymtClassificationPK)
-				.get(BsymtClassificationPK_.clscd)));
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			// order by no id asc
+			cq.orderBy(criteriaBuilder.asc(root.get(BsymtClassification_.bsymtClassificationPK)
+					.get(BsymtClassificationPK_.clscd)));
 
-		// creat query
-		TypedQuery<BsymtClassification> query = em.createQuery(cq);
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
+		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
 	}
 }

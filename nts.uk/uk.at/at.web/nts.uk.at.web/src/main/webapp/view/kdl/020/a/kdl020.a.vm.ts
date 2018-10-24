@@ -31,6 +31,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         reNumAnnLeave: KnockoutObservable<ReNumAnnLeaReferenceDate> = ko.observable(new ReNumAnnLeaReferenceDate());
         displayAnnualLeaveGrant: KnockoutObservable<DisplayAnnualLeaveGrant> = ko.observable(new DisplayAnnualLeaveGrant());
         attendNextHoliday: KnockoutObservable<AttendRateAtNextHoliday> = ko.observable(new AttendRateAtNextHoliday());
+        annualSet: KnockoutObservable<any> = ko.observable(null);
         constructor() {
             let self = this;
             self.selectedCode = ko.observable('');
@@ -105,11 +106,14 @@ module nts.uk.at.view.kdl020.a.screenModel {
                     self.employeeList(mappedList);
                     self.selectedCode(mappedList[0].code);
                     self.changeData(data);
+                    self.annualSet(data.annualSet);
                 }
             }).fail((error) => {
                 dialog({ messageId: error.messageId });
             }).always(() => {
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                if (self.employeeList().length > 1) {
+                    $('#component-items-list').ntsListComponent(self.listComponentOption);
+                }
                 block.clear();
                 dfd.resolve();
             });
@@ -168,21 +172,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return formatById("Clock_Short_HM", data);
         }
         genScheduleRecordText(scheduleRecordAtr) {
-            if (scheduleRecordAtr == null) {
-                return '';
-            }
-            if (scheduleRecordAtr == 0) {
-                return '未反映状態'
-            }
-
-            if (scheduleRecordAtr == 1) {
-                return '実績'
-            }
-            if (scheduleRecordAtr == 2) {
-                return 'スケジュール'
-            }
-
-            return '';
+           
+            return CreateAtr[scheduleRecordAtr];
         }
         genAttendanceRate(attendanceRate) {
             if (attendanceRate == null) {
@@ -375,6 +366,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         annualLeaveGrant: Array<any>;
         attendNextHoliday: any;
         reNumAnnLeave: IReNumAnnLeaReferenceDateImport;
+        annualSet: any;
     }
 
     export class AttendRateAtNextHoliday {
@@ -471,6 +463,19 @@ module nts.uk.at.view.kdl020.a.screenModel {
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+    
+    export enum CreateAtr {
+        /** 予定 */
+        "予定",
+        /** 実績 */
+        "実績",
+        /** 申請(事前) */
+        "申請(事前)",
+        /** 申請(事後) */
+        "申請(事後)",
+        /**フレックス補填   */
+        "フレックス補填"
     }
 
     export interface UnitModel {

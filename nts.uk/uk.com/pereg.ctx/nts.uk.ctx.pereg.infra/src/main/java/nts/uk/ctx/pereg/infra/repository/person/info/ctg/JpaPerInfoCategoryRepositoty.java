@@ -1,15 +1,19 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtDateRangeItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
@@ -17,6 +21,7 @@ import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -32,6 +37,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			 "AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
 			 "OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
 			 "ORDER BY po.disporder");
+	
+	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT DISTINCT ctg.categoryCd, ii.itemCd FROM PpemtPerInfoCtg ctg",
+			"INNER JOIN PpemtPerInfoItem ii ON ii.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtDateRangeItem dri ON dri.ppemtPerInfoCtgPK.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
+			"WHERE ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.startDateItemId OR ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.endDateItemId",
+			"AND ctg.cid = :cid ORDER BY ctg.categoryCd");
 
 	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -126,30 +137,31 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd";
 
-	private final static String SELECT_NO_WHERE = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
-			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca "
-			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId";
+	private final static String SELECT_NO_WHERE = String.join(" ",
+			"SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+			"co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder",
+			"FROM PpemtPerInfoCtg ca",
+			"INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			"INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId");
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = SELECT_NO_WHERE
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
-	private final static String SELECT_CTG_WITH_AUTH = SELECT_NO_WHERE
-			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
-			+ " WHERE ca.cid = :cid " 
-			+ " AND co.categoryParentCd IS NULL " 
-			+ " AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
-			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
-			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
-			+ "	JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId "
-			+ " AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) "
-			+ " AND (0 = :selfAuth or (1 = :selfAuth and iau.selfAuthType != 1)))"
-			+ " AND 0 != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
-			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1)) "
-			+ " AND (0 = :selfAuth or (1 = :selfAuth and c.selfAuthType != 1)))";
+	private final static String SELECT_CTG_WITH_AUTH = String.join(" ",
+			SELECT_NO_WHERE,
+			"INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId",
+			"WHERE ca.cid = :cid",
+			"AND co.categoryParentCd IS NULL", 
+			"AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)",
+			"AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId",
+			"AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtPerInfoItem i",
+			"JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId",
+			"AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId",
+			"AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) ",
+			"AND (0 = :selfAuth OR (1 = :selfAuth and iau.selfAuthType != 1)))",
+			"AND 0 != (SELECT COUNT(c.ppemtPersonItemAuthPk.roleId) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId",
+			"AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1))",
+			"AND (0 = :selfAuth OR (1 = :selfAuth AND c.selfAuthType != 1)))");
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -224,8 +236,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<String> getPerInfoCtgIdList(List<String> companyIdList, String categoryCd) {
-		return this.queryProxy().query(SELECT_LIST_CTG_ID_QUERY, String.class)
-				.setParameter("companyIdList", companyIdList).setParameter("categoryCd", categoryCd).getList();
+		List<String> results = new ArrayList<>();
+		CollectionUtil.split(companyIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_LIST_CTG_ID_QUERY, String.class)
+				.setParameter("companyIdList", subList).setParameter("categoryCd", categoryCd).getList());
+		});
+		return results;
 	}
 
 	@Override
@@ -543,6 +559,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
 					+ " ORDER BY po.disporder";
 		}
+		
 		return this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
 				.setParameter("roleId", roleId).setParameter("selfAuth", selfAuth).setParameter("otherAuth", otherAuth)
 				.setParameter("forAttendance", forAttendance)
@@ -562,9 +579,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId) {
-		List<PersonInfoCategory> lstEntity = this.queryProxy().query(SELECT_CTG_BY_CTGCD, Object[].class)
-				.setParameter("lstCtgCd", ctgCd).setParameter("cid", companyId)
-				.getList(x -> createDomainWithAbolition(x));
+		List<PersonInfoCategory> lstEntity = new ArrayList<>();
+		CollectionUtil.split(ctgCd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstEntity.addAll(this.queryProxy().query(SELECT_CTG_BY_CTGCD, Object[].class)
+				.setParameter("lstCtgCd", subList).setParameter("cid", companyId)
+				.getList(x -> createDomainWithAbolition(x)));
+		});
 		return lstEntity;
 	}
 
@@ -585,8 +605,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<String> getAllCtgId(List<String> ctgCd, String companyId) {
-		List<String> ctgIdLst = this.queryProxy().query(SELECT_CTG_ID_BY_CTGCD, String.class)
-				.setParameter("lstCtgCd", ctgCd).setParameter("cid", companyId).getList();
+		List<String> ctgIdLst = new ArrayList<>();
+		CollectionUtil.split(ctgCd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			ctgIdLst.addAll(this.queryProxy().query(SELECT_CTG_ID_BY_CTGCD, String.class)
+				.setParameter("lstCtgCd", subList).setParameter("cid", companyId).getList());
+		});
 		return ctgIdLst;
 	}
 
@@ -604,4 +627,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	}
 
+	@Override
+	public List<DateRangeDto> dateRangeCode() {
+		String cid = AppContexts.user().companyId();
+		// Get startDate and endDate of category history
+		List<Object[]> query = queryProxy().query(SELECT_DATE_RANGE_CODE, Object[].class).setParameter("cid", cid).getList();
+		return query.stream().map(m -> m[0].toString()).distinct().map(m -> {
+			List<Object[]> record = query.stream().filter(f -> f[0].toString().equals(m)).collect(Collectors.toList());
+
+			if (record.size() == 2) {
+				return new DateRangeDto(m, record.get(0)[1].toString(), record.get(1)[1].toString());
+			}
+
+			return null;
+		}).filter(f -> f != null).collect(Collectors.toList());
+	}
 }

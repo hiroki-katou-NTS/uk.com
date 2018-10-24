@@ -14,6 +14,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -222,7 +223,7 @@ public class PerInfoCategoryFinder {
 	};
 
 	// Function get List Category Combobox CPS007
-	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv3() {
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv3(boolean isCps007) {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
@@ -258,10 +259,32 @@ public class PerInfoCategoryFinder {
 				.mapCategoryIdAndLstItemDf(lstCtgId);
 
 		List<PerInfoCtgShowDto> categoryList = lstCtg.stream().map(p -> {
+			
 			List<Object[]> lstItemDfGroupByCtgId = mapCategoryIdAndLstItemDf.get(p.getPersonInfoCategoryId());
-			if (lstItemDfGroupByCtgId == null || CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
+			
+			if (isCps007) {
+				if (p.getCategoryCode().toString().equals("CS00001")) {
+					Optional<Object[]> itemEmpCode = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00001")).findFirst();
+					if (itemEmpCode.isPresent()) {
+						lstItemDfGroupByCtgId.remove(itemEmpCode.get());
+					}
+				} else if (p.getCategoryCode().toString().equals("CS00002")) {
+					Optional<Object[]> itemPersonName = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00003")).findFirst();
+					if (itemPersonName.isPresent()) {
+						lstItemDfGroupByCtgId.remove(itemPersonName.get());
+					}
+				} else if (p.getCategoryCode().toString().equals("CS00003")) {
+					Optional<Object[]> itemJobEntryDate = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00020")).findFirst();
+					if (itemJobEntryDate.isPresent()) {
+						lstItemDfGroupByCtgId.remove(itemJobEntryDate.get());
+					}
+				}
+			}
+			
+			if (CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
 				return null;
 			}
+			
 			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
 					p.getCategoryParentCode().v(), p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
@@ -275,10 +298,8 @@ public class PerInfoCategoryFinder {
 	};
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
-
-		// ãƒ­ã‚°ã‚¤ãƒ³è€…ã�Œã‚°ãƒ«ãƒ¼ãƒ—ä¼šç¤¾ç®¡ç�†è€…ã�‹ã�©ã�†ã�‹åˆ¤å®šã�™ã‚‹ -
-		// Kiá»ƒm tra quyá»�n
-		String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+		boolean checkRole = true;
+		String roleAdmin = AppContexts.user().roles().forSystemAdmin();
 		int payroll = NotUseAtr.NOT_USE.value;
 		int personnel = NotUseAtr.NOT_USE.value;
 		int atttendance = NotUseAtr.NOT_USE.value;
@@ -298,10 +319,41 @@ public class PerInfoCategoryFinder {
 				break;
 			}
 		}
-		if (roleId == null) {
-			// false Msg_1103
-			throw new BusinessException("Msg_1103");
-		} else {
+		// thực hiện thuật toán 「ログイン者がシステム管理者かどうか判定する」
+		if(roleAdmin == null){
+			checkRole = false;
+		}
+		if(checkRole == false){
+			// ãƒ­ã‚°ã‚¤ãƒ³è€…ã�Œã‚°ãƒ«ãƒ¼ãƒ—ä¼šç¤¾ç®¡ç�†è€…ã�‹ã�©ã�†ã�‹åˆ¤å®šã�™ã‚‹ -
+			// Kiá»ƒm tra quyá»�n
+			String roleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+			
+			if (roleId == null) {
+				// false Msg_1103
+				throw new BusinessException("Msg_1103");
+			} else {
+				List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(
+						AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode(), payroll, personnel, atttendance);
+
+				List<PerInfoCtgShowDto> ctgDtoLst = categoryList.stream().map(p -> {
+					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+							p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
+							p.getCategoryParentCode().v(),
+							p.getInitValMasterCls() == null ? InitValMasterObjCls.INIT.value
+									: p.getInitValMasterCls().value,
+							p.getAddItemCls() == null ? AddItemObjCls.ENABLE.value : p.getAddItemCls().value,
+							p.isCanAbolition(), p.getSalaryUseAtr().value, p.getPersonnelUseAtr().value,
+							p.getEmploymentUseAtr().value);
+				}).collect(Collectors.toList());
+
+				List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class,
+						internationalization);
+
+				return new PerInfoCtgDataEnumDto(historyTypes, ctgDtoLst);
+
+			}
+		}else{
+			// thực thi thuật toán 「カテゴリ一覧を表示する」
 			List<PersonInfoCategory> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(
 					AppContexts.user().zeroCompanyIdInContract(), AppContexts.user().contractCode(), payroll, personnel, atttendance);
 
@@ -320,7 +372,6 @@ public class PerInfoCategoryFinder {
 					internationalization);
 
 			return new PerInfoCtgDataEnumDto(historyTypes, ctgDtoLst);
-
 		}
 	};
 

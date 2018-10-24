@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -65,7 +65,7 @@ public class AggrPCLogonDivergence {
 			this.totalTime = this.totalTime.addMinutes(stayingTime.getBeforePCLogOnTime().v());
 			
 			// 日数を集計する
-			if (stayingTime.getStayingTime().v() > 0) this.days = this.days.addDays(1.0);
+			if (stayingTime.getBeforePCLogOnTime().v() > 0) this.days = this.days.addDays(1.0);
 		}
 		else {
 			
@@ -73,7 +73,7 @@ public class AggrPCLogonDivergence {
 			this.totalTime = this.totalTime.addMinutes(stayingTime.getAfterPCLogOffTime().v());
 			
 			// 日数を集計する
-			if (stayingTime.getStayingTime().v() > 0) this.days = this.days.addDays(1.0);
+			if (stayingTime.getAfterPCLogOffTime().v() > 0) this.days = this.days.addDays(1.0);
 		}
 		
 		// 平均時間を計算する

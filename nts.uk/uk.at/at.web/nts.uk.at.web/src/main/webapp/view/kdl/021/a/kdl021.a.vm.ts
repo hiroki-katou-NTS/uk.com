@@ -18,7 +18,8 @@ module kdl021.a.viewmodel {
             self.items = ko.observableArray([]);
             //header
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', width: 90 },
+                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'displayCode', width: 90 },
+                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', hidden: true },
                 { headerText: nts.uk.resource.getText("KDL021_4"), prop: 'name', width: 245, formatter: _.escape }
             ]);
             self.currentCodeList = ko.observableArray();
@@ -37,16 +38,15 @@ module kdl021.a.viewmodel {
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
             //the fist item 
-            self.dataSoure.push(new ItemModel("", "選択なし"));
+            if(!self.isMulti){
+                self.dataSoure.push(new ItemModel("", "選択なし", ""));
+            }
             //set source
             if (self.posibleItems.length > 0) {
                 if (self.isMonthly) {
                     service.getMonthlyAttendanceDivergenceName(self.posibleItems).done(function(lstItem: Array<any>) {
-                        for (let i in lstItem) {
-                            self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
-                        };
                         //set source
-                        self.items(self.dataSoure);
+                        self.items(self.prepareData(lstItem));
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res.message);
                     }).always(function() {
@@ -54,11 +54,7 @@ module kdl021.a.viewmodel {
                     });
                 } else {
                     service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>) {
-                        for (let i in lstItem) {
-                            self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
-                        };
-                        //set source
-                        self.items(self.dataSoure);
+                        self.items(self.prepareData(lstItem));
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res.message);
                     }).always(function() {
@@ -71,6 +67,13 @@ module kdl021.a.viewmodel {
             //勤怠項目の指定が0件の場合
             //set source
 //            self.items(self.dataSoure);
+        }
+        
+        prepareData(lstItem) {
+            let self = this;
+            let data = _.map(lstItem, item => { return new ItemModel(item.attendanceItemId, item.attendanceItemName, item.attendanceItemDisplayNumber) });
+            self.dataSoure = self.dataSoure.concat(_.sortBy(data, ['displayCode']));
+            return self.dataSoure;
         }
         //event When click to 設定 ボタン
         register() {
@@ -87,7 +90,8 @@ module kdl021.a.viewmodel {
         clearClick() {
             var self = this;
             self.items([]);
-            self.items(self.dataSoure);
+            let data = _.sortBy(self.dataSoure, ['displayCode']);
+            self.items(data);
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
         }
@@ -99,9 +103,11 @@ module kdl021.a.viewmodel {
     class ItemModel {
         code: string;
         name: string;
-        constructor(code: string, name: string) {
+        displayCode: number;
+        constructor(code: string, name: string, displayCode: number) {
             this.code = code;
             this.name = name;
+            this.displayCode = displayCode;
         }
     }
 

@@ -137,5 +137,5 @@ table#table tr td.title {
 	padding-bottom: 10px;
 }
 .sidebar-content{
-	height: 660px;
+	min-height: 660px;
 }

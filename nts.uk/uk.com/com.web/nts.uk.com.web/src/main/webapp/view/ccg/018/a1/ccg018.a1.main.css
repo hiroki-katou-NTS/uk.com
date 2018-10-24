@@ -60,7 +60,7 @@
 }
 
 .table1 {
-	width: 845px;
+	width: 945px;
 }
 
 .table1 thead tr, .table1 tbody {
@@ -68,14 +68,14 @@
 }
 
 .table1 tbody {
-	height: 480px;
+	height: 495px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
 /* for IE browser */
 *::-ms-backdrop, .table1 tbody {
-	height: 296px;
+	height: 330px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -89,22 +89,64 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 }
-.table1 thead tr th:first-child, .table1 tbody tr td:first-child {
-	width: 50px
+
+
+#A2-4 > table > thead > tr > th:nth-child(1){
+	width: 100px
+}
+
+#A2-4 > table > tbody > tr > td:nth-child(1){
+	width: 100px
+}
+
+#A2-4 > table > thead > tr > th:nth-child(2){
+	width: 200px
+}
+
+#A2-4 > table > tbody > tr > td:nth-child(2){
+	width: 200px
+}
+
+#A2-4 > table > thead > tr > th:nth-child(3){
+	width: 205px
+}
+
+#A2-4 > table > tbody > tr > td:nth-child(3){
+	width: 205px
+}
+
+#A2-4 > table > thead > tr > th:nth-child(4){
+	width: 205px
+}
+
+#A2-4 > table > tbody > tr > td:nth-child(4){
+	width: 205px
+}
+
+#A2-4 > table > thead > tr > th:nth-child(5){
+	width: 205px
+}
+
+#A2-4 > table > tbody > tr > td:nth-child(5){
+	width: 205px
+}
+/* 
+#A2-4 > table > tbody tr td:nth-child(1){
+	width: 100px;
 }
 
 .table1 thead tr th:nth-child(2), .table1 tbody tr td:nth-child(2) {
-	width: 180px
+	width: 200px
 }
 
 .table1 thead tr th, .table1 tbody tr td:nth-child(3), .table1 tbody tr td:nth-child(4)
 	{
-	width: 204px
+	width: 210px
 }
 
 .table1 thead tr th:nth-child(5), .table1 tbody tr td:nth-child(5) {
-	width: 180px
-}
+	width: 200px
+} */
 
 .ui-igcombo-wrapper {
 	height: 27px;
@@ -112,6 +154,6 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 	padding-left: 2px;
 }
 
-.width-tbody {
+/* .width-tbody {
 	width: 638px;
-}
+} */

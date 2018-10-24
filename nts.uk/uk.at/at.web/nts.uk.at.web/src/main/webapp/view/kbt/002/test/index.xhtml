@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 360,
+					height : 500
+				};
+			</script> 
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kbt002.ii.main.css" />
+				<com:scriptfile path="kbt002.ii.service.js" />
+				<com:scriptfile path="kbt002.ii.vm.js" />
+				<com:scriptfile path="kbt002.ii.start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					
+				</div>
+				<div id="functions-area-bottom">
+					<button tabindex="-1" data-bind="click: openDialog"  >KBT002_I</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
@@ -44,9 +45,6 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	@Column(name = "SID")
 	@Basic(optional = false)
 	public String employeeId;
-
-	@Column(name = "YMD_KEY")
-	public GeneralDate ymdKey;
 
 	@Column(name = "YM_KEY")
 	public Integer ymKey;
@@ -122,8 +120,8 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	 * @return domain DataCorrectionLog
 	 */
 	public DataCorrectionLog toDomainToView() {
-		GeneralDate ymd = this.ymdKey;
-		if (this.ymdKey == null) {
+		GeneralDate ymd = this.pk.ymdKey;
+		if (this.pk.ymdKey == null) {
 			if (this.ymKey != null) {
 				YearMonth ym = YearMonth.of(this.ymKey);
 				ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
@@ -141,15 +139,12 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		SrcdtDataCorrectionLog entityLog = new SrcdtDataCorrectionLog();
 		val correctedItem = dataLog.getCorrectedItem();
 		entityLog.pk = new SrcdtDataCorrectionLogPk(dataLog.getOperationId(), dataLog.getTargetUser().getUserId(),
-				dataLog.getTargetDataType().value, correctedItem.getId());
+				dataLog.getTargetDataType().value, correctedItem.getId(), dataLog.getTargetDataKey().getDateKey());
 		entityLog.userName = dataLog.getTargetUser().getUserName();
 		entityLog.employeeId = dataLog.getTargetUser().getEmployeeId();
-		val dateKey = dataLog.getTargetDataKey().getDateKey().orElse(null);
-		if (dateKey != null) {
-			entityLog.ymdKey = dateKey;
-			entityLog.ymKey = YearMonth.of(dateKey.year(), dateKey.month()).v();
-			entityLog.yKey = dateKey.year();
-		}
+		val dateKey = dataLog.getTargetDataKey().getDateKey();
+		entityLog.ymKey = YearMonth.of(dateKey.year(), dateKey.month()).v();
+		entityLog.yKey = dateKey.year();
 		entityLog.stringKey = dataLog.getTargetDataKey().getStringKey().orElse(null);
 		entityLog.correctionAttr = dataLog.getCorrectionAttr().value;
 		entityLog.itemName = correctedItem.getName();
@@ -168,6 +163,22 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		entityLog.showOrder = dataLog.getShowOrder();
 		entityLog.note = dataLog.getRemark();
 		return entityLog;
+	}
+	
+	public DataCorrectionLog toDomain() {
+		GeneralDate ymd = this.pk.ymdKey;
+		if (this.pk.ymdKey == null) {
+			if (this.ymKey != null) {
+				YearMonth ym = YearMonth.of(this.ymKey);
+				ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
+			} else if (this.yKey != null)
+				ymd = GeneralDate.ymd(this.yKey, 1, 1);
+		}
+		return new DataCorrectionLog(this.pk.operationId, new UserInfo(this.pk.userId, this.employeeId, this.userName),
+				TargetDataType.of(this.pk.targetDataType), TargetDataKey.of(ymd, this.stringKey),
+				CorrectionAttr.of(this.correctionAttr),
+				ItemInfo.createWithViewValue(this.pk.itemId, this.itemName, DataValueAttribute.STRING, this.rawValueBefore, this.rawValueAfter, this.viewValueBefore, this.viewValueAfter),
+				this.showOrder, this.note);
 	}
 	
 }

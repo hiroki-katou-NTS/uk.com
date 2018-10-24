@@ -62,11 +62,12 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 	 */
 	public BreakDownTimeDay(Integer oneDay, Integer morning, Integer afternoon) {
 		super();
+		// case not input
 		if (morning == null) {
-			throw new BusinessException("Msg_518", "KMK003_217");
+			morning = 0;
 		}
 		if (afternoon == null) {
-			throw new BusinessException("Msg_518", "KMK003_218");
+			afternoon = 0;
 		}
 		this.oneDay = new AttendanceTime(oneDay);
 		this.morning = new AttendanceTime(morning);

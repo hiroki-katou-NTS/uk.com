@@ -38,10 +38,10 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			return dailyInfor;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.NOTAUTO) {
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO) {
 			return dailyInfor;
 		}
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//INPUT．就業時間帯コードに値があるかチェックする
 			if(overtimePara.getOvertimePara().getWorkTimeCode().isEmpty()) {
 				return dailyInfor;
@@ -58,7 +58,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		ReflectParameter reflectPara = new ReflectParameter(overtimePara.getEmployeeId(),
 				overtimePara.getDateInfo(),
 				overtimePara.getOvertimePara().getWorkTimeCode(), 
-				overtimePara.getOvertimePara().getWorkTypeCode());
+				overtimePara.getOvertimePara().getWorkTypeCode(), false);
 		return scheWorkUpdateService.updateWorkTimeType(reflectPara, true, dailyInfor);
 	}
 
@@ -83,11 +83,11 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 		}
 		boolean isWorktimeIsFluid = false;
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
 			isWorktimeIsFluid = workTimeService.checkWorkTimeIsFluidWork(overtimePara.getOvertimePara().getWorkTimeCode());
 		}
-		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY
+		if(overtimePara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO
 				|| isWorktimeIsFluid) {
 			return true;
 		}
@@ -98,7 +98,8 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	@Override
 	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
 		//自動打刻をクリアする
-		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(), overtimePara.isAutoClearStampFlg(), 0);
+		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(),
+				overtimePara.isAutoClearStampFlg(), overtimePara.getOvertimePara());
 		//出退勤時刻反映できるかチェックする
 		if(!overtimePara.isActualReflectFlg()
 				&& !overtimePara.isScheTimeOutFlg()) {
@@ -142,10 +143,10 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			//１回勤務反映区分(output)をチェックする
 			if(findStartEndTimeReflect.isCountReflect1Atr()) {				
 				//開始時刻を反映できるかチェックする
-				boolean isStart = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, 
+				boolean isStart = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 1, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				//終了時刻を反映できるかチェックする
-				boolean isEnd = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1,
+				boolean isEnd = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 1,
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(),false);
 				TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), startEndTimeData.getEnd1(), 1, isStart, isEnd);
 				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1);
@@ -154,10 +155,10 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTimeReflect.isCountReflect2Atr()) {				
 				//開始時刻2を反映できるかチェックする
-				boolean isStart = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2,
+				boolean isStart = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 2,
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				//終了時刻を反映できるかチェックする
-				boolean isEnd = scheStartEndTimeReflect.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, 
+				boolean isEnd = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 2, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
 				TimeReflectPara timePara2 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), startEndTimeData.getEnd2(), 2, isStart, isEnd);
 				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2);

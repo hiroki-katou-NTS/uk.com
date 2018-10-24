@@ -6,7 +6,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
@@ -49,8 +51,7 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		builderString.append(
 				"SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth ");
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
-		builderString
-				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtAuthorityDailyItemPK.attendanceItemId = :attendanceItemId ");
 		builderString.append("AND a.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ");
 		UPDATE_BY_KEY = builderString.toString();
@@ -67,6 +68,9 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		builderString.append("DELETE ");
 		builderString.append("FROM KfnmtAuthorityDailyItem a ");
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.attendanceItemId IN :attendanceItemIds ");
+		builderString.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
+		builderString.append("AND a.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ");
 		REMOVE_EXIST_DATA = builderString.toString();
 	}
 
@@ -107,9 +111,17 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public void deleteExistData(List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
+	public void deleteExistData(String companyId, String  dailyPerformanceFormatCode,
+			BigDecimal sheetNo,List<Integer> attendanceItemIds) {
+		
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+				.setParameter("attendanceItemIds", subList)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+				.setParameter("sheetNo", sheetNo)
 				.executeUpdate();
+		});
 	}
 
 	private static AuthorityFomatDaily toDomain(KfnmtAuthorityDailyItem kfnmtAuthorityDailyItem) {

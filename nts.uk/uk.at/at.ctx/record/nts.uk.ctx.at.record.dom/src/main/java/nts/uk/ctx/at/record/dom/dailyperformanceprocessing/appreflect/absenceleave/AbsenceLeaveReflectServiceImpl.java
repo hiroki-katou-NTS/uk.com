@@ -76,7 +76,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return dailyInfor;
 		}
 		//予定勤種の反映
-		workUpdate.updateRecordWorkType(param.getEmployeeId(), param.getBaseDate(), param.getWorkTypeCode(), true);
+		dailyInfor = workUpdate.updateRecordWorkType(param.getEmployeeId(), param.getBaseDate(), param.getWorkTypeCode(), true, dailyInfor);
 		//1日半日出勤・1日休日系の判定
 		WorkStyle checkworkDay = basicService.checkWorkDay(param.getWorkTypeCode());
 		
@@ -139,12 +139,12 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return outData;
 		}
 		WorkingConditionItem workingConditionData = personalLablorCodition.get();
-		if(!workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-			return outData;
-		}
+		workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(x -> {
+			//反映就業時間帯=「平日時」．就業時間帯コード
+			outData.setWorkTimeCode(x.v());
+				
+		});
 		outData.setChkReflect(true);
-		//反映就業時間帯=「平日時」．就業時間帯コード
-		outData.setWorkTimeCode(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
 		
 		return outData;
 	}
@@ -193,7 +193,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	@Override
 	public WorkInfoOfDailyPerformance reflectRecordStartEndTime(CommonReflectParameter param, WorkInfoOfDailyPerformance dailyInfor) {
 		//勤種の反映
-		workUpdate.updateRecordWorkType(param.getEmployeeId(), param.getBaseDate(), param.getWorkTypeCode(), false);
+		dailyInfor = workUpdate.updateRecordWorkType(param.getEmployeeId(), param.getBaseDate(), param.getWorkTypeCode(), false, dailyInfor);
 		//1日半日出勤・1日休日系の判定
 		WorkStyle checkworkDay = basicService.checkWorkDay(param.getWorkTypeCode());
 		if(checkworkDay == WorkStyle.ONE_DAY_REST) {
@@ -258,7 +258,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return false;
 		}	
 		TimeActualStamp attendanceStamp = optTimeActual.get();
-		Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
+		Optional<WorkStamp> optActualStamp = attendanceStamp.getStamp();
 		if(!optActualStamp.isPresent()) {
 			return false;
 		}

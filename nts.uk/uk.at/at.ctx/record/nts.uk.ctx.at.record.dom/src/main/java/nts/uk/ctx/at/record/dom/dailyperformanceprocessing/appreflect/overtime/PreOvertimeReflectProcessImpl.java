@@ -30,8 +30,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	public WorkInfoOfDailyPerformance workTimeWorkTimeUpdate(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
 		//INPUT．勤種反映フラグ(予定)をチェックする
-		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
-				|| para.getOvertimePara().getWorkTypeCode().isEmpty()
+		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
+				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isScheReflectFlg()) {
 			return dailyInfo;
 		}
@@ -39,7 +39,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
-				para.getOvertimePara().getWorkTypeCode()); 
+				para.getOvertimePara().getWorkTypeCode(),
+				false); 
 		return workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfo);	
 	}
 	
@@ -48,8 +49,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		boolean ischeck = false;
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
-		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
-				|| para.getOvertimePara().getWorkTypeCode().isEmpty()
+		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
+				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
 			return new AppReflectRecordWork(ischeck, dailyInfo);
 		}
@@ -58,7 +59,9 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
 		
-		if(!dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+		if(dailyInfo.getRecordInfo().getSiftCode() == null
+				|| dailyInfo.getRecordInfo().getWorkTypeCode() == null
+				|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
 				||!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			ischeck = true;
 		} 
@@ -66,7 +69,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.getOvertimePara().getWorkTimeCode(), 
-				para.getOvertimePara().getWorkTypeCode()); 
+				para.getOvertimePara().getWorkTypeCode(),
+				false); 
 		dailyInfo = workUpdate.updateWorkTimeType(reflectInfo, false, dailyInfo);
 		return new AppReflectRecordWork(ischeck, dailyInfo);
 		
@@ -102,7 +106,7 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return false;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY) {
+		if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//流動勤務かどうかの判断処理
@@ -129,8 +133,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordInfo().getWorkTimeCode().v(),
-				dailyPerfor.getRecordInfo().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTimeCode().v(),
+				dailyPerfor.getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTypeCode().v());
 		return dataOut;
 	}
 

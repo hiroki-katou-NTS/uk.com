@@ -1,12 +1,15 @@
 package nts.uk.ctx.bs.person.infra.repository.person.contact;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
@@ -62,16 +65,16 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 				: null;
 		if (domain.getEmergencyContact1().isPresent()) {
 			EmergencyContact emergencyContact1 = domain.getEmergencyContact1().get();
-			entity.memo1 = emergencyContact1.getMemo().v();
-			entity.contactName1 = emergencyContact1.getContactName().v();
-			entity.phoneNo1 = emergencyContact1.getPhoneNumber().v();
+			entity.memo1 = emergencyContact1.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName1 = emergencyContact1.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo1 = emergencyContact1.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 
 		if (domain.getEmergencyContact2().isPresent()) {
 			EmergencyContact emergencyContact2 = domain.getEmergencyContact2().get();
-			entity.memo2 = emergencyContact2.getMemo().v();
-			entity.contactName2 = emergencyContact2.getContactName().v();
-			entity.phoneNo2 = emergencyContact2.getPhoneNumber().v();
+			entity.memo2 = emergencyContact2.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName2 = emergencyContact2.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo2 = emergencyContact2.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 		return entity;
 	}
@@ -87,18 +90,27 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 		entity.mailAdress = domain.getMailAdress().isPresent() ? domain.getMailAdress().get().v() : null;
 		entity.mobileMailAdress = domain.getMobileMailAdress().isPresent() ? domain.getMobileMailAdress().get().v()
 				: null;
+		
+		entity.memo1 = null;
+		entity.contactName1 = null;
+		entity.phoneNo1 = null;
+
+		entity.memo2 = null;
+		entity.contactName2 = null;
+		entity.phoneNo2 = null;
+		
 		if (domain.getEmergencyContact1().isPresent()) {
 			EmergencyContact emergencyContact1 = domain.getEmergencyContact1().get();
-			entity.memo1 = emergencyContact1.getMemo().v();
-			entity.contactName1 = emergencyContact1.getContactName().v();
-			entity.phoneNo1 = emergencyContact1.getPhoneNumber().v();
+			entity.memo1 = emergencyContact1.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName1 = emergencyContact1.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo1 = emergencyContact1.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 
 		if (domain.getEmergencyContact2().isPresent()) {
 			EmergencyContact emergencyContact2 = domain.getEmergencyContact2().get();
-			entity.memo2 = emergencyContact2.getMemo().v();
-			entity.contactName2 = emergencyContact2.getContactName().v();
-			entity.phoneNo2 = emergencyContact2.getPhoneNumber().v();
+			entity.memo2 = emergencyContact2.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName2 = emergencyContact2.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo2 = emergencyContact2.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 
 	}
@@ -121,8 +133,11 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 
 	@Override
 	public List<PersonContact> getByPersonIdList(List<String> personIds) {
-		List<BpsmtPersonContact> entities = this.queryProxy().query(GET_BY_LIST, BpsmtPersonContact.class)
-				.setParameter("personIdList", personIds).getList();
+		List<BpsmtPersonContact> entities = new ArrayList<>();
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_LIST, BpsmtPersonContact.class)
+				.setParameter("personIdList", subList).getList());
+		});
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 

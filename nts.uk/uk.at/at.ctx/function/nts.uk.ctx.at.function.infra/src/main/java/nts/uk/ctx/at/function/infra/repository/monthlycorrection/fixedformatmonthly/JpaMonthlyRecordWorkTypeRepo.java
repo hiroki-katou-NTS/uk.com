@@ -6,8 +6,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeRepository;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtDisplayTimeItemRC;
@@ -15,6 +19,7 @@ import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyActualResultRCPK;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonthlyRecordWorkType;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements MonthlyRecordWorkTypeRepository {
 
@@ -37,8 +42,14 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 	@Override
 	public List<MonthlyRecordWorkType> getMonthlyRecordWorkTypeByListCode(String companyID,
 			List<String> businessTypeCodes) {
-		List<MonthlyRecordWorkType> data = this.queryProxy().query(GET_MON_BY_LIST_CODE, KrcmtMonthlyRecordWorkType.class).setParameter("companyID", companyID).setParameter("businessTypeCode", businessTypeCodes).getList(c -> c.toDomain());
-		return data;
+		List<KrcmtMonthlyRecordWorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(businessTypeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_MON_BY_LIST_CODE, KrcmtMonthlyRecordWorkType.class)
+					.setParameter("companyID", companyID)
+					.setParameter("businessTypeCode", subList)
+					.getList());
+		});
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -46,7 +57,8 @@ public class JpaMonthlyRecordWorkTypeRepo extends JpaRepository implements Month
 		KrcmtMonthlyRecordWorkType newEntity = KrcmtMonthlyRecordWorkType.toEntity(monthlyRecordWorkType);
 		this.commandProxy().insert(newEntity);
 	}
-
+		
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateMonthlyRecordWorkType(MonthlyRecordWorkType monthlyRecordWorkType) {
 		KrcmtMonthlyRecordWorkType newEntity = KrcmtMonthlyRecordWorkType.toEntity(monthlyRecordWorkType);

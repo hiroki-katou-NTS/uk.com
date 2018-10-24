@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -13,6 +16,10 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
+import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 
 /**
  * @author sang.nv
@@ -29,6 +36,8 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
+	@Inject
+	private CreateDailyApprover createDailyApprover;
 	
 	@Override
 	public void updateHistoryByManagerSetting(String companyId, String historyId, String employeeId, GeneralDate startDate,
@@ -52,19 +61,36 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 			this.insertHistoryCmm053Service.updateOrInsertHistory(companyId, employeeId, historyId, startDate, endDate,
 					commonPs, monthlyPs, departmentApproverId, dailyApproverId);
 		}
+		//履歴の開始日とシステム日付をチェックする
+		GeneralDate systemDate = GeneralDate.today();
+		if(startDate.beforeOrEquals(systemDate)){
+			//指定社員の中間データを作成する（日別）
+			AppRootInstanceContent result =  createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
+			if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
+				throw new BusinessException(result.getErrorMsgID());
+			}
+			//指定社員の中間データを作成する（月別）
+			result = createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
+			if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
+				throw new BusinessException(result.getErrorMsgID());
+			}
+		}
+		
 	}
 
 	@Override
 	public void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
-		Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-				psAppRoot.getBranchId());
-		if (approvalPhase.isPresent()) {
-			ApprovalPhase updateApprovalPhase = approvalPhase.get();
-			List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
-			Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
-			if (firstApprover.isPresent()) {
-				firstApprover.get().setEmployeeId(employeeIdApprover);
-				this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
+		if(Strings.isNotBlank(employeeIdApprover)){
+			Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
+					psAppRoot.getBranchId());
+			if (approvalPhase.isPresent()) {
+				ApprovalPhase updateApprovalPhase = approvalPhase.get();
+				List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
+				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
+				if (firstApprover.isPresent()) {
+					firstApprover.get().setEmployeeId(employeeIdApprover);
+					this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
+				}
 			}
 		}
 	}

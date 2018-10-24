@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -26,16 +29,19 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Value
 public class LateDecisionClock {
+	//遅刻判断時刻
 	private TimeWithDayAttr lateDecisionClock;
+	//勤務No
 	private int workNo;
 
 	
 	/**
 	 * 遅刻判断時刻を作成する
-	 * @param workNo
-	 * @param predetermineTimeSet
-	 * @param deductionTimeSheet
-	 * @param lateGraceTime
+	 * @param workNo 勤務No
+	 * @param predetermineTimeSet 所定時間帯
+	 * @param deductionTimeSheet　控除時間帯
+	 * @param lateGraceTime　遅刻猶予時間
+	 * @param breakTimeList 
 	 * @return
 	 */
 	public static Optional<LateDecisionClock> create(
@@ -44,12 +50,12 @@ public class LateDecisionClock {
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting lateGraceTime,
 			TimeLeavingWork timeLeavingWork,
-			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType) {
+			Optional<CoreTimeSetting> coreTimeSetting,WorkType workType, 
+			List<TimeSheetOfDeductionItem> breakTimeList) {
 
 		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
 			return Optional.empty();
-//		TimezoneUse predetermineTimeSheet = new TimezoneUse(new TimeWithDayAttr(0), new TimeWithDayAttr(0), UseSetting.NOT_USE , workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		//計算範囲取得
@@ -59,16 +65,22 @@ public class LateDecisionClock {
 				// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
 				decisionClock = calｃRange.get().getStart();
 			} else {
-				// 猶予時間帯の作成                                                                                                   ↓明日はこれを修正する所から
+				// 猶予時間帯の作成                                                                                                   
 				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getStart(),
 																	 calｃRange.get().getStart().forwardByMinutes(lateGraceTime.getGraceTime().valueAsMinutes()));
-				// 重複している控除分をずらす
-				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
-				for(TimeZoneRounding breakTime:breakTimeSheetList) {
-					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getStart(),breakTime.getEnd());
-					if(deductTime.contains(graceTimeSheet.getEnd())){
-						graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart(), deductTime.getEnd());
-					}
+				// 重複している控除分をずらす(休憩)
+				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
+				//EnterPriseでは短時間系との重複はとっていないためコメントアウト
+//				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isChildCare()).map(t -> t.getTimeSheet()).collect(Collectors.toList());
+				
+				//控除時間帯(休憩＆短時間)と猶予時間帯の重複を調べ猶予時間帯の調整
+				for(TimeSheetOfDeductionItem breakTime:breakTimeSheetList) {
+					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getTimeSheet().getStart(),breakTime.getTimeSheet().getEnd());
+					val dupRange = deductTime.getDuplicatedWith(graceTimeSheet);
+						if(dupRange.isPresent()) {
+							graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart(), 
+																 graceTimeSheet.getEnd().forwardByMinutes(breakTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()));
+						}
 				}
 				decisionClock = graceTimeSheet.getEnd();
 			}
@@ -108,7 +120,6 @@ public class LateDecisionClock {
 				if(coreTimeSetting.get().getTimesheet().isNOT_USE()) {
 					return Optional.empty();
 				}
-//				if(attendance.greaterThanOrEqualTo(coreTimeSetting.get().getCoreTimeSheet().getEndTime())) {
 				val coreTime = coreTimeSetting.get().getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
 				if(attendance.greaterThanOrEqualTo(coreTime.getEndTime())) {
 					return Optional.of(new TimeSpanForCalc(coreTime.getStartTime(), coreTime.getEndTime()));

@@ -8,11 +8,11 @@ module nts.uk.at.view.kdw007.a {
         screenModel.startPage(null).done(function() {
             __viewContext.bind(screenModel);
             setTimeout(() => {
-                if (screenModel.lstErrorAlarm().length > 0) {
-                    $("#errorAlarmWorkRecordName").focus();
-                } else {
-                    $("#errorAlarmWorkRecordCode").focus();
-                }
+                if (screenModel.lstFilteredData().length > 0) {
+					$("#errorAlarmWorkRecordName").focus();
+				} else {
+					$("#errorAlarmWorkRecordCode").focus();
+				}
             }, 1);
         });
     });

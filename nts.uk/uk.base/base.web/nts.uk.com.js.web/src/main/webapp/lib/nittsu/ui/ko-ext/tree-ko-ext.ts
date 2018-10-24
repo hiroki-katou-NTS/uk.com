@@ -44,6 +44,7 @@ module nts.uk.ui.koExtentions {
             if (!nts.uk.util.isNullOrEmpty(rows)) {
                 height = rows* ROW_HEIGHT;    
             }
+            $(element).addClass("ig-tree-background");
             
             let $tree = $(element);
             
@@ -200,12 +201,16 @@ module nts.uk.ui.koExtentions {
                         let $node = $tree.igTree("nodesByValue", val);
                         $node.find("a:first").addClass("ui-state-active");
                         let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
-                        if($tree.igTree("checkState", $node) === "off"){
+                        if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
                             $tree.igTree("toggleCheckstate", $node);
                         }
                     });
                 } else {
-                    $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
+                    let $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                    if ($selectingNode.length > 0) {
+                        $tree.igTree("select", $selectingNode);
+                        $tree.igTree("expandToNode", $selectingNode);
+                    }
                 }
             }
         }

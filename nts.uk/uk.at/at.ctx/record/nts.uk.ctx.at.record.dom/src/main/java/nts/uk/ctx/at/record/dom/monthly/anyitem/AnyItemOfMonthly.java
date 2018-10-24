@@ -5,15 +5,16 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 月別実績の任意項目
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AnyItemOfMonthly extends AggregateRoot {
@@ -88,6 +89,30 @@ public class AnyItemOfMonthly extends AggregateRoot {
 	}
 	
 	/**
+	 * ファクトリー
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param aggrResult 任意項目集計結果
+	 * @return 月別実績の任意項目
+	 */
+	public static AnyItemOfMonthly of(
+			String employeeId,
+			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate,
+			AnyItemAggrResult aggrResult){
+		
+		AnyItemOfMonthly domain = new AnyItemOfMonthly(
+				employeeId, yearMonth, closureId, closureDate, aggrResult.getOptionalItemNo());
+		domain.time = Optional.ofNullable(aggrResult.getAnyTime());
+		domain.times = Optional.ofNullable(aggrResult.getAnyTimes());
+		domain.amount = Optional.ofNullable(aggrResult.getAnyAmount());
+		return domain;
+	}
+	
+	/**
 	 * 合算する
 	 * @param target 加算対象
 	 */
@@ -118,5 +143,17 @@ public class AnyItemOfMonthly extends AggregateRoot {
 				this.amount = Optional.of(new AnyAmountMonth(target.amount.get().v()));
 			}
 		}
+	}
+
+	public void updateTime(AnyTimeMonth time){
+		this.time = Optional.ofNullable(time);
+	}
+	
+	public void updateTimes(AnyTimesMonth times){
+		this.times = Optional.ofNullable(times);
+	}
+	
+	public void updateAmount(AnyAmountMonth amount){
+		this.amount = Optional.ofNullable(amount);
 	}
 }

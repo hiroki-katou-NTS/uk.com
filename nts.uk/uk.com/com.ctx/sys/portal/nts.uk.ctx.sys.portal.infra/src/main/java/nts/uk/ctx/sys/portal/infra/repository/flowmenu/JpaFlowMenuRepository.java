@@ -1,9 +1,13 @@
 package nts.uk.ctx.sys.portal.infra.repository.flowmenu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenu;
@@ -16,9 +20,10 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 @Stateless
 public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepository{
 	
-	private static final String SELECT_BASE = "SELECT m, t"
-									+ " FROM CcgmtFlowMenu m JOIN CcgmtTopPagePart t"
-									+ " ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID";
+	private static final String SELECT_BASE = "SELECT m, t "
+									+ "FROM CcgmtFlowMenu m JOIN CcgmtTopPagePart t "
+									+ "ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+									+ "AND m.ccgmtFlowMenuPK.companyID = t.ccgmtTopPagePartPK.companyID ";
 	private static final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID = :topPagePartID";
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
 	private static final String SELECT_IN = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID IN :topPagePartID";
@@ -87,8 +92,12 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 
 	@Override
 	public List<FlowMenu> findByCodes(String companyID, List<String> toppagePartID) {
-		return this.queryProxy().query(SELECT_IN, Object[].class)
-				.setParameter("topPagePartID", toppagePartID)
-				.getList(c -> joinObjectToDomain(c));
+		List<FlowMenu> resultList = new ArrayList<>();
+		CollectionUtil.split(toppagePartID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", subList)
+				.getList(c -> joinObjectToDomain(c)));
+		});
+		return resultList;
 	}
 }

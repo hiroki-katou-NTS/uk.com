@@ -90,5 +90,11 @@ project (':base.web:nts.uk.com.js.web') {
 		include '**/*.ts'
 		source = new File('src/main/webapp/lib')
 		outFile = new File('src/main/webapp/lib/nittsu/nts.uk.com.web.nittsu.bundles.js')
+	} 
+	
+	task csc(type: Exec) {
+		workingDir 'src/main/webapp/lib/nittsu/ui/style'		
+		commandLine 'cmd', '/c', 'node-sass'
+		args 'sass/base.scss', 'stylesheets/base.css', '--output-style', 'compressed', '--source-comments', 'false', '--source-map', 'true'
 	}
 }

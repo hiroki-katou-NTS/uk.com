@@ -22,16 +22,16 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
+import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogStorageRepository;
-import nts.uk.shr.com.user.UserInfoAdapter;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
-import nts.uk.shr.infra.web.util.QueryStringAnalyzer;
 
 public class StartPageLogWriter implements Filter {
 
@@ -59,19 +59,33 @@ public class StartPageLogWriter implements Filter {
 		
 		ScreenIdentifier targetPg = ScreenIdentifier.create(requestPagePath, httpRequest.getQueryString());
 		
-		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true)){
+		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true) || FilterHelper.isLoginPage(requestPagePath)){
+			return;
+		}
+		
+		ShareStandardMenuAdapter menuAdapter = CDI.current().select(ShareStandardMenuAdapter.class).get();
+		String comId = getValue(context, c -> c.companyId());
+		if(!menuAdapter.isEsistMenuWith(comId, targetPg.getScreenId(), targetPg.getProgramId(), targetPg.getQueryString())){
 			return;
 		}
 		
 		LogBasicInformation basic = new LogBasicInformation(
 				IdentifierUtil.randomUniqueId(), 
-				getValue(context, c -> c.companyId()),
+				comId,
 				UserInfo.employee(
 						getValue(context, c -> c.userId()), 
-						getValue(context, c -> c.employeeId()),
 						getValue(context, c -> {
-							UserInfoAdapter userAdapter = CDI.current().select(UserInfoAdapter.class).get();
-							return userAdapter.getUserName(c.userId());
+							if(c.employeeId() == null){
+								return c.userId();
+							}
+							return c.employeeId();
+						}),
+						getValue(context, c -> {
+							UserInfoAdaptorForLog userAdapter = CDI.current().select(UserInfoAdaptorForLog.class).get();
+							if(context.isEmployee()){
+								return userAdapter.findByEmployeeId(c.employeeId()).getUserName();
+							}
+							return userAdapter.findByUserId(c.userId()).getUserName();
 						})), 
 				new LoginInformation(
 						getValue(requseted, c -> c.getRequestIpAddress()),

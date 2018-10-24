@@ -20,6 +20,8 @@ module cps001.c.vm {
 
         enaBtnRes: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel: KnockoutObservable<boolean> = ko.observable(true);
+        
+        listEmpRestored: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor() {
             let self = this,
@@ -29,6 +31,8 @@ module cps001.c.vm {
             emp.id.subscribe(x => {
                 if (x) {
                     self.enableControl();
+                    nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.errors.clearAll();
 
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
@@ -36,17 +40,19 @@ module cps001.c.vm {
                     service.getDetail(x).done((data: IEmployee) => {
                         if (data) {
                             emp.id(iem.id);
-                            emp.code(iem.code);
-                            emp.name(iem.name);
+                            emp.code(data.code);
+                            emp.name(data.name);
 
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
                             $('#code').focus();
                             unblock();
+                            nts.uk.ui.errors.clearAll();
                         }
                     });
                 } else {
                     self.newMode();
+                    nts.uk.ui.errors.clearAll();
                 }
             });
 
@@ -106,7 +112,7 @@ module cps001.c.vm {
                 return;
             }
 
-            confirm({ messageId: "Msg_528" }).ifYes(() => {
+            confirm({messageId: "Msg_528"}, {buttonStyles: { yes: "proceed" } }).ifYes(() => {
                 let itemListLength = self.listEmployee().length,
                     indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; }),
                     objToRestore = {
@@ -129,6 +135,8 @@ module cps001.c.vm {
                     } else if (itemListLength - 1 > indexItemDelete) {
                         self.start(listItem[indexItemDelete + 1].id);
                     }
+                    
+                    self.listEmpRestored.push(emp.id);
 
                     unblock();
 
@@ -147,7 +155,7 @@ module cps001.c.vm {
 
                 });
 
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }
@@ -165,7 +173,7 @@ module cps001.c.vm {
             }
 
 
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+            confirm({ messageId: "Msg_1449" }).ifYes(() => {
                 let sid = emp.id;
                 block();
                 service.removedata(sid).done(() => {
@@ -187,12 +195,14 @@ module cps001.c.vm {
                 }).fail((mes) => {
                     unblock();
                 });
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }
 
         closeUp() {
+             let self = this;
+            setShared('CPS001C_RESTORE', self.listEmpRestored());
             close();
         }
 
@@ -220,6 +230,7 @@ module cps001.c.vm {
             emp.enableName(true);
             self.enaBtnRes(true);
             self.enaBtnDel(true);
+            nts.uk.ui.errors.clearAll();
         }
 
 

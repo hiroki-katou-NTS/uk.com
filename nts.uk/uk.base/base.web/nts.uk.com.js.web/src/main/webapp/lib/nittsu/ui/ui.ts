@@ -94,7 +94,7 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-
+        
         export function invisible() {
             let rect = calcRect();
 
@@ -176,11 +176,24 @@ module nts.uk.ui {
                             my: 'left top',
                             at: 'left bottom',
                             of: $label,
-                            collision: 'flip'
+                            collision: 'flipfit'
                         });
 
+                    if ($label.attr("disabled")) {
+                        let id = "#" + $label.attr("id");
+                        $(document).on('mouseleave.limitedlabel', id, () => {
+                            $(document).off('mouseleave.limitedlabel', id);
+                            $view.remove();
+                        });
+                        return;
+                    }
+                    
                     $label.bind('mouseleave.limitedlabel', () => {
                         $label.unbind('mouseleave.limitedlabel');
+                        $view.remove();
+                    });
+                    
+                    $label.on('remove', function() {
                         $view.remove();
                     });
                 }
@@ -188,7 +201,7 @@ module nts.uk.ui {
         });
         
         function isOverflow($label) {
-            if ($label[0].nodeName === "INPUT" 
+            if ( ($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")  
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
                 || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));
@@ -199,7 +212,14 @@ module nts.uk.ui {
                     }
                 }
                 
-                $div.html($label.val());
+                let text;
+                if ($label[0].nodeName === "DIV") { 
+                    text = $label.html();
+                } else {
+                    text = $label.val();
+                }
+                
+                $div.html(text);
                 let width = $div.outerWidth();
                 let scrollWidth = $div[0].scrollWidth;
                 $div.remove();

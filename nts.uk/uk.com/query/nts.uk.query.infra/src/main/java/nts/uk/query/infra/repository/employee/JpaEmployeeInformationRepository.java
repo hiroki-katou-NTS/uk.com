@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -46,7 +47,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND wh.strD <= :refDate"
 			+ " AND wh.endD >= :refDate";
 
-	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName"
+	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName, ji.bsymtJobInfoPK.jobId"
 			+ " FROM BsymtAffJobTitleHist ajh"
 			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId"
 			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId"
@@ -92,7 +93,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	public List<EmployeeInformation> find(EmployeeInformationQuery param) {
 		List<Object[]> persons = new ArrayList<>();
 
-		CollectionUtil.split(param.getEmployeeIds(), 1000, (subList) -> {
+		CollectionUtil.split(param.getEmployeeIds(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			persons.addAll(this.getEntityManager().createQuery(EMPLOYEE_QUERY).setParameter("listSid", subList)
 					.getResultList());
 		});
@@ -144,17 +145,19 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			List<Object[]> positions = this.getOptionalResult(param, POSITION_QUERY);
 			
 			employeeInfoList.keySet().forEach(empId -> {
-				Optional<Object[]> job = positions.stream().filter(wpl -> {
-					String id = (String) wpl[0];
+				Optional<Object[]> job = positions.stream().filter(pos -> {
+					String id = (String) pos[0];
 					return id.equals(empId);
 				}).findAny();
 				
 				if (job.isPresent()) {
 					String jobCode = (String) job.get()[1];
 					String jobName = (String) job.get()[2];
+					String jobId = (String) job.get()[3];
 					employeeInfoList.get(empId).setPosition(Optional.of(PositionModel.builder()
 							.positionCode(jobCode)
 							.positionName(jobName)
+							.positionId(jobId)
 							.build()));
 				}
 			});
@@ -225,7 +228,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	@SuppressWarnings("unchecked")
 	private List<Object[]> getOptionalResult(EmployeeInformationQuery param, String query) {
 		List<Object[]> results = new ArrayList<>();
-		CollectionUtil.split(param.getEmployeeIds(), 1000, (subList) -> {
+		CollectionUtil.split(param.getEmployeeIds(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			results.addAll(this.getEntityManager().createQuery(query).setParameter("listSid", subList)
 					.setParameter("refDate", param.getReferenceDate()).getResultList());
 		});

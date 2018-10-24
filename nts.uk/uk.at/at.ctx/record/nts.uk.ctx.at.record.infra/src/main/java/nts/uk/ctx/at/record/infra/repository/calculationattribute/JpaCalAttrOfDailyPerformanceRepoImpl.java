@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,8 +125,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			calcSet.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
 		}
 		if (domain.getLeaveEarlySetting() != null) {
-			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
-			calcSet.leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			calcSet.leaveLateSet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
 		}
 		calcSet.overTimeWorkId = overtimeCalc.overTimeWorkId;
 		calcSet.flexExcessTimeId = flexCalc.flexExcessTimeId;
@@ -200,8 +202,10 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 		return new CalAttrOfDailyPerformance(calc.krcstDaiCalculationSetPK.sid, calc.krcstDaiCalculationSetPK.ymd,
 				new AutoCalFlexOvertimeSetting(flex),
-				new AutoCalRaisingSalarySetting(calc.bonusPayNormalCalSet == 1 ? true : false,
-						calc.bonusPaySpeCalSet == 1 ? true : false),
+				new AutoCalRaisingSalarySetting(
+						calc.bonusPaySpeCalSet == 1 ? true : false,
+						calc.bonusPayNormalCalSet == 1 ? true : false
+						),
 				holiday, overtime,
 				new AutoCalcOfLeaveEarlySetting(calc.leaveEarlySet == 1 ? true : false,
 						calc.leaveLateSet  == 1 ? true : false),
@@ -267,9 +271,18 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void deleteByKey(String employeeId, GeneralDate baseDate) {
-		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
-				.setParameter("ymd", baseDate).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCST_DAI_CALCULATION_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", baseDate).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override

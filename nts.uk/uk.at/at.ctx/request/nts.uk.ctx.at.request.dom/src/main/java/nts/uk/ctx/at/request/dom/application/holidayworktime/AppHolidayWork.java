@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -67,6 +71,10 @@ public class AppHolidayWork extends AggregateRoot{
 	 * 就業時間外深夜時間
 	 */
 	private int holidayShiftNight;
+	/**
+	 * 時間外時間の詳細
+	 */
+	private Optional<AppOvertimeDetail> appOvertimeDetail;
 	
 	public AppHolidayWork(String companyID,
 						String appID,
@@ -84,8 +92,8 @@ public class AppHolidayWork extends AggregateRoot{
 						int holidayShiftNight){
 		this.companyID = companyID;
 		this.appID = appID;
-		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
-		this.workTimeCode = workTypeCode == null ? null : new WorkTimeCode(workTimeCode);
+		this.workTypeCode = Strings.isBlank(workTypeCode) ? null : new WorkTypeCode(workTypeCode);
+		this.workTimeCode = Strings.isBlank(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
 		this.workClock1 = HolidayWorkClock.validateTime(workClockStart1, workClockEnd1,goAtr1,backAtr1);
 		this.workClock2 = HolidayWorkClock.validateTime(workClockStart2, workClockEnd2,goAtr2,backAtr2);
 		this.divergenceReason = divergenceReason;

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,9 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -47,14 +51,18 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.shr.com.context.AppContexts;
 
 //@Stateless
 public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAttendanceItemConverter {
 
 	private final DailyRecordDto dailyRecord;
-
-	private DailyRecordToAttendanceItemConverterImpl() {
-		dailyRecord = new DailyRecordDto();
+	
+	private final Map<Integer, OptionalItem> optionalItems;
+	
+	private DailyRecordToAttendanceItemConverterImpl(Map<Integer, OptionalItem> optionalItems) {
+		this.dailyRecord = new DailyRecordDto();
+		this.optionalItems = optionalItems;
 	}
 
 	@Override
@@ -93,7 +101,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withAffiliationInfo(domain.getAffiliationInfor());
 		this.withBusinessType(domain.getBusinessType().orElse(null));
 		if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
-			this.withEmployeeErrors(domain.getEmployeeError().get(0));
+			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
 		this.withBreakTime(domain.getBreakTime());
@@ -111,8 +119,15 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		return this;
 	}
 	
-	public static DailyRecordToAttendanceItemConverter builder() {
-		return new DailyRecordToAttendanceItemConverterImpl();
+	public static DailyRecordToAttendanceItemConverter builder(OptionalItemRepository optionalItem) {
+		String compId = AppContexts.user().companyId();
+		return new DailyRecordToAttendanceItemConverterImpl(
+				optionalItem.findAll(compId).stream()
+					.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c)));
+	}
+	
+	public static DailyRecordToAttendanceItemConverter builder(Map<Integer, OptionalItem> optionalItems) {
+		return new DailyRecordToAttendanceItemConverterImpl(optionalItems);
 	}
 
 	public DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyPerformance domain) {
@@ -135,8 +150,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withEmployeeErrors(EmployeeDailyPerError domain) {
-		this.dailyRecord.withErrors(EmployeeDailyPerErrorDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain) {
+		this.dailyRecord.withErrors(domain.stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 		return this;
 	}
 
@@ -186,7 +201,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
-		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain));
+		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain, this.optionalItems));
 		return this;
 	}
 
@@ -236,5 +251,93 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	public DailyRecordToAttendanceItemConverter completed(){
 		return this;
+	}
+
+	@Override
+	public WorkInfoOfDailyPerformance workInfo() {
+		return this.dailyRecord.getWorkInfo().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
+	}
+
+	@Override
+	public CalAttrOfDailyPerformance calcAttr() {
+		return this.dailyRecord.getCalcAttr().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
+	}
+
+	@Override
+	public Optional<WorkTypeOfDailyPerformance> businessType() {
+		return this.dailyRecord.getBusinessType().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public AffiliationInforOfDailyPerfor affiliationInfo() {
+		return this.dailyRecord.getAffiliationInfo().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
+	}
+
+	@Override
+	public Optional<OutingTimeOfDailyPerformance> outingTime() {
+		return this.dailyRecord.getOutingTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public List<BreakTimeOfDailyPerformance> breakTime() {
+		return this.dailyRecord.getBreakTime().stream().map(d ->
+				d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<AttendanceTimeOfDailyPerformance> attendanceTime() {
+		return this.dailyRecord.getAttendanceTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork() {
+		return this.dailyRecord.getAttendanceTimeByWork().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<TimeLeavingOfDailyPerformance> timeLeaving() {
+		return this.dailyRecord.getTimeLeaving().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<ShortTimeOfDailyPerformance> shortTime() {
+		return this.dailyRecord.getShortWorkTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<SpecificDateAttrOfDailyPerfor> specificDateAttr() {
+		return this.dailyRecord.getSpecificDateAttr().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate() {
+		return this.dailyRecord.getAttendanceLeavingGate().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<AnyItemValueOfDaily> anyItems() {
+		return this.dailyRecord.getOptionalItem().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public List<EditStateOfDailyPerformance> editStates() {
+		return this.dailyRecord.getEditStates().stream().map(d ->
+						d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<TemporaryTimeOfDailyPerformance> temporaryTime() {
+		return this.dailyRecord.getTemporaryTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public Optional<PCLogOnInfoOfDaily> pcLogInfo() {
+		return this.dailyRecord.getPcLogInfo().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	}
+
+	@Override
+	public List<RemarksOfDailyPerform> remarks() {
+		return this.dailyRecord.getRemarks().stream().map(d ->
+						d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
 	}
 }

@@ -10,6 +10,12 @@
 	min-width: 1260px;
 }
 
+.licenseCheck{
+	margin: 0 140px;
+    min-width: 160px;
+    display: inline-block;
+}
+
 @media ( min-width : 1280px) {
 	#functions-area, #contents-area {
 		overflow-x: hidden;
@@ -79,6 +85,7 @@
 	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
 	white-space: pre;
+	line-height: 22px;
 }
 
 .bg-green .ui-iggrid-headertable th:last-child, .bg-green .ui-iggrid-tablebody td.ui-state-hover:last-child,

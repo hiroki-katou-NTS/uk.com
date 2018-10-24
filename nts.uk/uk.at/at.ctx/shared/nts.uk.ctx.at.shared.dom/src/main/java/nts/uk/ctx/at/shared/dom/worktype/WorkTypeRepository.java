@@ -5,12 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * The Interface WorkTypeRepository.
  */
 public interface WorkTypeRepository {
+	
+	Map<String , String> getCodeNameWorkType(String companyId, List<String> listWorktypeCode);
 
 	/**
 	 * Gets the possible work type.
@@ -20,7 +23,33 @@ public interface WorkTypeRepository {
 	 * @return the possible work type
 	 */
 	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
+	
+	/**
+	 * Gets the possible work type and order.
+	 *
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
+	 * @return the possible work type and order
+	 */
+	List<WorkTypeInfor> getPossibleWorkTypeAndOrder(String companyId, List<String> lstPossible);
+	
+	/**
+	 * Find all by order.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkTypeInfor> findAllByOrder(String companyId);
 
+	/**
+	 * Gets the possible work type with join.
+	 *
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
+	 * @return the possible work type
+	 */
+	List<WorkType> getPossibleWorkTypeV2(String companyId, List<String> lstPossible);
+	
 	/**
 	 * Find by company id.
 	 *
@@ -103,13 +132,13 @@ public interface WorkTypeRepository {
 	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
 	
 	/**
-	 * Find work type set close atr.
+	 * Find work type set close atr and deprecateAtr.
 	 *
 	 * @param companyId the company id
 	 * @param closeAtr the close atr
 	 * @return the list
 	 */
-	List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr);
+	List<WorkTypeSet> findWorkTypeSetCloseAtrDeprecateAtr(String companyId, int closeAtr, int deprecateAtr);
 	
 	/**
 	 * Adds the.

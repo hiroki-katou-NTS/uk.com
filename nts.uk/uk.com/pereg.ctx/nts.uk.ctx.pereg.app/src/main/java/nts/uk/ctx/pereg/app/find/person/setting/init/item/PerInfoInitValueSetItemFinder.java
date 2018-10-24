@@ -47,11 +47,17 @@ public class PerInfoInitValueSetItemFinder {
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
+	
+	private final static String nameStartDate = "開始日";
+	
+	private final static String nameEndDate = "終了日";
+	
 
-	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
+
+	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId, String baseDate) {
 		List<PerInfoInitValueSetItemDetail> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null && !item.isEmpty()) {
-			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item);
+			List<PerInfoInitValueSettingItemDto> itemDto = this.convertItemDtoLst(item, baseDate);
 			return itemDto;
 		}
 
@@ -75,6 +81,7 @@ public class PerInfoInitValueSetItemFinder {
 		} else {
 			itemList.addAll(this.createItemTimePointOfCS00070());
 		}
+		
 		List<ItemRequiredBackGroud> itemRequired = new ArrayList<>();
 		List<ItemDto> itemDto = new ArrayList<>();
 		if (item != null) {
@@ -82,6 +89,15 @@ public class PerInfoInitValueSetItemFinder {
 				item = item.stream().filter(c -> {
 					return !itemList.contains(c.getItemCode());
 				}).collect(Collectors.toList());
+			} else if(ctgCode.equals("CS00003")) {
+				item = item.stream().filter(c -> {
+					return !c.getItemCode().equals("IS00020");
+				}).collect(Collectors.toList());
+			} else if(ctgCode.equals("CS00001")) {
+				item = item.stream().filter(c -> {
+					return !c.getItemCode().equals("IS00001");
+				}).collect(Collectors.toList());
+				
 			}
 			this.setRequiredBackGround(item, ctg, itemDto, itemRequired);
 			ctgState.setItemLst(itemDto);
@@ -94,7 +110,7 @@ public class PerInfoInitValueSetItemFinder {
 		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItemDetail> items) {
+	public List<PerInfoInitValueSettingItemDto> convertItemDtoLst(List<PerInfoInitValueSetItemDetail> items, String baseDate) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<PerInfoInitValueSettingItemDto> itemDto = new ArrayList<>();
 		// アルゴリズム「勤務開始終了時刻を活性にするかチェックする」
@@ -149,25 +165,25 @@ public class PerInfoInitValueSetItemFinder {
 				String selectionId = item.getSelectionItemId();
 				this.setCompareItemCode(item, itemFilter, itemParents, dto, selectionId, isOld, isEven, ctgCode);
 				if (ctgCode.equals("CS00070")) {
-					if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld
-							|| item.getItemName().equals("開始日")) {
+					if (((item.getItemName().equals(nameEndDate) && isContinious)) || isEven || isOld
+							|| item.getItemName().equals(nameStartDate)) {
 						dto.setDisableCombox(true);
 					}
 				} else {
 
-					if (((item.getItemName().equals("終了日") && isContinious)) || isEven || isOld) {
+					if (((item.getItemName().equals(nameEndDate) && isContinious)) || isEven || isOld) {
 						dto.setDisableCombox(true);
 					}
 				}
-				return getInitItemDto(dto, personEmployeeType, ctgCode);
+				return getInitItemDto(dto, personEmployeeType, ctgCode, baseDate);
 			}).collect(Collectors.toList());
 		} else {
 			itemDto = items.stream().map(c -> {
 				PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-				if (c.getItemName().equals("終了日") && isContinious) {
+				if (c.getItemName().equals(nameEndDate) && isContinious) {
 					dto.setDisableCombox(true);
 				}
-				return getInitItemDto(dto, personEmployeeType, ctgCode);
+				return getInitItemDto(dto, personEmployeeType, ctgCode, baseDate);
 			}).collect(Collectors.toList());
 			;
 		}
@@ -177,18 +193,18 @@ public class PerInfoInitValueSetItemFinder {
 	}
 
 	private PerInfoInitValueSettingItemDto getInitItemDto(PerInfoInitValueSettingItemDto dto,
-			PersonEmployeeType personEmployeeType, String categoryCode) {
+			PersonEmployeeType personEmployeeType, String categoryCode, String baseDate) {
 		int dataType = dto.getDataType();
 		if (dataType == DataTypeValue.SELECTION.value || dataType == DataTypeValue.SELECTION_BUTTON.value
 				|| dataType == DataTypeValue.SELECTION_RADIO.value) {
 			boolean isDataType6 = dataType == DataTypeValue.SELECTION.value;
-			dto.setSelection(getSelectionItem(dto, personEmployeeType, isDataType6, categoryCode));
+			dto.setSelection(getSelectionItem(dto, personEmployeeType, isDataType6, categoryCode, baseDate.equals("null")? GeneralDate.today(): GeneralDate.fromString(baseDate, "yyyy-MM-dd")));
 		}
 		return dto;
 	}
 
 	private List<ComboBoxObject> getSelectionItem(PerInfoInitValueSettingItemDto dto,
-			PersonEmployeeType personEmployeeType, boolean isDataType6, String categoryCode) {
+			PersonEmployeeType personEmployeeType, boolean isDataType6, String categoryCode, GeneralDate baseDate) {
 		SelectionItemDto selectionItemDto = null;
 		ReferenceTypes refenceType = EnumAdaptor.valueOf(dto.getSelectionItemRefType(), ReferenceTypes.class);
 		switch (refenceType) {
@@ -205,12 +221,12 @@ public class PerInfoInitValueSetItemFinder {
 					dto.getSelectionItemRefType());
 			break;
 		}
-		return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
-				true, personEmployeeType, isDataType6, categoryCode);
+		return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDate,
+				true, personEmployeeType, isDataType6, categoryCode, null, true);
 	}
 
 	public List<PerInfoInitValueSettingItemDto> filterItemTimePointOfCS00020(List<PerInfoInitValueSetItemDetail> items,
-			String categorycode) {
+			String categorycode, String baseDate) {
 		String ctgCode = items.get(0).getCtgCode();
 		List<String> itemList = this.createItemTimePointOfCS00020();
 
@@ -243,7 +259,7 @@ public class PerInfoInitValueSetItemFinder {
 
 		return filteredItems.stream().map(c -> {
 			PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType(), categorycode);
+			return getInitItemDto(dto, perInfoCategory.get().getPersonEmployeeType(), categorycode, baseDate);
 		}).collect(Collectors.toList());
 	}
 
@@ -326,9 +342,9 @@ public class PerInfoInitValueSetItemFinder {
 	private void setRequiredBackGround(List<PerInfoInitValueSetItemDetail> item, PersonInfoCategory ctg,
 			List<ItemDto> itemDto, List<ItemRequiredBackGroud> itemRequired) {
 		item.stream().forEach(c -> {
-			boolean checkDisable = c.getItemName().equals("終了日")
+			boolean checkDisable = c.getItemName().equals(nameEndDate)
 					&& (ctg != null ? (ctg.getCategoryType() == CategoryType.CONTINUOUSHISTORY ? true : false) : false);
-			boolean checkDisableStart = c.getItemName().equals("開始日") && c.getCtgCode().equals("CS00070");
+			boolean checkDisableStart = c.getItemName().equals(nameStartDate) && c.getCtgCode().equals("CS00070");
 			itemDto.add(new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), false, c.getIsRequired()));
 			ItemRequiredBackGroud itemNamebackGroud = new ItemRequiredBackGroud();
 			ItemRequiredBackGroud disablebackGroud = new ItemRequiredBackGroud();

@@ -1,27 +1,28 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.employee.EmployeeWtSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 
@@ -52,32 +53,31 @@ public class ManagePerCompanySet {
 	//加給利用単位
 	Optional<BPUnitUseSetting> bpUnitSetting;
 	
-	//労働条件
 	@Setter
-	Optional<WorkingConditionItem> personInfo;
-	//法定労働
-	@Setter
-	DailyUnit dailyUnit;
-	
-	@Setter
-	MasterShareContainer shareContainer;
+	MasterShareContainer<String> shareContainer;
 	
 	//任意項目
-	@Setter
 	List<OptionalItem> optionalItems;
 	
 	// 任意項目計算式
-	@Setter
 	List<Formula> formulaList;
 	
 	//適用する雇用条件
-	@Setter
 	List<EmpCondition> empCondition;
 	
 	//0時跨ぎの設定
 	Optional<ZeroTime> zeroTime;
 	
+	@Setter
+	List<PersonnelCostSettingImport> personnelCostSettings;
 
+	@Setter
+	Optional<UpperLimitTotalWorkingHour> upperControl;
+	
+	Optional<UsageUnitSetting> usageSetting;
+	
+	Optional<EmployeeWtSetting>  employeeWTSetting;
+	
 	public ManagePerCompanySet(Map<String, AggregateRoot> holidayAddition,
 			Optional<HolidayAddtionSet> holidayAdditionPerCompany,
 			Optional<CalculateOfTotalConstraintTime> calculateOfTotalCons,
@@ -85,7 +85,13 @@ public class ManagePerCompanySet {
 			List<DivergenceTime> divergenceTime,
 			List<ErrorAlarmWorkRecord> errorAlarm,
 			Optional<BPUnitUseSetting> bpUnitSetting,
-			Optional<ZeroTime> zeroTime) {
+			List<OptionalItem> optionalItems,
+			List<Formula> formulaList,
+			List<EmpCondition> empCondition,
+			Optional<ZeroTime> zeroTime,
+			Optional<UpperLimitTotalWorkingHour> upperControl,
+			Optional<UsageUnitSetting> usageSetting,
+			Optional<EmployeeWtSetting>  employeeWTSetting) {
 		super();
 		this.holidayAddition = holidayAddition;
 		this.holidayAdditionPerCompany = holidayAdditionPerCompany;
@@ -94,9 +100,13 @@ public class ManagePerCompanySet {
 		this.divergenceTime = divergenceTime;
 		this.errorAlarm = errorAlarm;
 		this.bpUnitSetting = bpUnitSetting;
-		this.optionalItems = new ArrayList<>();
-		this.formulaList = new ArrayList<>();
-		this.empCondition = new ArrayList<>();
+		this.optionalItems = optionalItems;
+		this.formulaList = formulaList;
+		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
+		this.personnelCostSettings = Collections.emptyList();
+		this.upperControl = upperControl;
+		this.usageSetting = usageSetting;
+		this.employeeWTSetting = employeeWTSetting;
 	}
 }

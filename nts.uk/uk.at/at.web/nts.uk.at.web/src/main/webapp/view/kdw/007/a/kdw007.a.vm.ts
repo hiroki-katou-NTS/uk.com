@@ -1,6 +1,8 @@
 module nts.uk.at.view.kdw007.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     enum ScreenMode {
         Daily = 0,
@@ -33,9 +35,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KDW007_6"), key: 'code', width: 45 },
-            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 }
+            { headerText: nts.uk.resource.getText("KDW007_7"), key: 'name', width: 280 ,formatter: _.escape}
         ]);
-        lstErrorAlarm: KnockoutObservableArray<any> = ko.observableArray([]);
         lstFilteredData: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedErrorAlarm: KnockoutObservable<any>;
         selectedErrorAlarmCode: KnockoutObservable<string> = ko.observable(null);
@@ -65,19 +66,19 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: 2, name: "残業申請（早出・通常）" },
             { code: 3, name: "休暇申請" },
             { code: 4, name: "勤務変更申請" },
-            { code: 5, name: "出張申請" },
+//            { code: 5, name: "出張申請" },
             { code: 6, name: "直行直帰申請" },
             { code: 7, name: "休出時間申請" },
-            { code: 8, name: "打刻申請（外出許可）" },
-            { code: 9, name: "打刻申請（出退勤漏れ）" },
-            { code: 10, name: "打刻申請（打刻取消）" },
-            { code: 11, name: "打刻申請（レコーダイメージ）" },
-            { code: 12, name: "打刻申請（その他）" },
-            { code: 13, name: "時間年休申請" },
-            { code: 14, name: "遅刻早退取消申請" },
+//            { code: 8, name: "打刻申請（外出許可）" },
+//            { code: 9, name: "打刻申請（出退勤漏れ）" },
+//            { code: 10, name: "打刻申請（打刻取消）" },
+//            { code: 11, name: "打刻申請（レコーダイメージ）" },
+//            { code: 12, name: "打刻申請（その他）" },
+//            { code: 13, name: "時間年休申請" },
+//            { code: 14, name: "遅刻早退取消申請" },
             { code: 15, name: "振休振出申請" },
-            { code: 16, name: "連続出張申請" },
-            { code: 17, name: "３６協定時間申請" }
+//            { code: 16, name: "連続出張申請" },
+//            { code: 17, name: "３６協定時間申請" }
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -85,33 +86,50 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
 
         sideBar: KnockoutObservable<number>;
-        constructor(isDaily) {
+        codeToSelect: KnockoutObservable<string> = ko.observable(null);
+        
+        constructor(isMonthly) {
             let self = this;
             self.sideBar = ko.observable(2);
-            if (isDaily) { //monthly
+            if (isMonthly) { //monthly
                 self.screenMode(ScreenMode.Monthly);
             }
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
             self.showTypeAtr.subscribe((val) => {
-                if (self.lstErrorAlarm().length > 0) {
-                    //fix bug 98671
-                    //                    if (val == 0) {
-                    //                        self.lstFilteredData(self.lstErrorAlarm());
-                    //                    } else 
-                    if (val == 0) {
-                        self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 0; }));
-                    } else if (val == 1) {
-                        self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 1; }));
-                        if (self.screenMode() == ScreenMode.Daily) {
-                            self.updateTab();
+                nts.uk.ui.block.invisible();
+                service.getAll(val).done((lstData: Array<any>) => {
+                    if (lstData && lstData.length > 0) {
+                        let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
+                        self.lstFilteredData(sortedData);
+                        if (self.codeToSelect() == null) {
+                            if (self.selectedErrorAlarmCode() == self.lstFilteredData()[0].code)
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                            else 
+                                self.selectedErrorAlarmCode(self.lstFilteredData()[0].code);
+                        } else {
+                            if (self.selectedErrorAlarmCode() == self.codeToSelect())
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                            else 
+                                self.selectedErrorAlarmCode(self.codeToSelect());
                         }
+                        self.isNewMode(false);
+                        self.selectedTab('tab-1');
+                    } else {
+                        self.lstFilteredData([]);
+                        self.selectedErrorAlarmCode(null);
+                        self.reSetData(self.selectedErrorAlarm(), null);
+                        self.isNewMode(true);
+                        self.selectedTab('tab-1');
                     }
-                }
-                self.selectedErrorAlarmCode(self.lstFilteredData()[0].code);
+                    if (val == 1 && self.screenMode() == ScreenMode.Daily) {
+                        self.updateTab();
+                    }
+                    nts.uk.ui.block.clear();
+                });
             });
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
-                    let foundItem: ErrorAlarmWorkRecord = _.find(self.lstErrorAlarm(), (item) => {
+                    let foundItem: ErrorAlarmWorkRecord = _.find(self.lstFilteredData(), (item) => {
                         return item.code == code;
                     });
                     if (foundItem) {
@@ -162,27 +180,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.screenMode.valueHasMutated();
         }
 
-        isExistedCode() {
-            let self = this;
-            let foundItem = _.find(self.lstErrorAlarm(), (item) => {
-                return item.code == "U" + self.selectedErrorAlarm().code();
-            });
-            if (foundItem) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
             nts.uk.ui.errors.clearAll();
             if (self.screenMode() == ScreenMode.Daily) {
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                block.invisible();
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
                 service.findMonthlyCondition(foundItem.errorAlarmCheckID, foundItem.code).done((data) => {
                     self.resetMonthlyConditon(self.selectedErrorAlarm(), data);
+                }).always(() => {
+                    block.clear();
                 });
             }
             self.selectedTab('tab-1');
@@ -193,7 +202,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-
             if (self.screenMode() == ScreenMode.Daily) {
                 self.sideBar(1);
                 service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
@@ -202,38 +210,33 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         self.listRemarkColumnNo(lstItemCode);
                     }
                 });
-                service.getAll().done((lstData: Array<any>) => {
+                service.getAll(self.showTypeAtr()).done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
-                        self.lstErrorAlarm(sortedData);
                         self.selectedErrorAlarmCode(code !== null ? code : sortedData[0].code);
                         self.isNewMode(false);
                         self.selectedTab('tab-1');
                     } else {
-                        self.lstErrorAlarm([]);
                         self.lstFilteredData([]);
                         self.selectedErrorAlarmCode(null);
                         self.reSetData(self.selectedErrorAlarm(), null);
                         self.isNewMode(true);
                         self.selectedTab('tab-1');
                     }
-
-
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                $('#pg-name').text('KDW007A ' + nts.uk.resource.getText("KDW007_41"));
                 self.sideBar(2);
                 service.getAllMonthlyCondition().done((lstData: Array<any>) => {
                     if (lstData && lstData.length > 0) {
                         let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
                         self.lstFilteredData(sortedData);
-                        self.lstErrorAlarm(sortedData);
                         self.selectedErrorAlarmCode(code !== null ? code : sortedData[0].code);
                         self.isNewMode(false);
                     } else {
-                        self.lstErrorAlarm([]);
                         self.lstFilteredData([]);
                         self.selectedErrorAlarmCode(null);
                         self.reSetData(self.selectedErrorAlarm(), null);
@@ -298,6 +301,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -309,6 +320,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -359,6 +378,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         updateTab() {
             let self = this;
+            self.tabs()[0].visible(false);
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
@@ -369,9 +389,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         update() {
             let self = this;
+            
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                var data = ko.mapping.toJS(self.selectedErrorAlarm());
+                let data = ko.mapping.toJS(self.selectedErrorAlarm());
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;
@@ -400,38 +421,67 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     item.countableAddAtdItems = _.values(item.countableAddAtdItems);
                     item.countableSubAtdItems = _.values(item.countableSubAtdItems);
                 });
-                if (self.isNewMode() && self.isExistedCode()) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_3" }).then(() => {
-                        $("#errorAlarmWorkRecordCode").focus();
+                ko.utils.extend(data, {newMode: self.isNewMode() ? 1 : 0});
+                if (self.screenMode() == ScreenMode.Daily) {
+                    nts.uk.ui.block.invisible();
+                    service.update(data).done(() => {
+                        self.codeToSelect(data.code);
+                        if (data.fixedAtr == 1)
+                            self.showTypeAtr.valueHasMutated();
+                        else {
+                            if (self.showTypeAtr() == 0)
+                                self.showTypeAtr.valueHasMutated();
+                            else
+                                self.showTypeAtr(0);
+                        }
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            if (self.lstFilteredData().length > 0) {
+                                $("#errorAlarmWorkRecordName").focus();
+                            } else {
+                                $("#errorAlarmWorkRecordCode").focus();
+                            }
+                        });
+                    }).fail(err => {
+                        nts.uk.ui.dialog.alert(err).then(() => {
+                            $("#errorAlarmWorkRecordCode").focus();
+                        });
                     });
-                } else {
-                    if (self.screenMode() == ScreenMode.Daily) {
-                        service.update(data).done(() => {
+                    nts.uk.ui.block.clear();
+                } else if (self.screenMode() == ScreenMode.Monthly) {
+                    nts.uk.ui.block.invisible();
+                    service.updateMonthlyCondition(data).done(() => {
+                        self.codeToSelect(data.code);
+                        service.getAllMonthlyCondition().done((lstData: Array<any>) => {
+                            if (lstData && lstData.length > 0) {
+                                let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
+                                self.lstFilteredData(sortedData);
+                                self.selectedErrorAlarmCode.valueHasMutated();
+                                self.isNewMode(false);
+                            } else {
+                                self.lstFilteredData([]);
+                                self.selectedErrorAlarmCode(null);
+                                self.reSetData(self.selectedErrorAlarm(), null);
+                                self.isNewMode(true);
+                            }
+                            nts.uk.ui.block.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(self.isNewMode() ? "U" + data.code : data.code).then(() => {
-                                    self.showTypeAtr(0);
-                                });
-                                if (self.lstErrorAlarm().length > 0) {
+                                if (self.lstFilteredData().length > 0) {
                                     $("#errorAlarmWorkRecordName").focus();
                                 } else {
                                     $("#errorAlarmWorkRecordCode").focus();
                                 }
                             });
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alert(error);
+                        }).always(() => {
+                            block.clear();
                         });
-                    } else if (self.screenMode() == ScreenMode.Monthly) {
-                        service.updateMonthlyCondition(data).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.startPage(self.isNewMode() ? "U" + data.code : data.code).then(() => {
-                                    self.showTypeAtr(0);
-                                });
-                                if (self.lstErrorAlarm().length > 0) {
-                                    $("#errorAlarmWorkRecordName").focus();
-                                } else {
-                                    $("#errorAlarmWorkRecordCode").focus();
-                                }
-                            });
+                    }).fail(err => {
+                        nts.uk.ui.dialog.alert(err).then(() => {
+                            $("#errorAlarmWorkRecordCode").focus();
                         });
-                    }
+                    });
+                    nts.uk.ui.block.clear();
                 }
             }
 
@@ -442,10 +492,22 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let data = self.selectedErrorAlarm().code();
             if (self.screenMode() == ScreenMode.Daily) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
+                    let idx = _.findIndex(self.lstFilteredData(), e => {return e.code == data});
+                    if (self.lstFilteredData().length - 1 <= idx) {
+                        if (self.lstFilteredData().length < 2)
+                            self.codeToSelect(null);
+                        else 
+                            self.codeToSelect(self.lstFilteredData()[idx - 1].code);
+                    } else {
+                        self.codeToSelect(self.lstFilteredData()[idx + 1].code);
+                    }
                     service.remove(data).done(() => {
+                        if (self.showTypeAtr() == 0)
+                            self.showTypeAtr.valueHasMutated();
+                        else
+                            self.showTypeAtr(0);
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(null);
-                            if (self.lstErrorAlarm().length > 0) {
+                            if (self.lstFilteredData().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
                                 $("#errorAlarmWorkRecordCode").focus();
@@ -455,14 +517,36 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 });
             } else if (self.screenMode() == ScreenMode.Monthly) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
+                    let idx = _.findIndex(self.lstFilteredData(), e => {return e.code == data});
+                    if (self.lstFilteredData().length - 1 <= idx) {
+                        if (self.lstFilteredData().length < 2)
+                            self.codeToSelect(null);
+                        else 
+                            self.codeToSelect(self.lstFilteredData()[idx - 1].code);
+                    } else {
+                        self.codeToSelect(self.lstFilteredData()[idx + 1].code);
+                    }
                     service.removeMonthlyCondition(data).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.startPage(null);
-                            if (self.lstErrorAlarm().length > 0) {
-                                $("#errorAlarmWorkRecordName").focus();
+                        service.getAllMonthlyCondition().done((lstData: Array<any>) => {
+                            if (lstData && lstData.length > 0) {
+                                let sortedData: Array<any> = _.orderBy(lstData, ['code'], ['asc']);
+                                self.lstFilteredData(sortedData);
+                                self.selectedErrorAlarmCode(self.codeToSelect() !== null ? self.codeToSelect() : sortedData[0].code);
+                                self.isNewMode(false);
                             } else {
-                                $("#errorAlarmWorkRecordCode").focus();
+                                self.lstFilteredData([]);
+                                self.selectedErrorAlarmCode(null);
+                                self.reSetData(self.selectedErrorAlarm(), null);
+                                self.isNewMode(true);
                             }
+                            nts.uk.ui.block.clear();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                if (self.lstFilteredData().length > 0) {
+                                    $("#errorAlarmWorkRecordName").focus();
+                                } else {
+                                    $("#errorAlarmWorkRecordCode").focus();
+                                }
+                            });
                         });
                     });
                 });
@@ -473,7 +557,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         openSelectAtdItemColorDialog() {
             let self = this;
             //Open dialog KDL021
+            nts.uk.ui.block.invisible();
             service.getAllAttendanceItem().done((lstItem) => {
+                nts.uk.ui.block.clear();
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
                 // example wait
@@ -1166,7 +1252,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(null);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(null);
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(1);
             self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
@@ -1196,13 +1282,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.displayLeftOperator("");
             self.displayRightOperator("");
             switch (self.compareOperator()) {
-                case 0:
+                case 1:
                     self.displayLeftOperator("＝");
                     break;
-                case 1:
+                case 0:
                     self.displayLeftOperator("≠");
                     break;
-                case 2:
+                case 5:
                     self.displayLeftOperator("＞");
                     break;
                 case 3:
@@ -1211,7 +1297,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 case 4:
                     self.displayLeftOperator("＜");
                     break;
-                case 5:
+                case 2:
                     self.displayLeftOperator("≦");
                     break;
                 case 6:
@@ -1241,8 +1327,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     // Compare with a range
                     let rawStartValue = self.compareStartValue();
                     let rawEndValue = self.compareEndValue();
-                    let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
-                    let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
+                    let textDisplayLeftCompare: string = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawStartValue.toString() : nts.uk.time.parseTime(parseInt(rawStartValue.toString()), true).format();
+                    let textDisplayRightCompare: string = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawEndValue.toString() : nts.uk.time.parseTime(parseInt(rawEndValue.toString()), true).format();
                     self.displayLeftCompare(textDisplayLeftCompare);
                     self.displayRightCompare(textDisplayRightCompare);
                 } else {
@@ -1250,7 +1336,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.conditionType() === 0) {
                         // If is compare with a fixed value
                         let rawValue = self.compareStartValue();
-                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+                        let textDisplayLeftCompare = rawValue == null ? "" : (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
                         self.displayLeftCompare(textDisplayLeftCompare);
                         self.displayRightCompare("");
                     } else {
@@ -1357,14 +1443,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, false) ? param.compareStartValue : null);
-            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, false) ? param.compareEndValue : null);
-            self.compareOperator(param ? param.compareOperator : 0);
+            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, true) ? param.compareStartValue : null);
+            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, true) ? param.compareEndValue : null);
+            self.compareOperator(param ? param.compareOperator : 1);
             self.setTextDisplay();
         }
     }
 
-    export class MonthlyCorrectCondition {
-
-    }
 }

@@ -142,6 +142,11 @@ module nts.uk.at.view.kmk003.a {
                     this.shiftTwo = TimezoneModel.createShiftTwo();
                 }
 
+                getShiftTwo(): TimezoneModel {
+                    let self = this;
+                    return self.shiftTwo;
+                }
+                
                 updateData(data: PrescribedTimezoneSettingDto) {
                     this.morningEndTime(data.morningEndTime);
                     this.afternoonStartTime(data.afternoonStartTime);

@@ -22,8 +22,8 @@ import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.MonthlyCalculationByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.TotalWorkingTimeByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.anyaggrperiod.AnyAggrFrameCode;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
@@ -629,7 +629,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 		}
 		
 		// 月別実績の勤務時間
-		val vtWorkTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
+		val vtWorkTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT.of(
 				BonusPayTimeOfMonthly.of(
 						this.krcdtAnpAggrBnspyTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				GoOutOfMonthly.of(
@@ -780,7 +780,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 		this.calcTotalHolidayWorkTime = holidayWorkTime.getTotalHolidayWorkTime().getCalcTime().v();
 		this.beforeHolidayWorkTime = holidayWorkTime.getBeforeHolidayWorkTime().v();
 		this.totalTransferHdwkTime = holidayWorkTime.getTotalTransferTime().getTime().v();
-		this.calcTotalTransferHdwkTime = holidayWorkTime.getTotalHolidayWorkTime().getCalcTime().v();
+		this.calcTotalTransferHdwkTime = holidayWorkTime.getTotalTransferTime().getCalcTime().v();
 		
 		val vacationUseTime = aggregateTime.getVacationUseTime();
 		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getUseTime().v();

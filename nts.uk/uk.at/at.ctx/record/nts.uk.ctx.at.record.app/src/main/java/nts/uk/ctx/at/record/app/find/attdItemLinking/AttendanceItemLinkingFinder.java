@@ -36,10 +36,13 @@ public class AttendanceItemLinkingFinder {
 	private OptionalItemRepository optItemRepo;
 
 	/** The Constant MONTHLY_FRAME_TYPE. */
-	private static final int MONTHLY_FRAME_TYPE = 1;
+	private static final int MONTHLY_FRAME_TYPE = 2;
 
 	/** The Constant DAILY_FRAME_TYPE. */
-	private static final int DAILY_FRAME_TYPE = 3;
+	private static final int DAILY_FRAME_TYPE = 1;
+
+	/** The Constant FRAME_CATEGORY_OPTIONAL_ITEM. */
+	private static final int FRAME_CATEGORY_OPTIONAL_ITEM = 8;
 
 	/**
 	 * Find by any item.
@@ -62,7 +65,18 @@ public class AttendanceItemLinkingFinder {
 		// return list AttendanceItemLinking after filtered by list optional item.
 		return this.frameAdapter.getByAnyItem(convertToFrameType(request.getPerformanceAtr())).stream()
 				.filter(item -> filteredBySelectableList.contains(item.getFrameNo())).collect(Collectors.toList());
+	}
 
+	/**
+	 * Find attendance by optional item.
+	 *
+	 * @param optionalItemNos the optional item nos
+	 * @param performanceAtr the performance atr
+	 * @return the list
+	 */
+	public List<FrameNoAdapterDto> findAttendanceByOptionalItem(List<Integer> optionalItemNos, int performanceAtr) {
+		return this.frameAdapter.findByFrameNos(optionalItemNos, this.convertToFrameType(performanceAtr),
+				FRAME_CATEGORY_OPTIONAL_ITEM);
 	}
 
 	/**

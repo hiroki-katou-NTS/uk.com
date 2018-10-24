@@ -23,4 +23,10 @@ public class AutoCalRaisingSalarySettingDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = SPECIFIC)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private int specificSalaryCalSetting;
+
+	@Override
+	protected AutoCalRaisingSalarySettingDto clone() {
+		return new AutoCalRaisingSalarySettingDto(salaryCalSetting, specificSalaryCalSetting);
+	}
+	
 }

@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.cancelactuallock.Can
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess.MonthlyClosureUpdateLogProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr.MonthlyUpdateMgr;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -46,7 +46,7 @@ public class ExecuteMonthlyClosureCommandHandler extends AsyncCommandHandler<Mon
 		for (String empId : params.getListEmployeeId()) {
 			monthlyUpdateService.processEmployee(params.getMonthlyClosureUpdateLogId(), empId, params.getClosureId(),
 					new YearMonth(params.getCurrentMonth()),
-					new ClosureDate(params.getClosureDay(), params.isLastDayOfMonth()),
+					new ClosureDate(params.getClosureDay(), params.getIsLastDayOfMonth()),
 					new DatePeriod(params.getPeriodStart(), params.getPeriodEnd()));
 			dataSetter.updateData("processed", ++count);
 		}

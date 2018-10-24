@@ -1,7 +1,13 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyTarget;
+import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK;
 
@@ -9,52 +15,52 @@ import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK;
  * The Class JpaMasterCopyDataSetMemento.
  */
 public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
-
-	/** The entity. */
-	private SspmtMastercopyData entity;
+	private SspmtMastercopyCategory categoryEntity;
+	
+	/** The data entities. */
+	private List<SspmtMastercopyData> dataEntities;
 
 	/**
 	 * Instantiates a new jpa master copy data set memento.
 	 *
-	 * @param entity
+	 * @param dataEntites
 	 *            the entity
 	 */
-	public JpaMasterCopyDataSetMemento(SspmtMastercopyData entity) {
-		this.entity = entity;
+	public JpaMasterCopyDataSetMemento(SspmtMastercopyCategory categoryEntity,List<SspmtMastercopyData> dataEntites) {
+		this.categoryEntity = categoryEntity;
+		this.dataEntities = dataEntites;
+		
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategorySetMemento#
-	 * setMasterCopyId(java.lang.String)
+	 * @see
+	 * nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento#setTargetTable(
+	 * nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo)
 	 */
 	@Override
-	public void setMasterCopyId(String masterCopyId) {
-		SspmtMastercopyDataPK id = this.entity.getId();
-		if (id == null) {
-			id = new SspmtMastercopyDataPK(masterCopyId, null);
-			this.entity.setId(id);
-		}
-		this.entity.getId().setMasterCopyId(masterCopyId);
-
+	public void setTargetTable(List<TargetTableInfo> targetTables) {
+		int categoryNo = this.categoryEntity.getCategoryNo();
+		this.dataEntities =  targetTables.stream().map(e -> {
+			SspmtMastercopyDataPK pk = new SspmtMastercopyDataPK(categoryNo, e.getTableNo().v());
+			return new SspmtMastercopyData(pk,new BigDecimal(e.getCopyAttribute().value), e.getKey().getKEY1().v(), e.getKey().getKEY2().get().v(),
+					e.getKey().getKEY3().get().v(), e.getKey().getKEY4().get().v(), e.getKey().getKEY5().get().v(), e.getTableName().v());
+		}).collect(Collectors.toList());
 	}
 
-	/**
-	 * Sets the master copy target.
-	 *
-	 * @param masterCopyTarget
-	 *            the new master copy target
-	 */
 	@Override
-	public void setMasterCopyTarget(MasterCopyTarget masterCopyTarget) {
-		SspmtMastercopyDataPK id = this.entity.getId();
-		if (id == null) {
-			id = new SspmtMastercopyDataPK(null, masterCopyTarget.toString());
-			this.entity.setId(id);
-		}
-		this.entity.getId().setMasterCopyTarget(masterCopyTarget.toString());
-
+	public void setCategoryNo(MasterCopyCategoryNo categoryNo) {
+		//categoryEntity
+		this.categoryEntity.setCategoryNo(categoryNo.v());
+		//dataEntites
+		this.dataEntities.stream().forEach(e -> {
+			SspmtMastercopyDataPK pk = e.getId();
+			if(pk==null) {
+				pk = new SspmtMastercopyDataPK(categoryNo.v(), null);
+			}
+			e.setId(pk);
+		});
 	}
 
 }

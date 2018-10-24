@@ -33,19 +33,24 @@ public enum StandardMonth {
 	SEVEN_MONTH_AGO(7, "7ヶ月前"),
 	
 	/** 8ヶ月*/
-	EIGHT_MONTH(8, "8ヶ月"),
+//	EIGHT_MONTH(8, "8ヶ月"),
 	
 	/** 9ヶ月*/
-	NINE_MONTH(9, "9ヶ月"),
+	//NINE_MONTH(9, "9ヶ月"),
 	
 	/** 10ヶ月*/
-	TEN_MONTH(10, "10ヶ月"),
+//	TEN_MONTH(10, "10ヶ月"),
 	
 	/** 11ヶ月*/
-	ELEVEN_MONTH(11, "11ヶ月"),
+//	ELEVEN_MONTH(11, "11ヶ月"),
 	
 	/** 12ヶ月*/
-	TWELVE_MONTH(12, "12ヶ月");
+//	TWELVE_MONTH(12, "12ヶ月");
+	EIGHT_MONTH_AGO(8, "8ヶ月前"),
+	NINE_MONTH_AGO(9, "9ヶ月前"),
+	TEN_MONTH_AGO(10, "10ヶ月前"),
+	ELEVEN_MONTH_AGO(11, "11ヶ月前"),
+	TWELVE_MONTH_AGO(12, "12ヶ月前");
 	
 	/** The value. */
 	public final int value;

@@ -16,7 +16,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumAfterCurrentMon;
@@ -27,7 +27,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：当月以降の積立年休使用数・残数を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrentMon {
@@ -92,7 +92,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 					closure.getCompanyId().v(),
 					employeeId,
 					closurePeriod,
-					TempAnnualLeaveMngMode.OTHER,
+					InterimRemainMngMode.OTHER,
 					closurePeriod.end(),
 					false,
 					false,

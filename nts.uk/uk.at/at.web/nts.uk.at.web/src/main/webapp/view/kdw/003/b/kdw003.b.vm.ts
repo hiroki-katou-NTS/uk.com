@@ -30,7 +30,6 @@ module nts.uk.at.view.kdw003.b {
                 let self = this,
                     dfd = $.Deferred();
                 service.getErrorRefer(param).done((data) => {
-
                     let arrErrorCode: string[] = [];
                     let i: number = data.length;
                     _.each(errorValidate, value => {
@@ -43,7 +42,7 @@ module nts.uk.at.view.kdw003.b {
                             itemName: value.itemName, 
                             errorCode: "" });
                     });
-                    let arr: any[] = _.orderBy(data, ['employeeCode', 'date'], ['asc', 'asc']);
+                    let arr: any[] = _.orderBy(data, ['employeeCode', 'date', 'errorCode'], ['asc', 'asc', 'asc']);
 
                     _.each(data, (dt: any) => {
                         arrErrorCode.push(dt.errorCode);
@@ -156,7 +155,7 @@ module nts.uk.at.view.kdw003.b {
                 let transfer = {
                     appDate: dataShare.date,
                     uiType: 1,
-                    employeeIDs: [rowSelect.employeeId],
+                    employeeIDs: [],
                     stampRequestMode: 1,
                     screenMode: 0
                 };
@@ -205,30 +204,35 @@ module nts.uk.at.view.kdw003.b {
                     case 8:
                         //KAF002-打刻申請（外出許可）
                         transfer.stampRequestMode = 0;
+                         transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 9:
                         //KAF002-打刻申請（出退勤打刻漏れ）
                         transfer.stampRequestMode = 1;
+                         transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 10:
                         //KAF002-打刻申請（打刻取消）
                         transfer.stampRequestMode = 2;
+                         transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 11:
                         //KAF002-打刻申請（レコーダイメージ）
                         transfer.stampRequestMode = 3;
+                         transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 12:
                         //KAF002-打刻申請（その他）
                         transfer.stampRequestMode = 4;
+                         transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
@@ -288,12 +292,16 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeCode = model.employeeCode;
                 self.employeeName = model.employeeName;
                 self.submitedName = model.submitedName;
-                if (moment(model.date, "YYYY/MM/DD").day() == 6) {
-                    self.date = '<span style="color: #4F81BD">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
-                } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
-                    self.date = '<span style="color: #e51010">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
-                } else {
-                    self.date = '<span>' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                if (model.date != "" && model.date != null) {
+                    if (moment(model.date, "YYYY/MM/DD").day() == 6) {
+                        self.date = '<span style="color: #4F81BD">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                    } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
+                        self.date = '<span style="color: #e51010">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                    } else {
+                        self.date = '<span>' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
+                    }
+                }else{
+                     self.date = "";
                 }
                 self.errorCode = model.errorCode;
                 self.message = model.boldAtr ? '<span style="font-weight: bold;color: ' + model.messageColor + ';">' + model.message + '</span>' : '<span style="color: ' + model.messageColor + ';">' + model.message + '</span>';
@@ -322,12 +330,16 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeCode = model.employeeCode;
                 self.employeeName = model.employeeName;
                 self.submitedName = model.submitedName;
-                if (moment(model.date, "YYYY/MM/DD").day() == 6) {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
-                } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                if (model.date != "") {
+                    if (moment(model.date, "YYYY/MM/DD").day() == 6) {
+                        self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {
+                        self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    } else {
+                        self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    }
                 } else {
-                    self.date = moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)');
+                    self.date = "";
                 }
                 self.errorCode = model.errorCode;
                 self.message = model.message;

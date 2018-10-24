@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.BooleanUtils;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -44,7 +45,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId");
 
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
-			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate ");
+			"WHERE c.bsymtAffCompanyHistPk.sId = :sId ORDER BY c.startDate ");
 
 	private static final String SELECT_BY_EMPLOYEE_ID_DESC = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate DESC");
@@ -66,11 +67,8 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
 			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
 	
-	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
+	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT DISTINCT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
 			+ " WHERE af.bsymtAffCompanyHistPk.sId IN :employeeIds AND af.startDate <= :endDate AND :startDate <= af.endDate";
-
-	/** The Constant MAX_ELEMENTS. */
-	private static final Integer MAX_ELEMENTS = 1000;
 
 	@Override
 	public void add(AffCompanyHist domain) {
@@ -129,10 +127,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	@Override
-	public AffCompanyHist getAffCompanyHistoryOfEmployee(String cid, String employeeId) {
+	public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId)
-				.setParameter("cid", cid).getList();
+				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId).getList();
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}
@@ -154,7 +151,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}
-
+	
 	private AffCompanyHist toDomain(List<BsymtAffCompanyHist> entities) {
 		if (entities.isEmpty()) {
 			return null;
@@ -232,7 +229,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private BsymtAffCompanyHist toEntity(AffCompanyHistItem histItem, String pId, String sid) {
 		String companyId = AppContexts.user().companyId();
 		BsymtAffCompanyHistPk bsymtAffCompanyHistPk = new BsymtAffCompanyHistPk(pId, sid, histItem.getHistoryId());
-		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, 0, histItem.start(), histItem.end(), null);
+		return new BsymtAffCompanyHist(bsymtAffCompanyHistPk, companyId, BooleanUtils.toInteger(histItem.isDestinationData()), histItem.start(), histItem.end(), null);
 	}
 
 	@Override
@@ -273,16 +270,21 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// ResultList
 		List<BsymtAffCompanyHist> resultList = new ArrayList<>();
 		// Split employeeId List if size of employeeId List is greater than 1000
-		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", subList).getList();
+			
 			resultList.addAll(lstBsymtAffCompanyHist);
 		});
-
 		// check empty ResultList
 		if (CollectionUtil.isEmpty(resultList)) {
 			return new ArrayList<>();
 		}
+		
+		resultList.sort((o1, o2) -> {
+			return o1.startDate.compareTo(o2.startDate);
+		});
+		
 		// Convert Result List to Map
 		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.parallelStream()
 				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
@@ -306,9 +308,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// ResultList
 		List<BsymtAffCompanyHist> entities = new ArrayList<>();
 		// Split employeeId List if size of employeeId List is greater than 1000
-		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-					.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds)
+					.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", subList)
 					.getList();
 			entities.addAll(lstBsymtAffCompanyHist);
 		});
@@ -342,7 +344,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// ResultList
 		List<BsymtAffCompanyHist> resultList = new ArrayList<>();
 		// Split employeeId List if size of employeeId List is greater than 1000
-		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 					.query(SELECT_BY_EMPID_AND_DATE_PERIOD, BsymtAffCompanyHist.class)
 					.setParameter("employeeIds", subList)
@@ -372,7 +374,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	@Override
 	public List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod dateperiod) {
 		List<String> listSid = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
 					.setParameter("employeeIds", subList)
 					.setParameter("startDate", dateperiod.start())

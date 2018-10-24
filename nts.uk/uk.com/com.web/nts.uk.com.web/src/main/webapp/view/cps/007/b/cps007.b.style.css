@@ -1,5 +1,7 @@
 #contents-area {
 	height: auto !important;
+	max-height: none !important;
+	max-height: initial !important;
 }
 
 #contents-area .swap-list-updown-contaier>div {
@@ -16,8 +18,4 @@
 
 .nts-searchbbox-wrapper {
 	margin-bottom: 0;
-}
-
-#swap-list-search-area-input {
-	width: 150px !important;
 }

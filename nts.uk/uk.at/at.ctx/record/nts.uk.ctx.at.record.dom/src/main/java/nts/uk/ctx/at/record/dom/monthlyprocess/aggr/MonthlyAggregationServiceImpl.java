@@ -15,6 +15,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
@@ -25,7 +26,10 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.EmployeeExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -42,8 +46,8 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	/** リポジトリ：対象者ログ */
-	//@Inject
-	//private TargetPersonRepository targetPersonRepository;
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
 	
 	/** 月別集計が必要とするリポジトリ */
 	@Inject
@@ -55,6 +59,9 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	
+	@Inject
+	private ManagedParallelWithContext parallel;
+	
 	/**
 	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -65,7 +72,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, String companyId, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
@@ -76,7 +83,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 実行状態　初期設定
 		val dataSetter = asyncContext.getDataSetter();
 		dataSetter.setData("monthlyAggregateCount", 0);
-		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 
 		// 月次集計を実行するかチェックする
@@ -86,7 +92,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		if (!executionLog.get().getMonlyAggregationSetInfo().isPresent()) return success;
 		val executionContent = executionLog.get().getExecutionContent();
 		
-		// 実行種別　取得　（通常、再実行）
+		// 再実行の判断
 		ExecutionType reAggrAtr = executionLog.get().getMonlyAggregationSetInfo().get().getExecutionType();
 		
 		// ログ情報（実行ログ）を更新する
@@ -132,26 +138,27 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		
 		ConcurrentStopwatches.stop("08000:会社別データ読み込み");
 		
-		// 社員の数だけループ　（並列処理）
+		// 社員の数だけループ　（並列処理対象）
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
-		for (val employeeId : employeeIds){
-			if (stateHolder.isInterrupt()) break;
+		this.parallel.forEach(employeeIds, employeeId -> {
+			if (stateHolder.isInterrupt()) return;
 		
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
 			
 			// 社員1人分の処理　（社員の月別実績を集計する）
-			ProcessState coStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
+			MonthlyAggrEmpServiceValue aggrStatus = this.monthlyAggregationEmployeeService.aggregate(asyncContext,
 					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
+			ProcessState coStatus = aggrStatus.getState();
 			stateHolder.add(coStatus);
 
 			ConcurrentStopwatches.stop("10000:社員ごと：" + employeeId);
 
+			// 終了状態を確認する
 			if (coStatus == ProcessState.SUCCESS){
 				
 				// 成功時、ログ情報（実行内容の完了状態(（社員別））を更新する
-				//*****（未）　処理が不完全で、日別作成以外で使えない状態になっている。
-				//*****（未）　ステータスは、何を設定するかが規定されていない。未処理は、1っぽい。
-				//this.targetPersonRepository.update(employeeId, empCalAndSumExecLogID, 0);
+				this.targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID,
+						ExecutionContent.MONTHLY_AGGREGATION.value, EmployeeExecutionStatus.COMPLETE.value);
 				
 				dataSetter.updateData("monthlyAggregateCount", stateHolder.count());
 			}
@@ -159,13 +166,19 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 				
 				// 中断時
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+				return;
 			}
-		}
+		});
 		
 		ConcurrentStopwatches.printAll();
 		ConcurrentStopwatches.STOPWATCHES.clear();
 		
-		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
+		if (stateHolder.isInterrupt()){
+			this.empCalAndSumExeLogRepository.updateLogInfo(
+					empCalAndSumExecLogID, executionContent.value, ExecutionStatus.INCOMPLETE.value);
+			dataSetter.updateData("monthlyAggregateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+			return ProcessState.INTERRUPTION;
+		}
 		
 		// 処理を完了する
 		this.empCalAndSumExeLogRepository.updateLogInfo(

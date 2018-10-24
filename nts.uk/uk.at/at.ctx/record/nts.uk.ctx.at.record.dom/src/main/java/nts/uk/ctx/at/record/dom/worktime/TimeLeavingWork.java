@@ -131,17 +131,17 @@ public class TimeLeavingWork extends DomainObject{
 	public boolean checkLeakageStamp() {
 		//出勤時刻が無い
 		if( this.getAttendanceStamp() == null
-			&& !this.getAttendanceStamp().isPresent()
-			&& this.getAttendanceStamp().get().getStamp() == null
-			&& !this.getAttendanceStamp().get().getStamp().isPresent()
-			&& this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+			|| !this.getAttendanceStamp().isPresent()
+			|| this.getAttendanceStamp().get().getStamp() == null
+			|| !this.getAttendanceStamp().get().getStamp().isPresent()
+			|| this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
 			return false;
 		}
 		if(this.getLeaveStamp() == null
-				&& !this.getLeaveStamp().isPresent()
-				&& this.getLeaveStamp().get().getStamp() == null
-				&& !this.getLeaveStamp().get().getStamp().isPresent()
-				&& this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
+				|| !this.getLeaveStamp().isPresent()
+				|| this.getLeaveStamp().get().getStamp() == null
+				|| !this.getLeaveStamp().get().getStamp().isPresent()
+				|| this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
 			return false;
 		}
 		return true;

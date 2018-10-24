@@ -66,7 +66,7 @@
 														enable: true }"></div>
 
 				<div id="daterangepicker"
-					data-bind="ntsDateRangePicker: {startName:'#{i18n.getText('KAF007_62')}',endName: '#{i18n.getText('KAF007_63')}', value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
+					data-bind="ntsDateRangePicker: {name:'#[KAF007_12]',startName: '#[KAF007_12]' ,endName: '#[KAF007_12]' , value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
 
 
 				<div id="singleDate"
@@ -108,6 +108,8 @@
 				</div>
 				<div class="cell valign-center">
 					<!--A6_5 勤務就業選択-->
+					<!-- <button id="workSelect-kaf007"
+						data-bind=" click: $vm.openKDL003Click.bind($vm)">#{i18n.getText('KAF007_24')}</button> -->
 					<button id="workSelect-kaf007"
 						data-bind=" click: $parent.openKDL003Click">#{i18n.getText('KAF007_24')}</button>
 				</div>
@@ -138,9 +140,9 @@
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart1, 
-															enable: $parent.editable, 
+															enable: $parent.enableTime() , 
 															readonly: false,
-															required: $parent.isWorkChange }" />
+															required: $parent.requiredCheckTime }" />
 
 					</div>
 				</div>
@@ -155,9 +157,9 @@
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr', 
 															value: workChange().workTimeEnd1, 
-															enable: $parent.editable, 
+															enable: $parent.enableTime() , 
 															readonly: false,
-															required: $parent.isWorkChange }" />
+															required: $parent.requiredCheckTime }" />
 						<label
 							data-bind="text: $parent.appChangeSetting().commentContent2
 					,css: { 'bold': $parent.appChangeSetting().commentFontWeight2  }
@@ -311,15 +313,15 @@
 			</div>
 		</div>
 		<!--A10 休日に関して-->
-		<div class="valign-center control-group-kaf007">
+		<!-- <div class="valign-center control-group-kaf007">
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007"
 						data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF007_41')}</div>
 				</div>
 				<div class="cell valign-center">
-					<!--A10_1 休日は除く-->
-					<!--A10_2 休日は除く-->
+					A10_1 休日は除く
+					A10_2 休日は除く
 					<div>
 						<div
 							data-bind="ntsCheckBox: { checked: $parent.excludeHolidayAtr , 
@@ -328,7 +330,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<!--A11 定型理由（ラベル）-->
 		<div class="valign-center control-group-kaf007 overlay-reason-kaf007"
 			data-bind="if: $parent.typicalReasonDisplayFlg">
@@ -368,7 +370,7 @@
 	</div>
 	<!--RIGHT CONTENT -->
 	<div class="right-contents-kaf007"
-		data-bind="visible: application().prePostAtr() == 1">
+		data-bind="visible: $parent.showRightContent()  ">
 		<div class="panel panel-gray-bg panel-kaf007 panel-frame"
 			data-bind="with: $parent.recordWorkInfo">
 			<!--A30_1 実績の内容(ラベル)-->

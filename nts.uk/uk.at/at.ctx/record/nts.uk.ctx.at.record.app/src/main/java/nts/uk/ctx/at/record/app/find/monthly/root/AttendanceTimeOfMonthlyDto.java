@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.ExcessOutsideWorkOfMonthly
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyCalculationDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.TotalCountByPeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.VerticalTotalOfMonthlyDto;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
@@ -96,7 +96,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			dto.setExcessOutsideWork(ExcessOutsideWorkOfMonthlyDto.from(domain.getExcessOutsideWork()));
 			dto.setAggregateDays(domain.getAggregateDays() == null ? 0 : domain.getAggregateDays().v());
 			dto.setVerticalTotal(VerticalTotalOfMonthlyDto.from(domain.getVerticalTotal()));
-			dto.totalCount = TotalCountByPeriodDto.from(domain.getTotalCount());
+			dto.setTotalCount(TotalCountByPeriodDto.from(domain.getTotalCount()));
 			dto.exsistData();
 		}
 		return dto;

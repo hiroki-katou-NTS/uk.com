@@ -279,3 +279,9 @@ div.label {
 	width: 12px;
 	margin-right: -2px;
 }
+
+.limited-label{
+    display: block !important;
+    width: auto !important;
+}
+

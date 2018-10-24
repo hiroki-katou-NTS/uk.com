@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.Busin
  *
  */
 @Getter
-public class MonthlyRecordWorkType extends AggregateRoot {
+public class MonthlyRecordWorkType extends AggregateRoot{
 	/**会社ID*/
 	private String companyID;
 	/**コード*/
@@ -22,6 +22,14 @@ public class MonthlyRecordWorkType extends AggregateRoot {
 		this.companyID = companyID;
 		this.businessTypeCode = businessTypeCode;
 		this.displayItem = displayItem;
+	}
+
+	public MonthlyRecordWorkType clone() {
+		return new MonthlyRecordWorkType(companyID, new BusinessTypeCode(businessTypeCode.v()), displayItem.clone());
+	}
+
+	public MonthlyRecordWorkType() {
+		super();
 	}
 	
 

@@ -9,7 +9,7 @@ import lombok.Data;
 public class MasterCopyCategoryFindDto {
 	
 	/** The master copy id. */
-	private String masterCopyId;
+	private Integer masterCopyId;
 	
 	/** The order. */
 	private Integer order;
@@ -33,7 +33,7 @@ public class MasterCopyCategoryFindDto {
 	 * @param systemType the system type
 	 * @param masterCopyCategory the master copy category
 	 */
-	public MasterCopyCategoryFindDto(Integer systemType, String masterCopyCategory, Integer order, String masterCopyId){
+	public MasterCopyCategoryFindDto(Integer systemType, String masterCopyCategory, Integer order, Integer masterCopyId){
 		this.systemType = systemType;
 		this.masterCopyCategory = masterCopyCategory;
 		this.order = order;

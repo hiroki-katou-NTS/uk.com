@@ -7,7 +7,11 @@ package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.ResetAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class BasicScheduleResetCommand.
@@ -56,4 +60,27 @@ public class BasicScheduleResetCommand {
 	/** The working code. */
 	// 就業時間帯コード
 	private String workingCode;
+	
+	// 会社共通のマスタキャッシュ
+	private Object companySetting;
+	
+	public static BasicScheduleResetCommand create(
+			ScheduleCreatorExecutionCommand command,
+			DatePeriod period,
+			Object companySetting,
+			ScheduleCreator scheduleCreator,
+			ScheduleCreateContent content) {
+		BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
+		commandReset.setCompanyId(command.getCompanyId());
+		commandReset.setConfirm(content.getConfirm());
+		commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
+		commandReset.setExecutionId(command.getExecutionId());
+		commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
+		commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
+		commandReset.setTargetStartDate(period.start());
+		commandReset.setTargetEndDate(period.end());
+		commandReset.setCompanySetting(companySetting);
+		return commandReset;
+	}
+	
 }

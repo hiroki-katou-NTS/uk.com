@@ -22,6 +22,7 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionMan
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
@@ -53,6 +55,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -112,6 +116,12 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private RecSpecificDateSettingAdapter recSpecificDateSettingAdapter;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -181,14 +191,23 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 				/** 並列処理、AsyncTask */
 				// Create thread pool.
-				ExecutorService executorService = Executors.newFixedThreadPool(20);
-				CountDownLatch countDownLatch = new CountDownLatch(emloyeeIds.size());
+//				ExecutorService executorService = Executors.newFixedThreadPool(20);
+//				CountDownLatch countDownLatch = new CountDownLatch(emloyeeIds.size());
 
-				emloyeeIds.forEach(employeeId -> {
-					AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).setDataSetter(dataSetter)
-							.threadName(this.getClass().getName()).build(() -> {
+				this.managedParallelWithContext.forEach(emloyeeIds, employeeId -> {
+					if (asyncContext.hasBeenRequestedToCancel()) {
+//						asyncContext.finishedAsCancelled();
+						stateHolder.add(ProcessState.INTERRUPTION);
+						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+						return;
+						//return ProcessState.INTERRUPTION;
+					}
+					//AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).setDataSetter(dataSetter)
+							//.threadName(this.getClass().getName()).build(() -> {
 								// 社員の日別実績を計算
 								if (stateHolder.isInterrupt()) {
+									// Count down latch.
+									//countDownLatch.countDown();
 									return;
 								}
 								// 対象期間 = periodTime
@@ -265,28 +284,35 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 								if (cStatus == ProcessState.INTERRUPTION) {
 									stateHolder.add(cStatus);
 									dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
-									return ;
+									// Count down latch.
+									//countDownLatch.countDown();
+									return;
 								} 
 								
 								stateHolder.add(cStatus);
-								// Count down latch.
-								countDownLatch.countDown();
-							});
+//								// Count down latch.
+//								//countDownLatch.countDown();
+//								return;
+							//});
 					if(stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0) {
 						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
-						return ;
+						// Count down latch.
+						//countDownLatch.countDown();
+						stateHolder.add(ProcessState.INTERRUPTION);
+						return;
+						//return ProcessState.INTERRUPTION;
 					}
-					executorService.submit(task);
+					//executorService.submit(task);
 				});
 				// Wait for latch until finish.
-				try {
-					countDownLatch.await();
-				} catch (InterruptedException ie) {
-					throw new RuntimeException(ie);
-				} finally {
-					// Force shut down executor services.
-					executorService.shutdown();
-				}
+//				try {
+//					countDownLatch.await();
+//				} catch (InterruptedException ie) {
+//					throw new RuntimeException(ie);
+//				} finally {
+//					// Force shut down executor services.
+//					executorService.shutdown();
+//				}
 				status = stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).findFirst()
 						.orElse(ProcessState.SUCCESS);
 				if (status == ProcessState.SUCCESS) {
@@ -296,6 +322,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 					}
 				}
 			} else {
+				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 				status = ProcessState.INTERRUPTION;
 			}
 		}
@@ -430,14 +457,26 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 
+		/**
+		 * 勤務種別変更時に再作成　=　false reCreateWorkType
+		 * 異動時に再作成　=　false reCreateWorkPlace
+		 * 休職・休業者再作成　=　false reCreateRestTime
+		 */
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext,
-				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false,
+				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false, false, false, 
 				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
+		
+		// 暫定データの登録
+		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, periodTime.datesBetween());
+		
+		// ログ情報（実行内容の完了状態）を更新する
+		updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
+		
 		// 状態確認
 		if (cStatus == ProcessState.SUCCESS) {
-			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
 			dataSetter.updateData("dailyCreateCount", stateHolder.count() + 1);
 		} else {
+			dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 			return ProcessState.INTERRUPTION;
 		}
 		return cStatus;
@@ -464,7 +503,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		SUCCESS(1);
 
 		public final int value;
-
 	}
 
 	class StateHolder {

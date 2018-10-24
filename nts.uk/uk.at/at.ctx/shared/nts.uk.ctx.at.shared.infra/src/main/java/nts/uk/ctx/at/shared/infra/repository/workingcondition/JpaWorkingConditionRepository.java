@@ -19,13 +19,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -326,6 +326,12 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	 */
 	@Override
 	public List<WorkingCondition> getBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod) {
+		
+		// Check exist
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return Collections.emptyList();
+		}
+				
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -340,7 +346,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		
 		List<KshmtWorkingCond> result =  new ArrayList<>();
 		
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
@@ -350,12 +356,6 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			lstpredicateWhere.add(criteriaBuilder.not(criteriaBuilder.or(
 					criteriaBuilder.lessThan(root.get(KshmtWorkingCond_.endD), datePeriod.start()),
 					criteriaBuilder.greaterThan(root.get(KshmtWorkingCond_.strD), datePeriod.end()))));
-			
-			// TODO: Check & request update EAP with new condition
-//			lstpredicateWhere.add(
-//					criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), datePeriod.end()));
-//			lstpredicateWhere.add(criteriaBuilder
-//					.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), datePeriod.start()));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -366,11 +366,6 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			result.addAll(query.getResultList());
 		});
 
-		// Check exist
-		if (CollectionUtil.isEmpty(result)) {
-			return Collections.emptyList();
-		}
-		
 		return result.parallelStream()
 				.collect(Collectors.groupingBy(entity -> entity.getKshmtWorkingCondPK().getSid()))
 				.values().parallelStream()

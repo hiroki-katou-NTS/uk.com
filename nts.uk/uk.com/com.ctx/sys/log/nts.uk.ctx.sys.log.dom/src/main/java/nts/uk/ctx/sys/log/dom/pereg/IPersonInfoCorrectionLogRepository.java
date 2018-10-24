@@ -14,5 +14,11 @@ public interface IPersonInfoCorrectionLogRepository {
 	List<PersonInfoCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId,
 			DatePeriod period);
 	
+	List<PersonInfoCorrectionLog> findByTargetAndDate(List<String> operationId, List<String> listEmployeeId,
+			DatePeriod period);
+
+	
+	List<PersonInfoCorrectionLog> findByTargetAndDate(List<String> operationId, List<String> listEmployeeId);
+	
 	void save(List<PersonInfoCorrectionLog> correctionLogs);
 }

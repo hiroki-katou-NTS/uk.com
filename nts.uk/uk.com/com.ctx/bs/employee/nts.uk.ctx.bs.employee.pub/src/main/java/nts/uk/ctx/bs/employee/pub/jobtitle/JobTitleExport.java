@@ -35,5 +35,8 @@ public class JobTitleExport {
 
 	/** The end date. */
 	private GeneralDate endDate;
+	
+	/** The is manager. #100055*/
+	private boolean isManager;
 
 }

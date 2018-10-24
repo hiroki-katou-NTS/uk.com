@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.attendance.util;
 
-public interface ItemConst {
+public interface ItemConst extends Cloneable {
+	
 	public final String DAILY = "日次";
 	public final String MONTHLY = "月次";
 	
@@ -140,6 +141,27 @@ public interface ItemConst {
 	public final String MONTHLY_RESERVE_LEAVING_REMAIN_CODE = LAYOUT_E;
 	public final String MONTHLY_RESERVE_LEAVING_REMAIN_NAME = "積立年休月別残数データ";
 
+	public final String MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE = LAYOUT_F;
+	public final String MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME = "特別休暇月別残数データ";
+
+	public final String MONTHLY_OFF_REMAIN_CODE = LAYOUT_G;
+	public final String MONTHLY_OFF_REMAIN_NAME = "代休月別残数データ";
+
+	public final String MONTHLY_ABSENCE_LEAVE_REMAIN_CODE = LAYOUT_H;
+	public final String MONTHLY_ABSENCE_LEAVE_REMAIN_NAME = "振休月別残数データ";
+
+	public final String MONTHLY_REMARKS_CODE = LAYOUT_I;
+	public final String MONTHLY_REMARKS_NAME = "月別実績の備考";
+	
+	public final String MONTHLY_CARE_HD_REMAIN_CODE = LAYOUT_J;
+	public final String MONTHLY_CARE_HD_REMAIN_NAME = "介護休暇月別残数データ";
+	
+	public final String MONTHLY_CHILD_CARE_HD_REMAIN_CODE = LAYOUT_K;
+	public final String MONTHLY_CHILD_CARE_HD_REMAIN_NAME = "子の看護月別残数データ";
+	
+	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE = LAYOUT_L;
+	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME = "管理期間の36協定時間";
+
 	public final String OPTIONAL_ITEM_VALUE = "任意項目値";
 	
 	public final String WORK_TYPE = "勤務種類";
@@ -192,6 +214,7 @@ public interface ItemConst {
 	public final String NOT_DIGESTION = "未消化数";
 	public final String ANNUNAL_LEAVE = "年休";
 	public final String SPECIAL = "特別";
+	public final String SPECIAL_HOLIDAY = "特別休暇";
 	public final String COMPENSATORY = "代休";
 	public final String RETENTION = "積立年休";
 	public final String ABSENCE = "欠勤";
@@ -267,4 +290,6 @@ public interface ItemConst {
 	public final String CONVENIENCE = "便宜";
 	public final String TWO_TIMES = "二回";
 	public final String CLOSURE_STATE = "締め処理状態";
+	public final String OCCURRENCE = "発生";
+	public final String BREAK_DOWN = "内訳";
 }

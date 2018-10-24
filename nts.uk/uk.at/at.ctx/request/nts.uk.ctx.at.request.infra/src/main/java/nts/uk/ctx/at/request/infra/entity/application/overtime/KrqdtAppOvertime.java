@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -72,9 +74,13 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     @Column(name = "OVERTIME_SHIFT_NIGHT")
     private Integer overtimeShiftNight;
     
-    @OneToMany(targetEntity=KrqdtOvertimeInput.class, mappedBy="appOvertime", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=KrqdtOvertimeInput.class, mappedBy="appOvertime", cascade = CascadeType.ALL,orphanRemoval =true)
     @JoinTable(name = "KRQDT_OVERTIME_INPUT")
 	public List<KrqdtOvertimeInput> overtimeInputs;
+
+	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appOvertime", cascade = CascadeType.ALL,orphanRemoval =true)
+	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
+	public KrqdtAppOvertimeDetail appOvertimeDetail;
 
 	@Override
 	protected Object getKey() {
@@ -93,6 +99,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		this.setOvertimeShiftNight(appOverTime.getOverTimeShiftNight());
 		this.setFlexExcessTime(appOverTime.getFlexExessTime());
 		this.setDivergenceReason(appOverTime.getDivergenceReason());
+		List<KrqdtOvertimeInput> overTimes = new  ArrayList<KrqdtOvertimeInput>();
 		for(int i = 0; i<appOverTime.getOverTimeInput().size(); i++){
 			OverTimeInput overtimeInput = appOverTime.getOverTimeInput().get(i);
 			this.getOvertimeInputs().stream().filter(
@@ -101,9 +108,10 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 					&& x.krqdtOvertimeInputPK.getTimeItemTypeAtr()==overtimeInput.getTimeItemTypeAtr().value)
 			.findAny()
 			.map(x -> {
-				x.fromDomainValue(overtimeInput);
+				overTimes.add(x.fromDomainValue(overtimeInput));
 				return Optional.ofNullable(null);
 			}).orElseGet(()->{
+				
 				KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
 						new KrqdtOvertimeInputPK(
 							appOverTime.getCompanyID(),
@@ -115,10 +123,13 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 						overtimeInput.getStartTime() == null ? null : overtimeInput.getStartTime().v(), 
 						overtimeInput.getEndTime() == null ? null : overtimeInput.getEndTime().v(), 
 						overtimeInput.getApplicationTime() == null ? null : overtimeInput.getApplicationTime().v());
-				this.overtimeInputs.add(krqdtOvertimeInput);
+				overTimes.add(krqdtOvertimeInput);
+				
 				return null;
 			});
 		}
+		this.setOvertimeInputs(overTimes);
+		this.appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(appOverTime.getAppOvertimeDetail());
 		return this;
 	}
 	

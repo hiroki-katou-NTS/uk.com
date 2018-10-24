@@ -16,6 +16,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
@@ -60,7 +61,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
     private EntityManager entityManager;*/
 	
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		List<SspmtTarget> targetData = this.queryProxy()
 				.query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class)
@@ -83,13 +84,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void remove(String dataRecoveryProcessId) {
 		this.commandProxy().remove(SspmtPerformDataRecovery.class, dataRecoveryProcessId);
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public List<TableList> getByStorageRangeSaved(String categoryId, String dataRecoveryProcessId, StorageRangeSaved storageRangeSaved) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
@@ -100,7 +101,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public List<Target> findByDataRecoveryId(String dataRecoveryProcessId) {
 		List<SspmtTarget> listTarget = this.getEntityManager().createQuery(SELECT_ALL_TARGET, SspmtTarget.class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getResultList();
@@ -116,7 +117,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 		
@@ -147,7 +148,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 
@@ -180,7 +181,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName, List<String> columnNotNull) {
 		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
@@ -188,7 +189,9 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		}
 		List<String> cloumns = new ArrayList<>();
 		List<String> values = new ArrayList<>();
+		List<String> valuesNotNull = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
+		int i = 0;
 		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
 			cloumns.add(entry.getKey());
 			boolean anyNonEmpty = columnNotNull.stream().anyMatch(x -> x.equals(entry.getKey()));
@@ -199,15 +202,21 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 					values.add("null");
 				}
 			} else {
-				values.add("'" + entry.getValue() + "'");
+				i++;
+				//values.add("'" + entry.getValue() + "'");
+				valuesNotNull.add(entry.getValue());
+				values.add("?"+i);
 			}
 
 		}
 		INSERT_BY_TABLE.append(" " + cloumns);
 		INSERT_BY_TABLE.append(" VALUES ");
 		INSERT_BY_TABLE.append(values);
-		String test = INSERT_BY_TABLE.toString();
-		Query query = em.createNativeQuery(test.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+		String querySQL = INSERT_BY_TABLE.toString();
+		Query query = em.createNativeQuery(querySQL.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+		for (int j = 0; j < valuesNotNull.size(); j++) {
+			query.setParameter(j+1, valuesNotNull.get(j));
+		}
 		query.executeUpdate();
 
 	}
@@ -222,8 +231,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		
 		List<String> cloumns = new ArrayList<>();
 		List<String> values = new ArrayList<>();
+		List<String> valuesNotNull = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
+		int i =0;
 		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
+			
 			cloumns.add(entry.getKey());
 			boolean anyNonEmpty = columnNotNull.stream().anyMatch(x -> x.equals(entry.getKey()));
 			if (entry.getValue().isEmpty()) {
@@ -233,15 +245,21 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 					values.add("null");
 				}
 			} else {
-				values.add("'" + entry.getValue() + "'");
+				i++;
+				//values.add("'" + entry.getValue() + "'");
+				valuesNotNull.add(entry.getValue());
+				values.add("?"+i);
 			}
 
 		}
 		INSERT_BY_TABLE.append(" " + cloumns);
 		INSERT_BY_TABLE.append(" VALUES ");
 		INSERT_BY_TABLE.append(values);
-		String test = INSERT_BY_TABLE.toString();
-		Query query = em.createNativeQuery(test.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+		String querySQL = INSERT_BY_TABLE.toString();
+		Query query = em.createNativeQuery(querySQL.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+		for (int j = 0; j < valuesNotNull.size(); j++) {
+			query.setParameter(j+1, valuesNotNull.get(j));
+		}
 		query.executeUpdate();
 
 	}
@@ -266,7 +284,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 
 		EntityManager em = this.getEntityManager();
@@ -307,7 +325,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 				.setParameter("employeeIdList", employeeIdList).executeUpdate();*/
 		
-		CollectionUtil.split(employeeIdList, 1000, subEmployeeIdList -> {
+		CollectionUtil.split(employeeIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIdList -> {
 			this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class)
 			.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 			.setParameter("employeeIdList", subEmployeeIdList).executeUpdate();
@@ -325,17 +343,17 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@Override
 	public void updateCategorySelect(int selectionTarget, String dataRecoveryProcessId, List<String> listCheckCate) {
-		// TODO Auto-generated method stub UPDATE_BY_LIST_CATEGORY_ID
-		this.getEntityManager().createQuery(UPDATE_BY_LIST_CATEGORY_ID, SspmtTarget.class)
+		CollectionUtil.split(listCheckCate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(UPDATE_BY_LIST_CATEGORY_ID, SspmtTarget.class)
 				.setParameter("selectionTarget", selectionTarget)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
-				.setParameter("listCheckCate", listCheckCate).executeUpdate();
+				.setParameter("listCheckCate", subList).executeUpdate();
+		});
 	}
 
 	@Override
 	public void updateCategorySelectByDateFromTo(String startOfPeriod, String endOfPeriod, String dataRecoveryProcessId,
 			String checkCate) {
-		// TODO Auto-generated method stub
 		this.getEntityManager().createQuery(UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID, SspmtTarget.class)
 				.setParameter("startOfPeriod", startOfPeriod).setParameter("endOfPeriod", endOfPeriod)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).setParameter("checkCate", checkCate)
@@ -343,7 +361,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId) {
 
 		if (dataRecoveryProcessId != null) {
@@ -401,7 +419,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public List<String> getTypeColumnNotNull(String tableName) {
 		List<String> data = new ArrayList<>();
 		if (tableName != null) {

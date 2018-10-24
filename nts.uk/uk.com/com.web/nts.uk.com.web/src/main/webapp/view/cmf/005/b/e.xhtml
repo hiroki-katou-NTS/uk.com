@@ -57,22 +57,22 @@
 							<div class="valign-center control-group">
 								<div id="E7_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_27')}</div>
 								<span id="E7_2_1" class="timeLabel">#{i18n.getText('CMF005_28')}</span>
-								<div id="E7_2_2" style="display:inline-block;" data-bind="ntsDateRangePicker: { 
-									required: requiredDate, enable: false, name: '#[CMF005_29]', 
+								<div id="E7_2_2" class="datePickerTemp" style="display:inline-block;" data-bind="ntsDateRangePicker: { 
+									required: false, enable: false, name: '#[CMF005_29]', 
 									showNextPrevious: false, value: dateValue}"/>
 							</div>
 							<div class="valign-center control-group other">
 								<div class="space"></div>
 								<span id="E7_3_1" class="timeLabel">#{i18n.getText('CMF005_30')}</span>
-								<div id="E7_3_2" style="display:inline-block;" data-bind="ntsDateRangePicker: { 
-									required: requiredMonth, enable: false, name: '#[CMF005_31]',
+								<div id="E7_3_2" class="datePickerTemp" style="display:inline-block;" data-bind="ntsDateRangePicker: { 
+									required: false, enable: false, name: '#[CMF005_31]',
 									showNextPrevious: false, value: monthValue, type: 'yearmonth'}"/>
 							</div>
 							<div class="valign-center control-group other">
 								<div class="space"></div>
 								<span id="E7_4_1" class="timeLabel">#{i18n.getText('CMF005_32')}</span>
-								<div id="E7_4_2" style="display:inline-block;" data-bind="ntsDateRangePicker: {
-									required: requiredYear, enable: false, name: '#[CMF005_33]',
+								<div id="E7_4_2" class="datePickerTemp" style="display:inline-block;" data-bind="ntsDateRangePicker: {
+									required: false, enable: false, name: '#[CMF005_33]',
 									showNextPrevious: false, value: yearValue, type: 'year'}"/>
 							</div>
 							<div class="valign-center control-group">
@@ -102,10 +102,10 @@
 					<td style="width: 50%">
 						<!-- left area -->
 						<div class="fixed-flex-layout-right" style="padding-top: 20px; padding-left: 40px;">
-							<div style="float: left; width: 25%;">
+							<div style="float: left; width: 30%;">
 								<div id="E11_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_50')}</div>
 							</div>
-							<div style="float: left; width: 75%; padding-bottom: 20px;">
+							<div style="float: left; width: 70%; padding-bottom: 20px;">
 								<!-- E11_2_1 -->
 								<!-- E11_2_2 -->
 								<div data-bind="ntsRadioBoxGroup: {options: itemTitleAtr,

@@ -51,7 +51,8 @@ module nts.uk.at.view.kaf011.c.screenModel {
         version: KnockoutObservable<number> = ko.observable(0);
 
         employeeID: KnockoutObservable<string> = ko.observable('');
-
+        
+        firstLoad: KnockoutObservable<boolean> = ko.observable(false);
 
 
         constructor() {
@@ -93,6 +94,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
                         prePostAtr: self.prePostSelectedCode(),
                         enteredPersonSID: self.employeeID(),
                         appVersion: self.version(),
+                        remainDays: null
                     }
                 }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReferen
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 
 @Data
 @AllArgsConstructor
@@ -237,6 +238,15 @@ public class OverTimeDto {
 	
 	private AgreeOverTimeDto agreementTimeDto;
 	
+	private AppOvertimeDetailDto appOvertimeDetailDto;
+	
+	private Integer appOvertimeDetailStatus;
+	
+	/**
+	 * 控除時間帯(丸め付き)
+	 */
+	private List<DeductionTimeDto> timezones ;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -253,9 +263,9 @@ public class OverTimeDto {
 					? Collections.emptyList() 
 					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
 				0, 
-				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
+				appOverTime.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
 				Collections.emptyList(),
-				new SiftType(appOverTime.getSiftCode().v(),""),
+				appOverTime.getSiftCode() == null ? null : new SiftType(appOverTime.getSiftCode().v(),""),
 				Collections.emptyList(),
 				appOverTime.getWorkClockFrom1(), 
 				appOverTime.getWorkClockTo1(),  
@@ -292,7 +302,11 @@ public class OverTimeDto {
 				false,
 				false,
 				false,
-				null);
+				null,
+				null,
+				null,
+				Collections.emptyList()
+				);
 	}
 	
 }

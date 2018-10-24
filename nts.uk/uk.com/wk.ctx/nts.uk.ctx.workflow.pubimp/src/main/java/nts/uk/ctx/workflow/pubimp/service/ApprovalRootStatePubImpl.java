@@ -426,7 +426,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 						int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
 					}
 					//1.承認状況の判断
-					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(companyID, listApprovalPhaseState.get(i), approverID,agents);
+					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(
+							companyID, listApprovalPhaseState.get(i), approverID,
+							agents.stream().map(x -> x.getAgentSid1()).collect(Collectors.toList()));
 					if(listApprovalPhaseState.get(i).getPhaseOrder().equals(5) && listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) ){
 						checkStatusFrame(approvalStatusOutput,approvalStatus);
 						employeephase = i;
@@ -600,6 +602,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		if(CollectionUtil.isEmpty(approvalRootStates)){
 			return false;
 		}
+		System.out.println(approvalRootStates.stream().map(x -> x.getRootStateID()).collect(Collectors.toList()));
 		boolean result = false;
 		for(ApprovalRootState approval : approvalRootStates){
 			ApproverPersonExport ApproverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);

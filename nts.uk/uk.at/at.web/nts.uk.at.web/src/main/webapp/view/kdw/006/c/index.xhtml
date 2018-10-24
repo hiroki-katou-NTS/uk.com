@@ -27,7 +27,7 @@
 					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
 				<!-- C1_2 -->
 				<button id="register-button" class="proceed" tabindex="2"
-					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: saveData, timeClick: 1000" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="screen-d">
@@ -59,8 +59,9 @@
 				        enable: approvalProcessDto().useDailyBossChk}">
 					</div>
 					<!-- C2_6 -->
-					<div id="checkBox41" class="check-box-atr" tabindex="7"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().monthChkMsgAtr }">#{i18n.getText('KDW006_64')}</div>
+					<!-- fix bug 101969 -->
+<!-- 					<div id="checkBox41" class="check-box-atr" tabindex="7"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().monthChkMsgAtr }">#{i18n.getText('KDW006_64')}</div> -->
 					<!-- C2_7 -->
 					<div id="checkBox51" class="check-box-atr" tabindex="8"
 						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().disp36Atr }">#{i18n.getText('KDW006_65')}</div>
@@ -79,6 +80,10 @@
 					<!-- C2_12 -->
 					<div id="checkBox101" class="check-box-atr" tabindex="13"
 						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().clearManuAtr }">#{i18n.getText('KDW006_70')}</div>
+					<!-- C2_16 -->
+					<div id="checkBox161" class="check-box-atr" tabindex="14"
+						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().checkErrRefDisp }">#{i18n.getText('KDW006_84')}</div>
+						
 						
 					<!-- C2_13 -->
 					<div id="label13" class="label">#{i18n.getText('KDW006_77')}</div>
@@ -95,13 +100,13 @@
 						<!-- C3_1 -->
 						<div id="label11" class="label">#{i18n.getText('KDW006_60')}</div>
 						<!-- C3_2 -->
-						<div id="checkBox111" class="check-box-atr" tabindex="14"
+						<div id="checkBox111" class="check-box-atr" tabindex="15"
 							data-bind="ntsCheckBox: { checked: monPerformanceFunDto().dailySelfChkDispAtr }">#{i18n.getText('KDW006_61')}</div>
 						<!-- C3_3 -->
-						<div id="checkBox121" class="check-box-atr" tabindex="15"
+						<div id="checkBox121" class="check-box-atr" tabindex="16"
 							data-bind="ntsCheckBox: { checked: identityProcessDto().useMonthSelfCK }">#{i18n.getText('KDW006_36')}</div>
 						<!-- C3_4 -->
-						<div id="checkBox131" class="check-box-atr" tabindex="16"
+						<div id="checkBox131" class="check-box-atr" tabindex="17"
 							data-bind="ntsCheckBox: { checked: approvalProcessDto().useMonthBossChk }">#{i18n.getText('KDW006_37')}</div>
 					</div>
 				</div>

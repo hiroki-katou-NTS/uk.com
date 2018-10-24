@@ -19,7 +19,7 @@ public class PeregUserDefDeleteCommand {
 	public PeregUserDefDeleteCommand(PeregDeleteCommand command) {
 		this.personId = command.getPersonId();
 		this.employeeId = command.getEmployeeId();
-		this.categoryId = command.getCategoryId();
+		this.categoryId = command.getCategoryCode();
 		this.recordId = command.getRecordId();
 	}
 }

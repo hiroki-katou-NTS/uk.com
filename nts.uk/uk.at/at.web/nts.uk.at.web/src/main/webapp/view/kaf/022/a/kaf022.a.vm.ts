@@ -55,18 +55,21 @@ module nts.uk.at.view.kmf022 {
                 switch (tab.id) {
                     case 'a':
                         self.currentTab('a');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelA && typeof view.viewmodelA.start == 'function') {
                             view.viewmodelA.start();
                         }
                         break;
                     case 'l':
                         self.currentTab('l');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelL && typeof view.viewmodelL.start == 'function') {
                             view.viewmodelL.start();
                         }
                         break;
                     case 'm':
                         self.currentTab('m');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelM && typeof view.viewmodelM.start == 'function') {
                             view.viewmodelM.start();
                         }
@@ -1727,11 +1730,11 @@ module nts.uk.at.view.kmf022 {
 
             // open s dialog
             openSDialog(): void {
-                let self = this;
                 nts.uk.ui.block.grayout();
+                let self = this;
                 nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
             }
             
             
@@ -1750,8 +1753,8 @@ module nts.uk.at.view.kmf022 {
                             }
                         });
                     self.textEditorA13_4(dataA13.join(" + "));
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
             }
 
             loadData(): void {
@@ -2279,7 +2282,6 @@ module nts.uk.at.view.kmf022 {
                 $('#a7_23_2').trigger("validate");
                 $('#a7_23_3').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
-                nts.uk.ui.block.invisible();
                 let self = this,
                     data: any = {},
                     dataA4 = [],
@@ -2516,7 +2518,7 @@ module nts.uk.at.view.kmf022 {
                 };
                 //g
                 data.otRestApp7 = {
-                    appType: 7,
+                    appType: 6,
                     bonusTimeDisplayAtr: self.selectedIdG10(),
                     divergenceReasonFormAtr: self.selectedIdG12(),
                     divergenceReasonInputAtr: self.selectedIdG14(),
@@ -2618,11 +2620,11 @@ module nts.uk.at.view.kmf022 {
                 }
 
                 if (nts.uk.ui.errors.hasError() === false) {
+                    nts.uk.ui.block.grayout();
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             //Load data setting
                             self.loadData();
-
                         });
                     }).always(() => {
                         nts.uk.ui.block.clear();
@@ -2679,7 +2681,7 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             preOtTime: KnockoutObservable<number>;
             normalOtTime: KnockoutObservable<number>;
-            requiredA7_23: KnockoutObservable<boolean> = ko.observable(false);
+            requiredA7_23: KnockoutObservable<boolean>;
             constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
                 retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number, preOtTime: number, normalOtTime: number) {
                 this.companyId = ko.observable(companyId);
@@ -2692,6 +2694,7 @@ module nts.uk.at.view.kmf022 {
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
                 this.preOtTime = ko.observable(preOtTime);
                 this.normalOtTime = ko.observable(normalOtTime);
+                this.requiredA7_23 = ko.observable(retrictPreMethodFlg ? false : true);
                 this.retrictPreMethodFlg.subscribe((value) => {
                     if (value == 1) {
                         nts.uk.ui.errors.clearAll();
@@ -2701,7 +2704,7 @@ module nts.uk.at.view.kmf022 {
                         this.requiredA7_23(true);
                         $('#a7_23').trigger("validate");
                         $('#a7_23_2').trigger("validate");
-                        $('#a7_23_3').trigger("validate");
+                        $('#a7_23_3').trigger("validate");  
                     }
                 });
                 this.preOtTime.subscribe((value) => {

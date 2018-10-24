@@ -7,7 +7,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.screen.com.app.command.company.Cmm001AddCommand;
 import nts.uk.screen.com.app.command.company.Cmm001AddCommandHandler;
 import nts.uk.screen.com.app.command.company.Cmm001DeleteCommand;
@@ -16,6 +18,9 @@ import nts.uk.screen.com.app.command.company.Cmm001UpdateCommand;
 import nts.uk.screen.com.app.command.company.Cmm001UpdateCommandHandler;
 import nts.uk.screen.com.app.repository.company.CompanyQueryDto;
 import nts.uk.screen.com.app.repository.company.CompanyQueryRepository;
+import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 
  * @author yennth
@@ -73,6 +78,14 @@ public class Cmm001WebService extends WebService{
 	@POST
 	@Path("findAll")
 	public List<CompanyQueryDto> findAll() {
-		return this.companyQueryRepo.findAll();
+		if (StringUtils.isBlank(AppContexts.user().roles().forSystemAdmin()) &&
+				StringUtils.isBlank(AppContexts.user().roles().forGroupCompaniesAdmin())) {
+			throw new BusinessException("Msg_1103");
+		}
+		List<CompanyQueryDto> rs = companyQueryRepo.findAll();
+		if (CollectionUtil.isEmpty(rs)) {
+			throw new BusinessException("Msg_1103");
+		}
+		return rs;
 	}
 }

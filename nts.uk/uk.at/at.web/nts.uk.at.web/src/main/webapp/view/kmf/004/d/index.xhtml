@@ -69,8 +69,9 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td colspan="2">                                
-								<div class="provision-cbx" data-bind="ntsCheckBox: { checked: provisionCheck, enable: provisionDeactive }">#{i18n.getText('KMF004_61')}</div>
+							<td colspan="2" data-bind="if:lstGrantDate().length>0">
+								<div class="provision-cbx"
+									data-bind="ntsCheckBox: { checked: provisionCheck, enable: provisionActive }">#{i18n.getText('KMF004_61')}</div>
 							</td>
 						</tr>
 					</table>

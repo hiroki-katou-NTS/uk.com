@@ -18,9 +18,8 @@
 		<ui:define name="content">
 			<div id="content-area" class="body">
 				<div id="functions-area-bottom">
-					<button id="d1_25" class="x-large bg-daily-reflect-application"
+					<button id="d1_25" class="x-large proceed"
 						data-bind="click: submit">#{i18n.getText('CCG013_54')}</button>
-					<span style="padding: 0 20px;"></span>
 					<button id="d1_26" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_55')}</button>
 				</div>
 
@@ -59,6 +58,7 @@
 								optionsValue: 'primaryKey',
 								columns: columns,
 								multiple: true,
+								rows: 12,
 								value: currentCodeList}">
 						</table>
 					</div>
@@ -83,6 +83,7 @@
 								optionsValue: 'primaryKey',
 								columns: newColumns,
 								multiple: true,
+								rows: 12,
 								value: newCurrentCodeList}">
 						</table>
 					</div>

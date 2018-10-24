@@ -10,9 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -47,6 +51,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -70,7 +75,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ClosureOfDaily
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
@@ -87,6 +91,9 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -138,6 +145,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -147,6 +155,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -156,14 +168,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomainService {
 
 	@Inject
 	private WorkInformationRepository workInformationRepository;
-
 
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
@@ -245,84 +256,59 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private DeleteWorkInfoOfDaiPerService deleteWorkInfoOfDaiPerService;
-	
+
 	@Inject
 	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
-	
+
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-	
+
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
-	
+
 	@Inject
 	private AttendanceTimeRepository attendanceTimeRepository;
-	
+
 	@Inject
 	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
-	
+
 	@Inject
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
 
-	@Override
-	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport, Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem, Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			PeriodInMasterList periodInMasterList) {
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 
-		// pharse 2
-		// start --
-		// ドメインモデル「日別実績の勤務情報」を削除する - rerun
-		if (reCreateAttr == ExecutionType.RERUN) {
-			this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+	@Inject
+	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
+	
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
+	
+	@Inject
+	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
 
-			this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport, stampReflectionManagement,
-					mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
-		} else {
-			// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
-			if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
+	@Resource
+	private SessionContext scContext;
 
-				this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
-						stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
-			} else {
-				// 勤務種別変更時に再作成する
-				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType);
+	private ReflectWorkInforDomainService self;
 
-				if (exitStatus == ExitStatus.RECREATE) {
-					this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
-
-					this.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
-							stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
-				} else {
-					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, day).get();	
-					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
-					NewReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day,
-							workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
-							reCreateAttr,Optional.empty(),Optional.empty(),Optional.empty());
-//					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
-//							stampOutput, null, workInfoOfDailyPerformance,
-//							null, null, null, null);
-					if (stampOutput.getErrMesInfos().isEmpty()) {
-						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
-								stampOutput.getReflectStampOutput(), null, existsDailyInfo? null:workInfoOfDailyPerformance/*既に勤務情報が存在する場合は更新しない*/,
-								null, null, null, null);
-					} else {
-						stampOutput.getErrMesInfos().forEach(action -> {
-							this.errMessageInfoRepository.add(action);
-						});
-					}					
-				}
-			}
-		}
+	@PostConstruct
+	public void init() {
+		// Get self.
+		this.self = scContext.getBusinessObject(ReflectWorkInforDomainService.class);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
-	public void reflectWorkInformationWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement) {
+	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, boolean reCreateWorkPlace,
+			EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 
 		// pharse 2
 		// start --
@@ -330,33 +316,42 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (reCreateAttr == ExecutionType.RERUN) {
 			this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
 
-			this.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, stampReflectionManagement);
+			this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
+					employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
+					periodInMasterList);
 		} else {
 			// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 			if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
 
-				this.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, stampReflectionManagement);
+				this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
+						employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
+						mapDateHistoryItem, periodInMasterList);
 			} else {
 				// 勤務種別変更時に再作成する
-				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType);
+				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType , reCreateWorkPlace);
 
 				if (exitStatus == ExitStatus.RECREATE) {
 					this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
 
-					this.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, stampReflectionManagement);
+					this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
+							employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
+							mapDateHistoryItem, periodInMasterList);
 				} else {
-					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository.find(employeeId, day).get();	
+					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
+							.find(employeeId, day).get();
 					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
-					NewReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeId, day,
-							workInfoOfDailyPerformance, null, empCalAndSumExecLogID,
-							reCreateAttr,Optional.empty(),Optional.empty(),Optional.empty());
-//					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
-//							stampOutput, null, workInfoOfDailyPerformance,
-//							null, null, null, null);
+					NewReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+							employeeId, day, workInfoOfDailyPerformance, null, empCalAndSumExecLogID, reCreateAttr,
+							Optional.empty(), Optional.empty(), Optional.empty());
+					// this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId,
+					// employeeId, day,
+					// stampOutput, null, workInfoOfDailyPerformance,
+					// null, null, null, null);
 					if (stampOutput.getErrMesInfos().isEmpty()) {
-						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId, day,
-								stampOutput.getReflectStampOutput(), null, existsDailyInfo? null:workInfoOfDailyPerformance/*既に勤務情報が存在する場合は更新しない*/,
-								null, null, null, null);
+						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId,
+								day, stampOutput.getReflectStampOutput(), null,
+								existsDailyInfo ? null : workInfoOfDailyPerformance/* 既に勤務情報が存在する場合は更新しない */, null,
+								null, null, null);
 					} else {
 						stampOutput.getErrMesInfos().forEach(action -> {
 							this.errMessageInfoRepository.add(action);
@@ -367,29 +362,88 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 	}
 
-	private void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@Override
+	public void reflectWorkInformationWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType , boolean reCreateWorkPlace ,
+			Optional<StampReflectionManagement> stampReflectionManagement) {
+
+		// pharse 2
+		// start --
+		// ドメインモデル「日別実績の勤務情報」を削除する - rerun
+		if (reCreateAttr == ExecutionType.RERUN) {
+			this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+
+			this.self.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr,
+					reCreateWorkType, stampReflectionManagement);
+		} else {
+			// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
+			if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
+
+				this.self.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr,
+						reCreateWorkType, stampReflectionManagement);
+			} else {
+				// 勤務種別変更時に再作成する
+				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType , reCreateWorkPlace);
+
+				if (exitStatus == ExitStatus.RECREATE) {
+					this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+
+					this.self.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr,
+							reCreateWorkType, stampReflectionManagement);
+				} else {
+					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
+							.find(employeeId, day).get();
+					Boolean existsDailyInfo = workInfoOfDailyPerformance != null;
+					NewReflectStampOutput stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+							employeeId, day, workInfoOfDailyPerformance, null, empCalAndSumExecLogID, reCreateAttr,
+							Optional.empty(), Optional.empty(), Optional.empty());
+					// this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId,
+					// employeeId, day,
+					// stampOutput, null, workInfoOfDailyPerformance,
+					// null, null, null, null);
+					if (stampOutput.getErrMesInfos().isEmpty()) {
+						this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeId,
+								day, stampOutput.getReflectStampOutput(), null,
+								existsDailyInfo ? null : workInfoOfDailyPerformance/* 既に勤務情報が存在する場合は更新しない */, null,
+								null, null, null);
+					} else {
+						stampOutput.getErrMesInfos().forEach(action -> {
+							this.errMessageInfoRepository.add(action);
+						});
+					}
+				}
+			}
+		}
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@Override
+	public void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
 			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement, 
+			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			PeriodInMasterList periodInMasterList) {
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 		// 勤務種別を反映する
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(employeeId, day, empCalAndSumExecLogID);
+		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
+				empCalAndSumExecLogID);
 
 		if (workTypeOfDailyPerformance != null) {
-			
+
 			// 所属情報を反映する
 			val affiliationInforOfDailyPerforState = createAffiliationInforState(companyId, employeeId, day,
-			empCalAndSumExecLogID, employeeGeneralInfoImport);
+					empCalAndSumExecLogID, employeeGeneralInfoImport);
 
-//			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
-//					empCalAndSumExecLogID);
+			// val affiliationInforOfDailyPerforState =
+			// createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
+			// empCalAndSumExecLogID);
 
 			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
 				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
-						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, mapDateHistoryItem, mapWorkingConditionItem, periodInMasterList);
+						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, mapDateHistoryItem,
+						mapWorkingConditionItem, periodInMasterList);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -398,15 +452,20 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 	}
 
-	private void reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@Override
+	public void reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			Optional<StampReflectionManagement> stampReflectionManagement) {
 		// 勤務種別を反映する
-		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(employeeId, day, empCalAndSumExecLogID);
+		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
+				empCalAndSumExecLogID);
 
 		if (workTypeOfDailyPerformance != null) {
-			
-//			val affiliationInforOfDailyPerforState = createAffiliationInforState(companyId, employeeId, day,
-//			empCalAndSumExecLogID, employeeGeneralInfoImport);
+
+			// val affiliationInforOfDailyPerforState =
+			// createAffiliationInforState(companyId, employeeId, day,
+			// empCalAndSumExecLogID, employeeGeneralInfoImport);
 
 			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
 					empCalAndSumExecLogID);
@@ -415,7 +474,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
 				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
-						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, null, null , null);
+						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, null, null, null);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -423,9 +482,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			}
 		}
 	}
-	
+
 	/**
 	 * 所属情報を反映する
+	 * 
 	 * @param companyId
 	 * @param employeeId
 	 * @param day
@@ -434,28 +494,28 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * @return
 	 */
 	@Override
-	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
-			GeneralDate day, String empCalAndSumExecLogID, EmployeeGeneralInfoImport employeeGeneralInfoImport){
+	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, EmployeeGeneralInfoImport employeeGeneralInfoImport) {
 
 		// employment
-		Map<String, List<ExEmploymentHistItemImport>> mapEmploymentHist = employeeGeneralInfoImport.getEmploymentHistoryImports().stream()
-				.collect(Collectors.toMap(ExEmploymentHistoryImport::getEmployeeId,
-						ExEmploymentHistoryImport::getEmploymentItems));
-		
+		Map<String, List<ExEmploymentHistItemImport>> mapEmploymentHist = employeeGeneralInfoImport
+				.getEmploymentHistoryImports().stream().collect(Collectors.toMap(
+						ExEmploymentHistoryImport::getEmployeeId, ExEmploymentHistoryImport::getEmploymentItems));
+
 		Optional<ExEmploymentHistItemImport> employmentHistItemImport = Optional.empty();
 		List<ExEmploymentHistItemImport> exEmploymentHistItemImports = mapEmploymentHist.get(employeeId);
 		if (exEmploymentHistItemImports != null) {
 			employmentHistItemImport = exEmploymentHistItemImports.stream()
-					.filter(empHistItem -> empHistItem.getPeriod().contains(day)).findFirst();	
+					.filter(empHistItem -> empHistItem.getPeriod().contains(day)).findFirst();
 		}
-		
+
 		// classification
 		Map<String, List<ExClassificationHistItemImport>> mapClassificationHist = employeeGeneralInfoImport
 				.getExClassificationHistoryImports().stream()
 				.collect(Collectors.toMap(ExClassificationHistoryImport::getEmployeeId,
 						ExClassificationHistoryImport::getClassificationItems));
-		
-		Optional<ExClassificationHistItemImport> classificationHistItemImport  = Optional.empty();
+
+		Optional<ExClassificationHistItemImport> classificationHistItemImport = Optional.empty();
 		List<ExClassificationHistItemImport> exClassificationHistItemImports = mapClassificationHist.get(employeeId);
 		if (exClassificationHistItemImports != null) {
 			classificationHistItemImport = exClassificationHistItemImports.stream()
@@ -463,29 +523,29 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 		// Job title
-		Map<String, List<ExJobTitleHistItemImport>> mapJobTitleHist = employeeGeneralInfoImport.getExJobTitleHistoryImports().stream()
-				.collect(Collectors.toMap(ExJobTitleHistoryImport::getEmployeeId,
+		Map<String, List<ExJobTitleHistItemImport>> mapJobTitleHist = employeeGeneralInfoImport
+				.getExJobTitleHistoryImports().stream().collect(Collectors.toMap(ExJobTitleHistoryImport::getEmployeeId,
 						ExJobTitleHistoryImport::getJobTitleItems));
-		
+
 		Optional<ExJobTitleHistItemImport> jobTitleHistItemImport = Optional.empty();
 		List<ExJobTitleHistItemImport> exJobTitleHistItemImports = mapJobTitleHist.get(employeeId);
 		if (exJobTitleHistItemImports != null) {
-			jobTitleHistItemImport = exJobTitleHistItemImports.stream()
-					.filter(item -> item.getPeriod().contains(day)).findFirst();
+			jobTitleHistItemImport = exJobTitleHistItemImports.stream().filter(item -> item.getPeriod().contains(day))
+					.findFirst();
 		}
 
 		// workPlace
-		Map<String, List<ExWorkplaceHistItemImport>> mapWorkplaceHist = employeeGeneralInfoImport.getExWorkPlaceHistoryImports().stream()
-				.collect(Collectors.toMap(ExWorkPlaceHistoryImport::getEmployeeId,
-						ExWorkPlaceHistoryImport::getWorkplaceItems));
-		
+		Map<String, List<ExWorkplaceHistItemImport>> mapWorkplaceHist = employeeGeneralInfoImport
+				.getExWorkPlaceHistoryImports().stream().collect(Collectors
+						.toMap(ExWorkPlaceHistoryImport::getEmployeeId, ExWorkPlaceHistoryImport::getWorkplaceItems));
+
 		Optional<ExWorkplaceHistItemImport> workplaceHistItemImport = Optional.empty();
 		List<ExWorkplaceHistItemImport> exWorkplaceHistItemImports = mapWorkplaceHist.get(employeeId);
 		if (exWorkplaceHistItemImports != null) {
-			workplaceHistItemImport = exWorkplaceHistItemImports.stream()
-					.filter(item -> item.getPeriod().contains(day)).findFirst();
+			workplaceHistItemImport = exWorkplaceHistItemImports.stream().filter(item -> item.getPeriod().contains(day))
+					.findFirst();
 		}
-		
+
 		// Get Data
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 		// 存在しない - no data
@@ -514,20 +574,27 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			errMesInfos.add(employmentErrMes);
 		}
 		// 存在する - has data
-		if (employmentHistItemImport.isPresent() && workplaceHistItemImport.isPresent() && classificationHistItemImport.isPresent()
-				&& jobTitleHistItemImport.isPresent()) {
+		if (employmentHistItemImport.isPresent() && workplaceHistItemImport.isPresent()
+				&& classificationHistItemImport.isPresent() && jobTitleHistItemImport.isPresent()) {
 			return new AffiliationInforState(Collections.emptyList(),
 					Optional.of(new AffiliationInforOfDailyPerfor(
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()), employeeId,
-							jobTitleHistItemImport.get().getJobTitleId(), workplaceHistItemImport.get().getWorkplaceId(), day,
+							jobTitleHistItemImport.get().getJobTitleId(),
+							workplaceHistItemImport.get().getWorkplaceId(), day,
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()), null)));
 		} else {
+			// #日別作成修正 2018/07/17 前川 隼大
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 			return new AffiliationInforState(errMesInfos, Optional.empty());
 		}
 	}
 
 	public ExitStatus reCreateWorkType(String employeeId, GeneralDate day, String empCalAndSumExecLogID,
-			boolean reCreateWorkType) {
+			boolean reCreateWorkType ,boolean reCreateWorkPlace) {
 		ExitStatus exitStatus = ExitStatus.DO_NOT_RECREATE;
 
 		/**
@@ -537,7 +604,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// 社員の勤務種別を取得する
 			// 対応するドメインモデル「社員の勤務種別の履歴」を取得する
 			Optional<BusinessTypeOfEmployeeHistory> businessTypeOfEmployeeHistory = this.businessTypeEmpOfHistoryRepository
-					.findByBaseDate(day, employeeId);			
+					.findByBaseDate(day, employeeId);
 
 			if (businessTypeOfEmployeeHistory.isPresent()) {
 				String historyId = businessTypeOfEmployeeHistory.get().getHistory().get(0).identifier();
@@ -559,7 +626,23 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						return exitStatus;
 					} else {
 						if (businessTypeOfEmployee.get().getBusinessTypeCode()
-								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {
+								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {							
+							// パラメータ「異動時に再作成」を確認する
+							// check reCreateWorkPlace
+							if (reCreateWorkPlace == true) {
+								// ReqL30 :
+								Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
+								
+								Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, day);
+								
+								if (workPlaceHasData.isPresent() && affiliationInfo.isPresent()) {
+									if (!workPlaceHasData.get().getWorkplaceId().equals(affiliationInfo.get().getWplID())) {
+										exitStatus = ExitStatus.RECREATE;
+										return exitStatus;
+									}
+								}
+							}
+							
 							return exitStatus;
 						} else {
 							exitStatus = ExitStatus.RECREATE;
@@ -576,6 +659,22 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				this.errMessageInfoRepository.addList(errMesInfos);
 				return exitStatus;
 			}
+		} else {
+			// パラメータ「異動時に再作成」を確認する
+			// check reCreateWorkPlace
+			if (reCreateWorkPlace == true) {
+				// ReqL30 :
+				Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
+				
+				Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, day);
+				
+				if (workPlaceHasData.isPresent() && affiliationInfo.isPresent()) {
+					if (!workPlaceHasData.get().getWorkplaceId().equals(affiliationInfo.get().getWplID())) {
+						exitStatus = ExitStatus.RECREATE;
+						return exitStatus;
+					}
+				}
+			}
 		}
 
 		return exitStatus;
@@ -589,7 +688,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * @return WorkTypeOfDailyPerformance
 	 */
 	@Override
-	public WorkTypeOfDailyPerformance reflectWorkType(String employeeId, GeneralDate day,
+	public WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID) {
 
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
@@ -609,6 +708,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						businessTypeOfEmployee.get().getBusinessTypeCode().v());
 				return workTypeOfDailyPerformance;
 			} else {
+				// #日別作成修正 2018/07/17 前川 隼大
+				// 社員の日別実績のエラーを作成する
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+						new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+				this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 						new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 						new ErrMessageContent(TextResource.localize("Msg_1010")));
@@ -617,6 +722,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				return null;
 			}
 		} else {
+			// #日別作成修正 2018/07/17 前川 隼大
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 					new ErrMessageContent(TextResource.localize("Msg_1010")));
@@ -691,14 +802,22 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(), day,
 							new ClassificationCode(classificationHasData.get().getClassificationCode()), null)));
 		} else {
+			// #日別作成修正 2018/07/17 前川 隼大
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 			return new AffiliationInforState(errMesInfos, Optional.empty());
 		}
 	}
 
 	private void workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
 			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, ExecutionType reCreateAttr,
-			WorkTypeOfDailyPerformance workTypeOfDailyPerformance, boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem ,
+			WorkTypeOfDailyPerformance workTypeOfDailyPerformance, boolean reCreateWorkType,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			PeriodInMasterList periodInMasterList) {
 
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
@@ -721,16 +840,21 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			workingConditionItem = this.workingConditionItemRepository.getBySidAndStandardDate(employeeID, day);
 		} else {
 			String historyId = this.getHistByDay(mapDateHistoryItem, employeeID, day);
-			
+
 			if (historyId != null) {
 				if (mapWorkingConditionItem.get(employeeID) != null) {
-					workingConditionItem = Optional
-							.ofNullable(mapWorkingConditionItem.get(employeeID).get(historyId));
-				}				
-			}			
+					workingConditionItem = Optional.ofNullable(mapWorkingConditionItem.get(employeeID).get(historyId));
+				}
+			}
 		}
 
 		if (!workingConditionItem.isPresent() || workingConditionItem.get() == null) {
+			// #日別作成修正 2018/07/17 前川 隼大
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID, day,
+					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 					new ErrMessageResource("005"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 					new ErrMessageContent(TextResource.localize("Msg_430")));
@@ -752,6 +876,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 取得したImported(就業.勤務実績)「勤務予定基本情報」が存在するか確認する
 				// 存在しない - no data
 				if (!basicScheduleHasData.isPresent()) {
+					// #日別作成修正 2018/07/17 前川 隼大
+					// 社員の日別実績のエラーを作成する
+					EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID, day,
+							new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+					this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 							new ErrMessageResource("006"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 							new ErrMessageContent(TextResource.localize(TextResource.localize("Msg_431"))));
@@ -767,97 +897,157 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					workInfoOfDailyPerformanceUpdate
 							.setRecordInfo(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
 									basicScheduleHasData.get().getWorkTypeCode()));
-					
-					//ドメインモデル「勤務種類」を取得する 
-					// TODO
 
-					// 1日半日出勤・1日休日系の判定
-					WorkStyle workStyle = basicScheduleService
-							.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
+					// ドメインモデル「勤務種類」を取得する
+					Optional<WorkType> workTypeOpt = this.workTypeRepository.findByDeprecated(companyId,
+							workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 
-					if (workStyle != WorkStyle.ONE_DAY_REST) {
+					if (!workTypeOpt.isPresent()) {
+						// #日別作成修正 2018/07/17 前川 隼大
+						// 社員の日別実績のエラーを作成する
+						EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID,
+								day, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+						this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
 
-						// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
-						List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get()
-								.getWorkScheduleSidImports();
-						// 存在しない - no data
-						if (workScheduleHasData.isEmpty()) {
-							ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
-									new ErrMessageResource("007"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-									new ErrMessageContent(TextResource.localize("Msg_432")));
-							errMesInfos.add(employmentErrMes);
+						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+								new ErrMessageResource("015"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+								new ErrMessageContent(TextResource.localize("Msg_590")));
+						errMesInfos.add(employmentErrMes);
 
-							this.errMessageInfoRepository.addList(errMesInfos);
-						} else {
-							// copy information for employeeId has data
-							List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
-							workScheduleHasData.forEach(items -> {
-
-								if (items.getBounceAtr() == 3) {
-									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-								} else if (items.getBounceAtr() == 2) {
-									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
-								} else if (items.getBounceAtr() == 0) {
-									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
-									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-								} else if (items.getBounceAtr() == 1) {
-									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
-									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
-								}
-
-								ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(items.getScheduleCnt(),
-										items.getScheduleStartClock(), items.getScheduleEndClock());
-								scheduleTimeSheets.add(scheduleTimeSheet);
-							});
-
-							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
-
-							// 勤務予定の休憩時間帯を日別実績に写す
-							breakTimeOfDailyPerformance = this.breakTimeOfDailyPerformanceRepository.find(employeeID,
-									day, 1);
-
-							// Imported「勤務予定休憩時間帯」を取得する
-							List<WorkBreakTimeImport> workBreakTimeImportList = this.basicScheduleAdapter
-									.findWorkBreakTime(employeeID, day);
-
-							if (workBreakTimeImportList != null && !workBreakTimeImportList.isEmpty()) {
-								// List<BreakTimeSheet> breakTimeSheets =
-								// workBreakTimeImportList.stream().map(item ->
-								// {
-								// BreakTimeSheet breakTimeSheet = new
-								// BreakTimeSheet(
-								// new BreakFrameNo(item.getScheduleBreakCnt()),
-								// item.getScheduledStartClock(),
-								// item.getScheduledEndClock(), new
-								// AttendanceTime(0));
-								// return breakTimeSheet;
-								// }).collect(Collectors.toList());
-
-								List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
-								int breakFrameNo = 1;
-								for (WorkBreakTimeImport workBreakTimeImport : workBreakTimeImportList) {
-									BreakTimeSheet breakTimeSheet = new BreakTimeSheet(new BreakFrameNo(breakFrameNo),
-											workBreakTimeImport.getScheduledStartClock(),
-											workBreakTimeImport.getScheduledEndClock(), new AttendanceTime(0));
-									breakTimeSheets.add(breakTimeSheet);
-									breakFrameNo++;
-								}
-
-								BreakTimeOfDailyPerformance breakTimeOfDailyPerformanceUpdate = new BreakTimeOfDailyPerformance(
-										employeeID, EnumAdaptor.valueOf(1, BreakType.class), breakTimeSheets, day);
-								breakTimeOfDailyPerformance = Optional.of(breakTimeOfDailyPerformanceUpdate);
-							}
-						}
+						this.errMessageInfoRepository.addList(errMesInfos);
 					} else {
-						workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-						workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-						workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(null);
+
+						// 1日半日出勤・1日休日系の判定
+						WorkStyle workStyle = basicScheduleService
+								.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
+
+						if (workStyle != WorkStyle.ONE_DAY_REST) {
+
+							// ドメインモデル「就業時間帯の設定」を取得する
+							Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository
+									.findByCodeAndAbolishCondition(companyId,
+											workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(),
+											AbolishAtr.NOT_ABOLISH);
+
+							if (!workTimeOpt.isPresent()) {
+								// #日別作成修正 2018/07/17 前川 隼大
+								// 社員の日別実績のエラーを作成する
+								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+										employeeID, day, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+								this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
+								ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+										new ErrMessageResource("016"), EnumAdaptor.valueOf(0, ExecutionContent.class),
+										day, new ErrMessageContent(TextResource.localize("Msg_591")));
+								errMesInfos.add(employmentErrMes);
+
+								this.errMessageInfoRepository.addList(errMesInfos);
+							} else {
+
+								// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
+								List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get()
+										.getWorkScheduleSidImports();
+								// 存在しない - no data
+								if (workScheduleHasData.isEmpty()) {
+									// #日別作成修正 2018/07/17 前川 隼大
+									// 社員の日別実績のエラーを作成する
+									EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+											employeeID, day, new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+									this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
+									ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID,
+											empCalAndSumExecLogID, new ErrMessageResource("007"),
+											EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+											new ErrMessageContent(TextResource.localize("Msg_432")));
+									errMesInfos.add(employmentErrMes);
+
+									this.errMessageInfoRepository.addList(errMesInfos);
+								} else {
+									// copy information for employeeId has data
+									List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+									workScheduleHasData.forEach(items -> {
+
+										if (items.getBounceAtr() == 0) {
+											workInfoOfDailyPerformanceUpdate
+													.setBackStraightAtr(NotUseAttribute.Not_use);
+											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+										} else if (items.getBounceAtr() == 1) {
+											workInfoOfDailyPerformanceUpdate
+													.setBackStraightAtr(NotUseAttribute.Not_use);
+											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+										} else if (items.getBounceAtr() == 2) {
+											workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
+											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+										} else if (items.getBounceAtr() == 3) {
+											workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
+											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+										}
+
+										ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(
+												items.getScheduleCnt(), items.getScheduleStartClock(),
+												items.getScheduleEndClock());
+										scheduleTimeSheets.add(scheduleTimeSheet);
+									});
+
+									workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
+
+									// 勤務予定の休憩時間帯を日別実績に写す
+									breakTimeOfDailyPerformance = this.breakTimeOfDailyPerformanceRepository
+											.find(employeeID, day, 1);
+
+									// Imported「勤務予定休憩時間帯」を取得する
+									List<WorkBreakTimeImport> workBreakTimeImportList = this.basicScheduleAdapter
+											.findWorkBreakTime(employeeID, day);
+
+									if (workBreakTimeImportList != null && !workBreakTimeImportList.isEmpty()) {
+										// List<BreakTimeSheet> breakTimeSheets
+										// =
+										// workBreakTimeImportList.stream().map(item
+										// ->
+										// {
+										// BreakTimeSheet breakTimeSheet = new
+										// BreakTimeSheet(
+										// new
+										// BreakFrameNo(item.getScheduleBreakCnt()),
+										// item.getScheduledStartClock(),
+										// item.getScheduledEndClock(), new
+										// AttendanceTime(0));
+										// return breakTimeSheet;
+										// }).collect(Collectors.toList());
+
+										List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+										int breakFrameNo = 1;
+										for (WorkBreakTimeImport workBreakTimeImport : workBreakTimeImportList) {
+											BreakTimeSheet breakTimeSheet = new BreakTimeSheet(
+													new BreakFrameNo(breakFrameNo),
+													workBreakTimeImport.getScheduledStartClock(),
+													workBreakTimeImport.getScheduledEndClock(), new AttendanceTime(0));
+											breakTimeSheets.add(breakTimeSheet);
+											breakFrameNo++;
+										}
+
+										BreakTimeOfDailyPerformance breakTimeOfDailyPerformanceUpdate = new BreakTimeOfDailyPerformance(
+												employeeID, EnumAdaptor.valueOf(1, BreakType.class), breakTimeSheets,
+												day);
+										breakTimeOfDailyPerformance = Optional.of(breakTimeOfDailyPerformanceUpdate);
+									}
+								}
+							}
+						} else {
+							workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
+							workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(new ArrayList<>());
+						}
 					}
 				}
 
 			} else {
+				// #日別作成修正 2018/07/17 前川 隼大
+				// 社員の日別実績のエラーを作成する
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeID, day,
+						new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+				this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
 				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
 						new ErrMessageResource("012"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
 						new ErrMessageContent(TextResource.localize("Msg_1120")));
@@ -1004,15 +1194,21 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// }
 			}
 			if (errMesInfos.isEmpty()) {
+
+				// pharse 3
+				// #日別作成修正 2018/07/17 前川 隼大
+				// 社員の日別実績のエラーを解除する
+				this.createEmployeeDailyPerError.removeByCidSidDateAndErrorCode(companyId, employeeID, day, "S025");
+
 				// pharse 2 start ----
 				// 特定日を日別実績に反映する
 				SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = reflectSpecificDate(companyId, employeeID,
 						day, affiliationInforOfDailyPerfor.getWplID(), periodInMasterList);
 
 				// 加給設定を日別実績に反映する
-				Optional<BonusPaySetting> bonusPaySetting = this.reflectBonusSettingDailyPer(companyId, employeeID, day, 
-						workInfoOfDailyPerformanceUpdate, affiliationInforOfDailyPerfor, periodInMasterList); 
-				
+				Optional<BonusPaySetting> bonusPaySetting = this.reflectBonusSettingDailyPer(companyId, employeeID, day,
+						workInfoOfDailyPerformanceUpdate, affiliationInforOfDailyPerfor, periodInMasterList);
+
 				if (bonusPaySetting.isPresent()) {
 					affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor(
 							affiliationInforOfDailyPerfor.getEmploymentCode(),
@@ -1031,17 +1227,20 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				WorkStyle workStyle = basicScheduleService
 						.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 				if (workStyle != WorkStyle.ONE_DAY_REST) {
-					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, null,
-							employeeID, day, stampReflectionManagement);
+					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId,
+							workInfoOfDailyPerformanceUpdate, workingConditionItem, null, employeeID, day,
+							stampReflectionManagement);
 					// check tay
 					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
-							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,
-							reCreateAttr,Optional.of(calAttrOfDailyPerformance),Optional.of(affiliationInforOfDailyPerfor),Optional.empty());
+							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID, reCreateAttr,
+							Optional.of(calAttrOfDailyPerformance), Optional.of(affiliationInforOfDailyPerfor),
+							Optional.empty());
 				}
 				if (stampOutput.getErrMesInfos() == null || stampOutput.getErrMesInfos().isEmpty()) {
 					this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyId, employeeID, day,
-							stampOutput.getReflectStampOutput(), affiliationInforOfDailyPerfor, workInfoOfDailyPerformanceUpdate,
-							specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, workTypeOfDailyPerformance,
+							stampOutput.getReflectStampOutput(), affiliationInforOfDailyPerfor,
+							workInfoOfDailyPerformanceUpdate, specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance,
+							workTypeOfDailyPerformance,
 							breakTimeOfDailyPerformance.isPresent() ? breakTimeOfDailyPerformance.get() : null);
 				} else {
 					stampOutput.getErrMesInfos().forEach(action -> {
@@ -1050,19 +1249,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 			}
 		}
-	}	
-	
+	}
+
 	// Get history by day
 	private String getHistByDay(Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, String employeeId,
 			GeneralDate day) {
-		if (mapDateHistoryItem.get(employeeId) == null || mapDateHistoryItem.get(employeeId).entrySet().stream().filter(item -> item.getValue().contains(day))
-				.findFirst().get() == null) {
+		if (mapDateHistoryItem.get(employeeId) == null || !mapDateHistoryItem.get(employeeId).entrySet().stream()
+				.filter(item -> item.getValue().contains(day)).findFirst().isPresent()) {
 			return null;
 		}
 		return mapDateHistoryItem.get(employeeId).entrySet().stream().filter(item -> item.getValue().contains(day))
 				.findFirst().get().getKey();
 	}
-	
+
 	/**
 	 * 特定日を日別実績に反映する
 	 * 
@@ -1075,17 +1274,21 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Override
 	public SpecificDateAttrOfDailyPerfor reflectSpecificDate(String companyId, String employeeId, GeneralDate day,
 			String workPlaceID, PeriodInMasterList periodInMasterList) {
-		List<MasterList> masterLists = periodInMasterList.getMasterLists();
-		Optional<MasterList> newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
-		
+		List<MasterList> masterLists = new ArrayList<>();
+		Optional<MasterList> newMasterLists = Optional.empty();
+		if (periodInMasterList != null) {
+			masterLists = periodInMasterList.getMasterLists();
+			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
+		}
+
 		RecSpecificDateSettingImport specificDateSettingImport = new RecSpecificDateSettingImport();
-		if(newMasterLists.isPresent() && newMasterLists.get().getSpecificDateSettingImport().isPresent()){
+		if (newMasterLists.isPresent() && newMasterLists.get().getSpecificDateSettingImport().isPresent()) {
 			specificDateSettingImport = newMasterLists.get().getSpecificDateSettingImport().get();
 		} else {
-			specificDateSettingImport = this.recSpecificDateSettingAdapter
-					.specificDateSettingService(companyId, workPlaceID, day);
+			specificDateSettingImport = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
+					workPlaceID, day);
 		}
-		
+
 		List<SpecificDateAttrSheet> specificDateAttrSheets = new ArrayList<>();
 		for (int i = 1; i < 11; i++) {
 			if (specificDateSettingImport.getNumberList().contains(i)) {
@@ -1097,7 +1300,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						SpecificDateAttr.NOT_USE);
 				specificDateAttrSheets.add(specificDateAttrSheet);
 			}
-		};
+		}
+		;
 		SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(employeeId,
 				specificDateAttrSheets, day);
 		return specificDateAttrOfDailyPerfor;
@@ -1121,12 +1325,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					|| recStatusOfEmployeeImport.getStatusOfEmployment() == 3) {
 				List<WorkType> workTypeList = this.workTypeRepository.findByCompanyId(companyId);
 				// 廃止区分＝廃止しない
-				List<WorkType> workTypeOneDayList = workTypeList.stream().filter(x -> x.isOneDay() && x.getDeprecate() == DeprecateClassification.NotDeprecated)
+				List<WorkType> workTypeOneDayList = workTypeList.stream()
+						.filter(x -> x.isOneDay() && x.getDeprecate() == DeprecateClassification.NotDeprecated)
 						.collect(Collectors.toList());
 
 				WorkType workTypeNeed = null;
 				for (WorkType workType : workTypeOneDayList) {
-					WorkTypeSet workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay);
+					Optional<WorkTypeSet> workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay);
 					if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2
 							&& WorkTypeClassification.LeaveOfAbsence == workType.getDailyWork().getOneDay()) {
 						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
@@ -1165,7 +1370,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							break;
 						}
 
-						if (closeAtr == workTypeSet.getCloseAtr().value) {
+						if (workTypeSet.isPresent() && closeAtr == workTypeSet.get().getCloseAtr().value) {
 							// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
 							workTypeNeed = workType;
 							break;
@@ -1229,26 +1434,32 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 					}
 					// to show clear attendance item
-					List<Integer> timeleavingAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
-					List<Integer> temporaryTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME);
-					List<Integer> breakTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME);
-					List<Integer> shortTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME);
-					List<Integer> attTimeAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME);
-					List<Integer> anyItemAttItemIds = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM);
-					List<Integer> attItemList =  new ArrayList<>();
-//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE));
-//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME));
-//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME));
-//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME));
-//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME));
-//					attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM));					
+					List<Integer> timeleavingAttItemIds = AttendanceItemIdContainer
+							.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
+					List<Integer> temporaryTimeAttItemIds = AttendanceItemIdContainer
+							.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME);
+					List<Integer> breakTimeAttItemIds = AttendanceItemIdContainer
+							.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME);
+					List<Integer> shortTimeAttItemIds = AttendanceItemIdContainer
+							.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME);
+					List<Integer> attTimeAttItemIds = AttendanceItemIdContainer
+							.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME);
+					List<Integer> anyItemAttItemIds = AttendanceItemIdContainer
+							.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM);
+					List<Integer> attItemList = new ArrayList<>();
+					// attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE));
+					// attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.TEMPORARY_TIME));
+					// attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME));
+					// attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME));
+					// attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDANCE_TIME));
+					// attItemList.addAll(AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.OPTIONAL_ITEM));
 					attItemList.addAll(timeleavingAttItemIds);
 					attItemList.addAll(temporaryTimeAttItemIds);
 					attItemList.addAll(breakTimeAttItemIds);
 					attItemList.addAll(shortTimeAttItemIds);
 					attItemList.addAll(attTimeAttItemIds);
 					attItemList.addAll(anyItemAttItemIds);
-					
+
 					// 休職・休業で不要なドメインモデルを削除する
 					// 日別実績のドメインモデルを削除する
 					this.timeLeavingOfDailyPerformanceRepository.delete(employeeId, day);
@@ -1263,7 +1474,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					// 日別実績の作業別勤怠時間 - TODO : has not entity
 					// 日別実績の任意項目
 					this.anyItemValueOfDailyRepo.removeByEmployeeIdAndDate(employeeId, day);
-					
+
 					// ドメインモデル「日別実績の編集状態」を削除する
 					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemList);
 				}
@@ -1280,33 +1491,36 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 */
 	@Override
 	public CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day,
-			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
-			PeriodInMasterList periodInMasterList) {
-		
+			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
+
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance();
-		
+
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId, affiliationInforOfDailyPerfor.getWplID(), day);
-		
+			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+					affiliationInforOfDailyPerfor.getWplID(), day);
+
 			// 自動計算設定の取得(get auto calculation setting)
 			BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(companyId,
-					employeeId, day, affiliationInforOfDailyPerfor.getWplID(), affiliationInforOfDailyPerfor.getJobTitleID(), Optional.of(workPlaceIdList));
-			
+					employeeId, day, affiliationInforOfDailyPerfor.getWplID(),
+					affiliationInforOfDailyPerfor.getJobTitleID(), Optional.of(workPlaceIdList));
+
 			calAttrOfDailyPerformance = this.autoCalSetting(baseAutoCalSetting, employeeId, day);
 		} else {
 			List<MasterList> masterLists = periodInMasterList.getMasterLists();
-			Optional<MasterList> newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
-			
+			Optional<MasterList> newMasterLists = masterLists.stream()
+					.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
 			BaseAutoCalSetting baseAutoCalSettingNew = newMasterLists.get().getBaseAutoCalSetting();
-			
+
 			calAttrOfDailyPerformance = this.autoCalSetting(baseAutoCalSettingNew, employeeId, day);
 		}
 		return calAttrOfDailyPerformance;
 	}
-	
-	private CalAttrOfDailyPerformance autoCalSetting(BaseAutoCalSetting baseAutoCalSetting , String employeeId, GeneralDate day){
+
+	private CalAttrOfDailyPerformance autoCalSetting(BaseAutoCalSetting baseAutoCalSetting, String employeeId,
+			GeneralDate day) {
 
 		AutoCalSetting flexExcessTime = new AutoCalSetting(
 				baseAutoCalSetting.getFlexOTTime().getFlexOtTime().getUpLimitORtSet(),
@@ -1314,7 +1528,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		AutoCalFlexOvertimeSetting autoCalFlexOvertimeSetting = new AutoCalFlexOvertimeSetting(flexExcessTime);
 
 		// 加給: 加給の自動計算設定
-		AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
+		AutoCalRaisingSalarySetting autoCalRaisingSalarySetting = new AutoCalRaisingSalarySetting(
+				baseAutoCalSetting.getRaisingSalary().isSpecificRaisingSalaryCalcAtr(),
+				baseAutoCalSetting.getRaisingSalary().isRaisingSalaryCalcAtr());
 
 		// 休出時間: 休出時間の自動計算設定
 		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(
@@ -1339,45 +1555,46 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						baseAutoCalSetting.getNormalOTTime().getLegalMidOtTime().getCalAtr()));
 
 		// //遅刻早退: 遅刻早退の自動計算設定
-		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(true,
-				true);
+		AutoCalcOfLeaveEarlySetting autoCalOfLeaveEarlySetting = new AutoCalcOfLeaveEarlySetting(
+				baseAutoCalSetting.getLeaveEarly().isLate(), baseAutoCalSetting.getLeaveEarly().isLeaveEarly());
 		// 乖離時間: 乖離時間の自動計算設定
-		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(
-				DivergenceTimeAttr.USE);
+		AutoCalcSetOfDivergenceTime autoCalcSetOfDivergenceTime = new AutoCalcSetOfDivergenceTime(EnumAdaptor
+				.valueOf(baseAutoCalSetting.getDivergenceTime().getDivergenceTime().value, DivergenceTimeAttr.class));
 
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance(employeeId, day,
 				autoCalFlexOvertimeSetting, autoCalRaisingSalarySetting, holidayTimeSetting, overtimeSetting,
 				autoCalOfLeaveEarlySetting, autoCalcSetOfDivergenceTime);
-		
+
 		return calAttrOfDailyPerformance;
-	} 
-	
+	}
+
 	private WorkInformation getWorkInfo(Optional<SingleDaySchedule> workingCondition, SingleDaySchedule category) {
 		WorkInformation recordWorkInformation;
 		if (workingCondition.isPresent()) {
 			recordWorkInformation = new WorkInformation(workingCondition.get().getWorkTimeCode().orElse(null),
-					workingCondition.get().getWorkTypeCode());
+					workingCondition.get().getWorkTypeCode().orElse(null));
 		} else {
 			recordWorkInformation = new WorkInformation(category.getWorkTimeCode().orElse(null),
-					category.getWorkTypeCode());
+					category.getWorkTypeCode().orElse(null));
 		}
 		return recordWorkInformation;
 	}
 
 	@Override
-	public TimeLeavingOfDailyPerformance createStamp(String companyId, WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
+	public TimeLeavingOfDailyPerformance createStamp(String companyId,
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,
 			String employeeID, GeneralDate day, Optional<StampReflectionManagement> stampReflectionManagement) {
-		
+
 		if (timeLeavingOptional == null) {
 			// 日別実績の出退勤
-			timeLeavingOptional = new TimeLeavingOfDailyPerformance();			
+			timeLeavingOptional = new TimeLeavingOfDailyPerformance();
 		}
-		
+
 		// ドメインモデル「打刻反映管理」を取得する
-		if (stampReflectionManagement == null ) {
+		if (stampReflectionManagement == null) {
 			stampReflectionManagement = this.stampReflectionManagementRepository.findByCid(companyId);
-		}		
+		}
 
 		// 自動打刻セットする - set new 自動打刻セット詳細
 		// 自動打刻セット詳細をクリア
@@ -1434,18 +1651,32 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						// 出勤
 						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
-								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get();
+								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
+										? stampSet.getRoundingSets().stream()
+												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
+												.get()
+										: null;
 
-						int attendanceTimeAfterRouding = this.roudingTime(sheet.getAttendance().v(),
+						int attendanceTimeAfterRouding = atendanceRoundingSet != null ? this.roudingTime(
+								sheet.getAttendance().v(),
 								atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
 								new Integer(atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
-										.intValue());
+										.intValue())
+								: sheet.getAttendance().v();
 						// 退勤
 						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
-								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get();
-						int leaveTimeAfterRounding = this.roudingTime(sheet.getLeaveWork().v(),
+								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
+										? stampSet.getRoundingSets().stream()
+												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
+												.findFirst().get()
+										: null;
+
+						int leaveTimeAfterRounding = leavingRoundingSet != null ? this.roudingTime(
+								sheet.getLeaveWork().v(),
 								leavingRoundingSet.getRoundingSet().getFontRearSection().value,
-								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description).intValue());
+								new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description)
+										.intValue())
+								: sheet.getLeaveWork().v();
 
 						// ドメインモデル「所属職場履歴」を取得する
 						attendanceStampTemp
@@ -1474,13 +1705,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 
 						// 所定時間帯を取得する
-						Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
-								.findByWorkTimeCode(companyId,
-										workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
+						PredetermineTimeSetForCalc predetemineTimeSetting = workTimeSettingService
+								.getPredeterminedTimezone(companyId,workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(),
+										workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v(), null);
 
-						if (predetemineTimeSetting.isPresent()) {
-							List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting()
-									.getLstTimezone();
+						if (!predetemineTimeSetting.getTimezones().isEmpty()) {
+							List<TimezoneUse> lstTimezone = predetemineTimeSetting.getTimezones();
 							for (TimezoneUse timezone : lstTimezone) {
 								if (timezone.getUseAtr() == UseSetting.USE) {
 									TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
@@ -1499,22 +1729,38 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											companyId,
 											workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v());
 									WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
+
 									// 出勤
 									RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
 											.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
-											.get();
-									int attendanceTimeAfterRouding = this.roudingTime(timezone.getStart().v(),
-											atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
-											new Integer(atendanceRoundingSet.getRoundingSet().getRoundingTimeUnit().description).intValue());
+											.isPresent()
+													? stampSet.getRoundingSets().stream()
+															.filter(item -> item.getSection() == Superiority.ATTENDANCE)
+															.findFirst().get()
+													: null;
+
+									int attendanceTimeAfterRouding = atendanceRoundingSet != null
+											? this.roudingTime(timezone.getStart().v(),
+													atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
+													new Integer(atendanceRoundingSet.getRoundingSet()
+															.getRoundingTimeUnit().description).intValue())
+											: timezone.getStart().v();
 
 									actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
+
 									// 退勤
 									RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
 											.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst()
-											.get();
-									int leaveTimeAfterRounding = this.roudingTime(timezone.getEnd().v(),
-											leavingRoundingSet.getRoundingSet().getFontRearSection().value,
-											new Integer(leavingRoundingSet.getRoundingSet().getRoundingTimeUnit().description).intValue());
+											.isPresent() ? stampSet.getRoundingSets().stream()
+													.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
+													.findFirst().get() : null;
+
+									int leaveTimeAfterRounding = leavingRoundingSet != null
+											? this.roudingTime(timezone.getEnd().v(),
+													leavingRoundingSet.getRoundingSet().getFontRearSection().value,
+													new Integer(leavingRoundingSet.getRoundingSet()
+															.getRoundingTimeUnit().description).intValue())
+											: timezone.getEnd().v();
 
 									leaveActualStamp.setAfterRoundingTime(new TimeWithDayAttr(leaveTimeAfterRounding));
 
@@ -1580,8 +1826,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							item.getLeaveStamp().getNumberOfReflectionStamp());
 				}
 
-				return new TimeLeavingWork(item.getWorkNo(),
-						attendanceStamp == null ? null : attendanceStamp, leaveStamp);
+				return new TimeLeavingWork(item.getWorkNo(), attendanceStamp == null ? null : attendanceStamp,
+						leaveStamp);
 			}).collect(Collectors.toList());
 			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
 
@@ -1599,13 +1845,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (timeLeavingOptional.getTimeLeavingWorks() != null) {
 					leavingStamp = timeLeavingOptional.getTimeLeavingWorks().stream()
 							.filter(itemx -> itemx.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v())).findFirst()
-							.orElse(new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(), new TimeActualStamp()));
+							.orElse(new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(),
+									new TimeActualStamp()));
 				} else {
-					leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(), new TimeActualStamp());
+					leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), new TimeActualStamp(),
+							new TimeActualStamp());
 				}
 
-				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().get();
-				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().get();
+				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().orElse(null);
+				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().orElse(null);
 
 				// 出勤反映 = true
 				// 出勤に自動打刻セットする
@@ -1627,8 +1875,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
 								|| (!leavingStamp.getAttendanceStamp().isPresent())
 								|| (leavingStamp.getAttendanceStamp().get().getStamp() == null)
-								|| (leavingStamp.getAttendanceStamp().get().getStamp().isPresent() && 
-										leavingStamp.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) ) {
+								|| (!leavingStamp.getAttendanceStamp().get().getStamp().isPresent())
+								|| (leavingStamp.getAttendanceStamp().get().getStamp().isPresent() && leavingStamp
+										.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null)) {
 
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
@@ -1643,7 +1892,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
 
 						}
-					} 
+					}
 				}
 
 				// set leave
@@ -1663,8 +1912,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
 								|| (!leavingStamp.getLeaveStamp().isPresent())
 								|| (leavingStamp.getLeaveStamp().get().getStamp() == null)
-								|| (leavingStamp.getLeaveStamp().get().getStamp().isPresent() && 
-										leavingStamp.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) ) {
+								|| (!leavingStamp.getLeaveStamp().get().getStamp().isPresent())
+								|| (leavingStamp.getLeaveStamp().get().getStamp().isPresent() && leavingStamp
+										.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null)) {
 
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
@@ -1681,8 +1931,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					}
 				}
 
-				leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), attendanceStamp,
-						leaveStamp);
+				leavingStamp = new TimeLeavingWork(timeLeavingWork.getWorkNo(), attendanceStamp, leaveStamp);
 				// leavingStamp.setTimeLeavingWork(timeLeavingWork.getWorkNo(),
 				// Optional.of(attendanceStamp), Optional.of(leaveStamp));
 				timeLeavingWorkList.add(leavingStamp);
@@ -1695,60 +1944,102 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		} else {
 			timeLeavingOptional = null;
 		}
-		
+
 		return timeLeavingOptional;
 	}
 
 	/**
 	 * 加給設定を日別実績に反映する
+	 * 
 	 * @param companyId
 	 * @param employeeId
 	 * @param day
 	 * @param workInfoOfDailyPerformanceUpdate
 	 * @return
 	 */
-	private Optional<BonusPaySetting> reflectBonusSettingDailyPer(String companyId, String employeeId, GeneralDate day, 
+	private Optional<BonusPaySetting> reflectBonusSettingDailyPer(String companyId, String employeeId, GeneralDate day,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
-			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
-			PeriodInMasterList periodInMasterList){
+			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-		
+
 		if (periodInMasterList == null) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId, affiliationInforOfDailyPerfor.getWplID(), day);
-			
+			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+					affiliationInforOfDailyPerfor.getWplID(), day);
+
 			// 加給設定を取得する
 			bonusPaySetting = this.reflectBonusSetting(companyId, employeeId, day,
-					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(), workPlaceIdList);
+					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null
+							? workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v() : null,
+					workPlaceIdList);
+
+			return bonusPaySetting;
 		} else {
 			// 「期間内マスタ一覧」と「就業時間帯コード」から加給設定を取得する
 			// 就業時間帯の加給設定を取得する
 			// ドメインモデル「加給利用単位」を取得する
 			Optional<BPUnitUseSetting> bPUnitUseSetting = this.bPUnitUseSettingRepository.getSetting(companyId);
-			
+
 			// 加給利用単位．個人使用区分
-			if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getWorkingTimesheetUseAtr() == nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr.USE) {
-				if(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null){
+			if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get()
+					.getWorkingTimesheetUseAtr() == nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr.USE) {
+				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null) {
 					// ドメインモデル「就業時間帯加給設定」を取得
 					Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
-							.getWTBPSetting(companyId, new WorkingTimesheetCode(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v()));
+							.getWTBPSetting(companyId, new WorkingTimesheetCode(
+									workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v()));
 					if (workingTimesheetBonusPaySetting.isPresent()) {
-						Optional<BonusPaySetting> bonusPay = bPSettingRepository.getBonusPaySetting(companyId, workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
+						Optional<BonusPaySetting> bonusPay = bPSettingRepository.getBonusPaySetting(companyId,
+								workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 						if (!bonusPay.isPresent()) {
 							List<MasterList> masterLists = periodInMasterList.getMasterLists();
-							Optional<MasterList> newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
-							
-							bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt() : Optional.empty();
+							Optional<MasterList> newMasterLists = masterLists.stream()
+									.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+							bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+									: Optional.empty();
+
+							return bonusPaySetting;
+						} else {
+							return bonusPay;
 						}
-					}	
+					} else {
+						// return fail
+						List<MasterList> masterLists = periodInMasterList.getMasterLists();
+						Optional<MasterList> newMasterLists = masterLists.stream()
+								.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+						bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+								: Optional.empty();
+
+						return bonusPaySetting;
+					}
+				} else {
+					// return fail
+					List<MasterList> masterLists = periodInMasterList.getMasterLists();
+					Optional<MasterList> newMasterLists = masterLists.stream()
+							.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+					bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+							: Optional.empty();
+
+					return bonusPaySetting;
 				}
+			} else {
+				// return fail
+				List<MasterList> masterLists = periodInMasterList.getMasterLists();
+				Optional<MasterList> newMasterLists = masterLists.stream()
+						.filter(item -> item.getDatePeriod().contains(day)).findFirst();
+
+				bonusPaySetting = newMasterLists.isPresent() ? newMasterLists.get().getBonusPaySettingOpt()
+						: Optional.empty();
+
+				return bonusPaySetting;
 			}
 		}
-		
-		return bonusPaySetting;
 	}
-	
+
 	/**
 	 * 加給設定を取得
 	 * 
@@ -1763,25 +2054,61 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 
-		// ドメインモデル「就業時間帯加給設定」を取得
-		Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
-				.getWTBPSetting(companyId, new WorkingTimesheetCode(workTimeCode));
+		if (workTimeCode != null) {
 
-		if (!workingTimesheetBonusPaySetting.isPresent()) {
+			// ドメインモデル「就業時間帯加給設定」を取得
+			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
+					.getWTBPSetting(companyId, new WorkingTimesheetCode(workTimeCode));
+
+			if (!workingTimesheetBonusPaySetting.isPresent()) {
+				// ドメインモデル「個人加給設定」を取得
+				Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository
+						.getPersonalBonusPaySetting(employeeId);
+				if (!personalBonusPaySetting.isPresent()) {
+					// 職場の加給設定を取得する
+					Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
+					for (String wPId : workPlaceIDs) {
+						workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(companyId,
+								new WorkplaceId(wPId));
+						if (workplaceBonusPaySetting.isPresent()) {
+							break;
+						}
+					}
+
+					if (!workplaceBonusPaySetting.isPresent()) {
+						Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
+								.getSetting(companyId);
+						if (companyBonusPaySetting.isPresent()) {
+							bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+									companyBonusPaySetting.get().getBonusPaySettingCode());
+						}
+					} else {
+						bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+								workplaceBonusPaySetting.get().getBonusPaySettingCode());
+					}
+				} else {
+					bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+							personalBonusPaySetting.get().getBonusPaySettingCode());
+				}
+			} else {
+				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+						workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
+			}
+		} else {
 			// ドメインモデル「個人加給設定」を取得
 			Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository
 					.getPersonalBonusPaySetting(employeeId);
 			if (!personalBonusPaySetting.isPresent()) {
-				// 職場の加給設定を取得する				
+				// 職場の加給設定を取得する
 				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
-				for(String wPId : workPlaceIDs){
-					workplaceBonusPaySetting = this.wPBonusPaySettingRepository
-							.getWPBPSetting(companyId, new WorkplaceId(wPId));
+				for (String wPId : workPlaceIDs) {
+					workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(companyId,
+							new WorkplaceId(wPId));
 					if (workplaceBonusPaySetting.isPresent()) {
 						break;
 					}
 				}
-				
+
 				if (!workplaceBonusPaySetting.isPresent()) {
 					Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
 							.getSetting(companyId);
@@ -1797,9 +2124,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
 						personalBonusPaySetting.get().getBonusPaySettingCode());
 			}
-		} else {
-			bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
-					workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 		}
 
 		return bonusPaySetting;
@@ -1816,7 +2140,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				result = result.setScale(0, RoundingMode.UP);
 				;
 			}
-		} 
+		}
 		return result.multiply(new BigDecimal(roundingTimeUnit)).intValue();
 	}
 

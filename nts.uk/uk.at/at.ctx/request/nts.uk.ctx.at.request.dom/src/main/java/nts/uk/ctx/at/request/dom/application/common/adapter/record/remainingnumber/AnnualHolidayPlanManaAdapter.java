@@ -17,7 +17,7 @@ public interface AnnualHolidayPlanManaAdapter {
 	 */
 	List<AnnualHolidayPlanManaRequest> lstDataByPeriod(String sid, String workTypeCode, DatePeriod dateData);
 	/**
-	 * 
+	 * 指定する期間の計画年休使用明細を取得する
 	 * @param employeeId
 	 * @param worktypeCode
 	 * @param dateData

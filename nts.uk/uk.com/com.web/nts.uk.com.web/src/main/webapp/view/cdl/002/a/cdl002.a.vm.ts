@@ -26,7 +26,9 @@ module nts.uk.com.view.cdl002.a {
                     self.selectedMulEmployment(params.selectedCodes ? params.selectedCodes : []);
                 }
                 else {
-                    self.selectedSelEmployment(params.selectedCodes);
+                    if (params.selectedCodes.length > 0) {
+                        self.selectedSelEmployment(params.selectedCodes[0]);
+                    }
                 }
                 
                 // If Selection Mode is Multiple Then not show Unselected Row
@@ -48,8 +50,10 @@ module nts.uk.com.view.cdl002.a {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: null,
                     isDialog: true,
+                    selectedClosureId: ko.observable(null),
                     isShowNoSelectRow: self.isDisplayUnselect(),
                     maxRows: 10,
+                    isSelectAllAfterReload: false,
                     tabindex: 1
                 };
                 if (self.isMultiSelect()) {

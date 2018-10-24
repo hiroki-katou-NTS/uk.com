@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
+import java.util.Collections;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
@@ -103,19 +104,8 @@ public class SpecialHoliday extends AggregateRoot {
 				new Memo(memo));
 	}
 	
-	public void publishEvent(boolean flag) {
-		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
-						this.specialHolidayCode,
-						this.specialHolidayName);
-		
-		event.toBePublished();
+	public TargetItem getTargetItem() {
+		return targetItem != null ? targetItem : new TargetItem(Collections.emptyList(), Collections.emptyList());
 	}
 	
-	public void publishEvent(boolean flag, int code, String name) {
-		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
-				new SpecialHolidayCode(code),
-				new SpecialHolidayName(name));
-		
-		event.toBePublished();
-	}
 }

@@ -15,10 +15,13 @@ import java.util.stream.Stream;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
+import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 
 /**
@@ -46,12 +49,16 @@ public class DailyPerformanceCorrectionDto {
 	private DPControlDisplayItem lstControlDisplayItem;
 
 	private List<DPCellStateDto> lstCellState;
+	
+	private List<DPCellStateDto> lstCellStateCalc;
 
 	private List<DPDataDto> lstData;
 
 	private List<DailyPerformanceAuthorityDto> authorityDto;
 
 	private String employmentCode;
+	
+	private Integer closureId;
 
 	// A13_1 コメント
 	private String comment;
@@ -79,7 +86,19 @@ public class DailyPerformanceCorrectionDto {
 	private List<TextStyle> textStyles;
 	
 	private Set<String> autBussCode;
-
+	
+	private List<DailyRecordDto> domainOld;
+	
+	private boolean showTighProcess;
+	
+	private IndentityMonthResult indentityMonthResult;
+	
+	private boolean showErrorDialog;
+	
+	private List<DCMessageError> errors;
+	
+	private int errorInfomation;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
@@ -91,6 +110,11 @@ public class DailyPerformanceCorrectionDto {
 		this.changeSPR = new ChangeSPR(false, false);
 		this.textStyles = new ArrayList<>();
 		this.autBussCode = new HashSet<>();
+		this.showTighProcess = false;
+		this.lstCellStateCalc = new ArrayList<>();
+		this.indentityMonthResult = new IndentityMonthResult(false, false, true);
+		this.errors = new ArrayList<>();
+		this.errorInfomation = DCErrorInfomation.NORMAL.value;
 	}
 
 	/** Check if employeeId is login user */
@@ -121,19 +145,19 @@ public class DailyPerformanceCorrectionDto {
 	private void setDisableCell(DPHeaderDto header, DPDataDto data, Map<Integer, DPAttendanceItem> mapDP) {
 //		Optional<DPCellStateDto> existedCellState = findExistCellState(data.getId(), header.getKey());
 //		if (existedCellState.isPresent()) {
-//			existedCellState.get().addState("ntsgrid-disable");
+//			existedCellState.get().addState("mgrid-disable");
 //		} else {
 		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted") && !header.getKey().equals("ApplicationList")){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
-					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "NO" + getID(header.getKey()), toList("ntsgrid-disable")));
+					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "NO" + getID(header.getKey()), toList("mgrid-disable")));
 				} else {
-					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Code" + getID(header.getKey()), toList("ntsgrid-disable")));
+					this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Code" + getID(header.getKey()), toList("mgrid-disable")));
 				}
-				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Name" + getID(header.getKey()), toList("ntsgrid-disable")));
+				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), "Name" + getID(header.getKey()), toList("mgrid-disable")));
 			} else {
-				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), header.getKey(), toList("ntsgrid-disable")));
+				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), header.getKey(), toList("mgrid-disable")));
 			}
 		   }
 //		}
@@ -201,7 +225,7 @@ public class DailyPerformanceCorrectionDto {
 					String errorType = getErrorType(lstErrorSetting, error);
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
-						if (!errorType.equals(data.getError())) {
+						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
 							data.setError("ER/AL");
 						}
 					} else {
@@ -209,8 +233,8 @@ public class DailyPerformanceCorrectionDto {
 					}
 					// add error alarm cell state
 					error.getAttendanceItemId().stream().forEach(x ->{
-						setCellStateCheck(data.getId(), x.toString(),
-								errorType.contains("ER") ? "ntsgrid-error" : "ntsgrid-alarm", mapDP);
+						if(errorType.contains("ER") || errorType.contains("AL")) setCellStateCheck(data.getId(), x.toString(),
+								errorType.contains("ER") ? "mgrid-error" : "mgrid-alarm", mapDP);
 					});
 				}
 			});
@@ -223,16 +247,16 @@ public class DailyPerformanceCorrectionDto {
 		if (setting == null) {
 			return "";
 		}
-		return setting.getTypeAtr() == 0 ? "ER" : "AL";
+		return setting.getTypeAtr() == 0 ? "ER" : setting.getTypeAtr() == 2 ? "" : "AL";
 	}
 
 	/** Set AlarmCell state for Fixed cell */
 	public void setAlarmCellForFixedColumn(String dataId, Integer mode) {
 		if (mode == 0) {
-			setCellStateFixed(dataId, "date", "ntsgrid-alarm");
+			setCellStateFixed(dataId, "date", "mgrid-alarm");
 		} else {
 			Stream.of("date", "employeeCode", "employeeName").forEach(columnKey -> {
-				setCellStateFixed(dataId, columnKey, "ntsgrid-alarm");
+				setCellStateFixed(dataId, columnKey, "mgrid-alarm");
 			});
 		}
 	}
@@ -290,7 +314,7 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Set AlarmCell state for Fixed cell */
-	public void setLock(String rowId, String columnKey, String state) {
+	public void setCellSate(String rowId, String columnKey, String state) {
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
 			existedCellState.get().addState(state);
@@ -303,4 +327,9 @@ public class DailyPerformanceCorrectionDto {
 
 	}
 
+	public void checkShowTighProcess(int displayMode, boolean userLogin){
+		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
+		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
+		indentityMonthResult.setHideAll(displayMode != 0);
+	}
 }

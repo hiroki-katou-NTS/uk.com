@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -60,7 +61,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	 */
 	@Override
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
-			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID) {
+			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID, boolean sendMailApplicaint) {
 		String cid = AppContexts.user().companyId();
 		Application_New application = applicationRepository.findByID(cid, appId).get();
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
@@ -86,7 +87,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 						applicantID);
 			}
 		}
-		String mailContent1 = mailBody + "\n" + urlInfo;
+		String mailContent1 = mailBody + "\n" + I18NText.getText("KDL030_30") + "\n" + urlInfo;
 		//※同一メール送信者に複数のメールが送られないよう
 		//　一旦メール送信した先へのメールは送信しない。
 		//list sID da gui
@@ -94,7 +95,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		//2018/06/12　追加
 		//QA#96551
 		//申請者にメール送信かチェックする
-		if(!Strings.isBlank(applicantID)){//チェックする
+		if(sendMailApplicaint && !Strings.isBlank(applicantID)){//チェックする
 			//imported（申請承認）「社員メールアドレス」を取得する  - Rq225 (419)
 			List<MailDestinationImport> lstApplicantMail = envAdapter.getEmpEmailAddress(cid, Arrays.asList(applicantID), 6);
 			List<OutGoingMailImport> mailApplicant = lstApplicantMail.get(0).getOutGoingMails();

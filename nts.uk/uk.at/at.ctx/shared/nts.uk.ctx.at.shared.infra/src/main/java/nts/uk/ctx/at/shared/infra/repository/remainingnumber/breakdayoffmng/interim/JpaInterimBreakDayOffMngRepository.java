@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.breakdayoffmng.interim;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
@@ -122,12 +125,16 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		if(mngId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(QUERY_BY_EXPIRATIONDATE, KrcmtInterimBreakMng.class)
-				.setParameter("breakMngIds", mngId)
-				.setParameter("unUsedDays", unUseDays)
-				.setParameter("startDate", dateData.start())
-				.setParameter("endDate", dateData.end())
-				.getList(c -> toDomainBreakMng(c));
+		List<InterimBreakMng> resultList = new ArrayList<>();
+		CollectionUtil.split(mngId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_BY_EXPIRATIONDATE, KrcmtInterimBreakMng.class)
+								.setParameter("breakMngIds", subList)
+								.setParameter("unUsedDays", unUseDays)
+								.setParameter("startDate", dateData.start())
+								.setParameter("endDate", dateData.end())
+								.getList(c -> toDomainBreakMng(c)));
+		});
+		return resultList;
 	}
 	
 	@Override
@@ -160,7 +167,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.unUsedDays = domain.getUnUsedDays().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -193,7 +200,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.unOffsetDays = domain.getUnOffsetDay().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -230,7 +237,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.selectedAtr = domain.getSelectedAtr().value;
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -279,11 +286,23 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	
 	@Override
 	public void deleteInterimBreakMng(List<String> mngIds) {
-		this.commandProxy().removeAll(KrcmtInterimBreakMng.class, mngIds);
+		if(!mngIds.isEmpty()) {
+			String sql = "delete  from KrcmtInterimBreakMng a where a.breakMngId IN :mngIds";
+			CollectionUtil.split(mngIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				this.getEntityManager().createQuery(sql).setParameter("mngIds", subList).executeUpdate();
+			});
+			this.getEntityManager().flush();
+		}
 	}
 	
 	@Override
 	public void deleteInterimDayOffMng(List<String> mngIds) {
-		this.commandProxy().removeAll(KrcmtInterimDayOffMng.class, mngIds);
+		if(!mngIds.isEmpty()) {
+			String sql = "delete  from KrcmtInterimDayOffMng a where a.dayOffMngId IN :mngIds";
+			CollectionUtil.split(mngIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				this.getEntityManager().createQuery(sql).setParameter("mngIds", subList).executeUpdate();
+			});
+			this.getEntityManager().flush();
+		}
 	}
 }

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -14,20 +13,19 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
@@ -49,7 +47,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	private TimeMonthWithCalculation totalTransferTime;
 	/** 集計休出時間 */
 	private Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> aggregateHolidayWorkTimeMap;
-
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -130,7 +128,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param aggregateAtr 集計区分
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
-	 * @param excessOutsideTimeSet 時間外超過設定
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param autoExceptHolidayWorkFrames 自動的に除く休出枠
 	 * @param companySets 月別集計で必要な会社別設定
@@ -164,8 +162,15 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 				
 				// 自動計算して休出時間を集計する
 				this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
-						workInfo, legalHolidayWorkTransferOrder, roleHolidayWorkFrameMap,
+						workInfo, legalHolidayWorkTransferOrder, excessOutsideTimeSet, roleHolidayWorkFrameMap,
 						companySets, employeeSets, repositories);
+			}
+		}
+		
+		// 法定内休出の計算休出を休出時間の計算休出へ移送
+		for (val entry : this.aggregateHolidayWorkTimeMap.entrySet()){
+			for (val workEntry : entry.getValue().getTimeSeriesWorks().entrySet()){
+				workEntry.getValue().addCalcLegalHWTimeToCalcHWTime();
 			}
 		}
 	}
@@ -174,7 +179,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * 休出を集計するか確認する
 	 * @param companyId 会社ID
 	 * @param workInfo 勤務情報
-	 * @param excessOutsideTimeSet 時間外超過設定
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return true：休出を集計する、false：休出を集計しない
@@ -211,6 +216,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param workingSystem 労働制
 	 * @param workInfo 勤務情報
 	 * @param legalHolidayWorkTransferOrder 法定内休出振替順
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
@@ -220,6 +226,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			String companyId, String placeId, String employmentCd, WorkingSystem workingSystem,
 			WorkInformation workInfo,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
@@ -255,7 +262,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 		
 			// 休出枠時間のループ処理
 			canLegalHolidayWork = this.holidayWorkFrameTimeProcess(holidayWorkAndTransferAtr,
-					legalHolidayWorkTransferOrder, canLegalHolidayWork,
+					legalHolidayWorkTransferOrder, excessOutsideTimeSet, canLegalHolidayWork,
 					roleHolidayWorkFrameMap, holidayWorkFrameTimes, attendanceTimeOfDaily.getYmd());
 		}
 	}
@@ -297,6 +304,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * 休出枠時間のループ処理
 	 * @param holidayWorkAndTransferAtr 休出振替区分
 	 * @param legalHolidayWorkTransferOrderOfAggrMonthly 法定内休出振替順
+	 * @param excessOutsideTimeSet 割増集計方法
 	 * @param canLegalHolidayWork 法定内休出に出来る時間
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 * @param holidayWorkFrameTimeMap 休出枠時間　（日別実績より取得）
@@ -306,6 +314,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	private AttendanceTime holidayWorkFrameTimeProcess(
 			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrderOfAggrMonthly,
+			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			AttendanceTime canLegalHolidayWork,
 			Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap,
 			Map<HolidayWorkFrameNo, HolidayWorkFrameTime> holidayWorkFrameTimeMap,
@@ -324,6 +333,22 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			// 対象の時系列ワークを確認する
 			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
 			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
+			
+			// 「法定内休出を含める」を確認
+			if (excessOutsideTimeSet.getLegalHoliday() == false){
+				
+				// 取得した休出枠時間を集計休出時間に入れる
+				switch (holidayWorkAndTransferAtr){
+				case HOLIDAY_WORK:
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
+					break;
+				}
+				continue;
+			}
 			
 			// 対象の役割を確認する
 			if (!roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())) continue;
@@ -352,7 +377,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalHolidayWorkTime, new AttendanceTime(0)));
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							holidayWorkTime, new AttendanceTime(0)));
+							holidayWorkTime, holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime()));
+					timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
 					break;
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
@@ -372,17 +398,32 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalTransferTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addTransferTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							transferTimeWork, new AttendanceTime(0)));
+							transferTimeWork, holidayWorkFrameTime.getTransferTime().get().getCalcTime()));
 					break;
 				}
 				break;
 				
 			case STATUTORY_HOLIDAYS:
 				
+				// 取得した休出枠時間を集計休出時間に入れる
+				switch (holidayWorkAndTransferAtr){
+				case HOLIDAY_WORK:
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
+					break;
+				}
+				break;
+				
+			case NON_STATUTORY_HOLIDAYS:
+				
 				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
 				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
 					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
+					timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTime.getBeforeApplicationTime().get());
 					if (timeAfterCalc.lessThanOrEqualTo(holidayWorkFrameTime.getHolidayWorkTime().get().getTime())){
 						timeAfterCalc = new AttendanceTime(0);
 					}
@@ -403,19 +444,6 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					break;
 				}
 				break;
-				
-			case NON_STATUTORY_HOLIDAYS:
-				
-				// 取得した休出枠時間を集計休出時間に入れる
-				switch (holidayWorkAndTransferAtr){
-				case HOLIDAY_WORK:
-					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
-					break;
-				case TRANSFER:
-					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTime.getTransferTime().get());
-					break;
-				}
-				break;
 			}
 		}
 		
@@ -427,13 +455,15 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
 	 * @param aggregateAtr 集計区分
-	 * @param flexAggrSet フレックス時間勤務の月の集計設定
-	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
 	 * @param flexTime フレックス時間
+	 * @param settingsByFlex フレックス勤務が必要とする設定
 	 */
 	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			String companyId, MonthlyAggregateAtr aggregateAtr, FlexMonthWorkTimeAggrSet flexAggrSet,
-			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt, FlexTime flexTime){
+			String companyId, MonthlyAggregateAtr aggregateAtr,
+			FlexTime flexTime, SettingRequiredByFlex settingsByFlex){
+
+		val flexAggrSet = settingsByFlex.getFlexAggrSet();
+		val roleHolidayWorkFrameMap = settingsByFlex.getRoleHolidayWorkFrameMap();
 		
 		// 「休出枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -452,16 +482,14 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			// 「設定．残業を含める」を確認する
 			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
 
-				// 休日出勤フレックス加算を確認
-				if (monthlyAggrSetOfFlexOpt.isPresent()) {
-					val holidayWorkMap = monthlyAggrSetOfFlexOpt.get().getOutsideTimeAddSet().getHolidayWorkMap();
-					if (holidayWorkMap.containsKey(holidayWorkFrameNo)){
-						if (holidayWorkMap.get(holidayWorkFrameNo).getAddition() == UseAtr.USE){
-					
-							// 取得した休出枠時間を「フレックス時間」に入れる
-							flexTime.addHolidayWorkTimeFrameTime(ymd, holidayWorkFrameTimeSrc);
-							continue;
-						}
+				// 処理中のNOが「法定外休出」に一致するか
+				if (roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())){
+					val role = roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v());
+					if (role.getRoleOfOpenPeriodEnum() == RoleOfOpenPeriodEnum.NON_STATUTORY_HOLIDAYS){
+						
+						// 取得した休出枠時間を「フレックス時間」に入れる
+						flexTime.addHolidayWorkTimeFrameTime(ymd, holidayWorkFrameTimeSrc);
+						continue;
 					}
 				}
 			}
@@ -475,7 +503,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
-	 * 休日出勤の集計
+	 * 休日出勤の集計　（期間別集計用）
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param roleHolidayWorkFrameMap 休出枠の役割

@@ -47,7 +47,6 @@ module nts.uk.com.view.cdl009.a {
                     isShowSelectButton: true,
                     isDialog: true,
                     maxRows: 12,
-                    tabindex: 1,
                     systemType : 2
                 };
                 self.listComponentOpt = {
@@ -57,13 +56,12 @@ module nts.uk.com.view.cdl009.a {
                     selectedCode: ko.observable(),
                     isDialog: true,
                     employeeInputList: self.employeeList,
-                    maxRows: 12,
-                    tabindex: 3,
+                    maxRows: 12
                 };
                 // Set SelectedCode to listComponentOpt (Depend on isMultiSelect)
                 if (self.isMultiSelect()) {
                     self.listComponentOpt.selectedCode = self.selectedEmps;
-                    self.listComponentOpt.isShowSelectAllButton = true;
+                    self.listComponentOpt.isShowSelectAllButton = false;
                 } else {
                     self.listComponentOpt.selectedCode = self.selectedEmpCode;
                 }
@@ -139,7 +137,10 @@ module nts.uk.com.view.cdl009.a {
                         res.forEach(item => {
                             empList.push({ id: item.employeeId, code: item.employeeCode, name: item.employeeName, workplaceName: item.workplaceName });
                         });
-                        self.employeeList(empList);
+                        
+                        let data = _.orderBy(empList, ["code"], ['asc']);
+                        
+                        self.employeeList(data);
                     } else {
                         self.employeeList([]);
                     }

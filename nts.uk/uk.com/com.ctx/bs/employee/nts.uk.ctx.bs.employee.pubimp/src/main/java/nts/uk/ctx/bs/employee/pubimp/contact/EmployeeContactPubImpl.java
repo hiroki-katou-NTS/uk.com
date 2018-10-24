@@ -109,15 +109,15 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 
 		Optional<EmergencyContact> emerContact1 = p.getEmergencyContact1();
 		if (emerContact1.isPresent()) {
-			pcObject.setMemo1(emerContact1.get().getMemo().v());
-			pcObject.setContactName1(emerContact1.get().getContactName().v());
-			pcObject.setPhoneNumber1(emerContact1.get().getPhoneNumber().v());
+			pcObject.setMemo1(emerContact1.get().getMemo().map(i->i.v()).orElse(null));
+			pcObject.setContactName1(emerContact1.get().getContactName().map(i->i.v()).orElse(null));
+			pcObject.setPhoneNumber1(emerContact1.get().getPhoneNumber().map(i->i.v()).orElse(null));
 		}
 		Optional<EmergencyContact> emerContact2 = p.getEmergencyContact2();
 		if (emerContact2.isPresent()) {
-			pcObject.setMemo2(emerContact2.get().getMemo().v());
-			pcObject.setContactName2(emerContact2.get().getContactName().v());
-			pcObject.setPhoneNumber2(emerContact2.get().getPhoneNumber().v());
+			pcObject.setMemo2(emerContact2.get().getMemo().map(i->i.v()).orElse(null));
+			pcObject.setContactName2(emerContact2.get().getContactName().map(i->i.v()).orElse(null));
+			pcObject.setPhoneNumber2(emerContact2.get().getPhoneNumber().map(i->i.v()).orElse(null));
 		}
 		return pcObject;
 

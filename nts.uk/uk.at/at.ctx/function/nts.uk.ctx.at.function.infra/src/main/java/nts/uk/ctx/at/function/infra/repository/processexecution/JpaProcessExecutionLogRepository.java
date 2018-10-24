@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutio
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogRepository extends JpaRepository
 		implements ProcessExecutionLogRepository {
@@ -47,7 +50,9 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	private static final String SELECT_BY_KEY_NATIVE = "SELECT * FROM KFNMT_PROC_EXEC_LOG as pel WITH (READUNCOMMITTED)"
 			+ "WHERE pel.CID = ? "
 			+ "AND pel.EXEC_ITEM_CD = ? ";
-	
+	private static final String DELETE_BY_EXEC_CD = " DELETE FROM KfnmtProcessExecutionLog c "
+			+ "WHERE c.kfnmtProcExecLogPK.companyId = :companyId "
+			+ "AND c.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 	@Override
 	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_BY_CID, KfnmtProcessExecutionLog.class)
@@ -66,7 +71,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	public void insert(ProcessExecutionLog domain) {
 		this.commandProxy().insert(KfnmtProcessExecutionLog.toEntity(domain));
 	}
-	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void update(ProcessExecutionLog domain) {
 		KfnmtProcessExecutionLog updateData = KfnmtProcessExecutionLog.toEntity(domain);
@@ -81,11 +86,14 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		oldData.reflectApprovalResultEnd = updateData.reflectApprovalResultEnd;
 		this.commandProxy().update(oldData);
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void remove(String companyId, String execItemCd, String execId) {
-		KfnmtProcessExecutionLogPK kfnmtProcExecPK = new KfnmtProcessExecutionLogPK(companyId, execItemCd, execId);
-		this.commandProxy().remove(KfnmtProcessExecutionLog.class, kfnmtProcExecPK);
+		this.getEntityManager().createQuery(DELETE_BY_EXEC_CD, KfnmtProcessExecutionLog.class)
+		.setParameter("companyId", companyId)
+		.setParameter("execItemCd", execItemCd)
+		.executeUpdate();
 	}
 
 	@Override

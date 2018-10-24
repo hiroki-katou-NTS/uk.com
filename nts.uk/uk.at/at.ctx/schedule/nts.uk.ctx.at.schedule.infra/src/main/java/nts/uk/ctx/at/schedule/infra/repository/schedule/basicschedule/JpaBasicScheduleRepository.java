@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +21,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -27,6 +28,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -60,7 +62,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduleti
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfoPK;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
@@ -84,6 +85,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	public static final String GET_LIST_BY_LIST_SID_DATE = "SELECT a " + "FROM KscdtBasicSchedule a "
 			+ "WHERE a.kscdpBSchedulePK.sId IN :sIds "
 			+ "AND (a.kscdpBSchedulePK.date BETWEEN :startDate AND :endDate)";
+	
+	public static final String GET_BY_LIST_DATE = "SELECT c FROM KscdtBasicSchedule c"
+			+ " WHERE c.kscdpBSchedulePK.sId = :employeeId"
+			+ " AND c.kscdpBSchedulePK.date IN :dates";
 
 	@Override
 	public void insert(BasicSchedule bSchedule) {
@@ -133,7 +138,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -186,7 +191,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -236,21 +241,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * #delete(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public void delete(String employeeId, GeneralDate baseDate) {
-		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
-		this.removeAllChildCare(employeeId, baseDate);
+	public void delete(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule) {
+		this.removeScheduleBasic(employeeId, baseDate);
 		this.removeAllTimeZone(employeeId, baseDate);
+		this.removeAllChildCare(employeeId, baseDate);
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
 		this.removeScheduleMaster(employeeId, baseDate);
-	}
-
-	@Override
-	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate) {
-		this.removeAllTimeZone(employeeId, baseDate);
-		this.removeAllScheduleBreakTime(employeeId, baseDate);
-		this.removeAllChildCare(employeeId, baseDate);
-		this.removeScheduleTime(employeeId, baseDate);
+		this.removeScheStateWithoutListScheState(employeeId, baseDate);
 	}
 
 	/*
@@ -276,36 +274,38 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	public List<BasicSchedule> findSomePropertyWithJDBC(List<String> listSid, DatePeriod datePeriod) {
 		List<BasicSchedule> listNewBasicSchedule = new ArrayList<>();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String listEmp = "(";
-		for(int i = 0; i < listSid.size(); i++){
-			listEmp += "'"+ listSid.get(i) +"',";
-		}
-		// remove last , in string and add )
-		listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
-		
-		String sqlQueryWhere = " WHERE KSCDT_SCHE_BASIC.SID IN " + listEmp + " AND KSCDT_SCHE_BASIC.YMD BETWEEN " + "'" + datePeriod.start() + "' AND '" + datePeriod.end() + "'";
-
-		String sqlQuery = "SELECT KSCDT_SCHE_BASIC.SID, KSCDT_SCHE_BASIC.YMD, KSCDT_SCHE_BASIC.WORKTYPE_CD, KSCDT_SCHE_BASIC.WORKTIME_CD, KSCDT_SCHE_BASIC.CONFIRMED_ATR,"
-				+ " KSCDT_SCHE_MASTER.BUSINESS_TYPE_CD, KSCDT_SCHE_MASTER.WKP_ID FROM KSCDT_SCHE_BASIC"
-				+ " LEFT JOIN KSCDT_SCHE_MASTER ON KSCDT_SCHE_BASIC.SID = KSCDT_SCHE_MASTER.SID AND KSCDT_SCHE_BASIC.YMD = KSCDT_SCHE_MASTER.YMD"
-				+ sqlQueryWhere;
-		try {
-			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
-			while (rs.next()) {
-				String sId = rs.getString("SID");
-				GeneralDate date = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-				String workTypeCode = rs.getString("WORKTYPE_CD");
-				String workTimeCode = rs.getString("WORKTIME_CD");
-				int confirmAtr = rs.getInt("CONFIRMED_ATR");
-				String bussinessTypeCd = rs.getString("BUSINESS_TYPE_CD");
-				String wkpId = rs.getString("WKP_ID");
-				
-				ScheMasterInfo scheMasterInfo =  new ScheMasterInfo(bussinessTypeCd, wkpId);
-				listNewBasicSchedule.add(new BasicSchedule(sId, date, workTypeCode, workTimeCode, EnumAdaptor.valueOf(confirmAtr, ConfirmedAtr.class), scheMasterInfo));
+		CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String listEmp = "(";
+			for(int i = 0; i < subList.size(); i++){
+				listEmp += "'"+ subList.get(i) +"',";
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			// remove last , in string and add )
+			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
+			
+			String sqlQueryWhere = " WHERE KSCDT_SCHE_BASIC.SID IN " + listEmp + " AND KSCDT_SCHE_BASIC.YMD BETWEEN " + "'" + datePeriod.start() + "' AND '" + datePeriod.end() + "'";
+	
+			String sqlQuery = "SELECT KSCDT_SCHE_BASIC.SID, KSCDT_SCHE_BASIC.YMD, KSCDT_SCHE_BASIC.WORKTYPE_CD, KSCDT_SCHE_BASIC.WORKTIME_CD, KSCDT_SCHE_BASIC.CONFIRMED_ATR,"
+					+ " KSCDT_SCHE_MASTER.BUSINESS_TYPE_CD, KSCDT_SCHE_MASTER.WKP_ID FROM KSCDT_SCHE_BASIC"
+					+ " LEFT JOIN KSCDT_SCHE_MASTER ON KSCDT_SCHE_BASIC.SID = KSCDT_SCHE_MASTER.SID AND KSCDT_SCHE_BASIC.YMD = KSCDT_SCHE_MASTER.YMD"
+					+ sqlQueryWhere;
+			try {
+				ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+				while (rs.next()) {
+					String sId = rs.getString("SID");
+					GeneralDate date = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+					String workTypeCode = rs.getString("WORKTYPE_CD");
+					String workTimeCode = rs.getString("WORKTIME_CD");
+					int confirmAtr = rs.getInt("CONFIRMED_ATR");
+					String bussinessTypeCd = rs.getString("BUSINESS_TYPE_CD");
+					String wkpId = rs.getString("WKP_ID");
+					
+					ScheMasterInfo scheMasterInfo =  new ScheMasterInfo(bussinessTypeCd, wkpId);
+					listNewBasicSchedule.add(new BasicSchedule(sId, date, workTypeCode, workTimeCode, EnumAdaptor.valueOf(confirmAtr, ConfirmedAtr.class), scheMasterInfo));
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
 		return listNewBasicSchedule;
 	}
 
@@ -327,7 +327,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 		String sqlQuery = "SELECT KSCDT_SCHE_BASIC.SID, KSCDT_SCHE_BASIC.YMD, KSCDT_SCHE_BASIC.WORKTYPE_CD, KSCDT_SCHE_BASIC.WORKTIME_CD, KSCDT_SCHE_BASIC.CONFIRMED_ATR,"
 				+ " KSCDT_SCHE_TIMEZONE.CNT, KSCDT_SCHE_TIMEZONE.BOUNCE_ATR, KSCDT_SCHE_TIMEZONE.START_CLOCK as TZ_START_CLOCK, KSCDT_SCHE_TIMEZONE.END_CLOCK as TZ_END_CLOCK,"
-				+ " KSCDT_SCHE_TIME.BREAK_TIME, KSCDT_SCHE_TIME.WORKING_TIME, KSCDT_SCHE_TIME.WEEKDAY_TIME, KSCDT_SCHE_TIME.PRESCRIBED_TIME, KSCDT_SCHE_TIME.TOTAL_LABOR_TIME, KSCDT_SCHE_TIME.CHILD_CARE_TIME,"
+				+ " KSCDT_SCHE_TIME.BREAK_TIME, KSCDT_SCHE_TIME.WORKING_TIME, KSCDT_SCHE_TIME.WEEKDAY_TIME, KSCDT_SCHE_TIME.PRESCRIBED_TIME, KSCDT_SCHE_TIME.TOTAL_LABOR_TIME, KSCDT_SCHE_TIME.CHILD_TIME, KSCDT_SCHE_TIME.CARE_TIME, KSCDT_SCHE_TIME.FLEX_TIME,"
 				+ " KSCDT_SCHE_FEE_TIME.NO as FT_NO, KSCDT_SCHE_FEE_TIME.PERSON_FEE_TIME,"
 				+ " KSCDT_SCHE_BREAK.BREAK_CNT, KSCDT_SCHE_BREAK.START_CLOCK as BT_START_CLOCK, KSCDT_SCHE_BREAK.END_CLOCK as BT_END_CLOCK,"
 				+ " KSCDT_SCHE_MASTER.EMP_CD, KSCDT_SCHE_MASTER.CLS_CD, KSCDT_SCHE_MASTER.BUSINESS_TYPE_CD, KSCDT_SCHE_MASTER.JOB_ID, KSCDT_SCHE_MASTER.WKP_ID FROM KSCDT_SCHE_BASIC"
@@ -356,7 +356,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				Integer weekdayTime = rs.getObject("WEEKDAY_TIME") == null ? null : Integer.valueOf(rs.getInt("WEEKDAY_TIME"));
 				Integer prescribedTime = rs.getObject("PRESCRIBED_TIME") == null ? null : Integer.valueOf(rs.getInt("PRESCRIBED_TIME"));
 				Integer totalLaborTime = rs.getObject("TOTAL_LABOR_TIME") == null ? null : Integer.valueOf(rs.getInt("TOTAL_LABOR_TIME"));
-				Integer childCareTime = rs.getObject("CHILD_CARE_TIME") == null ? null : Integer.valueOf(rs.getInt("CHILD_CARE_TIME"));
+				Integer childTime = rs.getObject("CHILD_TIME") == null ? null : Integer.valueOf(rs.getInt("CHILD_TIME"));
+				Integer careTime = rs.getObject("CARE_TIME") == null ? null : Integer.valueOf(rs.getInt("CARE_TIME"));
+				Integer flexTime = rs.getObject("FLEX_TIME") == null ? null : Integer.valueOf(rs.getInt("FLEX_TIME"));
 
 				Integer feeTimeNo = rs.getObject("FT_NO") == null ? null : Integer.valueOf(rs.getInt("FT_NO"));
 				Integer personFeeTime = rs.getObject("PERSON_FEE_TIME") == null ? null : Integer.valueOf(rs.getInt("PERSON_FEE_TIME"));
@@ -373,7 +375,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 				listBasicScheduleFromSql.add(new BasicScheduleFromSql(sId, date, workTypeCode, workTimeCode, confirmAtr,
 						timezoneCnt, bounceAtr, timezoneStart, timezoneEnd, breakTime, workingTime, weekdayTime,
-						prescribedTime, totalLaborTime, childCareTime, feeTimeNo, personFeeTime,  breakCnt, breakTimeStart, breakTimeEnd, empCd,
+						prescribedTime, totalLaborTime, childTime, careTime, flexTime, feeTimeNo, personFeeTime,  breakCnt, breakTimeStart, breakTimeEnd, empCd,
 						clsCd, bussinessTypeCd, jobId, wkpId));
 			}
 
@@ -382,7 +384,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			listNewBasicSchedule.addAll(this.mapData(mapPairBasicSche));
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return listNewBasicSchedule;
 	}
@@ -407,7 +409,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList()));
 			basic.setWorkScheduleTime(value.stream().filter(x -> x.getBreakTime() != null).map(x -> WorkScheduleTime.createFromJavaType(listPersonFeeTime,
 					x.getBreakTime(), x.getWorkingTime(), x.getWeekdayTime(), x.getPrescribedTime(),
-					x.getTotalLaborTime(), x.getChildCareTime())).findFirst().orElse(null));
+					x.getTotalLaborTime(), x.getChildTime(), x.getCareTime(), x.getFlexTime())).findFirst().orElse(null));
 			
 			basic.setWorkScheduleMaster(value.stream()
 					.map(x -> ScheMasterInfo.createFromJavaType(key.getLeft(), key.getRight(), x.getEmpCd(),
@@ -446,7 +448,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		WorkScheduleTime workScheduleTime = WorkScheduleTime.createFromJavaType(
 				entity.getKscdtScheFeeTime().stream().map(x -> toDomainPersonFeeTime(x)).collect(Collectors.toList()),
 				entity.getBreakTime(), entity.getWorkingTime(), entity.getWeekdayTime(), entity.getPrescribedTime(),
-				entity.getTotalLaborTime(), entity.getChildCareTime());
+				entity.getTotalLaborTime(), entity.getChildTime(), entity.getCareTime(), entity.getFlexTime());
 		return workScheduleTime;
 	}
 
@@ -710,7 +712,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 	private BasicSchedule toDomain(KscdtBasicSchedule entity) {
 		return new BasicSchedule(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date, entity.workTypeCode,
-				entity.workTypeCode, ConfirmedAtr.valueOf(entity.confirmedAtr));
+				entity.workTimeCode, ConfirmedAtr.valueOf(entity.confirmedAtr));
 	}
 
 	/**
@@ -740,10 +742,25 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		
+	}
+	
+	/**
+	 * Removes schedule basic.
+	 * @param employeeId
+	 * @param baseDate
+	 */
+	private void removeScheduleBasic(String employeeId, GeneralDate baseDate){
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_BASIC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -756,32 +773,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	private void removeAllChildCare(String employeeId, GeneralDate baseDate) {
 
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCMT_CHILD_CARE_SCH (KscdtScheChildCare SQL)
-		CriteriaDelete<KscdtScheChildCare> cq = criteriaBuilder.createCriteriaDelete(KscdtScheChildCare.class);
-
-		// root data
-		Root<KscdtScheChildCare> root = cq.from(KscdtScheChildCare.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid), employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_CHILD_CARE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -795,35 +794,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	private void removeAllTimeZone(String employeeId, GeneralDate baseDate) {
 
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleTimeZone SQL)
-		CriteriaDelete<KscdtWorkScheduleTimeZone> cq = criteriaBuilder
-				.createCriteriaDelete(KscdtWorkScheduleTimeZone.class);
-
-		// root data
-		Root<KscdtWorkScheduleTimeZone> root = cq.from(KscdtWorkScheduleTimeZone.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.sId),
-				employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.date),
-				baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_TIMEZONE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -881,19 +859,27 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	private void insertScheduleMaster(ScheMasterInfo scheMasterInfo) {
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
 		String classificationCd = scheMasterInfo.getClassificationCd() != null
 				? "'" + scheMasterInfo.getClassificationCd() + "'" : null;
 		String businessTypeCd = scheMasterInfo.getBusinessTypeCd() != null
 				? "'" + scheMasterInfo.getBusinessTypeCd() + "'" : null;
+		// jobId, workplaceId, employmentCd trong DB khac null nhung van can check do nhieu truong hop no van = null
+		String jobId = scheMasterInfo.getJobId() != null
+				? "'" + scheMasterInfo.getJobId() + "'" : null;
+		String workplaceId = scheMasterInfo.getWorkplaceId() != null
+				? "'" + scheMasterInfo.getWorkplaceId() + "'" : null;
+		String employmentCd = scheMasterInfo.getEmploymentCd() != null
+				? "'" + scheMasterInfo.getEmploymentCd() + "'" : null;
 
 		String sqlQuery = "INSERT INTO KSCDT_SCHE_MASTER (SID, YMD, EMP_CD, CLS_CD, BUSINESS_TYPE_CD, JOB_ID, WKP_ID) VALUES ("
-				+ "'" + scheMasterInfo.getSId() + "', " + "'" + scheMasterInfo.getGeneralDate() + "', " + "'"
-				+ scheMasterInfo.getEmploymentCd() + "', " + classificationCd + ", " + businessTypeCd + ", " + "'"
-				+ scheMasterInfo.getJobId() + "', " + "'" + scheMasterInfo.getWorkplaceId() + "'" + ")";
+				+ "'" + scheMasterInfo.getSId() + "', " + "'" + scheMasterInfo.getGeneralDate() + "', "
+				+ employmentCd + ", " + classificationCd + ", " + businessTypeCd + ", "
+				+ jobId + ", " + workplaceId + ")";
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -919,7 +905,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -930,9 +916,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 */
 	private void removeScheduleMaster(String employeeId, GeneralDate baseDate) {
-		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(employeeId, baseDate);
-		if (this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).isPresent()) {
-			this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = null;
+		sqlQuery = "Delete From KSCDT_SCHE_MASTER Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -961,12 +952,13 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
 
-	private void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
+	@Override
+	public void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState) {
 		if (listWorkScheduleState == null || listWorkScheduleState.size() == 0) {
 			return;
 		}
@@ -982,7 +974,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -1010,7 +1002,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -1031,27 +1023,46 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
 	
-	private void removeScheState(String employeeId, GeneralDate baseDate,
+	@Override
+	public void removeScheState(String employeeId, GeneralDate baseDate,
 			List<WorkScheduleState> listWorkScheduleState) {
-		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
-		String listItemIdString = "(";
-		for(int i = 0; i < listItemId.size(); i++){
-			listItemIdString += "'"+ listItemId.get(i) +"',";
+		
+		if(CollectionUtil.isEmpty(listWorkScheduleState)){
+			return;
 		}
-		// remove last , in string and add )
-		listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+		
+		List<Integer> listItemId = listWorkScheduleState.stream().map(x -> x.getScheduleItemId()).collect(Collectors.toList());
+		CollectionUtil.split(listItemId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String listItemIdString = "(";
+			for(int i = 0; i < subList.size(); i++){
+				listItemIdString += "'"+ subList.get(i) +"',";
+			}
+			// remove last , in string and add )
+			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+					+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
+			try {
+				con.createStatement().executeUpdate(sqlQuery);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+	
+	private void removeScheStateWithoutListScheState(String employeeId, GeneralDate baseDate) {
+		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
-				+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1064,36 +1075,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 *            the base date
 	 */
 	private void removeAllScheduleBreakTime(String employeeId, GeneralDate baseDate) {
-
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleBreak SQL)
-		CriteriaDelete<KscdtWorkScheduleBreak> cq = criteriaBuilder.createCriteriaDelete(KscdtWorkScheduleBreak.class);
-
-		// root data
-		Root<KscdtWorkScheduleBreak> root = cq.from(KscdtWorkScheduleBreak.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.sId),
-				employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.date),
-				baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
-
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_BREAK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -1110,15 +1099,18 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		WorkScheduleTime scheduleTime = workScheduleTime.get();
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "INSERT INTO KSCDT_SCHE_TIME (SID, YMD, BREAK_TIME, WORKING_TIME, WEEKDAY_TIME, PRESCRIBED_TIME, TOTAL_LABOR_TIME, CHILD_CARE_TIME) VALUES ("
-				+ "'" + employeeId + "', " + "'" + baseDate
-				+ "', " + scheduleTime.getBreakTime().valueAsMinutes() + ", " + scheduleTime.getWorkingTime().valueAsMinutes() + ", " + scheduleTime.getWeekdayTime().valueAsMinutes() + ", "
-				+ scheduleTime.getPredetermineTime().valueAsMinutes() + ", " + scheduleTime.getTotalLaborTime().valueAsMinutes() + ", " + scheduleTime.getChildCareTime().valueAsMinutes()
-				+ ")";
+		String sqlQuery = "INSERT INTO KSCDT_SCHE_TIME (SID, YMD, BREAK_TIME, WORKING_TIME, WEEKDAY_TIME, PRESCRIBED_TIME, TOTAL_LABOR_TIME, CHILD_TIME, CARE_TIME, FLEX_TIME) VALUES ("
+				+ "'" + employeeId + "', " + "'" + baseDate + "', " + scheduleTime.getBreakTime().valueAsMinutes()
+				+ ", " + scheduleTime.getWorkingTime().valueAsMinutes() + ", "
+				+ scheduleTime.getWeekdayTime().valueAsMinutes() + ", "
+				+ scheduleTime.getPredetermineTime().valueAsMinutes() + ", "
+				+ scheduleTime.getTotalLaborTime().valueAsMinutes() + ", "
+				+ scheduleTime.getChildTime().valueAsMinutes() + ", " + scheduleTime.getCareTime().valueAsMinutes()
+				+ ", " + scheduleTime.getFlexTime().valueAsMinutes() + ")";
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -1145,13 +1137,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			String sqlQuery = "Update KSCDT_SCHE_TIME Set BREAK_TIME = " + scheduleTime.getBreakTime().valueAsMinutes() + ", "
 					+ "WORKING_TIME = " + scheduleTime.getWorkingTime().valueAsMinutes() + ", " + "WEEKDAY_TIME = " + scheduleTime.getWeekdayTime().valueAsMinutes()
 					+ ", " + "PRESCRIBED_TIME = " + scheduleTime.getPredetermineTime().valueAsMinutes() + ", " + "TOTAL_LABOR_TIME = "
-					+ scheduleTime.getTotalLaborTime().valueAsMinutes() + ", " + "CHILD_CARE_TIME = " + scheduleTime.getChildCareTime().valueAsMinutes()
+					+ scheduleTime.getTotalLaborTime().valueAsMinutes() + ", " + "CHILD_TIME = " + scheduleTime.getChildTime().valueAsMinutes()
+					+ ", " + "CARE_TIME = " + scheduleTime.getCareTime().valueAsMinutes() + ", " + "FLEX_TIME = " + scheduleTime.getFlexTime().valueAsMinutes()
 					+ " Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'"
 					+ baseDate + "'";
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 			
 		} else {
@@ -1170,7 +1163,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1181,11 +1174,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	@Override
 	public GeneralDate findMaxDateByListSid(List<String> sIds) {
-		List<GeneralDate> listDate = this.queryProxy().query(GET_LIST_DATE_BY_LIST_SID, GeneralDate.class)
-				.setParameter("sIds", sIds).getList();
-		if (listDate == null || listDate.isEmpty())
-			return null;
-
+		List<GeneralDate> listDate = new ArrayList<>(); 
+		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listDate.addAll(this.queryProxy().query(GET_LIST_DATE_BY_LIST_SID, GeneralDate.class)
+				.setParameter("sIds", subList)
+				.getList());
+		});
+		if (listDate.isEmpty()) return null;
+		listDate.sort(Comparator.comparing(GeneralDate::date).reversed()); // DESC order
 		return listDate.get(0);
 	}
 
@@ -1199,14 +1195,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	}
 
 	@Override
-	public List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate) {
-		List<BasicSchedule> result = this.queryProxy().query(GET_LIST_BY_LIST_SID_DATE, KscdtBasicSchedule.class)
-				.setParameter("sIds", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toDomain(x));
-		return result;
-	}
-	
-	@Override
 	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String sqlQuery = null;
@@ -1217,8 +1205,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	@Override
+	public List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, List<GeneralDate> dates) {
+		if(dates.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<BasicSchedule> result = new ArrayList<>();
+		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			result.addAll(this.queryProxy().query(GET_BY_LIST_DATE, KscdtBasicSchedule.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("dates", subList)
+				.getList(x -> toDomain(x)));
+		});
+		return result;
 	}
 }

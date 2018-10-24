@@ -49,10 +49,8 @@ module nts.uk.com.view.cas004.a {
                         self.currentEmpCid(currentUser.cid);
                         self.isSpecial(currentUser.specialUser);
                         self.isMultiCom(currentUser.multiCompanyConcurrent);
-                        self.isChangePass(false);
-                        self.isDisplay(true);
-                        self.isDelete(true);
                     };
+                    self.updateMode();
                 });
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'userID', width: 0, hidden: true },
@@ -96,6 +94,13 @@ module nts.uk.com.view.cas004.a {
                 errors.clearAll();
                 $('#login-id').focus();
                 $('.nts-input').ntsError('clear');
+            }
+            
+            updateMode(): void {
+                let self = this;
+                self.isChangePass(false);
+                self.isDisplay(true);
+                self.isDelete(true);
             }
             
             private resetData() {
@@ -143,10 +148,10 @@ module nts.uk.com.view.cas004.a {
                                         }
                                     }
                                     else {
-                                        self.currentCode(userId);
                                         self.isFocusFirst(false);
+                                        self.updateMode();
+                                        self.currentCode(userId);
                                         self.companyCode(null);
-                                        
                                     };
                                 });
                             }).fail((res) => {
@@ -184,8 +189,9 @@ module nts.uk.com.view.cas004.a {
                                         }
                                     }
                                     else {
-                                        self.currentCode(updateUser.userID);
                                         self.isFocusFirst(false);
+                                        self.updateMode();
+                                        self.currentCode(updateUser.userID);
                                         self.companyCode(null);
                                     };
                                 });
@@ -193,6 +199,8 @@ module nts.uk.com.view.cas004.a {
                                 if (res.messageId != null || res.messageId != undefined) {
                                     if (res.messageId == "Msg_61") {
                                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: [" " + self.currentLoginID() + " "] });
+                                    } else if (res.messageId == "Msg_716") {
+                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS004_13")] });
                                     } else {
                                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                                     }
@@ -214,12 +222,20 @@ module nts.uk.com.view.cas004.a {
                 let self = this;
                 blockUI.invisible();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    let userId = self.currentUserDto().userID;
+                    let userId = self.currentCode();
                     let deleteCmd = new model.DeleteCmd(userId, self.currentPersonId());
                     service.deleteUser(deleteCmd).done(function() {
                         blockUI.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            self.loadUserGridList(null, null);
+                            let list = self.userList();
+                            let lastIndex = list.length - 1;
+                            let index = _.findIndex(list, function(x: model.UserDto)
+                            { return x.userID == userId });
+                            let nextUserID = null;
+                            if (index != lastIndex)
+                                nextUserID = list[index + 1].userID;
+                            else nextUserID = list[index - 1].userID;
+                            self.loadUserGridList(null, nextUserID);
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });

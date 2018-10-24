@@ -115,7 +115,6 @@ module nts.uk.com.view.cps005.a {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().addPerInfoCtg(newCategory).done(() => {
                         self.reloadData(newCategory.categoryName);
-                        info({ messageId: "Msg_15" }).then(() => {
                             confirm({ messageId: "Msg_213" }).ifYes(() => {
                                 let params = {
                                     categoryId: self.currentData().perInfoCtgSelectCode(),
@@ -140,7 +139,6 @@ module nts.uk.com.view.cps005.a {
                                  ctrl.focus().val('').val(str);
                                 block.clear();
                             })
-                        });
                     }).fail(res => {
 
                         if (res.messageId == 'Msg_928') {
@@ -223,8 +221,9 @@ module nts.uk.com.view.cps005.a {
                     }
                     let ctrl = $("#category-name-control"),
                         str = ctrl.val();
-
-                    ctrl.focus().val('').val(str);
+                    if($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0){
+                         ctrl.focus().val('').val(str);
+                    }
                 });
             });
         }
@@ -277,6 +276,9 @@ module nts.uk.com.view.cps005.a {
                         break;
                     case 5:
                         self.categoryTypeName = getText("Enum_HistoryTypes_DUPLICATE");
+                        break;
+                    case 6:
+                        self.categoryTypeName = getText("Enum_HistoryTypes_CONTINUOUS");
                         break;
                 }
                 self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);

@@ -1,11 +1,11 @@
 #contents-area {padding: 10px 20px; overflow: hidden;}
 
-table.info-table {border-collapse: collapse; min-width:550px;}
+table.info-table {border-collapse: collapse; min-width:580px;}
 table.info-table td {border: 1px solid #CCC; padding:2px 7px;}
 table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
 
 .process-name {display:inline-block; width: 150px;}
-.process-count {display:inline-block; width: 75px;}
+.process-count {display:inline-block; width: 105px;}
 .process-status {display:inline-block; width: 70px;}
 .process-error {display:inline-block; width: 60px;}
 
@@ -13,4 +13,4 @@ table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
 
 .log-selection {min-height: 35px;}
 
-.place-holder {width: 762px; height: 255px; background-color: #F3F3F3;}
+.place-holder {width: 92% !important; height: 255px; background-color: #F3F3F3;}

@@ -66,5 +66,11 @@ public interface HolidayService {
 	 * @param newApp
 	 */
 	void createHolidayWork(AppHolidayWork domain, Application_New newApp);
+	
+	/**
+	 * 11.休出申請（振休変更）削除
+	 * @param appID
+	 */
+	public void delHdWorkByAbsLeaveChange(String appID);
 }
 	

@@ -7,7 +7,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -83,7 +85,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				.setParameter("appID", appID)
 				.getSingle(c -> toDomain(c));
 		if(!item.isPresent()) {
-			return null;
+			return Optional.empty();
 		}
 		return item;
 	}
@@ -142,10 +144,14 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		if(lstAppID.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtGoBackDirectly.class)
-				.setParameter("companyID", companyID)
-				.setParameter("lstAppID", lstAppID)
-                .getList(item -> toDomain(item));
+		List<GoBackDirectly> resultList = new ArrayList<>();
+		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtGoBackDirectly.class)
+								  .setParameter("companyID", companyID)
+								  .setParameter("lstAppID", subList)
+								  .getList(item -> toDomain(item)));
+		});
+		return resultList;
 	}
 
 }

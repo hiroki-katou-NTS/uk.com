@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -25,7 +26,7 @@ public class StartAlarmListExtraProcessHandler extends CommandHandlerWithResult<
 		GeneralDateTime now1 = GeneralDateTime.now();
 		AlarmListExtraProcessStatus alarmExtraProcessStatus = new AlarmListExtraProcessStatus(
 				IdentifierUtil.randomUniqueId(), companyID, GeneralDate.today(), now1.hours() * 60 + now1.minutes(),
-				employeeId, null, null);
+				employeeId, null, null,ExtractionState.PROCESSING);
 		return repo.addAlListExtaProcess(alarmExtraProcessStatus);
 	}
 }

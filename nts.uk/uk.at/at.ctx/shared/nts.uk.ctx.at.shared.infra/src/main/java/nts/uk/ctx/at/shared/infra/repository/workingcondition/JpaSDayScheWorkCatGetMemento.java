@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -44,8 +47,9 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	 * getWorkTypeCode()
 	 */
 	@Override
-	public WorkTypeCode getWorkTypeCode() {
-		return new WorkTypeCode(this.entity.getWorkTypeCode());
+	public Optional<WorkTypeCode> getWorkTypeCode() {
+		return Optional.ofNullable(this.entity.getWorkTypeCode() != null
+				? new WorkTypeCode(this.entity.getWorkTypeCode()) : null);
 	}
 
 	/*
@@ -58,6 +62,9 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TimeZone> getWorkingHours() {
+		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkCatTimeZones())) {
+			return Collections.emptyList();
+		}
 		return this.entity.getKshmtWorkCatTimeZones().stream()
 				.map(entity -> new TimeZone(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());

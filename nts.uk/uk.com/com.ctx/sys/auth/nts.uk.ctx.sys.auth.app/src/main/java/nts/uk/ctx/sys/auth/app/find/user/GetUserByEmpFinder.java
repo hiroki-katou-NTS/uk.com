@@ -20,8 +20,8 @@ public class GetUserByEmpFinder {
 
 	@Inject
 	private UserRepository userRepo;
-
-	List<UserAuthDto> getByListEmp(List<String> listEmpID) {
+    /** Logic request 387- 486 **/
+	public List<UserAuthDto> getByListEmp(List<String> listEmpID) {
 		// Lay request 61
 		List<EmpInfoImport> empInforLst = empInfoAdapter.getEmpInfo(listEmpID);
 		List<String> listPID = empInforLst.stream().map(c -> c.getPersonId()).collect(Collectors.toList());
@@ -33,11 +33,12 @@ public class GetUserByEmpFinder {
 			List<UserAuthDto> result = new ArrayList<>();
 
 			for (EmpInfoImport em : empInforLst) {
-				if (!em.getPersonId().isEmpty()) {
-					User user = listUser.stream().filter(c -> c.getAssociatedPersonID().equals(em.getPersonId()))
+				if (!em.getPersonId().isEmpty() && em.getPersonId() != null) {
+					User user = listUser.stream().filter(c -> c.getAssociatedPersonID().get().equals(em.getPersonId()))
 							.findFirst().get();
 
-					UserAuthDto u = new UserAuthDto(user.getUserID(), user.getUserName().get().v(),
+					UserAuthDto u = new UserAuthDto(user.getUserID(),
+							user.getUserName().isPresent() ? user.getUserName().get().v() : "" ,
 							user.getLoginID().v(), em.getEmployeeId(), em.getEmployeeCode(), em.getPerName());
 					result.add(u);
 				}

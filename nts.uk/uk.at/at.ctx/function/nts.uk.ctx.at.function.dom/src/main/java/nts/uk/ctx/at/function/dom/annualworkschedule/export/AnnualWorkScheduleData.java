@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,7 +11,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeOfManagePeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
@@ -46,8 +43,9 @@ public class AnnualWorkScheduleData {
 	private ItemData month12th;
 
 	private BigDecimal average;
-	private BigDecimal sum;
+	private ItemData sum;
 	private Integer monthsExceeded;
+	private Integer monthsRemaining;
 
 	private ItemData period1st;
 	private ItemData period2nd;
@@ -58,6 +56,8 @@ public class AnnualWorkScheduleData {
 	private ItemData period7th;
 
 	private Integer maxDigitAfterDecimalPoint = null;
+
+	private boolean agreementTime;
 
 	public void setMonthlyData(ItemData item, YearMonth ym) {
 		int monthIndex = (int) this.startYm.until(ym, ChronoUnit.MONTHS);
@@ -130,57 +130,39 @@ public class AnnualWorkScheduleData {
 	/**
 	 * 月平均の算出(Calculate monthly average)
 	 */
-	public AnnualWorkScheduleData calc() {
-		// 取得した実績の合計を算出する
-		this.sum = new BigDecimal(0);
-		this.sum = this.sum.add(this.getItemValueByNullOrZero(this.month1st))
-				.add(this.getItemValueByNullOrZero(this.month2nd)).add(this.getItemValueByNullOrZero(this.month3rd))
-				.add(this.getItemValueByNullOrZero(this.month4th)).add(this.getItemValueByNullOrZero(this.month5th))
-				.add(this.getItemValueByNullOrZero(this.month6th)).add(this.getItemValueByNullOrZero(this.month7th))
-				.add(this.getItemValueByNullOrZero(this.month8th)).add(this.getItemValueByNullOrZero(this.month9th))
-				.add(this.getItemValueByNullOrZero(this.month10th)).add(this.getItemValueByNullOrZero(this.month11th))
-				.add(this.getItemValueByNullOrZero(this.month12th));
-		// 月平均を算出する
-		this.average = this.sum.divide(BigDecimal.valueOf(this.numMonth), this.getMaxDigitAfterDecimalPoint(),
-				RoundingMode.HALF_UP);
-		return this;
-	}
-
-	private int getMaxDigitAfterDecimalPoint() {
-		if (maxDigitAfterDecimalPoint == null) {
-			maxDigitAfterDecimalPoint = Collections
-					.max(Arrays.asList(this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month1st)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month2nd)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month3rd)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month4th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month5th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month6th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month7th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month8th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month9th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month10th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month11th)),
-							this.getDigitAfterDecimalPoint(this.getItemValueByNullOrDefault(this.month12th))));
+	public AnnualWorkScheduleData calc(boolean calcSum) {
+		if (calcSum) {
+			// 取得した実績の合計を算出する
+			BigDecimal sum = new BigDecimal(0);
+			sum = sum.add(this.getItemValueByNullOrZero(this.month1st))
+					.add(this.getItemValueByNullOrZero(this.month2nd)).add(this.getItemValueByNullOrZero(this.month3rd))
+					.add(this.getItemValueByNullOrZero(this.month4th)).add(this.getItemValueByNullOrZero(this.month5th))
+					.add(this.getItemValueByNullOrZero(this.month6th)).add(this.getItemValueByNullOrZero(this.month7th))
+					.add(this.getItemValueByNullOrZero(this.month8th)).add(this.getItemValueByNullOrZero(this.month9th))
+					.add(this.getItemValueByNullOrZero(this.month10th))
+					.add(this.getItemValueByNullOrZero(this.month11th))
+					.add(this.getItemValueByNullOrZero(this.month12th));
+			this.sum = new ItemData(sum, null);
 		}
-		return maxDigitAfterDecimalPoint;
-	}
-
-	private int getDigitAfterDecimalPoint(BigDecimal value) {
-		if (value == null)
-			return 0;
-		String valueStr = value.toString();
-		int indexPoint = valueStr.indexOf('.');
-		if (indexPoint < 0)
-			return 0;
-		return valueStr.length() - (indexPoint + 1);
+		if (this.numMonth == 0) {
+			return this;
+		}
+		// 月平均を算出する
+		switch (this.valOutFormat) {
+		case DAYS:
+		case TIMES:
+		case AMOUNT:
+			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 1, RoundingMode.HALF_UP);
+			break;
+		case TIME:
+			this.average = this.sum.getValue().divide(BigDecimal.valueOf(this.numMonth), 0, RoundingMode.HALF_UP);
+			break;
+		}
+		return this;
 	}
 
 	private BigDecimal getItemValueByNullOrZero(ItemData item) {
 		return item == null ? BigDecimal.valueOf(0) : item.getValue();
-	}
-
-	private BigDecimal getItemValueByNullOrDefault(ItemData item) {
-		return item == null ? null : item.getValue();
 	}
 
 	private String formatItemData(ItemData item) {
@@ -195,9 +177,10 @@ public class AnnualWorkScheduleData {
 		if (valOutFormat.equals(ValueOuputFormat.TIME)) {
 			return String.format("%d:%02d", value.longValue() / 60, Math.abs(value.longValue() % 60));
 		}
-		if (valOutFormat.equals(ValueOuputFormat.TIMES)) {
+		// CR: No 135
+		/*if (valOutFormat.equals(ValueOuputFormat.TIMES)) {
 			return String.valueOf(value.longValue());
-		}
+		}*/
 		return String.valueOf(value.floatValue());
 	}
 
@@ -250,11 +233,26 @@ public class AnnualWorkScheduleData {
 	}
 
 	public String formatSum() {
-		return this.formatBigDecimal(this.sum);
+		return this.formatItemData(this.sum);
 	}
 
 	public String formatAverage() {
 		return this.formatBigDecimal(this.average);
+	}
+
+	public String formatMonthsExceeded() {
+		return this.formatMonths(this.monthsExceeded);
+	}
+
+	public String formatMonthsRemaining() {
+		return this.formatMonths(this.monthsRemaining);
+	}
+
+	private String formatMonths(Integer value) {
+		if (value == null) {
+			return "";
+		}
+		return "'" + value + "回";
 	}
 
 	public String formatMonthPeriod1st() {
@@ -290,18 +288,15 @@ public class AnnualWorkScheduleData {
 			return null;
 		switch (item.getStatus()) {
 		case EXCESS_LIMIT_ERROR:
-		case EXCESS_EXCEPTION_LIMIT_ERROR:
 		case EXCESS_LIMIT_ERROR_SP:
-			// #FD4D4D = 16600397
+		case EXCESS_EXCEPTION_LIMIT_ALARM:
+		case EXCESS_EXCEPTION_LIMIT_ERROR:
+			// No56: #FD4D4D = 16600397
 			return 16600397;
 		case EXCESS_LIMIT_ALARM:
-		case EXCESS_EXCEPTION_LIMIT_ALARM:
 		case EXCESS_LIMIT_ALARM_SP:
-			// #F6F636 = 16184886
+			// No57: #F6F636 = 16184886
 			return 16184886;
-		case NORMAL_SPECIAL:
-			// #EB9152 = 15438162
-			return 15438162;
 		default:
 			return null;
 		}
@@ -355,6 +350,10 @@ public class AnnualWorkScheduleData {
 		return this.getColor(this.month12th);
 	}
 
+	public Integer getColorSum() {
+		return this.getColor(this.sum);
+	}
+
 	public Integer getColorPeriodMonth1st() {
 		return this.getColor(this.period1st);
 	}
@@ -384,7 +383,7 @@ public class AnnualWorkScheduleData {
 	}
 
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemOutTblBook itemOut,
-			List<MonthlyAttendanceResultImport> monthlyAttendanceResult, YearMonth startYm, int numMonth) {
+			List<MonthlyAttendanceResultImport> monthlyAttendanceResult, YearMonth startYm) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
 				.collect(Collectors.toMap(CalcFormulaItem::getAttendanceItemId, CalcFormulaItem::getOperation));
 
@@ -392,7 +391,8 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.calcNumMonthFromAttendance(monthlyAttendanceResult);
+		annualWorkScheduleData.setAgreementTime(false);
 		monthlyAttendanceResult.forEach(m -> {
 			annualWorkScheduleData.setMonthlyData(
 					AnnualWorkScheduleData.sumAttendanceData(operationMap, m.getAttendanceItems()),
@@ -413,6 +413,7 @@ public class AnnualWorkScheduleData {
 				} catch (Exception e) {
 					continue;
 				}
+				if (!operationMap.containsKey(attendanceItem.getItemId())) continue;
 				// 0: subtract, 1: plus
 				if (operationMap.get(attendanceItem.getItemId()) == 0) {
 					sum = sum.subtract(val);
@@ -425,22 +426,33 @@ public class AnnualWorkScheduleData {
 	}
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
-			List<AgreementTimeOfManagePeriodImport> listAgreementTime,
-			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth,
-			Integer monthsExceeded) {
+			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
+			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
+			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
+			Integer monthLimit) {
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
 		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
-		listAgreementTime.forEach(m -> {
-			BigDecimal value = new BigDecimal(m.getAgreementTime().getAgreementTime().v());
-			AgreementTimeStatusOfMonthly status = m.getAgreementTime().getStatus();
+		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
+		annualWorkScheduleData.setAgreementTime(true);
+		listAgreementTimeBymonth.forEach(m -> {
+			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
+			AgreementTimeStatusOfMonthly status = m.getStatus();
 			ItemData item = new ItemData(value, status);
 			annualWorkScheduleData.setMonthlyData(item,
-					YearMonth.of(m.getYearMonth().year(), m.getYearMonth().month()));
+					YearMonth.of(m.getStartMonth().year(), m.getStartMonth().month()));
 		});
+		
+		if(!listAgreementTimeByYear.isEmpty()){
+			AgreementTimeByPeriodImport agreementYear = listAgreementTimeByYear.get(0);
+			BigDecimal value = new BigDecimal(agreementYear.getAgreementTime().v());
+			AgreementTimeStatusOfMonthly status = agreementYear.getStatus();
+			ItemData item = new ItemData(value, status);
+			annualWorkScheduleData.setSum(item);
+		}
 
 		listExcesMonths = listExcesMonths.stream().sorted((excesMonth1, excesMonth2) -> Integer
 				.compare(excesMonth1.getStartMonth().v(), excesMonth2.getStartMonth().v()))
@@ -456,6 +468,16 @@ public class AnnualWorkScheduleData {
 		return annualWorkScheduleData;
 	}
 	
+	private void calcNumMonthFromAttendance(List<MonthlyAttendanceResultImport> listMonthlyAttendance) {
+		this.numMonth = listMonthlyAttendance.stream().map(x -> x.getYearMonth().v()).distinct()
+				.collect(Collectors.toList()).size();
+	}
+
+	private void calcNumMonthFromAgreement(List<AgreementTimeByPeriodImport> listAgreementTime) {
+		this.numMonth = listAgreementTime.stream().map(x -> x.getStartMonth().v()).distinct()
+				.collect(Collectors.toList()).size();
+	}
+
 	public boolean hasItemData() {
 		if (this.month1st != null || this.month2nd != null || this.month3rd != null || this.month4th != null
 				|| this.month5th != null || this.month6th != null || this.month7th != null || this.month8th != null

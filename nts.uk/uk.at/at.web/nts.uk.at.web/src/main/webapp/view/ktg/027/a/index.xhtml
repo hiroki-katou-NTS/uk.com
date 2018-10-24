@@ -21,12 +21,12 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="valign-center control-group"
-					style="margin-top: 10px; margin-bottom: 15px;">
+					style="margin-top: 5px; margin-bottom: 15px;">
 					<label>#{i18n.getText('KTG027_3')}</label>
-					<div
-						data-bind="ntsDatePicker: { name: '#[KTG027_3]', value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
+					<div id = "inputYM"
+						data-bind="ntsDatePicker: { name: '#[KTG027_3]',value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
 				</div>
-				<div class="valign-center control-group" style="min-width: 500px;">
+				<div class="valign-center control-group">
 					<label>#{i18n.getText('KTG027_4')}</label>
 					<div id="combo-box" style="margin-left: 19px;"
 						data-bind="ntsComboBox: {
@@ -51,12 +51,12 @@
 					<div data-bind="visible:!displayEr()">
 
 						<table id="fixed-table">
-							<colgroup>
-								<col width="250px" />
-								<col width="70px" />
-								<col width="70px" />
-								<col width="70px" />
-								<col width="70px" />
+							<colgroup>	
+								<col width="230px" />
+								<col width="75px" />
+								<col width="105px" />
+								<!-- <col width="70px" />
+								<col width="70px" /> -->
 
 							</colgroup>
 							<thead>
@@ -69,19 +69,19 @@
 
 								<tr>
 									<th class="ui-widget-header">#{i18n.getText('KTG027_8')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th>
+									<!-- <th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
+									<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th> -->
 								</tr>
 							</thead>
 							
 							<tbody data-bind="foreach : inforOvertime">
 								<tr
-									data-bind="style : {backgroundColor : backgroundColor , color : color}">
+									data-bind="style: { backgroundColor: status !== 0 ? backgroundColor : '', color : status !== 0  ? color : ''}">
 									<td data-bind="text : employee"></td>
 									<td data-bind="text : timeLimit"></td>
 									<td data-bind="text : actualTime"></td>
-									<td data-bind="text : applicationTime"></td>
-									<td data-bind="text : totalTime"></td>
+									<!-- <td data-bind="text : applicationTime"></td>
+									<td data-bind="text : totalTime"></td> -->
 								</tr>
 							</tbody>
 						</table>

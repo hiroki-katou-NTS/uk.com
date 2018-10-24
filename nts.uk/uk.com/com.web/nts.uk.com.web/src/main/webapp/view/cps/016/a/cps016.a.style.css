@@ -95,7 +95,7 @@ button.search-btn {
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 359px;
+	width: 381px;
 }
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
@@ -109,11 +109,9 @@ i.icon.icon-searchbox {
 .layout-control .drag-panel {
 	height: 500px !important;
 }
-
-#contents-area {
-	width: 1000px;
-	height: 768px;
-	overflow: hidden;
+#header[style]+#master-content>#contents-area {
+	height: calc(100vh - 69px) !important;
+	max-height: calc(100vh - 69px) !important;
 }
 
 #contents-area-left {

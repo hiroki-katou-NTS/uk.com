@@ -24,7 +24,6 @@ module nts.uk.at.view.kwr001.c {
             selectedRuleCode: any;
             
             currentCodeListSwap: KnockoutObservableArray<ItemModel>;
-            test: KnockoutObservableArray<any>;
 
             checkedRemarksInput: KnockoutObservable<boolean>;
             checkedMasterUnregistered: KnockoutObservable<boolean>;
@@ -41,7 +40,11 @@ module nts.uk.at.view.kwr001.c {
             // start: variable global store data from service 
             allMainDom: KnockoutObservable<any>;
             outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
-            // end: variable global store data from service 
+            // end: variable global store data from service
+            
+            // store map to convert id and code attendance item
+            mapIdCodeAtd: any;
+            mapCodeIdAtd: any;
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
@@ -60,7 +63,7 @@ module nts.uk.at.view.kwr001.c {
                 self.outputItemList = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR001_52"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR001_53"), prop: 'name', width: 180 }
+                    { headerText: nts.uk.resource.getText("KWR001_53"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
                 self.currentCodeList = ko.observable();
                 self.C3_2_value = ko.observable("");
@@ -69,7 +72,6 @@ module nts.uk.at.view.kwr001.c {
                 self.roundingRules = ko.observableArray([]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
-                self.test = ko.observableArray([]);
                 
                 self.currentCodeListSwap.subscribe(function(value) {
                 })
@@ -85,17 +87,17 @@ module nts.uk.at.view.kwr001.c {
                         return value == o.itemCode; 
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
-                        nts.uk.ui.errors.clearAll();
-                        self.C3_2_value(codeChoose.itemCode);
-                        self.C3_3_value(codeChoose.itemName);
-                        let outputItemDailyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
-                                                                return codeChoose.itemCode == o.itemCode;             
-                                                            })
-                        self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
-                        self.selectedRuleCode(codeChoose.workTypeNameDisplay);
-                        self.enableBtnDel(true);
-                        self.enableCodeC3_2(false);
-                        self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
+                        blockUI.grayout();
+                        service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
+                            self.C3_2_value(outputItemDailyWorkSchedule.itemCode);
+                            self.C3_3_value(outputItemDailyWorkSchedule.itemName);
+                            self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
+                            self.selectedRuleCode(outputItemDailyWorkSchedule.workTypeNameDisplay);
+                            self.enableBtnDel(true);
+                            self.enableCodeC3_2(false);
+                            self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
+                            blockUI.clear();
+                        })
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -103,6 +105,9 @@ module nts.uk.at.view.kwr001.c {
                         self.enableBtnDel(false);
                         self.enableCodeC3_2(true);
                     }
+                    _.delay(() => {
+                        nts.uk.ui.errors.clearAll();
+                    }, 400);
                 })
                 
                 self.checkedRemarksInput = ko.observable(false);
@@ -135,6 +140,8 @@ module nts.uk.at.view.kwr001.c {
                 })
                 
                 self.isEnableRemarkInputContents = ko.observable(false);
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
             }
             
             /*
@@ -144,12 +151,14 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 
                 // variable temporary
-                let temp2: any[] = [];
-                let temp1: any[] = [];
+                let temp2: ItemModel[] = [];
+                let temp1: ItemModel[] = [];
                 self.items.removeAll();
                 self.currentCodeListSwap.removeAll();
                 _.forEach(data.lstDisplayedAttendance, function(value, index) {
-                    temp1.push({code: value.attendanceDisplay+"", name: value.attendanceName});    
+                    if (value.attendanceName) {
+                        temp1.push({ code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay });
+                    }
                 })
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
@@ -213,10 +222,17 @@ module nts.uk.at.view.kwr001.c {
                     
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemDailyWorkSchedule, function(value, index) {
-                        arrCodeName.push({code: value.itemCode+"", name: value.itemName});
+                        arrCodeName.push({code: value.itemCode+"", name: value.itemName, id: ""});
                     });
                     self.outputItemList(arrCodeName);
-                    self.items(data.dailyAttendanceItem);
+                    
+                    _.forEach(data.dailyAttendanceItem, (value) => {
+                        self.mapCodeIdAtd[value.code] = value.id;
+                        self.mapIdCodeAtd[value.id] = value.code;        
+                    })
+                    
+                    self.items(data.dailyAttendanceItem);                    
+                    
                     dfd.resolve();
                 })
                 
@@ -259,16 +275,11 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 service.getEnumRemarkInputContent().done(function(data: any) {
                     let arr: ItemModel[] = [];
-                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118")));
-                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119")));
-                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120")));
-                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121")));
-                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122")));
-//                    arr.push(new ItemModel('1', data[0].localizedName));
-//                    arr.push(new ItemModel('2', data[1].localizedName));
-//                    arr.push(new ItemModel('3', data[2].localizedName));
-//                    arr.push(new ItemModel('4', data[3].localizedName));
-//                    arr.push(new ItemModel('5', data[4].localizedName));
+                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118"), ''));
+                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119"), ''));
+                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120"), ''));
+                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121"), ''));
+                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122"), ''));
                     self.remarkInputContents(arr);
                     dfd.resolve();
                 })
@@ -280,29 +291,38 @@ module nts.uk.at.view.kwr001.c {
             */
             openScreenD () {
                 var self = this;
-                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
+                let dataScrD: any;
+//                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
-                    if (!_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D'))) {
-                        self.currentCodeList('');
-                        if (!_.isUndefined(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose) && !_.isEmpty(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose)) {
-                            $('#C3_3').focus();                            
+                    dataScrD = nts.uk.ui.windows.getShared('KWR001_D');
+                    if (!_.isEmpty(dataScrD)) {
+                        if (!_.isEmpty(dataScrD.error)) {
+                            nts.uk.ui.dialog.alertError(dataScrD.error);   
                         } else {
-                            $('#C3_2').focus();
+                            self.currentCodeList('');
+                            if (!_.isUndefined(dataScrD.lstAtdChoose) && !_.isEmpty(dataScrD.lstAtdChoose)) {
+                                $('#C3_3').focus();                            
+                            } else {
+                                $('#C3_2').focus();
+                            }
+                            
+                            let arrTemp: any[] = [];
+                            _.forEach(self.outputItemPossibleLst(), function(value) {
+                                arrTemp.push(value);
+                            })
+                            _.forEach(dataScrD.lstAtdChoose, (value) => {
+                                value.code = self.mapIdCodeAtd[value.id];    
+                            })
+                            self.currentCodeListSwap(dataScrD.lstAtdChoose);
+                            self.items(arrTemp);
+                            self.C3_2_value(dataScrD.codeCopy);
+                            self.C3_3_value(dataScrD.nameCopy);
+                            self.saveData();    
                         }
-                        
-                        let arrTemp: any[] = [];
-                        _.forEach(self.outputItemPossibleLst(), function(value) {
-                            arrTemp.push(value);
-                        })
-                        self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR001_D').lstAtdChoose);
-                        self.items(arrTemp);
-                        self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
-                        self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
-                        self.saveData();
                     } else {
                         self.currentCodeList(self.storeCurrentCodeBeforeCopy());
                     }
@@ -325,7 +345,7 @@ module nts.uk.at.view.kwr001.c {
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 _.forEach(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({sortBy: index, itemToDisplay: value.code});
+                    command.lstDisplayedAttendance.push({sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code]});
                 });
                 command.lstRemarkContent = [];
                 command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedRemarksInput()), printItem: 0});
@@ -367,7 +387,7 @@ module nts.uk.at.view.kwr001.c {
                     if (err.messageId == "Msg_3") {
                         $("#C3_2").ntsError('set', { messageId: "Msg_3"});
                     } else {
-                       nts.uk.ui.dialog.alertError(err);     
+                       nts.uk.ui.dialog.alertError(err);
                     }
                     dfd.reject();
                 })
@@ -380,11 +400,13 @@ module nts.uk.at.view.kwr001.c {
                 self.currentCodeList('');
                 self.C3_2_value('');
                 self.C3_3_value('');
-                nts.uk.ui.errors.clearAll();
                 $('#C3_2').focus();
                 self.getOutputItemDailyWorkSchedule([]);
                 self.enableBtnDel(false);
                 self.selectedRuleCode(0);
+                _.delay(() => {
+                    nts.uk.ui.errors.clearAll();
+                }, 400);
             }
             
             private convertBoolToNum(value: boolean): number {
@@ -475,9 +497,11 @@ module nts.uk.at.view.kwr001.c {
         class ItemModel {
             code: string;
             name: string;
-            constructor(code: string, name: string) {
+            id: string;
+            constructor(code: string, name: string, id: string) {
                 this.code = code;
-                this.name = name;  
+                this.name = name;
+                this.id = id;
             }
         } 
     }

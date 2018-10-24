@@ -39,7 +39,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 3, name: text("KAF022_303") }
         ]);
 
-        timeInputUseAtr = ko.observableArray([
+        timeInputUseAtr = ko.observableArray([  
             { code: 1, name: text("KAF022_308") },
             { code: 0, name: text("KAF022_309") }
         ]);
@@ -98,9 +98,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
             return !!self.selectVer27() && isUpdate();
         });
-
+        textKAF022_285 : KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
+            
+            // get text KAF022_285
+            self.textKAF022_285(nts.uk.resource.getText("KAF022_285") + "("
+                        + nts.uk.text.getCharType('Memo').viewName +
+                        + __viewContext.primitiveValueConstraints.Memo.maxLength/2
+                        + "文字)");
 
             _.extend(self.kcp004WorkplaceListOption, {
                 baseDate: self.baseDate,
@@ -136,6 +142,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                     self.selectedSetting.update(exsistedSetting);
                 } else {
                     self.selectedSetting.update(null);
+                    self.selectedSetting.wkpName("");
                 }
 
                 self.selectedSetting.wkpId(val);
@@ -174,8 +181,6 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                         nts.uk.ui.block.clear();
                     });
             } else {
-
-                //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
                     if (config) {
                         _.extend(config, {
@@ -265,15 +270,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             command = _.omit(command, ['update', 'wkpName', 'initSettingList']);
 
             if (nts.uk.ui.errors.hasError() === false) {
-                nts.uk.ui.block.grayout();
+                
                 if (!!self.selectVer27()) {
                     service.update([command]).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            nts.uk.ui.block.clear();
+                            nts.uk.ui.block.grayout();
                             self.reloadData();
+                            nts.uk.ui.block.clear();
                         });
                     }).fail(msg => {
-                        debugger;
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
                     });
                 } else {
@@ -285,8 +290,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                     service.saveCom(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            nts.uk.ui.block.clear();
+                            nts.uk.ui.block.grayout();
                             self.reloadData();
+                            nts.uk.ui.block.clear();
                         });
                     }).fail(() => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
@@ -478,7 +484,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
             self.appType = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.appType : appTypeParam);
             self.memo = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.memo : '');
-            self.useAtr = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 0);
+            self.useAtr = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 1);
             self.prerequisiteForpauseFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.prerequisiteForpauseFlg : 0);
             self.otAppSettingFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.otAppSettingFlg : 0);
             self.holidayTimeAppCalFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.holidayTimeAppCalFlg : 0);
@@ -501,7 +507,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
             self.appType(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.appType : appTypeParam);
             self.memo(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.memo : '');
-            self.useAtr(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 0);
+            self.useAtr(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 1);
             self.prerequisiteForpauseFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.prerequisiteForpauseFlg : 0);
             self.otAppSettingFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.otAppSettingFlg : 0);
             self.holidayTimeAppCalFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.holidayTimeAppCalFlg : 0);

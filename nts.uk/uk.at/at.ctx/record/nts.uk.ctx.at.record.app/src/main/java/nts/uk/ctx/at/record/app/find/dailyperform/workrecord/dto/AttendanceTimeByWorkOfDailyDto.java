@@ -1,10 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
+import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
+import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.ActualWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.WorkTimeOfDaily;
@@ -25,6 +32,7 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 	private String employeeId;
 
 	/** 年月日: 年月日 */
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
 	/** 作業一覧: 日別実績の作業時間 */
@@ -44,6 +52,19 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getStart()), 
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getEnd())), 
 								c.getWorkTime() == null ? null : c.getWorkTime().valueAsMinutes())));
+			dto.exsistData();
+		}
+		
+		return dto;
+	}
+	
+	@Override
+	public AttendanceTimeByWorkOfDailyDto clone() {
+		AttendanceTimeByWorkOfDailyDto dto = new AttendanceTimeByWorkOfDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setWorkTimes(workTimes == null ? null : workTimes.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if(isHaveData()){
 			dto.exsistData();
 		}
 		
@@ -76,10 +97,10 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),
 										new ActualWorkTimeSheet(getStamp(c.getTimeSheet().getStart()),
 												getStamp(c.getTimeSheet().getEnd())),
-										new ActualWorkTime(c.getWorkTime()))));
+										new ActualWorkTime(c.getWorkTime() == null ? 0 : c.getWorkTime()))));
 	}
 	
 	private TimeActualStamp getStamp(WithActualTimeStampDto stamp) {
-		return stamp == null ? null : stamp.toDomain();
+		return stamp == null ? new TimeActualStamp() : stamp.toDomain();
 	}
 }

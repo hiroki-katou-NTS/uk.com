@@ -71,6 +71,12 @@ public interface RoleIndividualGrantRepository {
 	/** Remove */
 	void remove(String userId, String companyId, int roleType);
 	
+	// add repo for CAS004
+	/** Remove by user ID*/
+	void removeByUserId(String userId);
+	
 	Optional<RoleIndividualGrant> findByDetail(String userId, String companyId, int roleType, List<String> roleIDLst, GeneralDate date);
+	
+	List<RoleIndividualGrant> findRoleIndividual( String companyId, int roleType, List<String> roleIDLst, GeneralDate date);
 
 }

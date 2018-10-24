@@ -22,6 +22,7 @@ module kcp009.viewmodel {
         isDisplay: KnockoutObservable<boolean>;
         isShowEmpList: KnockoutObservable<boolean>;
         tabIndex: number;
+        componentWrapperId: string;
 
         constructor() {
             var self = this;
@@ -33,11 +34,12 @@ module kcp009.viewmodel {
             self.empDisplayCode = ko.observable(null);
             self.empBusinessName = ko.observable(null);
             self.organizationDesignation = ko.observable(null);
-            self.organizationName = ko.observable(null);
+            self.organizationName = ko.observable('');
 
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
             self.isShowEmpList = ko.observable(false);
+            self.componentWrapperId = nts.uk.util.randomId();
         }
 
         // Initialize Component
@@ -60,14 +62,31 @@ module kcp009.viewmodel {
             }
             if (data.employeeInputList().length > 0) {
                 self.empList(data.employeeInputList());
+                //input.初期選択社員IDに値がない場合
+                if (_.isNil(data.selectedItem) || _.isNil(data.selectedItem())) {
+                    if (_.isNil(data.selectedItem)) {
+                        self.selectedItem = ko.observable(null);
+                    }
+                    else {
+                        self.selectedItem = data.selectedItem;
+                    }
+                    // Set SelectedItem: First Item
+                    let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
+                    if (codeEmp) {//社員リストにログイン社員が含まれる
+                        self.selectedItem(__viewContext.user.employeeId);
+                    } else {//社員リストにログイン社員が含まれない
+                        self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+                    }
+                }
+                else {//input.初期選択社員IDに値がある場合
+                    self.selectedItem = data.selectedItem;
+                }
             } else {
                 // message 184
                 nts.uk.ui.dialog.info({ messageId: "Msg_184" });
             }
-            self.selectedItem = data.selectedItem;
             
-            // Set SelectedItem: First Item
-            self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+            
 
             // Initial Binding from Selected Item
             self.bindEmployee(self.selectedItem());
@@ -150,10 +169,8 @@ module kcp009.viewmodel {
                 // set z-index higher than CCG001
                 $('#item-list-' + self.prefix()).css('z-index', 998);
 
-                // Toggle
-                $(btnShowListEl).click(function() { 
-                    $(itemListEl).ntsPopup('toggle');
-                });
+                self.initKcp009Event();
+
                 // Enter keypress
                 $('#search-input-'+self.prefix()).on('keypress', function(e) {
                     if (e.which == 13) {
@@ -167,6 +184,56 @@ module kcp009.viewmodel {
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+
+        private initKcp009Event(): void {
+            let self = this;
+
+            const componentWrapperParent = $('#' + self.componentWrapperId).parent();
+            if (!componentWrapperParent.attr('kcp009-event-click-registered')) {
+                componentWrapperParent.attr('kcp009-event-click-registered', 'true');
+
+                $(document.body).on('click', e => {
+                    const listBox = $('#item-list-' + self.prefix());
+
+                    // click button show list box
+                    if (e.target.id == 'btn_show_list-' + self.prefix()) {
+                        listBox.ntsPopup('toggle');
+                        return;
+                    }
+
+                    // click select item
+                    if ($(e.target).parents('#item-list-' + self.prefix() + ' .ntsListBox').length > 0) {
+                        listBox.ntsPopup('toggle');
+                    }
+
+                    // click to inside component
+                    if (listBox[0] == e.target || jQuery.contains(listBox[0], e.target)) {
+                        return;
+                    }
+
+                    // click when block ui
+                    if (!_.isEmpty($('div.ui-widget-overlay.ui-front'))) {
+                        return;
+                    }
+                    if (!_.isEmpty($('div.blockUI.blockOverlay'))) {
+                        return;
+                    }
+                    // check is click to errors notifier
+                    if (e.target.id == 'func-notifier-errors') {
+                        return;
+                    }
+                    // Check is click to dialog.
+                    if ($(e.target).parents("[role='dialog']")[0]) {
+                        return;
+                    }
+
+                    // close listbox popup
+                    if (listBox.css('visibility') == 'visible') {
+                        listBox.ntsPopup('toggle');
+                    }
+                });
+            }
         }
 
         // bindEmployee
@@ -243,7 +310,7 @@ module kcp009.viewmodel {
                     self.selectedItem(employee.employeeId);
                     self.empDisplayCode(employee.employeeCode);
                     self.empBusinessName(employee.businessName);
-                    self.organizationName(employee.orgName);
+                    self.organizationName(employee.wkpDisplayName);
                 }
 
             }).fail(function(res) {
@@ -284,7 +351,7 @@ module kcp009.viewmodel {
         isDisplayOrganizationName: boolean;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         targetBtnText: string;
-        selectedItem: KnockoutObservable<string>;
+        selectedItem ?: KnockoutObservable<string>;
         tabIndex: number;
     }
 
@@ -329,7 +396,7 @@ module kcp009.viewmodel {
                 employeeId: string;
                 employeeCode: string;
                 businessName: string;
-                orgName: string
+                wkpDisplayName: string;
             }
         }
     }

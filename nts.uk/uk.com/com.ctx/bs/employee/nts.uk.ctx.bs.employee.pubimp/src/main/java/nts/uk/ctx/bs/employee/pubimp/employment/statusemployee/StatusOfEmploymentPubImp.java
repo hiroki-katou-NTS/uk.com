@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
@@ -14,7 +15,6 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
@@ -27,11 +27,15 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 
 	@Override
 	public StatusOfEmploymentExport getStatusOfEmployment(String employeeId, GeneralDate referenceDate) {
-		String cid = AppContexts.user().companyId();
-		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,employeeId)
-				.getAffCompanyHistByEmployee(employeeId);
+		AffCompanyHist affCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(employeeId);
+				
+		if (affCompanyHist == null) {
+			return null;
+		}
+		
+		AffCompanyHistByEmployee affCompanyHistByEmployee = affCompanyHist.getAffCompanyHistByEmployee(employeeId);
 
-		if (employeeHistory == null) {
+		if (affCompanyHistByEmployee == null) {
 			return null;
 		}
 
@@ -40,7 +44,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 		statusOfEmploymentExport.setRefereneDate(referenceDate);
 
 		// get HistoryItem match with referenceDate
-		Optional<AffCompanyHistItem> historyItem = employeeHistory.getHistoryWithReferDate(referenceDate);
+		Optional<AffCompanyHistItem> historyItem = affCompanyHistByEmployee.getHistoryWithReferDate(referenceDate);
 
 		if (historyItem.isPresent()) {
 			// match startDate <= referenceDate <= endDate
@@ -71,12 +75,12 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 
 		} else {
 			// NOT match startDate <= referenceDate <= endDate
-			Optional<AffCompanyHistItem> hitoryBefore = employeeHistory.getHistoryBeforeReferDate(referenceDate);
+			Optional<AffCompanyHistItem> hitoryBefore = affCompanyHistByEmployee.getHistoryBeforeReferDate(referenceDate);
 			
 			if (hitoryBefore.isPresent()) {
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
 			} else {
-				Optional<AffCompanyHistItem> hitoryAfter = employeeHistory.getHistoryAfterReferDate(referenceDate);
+				Optional<AffCompanyHistItem> hitoryAfter = affCompanyHistByEmployee.getHistoryAfterReferDate(referenceDate);
 				if (hitoryAfter.isPresent()) {
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
 				}

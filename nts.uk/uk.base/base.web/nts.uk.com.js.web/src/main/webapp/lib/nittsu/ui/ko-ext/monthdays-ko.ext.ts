@@ -22,13 +22,17 @@ module nts.uk.ui.koExtentions {
                         width: '60px'
                     });
                 },
-                getMonths = () => _.range(1, 13).map(m => ({ text: m, value: m })),
-                getDaysInMonth = (month: number) => _.range(1, moment(month, "MM").daysInMonth() + 1).map(m => ({ text: m, value: m }));
+                getMonths = () => _.range(0, 13).map(m => ({ text: m === 0 ? "" : m, value: m })),
+                getDaysInMonth = (month: number) => _.range(0, moment(month, "MM").daysInMonth() + 1).map(m => ({ text: m === 0 ? "" : m, value: m }));
 
             let value = ko.unwrap(data.value);
             let dataName = ko.unwrap(data.name);
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+            let required = _.isNil(data.required) ? false : ko.unwrap(data.required);
 
+            if (dataName) {
+                dataName = nts.uk.resource.getControlName(dataName);
+            }
             $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
 
             $container.addClass("ntsControl ntsMonthDays_Container");
@@ -55,12 +59,17 @@ module nts.uk.ui.koExtentions {
 
             // month change
             monthValueAccessor.value.subscribe(v => {
-                // change options of combobox days
-                let days = getDaysInMonth(v),
-                    curentDay = ko.toJS(dayValueAccessor.value);
-
-                dayValueAccessor.value(_.min([curentDay, days.length]));
-                dayValueAccessor.options(days);
+                if (v === 0) {
+                    dayValueAccessor.value(0);
+                    dayValueAccessor.options([{ text: "", value: 0}]);
+                } else {
+                    // change options of combobox days
+                    let days = getDaysInMonth(v),
+                        curentDay = ko.toJS(dayValueAccessor.value);
+    
+                    dayValueAccessor.value(_.min([curentDay, days.length]));
+                    dayValueAccessor.options(days);
+                }
             });
 
             // bind data out
@@ -70,6 +79,7 @@ module nts.uk.ui.koExtentions {
                         curentDay = ko.toJS(dayValueAccessor.value);
 
                     data.value(currentMonth * 100 + curentDay);
+                    $container.trigger("validate");
                 }
             })
 
@@ -86,6 +96,24 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             })
+            
+            $container.on("validate", evt => {
+                if (!$container.is(evt.target)) return;
+                let required = $container.data("required");
+                if (required && (monthValueAccessor.value() === 0 || _.isNil(monthValueAccessor.value()))) {
+                    $monthPicker.addClass("error").ntsError("set", 
+                        resource.getMessage("FND_E_REQ_SELECT", [ dataName + "の月" ]), "FND_E_REQ_SELECT");
+                } else {
+                    $monthPicker.removeClass("error").ntsError("clear");
+                }
+                
+                if (required && (dayValueAccessor.value() === 0 || _.isNil(dayValueAccessor.value()))) {
+                    $dayPicker.addClass("error").ntsError("set", 
+                        resource.getMessage("FND_E_REQ_SELECT", [ dataName + "の日" ]), "FND_E_REQ_SELECT");
+                } else {
+                    $dayPicker.removeClass("error").ntsError("clear");
+                }
+            });
 
             // day accessor cuar 2 cbox vao data
             $container.data("cusVal", { month: monthValueAccessor, day: dayValueAccessor });
@@ -103,6 +131,7 @@ module nts.uk.ui.koExtentions {
                 $container = $(element),
                 value = ko.unwrap(data.value),
                 enable = data.enable === undefined ? true : ko.unwrap(data.enable),
+                required = _.isNil(data.required) ? false : ko.unwrap(data.required),
                 $monthPicker = $container.find(".ntsMonthPicker"),
                 $dayPicker = $container.find(".ntsDayPicker"),
                 bindedVal = $container.data("cusVal");
@@ -116,6 +145,7 @@ module nts.uk.ui.koExtentions {
             //                $dayPicker.igCombo('option', 'disabled', true); 
 
             $container.find("input").attr("tabindex", "-1");
+            $container.data("required", required);
 
             ko.bindingHandlers["ntsComboBox"].update($monthPicker[0], () => bindedVal.month, allBindingsAccessor, viewModel, bindingContext);
 

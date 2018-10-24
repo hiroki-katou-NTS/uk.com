@@ -28,7 +28,13 @@ module cps001.f {
                 }
             });
 
-            $('.browser-button').focus();
+            
+            setTimeout(() => {
+                $('.browser-button').focus();
+                $('.browser-button').attr("tabindex", 2);
+                $(".link-button").attr("tabindex", 2);
+                $(".delete-button").attr("tabindex", 2);
+            }, 500);
         });
 
 
@@ -78,7 +84,8 @@ function ButtonClick() {
     var id = $(this).data("id");
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
-    __viewContext['viewModel'].filename('');
+    //__viewContext['viewModel'].filename('');
+    $("#file-upload").ntsFileUpload("clear");
 }
 
 interface IPersonAuth {

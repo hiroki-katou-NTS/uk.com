@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.ac.common;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,21 +15,50 @@ import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
 
 @Stateless
 public class ScTimeAdapterImpl implements ScTimeAdapter {
+	
 	@Inject
 	private ScheduleTimePub scheduleTimePub;
 	
 	@Override
-	public ScTimeImport calculation(ScTimeParam param) {
+	public ScTimeImport calculation(Object companySetting, ScTimeParam param) {
+		
+		ScheduleTimePubExport export = this.scheduleTimePub.calculationScheduleTime(
+				companySetting,
+				createScheduleTimePubImport(param));
+		return createScTimeImport(export);
+	}
+	
+	@Override
+	public List<ScTimeImport> calculation(Object companySetting, List<ScTimeParam> params) {
+		
+		return this.scheduleTimePub.calclationScheduleTimeForMultiPeople(
+				companySetting,
+				params.stream().map(p -> createScheduleTimePubImport(p)).collect(Collectors.toList()))
+				.stream()
+				.map(o -> createScTimeImport(o))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Object getCompanySettingForCalculation() {
+		return this.scheduleTimePub.getCompanySettingForCalclationScheduleTimeForMultiPeople();
+	}
+
+	private static ScheduleTimePubImport createScheduleTimePubImport(ScTimeParam param) {
 		ScheduleTimePubImport impTime = new ScheduleTimePubImport(param.getEmployeeId(), param.getTargetDate(),
 				param.getWorkTypeCode(), param.getWorkTimeCode(), param.getStartClock(), param.getEndClock(),
 				param.getBreakStartTime(), param.getBreakEndTime(), param.getChildCareStartTime(),
 				param.getChildCareEndTime());
-		ScheduleTimePubExport export = this.scheduleTimePub.calculationScheduleTime(impTime);
-		
+		return impTime;
+	}
+
+	private static ScTimeImport createScTimeImport(ScheduleTimePubExport export) {
 		return ScTimeImport.builder()
 				.actualWorkTime(export.getActualWorkTime())
 				.breakTime(export.getBreakTime())
-				.childCareTime(export.getChildCareTime())
+				.childTime(export.getChildTime())
+				.careTime(export.getCareTime())
+				.flexTime(export.getFlexTime())
 				.employeeid(export.getEmployeeid())
 				.personalExpenceTime(export.getPersonalExpenceTime())
 				.preTime(export.getPreTime())

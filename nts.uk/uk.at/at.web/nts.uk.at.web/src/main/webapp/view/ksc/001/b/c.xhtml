@@ -36,14 +36,14 @@
 					</div>
 				</div>
 
-				<div class="top-right" style="float: left; width: 50%;">
+				<!-- <div class="top-right" style="float: left; width: 50%;">
 					<div class="checkboxSettingEnd" tabindex="-1">
 						<div tabindex="15" data-bind="ntsCheckBox: { checked: confirm }">#{i18n.getText('KSC001_17')}</div>
 					</div>
 					<div class="labelSettingEnd" tabindex="-1">
 						<label tabindex="-1">#{i18n.getText('KSC001_18')}</label>
 					</div>
-				</div>
+				</div> -->
 			</div>
 
 			<div class="selectionCase" tabindex="-1">
@@ -57,7 +57,7 @@
 						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: isReCreate, option: lstReCreate()[0], 
 													name: '#[KSC001_82]', optionValue: 'value', optionText: 'name', group: 'KSC001_82'}" />
 					<div style="margin-left: 20px;" tabindex="3"
-						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: isReCreate, option: lstReCreate()[1], 
+						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: false, option: lstReCreate()[1], 
 													name: '#[KSC001_82]', optionValue: 'value', optionText: 'name', group: 'KSC001_82'}" />
 				</div>
 
@@ -100,7 +100,7 @@
 						data-bind="ntsCheckBox: { checked: recreateWorkTypeChange,
 						enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_95')}</div>
 				</div>
-				<div class="radioboxProcessExecutionAtr">
+				<!-- <div class="radioboxProcessExecutionAtr">
 					<div tabindex="4"
 						data-bind="ntsRadioButton: { checked: checkProcessExecutionAtrRebuild, enable: isReCreate, option: lstProcessExecution()[1], 
 													name: '#[KSC001_83]', optionValue: 'value', optionText: 'name', group: 'KSC001_83'}" />
@@ -121,10 +121,10 @@
 					<div class="checkboxOne-1" tabindex="14"
 						data-bind="ntsCheckBox: { checked: resetTimeAssignment,
 						enable: isReSetting }">#{i18n.getText('KSC001_99')}</div>
-				</div>
+				</div> -->
 			</div>
 
-			<div>
+			<div style="margin-top: 163px; margin-left: 362px;">
 				<div class="buttonBeginPrevious" tabindex="-1">
 					<button class="large" tabindex="16"
 						data-bind="click: previousPageC">#{i18n.getText('KSC001_102')}</button>

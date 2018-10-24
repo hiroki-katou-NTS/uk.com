@@ -22,12 +22,12 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click: exportExcel">#{i18n.getText('KWR006_5')}</button>
+				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click: exportExcel, enable: $root.errors.isEmpty">#{i18n.getText('KWR006_5')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: exportPdf">#{i18n.getText('KWR006_6')}</button>
+				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: exportPdf, enable: $root.errors.isEmpty">#{i18n.getText('KWR006_6')}</button>
 			</div>
 			
-			<div id="content-area" style="display: none" data-bind="visible: true">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<div id="ccgcomponent"></div>
 				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
 			
@@ -95,6 +95,7 @@
 											visibleItemsCount: 10,
 											value: monthlyWorkScheduleConditionModel.selectedCode,
 											optionsText: 'name',
+											required: true,
 											columns: [
 												{ prop: 'code', length: 2 },
 												{ prop: 'name', length: 6 },
@@ -139,7 +140,7 @@
 											</td>
 											<td>
 												<!-- A10_6 -->
-												<div tabindex="16" data-bind="ntsCheckBox: { checked: cumulativeWorkplace }">#{i18n.getText('KWR006_22')}</div>
+												<div tabindex="16" id="cumulativeWorkplace" data-bind="ntsCheckBox: { checked: cumulativeWorkplace }">#{i18n.getText('KWR006_22')}</div>
 												<!-- A11_1 -->
 												<div class="panel panel-frame" data-bind="with: workplaceHierarchyTotal">
 													<!-- A11_2 -->
@@ -159,7 +160,7 @@
 													<!-- A11_9 -->
 													<div tabindex="23" data-bind="ntsCheckBox: { checked: seventhLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_30')}</div>
 													<!-- A11_10 -->
-													<div tabindex="24" data-bind="ntsCheckBox: { checked: eightLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_31')}</div>
+													<div tabindex="24" data-bind="ntsCheckBox: { checked: eighthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_31')}</div>
 													<!-- A11_11 -->
 													<div tabindex="25" data-bind="ntsCheckBox: { checked: ninthLevel, enable: cumulativeWorkplace }">#{i18n.getText('KWR006_32')}</div>
 													<!-- A11_12 -->

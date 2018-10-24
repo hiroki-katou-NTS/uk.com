@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffComHistItemShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -146,5 +147,17 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 		List<SClsHistExport> lstExport = classPub.findSClsHistBySid(companyId, employeeIds, datePeriod);
 		return lstExport.stream().map(x -> new SClsHistImport(x.getPeriod(), x.getEmployeeId(), x.getClassificationCode(), x.getClassificationName()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public AffCompanyHistSharedImport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate) {
+		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySidAndBaseDate(sid, baseDate));
+		return importList;
+	}
+	
+	@Override
+	public AffCompanyHistSharedImport GetAffComHisBySid(String cid, String sid){
+		AffCompanyHistSharedImport importList = convert(this.syCompanyPub.GetAffComHisBySid(cid,sid));
+		return importList;
 	}
 }

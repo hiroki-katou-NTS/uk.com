@@ -10,6 +10,9 @@ module nts.uk.ui {
     
     /** Event to notify ViewModel built to bind. */
     export var viewModelBuilt = $.Callbacks();
+    
+    /** Event to notify ViewModel applied bindings. */
+    export var viewModelApplied = $.Callbacks();
 
     
     // Kiban ViewModel
@@ -64,6 +67,8 @@ module nts.uk.ui {
             
             ko.applyBindings(_viewModel);
             
+            viewModelApplied.fire(_viewModel);
+            
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
             nts.uk.cookie.remove("startfrommenu", {path: "/"});
@@ -78,6 +83,7 @@ module nts.uk.ui {
             if ($("#functions-area-bottom").length != 0) {
                 content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
             }
+            
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
             //            } 

@@ -2,14 +2,12 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 年休出勤率計算結果
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class CalYearOffWorkAttendRate {
 	
@@ -25,6 +23,13 @@ public class CalYearOffWorkAttendRate {
 	/** 控除日数 */
 	private Double deductedDays;
 
+	public CalYearOffWorkAttendRate(){
+		this.attendanceRate = 0.0;
+		this.prescribedDays = 0.0;
+		this.workingDays = 0.0;
+		this.deductedDays = 0.0;
+	}
+	
 	/**
 	 * 日数から出勤率を計算する
 	 */

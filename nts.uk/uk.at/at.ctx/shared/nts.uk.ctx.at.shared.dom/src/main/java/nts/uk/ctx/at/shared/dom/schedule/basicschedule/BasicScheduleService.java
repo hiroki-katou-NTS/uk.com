@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -21,6 +22,18 @@ public interface BasicScheduleService {
 	 * @param workTimeCode
 	 */
 	void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode);
+	
+	/**
+	 * check Pair WorkType and WorkTime With List WorkType
+	 * Return state of error checking process: nothing or throw error
+	 * For response
+	 * 勤務種類・就業時間帯ペアチェック
+	 * 
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param listWorkType
+	 */
+	void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType);
 
 	/**
 	 * 勤務種類のマスタチェック
@@ -57,6 +70,8 @@ public interface BasicScheduleService {
 	 * @return WorkStyle
 	 */
 	WorkStyle checkWorkDay(String workTypeCode);
+	
+	WorkStyle checkWorkDay(Optional<WorkType> workTypeOpt);
 	
 	WorkStyle checkWorkDayByList(String workTypeCode, List<WorkType> listWorkType);
 	

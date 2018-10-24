@@ -18,14 +18,21 @@ module nts.uk.at.view.kal003.c.viewmodel {
             { code: 0, name: nts.uk.resource.getText("KDW007_108") },
             { code: 1, name: nts.uk.resource.getText("KDW007_107") }
         ]);
-
-        enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: "等しい（＝）" },
-            { code: 1, name: "等しくない（≠）" },
-            { code: 2, name: "より大きい（＞）" },
+        enumSingleValueCompareTypes: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: "等しくない（≠）" },
+            { code: 1, name: "等しい（＝）" },
+            { code: 2, name: "以下（≦）" },
             { code: 3, name: "以上（≧）" },
             { code: 4, name: "より小さい（＜）" },
-            { code: 5, name: "以下（≦）" },
+            { code: 5, name: "より大きい（＞）" }
+        ]);
+        enumlistCompareTypes : KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: "等しくない（≠）" },
+            { code: 1, name: "等しい（＝）" },
+            { code: 2, name: "以下（≦）" },
+            { code: 3, name: "以上（≧）" },
+            { code: 4, name: "より小さい（＜）" },
+            { code: 5, name: "より大きい（＞）" },
             { code: 6, name: "範囲の間（境界値を含まない）（＜＞）" },
             { code: 7, name: "範囲の間（境界値を含む）（≦≧）" },
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
@@ -55,31 +62,32 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 countableAddAtdItems: _.values(param.data.countableAddAtdItems || []),
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
-
-            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
-
-            caic.conditionAtr.subscribe(v => {
+            //self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+            caic = ko.mapping.fromJS(param.data);
+            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+            
+            self.currentAtdItemCondition.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
-                caic.uncountableAtdItem(null);
-                caic.countableAddAtdItems([]);
-                caic.countableSubAtdItems([]);
-                caic.conditionType(0);
-                caic.compareOperator(0);
-                caic.singleAtdItem(null);
-                caic.compareStartValue(null);
-                caic.compareEndValue(null);
+                self.currentAtdItemCondition.uncountableAtdItem(null);
+                self.currentAtdItemCondition.countableAddAtdItems([]);
+                self.currentAtdItemCondition.countableSubAtdItems([]);
+                self.currentAtdItemCondition.conditionType(0);
+                self.currentAtdItemCondition.compareOperator(0);
+                self.currentAtdItemCondition.singleAtdItem(0);
+                self.currentAtdItemCondition.compareStartValue(0);
+                self.currentAtdItemCondition.compareEndValue(0);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
             });
-            caic.compareOperator.subscribe((value) => {
+            self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 if (value > 5) {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
                         { code: 1, name: "勤怠項目", enable: false }
                     ]);
 
-                    caic.conditionType(0);
+                    self.currentAtdItemCondition.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
@@ -103,7 +111,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
             }    
 //            caic.compareOperator.valueHasMutated();
 
-            caic.conditionType.subscribe((value) => {
+            self.currentAtdItemCondition.conditionType.subscribe((value) => {
                 if (value === 0) {
                     $('#display-compare-item').ntsError('clear');
                     $(".value-input").trigger("validate");
@@ -124,7 +132,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
             self.fillTextDisplayComparison();
 
             // validate
-            caic.compareStartValue.subscribe(v => {
+            self.currentAtdItemCondition.compareStartValue.subscribe(v => {
                 let s = ko.toJS(caic.compareStartValue),
                     e = ko.toJS(caic.compareEndValue),
                     t = ko.toJS(caic.compareOperator);
@@ -177,7 +185,8 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 }, 25);
             });
 
-            caic.compareEndValue.subscribe(v => caic.compareStartValue.valueHasMutated());
+            self.currentAtdItemCondition.compareEndValue.subscribe(v => 
+                self.currentAtdItemCondition.compareStartValue.valueHasMutated());
         }
 
         fillTextDisplayTarget() {
@@ -250,110 +259,22 @@ module nts.uk.at.view.kal003.c.viewmodel {
             let dfd = $.Deferred<any>();
             if (self.currentAtdItemCondition.conditionAtr() === 0) {
                 //With type 回数 - Times
-                service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : DailyAttendanceItemAtr.NumberOfTime, self.mode).done((data) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            data.push(lstOptItem[i]);
-                        }
-                    });
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });
-//                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
-//                        for (let i = 0; i < lstOptItem.length; i++) {
-//                            lstAtdItem.push(lstOptItem[i]);
-//                        }
-//                        dfd.resolve(lstAtdItem);
-//                    });
+                service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.NUMBER, self.mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 1) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : DailyAttendanceItemAtr.Time, self.mode).done((data) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 1, self.mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            data.push(lstOptItem[i]);
-                        }
-                    });
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });
-//                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 0, self.mode).done((lstOptItem) => {
-//                        for (let i = 0; i < lstOptItem.length; i++) {
-//                            lstAtdItem.push(lstOptItem[i]);
-//                        }
-//                        dfd.resolve(lstAtdItem);
-//                    });
-                });
-            } else if (self.currentAtdItemCondition.conditionAtr() === 2) {
-                //With type 時刻 - TimeWithDay
-                service.getAttendanceItemByAtr(DailyAttendanceItemAtr.TimeOfDay, self.mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.TIME, self.mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
-            } else if (self.currentAtdItemCondition.conditionAtr() === 3) {
+            }  else if (self.currentAtdItemCondition.conditionAtr() === 3) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : DailyAttendanceItemAtr.AmountOfMoney, self.mode).done((data) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 1, self.mode).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            data.push(lstOptItem[i]);
-                        }
-                    });
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });
-//                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 2, self.mode).done((lstOptItem) => {
-//                        for (let i = 0; i < lstOptItem.length; i++) {
-//                            lstAtdItem.push(lstOptItem[i]);
-//                        }
-//                        dfd.resolve(lstAtdItem);
-//                    });
+                service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.AMOUNT, self.mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
                 });
-            } else { // 日数
-                service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((data) => {
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
-                    service.getNameMonthly(listAttdID).done(function(dataNew) {
-                        for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<dataNew.length; j++){
-                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
-                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
-                                    break;
-                                }  
-                            }    
-                        }
-                        dfd.resolve(data);
-                    });   
-//                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstOptItem) => {
-//                        for (let i = 0; i < lstOptItem.length; i++) {
-//                            lstAtdItem.push(lstOptItem[i]);
-//                        }
-//                        dfd.resolve(lstAtdItem);
-//                    });
+            } else if (self.currentAtdItemCondition.conditionAtr() === 4) { // 日数
+                service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
                 });
             }
             return dfd.promise();
@@ -374,6 +295,10 @@ module nts.uk.at.view.kal003.c.viewmodel {
                         if (output) {
                             self.currentAtdItemCondition.uncountableAtdItem(parseInt(output));
                             self.fillTextDisplayTarget();
+                        } 
+                        else if (output === "") {
+                            self.currentAtdItemCondition.uncountableAtdItem(0);
+                            self.displayTargetAtdItems("");
                         }
                     });
                 } else {
@@ -413,41 +338,51 @@ module nts.uk.at.view.kal003.c.viewmodel {
                         self.currentAtdItemCondition.singleAtdItem(parseInt(output));
                         self.fillTextDisplayComparison();
                     }
+                    else if (output === "") {
+                        self.currentAtdItemCondition.singleAtdItem(0);
+                        self.displayCompareAtdItems("");
+                    }
                 });
             });
         }
 
-        validateRange() {
-            let self = this,
-                caic = ko.toJS(self.currentAtdItemCondition);
+        validateRange() : boolean{
+            let self = this;
+            let isValid: boolean = true;
+            let caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
             $(".value-input").filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
-                    if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+                    isValid = false;
+                    setTimeout(() => {
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                    }
-                }, 25);
+
+                    }, 25);
+                 }
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
-                    if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
+                    isValid = false;
+                    setTimeout(() => {
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                    }
-                }, 25);
+                    }, 25);
+                }
             }
+            return isValid;
         }
 
         returnData() {
             let self = this;
-
             $(".need-check").filter(":enabled").trigger("validate");
-            self.validateRange();
-
-            if (!nts.uk.ui.errors.hasError()) {
+            if (self.validateRange() && !nts.uk.ui.errors.hasError()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
                 param.countableAddAtdItems = _.values(param.countableAddAtdItems);
                 param.countableSubAtdItems = _.values(param.countableSubAtdItems);
@@ -493,8 +428,8 @@ module nts.uk.at.view.kal003.c.viewmodel {
             this.countableSubAtdItems = ko.observableArray(param.countableSubAtdItems);
             this.conditionType = ko.observable(param.conditionType);
             this.singleAtdItem = ko.observable(param.singleAtdItem);
-            this.compareStartValue = ko.observable(param.compareStartValue);
-            this.compareEndValue = ko.observable(param.compareEndValue);
+            this.compareStartValue = ko.observable(param.compareStartValue || 0);
+            this.compareEndValue = ko.observable(param.compareEndValue || 0);
             this.compareOperator = ko.observable(param.compareOperator);
         }
         

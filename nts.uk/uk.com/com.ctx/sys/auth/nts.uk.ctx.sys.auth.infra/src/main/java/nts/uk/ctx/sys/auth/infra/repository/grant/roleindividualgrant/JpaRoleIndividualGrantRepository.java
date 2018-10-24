@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -162,6 +164,35 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 				.setParameter("roleIDLst", roleIDLst)
 				.setParameter("date", date)
 				.getSingle(c -> c.toDomain());
+	}
+
+	private static final String SELECT_BY_USER_ID = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userId";
+	
+	@Override
+	public void removeByUserId(String userId) {
+		List<SacmtRoleIndiviGrant> entities = this.queryProxy().query(SELECT_BY_USER_ID, SacmtRoleIndiviGrant.class)
+				.setParameter("userId", userId).getList();
+		this.commandProxy().removeAll(entities);
+	}
+	private static final String FIND = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyId"
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType"
+			+ " AND c.roleId IN :roleIDLst"
+			+ " AND c.strD <= :date AND c.endD >= :date";
+
+	@Override
+	public List<RoleIndividualGrant> findRoleIndividual(String companyId, int roleType, List<String> roleIDLst,
+			GeneralDate date) {
+		List<RoleIndividualGrant> resultList = new ArrayList<>();
+		CollectionUtil.split(roleIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND, SacmtRoleIndiviGrant.class)
+				.setParameter("companyId", companyId)
+				.setParameter("roleType", roleType)
+				.setParameter("roleIDLst", subList)
+				.setParameter("date", date)
+				.getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 
 }

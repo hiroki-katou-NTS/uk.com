@@ -19,6 +19,8 @@ module cps001.d.vm {
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         enaBtnSave: KnockoutObservable<boolean> = ko.observable(true);
         isInit = true;
+        fileIdOld : string;
+        fileNameOld: string;
 
         constructor() {
             let self = this;
@@ -34,6 +36,10 @@ module cps001.d.vm {
             block();
             service.getFullAvatar(self.empFileMn().employeeId).done(function(data) {
                 if (data.fileId != null) {
+                    self.fileIdOld = data.fileId;
+                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + data.fileId).done(function(res) {
+                        self.fileNameOld = res.originalName;
+                    });
                     self.empFileMn().fileId = data.fileId;
                     self.empFileMn().fileType = 0;
                     if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
@@ -54,13 +60,6 @@ module cps001.d.vm {
                     if (!self.isInit) {
                         self.isChange(true);
                         unblock();
-                        // check size if req
-                        
-                       /*  if (query.size > 10485760) { // 10485760 = 10MB
-                            self.hasError = true;
-                            alertError({ messageId: "Msg_77" });
-                        } */
-                        
                         return;
                     }
                     self.isInit = false;
@@ -116,8 +115,17 @@ module cps001.d.vm {
                         self.empFileMn().fileId = data1.id;
 
                         $("#test").ntsImageEditor("uploadOriginal", { stereoType: "avatarfile" }).done(function(data2) {
-
-                            let emp = { employeeId: self.empFileMn().employeeId, fileId: data1.id, fileType: 0, fileIdnew: data2.id, isAvatar: true };
+                        debugger;
+                            let emp = {
+                            employeeId: self.empFileMn().employeeId, 
+                            fileId: data1.id,
+                            fileType: 0,
+                            fileName : data2.originalName, 
+                            fileIdnew: data2.id, isAvatar: true , 
+                            categoryName : nts.uk.resource.getText("CPS001_152"), 
+                            itemName : nts.uk.resource.getText("CPS001_150"), 
+                            fileIdOld:self.fileIdOld , 
+                            fileNameOld : self.fileNameOld};
                             self.updateImage(emp);
                         });
 
@@ -137,7 +145,7 @@ module cps001.d.vm {
                         //insert employee file management
                         block();
                         service.removeAvaOrMap(emp).done(function() {
-                            service.insertAvaOrMap(emp).done(function() {
+                            service.updateAvaOrMap(emp).done(function() {
                                 setShared("CPS001D_VALUES", ko.unwrap(self.empFileMn));
                                 unblock();
                                 self.close();

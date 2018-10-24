@@ -127,7 +127,11 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM'), 0),
                 new ItemModel(2, nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE'), 0),
                 new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0),
-                new ItemModel(4, nts.uk.resource.getText('Enum_CloseAtr_INJURY_OR_ILLNESS'), 0)
+                new ItemModel(4, nts.uk.resource.getText('Enum_CloseAtr_INJURY_OR_ILLNESS'), 0),
+                new ItemModel(5, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_1'), 0),
+                new ItemModel(6, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_2'), 0),
+                new ItemModel(7, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_3'), 0),
+                new ItemModel(8, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_4'), 0)
             ]);
 
             //出勤率の計算方法
@@ -241,7 +245,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                     self.isCreated(true);
                     $('#input-workTypeCode').focus();
-                    self.checkDisabled(true);
+                    self.cleanForm();
                 }
 
             });
@@ -284,7 +288,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         private saveData(): void {
             let self = this,
                 lang = ko.toJS(self.langId);
-
+            nts.uk.ui.block.invisible();
             if (lang == 'ja') {
                 self.addWorkType();
             } else {
@@ -380,30 +384,33 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             $("#memo-input").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
                 return;
             }
             if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == null) ||
                 (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == null) ||
                 (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == null)) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
                 return;
             }
             if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == null)
                 || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == null) ||
                 (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == null)) {
+                nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
                 return;
             }
-            nts.uk.ui.block.invisible();
+
             service.addWorkType(self.isCreated(), command).done(function() {
                 self.isCreated(false);
                 self.getWorkType().done(function() {
                     self.currentCode(workType.workTypeCode());
                 });
 
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError(error);
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
@@ -591,7 +598,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 if (data && !!data.length) {
                     lwt(_(data).orderBy(['dispOrder', 'workTypeCode'], ['asc', 'asc'])
                         .map(x => $.extend({
-                            icon: !!x.abolishAtr ? '<i class="icon icon-dot"></i>' : ''
+                            icon: !!x.abolishAtr ? '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />' : ''
                         }, x)).value());
                 }
                 dfd.resolve();
@@ -776,11 +783,13 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
 
             service.insert(obj).done(() => {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getWorkType();
                 self.findWorkTypeLanguage();
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(() => {
+                nts.uk.ui.block.clear();
                 dfd.reject();
             });
             dfd.promise();
@@ -858,7 +867,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (defaultMenu == 0) {
                 this.icon = "";
             } else {
-                this.icon = '<i class="icon icon-dot"></i>';
+                this.icon = '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
             }
         }
     }
@@ -942,7 +951,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (param.abolishAtr == 0) {
                 this.icon = "";
             } else {
-                this.icon = '<i class="icon icon-dot"></i>';
+                this.icon = '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
             }
         }
     }

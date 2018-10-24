@@ -18,6 +18,12 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.Time36UpperLimitCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetailRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
@@ -41,6 +47,13 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	private ApplicationRepository_New appRepository;
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
+
+	@Inject
+	private Time36UpperLimitCheck time36UpperLimitCheck;
+	
+	@Inject 
+	private AppOvertimeDetailRepository appOvertimeDetailRepository;
+
 	// @Inject
 	// private PersonalLaborConditionRepository
 	// personalLaborConditionRepository;
@@ -174,10 +187,141 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 	}
 
-	@Override
-	public void TimeUpperLimitMonthCheck() {
-		// TODO Auto-generated method stub
+	/**
+	 * ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+	 */
+	private boolean isUseExtratimeDisplayAndExcess(OvertimeRestAppCommonSetting overtimeSeting) {
+		// 時間外表示区分が表示する OR 時間外超過区分がチェックする（登録不可）
+		return UseAtr.USE.equals(overtimeSeting.getExtratimeDisplayAtr())
+				|| UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
+	}
 
+	/**
+	 * 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
+	 */
+	private boolean isErrorCheck36TimeLimit(Time36UpperLimitCheckResult result,
+			OvertimeRestAppCommonSetting overtimeSeting) {
+		return result.getErrorFlg() && UseAtr.USE.equals(overtimeSeting.getExtratimeExcessAtr());
+	}
+
+	@Override
+	public Optional<AppOvertimeDetail> registerOvertimeCheck36TimeLimit(String companyId, String employeeId,
+			GeneralDate appDate, List<OverTimeInput> overTimeInput) {
+		// ドメインモデル「残業休出申請共通設定」を取得
+		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
+		if (!overtimeSetingOtp.isPresent()) {
+			return Optional.empty();
+		}
+		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
+			return Optional.empty();
+		}
+		// 代行申請かをチェックする
+		// TODO
+		// ３６時間の上限チェック(新規登録)
+		List<AppTimeItem> appTimeItems = overTimeInput.stream().filter(x -> x != null && x.getApplicationTimeValue()!=null).collect(Collectors.toList()).stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
+		}).collect(Collectors.toList());
+		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
+				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
+		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
+		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
+			// エラーメッセージを表示する（Msg_329）
+			throw new BusinessException("Msg_329");
+		}
+		return result.getAppOvertimeDetail();
+	}
+
+	@Override
+	public Optional<AppOvertimeDetail> updateOvertimeCheck36TimeLimit(String companyId, String appId,
+			String enteredPersonId, String employeeId, GeneralDate appDate, List<OverTimeInput> overTimeInput) {
+		// ドメインモデル「残業休出申請共通設定」を取得
+		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
+		if (!overtimeSetingOtp.isPresent()) {
+			return Optional.empty();
+		}
+		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
+			return Optional.empty();
+		}
+		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
+				.getAppOvertimeDetailById(companyId, appId);
+		// ３６時間の上限チェック(照会)
+		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
+		}).collect(Collectors.toList());
+		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
+				employeeId, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
+		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
+		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
+			// エラーメッセージを表示する（Msg_329）
+			throw new BusinessException("Msg_329");
+		}
+		return result.getAppOvertimeDetail();
+	}
+
+	@Override
+	public Optional<AppOvertimeDetail> registerHdWorkCheck36TimeLimit(String companyId, String employeeId,
+			GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
+		// ドメインモデル「残業休出申請共通設定」を取得
+		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
+		if (!overtimeSetingOtp.isPresent()) {
+			return Optional.empty();
+		}
+		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
+			return Optional.empty();
+		}
+		// 代行申請かをチェックする
+		// TODO
+		// ３６時間の上限チェック(新規登録)
+		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		}).collect(Collectors.toList());
+		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
+				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
+		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
+		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
+			// エラーメッセージを表示する（Msg_329）
+			throw new BusinessException("Msg_329");
+		}
+		return result.getAppOvertimeDetail();
+	}
+
+	@Override
+	public Optional<AppOvertimeDetail> updateHdWorkCheck36TimeLimit(String companyId, String appId,
+			String enteredPersonId, String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
+		// ドメインモデル「残業休出申請共通設定」を取得
+		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
+		if (!overtimeSetingOtp.isPresent()) {
+			return Optional.empty();
+		}
+		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
+		// ドメインモデル「残業休出申請共通設定」.時間外表示区分と時間外超過区分をチェックする
+		if (!this.isUseExtratimeDisplayAndExcess(overtimeSeting)) {
+			return Optional.empty();
+		}
+		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
+				.getAppOvertimeDetailById(companyId, appId);
+		// ３６時間の上限チェック(照会)
+		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		}).collect(Collectors.toList());
+		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,
+				ApplicationType.BREAK_TIME_APPLICATION, appTimeItems);
+		// 上限エラーフラグがtrue AND ドメインモデル「残業休出申請共通設定」.時間外超過区分がチェックする（登録不可）
+		if (this.isErrorCheck36TimeLimit(result, overtimeSeting)) {
+			// エラーメッセージを表示する（Msg_329）
+			throw new BusinessException("Msg_329");
+		}
+		return result.getAppOvertimeDetail();
 	}
 
 	@Override

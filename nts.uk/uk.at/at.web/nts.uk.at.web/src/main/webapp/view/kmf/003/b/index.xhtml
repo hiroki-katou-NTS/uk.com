@@ -25,20 +25,25 @@
 			<com:scriptfile path="kmf003.b.vm.js" />
 			<com:scriptfile path="kmf003.b.start.js" />
 			<com:scriptfile path="kmf003.b.service.js" />
+			<com:scriptfile path="kmf003.b1.vm.js" />
+			<com:scriptfile path="kmf003.b1.service.js" />
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 		
 			<!-- BEGIN FUNCTION AREA-->
+			
 			<div id="functions-area">
-				<button id="A_BTN_002" tabindex="163" class="proceed" data-bind="click: submit, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
-				<button id="A_BTN_003" tabindex="164" data-bind="click: cancel">#{i18n.getText('KMF003_56')}</button>
+				<button id="A_BTN_002" class="proceed" data-bind="click: submit, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
+				<button id="A_BTN_003"  data-bind="click: cancel">#{i18n.getText('KMF003_56')}</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 			
 			<!-- BEGIN CONTENT AREA-->
 			<div id="contents-area">
+			<!-- CONTENT B -->
+			<com:ko-if bind="dialogType()=='A'">
 				<table>
 					<tr>
 						<td width="170"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_10')}</div></td>
@@ -63,8 +68,8 @@
 						<tr>
 							<td>#{i18n.getText('KMF003_46')}</td>
 							<td style="text-align: right">
-								<div tabindex="161" id="reference-date" class="cal-value" data-bind="ntsDatePicker: { 
-										name: '#[KMF003_51]', value: referenceDate, dateFormat: 'YYYY/MM/DD' }, hasfocus: true"></div>
+								<div  id="reference-date" class="cal-value" data-bind="ntsDatePicker: { 
+										name: '#[KMF003_46]', value: referenceDate, dateFormat: 'YYYY/MM/DD' }, hasfocus: true"></div>
 							</td>
 							<td></td>
 						</tr>
@@ -72,18 +77,18 @@
 						<tr>
 							<td><span data-bind="visible: displayDateSelected">#{i18n.getText('KMF003_53')}</span></td>
 							<td style="text-align: center;"><span data-bind="text: dateSelected"></span></td>
-							<td><button tabindex="162" class="caret-bottom btn-cal" data-bind="click: calculate">#{i18n.getText('KMF003_54')}</button></td>
+							<td><button class="caret-bottom btn-cal" data-bind="click: calculate">#{i18n.getText('KMF003_54')}</button></td>
 						</tr>
 					</table>
 				</div>
 				
 				<div class="bound"></div>
-				<div id="b2_1" tabindex="1">
+				<div id="b2_1" >
 					<table class="contents-header">
 						<thead>
 							<tr>
 								<td rowspan="2" class="numbers">#{i18n.getText('KMF003_38')}</td>
-								<td colspan="2">#{i18n.getText('KMF003_40')}</td>
+								<td colspan="2">#{i18n.getText('KMF003_40')}</td> 
 								<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
 								<td rowspan="2" class="input-units">#{i18n.getText('KMF003_44')}</td>
 								<td rowspan="2" class="input-units">#{i18n.getText('KMF003_45')}</td>
@@ -105,7 +110,7 @@
 						<tbody data-bind="foreach: items">
 							<tr>
 								<td data-bind="text: $index() + 1" class="numbers"></td>
-								<td class="input-units"><input class="year-input" data-bind="attr: { tabindex: ($index() * 8 + 3), class: ('year-input' + $index()) }, ntsNumberEditor: {
+								<td class="input-units"><input class="year-input" data-bind="attr: {  class: ('year-input' + $index()) }, ntsNumberEditor: {
 											value: lengthOfServiceYears, 
 											constraint: 'LengthOfServiceYears',
 											name: '#[KMF003_48]',
@@ -113,7 +118,7 @@
 												unitID: 'YEARS',
 												width: '50'
 											})}" /></td>
-								<td  class="input-units"><input class="months-input" data-bind="attr: { tabindex: ($index() * 8 + 4) }, ntsNumberEditor: {
+								<td  class="input-units"><input class="months-input" data-bind=" ntsNumberEditor: {
 											value: lengthOfServiceMonths, 
 											constraint: 'LengthOfServiceMonths',
 											name: '#[KMF003_49]',
@@ -121,7 +126,7 @@
 												unitID: 'MONTHS',
 												width: '60'
 											})}" /></td>
-								<td  class="input-units"><input class="days-input" data-bind="attr: { tabindex: ($index() * 8 + 5) }, ntsNumberEditor: {
+								<td  class="input-units"><input class="days-input" data-bind=" ntsNumberEditor: {
 											value: grantDays, 
 											constraint: 'GrantDays',
 											name: '#[KMF003_43]',
@@ -130,7 +135,7 @@
 												width: '50',
 												decimallength: 1
 											})}" /></td>
-								<td  class="input-units"><input class="days-input" data-bind="attr: { tabindex: ($index() * 8 + 6) }, ntsNumberEditor: {
+								<td  class="input-units"><input class="days-input" data-bind=" ntsNumberEditor: {
 											value: limitedTimeHdDays, 
 											constraint: 'LimitedTimeHdDays',
 											name: '#[KMF003_44]',
@@ -139,7 +144,7 @@
 												unitID: 'DAYS',
 												width: '50'
 											})}" /></td>										
-								<td class="input-units"><input class="times-input" data-bind="attr: { tabindex: ($index() * 8 + 7) }, ntsNumberEditor: {
+								<td class="input-units"><input class="times-input" data-bind=" ntsNumberEditor: {
 											value: limitedHalfHdCnt, 
 											constraint: 'LimitedHalfHdCnt',
 											name: '#[KMF003_45]',
@@ -148,7 +153,7 @@
 												unitID: 'TIMES',
 												width: '50'
 											})}" /></td>
-								<td class="base-date"><div class="base-date-options" id="combo-box" data-bind="attr: { tabindex: ($index() * 8 + 8) }, ntsComboBox: {
+								<td class="base-date"><div class="base-date-options" id="combo-box" data-bind=" ntsComboBox: {
 	 										options: $parent.grantReferenceDateOptions,
 	 										optionsValue: 'code',
 	 										value: $data.grantReferenceDate,
@@ -157,13 +162,111 @@
 	 											{ prop: 'name', length: 10 }
 	 										],
 	 										enable: grantReferenceDateEnable }"></div></td>
-								<td class="allow-pay"><div  data-bind="attr: { tabindex: ($index() * 8 + 2) }, ntsCheckBox: { checked: grantSimultaneity }"></div></td>
-								<td class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
-							</tr>
+								<td class="allow-pay"><div  data-bind=" ntsCheckBox: { checked: grantSimultaneity }"></div></td>
+									<td
+										data-bind="style:{ width:$parent.isShowCheckBox()==true?'263px':'304px' }"
+										class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
+								</tr>
 						</tbody>
 					</table>
 				</div>
+				</com:ko-if>
+				<!-- END CONTENT B -->
+				<!-- CONTENT B 1-->
+				<com:ko-if bind="dialogType()=='B'">
+				<table class="top-tbl">
+					<tr>
+						<td width="170"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_10')}</div></td>
+						<td width="40"><span data-bind="text: code"></span></td>
+						<td width="150"><span data-bind="text: name"></span></td>
+					</tr>
+					<tr></tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_19')}</div></td>
+						<td colspan="2"><span data-bind="text: conditionValue"></span></td>
+					</tr>
+				</table>
+								
+				<table id="fixed-table" style="padding-top: 25px;">
+					<colgroup>
+						<col width="40px"/>
+						<col width="60px"/>
+						<col width="70px"/>
+						<col width="80px"/>
+						<col width="65px"/>
+						<col width="65px"/>
+					</colgroup>
+					<thead>
+						<tr>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_38')}</td>
+							<td colspan="2" class="ui-widget-header">#{i18n.getText('KMF003_40')}</td>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_43')}</td>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_44')}</td>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_45')}</td>
+						</tr>
+						<tr>
+							<td class="ui-widget-header">#{i18n.getText('KMF003_41')}</td>
+							<td class="ui-widget-header">#{i18n.getText('KMF003_42')}</td>
+						</tr>
+					</thead>
+					
+					<tbody data-bind="foreach: items">
+						<tr>
+							<td data-bind="text: $index() + 1" class="numbers"></td>
+							<td class="input-units"><input class="year-input" data-bind="attr: { class: ('year-input' + $index()) }, ntsNumberEditor: {
+										value: lengthOfServiceYears, 
+										constraint: 'LengthOfServiceYears',
+										name: '#[KMF003_48]',
+										enable: false,
+										option: ko.mapping.fromJS({
+											unitID: 'YEARS',
+											width: '50'
+										})}" /></td>
+							<td class="input-units"><input class="months-input" data-bind="ntsNumberEditor: {
+										value: lengthOfServiceMonths, 
+										constraint: 'LengthOfServiceMonths',
+										name: '#[KMF003_49]',
+										enable: false,
+										option: ko.mapping.fromJS({
+											unitID: 'MONTHS',
+											width: '60'
+										})}" /></td>
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: grantDays, 
+										constraint: 'GrantDays',
+										name: '#[KMF003_43]',
+										enable: gdEnable,
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '70',
+											decimallength: 1
+										})}" /></td>
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: limitedTimeHdDays, 
+										constraint: 'LimitedTimeHdDays',
+										name: '#[KMF003_44]',
+										enable: ltdEnable,
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '50'
+										})}" /></td>										
+							<td class="input-units"><input class="times-input" data-bind="ntsNumberEditor: {
+										value: limitedHalfHdCnt, 
+										constraint: 'LimitedHalfHdCnt',
+										name: '#[KMF003_45]',
+										enable: lthEnable,
+										option: ko.mapping.fromJS({
+											unitID: 'TIMES',
+											width: '50'
+										})}" /></td>
+						</tr>
+					</tbody>
+				</table>
+				</com:ko-if>
+				<!-- END CONTENT B1-->
 			</div>
+			
+			
 			<!-- END CONTENT AREA-->
 			
 		</ui:define>

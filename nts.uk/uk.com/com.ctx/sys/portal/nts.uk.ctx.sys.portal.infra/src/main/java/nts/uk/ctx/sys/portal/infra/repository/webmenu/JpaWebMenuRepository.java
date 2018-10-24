@@ -1,13 +1,17 @@
 package nts.uk.ctx.sys.portal.infra.repository.webmenu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.jws.WebMethod;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
@@ -37,6 +41,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId " + "AND a.ccgstWebMenuPK.webMenuCd != :webMenuCd ";
 	private static final String SELECT_SIMPLE_WEBMENU = "SELECT a.ccgstWebMenuPK.webMenuCd, a.webMenuName FROM CcgstWebMenu a "
 			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId";
+	private static final String SEL_ORDER = SELECT_SIMPLE_WEBMENU + " ORDER BY a.ccgstWebMenuPK.webMenuCd ASC ";
 
 	@Override
 	public List<WebMenu> findAll(String companyId) {
@@ -47,7 +52,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public List<WebMenuSimple> findAllSimpleValue(String companyId) {
-		return this.queryProxy().query(SELECT_SIMPLE_WEBMENU, Object[].class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SEL_ORDER, Object[].class).setParameter("companyId", companyId)
 				.getList(c -> {
 					return new WebMenuSimple((String) c[0], (String) c[1]);
 				});
@@ -75,16 +80,23 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		if (webMenuCodes == null)
 			return null;
 		queryStr.append(" AND a.ccgstWebMenuPK.webMenuCd IN :codes");
-		TypedQueryWrapper<CcgstWebMenu> typedQuery = this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class);
-		typedQuery.getQuery().setHint("eclipselink.batch", "a.menuBars.titleMenus.treeMenus");
-		return typedQuery.setParameter("companyId", companyId).setParameter("codes", webMenuCodes).getList(w -> {
-			return toDomain(companyId, w);
+		
+		List<WebMenu> results = new ArrayList<>();
+		CollectionUtil.split(webMenuCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			TypedQueryWrapper<CcgstWebMenu> typedQuery = this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class);
+			typedQuery.getQuery().setHint("eclipselink.batch", "a.menuBars.titleMenus.treeMenus");
+			results.addAll(typedQuery.setParameter("companyId", companyId).setParameter("codes", subList).getList(w -> {
+				return toDomain(companyId, w);
+			}));
 		});
+		
+		return results;
 	}
 
 	@Override
 	public void add(WebMenu webMenu) {
 		this.commandProxy().insert(toEntity(webMenu));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -102,6 +114,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	public void remove(String companyId, String webMenuCode) {
 		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		this.commandProxy().remove(CcgstWebMenu.class, key);
+		this.getEntityManager().flush();
 	}
 
 	@Override

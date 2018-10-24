@@ -11,7 +11,9 @@ module nts.uk.at.view.kal003.b.service {
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
             getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
+            //update #100050 daily
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
+            getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
             getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
             // start MinhVV Edit
             getEnumTypeCheckWorkRecordMultipleMonth: "/at/function/alarm/checkcondition/kal003b/get-enum-type-check-work-record-multiple-month",
@@ -24,15 +26,20 @@ module nts.uk.at.view.kal003.b.service {
             getEnumLogicalOperator:         "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
             //monthly
             getAttdItemMonByAtr:         "at/record/attendanceitem/monthly/findbyatr/{0}",
-            getSpecialholidayframe : "at/share/worktype/specialholidayframe/findspecbyabolish",
+            
+            //Update ticket #101187
+//            getSpecialholidayframe : "at/share/worktype/specialholidayframe/findspecbyabolish",
+            getSpecialHoliday : "shared/specialholiday/findByCid",
+            //End Update ticket #101187
             
             getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
-            getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
             getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
             getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
             
             //getname monthly
-            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+
+            
             
 
     }
@@ -84,6 +91,9 @@ module nts.uk.at.view.kal003.b.service {
     export function getAttendanceItemByAtr(atr) : JQueryPromise<any>  {
         return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
     }
+    export function getMonthlyAttendanceItemByCodes(atr): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByCodes ,atr);
+    }
     /**
      * Find work type by list codes.
      */
@@ -114,9 +124,15 @@ module nts.uk.at.view.kal003.b.service {
         return nts.uk.request.ajax("at", paths.getAttdItemMonByAtr,atr);
     }
     
-    export function getSpecialholidayframe() : JQueryPromise<any>  {
-        return nts.uk.request.ajax("at", paths.getSpecialholidayframe);
+    //Update ticket #100187
+//    export function getSpecialholidayframe() : JQueryPromise<any>  {
+//        return nts.uk.request.ajax("at", paths.getSpecialholidayframe);
+//    }
+    
+    export function getSpecialHoliday() : JQueryPromise<any>  {
+        return nts.uk.request.ajax("at", paths.getSpecialHoliday);
     }
+    //End ticket #100187
     
      export function getAttendanceItemByCodesNew(codes, mode) {
         if (mode == 1) //monthly

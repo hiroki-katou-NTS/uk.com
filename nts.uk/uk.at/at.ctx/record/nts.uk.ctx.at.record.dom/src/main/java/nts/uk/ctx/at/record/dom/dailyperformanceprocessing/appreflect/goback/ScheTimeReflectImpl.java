@@ -169,7 +169,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return;
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
-			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
+			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode() == null ? null : workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
 		boolean isStart1 = this.checkAttendenceReflect(para, 1, true);
@@ -234,7 +234,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return true;
 			}
 			TimeActualStamp attendanceStamp = optAttendanceStamp.get();
-			Optional<WorkStamp> optActualStamp = attendanceStamp.getActualStamp();
+			Optional<WorkStamp> optActualStamp = attendanceStamp.getStamp();
 			if(!optActualStamp.isPresent()) {
 				return true;		
 			} 
@@ -296,11 +296,11 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//INPUT．予定反映区分をチェックする
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		if(scheReflectAtr
-				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAY) {
+				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//INPUT．予定と実績を同じに変更する区分が「流動勤務のみ自動変更する」
-		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.FLUIDWORK) {
+		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//流動勤務かどうかの判断処理
 			return workTimeisFluidWork.checkWorkTimeIsFluidWork(worktimeCode);
 		}

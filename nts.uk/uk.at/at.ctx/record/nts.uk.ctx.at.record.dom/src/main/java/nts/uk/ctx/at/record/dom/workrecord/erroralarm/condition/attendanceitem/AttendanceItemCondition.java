@@ -9,6 +9,7 @@ import java.util.function.Function;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
 /**
@@ -67,23 +68,47 @@ public class AttendanceItemCondition extends DomainObject {
 	}
 
 	/** 勤怠項目をチェックする */
-	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
-		boolean checkGroup1 = group1.check(getValueFromItemIds);
+	public WorkCheckResult check(Function<List<Integer>, List<Double>> getValueFromItemIds) {
+		WorkCheckResult checkGroup1 = group1.check(getValueFromItemIds);
 		if (!this.isUseGroup2()) {
 			return checkGroup1;
 		}
-		boolean checkGroup2 = group2.check(getValueFromItemIds);
-		switch (this.operatorBetweenGroups) {
-		case AND:
-			return checkGroup1 && checkGroup2;
-		case OR:
-			return checkGroup1 || checkGroup2;
-		default:
-			throw new RuntimeException("invalid this.operatorBetweenGroups: " + this.operatorBetweenGroups);
-		}
+		WorkCheckResult checkGroup2 = group2.check(getValueFromItemIds);
+		
+		return compareGroups(checkGroup1, checkGroup2, this.operatorBetweenGroups == LogicalOperator.AND);
 	}
 
 	public boolean isUseGroup2() {
 		return this.group2UseAtr;
+	}
+	
+	private WorkCheckResult compareGroups(WorkCheckResult group1, WorkCheckResult group2, boolean same){
+		if(group1 == WorkCheckResult.NOT_CHECK && group2 == WorkCheckResult.NOT_CHECK){
+			return WorkCheckResult.NOT_CHECK;
+		}
+		
+		if(group1 == WorkCheckResult.NOT_CHECK) {
+			if(WorkCheckResult.ERROR == group2){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
+		}
+		if(group2 == WorkCheckResult.NOT_CHECK) {
+			if(WorkCheckResult.ERROR == group1){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
+		}
+		if(same){
+			if(WorkCheckResult.ERROR == group2 && WorkCheckResult.ERROR == group1){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
+		}
+
+		if(WorkCheckResult.ERROR == group2 || WorkCheckResult.ERROR == group1){
+			return WorkCheckResult.ERROR;
+		}
+		return WorkCheckResult.NOT_ERROR;
 	}
 }

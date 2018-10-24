@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -25,22 +26,21 @@ public interface CreateDailyResultEmployeeDomainService {
 
 	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			PeriodInMasterList periodInMasterList);
-
-	ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
+
+	ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
+			List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace,
+			boolean reCreateRestTime, EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode,
-			PeriodInMasterList periodInMasterList);
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
+			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement);
 
 	/**
 	 * create method for kbt002 call
@@ -56,13 +56,12 @@ public interface CreateDailyResultEmployeeDomainService {
 	 */
 	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement);
-	
+			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime, Optional<StampReflectionManagement> stampReflectionManagement);
+
 	ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executeDate, String companyId,
-			String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
-			Optional<StampReflectionManagement> stampReflectionManagement, 
-			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode);
+			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode);
 
 }

@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 470,
+					height : 410
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk012.f.main.css" />
+			<com:scriptfile path="kmk012.f.service.js" />
+			<com:scriptfile path="kmk012.f.vm.js" />
+			<com:scriptfile path="kmk012.f.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area" >
+				<div>
+					<!-- F1 -->
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK012_52')}</div>
+					<!-- F2 -->
+					<div tabindex="1" id="operationStartDate" data-bind="ntsDatePicker: {value: operationStartDate, 
+																 dateFormat: 'YYYY/MM/DD',
+																 name: '#[KMK012_53]'
+																 }"></div>
+				</div>
+				<!-- F3 -->
+				<div class="label">#{i18n.getText('KMK012_54')}</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- F4 -->
+				<button tabindex="2" data-bind="enable: $root.errors.isEmpty, click: closeSaveDialog" class="proceed">#{i18n.getText('KMK012_55')}</button>
+				<!-- F5 -->
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KMK012_56')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

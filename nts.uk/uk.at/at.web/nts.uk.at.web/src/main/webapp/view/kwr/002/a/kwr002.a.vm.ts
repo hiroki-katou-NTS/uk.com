@@ -6,6 +6,7 @@ module nts.uk.com.view.kwr002.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import getMsg = nts.uk.resource.getMessage;
 
     export module viewModel {
         export class ScreenModel {
@@ -329,11 +330,22 @@ module nts.uk.com.view.kwr002.a {
                 }
                 nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 1));
-                service.exportService(self.exportDto()).done(() => {
+                service.exportService(self.exportDto()).done((response) => {
+                    if (response.taskDatas.length > 0) {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
+                    }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
-                    self.showMessageError(res);
                     nts.uk.ui.block.clear();
+                    if (res.message !== "" && res.businessException) {
+                        nts.uk.ui.dialog.caution(res).then(() => {
+                            nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
+                        });
+                    } else {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+
+                    }
+
                 });
             }
 
@@ -347,11 +359,25 @@ module nts.uk.com.view.kwr002.a {
                 }
                 nts.uk.ui.block.grayout();
                 self.exportDto(new ExportDto(self.findEmployeeIdsByCodes(self.selectedEmployeeCode()), self.toDate(self.dateValue().startDate), self.toDate(self.dateValue().endDate), self.selectedCode(), 2));
-                service.exportService(self.exportDto()).done(() => {
+                service.exportService(self.exportDto()).done((response) => {
+                    if (response.taskDatas.length > 0) {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
+                    }
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
-                    self.showMessageError(res);
                     nts.uk.ui.block.clear();
+                    if (res.message !== "" && res.businessException) {
+                        nts.uk.ui.dialog.caution(res).then(() => {
+                            nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
+                        });
+
+
+                    } else {
+                        nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+
+                    }
+
+
                 });
             }
 
@@ -377,12 +403,13 @@ module nts.uk.com.view.kwr002.a {
                     return;
                 }
 
+                nts.uk.ui.dialog.bundledErrors(res);
                 // show error message
-                if (Array.isArray(res.errors)) {
-                    nts.uk.ui.dialog.bundledErrors(res);
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                }
+                //                if (Array.isArray(res.errors)) {
+                //                    nts.uk.ui.dialog.bundledErrors(res);
+                //                } else {
+                //                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                //                }
             }
 
             public openBDialog(): JQueryPromise<any> {
@@ -399,12 +426,18 @@ module nts.uk.com.view.kwr002.a {
                             // $('#print').attr("disabled", "disabled")
                             // $('#exportExcel').attr("disabled", "disabled")
                         } else {
+                            let ARESCode = getShared("currentARESCode");
                             var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
                             _.map(sortArray, (item) => {
                                 item.code = _.padStart(item.code, 2, '0');
                             });
                             self.attendanceRecordList(sortArray);
-                            self.selectedCode(sortArray[0].code);
+                            if (ARESCode === undefined) {
+                                self.selectedCode(sortArray[0].code);
+                            }
+                            else {
+                                self.selectedCode(ARESCode);
+                            }
                             self.enableSave(true)
                         }
                         // console.log(self.attendanceRecordList());

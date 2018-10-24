@@ -12,6 +12,6 @@ public interface AppReflectManager {
 	 * 社員の申請を反映
 	 * @param appInfor
 	 */
-	public void reflectEmployeeOfApp(Application_New appInfor);
+	public ReflectResult reflectEmployeeOfApp(Application_New appInfor, InformationSettingOfEachApp reflectSetting);
 
 }

@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -124,6 +125,12 @@ public class ErrorAlarmWorkRecordDto {
 				erAlAtdItemConditionDto.setCompareEndValue(
 						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
+			case DAYS:
+				erAlAtdItemConditionDto.setCompareStartValue(
+						new BigDecimal(((CheckedTimesValueDay) itemDomain.getCompareRange().getStartValue()).v()));
+				erAlAtdItemConditionDto.setCompareEndValue(
+						new BigDecimal(((CheckedTimesValueDay) itemDomain.getCompareRange().getEndValue()).v()));
+				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);
 		} else if (itemDomain.getCompareSingleValue() != null) {
@@ -144,6 +151,10 @@ public class ErrorAlarmWorkRecordDto {
 				case TIMES:
 					erAlAtdItemConditionDto.setCompareStartValue(
 							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
+					break;
+				case DAYS:
+					erAlAtdItemConditionDto.setCompareStartValue(
+							new BigDecimal(((CheckedTimesValueDay) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				}
 			} else {
@@ -192,7 +203,7 @@ public class ErrorAlarmWorkRecordDto {
 	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
 		// Create to DTO root
 		ErrorAlarmWorkRecordDto errorAlarmWorkRecordDto = new ErrorAlarmWorkRecordDto(domain.getCompanyId(),
-				domain.getCode().v(), domain.getName().v(), domain.getFixedAtr() ? 1 : 0, domain.getUseAtr() ? 1 : 0,
+				domain.getCode().v().substring(1), domain.getName().v(), domain.getFixedAtr() ? 1 : 0, domain.getUseAtr() ? 1 : 0,
 				domain.getRemarkCancelErrorInput().value, domain.getRemarkColumnNo(), domain.getTypeAtr().value,
 				conditionDomain != null ? conditionDomain.getDisplayMessage().v() : "",
 				domain.getMessage().getBoldAtr() ? 1 : 0, domain.getMessage().getMessageColor().v(),

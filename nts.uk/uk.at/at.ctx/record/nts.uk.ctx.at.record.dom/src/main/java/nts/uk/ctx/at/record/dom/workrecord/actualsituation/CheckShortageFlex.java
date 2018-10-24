@@ -95,10 +95,10 @@ public class CheckShortageFlex {
 			return resultCheck.createCheckShortage(checkIndentityDayConfirm.checkIndentityDay(employeeId, approvalOpt.get().getDate()));
 		}
 		// TODO 対象月の承認が済んでいるかチェックする
-		boolean checkMonth = checkApprovalTargetMonth.checkApprovalTargetMonth(employeeId, date);
-		if (checkMonth)
-			return resultCheck.createCheckShortage(true);
-		return resultCheck.createCheckShortage(checkIndentityMonthConfirm.checkIndentityMonth(employeeId, date));
+		//boolean checkMonth = checkApprovalTargetMonth.checkApprovalTargetMonth(employeeId, date);
+		//if (checkMonth)
+		return resultCheck.createCheckShortage(true);
+		//return resultCheck.createCheckShortage(checkIndentityMonthConfirm.checkIndentityMonth(employeeId, date));
 	}
 	
 	/**
@@ -117,8 +117,7 @@ public class CheckShortageFlex {
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
-		return this.closureService.getClosurePeriod(
-				closure.get().getClosureId().value, currentMonth.getProcessingYm());
+		return this.closureService.getClosurePeriod(closure.get(), currentMonth.getProcessingYm());
 	}
 	
 	/**

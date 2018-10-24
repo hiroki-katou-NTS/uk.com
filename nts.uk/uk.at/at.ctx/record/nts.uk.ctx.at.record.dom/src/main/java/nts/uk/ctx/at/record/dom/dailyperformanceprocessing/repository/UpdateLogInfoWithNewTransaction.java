@@ -6,19 +6,17 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class UpdateLogInfoWithNewTransaction {
 
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateLogInfo(String empCalAndSumExecLogID,int executionContent, int processStatus) {
-		empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.PROCESSING.value);
-		
+		empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent, processStatus);
 	};
 
 }

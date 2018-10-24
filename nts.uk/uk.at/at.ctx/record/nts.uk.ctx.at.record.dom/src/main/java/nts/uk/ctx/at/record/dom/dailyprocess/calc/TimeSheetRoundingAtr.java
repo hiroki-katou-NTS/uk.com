@@ -6,9 +6,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum TimeSheetRoundingAtr {
-	PerTimeSheet,
-	PerTimeFrame,
-	ALL
+	PerTimeSheet, //時間帯毎に丸める
+	PerTimeFrame, //時間帯枠毎に丸める
+	ALL //全体で丸める
 	;
-	
 }

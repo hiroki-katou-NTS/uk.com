@@ -1,12 +1,12 @@
 #contents-area {
 	width: 1290px;
 	height: 100%;
-	/* overflow-y: hidden !important; */
 	overflow-y: inherit !important;
 }
 
 .float-right {
 	float: right !important;
+	margin-right: 55px;
 }
 
 #content-left {
@@ -22,52 +22,6 @@
 
 .notrequiredCell {
 	background-color: #C7F391;
-}
-
-.input-units {
-	width: 209px !important;
-}
-
-.sub-input-units {
-	width: 150px !important;
-	border: 0px solid #999999 !important;
-	text-align: right !important;
-
-}
-
-.nts-datepicker-wrapper .ntsDatepicker {
-	width: 161px !important;
-}
-
-#datey.nts-input {
-	padding: 3px 10px !important;
-}
-
-#date {
-	border: 0px solid #999999 !important;
-	width: 205px !important;
-}
-
-#datey {
-	border: 0px solid #999999 !important;
-	width: 192px !important;
-	padding-left: 2px;
-}
-
-#timeItem {
-	width: 205px !important;
-}
-
-#timePoint {
-	width: 205px !important;
-}
-
-#number {
-	width: 205px !important;
-}
-
-#string {
-	width: 205px !important;
 }
 
 #content-right {
@@ -116,7 +70,7 @@ input.ntsSearchBox {
 
 #sub-right {
 	float: left;
-	width: 634px;
+	width: 595px;
 	margin-left: 30px;
 }
 
@@ -125,10 +79,19 @@ input.ntsSearchBox {
 }
 
 #sub-right>table>tbody {
-	max-height: 510px;
-	overflow-y: scroll;
+	max-height: 495px;
 	overflow-x: hidden;
-	width: 634px;
+}
+
+#sub-center {
+	width: 25px !important;
+	float: left;
+}
+
+#sub-center > span.caret-background.caret-right.direction-right {
+	position: absolute;;
+	margin-top: 50px !important;
+	margin-left: 2px !important;
 }
 
 #search_his {
@@ -141,52 +104,6 @@ input.ntsSearchBox {
 	margin-left: 375px;
 }
 
-.contents-header {
-	width: 100%;
-}
-
-thead {
-	background-color: #CFF1A5;
-}
-
-table tr td, table tr th {
-	font-size: 14px;
-	font-family: "DroidSansMono", "Meiryo";
-}
-
-.ui-igcombo-wrapper {
-	display: block;
-	width: initial;
-	width: auto;
-}
-
-.value {
-	width: 200px !important;
-}
-
-.contents-header thead td {
-	border: 1px solid #CCC;
-	text-align: left;
-	padding: 0px 0px;
-	font-weight: bold;
-}
-
-.contents-header thead {
-	width: 634px;
-}
-
-#COL_1 {
-	width: 200px !important;
-}
-
-#COL_2 {
-	width: 190px !important;
-}
-
-#COL_3 {
-	width: 240px !important;
-}
-
 #A2_012 {
 	margin-left: 15px;
 	width: 97px;
@@ -197,51 +114,109 @@ table tr td, table tr th {
 	margin-left: 5px;
 }
 
+table tr td, table tr th {
+	font-size: 14px;
+	font-family: "DroidSansMono", "Meiryo";
+}
+
+.ui-igcombo-wrapper {
+	display: block;
+	width: initial;
+	width: 249px;
+}
+
+.contents-header {
+	width: 94.5%;
+	border: 1px solid #ccc;
+}
+
+.contents-header tbody tr:first-child td {
+	border-top: none;
+} 
+
+thead {
+	background-color: #CFF1A5;
+}
+
+#COL_1 {
+	min-width: 180px !important;
+	border-left: none;
+    border-top: none;
+}
+
+#COL_2 {
+	min-width: 160px !important;
+	border-top: none;
+}
+
+#COL_3 {
+	min-width: 249px !important;
+	border-right: none;
+	border-top: none;
+}
+
 #combo-box {
-	min-width: 100px !important;
+	width: 160px !important;
+} 
+
+.input-units {
+	width: 209px !important;
+}
+
+input.sub-input-units  {
+	border: 1px solid transparent !important;
 }
 
 .input-units-1 {
-	min-width: 200px;
-	max-width: 200px;
+	min-width: 179px;
+	max-width: 179px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
 .input-units-2 {
-	min-width: 190px;
-	max-width: 190px;
+	min-width: 160px;
+	max-width: 160px;
 }
 
 .input-units-3 {
-	width: 240px !important;
+	min-width: 249px !important;
+	max-width: 249px !important;
 }
 
-#notdata {
-	min-width: 240px !important;
-	max-width: 240px !important;
+ #notdata {
+	min-width: 249px !important;
+	max-width: 249px !important;
 }
 
-#sub-center {
-	width: 25px !important;
-	float: left;
+.sub-input-units  {
+	width: 249px !important;
+	text-align: right !important;
 }
 
-span.caret-background.caret-right.direction-right {
-	position: absolute;;
-	margin-top: 50px !important;
-	margin-left: 2px !important;
+.ntsDatepicker.nts-input.reset-element.sub-input-units{
+	width: 225px !important;
 }
+.sub-input-units.nts-editor.nts-input{
+	width: 225px !important;
+}
+
+.ntsControl.error input{
+	border-color: #ff6666 !important;
+}
+
+.input.sub-input-units:focus{
+	 border: 1px solid #0096f2;
+     box-shadow: none;
+}
+
 
 th>div {
-	top: 0;
-	padding: 3px;
 	color: #000;
-	position: absolute;
 	border-left: 1px solid #ccc;
 	background-color: #CFF1A5 !important;
-}
+} 
 
 th {
 	height: 0;
@@ -263,20 +238,10 @@ td {
 	border: 1px solid #ccc;
 }
 
-
-.contents-header tbody tr:first-child td {
-	border-top: none;
-}
-
 label[for] {
 	line-height: 20px !important;
 	right: -3px !important;
 	margin-top: 1.5px;
-}
-
-#date1 {
-	width: 85px !important;
-	margin-left: 5px !important;
 }
 
 #A3_13 {
@@ -285,11 +250,6 @@ label[for] {
 
 #A3_15 {
 	margin-left: 5px !important;
-}
-
-.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable
-	{
-	top: 578.5px !important;
 }
 
 .caret-background caret-right direction-right {
@@ -310,7 +270,4 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
-}
-#sub-right>table>tbody{
-	max-height: 495px !important;
 }

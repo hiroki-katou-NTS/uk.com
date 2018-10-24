@@ -11,9 +11,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class TimeDivergenceWithCalculation {
+	//時間
 	@Setter
 	private AttendanceTime time;
+	//計算時間
 	private AttendanceTime calcTime;
+	//乖離時間
 	private AttendanceTime divergenceTime;
 	
 	
@@ -40,6 +43,11 @@ public class TimeDivergenceWithCalculation {
 	 */
 	public static TimeDivergenceWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeDivergenceWithCalculation(time,calcTime);
+		
+	}
+	
+	public static TimeDivergenceWithCalculation defaultValue() {
+		return new TimeDivergenceWithCalculation(AttendanceTime.ZERO, AttendanceTime.ZERO);
 		
 	}
 	
@@ -72,7 +80,7 @@ public class TimeDivergenceWithCalculation {
 	}
 	
 	public static TimeDivergenceWithCalculation emptyTime() {
-		return TimeDivergenceWithCalculation.sameTime(null);
+		return TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		
 	}
 	

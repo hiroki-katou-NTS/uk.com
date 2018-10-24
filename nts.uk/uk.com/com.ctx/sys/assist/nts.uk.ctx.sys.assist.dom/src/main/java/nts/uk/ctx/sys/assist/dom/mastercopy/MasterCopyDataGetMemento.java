@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
+import java.util.List;
+
 /**
  * The Interface MasterCopyDataGetMemento.
  */
@@ -10,12 +12,12 @@ public interface MasterCopyDataGetMemento {
 	 *
 	 * @return the master copy id
 	 */
-	String getMasterCopyId();
+	MasterCopyCategoryNo getCategoryNo();
 
 	/**
-	 * Gets the master copy target.
+	 * Gets the target table.
 	 *
-	 * @return the master copy target
+	 * @return the target table
 	 */
-	MasterCopyTarget getMasterCopyTarget();
+	List<TargetTableInfo> getTargetTable();
 }

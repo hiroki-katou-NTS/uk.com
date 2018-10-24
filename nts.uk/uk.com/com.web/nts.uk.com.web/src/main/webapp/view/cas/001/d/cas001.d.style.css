@@ -14,26 +14,11 @@
 #category {
 	margin-left: 25px;
 	width: 480px;
-	height: 360px;
+	height: 405px;
 	position: relative;
 	margin-top: 20px;
 	padding-top: 25px;
 }
-/* 
-#search {
-	margin-left: 5px;
-} */
-
-/* input.ntsSearchBox {
-	width: 300px !important;
-	margin-left: 5px;
-	margin-top: 10px;
-}
-
-button.search-btn, button.clear-btn {
-	margin-top: 10px;
-	width: 20px !important;
-} */
 .distane {
 	margin-bottom: 5px;
 }
@@ -48,34 +33,22 @@ button.search-btn, button.clear-btn {
 	width: 440px;
 }
 
-.ui-widget-header {
-	border: none;
-	background: none;
-}
-
-.ui-iggrid .ui-iggrid-toolbar .ui-iggrid-results {
-	margin-right: 85px;
-	padding-right: 0px;
-}
-
-.ui-iggrid-header {
-	height: 45px !important;
-}
-
-.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header,
-	.ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active,
-	.ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus,
-	.ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header,
-	.ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active,
-	.ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus
-	{
-	border: 1px solid rgba(25, 24, 24, 0.26);
-}
-
-.ui-iggrid table tr td {
-	height: 20px !important;
-}
 
 #functions-area-bottom {
 	height: 57px !important;
+}
+
+ #grid_otherAuth > span > div > label > span.label{
+	margin-left: -30px;
+    margin-top: -20px;
+}
+#grid_otherAuth > span > div > label > span.box{
+	margin-top: 20px;
+}
+#grid_selfAuth > span > div > label > span.label{
+	margin-left: -30px;
+    margin-top: -20px;
+}
+#grid_selfAuth > span > div > label > span.box{
+	margin-top: 20px;
 }

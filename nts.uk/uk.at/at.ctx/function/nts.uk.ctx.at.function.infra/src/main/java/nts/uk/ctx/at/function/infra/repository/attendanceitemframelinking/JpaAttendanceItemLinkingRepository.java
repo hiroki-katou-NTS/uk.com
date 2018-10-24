@@ -4,12 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.attendanceitemframelinking;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
@@ -21,6 +26,11 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	private static final String FIND;
 	private static final String FIND_BY_ANY_ITEM;
 	private static final String FIND_BY_ITEM_ID_AND_TYPE;
+
+	private static final String FIND_BY_FRAME_NO = "SELECT a FROM KfnmtAttendanceLink a "
+			+ "WHERE a.kfnmtAttendanceLinkPK.frameNo IN :frameNos "
+			+ "AND a.kfnmtAttendanceLinkPK.typeOfItem = :typeOfItem "
+			+ "AND a.kfnmtAttendanceLinkPK.frameCategory = :frameCategory";
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -48,8 +58,12 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	public List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds) {
 		if(attendanceItemIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds).getList(f -> toDomain(f));
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	private static AttendanceItemLinking toDomain(KfnmtAttendanceLink kfnmtAttendanceLink) {
@@ -79,17 +93,25 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		if(attendanceItemIds.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds)
-				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList)
+					.setParameter("typeOfItem", type.value).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<AttendanceItemLinking> getFullDataByListAttdaId(List<Integer> attendanceItemIds) {
 		if(attendanceItemIds.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds).getList(c->c.toDomain());
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -97,9 +119,42 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		if(attendanceItemIds.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemIds", attendanceItemIds)
-				.setParameter("typeOfItem", type.value).getList(f -> f.toDomain());
+		List<KfnmtAttendanceLink> results  = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
+					.setParameter("attendanceItemIds", subList)
+					.setParameter("typeOfItem", type.value).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.
+	 * AttendanceItemLinkingRepository#findByFrameNos(java.util.List)
+	 */
+	@Override
+	public List<AttendanceItemLinking> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory) {
+		if (CollectionUtil.isEmpty(frameNos)) {
+			return Collections.emptyList();
+		}
+
+		BigDecimal bTypeOfItem = BigDecimal.valueOf(typeOfItem);
+		BigDecimal bFrameCategory = BigDecimal.valueOf(frameCategory);
+		List<AttendanceItemLinking> resultList = new ArrayList<>();
+		CollectionUtil.split(
+				frameNos.stream().map(BigDecimal::valueOf).collect(Collectors.toList()), 
+				DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, 
+				subList -> {
+					resultList.addAll(this.queryProxy().query(FIND_BY_FRAME_NO, KfnmtAttendanceLink.class)
+							.setParameter("frameNos", subList)
+							.setParameter("typeOfItem", bTypeOfItem)
+							.setParameter("frameCategory", bFrameCategory)
+							.getList(KfnmtAttendanceLink::toDomain));
+		});
+		
+		return resultList;
 	}
 
 }

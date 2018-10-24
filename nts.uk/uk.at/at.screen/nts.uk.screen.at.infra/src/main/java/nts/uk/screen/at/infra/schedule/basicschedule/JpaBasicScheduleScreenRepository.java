@@ -1,5 +1,8 @@
 package nts.uk.screen.at.infra.schedule.basicschedule;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -49,12 +53,6 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " AND a.kshmtWorkTimeSetPK.cid = b.kshmtWorkTimeSheetSetPK.cid"
 			+ " WHERE a.kshmtWorkTimeSetPK.cid = :companyId" + " AND a.abolitionAtr = :abolitionAtr"
 			+ " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC";
-	private static final String SELECT_BY_CID_DEPRECATE_CLS_1 = "SELECT NEW " + WorkTypeScreenDto.class.getName()
-			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr)"
-			+ " FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o "
-			+ " ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId " + " AND c.deprecateAtr = :deprecateClassification "
-			+ " ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
 			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
 			+ " OR c.workTimeCode IN :workTimeCode";
@@ -129,7 +127,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	public List<BasicScheduleScreenDto> getByListSidAndDate(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<BasicScheduleScreenDto> datas = new ArrayList<BasicScheduleScreenDto>();
-		CollectionUtil.split(employeeId, 1000, subIdList -> {
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class)
 					.setParameter("sId", subIdList).setParameter("startDate", startDate)
 					.setParameter("endDate", endDate).getList(x -> toDto(x)));
@@ -137,7 +135,61 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		return datas;
 
 	}
-
+	
+	/**
+	 * Get data source for screen KSU001
+	 * get data of timezone with cnt = 1 (chi hien thi gio ca 1 nen k can lay gio ca 2) 
+	 * @param employeeIds
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(List<String> employeeIds, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<BasicScheduleScreenDto> listBasicScheduleScreenDto = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+	
+			String listEmp = "(";
+			for(int i = 0; i < subList.size(); i++){
+				listEmp += "'"+ subList.get(i) +"',";
+			}
+			// remove last , in string and add )
+			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
+	
+			String sqlQueryWhere = " WHERE KSCDT_SCHE_BASIC.SID IN " + listEmp
+					+ " AND (KSCDT_SCHE_BASIC.YMD between " + "'" + startDate + "' and '" + endDate + "')"
+					+ " AND (KSCDT_SCHE_TIMEZONE.CNT IS NULL OR KSCDT_SCHE_TIMEZONE.CNT = " + 1 + ")";
+	
+			String sqlQuery = "SELECT KSCDT_SCHE_BASIC.SID, KSCDT_SCHE_BASIC.YMD, KSCDT_SCHE_BASIC.WORKTYPE_CD, KSCDT_SCHE_BASIC.WORKTIME_CD, KSCDT_SCHE_BASIC.CONFIRMED_ATR,"
+					+ " KSCDT_SCHE_TIMEZONE.CNT, KSCDT_SCHE_TIMEZONE.BOUNCE_ATR, KSCDT_SCHE_TIMEZONE.START_CLOCK as TZ_START_CLOCK, KSCDT_SCHE_TIMEZONE.END_CLOCK as TZ_END_CLOCK"
+					+ " FROM KSCDT_SCHE_BASIC LEFT JOIN KSCDT_SCHE_TIMEZONE ON KSCDT_SCHE_BASIC.SID = KSCDT_SCHE_TIMEZONE.SID AND KSCDT_SCHE_BASIC.YMD = KSCDT_SCHE_TIMEZONE.YMD"
+					+ sqlQueryWhere;
+			try {
+				ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+				while (rs.next()) {
+					String sId = rs.getString("SID");
+					GeneralDate date = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+					String workTypeCode = rs.getString("WORKTYPE_CD");
+					String workTimeCode = rs.getString("WORKTIME_CD");
+					int confirmAtr = rs.getInt("CONFIRMED_ATR");
+	
+					Integer timezoneCnt = rs.getObject("CNT") == null ? null : Integer.valueOf(rs.getInt("CNT"));
+					Integer bounceAtr = rs.getObject("BOUNCE_ATR") == null ? null : Integer.valueOf(rs.getInt("BOUNCE_ATR"));
+					Integer timezoneStart = rs.getObject("TZ_START_CLOCK") == null ? null : Integer.valueOf(rs.getInt("TZ_START_CLOCK"));
+					Integer timezoneEnd = rs.getObject("TZ_END_CLOCK") == null ? null : Integer.valueOf(rs.getInt("TZ_END_CLOCK"));
+	
+					listBasicScheduleScreenDto.add(new BasicScheduleScreenDto(sId, date, workTypeCode, workTimeCode,
+							confirmAtr, timezoneCnt, timezoneStart, timezoneEnd, bounceAtr));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
+		return listBasicScheduleScreenDto;
+	}
+	
 	/**
 	 * get list WorkTimeSet by companyId and abolitionAtr = ABOLISH join with
 	 * table WorkTimeSheetSet, sort by workTimeCode
@@ -153,9 +205,40 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	 */
 	@Override
 	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls1(String companyId, int deprecateClassification) {
-		return this.queryProxy().query(SELECT_BY_CID_DEPRECATE_CLS_1, WorkTypeScreenDto.class)
-				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
-				.getList();
+		
+		List<WorkTypeScreenDto> listWorkTypeScreenDto = new ArrayList<>();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
+		String sqlQueryWhere = "where KSHMT_WORKTYPE.CID = '" + companyId + "' AND KSHMT_WORKTYPE.ABOLISH_ATR = " + deprecateClassification
+				+ " order by CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NULL THEN 1 ELSE 0 END,"
+				+ " CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NULL THEN KSHMT_WORKTYPE.CD END ASC,"
+				+ " CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NOT NULL THEN KSHMT_WORKTYPE_ORDER.DISPORDER END ASC";
+
+		String sqlQuery = 
+				"select KSHMT_WORKTYPE.CD, KSHMT_WORKTYPE.NAME, KSHMT_WORKTYPE.ABNAME, KSHMT_WORKTYPE.SYNAME, KSHMT_WORKTYPE.MEMO,"
+				+ " KSHMT_WORKTYPE.WORK_ATR, KSHMT_WORKTYPE.ONE_DAY_CLS, KSHMT_WORKTYPE.MORNING_CLS, KSHMT_WORKTYPE.AFTERNOON_CLS"
+				+ " from KSHMT_WORKTYPE left join KSHMT_WORKTYPE_ORDER"
+				+ " on KSHMT_WORKTYPE.CID = KSHMT_WORKTYPE_ORDER.CID and KSHMT_WORKTYPE.CD = KSHMT_WORKTYPE_ORDER.WORKTYPE_CD "
+				+ sqlQueryWhere;
+		try {
+			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+			while (rs.next()) {
+				String workTypeCode = rs.getString("CD");
+				String name = rs.getString("NAME");
+				String abbreviationName = rs.getString("ABNAME");
+				String symbolicName = rs.getString("SYNAME");
+				String memo = rs.getString("MEMO");
+				int workTypeUnit = rs.getInt("WORK_ATR");
+				int oneDay = rs.getInt("ONE_DAY_CLS");
+				int morning = rs.getInt("MORNING_CLS");
+				int afternoon = rs.getInt("AFTERNOON_CLS");
+				
+				listWorkTypeScreenDto.add(new WorkTypeScreenDto(workTypeCode, name, abbreviationName, symbolicName, memo, workTypeUnit, oneDay, morning, afternoon));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listWorkTypeScreenDto;
 	}
 
 	/**
@@ -164,9 +247,17 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	@Override
 	public List<WorkEmpCombineScreenDto> getListWorkEmpCobine(String companyId, List<String> lstWorkTypeCode,
 			List<String> lstWorkTimeCode) {
-		return this.queryProxy().query(GET_WORK_EMP_COMBINE, KscmtWorkEmpCombine.class)
-				.setParameter("companyId", companyId).setParameter("workTypeCode", lstWorkTypeCode)
-				.setParameter("workTimeCode", lstWorkTimeCode).getList(x -> toWorkEmpCombineScreenDto(x));
+		List<WorkEmpCombineScreenDto> resultList = new ArrayList<>();
+		CollectionUtil.split(lstWorkTypeCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, workTypes -> {
+			CollectionUtil.split(lstWorkTimeCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, workTimes -> {
+				resultList.addAll(this.queryProxy().query(GET_WORK_EMP_COMBINE, KscmtWorkEmpCombine.class)
+						.setParameter("companyId", companyId)
+						.setParameter("workTypeCode", workTypes)
+						.setParameter("workTimeCode", workTimes)
+						.getList(x -> toWorkEmpCombineScreenDto(x)));
+			});
+		});
+		return resultList;
 	}
 
 	/**
@@ -185,7 +276,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(List<String> sId, GeneralDate startDate,
 			GeneralDate endDate) {
 		List<BasicScheduleScreenDto> datas = new ArrayList<BasicScheduleScreenDto>();
-		CollectionUtil.split(sId, 1000, subIdList -> {
+		CollectionUtil.split(sId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 			datas.addAll(this.queryProxy().query(GET_WORK_SCH_TIMEZONE, KscdtWorkScheduleTimeZone.class)
 					.setParameter("sId", subIdList).setParameter("startDate", startDate)
 					.setParameter("endDate", endDate).getList(x -> toBasicScheduleScreenDto(x)));

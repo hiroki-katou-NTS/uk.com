@@ -8,6 +8,7 @@
         nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
         <!-- month -->
         nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
+        nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition
     </com:ValidatorScript>
 	<com:EnumScript>
 		nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond
@@ -27,22 +28,22 @@
 	           </tr>
 		    </table>
 		</div>
-		<div id="div_table_check_conditions" style="padding-top: 10px;">
+		<div id="div_table_check_conditions" style="padding-top: 20px;">
 		   <table id="check-condition-table">
 		       <colgroup>
 			        <col width="36px"/>
 			        <col width="36px"/>
-			        <col width="200px"/>
+			        <col width="230px"/>
 			        <col width="90px"/>
-			        <col width="190px"/>
+			        <col width="230px"/>
 			    </colgroup>
 			    <thead>
 			        <tr>
-			            <th class="ui-widget-header"><div data-bind="ntsCheckBox: {checked: isAllCheckCondition}"></div></th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_24')}</th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_12')}</th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_23')}</th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_25')}</th>
+			            <th class="ui-widget-header" style="text-align: center;"><div data-bind="ntsCheckBox: {checked: isAllCheckCondition}"></div></th>
+			            <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAL003_24')}</th>
+			            <th class="ui-widget-header" >#{i18n.getText('KAL003_12')}</th>
+			            <th class="ui-widget-header" >#{i18n.getText('KAL003_23')}</th>
+			            <th class="ui-widget-header" >#{i18n.getText('KAL003_25')}</th>
 			        </tr>
 		        </thead>
 		       <tbody data-bind="foreach: listWorkRecordExtractingConditions()">
@@ -54,13 +55,18 @@
 	                       <span data-bind="text: rowId"></span>
 	                   </td>
 	                   <td>
-	                       <input class ="nameWKRecordIDDaily" data-bind="ntsTextEditor: {value: nameWKRecord, required: true, constraint: 'NameWKRecord', name: '#[KAL003_12]', 
+	                       <input class ="nameAlarmDailyM" data-bind="ntsTextEditor: {
+	                       value: nameWKRecord, 
+	                       required: true,
+	                       constraint: 'NameAlarmExtractionCondition', 
+	                       name: '#[KAL003_12]', 
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-				                textmode: 'text',
-				                placeholder: '',
-				                width: '203px',
-				                textalign: 'left'
-				            }))}" />
+				                	textmode: 'text',
+				                	placeholder: '',
+				                	width: '203px',
+				                	textalign: 'left'
+				            	})
+				            )}" />
 	                   </td>
 	                   <td style ="text-align: center;">
 	                       <button data-bind="click: $parent.btnSettingCheckCondition_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button>
@@ -84,7 +90,7 @@
 		</div>
 		<div class="valign-center control-group">
 			<div
-				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4'}"></div>
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4', enable : false}"></div>
 			<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
 		</div>
 	</div>
@@ -95,11 +101,11 @@
 		       <tr>
 			       <td class = "pad_left_10px">
 				       <!-- A8_1 -->
-				       <div class = "pad_left_10px"><button data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button></div>
+				       <div style="margin-right: 15px;" class = "pad_left_10px"><button data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button></div>
 		           </td>
 		           <td class = "pad_left_10px"> 
 		               <!-- A8_2 -->
-	                    <div class = "pad_left_10px"><button data-bind="click: deleteCheckCondition_click, enable : checkUseAtr" style="margin-left: 50px">#{i18n.getText('KAL003_22')}</button></div>
+	                    <div class = "pad_left_10px"><button data-bind="click: deleteCheckCondition_click, enable : checkUseAtr" >#{i18n.getText('KAL003_22')}</button></div>
 	               </td>
 	           </tr>
 		    </table>
@@ -115,11 +121,11 @@
 			    </colgroup>
 			    <thead>
 			        <tr>
-			            <th class="ui-widget-header"><div data-bind="ntsCheckBox: {checked: isAllCheckCondition}"></div></th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_24')}</th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_12')}</th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_23')}</th>
-			            <th class="ui-widget-header">#{i18n.getText('KAL003_25')}</th>
+			            <th class="ui-widget-header" style="text-align: center;"><div data-bind="ntsCheckBox: {checked: isAllCheckCondition}"></div></th>
+			            <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('KAL003_24')}</th>
+			            <th class="ui-widget-header" >#{i18n.getText('KAL003_12')}</th>
+			            <th class="ui-widget-header" >#{i18n.getText('KAL003_23')}</th>
+			            <th class="ui-widget-header" >#{i18n.getText('KAL003_25')}</th>
 			        </tr>
 		        </thead>
 		       <tbody data-bind="foreach: listMulMonCheckSet()">
@@ -134,14 +140,15 @@
 	                       <input class ="nameWKRecordID" 
 	                       data-bind="ntsTextEditor: {value: nameAlarmMulMon,
 	                        	required: true,
-	                         	constraint: 'NameWKRecord',
+	                         	constraint: 'NameAlarmExtractionCondition',
 	                          	name: '#[KAL003_12]', 
 		                       	option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-				                textmode: 'text',
-				                placeholder: '',
-				                width: '203px',
-				                textalign: 'left'
-				            }))}" />
+				                	textmode: 'text',
+				                	placeholder: '',
+				                	width: '203px',
+				                	textalign: 'left'
+				            	})
+				            )}" />
 	                   </td>
 	                   <td style ="text-align: center;">
 	                       <button data-bind="click: $parent.btnSettingCheckCondition_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button>

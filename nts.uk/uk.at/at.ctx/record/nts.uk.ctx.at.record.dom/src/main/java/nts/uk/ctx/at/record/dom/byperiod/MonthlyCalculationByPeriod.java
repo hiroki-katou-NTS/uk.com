@@ -15,7 +15,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の月の計算
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class MonthlyCalculationByPeriod implements Cloneable {
@@ -93,12 +93,8 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 		// 総労働時間の集計
 		this.aggregateTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap(), companySets);
 
-		// 「労働制」を確認する
-		if (workingSystem == WorkingSystem.FLEX_TIME_WORK){
-			
-			// フレックス時間の集計
-			this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
-		}
+		// フレックス時間の集計
+		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
 		
 		// 総労働時間を計算
 		int totalMinutes = this.aggregateTime.getTotalWorkingTargetTime().v() +
@@ -240,6 +236,24 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
+		}
+		
+		// フレックス法定内時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
+			int flexLegalMinutes = 0;
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+		}
+		
+		// フレックス法定外時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+			val flexIllegalMinutes = this.flexTime.getFlexExcessTime().v();
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 		}
 		
 		// フレックス超過時間　（フレックス時間のプラス分）

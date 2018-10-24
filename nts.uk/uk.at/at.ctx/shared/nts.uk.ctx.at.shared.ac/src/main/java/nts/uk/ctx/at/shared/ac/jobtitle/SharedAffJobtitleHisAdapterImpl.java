@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.ac.jobtitle;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,6 +32,21 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 		SharedAffJobTitleHisImport affJobTitleSidImport = new SharedAffJobTitleHisImport(employeeJobHis.get().getEmployeeId(),
 				employeeJobHis.get().getJobTitleID(), dateRange, employeeJobHis.get().getJobTitleName());
 		return Optional.of(affJobTitleSidImport);
+	}
+
+	@Override
+	public List<SharedAffJobTitleHisImport> findAffJobTitleHisByListSid(List<String> employeeIds,
+			GeneralDate processingDate) {
+		return this.syJobTitlePub.findSJobHistByListSIdV2(employeeIds, processingDate).stream().map(c->convertToExport(c)).collect(Collectors.toList());
+	}
+	
+	private SharedAffJobTitleHisImport convertToExport (EmployeeJobHistExport export) {
+		DatePeriod dateRange = new DatePeriod(export.getStartDate(), export.getEndDate());
+		return new  SharedAffJobTitleHisImport(
+				export.getEmployeeId(),
+				export.getJobTitleID(), 
+				dateRange, 
+				export.getJobTitleName());
 	}
 
 }

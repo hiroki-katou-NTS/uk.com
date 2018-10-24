@@ -21,6 +21,9 @@ public class WorkScheOutputConstants {
 	/** The Constant DAY. */
 	public static final String DAY = "曜";
 	
+	/** The Constant CLOSURE_DATE. */
+	public static final String CLOSURE_DATE = "締日";
+	
 	/** The Constant REMARK. */
 	public static final String REMARK = "備考";
 	
@@ -30,9 +33,16 @@ public class WorkScheOutputConstants {
 	/** The Constant PERIOD. */
 	public static final String PERIOD = "[期間]";
 	
+	/** The Constant CLOSURE_DATE_LAST_DAY. */
+	public static final String CLOSURE_DATE_LAST_DAY = "末日";
+	
+	/** The Constant CLOSURE_DATE_NON_LAST_DAY. */
+	public static final String CLOSURE_DATE_NON_LAST_DAY = "%d日";
+	
 	// File/Sheet name
 	public static final String SHEET_FILE_NAME = "日別勤務表";
-	public static final String SHEET_FILE_NAME_MONTHLY = "月別勤務集計表";
+	public static final String SHEET_NAME_MONTHLY = "Sheet1";
+	public static final String FILE_NAME_MONTHLY = "月別勤務集計表";
 	
 	// Calculation text
 	public static final String TOTAL_EMPLOYEE = "個人計";
@@ -89,7 +99,7 @@ public class WorkScheOutputConstants {
 	public static final String YEAR_OFF = "年休使用数";
 	
 	/** The Constant HEAVY. */
-	public static final String HEAVY = "所定日数";
+	public static final String HEAVY = "積立使用数";
 	
 	/** The Constant SPECIAL. */
 	public static final String SPECIAL = "特休日数";
@@ -136,4 +146,7 @@ public class WorkScheOutputConstants {
 	
 	/** The Constant RANGE_DAILY_WORKPLACE_ROW. */
 	public static final String RANGE_DAILY_WORKPLACE_ROW = "DailyWorkplaceRow";
+	
+	public static final String PERIOD_SYMBOL = "～";
+	
 }

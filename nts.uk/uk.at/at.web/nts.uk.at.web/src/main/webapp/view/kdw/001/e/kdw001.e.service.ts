@@ -4,7 +4,9 @@ module nts.uk.at.view.kdw001.e.service {
     var paths: any = {
         getErrorMessageInfo: "at/record/log/getErrorMessageInfo",
         addEmpCalSumAndTarget: "at/record/log/addEmpCalSumAndTarget",
-        checkprocess: "at/record/log/checkprocess"
+        checkprocess: "at/record/log/checkprocess",
+        updateExcutionTime : "at/record/log/updateExcutionTime",
+        updateLogState : "at/record/log/updateLogState"
     }
     
     export function getErrorMessageInfo(params: any): JQueryPromise<any> {
@@ -21,6 +23,14 @@ module nts.uk.at.view.kdw001.e.service {
     
     export function saveAsCsv(data:any): JQueryPromise<any> {
         return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "personError", domainType: "personerror", languageId: 'ja', reportType: 3 ,data:data});
+    }
+    
+    export function updateExcutionTime(params: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.updateExcutionTime, params);
+    }
+    
+    export function updateLogState(params: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.updateLogState, params);
     }
 
 }

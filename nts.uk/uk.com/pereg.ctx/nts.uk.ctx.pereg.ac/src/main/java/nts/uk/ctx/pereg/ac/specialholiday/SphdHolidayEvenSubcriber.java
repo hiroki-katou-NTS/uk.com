@@ -14,7 +14,9 @@ import javax.inject.Inject;
 import nts.arc.i18n.I18NResources;
 import nts.arc.layer.dom.event.DomainEventSubscriber;
 import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryName;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -67,7 +69,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		List<PersonInfoItemDefinition> updateItems = new ArrayList<>();
 		String contractCd = AppContexts.user().contractCode();
 
-		if (domainEvent.isEffective()) {
+		if (domainEvent.isUse()) {
 			/**
 			 * 【更新内容】 廃止区分 ＝ 廃止しない カテゴリ名称 ＝ パラメータ．特別休暇名称 + #CPS001_133（○○情報） or カテゴリ名称 ＝
 			 * パラメータ．特別休暇名称 + #CPS001_134（○○付与残数）
@@ -86,7 +88,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				x.setDomainNameAndAbolition(new CategoryName(name), 0);
 				ctgUpdateList.add(x);
 				updateItems.addAll(
-						getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, true, loginCompanyId));
+						getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, true, domainEvent.getTypeTime() ,loginCompanyId));
 			}
 		} else {
 			/**
@@ -115,8 +117,8 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 				String domainEventName = domainEvent.getSpecialHolidayName() == null ? ""
 						: domainEvent.getSpecialHolidayName().v();
 
-				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, false,
-						loginCompanyId, updateCompanyId));
+				updateItems.addAll(getUpdateItems(domainEventName, x.getCategoryCode().v(), contractCd, false, domainEvent.getTypeTime()
+						, loginCompanyId, updateCompanyId));
 			}
 
 		}
@@ -131,7 +133,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 	}
 
 	private List<PersonInfoItemDefinition> getUpdateItems(String spHDName, String ctgId, String contractCode,
-			boolean isEffective, String... companyId) {
+			boolean isEffective, TypeTime typeTime, String... companyId) {
 		return itemRepo.getItemDefByCtgCdAndComId(ctgId, companyId[0]).stream().filter(f -> {
 			String itemCode = f.getItemCode().v();
 			Optional<String> newItemName = getNewItemName(itemCode, spHDName);
@@ -142,6 +144,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 					 * 【更新内容】 廃止区分 ＝ 廃止しない 項目名称 ＝
 					 */
 					f.setItemName(newItemName.get());
+					f.setIsAbolition(getAbolition(itemCode, typeTime));
 				} else {
 					/**
 					 * 【更新内容】 廃止区分 ＝ 廃止する 項目名 ＝ 取得したゼロ会社の「個人情報項目定義」．項目名
@@ -189,6 +192,23 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		};
 
 		return map.get(spcHdCode);
+	}
+	
+	private IsAbolition getAbolition(String itemCode, TypeTime typeTime) {
+		if (mapICdFull.containsKey(itemCode)) {
+			int key = mapICdFull.get(itemCode);
+			
+			switch (key) {
+				case 4:
+					return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
+				case 5:
+					return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
+				default:
+					return IsAbolition.NOT_ABOLITION;
+			}
+		}
+
+		return IsAbolition.NOT_ABOLITION;
 	}
 
 	private Optional<String> getNewItemName(String itemCode, String name) {

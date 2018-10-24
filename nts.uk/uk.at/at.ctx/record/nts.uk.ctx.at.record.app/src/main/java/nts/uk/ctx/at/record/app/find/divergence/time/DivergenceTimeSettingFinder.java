@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.divergence.time;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,8 @@ public class DivergenceTimeSettingFinder {
 			DivergenceTimeDto dto = new DivergenceTimeDto();
 			e.saveToMemento(dto);
 			return dto;
-		}).collect(Collectors.toList());
+		}).sorted((o1, o2) -> o1.getDivergenceTimeNo() >= o2.getDivergenceTimeNo() ? 1 : -1)
+		.collect(Collectors.toList());
 	}
 
 }

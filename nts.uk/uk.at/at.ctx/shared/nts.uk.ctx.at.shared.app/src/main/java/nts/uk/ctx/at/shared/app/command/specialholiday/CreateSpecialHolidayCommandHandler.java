@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,10 +43,11 @@ public class CreateSpecialHolidayCommandHandler extends CommandHandlerWithResult
 		errList.addAll(domain.getSpecialLeaveRestriction().validateInput());
 		
 		if (errList.isEmpty()) {
+			// call event
+			SpecialHolidayDomainEvent sHC = SpecialHolidayDomainEvent.createFromDomain(true,domain);
+			sHC.toBePublished();
 			// add to db		
 			sphdRepo.add(domain);
-			
-			domain.publishEvent(true);
 		}
 		
 		return errList;

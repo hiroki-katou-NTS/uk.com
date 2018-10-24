@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl005.a {
             hint03: KnockoutObservable<string> = ko.observable("");
             value04: KnockoutObservable<string> = ko.observable("");
             hint04: KnockoutObservable<string> = ko.observable("");
+            expirationDateText: KnockoutObservable<string> = ko.observable("");
             
             constructor() {
                 var self = this;
@@ -50,6 +51,11 @@ module nts.uk.at.view.kdl005.a {
                             self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemData.businessName]));
                             
                             service.getDetailsConfirm(itemData.employeeId, self.kdl005Data.baseDate).done(function(data) {
+                                if (data.deadLineDetails) {
+                                    if (data.deadLineDetails.isManaged) {
+                                        self.expirationDateText(ExpirationDate[data.deadLineDetails.expirationTime]);
+                                    }
+                                }
                                 self.bindTimeData(data);
                                 self.bindSummaryData(data);
                             }).fail(function(res) {
@@ -88,22 +94,27 @@ module nts.uk.at.view.kdl005.a {
                         
                         $('#component-items-list').ntsListComponent(self.listComponentOption);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
                         service.getDetailsConfirm(data.employeeBasicInfo[0].employeeId, self.kdl005Data.baseDate).done(function(data) {
+                            if (data.deadLineDetails) {
+                                if (data.deadLineDetails.isManaged) {
+                                    self.expirationDateText(ExpirationDate[data.deadLineDetails.expirationTime]);
+                                }
+                            }
                             self.bindTimeData(data);
                             self.bindSummaryData(data);
                         }).fail(function(res) {
                               
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     }
                 });
             }
@@ -118,27 +129,29 @@ module nts.uk.at.view.kdl005.a {
             }
             
             bindTimeData(data: any) {
-                var self = this;
-                var leaveDate = "";
-                var dayOffDateTop = "";
-                var dayOffDateBot = "";
-                var duedateHoliday = "";
-                var occurrenceDays1 = "";
-                var occurrenceDays2Top = "";
-                var occurrenceDays2Bot = "";
+                let self = this;
+               
                 
                 self.dataItems.removeAll();
                 
                 if(data.lstHistory != null && data.lstHistory.length >= 1) {
                     _.each(data.lstHistory, function (item) {
-                        var isHalfDay = false;
+                        
+                        let leaveDate = "";
+                        let dayOffDateTop = "";
+                        let dayOffDateBot = "";
+                        let duedateHoliday = "";
+                        let occurrenceDays1 = "";
+                        let occurrenceDays2Top = "";
+                        let occurrenceDays2Bot = "";
+                        let isHalfDay = false;
                         
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
-                                var dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
+                                let dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
                                 
                                 if(dayoffDateStr !== "") {
-                                    if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
+                                    if(item.breakHis.mngAtr == 2 || item.breakHis.mngAtr == 3) {
                                         leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr])]);
                                     } else {
                                         leaveDate = nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr]);
@@ -164,7 +177,7 @@ module nts.uk.at.view.kdl005.a {
                         }
                         
                         if(item.dayOffHis != null) {
-                            if(item.dayOffHis.createAtr == 0 || item.dayOffHis.createAtr == 4) {
+                            if(item.dayOffHis.createAtr == 2 || item.dayOffHis.createAtr == 3) {
                                 if(item.dayOffHis.dayOffDate.dayoffDate != null) {
                                     dayOffDateTop = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
                                 } else {
@@ -189,10 +202,10 @@ module nts.uk.at.view.kdl005.a {
                             isHalfDay = true;
                         }
                         
-                        var temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
+                        let temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
-                        if(temp.leaveDate !== "" && temp.dayOffDateTop !== "" && temp.dayOffDateBot !== "" && temp.duedateHoliday !== "" 
-                                && temp.occurrenceDays1 !== "" && temp.occurrenceDays2Top !== "" && temp.occurrenceDays2Bot !== "") {
+                        if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== "" 
+                                || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
                             self.dataItems.push(temp);
                         }
                     });                    
@@ -201,31 +214,45 @@ module nts.uk.at.view.kdl005.a {
             
             bindSummaryData(data: any) {
                 var self = this;
-                
-                if(data.totalInfor != null) {
+                if (data.totalInfor != null) {
                     self.value01(data.totalInfor.carryForwardDays + nts.uk.resource.getText("KDL005_27"));
-                    self.value02(data.totalInfor.recordOccurrenceDays + nts.uk.resource.getText("KDL005_27"));
-                    self.hint02(data.totalInfor.scheOccurrenceDays + nts.uk.resource.getText("KDL005_27"));
-                    self.value03(data.totalInfor.recordUseDays + nts.uk.resource.getText("KDL005_27"));
-                    self.hint03(data.totalInfor.scheUseDays + nts.uk.resource.getText("KDL005_27"));
-                    var ramaining01 = data.totalInfor.recordOccurrenceDays - data.totalInfor.recordUseDays;
-                    var ramaining02 = data.totalInfor.scheOccurrenceDays - data.totalInfor.scheUseDays;
-                    self.value04(ramaining01 + nts.uk.resource.getText("KDL005_27"));
-                    self.hint04(ramaining02 + nts.uk.resource.getText("KDL005_27"));
                 } else {
                     self.value01(nts.uk.resource.getText("KDL005_27", ["0"]));
+                }
+                if (data.breakDay != null) {
+
+                    self.value02(data.breakDay.occurrenceDays + nts.uk.resource.getText("KDL005_27"));
+                    self.value03(data.breakDay.useDays + nts.uk.resource.getText("KDL005_27"));
+                    self.value04(data.breakDay.remainDays + nts.uk.resource.getText("KDL005_27"));
+                } else {
+
                     self.value02(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.hint02(nts.uk.resource.getText("KDL005_27", ["0"]));
                     self.value03(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.hint03(nts.uk.resource.getText("KDL005_27", ["0"]));
                     self.value04(nts.uk.resource.getText("KDL005_27", ["0"]));
-                    self.hint04(nts.uk.resource.getText("KDL005_27", ["0"]));
                 }
             }
             
             cancel() {
                 nts.uk.ui.windows.close();
             }
+        }
+        
+        export enum ExpirationDate {
+            "当月",//0
+            "常に繰越",//1
+            "年度末クリア",//2
+            "1ヶ月",//3
+            "2ヶ月",//4
+            "3ヶ月",//5
+            "4ヶ月",//6
+            "5ヶ月",//7
+            "6ヶ月",//8
+            "7ヶ月",//9
+            "8ヶ月",//10
+            "9ヶ月",//11
+            "10ヶ月",//12
+            "11ヶ月",//13
+            "1年",//14
         }
         
         export class ListType {
