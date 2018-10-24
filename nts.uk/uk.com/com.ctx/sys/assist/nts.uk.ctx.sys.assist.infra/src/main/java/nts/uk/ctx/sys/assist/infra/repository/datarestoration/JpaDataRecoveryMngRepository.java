@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoveryMng;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
-@Transactional(value = TxType.REQUIRED)
+@Transactional(value = TxType.REQUIRES_NEW)
 public class JpaDataRecoveryMngRepository extends JpaRepository implements DataRecoveryMngRepository {
 	
 	@PersistenceContext
