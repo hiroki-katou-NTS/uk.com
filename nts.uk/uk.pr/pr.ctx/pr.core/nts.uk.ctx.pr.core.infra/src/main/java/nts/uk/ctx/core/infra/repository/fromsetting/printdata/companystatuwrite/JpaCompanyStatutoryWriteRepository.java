@@ -17,6 +17,8 @@ public class JpaCompanyStatutoryWriteRepository extends JpaRepository implements
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtComStatutoryWrite f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.comStatutoryWritePk.cid =:cid AND  f.comStatutoryWritePk.code =:code ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.comStatutoryWritePk.cid =:cid order by f.comStatutoryWritePk.code ASC";
+
 
     @Override
     public List<CompanyStatutoryWrite> getAllCompanyStatutoryWrite(){
@@ -46,4 +48,12 @@ public class JpaCompanyStatutoryWriteRepository extends JpaRepository implements
     public void remove(String cid, String code){
         this.commandProxy().remove(QpbmtComStatutoryWrite.class, new QpbmtComStatutoryWritePk(cid, code));
     }
+
+    @Override
+    public List<CompanyStatutoryWrite> getByCid(String cid) {
+        return this.queryProxy().query(SELECT_BY_CID, QpbmtComStatutoryWrite.class)
+                .setParameter("cid",cid)
+                .getList(item -> item.toDomain());
+    }
+
 }

@@ -19,4 +19,6 @@ public interface CompanyStatutoryWriteRepository
 
     void remove(String cid, String code);
 
+    List<CompanyStatutoryWrite> getByCid(String cid);
+
 }
