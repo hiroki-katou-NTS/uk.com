@@ -67,23 +67,24 @@ public class AnyItemValueOfDaily {
         		//計算処理
         		val calcResult = optionalItem.caluculationFormula(companyId, optionalItem, test, dailyRecordDto, Optional.empty());
                 anyItemList.add(calcResult);
-                //------
+                //計算した値を Converter内へ格納
             	if(dailyAnyItem.isPresent()) {
             		List<AnyItemValue> forcsItem = dailyAnyItem.get().items;
             		Optional<AnyItemValue> getAnyItem = forcsItem.stream().filter(tc -> tc.getItemNo().v().equals(calcResult.getOptionalItemNo().v())).findFirst();
         			//存在する(上書き)
             		if(getAnyItem.isPresent()) {
-
-            			//AnyItemValue updateItem = new AnyItemValue(calcResult.getOptionalItemNo(), times, amount, time);
+            			//更新する(一致する)任意項目NoががいぶDtoのリスト内にいるかチェック
             			 val numberList = forcsItem.stream().map(tc -> tc.getItemNo().v().intValue()).collect(Collectors.toList());
+            			 //リスト内での位置取得
             			 int indexNumber = numberList.indexOf(calcResult.getOptionalItemNo().v().intValue());
+            			 //更新
             			 forcsItem.set(indexNumber, new AnyItemValue(new AnyItemNo(calcResult.getOptionalItemNo().v()),
 								 												   calcResult.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
 								 												   calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
 								 												   calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
             		}
             		else {
-            			//コンバーター内には存在しない任意項目No
+            			//コンバーター内には存在しない任意項目Noの追加
             			forcsItem.add(new AnyItemValue(new AnyItemNo(calcResult.getOptionalItemNo().v()),
             														 calcResult.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
             														 calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
@@ -92,7 +93,6 @@ public class AnyItemValueOfDaily {
             		dailyAnyItem.get().items = forcsItem;
             		dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
             	}
-            	//-------
         	}
 
         }
