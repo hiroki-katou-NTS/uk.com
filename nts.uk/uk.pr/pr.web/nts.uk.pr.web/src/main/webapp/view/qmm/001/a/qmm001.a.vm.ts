@@ -243,24 +243,23 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         return;
                     }
                     self.salGenParaValue(item);
-                    if(item.numValue != null){
-                        self.value(Number(item.numValue));
-                    }
-                    else{
-                        if(item.charValue != null){
-                            self.value(item.numValue);
+                    switch (item.availableAtr){
+                        case PARAATTRITYPE.TIME:{
+                            self.value(Number(item.timeValue));
+                            break;
+                        };
+                        case PARAATTRITYPE.TEXT:{
+                            self.value(item.charValue);
+                            break;
+                        };
+                        case PARAATTRITYPE.NUMBER:{
+                            self.value(Number(item.numValue));
+                            break;
+                        };
+                        default :{
+                            self.value(null);
                         }
-                        else{
-                            if(item.timeValue != null){
-                                self.value(Number(item.timeValue));
-                            }
-                            else{
-                                self.value(null);
-                            }
-                        }
-
                     }
-
                     self.selectedSwitchParaAvai(item.availableAtr);
                     self.selectedSwitchParaTargetAtr(item.targetAtr);
                     self.valueComboBox((item.selection == null)? 0 : item.selection);
@@ -492,7 +491,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         openDialogC(){
             let self = this;
             let historyId : string = self.selectedSalGenParaHistory();
-            let isFirst :boolean = (_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; }) == 0) ? true :false ;
+            let isFirst :boolean = (_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; }) == 0 && self.listHistory().length > 1 ) ? true :false ;
             let index : number =_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; });
             let data:any = null ;
             if(self.modeHistory() == MODEHISTORY.YEARMONTH){
