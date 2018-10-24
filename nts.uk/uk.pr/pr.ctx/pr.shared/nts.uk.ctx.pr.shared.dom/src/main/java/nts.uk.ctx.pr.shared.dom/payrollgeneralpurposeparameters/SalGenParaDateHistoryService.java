@@ -52,7 +52,7 @@ public class SalGenParaDateHistoryService {
         if (dateHistory.get().getDateHistoryItem().size() > 0 ){
             DateHistoryItem lastestItem = dateHistory.get().getDateHistoryItem().get(0);
             dateHistory.get().exCorrectToRemove(lastestItem);
-            salGenParaDateHistRepository.update(lastestItem, cId, dateHistory.get().getParaNo());
+            salGenParaDateHistRepository.update(lastestItem, dateHistory.get().getParaNo(), cId);
         }
     }
 

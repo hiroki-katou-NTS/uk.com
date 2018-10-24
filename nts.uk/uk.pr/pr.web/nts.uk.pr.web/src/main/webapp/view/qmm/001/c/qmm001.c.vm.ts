@@ -10,6 +10,8 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         startYearMonth: KnockoutObservable<number> = ko.observable();
         startDate: KnockoutObservable<string> = ko.observable('');
         end: KnockoutObservable<string> = ko.observable('');
+        endYearMonth: KnockoutObservable<number> = ko.observable();
+        endDate: KnockoutObservable<number> = ko.observable();
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
         startLastDate: KnockoutObservable<string> = ko.observable('');
         itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
@@ -43,32 +45,36 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                     self.startLastYearMonth(params.start);
                     self.end(getText('QMM001_31', [self.convertMonthYearToString(params.end)]));
                     self.startYearMonth(params.start);
+                    self.endYearMonth(params.end);
                 }
                 if (params.historyAtr == 0) {
-                    self.startLastDate(params.start);
+                    self.startLastDate(self.convertStringToDate(params.start));
                     self.end(getText('QMM001_31', [params.end]));
                     self.startDate(params.start);
+                    self.endDate(params.end);
                 }
 
             }
         }
         update(){
             let self = this;
-            if(self.historyAtr == PARAHISTORYATR.YMHIST && self.validateYearMonth()) {
+            if(self.historyAtr() == PARAHISTORYATR.YMHIST && self.validateYearMonth()) {
                 return;
             }
-            if(self.historyAtr == PARAHISTORYATR.YMDHIST && self.validateYearMonthDay()) {
+            if(self.historyAtr() == PARAHISTORYATR.YMDHIST && self.validateYearMonthDay()) {
                 return;
             }
-            let data: any = {
-                hisId: self.hisId(),
-                code: self.code(),
-                paraNo: self.code(),
-                start: Number(self.startYearMonth()),
-                mode: self.methodEditing()
-            }
+
             block.invisible();
             if (self.historyAtr() == PARAHISTORYATR.YMDHIST) {
+                let data: any = {
+                    hisId: self.hisId(),
+                    code: self.code(),
+                    paraNo: self.code(),
+                    start: moment.utc(self.startDate(), 'YYYY/MM/DD').toISOString(),
+                    end: moment.utc(self.endDate(), 'YYYY/MM/DD').toISOString(),
+                    mode: self.methodEditing()
+                }
                 if (self.methodEditing() == EDIT_METHOD.DELETE) {
                     dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                         service.updateHistoryDate(data).done(() => {
@@ -97,6 +103,14 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                     });
                 }
             } else {
+                let data: any = {
+                    hisId: self.hisId(),
+                    code: self.code(),
+                    paraNo: self.code(),
+                    start: Number(self.startYearMonth()),
+                    end: self.endYearMonth(),
+                    mode: self.methodEditing()
+                }
                 if (self.methodEditing() == EDIT_METHOD.DELETE) {
                     dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                         service.updateHistoryYearMonth(data).done(() => {
@@ -166,12 +180,9 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             }
         }
 
-        convertStringToYearMonth(yearMonth: any){
-            let self = this;
-            let year: string, month: string;
-            yearMonth = yearMonth.substring(3);
-            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
-            return yearMonth;
+        convertStringToDate(date: any) {
+            date = date.slice(0, 4) + date.slice(5, 7) + date.slice(8,10);
+            return Number(date);
         }
 
     }

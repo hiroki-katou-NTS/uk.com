@@ -50,7 +50,7 @@ public class SalGenParaYearMonthHistoryService {
         if (yearMonthHistory.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = yearMonthHistory.get().getHistory().get(0);
             yearMonthHistory.get().exCorrectToRemove(lastestItem);
-            salGenParaYMHistRepository.update(lastestItem, yearMonthHistory.get().getParaNo(), cId);
+            salGenParaYMHistRepository.update(lastestItem, cId, yearMonthHistory.get().getParaNo());
         }
     }
 
