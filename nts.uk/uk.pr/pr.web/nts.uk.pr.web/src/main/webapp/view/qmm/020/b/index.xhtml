@@ -1,0 +1,34 @@
+<div>
+        <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
+
+                <div id="A">
+                        <span>#{i18n.getText('QMM020_5')}</span>
+                        <button id="A1_1" tabindex="1"
+                                data-bind="click: openE,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+
+                        <button id="A1_2" tabindex="2" class="proceed"
+                                data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
+
+                        <button id="A1_3" tabindex="3"
+                                data-bind="enable: false">#{i18n.getText('QMM020_3')}</button>
+
+                        <button id="A1_4" tabindex="4"
+                                data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
+                </div>
+
+        </div>
+        <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+                <div class="fixed-flex-layout-left" style="margin-left: 25px">
+                        <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: true, visible: true}">
+                                <div>
+                                        <button data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_13')}</button>
+
+                                        <button data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_14')}</button>
+                                </div>
+                        </div>
+                </div>
+                <div class="fixed-flex-layout-right">
+                    <!-- some contents in right column -->
+                </div>
+        </div>
+</div>
