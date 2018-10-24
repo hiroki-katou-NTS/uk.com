@@ -10,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.Payment
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.paymentitemset.QpbmtPaymentItemSt;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.paymentitemset.QpbmtPaymentItemStPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPaymentItemStRepository extends JpaRepository implements PaymentItemSetRepository {
@@ -20,10 +21,10 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
             " AND  f.paymentItemStPk.categoryAtr =:categoryAtr" +
             " AND  f.paymentItemStPk.itemNameCd =:itemNameCd ";
     private static final String UPDATE_IN_LIST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 1"
-            + " WHERE f.paymentItemStPk.salaryItemId IN :lstSalaryId";
+            + " WHERE f.paymentItemStPk.cid =:cid AND f.paymentItemStPk.itemNameCd IN :lstCode";
     private static final String UPDATE_NOT_IN_LIST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 0"
-            + " WHERE f.paymentItemStPk.salaryItemId NOT IN :lstSalaryId";
-    private static final String UPDATE_LIST_PAYMENTITEMST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 0";
+            + " WHERE f.paymentItemStPk.cid =:cid AND f.paymentItemStPk.itemNameCd NOT IN :lstCode";
+    private static final String UPDATE_LIST_PAYMENTITEMST = " UPDATE QpbmtPaymentItemSt f SET f.averageWageAtr = 0 WHERE f.paymentItemStPk.cid =:cid";
 
     @Override
     public List<PaymentItemSet> getAllPaymentItemSt() {
@@ -51,10 +52,12 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
     }
 
     @Override
-    public void updateAll(List<String> lstSalaryId) {
-        if (lstSalaryId.size() > 0) {
-            this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
-            this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("lstSalaryId", lstSalaryId).executeUpdate();
+    public void updateAll(List<String> lstCode) {
+        String cid = AppContexts.user().companyId();
+
+        if (lstCode.size() > 0) {
+            this.getEntityManager().createQuery(UPDATE_IN_LIST).setParameter("cid", cid).setParameter("lstCode", lstCode).executeUpdate();
+            this.getEntityManager().createQuery(UPDATE_NOT_IN_LIST).setParameter("cid", cid).setParameter("lstCode", lstCode).executeUpdate();
         }else{
             this.getEntityManager().createQuery(UPDATE_LIST_PAYMENTITEMST).executeUpdate();
         }
