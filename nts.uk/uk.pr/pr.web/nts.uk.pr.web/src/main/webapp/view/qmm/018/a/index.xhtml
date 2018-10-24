@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.averagewagecalculationset.ExceptionFormula
+        </com:ValidatorScript>
+        <com:stylefile path="qmm018.a.style.css"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm018.a.start.js"/>
+        <com:scriptfile path="qmm018.a.service.js"/>
+        <com:scriptfile path="qmm018.a.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- A1_1 -->
+            <button data-bind="click: registration, enable: $root.errors.isEmpty"
+                    tabindex="1" class="proceed">#{i18n.getText('QMM018_1')}</button>
+            <!-- A1_2 -->
+            <button data-bind="click: correctionLog, enable: true"
+                    tabindex="2">#{i18n.getText('QMM018_2')}</button>
+        </div>
+        <div id="contents-area" style="display: flex; margin-left: 60px; min-width: 1200px;">
+            <div style="padding: 10px;">
+                <!--A2_1-->
+                <div style="padding-left: 10px" class="label">#{i18n.getText('QMM018_3')}</div>
+                <!-- A2_2 -->
+                <div style="margin-top: 15px;"
+                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM018_4')}</div>
+                <!--A2_3-->
+                <div id="A2_3" tabindex="3"
+                     data-bind="ntsCheckBox: {checked: checkWage, enable: true}">#{i18n.getText('QMM018_5')}</div>
+                <!--A2_4-->
+                <hr/>
+                <div class="valign-center control-group">
+                    <!--A2_5-->
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM018_6')}</div>
+                    <!--A2_6-->
+                    <img style="margin-left: 46px;" src="../a/QMM018_1.png"/>
+                </div>
+                <div class="valign-center control-group">
+                    <!--A2_7-->
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM018_7')}</div>
+                    <!--A2_8-->
+                    <img style="margin-left: 55px;" src="../a/QMM018_2.png"/>
+                    <!--A2_26-->
+                    <label id="A2_26" style="width: 100px;" data-bind="text: disExceptionFormula"></label>
+                </div>
+                <div class="valign-center control-group" style="margin-left: 155px;">
+                    <!--A2_10-->
+                    <div style="width: 170px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_9')}</div>
+                    <!-- A2_11 -->
+                    <button style="margin-left: 50px;" class="small" data-bind="click: wageItemSet, enable: true"
+                            tabindex="4">#{i18n.getText('QMM018_10')}</button>
+                    <!-- I2_12 -->
+                    <input id="A2_12"
+                           data-bind="ntsTextEditor: {
+                                                    name:'#[QMM018_10]',
+													option: {width: '250px'},
+													value: targetWageItem,
+													readonly: true,
+													required: true
+												}"/>
+                </div>
+                <div class="valign-center control-group" style="margin-left: 155px;">
+                    <!--A2_13-->
+                    <div style="width: 180px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_11')}</div>
+                    <!--A2_14-->
+                    <div id="A2_13" tabindex="5"
+                         style="margin-left: 39px"
+                         data-bind="ntsSwitchButton: {
+													options:  attendanceDays,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedAttendanceDays,
+													name:'#[QMM018_12]',
+													required: true,
+													enable: true }"></div>
+                    <!--A2_15-->
+                    <button tabindex="-1" data-bind="ntsHelpButton: {image: 'QMM018_3.png', position: 'right top', enable: true }">?</button>
+                </div>
+                <div class="valign-center control-group" style="margin-left: 200px;">
+                    <!--A2_16-->
+                    <label>#{i18n.getText('QMM018_15')}</label>
+                    <!-- A1_17 -->
+                    <div style="margin-left: 96px;" tabindex="6" data-bind="ntsComboBox: {name: '#[QMM018_16]',
+																	options: fractionProcessingAtr,
+																	optionsValue: 'code',
+																	visibleItemsCount: 2,
+																	value: selectedFractionProcessingAtr,
+																	optionsText: 'name',
+																	enable: enableFractionProcessingAtr,
+																	selectFirstIfNull: true,
+																	columns: [
+																		{ prop: 'name', length: 12 }
+																	]}"></div>
+                    <!--A2_19-->
+                    <label style="margin-left: 10px;">#{i18n.getText('QMM018_17')}</label>
+                </div>
+                <div class="valign-center control-group" style="margin-left: 200px;">
+                    <!--A2_20-->
+                    <label>#{i18n.getText('QMM018_18')}</label>
+                    <!-- A2_21 -->
+                    <button style="margin-left: 62px;" class="small"
+                            data-bind="click: workingDaysItemSet, enable: enableTargetWorkingDaysItem"
+                            tabindex="7">#{i18n.getText('QMM018_10')}</button>
+                    <!-- A2_22 -->
+                    <input id="A2_22"
+                           data-bind="ntsTextEditor: {
+                                                    name:'#[QMM018_10]',
+													option: {width: '250px'},
+													value: targetWorkingDaysItem,
+													readonly: true,
+													required: true,
+													enable: enableTargetWorkingDaysItem
+												}" />
+                </div>
+                <div class="valign-center control-group" style="margin-left: 155px;">
+                    <!--A2_23-->
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM018_19')}</div>
+                    <!--A2_24-->
+                    <input style="margin-left: 8px;" id="A2_24" tabindex="9" data-bind="ntsNumberEditor: {
+																	value: exceptionFormula,
+																	constraint: 'ExceptionFormula',
+																	name: '#[QMM018_28]',
+																	option: {
+													                    width: '30px'
+													                },
+													                required: true,
+																	enable: true}"/>
+                    <!--A2_25-->
+                    <label>#{i18n.getText('QMM018_20')}</label>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

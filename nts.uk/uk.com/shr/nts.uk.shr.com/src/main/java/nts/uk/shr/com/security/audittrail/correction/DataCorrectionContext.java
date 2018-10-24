@@ -2,10 +2,10 @@ package nts.uk.shr.com.security.audittrail.correction;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import javax.enterprise.inject.spi.CDI;
 
-import lombok.Getter;
 import lombok.val;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
@@ -45,28 +45,34 @@ public class DataCorrectionContext {
 		this.parameters = new HashMap<>();
 	}
 	
-	/**
-	 * This method must be called when transaction begin.
-	 * @param processorId Processor ID
-	 */
-	public static void transactionBegun(CorrectionProcessorId processorId) {
-		transactionBegun(processorId, DEFAULT_TRANSACTION_CONTROL_LEVEL);
+	public static void transactional(CorrectionProcessorId processorId, Runnable transaction) {
+		transactional(processorId, DEFAULT_TRANSACTION_CONTROL_LEVEL, transaction);
 	}
 	
-	/**
-	 * This method must be called when transaction begin.
-	 * @param processorId Processor ID
-	 */
-	public static void transactionBegun(CorrectionProcessorId processorId, int transactionControlLevel) {
-		// 個人情報の登録のようにCommandFacadeを使っている場合は、transactionBegunが二重に呼ばれる可能性がある
-		if (contextThreadLocal.get() != null) {
-			return;
+	public static <T> T transactional(CorrectionProcessorId processorId, Supplier<T> transaction) {
+		return transactional(processorId, DEFAULT_TRANSACTION_CONTROL_LEVEL, transaction);
+	}
+	
+	public static void transactional(CorrectionProcessorId processorId, int transactionControlLevel, Runnable transaction) {
+		transactional(processorId, transactionControlLevel, () -> {
+			transaction.run();
+			return null;
+		});
+	}
+	
+	public static <T> T transactional(CorrectionProcessorId processorId, int transactionControlLevel, Supplier<T> transaction) {
+		transactionBegun(processorId, transactionControlLevel);
+		
+		T result;
+		try {
+			result = transaction.get();
+		} catch (Exception e) {
+			transactionAborted(transactionControlLevel);
+			throw e;
 		}
 		
-		contextThreadLocal.set(new DataCorrectionContext(
-				processorId,
-				IdentifierUtil.randomUniqueId(),
-				transactionControlLevel));
+		transactionFinishing(transactionControlLevel);
+		return result;
 	}
 	
 	/**
@@ -84,22 +90,45 @@ public class DataCorrectionContext {
 	 */
 	public static void setParameter(String key, Serializable parameter) {
 		val context = getCurrentContext();
-	context.parameters.put(key, parameter);
+		context.parameters.put(key, parameter);
+	}
+	
+	/**
+	 * This method must be called when transaction begin.
+	 * @param processorId Processor ID
+	 */
+	private static void transactionBegun(CorrectionProcessorId processorId) {
+		transactionBegun(processorId, DEFAULT_TRANSACTION_CONTROL_LEVEL);
+	}
+	
+	/**
+	 * This method must be called when transaction begin.
+	 * @param processorId Processor ID
+	 */
+	private static void transactionBegun(CorrectionProcessorId processorId, int transactionControlLevel) {
+		// 個人情報の登録のようにCommandFacadeを使っている場合は、transactionBegunが二重に呼ばれる可能性がある
+		if (contextThreadLocal.get() != null) {
+			return;
+		}
+		
+		contextThreadLocal.set(new DataCorrectionContext(
+				processorId,
+				IdentifierUtil.randomUniqueId(),
+				transactionControlLevel));
 	}
 	
 	/**
 	 * This method must be called when transaction finish.
 	 */
-	public static void transactionFinishing() {
+	private static void transactionFinishing() {
 		transactionFinishing(DEFAULT_TRANSACTION_CONTROL_LEVEL);
 	}
 	
 	/**
 	 * This method must be called when transaction finish.
 	 */
-	public static void transactionFinishing(int transactionControlLevel) {
+	private static void transactionFinishing(int transactionControlLevel) {
 		val context = getCurrentContext();
-		
 		if (context.transactionControlLevel != transactionControlLevel) {
 			return;
 		}
@@ -107,6 +136,19 @@ public class DataCorrectionContext {
 		val agent = CDI.current().select(CorrectionLoggingAgent.class).get();
 		agent.requestProcess(context.operationId, context.processorId, context.parameters);
 		
+		cleanTransaction();
+	}
+	
+	private static void transactionAborted(int transactionControlLevel) {
+		val context = getCurrentContext();
+		if (context.transactionControlLevel != transactionControlLevel) {
+			return;
+		}
+
+		cleanTransaction();
+	}
+	
+	private static void cleanTransaction() {
 		contextThreadLocal.set(null);
 	}
 	

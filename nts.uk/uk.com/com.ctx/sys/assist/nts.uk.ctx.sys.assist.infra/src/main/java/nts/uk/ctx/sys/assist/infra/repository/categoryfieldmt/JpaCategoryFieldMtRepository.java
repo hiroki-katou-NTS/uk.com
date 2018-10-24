@@ -1,11 +1,15 @@
 package nts.uk.ctx.sys.assist.infra.repository.categoryfieldmt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
 import nts.uk.ctx.sys.assist.infra.entity.categoryfieldmt.SspmtCategoryFieldMt;
@@ -63,8 +67,12 @@ public class JpaCategoryFieldMtRepository extends JpaRepository implements Categ
 	 */
 	@Override
 	public List<CategoryFieldMt> getCategoryFieldMtByListId(List<String> categoryIds) {
-		return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategoryFieldMt.class)
-				.setParameter("lstCategoryId", categoryIds)
-		        .getList(c->c.toDomain());
+		List<SspmtCategoryFieldMt> entities = new ArrayList<>();
+		CollectionUtil.split(categoryIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategoryFieldMt.class)
+				.setParameter("lstCategoryId", subList)
+		        .getList());
+		});
+		return entities.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
 }

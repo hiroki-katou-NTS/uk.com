@@ -2,20 +2,24 @@ package nts.uk.ctx.pr.core.dom.laborinsurance;
 
 import java.util.List;
 
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+
 /**
 * 雇用保険料率
 */
-public interface EmpInsurBusBurRatioRepository
-{
+public interface EmpInsurBusBurRatioRepository {
 
+	EmpInsurHis getEmpInsurHisByCid(String cid);
+	
+	List<EmpInsurBusBurRatio> getEmpInsurPreRateById(String cid, String historyId);
+
+	void add(EmpInsurPreRate domain, String cId, YearMonthHistoryItem item);
+
+    void update(EmpInsurPreRate domain, String cId, YearMonthHistoryItem item);
     
-    List<EmpInsurBusBurRatio> getEmpInsurBusBurRatioByHisId(String hisId);
+    void update(YearMonthHistoryItem item , String cId);
 
-    void add(List<EmpInsurBusBurRatio> domain);
-
-    void update(List<EmpInsurBusBurRatio> domain);
-
-    void remove(String hisId);
+    void remove(String cId, String historyId);
    
 
 }

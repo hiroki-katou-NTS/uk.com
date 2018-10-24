@@ -139,5 +139,13 @@ public interface EmployeeDataMngInfoRepository {
 	Optional<EmployeeDataMngInfo> findByCidEmployeeCodeAndDeletedStatus(String cid, String pid, EmployeeDeletionAttr deletedStatus);
 	// request list 515
 	List<EmployeeDataMngInfo> findBySidNotDel(List<String> sid);
+	/**
+	 * @author lanlt
+	 * getAllEmpNotDeleteByCid phục vụ một phần cho request 120-1
+	 * @param companyId
+	 * @param companyId
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId);
 	
 }

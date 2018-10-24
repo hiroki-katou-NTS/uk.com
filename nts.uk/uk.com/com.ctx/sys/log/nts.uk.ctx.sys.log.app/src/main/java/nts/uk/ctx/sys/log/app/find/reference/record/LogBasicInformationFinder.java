@@ -26,7 +26,6 @@ import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.WebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
@@ -177,7 +176,7 @@ public class LogBasicInformationFinder {
 				String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
 				// Get persion info log
 				List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
-						.findByTargetAndDate(operationIds,logParams.getListTagetEmployeeId(), datePeriodTaget);
+						.findByTargetAndDate(operationIds,logParams.getListTagetEmployeeId());
 				
 				// Get list employeeCode operator by list information operator
 				mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,null,listPersonInfoCorrectionLog,null,null);

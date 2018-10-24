@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment.interim;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -121,12 +124,16 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		if(recId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(QUERY_REC_BY_DATEPERIOD, KrcmtInterimRecMng.class)
-				.setParameter("mngIds", recId)
-				.setParameter("unUsedDays", unUseDays)
-				.setParameter("startDate", dateData.start())
-				.setParameter("endDate", dateData.end())
-				.getList(c -> toDomainRecMng(c));
+		List<InterimRecMng> resultList = new ArrayList<>();
+		CollectionUtil.split(recId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_REC_BY_DATEPERIOD, KrcmtInterimRecMng.class)
+								.setParameter("mngIds", subList)
+								.setParameter("unUsedDays", unUseDays)
+								.setParameter("startDate", dateData.start())
+								.setParameter("endDate", dateData.end())
+								.getList(c -> toDomainRecMng(c)));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -265,17 +272,24 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 
 	@Override
 	public List<InterimRecAbsMng> getRecByIdsMngAtr(List<String> recIds, DataManagementAtr recMngAtr) {
-		return this.queryProxy().query(QUERY_REC_BY_IDS_ATR, KrcmtInterimRecAbs.class)
-				.setParameter("recruitmentMngId", recIds)
-				.setParameter("recruitmentMngAtr", recMngAtr.value)
-				.getList(x -> toDomainRecAbs(x));
+		List<InterimRecAbsMng> resultList = new ArrayList<>();
+		CollectionUtil.split(recIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_REC_BY_IDS_ATR, KrcmtInterimRecAbs.class)
+								.setParameter("recruitmentMngId", subList)
+								.setParameter("recruitmentMngAtr", recMngAtr.value)
+								.getList(x -> toDomainRecAbs(x)));
+		});
+		return resultList;
 	}
 
 	@Override
 	public void deleteInterimRecMng(List<String> listRecMngId) {
 		if(!listRecMngId.isEmpty()) {
 			String sql = "delete  from KrcmtInterimRecMng a where a.recruitmentMngId IN :listRecMngId";
-			this.getEntityManager().createQuery(sql).setParameter("listRecMngId", listRecMngId).executeUpdate();
+			CollectionUtil.split(listRecMngId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				this.getEntityManager().createQuery(sql).setParameter("listRecMngId", subList).executeUpdate();
+			});
+			this.getEntityManager().flush();
 		}
 	}
 
@@ -283,15 +297,22 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public void deleteInterimAbsMng(List<String> listAbsMngId) {
 		if(!listAbsMngId.isEmpty()) {
 			String sql = "delete  from KrcmtInterimAbsMng a where a.absenceMngId IN :listAbsMngId";
-			this.getEntityManager().createQuery(sql).setParameter("listAbsMngId", listAbsMngId).executeUpdate();
+			CollectionUtil.split(listAbsMngId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				this.getEntityManager().createQuery(sql).setParameter("listAbsMngId", subList).executeUpdate();
+			});
+			this.getEntityManager().flush();
 		}
 	}
 
 	@Override
 	public List<InterimRecAbsMng> getAbsByIdsMngAtr(List<String> absIds, DataManagementAtr absMngAtr) {
-		return this.queryProxy().query(QUERY_ABS_BY_IDS_ATR, KrcmtInterimRecAbs.class)
-				.setParameter("absenceMngIds", absIds)
-				.setParameter("absenceMngAtr", absMngAtr.value)
-				.getList(x -> toDomainRecAbs(x));
+		List<InterimRecAbsMng> resultList = new ArrayList<>();
+		CollectionUtil.split(absIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_ABS_BY_IDS_ATR, KrcmtInterimRecAbs.class)
+								.setParameter("absenceMngIds", subList)
+								.setParameter("absenceMngAtr", absMngAtr.value)
+								.getList(x -> toDomainRecAbs(x)));
+		});
+		return resultList;
 	}
 }

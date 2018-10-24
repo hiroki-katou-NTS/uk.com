@@ -98,6 +98,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         }
 
         cancel() {
+            let self = this;
+            setShared("QMM005B", {paramB: self.processingYearList().length});
             nts.uk.ui.windows.close();
         }
 

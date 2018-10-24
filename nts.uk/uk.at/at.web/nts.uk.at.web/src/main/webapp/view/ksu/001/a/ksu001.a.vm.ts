@@ -318,7 +318,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
                 self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
 
-                self.initCCG001();
                 self.initExTable();
                 dfd.resolve();
             });
@@ -374,8 +373,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }).fail(() => { self.stopRequest(true); });
         }
 
-        initCCG001(): void {
-            let self = this;
+        initCCG001(): JQueryPromise<any>  {
+            let self = this, dfd = $.Deferred();
             // Component option
             self.ccgcomponent = {
                 maxPeriodRange: 'oneMonth',
@@ -411,6 +410,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
                 isMutipleCheck: true, // 選択モード
+                showOnStart: true,
 
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
@@ -433,9 +433,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
             // Start component
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-                setTimeout(() =>{$("#ccg001-btn-search-drawer").trigger("click");}, 500);
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+                dfd.resolve();
             });
+            
+            return dfd.promise();
         }
 
         /**
@@ -1452,12 +1454,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let arrObj: any[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     arrTmp: Cell[] = _.clone(arrCell),
-                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells");
+                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells"),
+                    newArrCell = [];
+                
                 // compare 2 array lockCell init and after
                 if (arrCell.length == 0 && _.isEqual(self.arrLockCellInit(), arrLockCellAfterSave)) {
                     return;
                 }
-
+                
                 self.stopRequest(false);
                                     
                 let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
@@ -1495,9 +1499,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }));
                         }
                     });
-                    //distinct arrCell
-                    arrCell = _.uniqWith(arrCell, _.isEqual);    
                 }
+                
+                // distinct arrCell- do khi thay doi 1 cell co 2 row thi a Manh ban ra 2 cell vs innerIdx khac nhau
+                _.each(arrCell, cell => {
+                    if (!_.find(newArrCell, { 'rowIndex': cell.rowIndex, 'columnKey': cell.columnKey })) {
+                        newArrCell.push(cell);
+                    };
+                });
+                arrCell = newArrCell;
+                
                 arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, ['rowIndex', 'columnKey']);
                 arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
                 arrCell = _.differenceBy(arrCell, arrNewCellIsLocked, ['rowIndex', 'columnKey']);

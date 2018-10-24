@@ -12,6 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -20,8 +22,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -32,6 +32,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -50,6 +54,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	private InterimRemainOffMonthProcess createDataService;
 	@Inject
 	private ClosureService closureService;
+	@Inject
+	private AbsenceTenProcess absenceTenProcess;
+	@Inject
+	private CompanyAdapter companyAdapter;
 	@Override
 	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
 		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
@@ -57,7 +65,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//アルゴリズム「未使用の振出(確定)を取得する」を実行する
 		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec, paramInput.getDateData().start());
 		//繰越数を計算する
-		double carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);		
+		ResultAndError carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);		
 		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
 		//アルゴリズム「未使用の振出(暫定)を取得する」を実行する
 		lstAbsRec = this.lstInterimInfor(paramInput, lstAbsRec);
@@ -78,12 +86,15 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		if(remainUnDigestedDays.getRemainDays() < 0) {
 			lstError.add(PauseError.PAUSEREMAINNUMBER);
 		}
+		if(remainUnDigestedDays.isErrors()) {
+			lstError.add(PauseError.OFFSETNUMBER);
+		}
 		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
 				remainUnDigestedDays.getRemainDays(), 
 				remainUnDigestedDays.getUnDigestedDays(),
 				occurrenceUseDays.getRemainDays(),
 				occurrenceUseDays.getUnDigestedDays(),
-				carryForwardDays,
+				carryForwardDays.getRerultDays(),
 				lstError);
 		return outputData;
 	}
@@ -92,7 +103,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	public List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid, GeneralDate ymd) {
 		List<AbsRecDetailPara> lstOutput = new ArrayList<>();
 		//アルゴリズム「確定振休から未相殺の振休を取得する」を実行する
-		List<SubstitutionOfHDManagementData> lstUnOffsetDays = this.getAbsOfUnOffsetFromConfirm(cid, sid, ymd);
+		List<SubstitutionOfHDManagementData> lstUnOffsetDays = confirmAbsMngRepo.getByYmdUnOffset(cid, sid, ymd, 0);
 		if(lstUnOffsetDays.isEmpty()) {
 			return lstOutput;
 		}
@@ -106,30 +117,29 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		}		
 		return lstOutput;
 	}
-	@Override
+	/*@Override
 	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid, GeneralDate ymd) {
 		// ドメインモデル「振休管理データ」
 		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBysiD(cid, sid);
 		List<SubstitutionOfHDManagementData> lstOutput = new ArrayList<>();
 		for (SubstitutionOfHDManagementData x : lstAbsConfirmData) {
-			if(x.getRemainDays().v() <= 0 
-					||(x.getHolidayDate().getDayoffDate().isPresent() && x.getHolidayDate().getDayoffDate().get().afterOrEquals(ymd))) {
+			if(x.getHolidayDate().getDayoffDate().isPresent() && x.getHolidayDate().getDayoffDate().get().afterOrEquals(ymd)) {
 				continue;
 			}
 			lstOutput.add(x);
 		}
 		return lstOutput;
-	}	
+	}	*/
 
 	@Override
 	public AbsRecDetailPara getInterimAndConfirmAbs(String sid, SubstitutionOfHDManagementData confirmAbsData) {
 		AbsRecDetailPara outData = new AbsRecDetailPara();
-		//ドメインモデル「暫定振出振休紐付け管理」を取得する
-		List<InterimRecAbsMng> lstInterim = recAbsRepo.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM, confirmAbsData.getSubOfHDID());
+		//ドメインモデル「暫定振出振休紐付け管理」を取得する　 REPONSE 対応
+		//List<InterimRecAbsMng> lstInterim = recAbsRepo.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM, confirmAbsData.getSubOfHDID());
 		double unUseDays = confirmAbsData.getRemainDays().v();
-		for (InterimRecAbsMng interimRecAbsMng : lstInterim) {
+		/*for (InterimRecAbsMng interimRecAbsMng : lstInterim) {
 			unUseDays -= interimRecAbsMng.getUseDays().v();
-		}
+		}*/
 		if(unUseDays <= 0) {
 			return null;
 		}
@@ -149,9 +159,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd) {
 		//2-1.確定振出から未使用の振出を取得する
-		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCod(cid, sid, DigestionAtr.UNUSED.value)
-				.stream().filter(x -> x.getUnUsedDays().v() > 0)
-				.collect(Collectors.toList());
+		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getByUnUseState(cid, sid, ymd, 0, DigestionAtr.UNUSED);
 		if(lstConfirmRec.isEmpty()) {
 			return lstDataDetail;
 		}
@@ -161,11 +169,13 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				continue;
 			}
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
-			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
+			//ドメインモデル「暫定振出振休紐付け管理」を取得する REPONSE 対応			
+			//List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
 			double unUseDays = confirmRecData.getUnUsedDays().v();
-			for (InterimRecAbsMng interimData : lstInterim) {
+			/*for (InterimRecAbsMng interimData : lstInterim) {
 				unUseDays -= interimData.getUseDays().v();
-			}
+			}*/
+			//未使用日数をチェックする
 			if(unUseDays > 0) {
 				UnUseOfRec unUseDayOfRec = new UnUseOfRec(confirmRecData.getExpiredDate(), 
 						confirmRecData.getPayoutId(), 
@@ -173,7 +183,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, StatutoryAtr.class), 
 						unUseDays,
 						DigestionAtr.USED,
-						Optional.empty());
+						Optional.empty(),
+						Optional.of(ymd));
 				//Khong ton tai 1 ngay vua co nghi bu va di lam bu
 				AbsRecDetailPara dataDetail = new AbsRecDetailPara(sid, 
 						MngDataStatus.CONFIRMED,
@@ -188,21 +199,26 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
-	public double calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail) {
+	public ResultAndError calcCarryForwardDays(GeneralDate startDate, List<AbsRecDetailPara> lstDataDetail) {
 		// アルゴリズム「6.残数と未消化を集計する」を実行
-		return this.getRemainUnDigestedDays(lstDataDetail, startDate).getRemainDays();
+		AbsDaysRemain outPut = this.getRemainUnDigestedDays(lstDataDetail, startDate);
+		return new ResultAndError(outPut.getRemainDays(), outPut.isErrors());
 	}
 
 	@Override
 	public AbsDaysRemain getRemainUnDigestedDays(List<AbsRecDetailPara> lstDataDetail, GeneralDate baseDate) {
-		AbsDaysRemain outData = new AbsDaysRemain(0, 0);
+		AbsDaysRemain outData = new AbsDaysRemain(0, 0, false);
 		double unOffSetDays = 0;
 		//「振出振休明細」をループする
 		for (AbsRecDetailPara detailData : lstDataDetail) {
 			//「振出振休明細」．発生消化区分をチェックする
 			if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
-				//残日数 -= ループ中の「振休の未相殺」．未相殺日数
-				//outData.setRemainDays(outData.getRemainDays() - detailData.getUnOffsetOfAb().get().getUnOffSetDays());
+				//「相殺できないエラー」を「振休の集計結果」．エラー情報に追加する
+				//ループ中の「振休の未相殺」．未相殺日数 >0 AND
+				if(detailData.getUnOffsetOfAb().get().getUnOffSetDays() > 0) {
+					outData.setErrors(true);	
+				}
+				//残日数 -= ループ中の「振休の未相殺」．未相殺日数				
 				unOffSetDays += detailData.getUnOffsetOfAb().get().getUnOffSetDays();
 			} else if (detailData.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE) {
 				UnUseOfRec recData = detailData.getUnUseOfRec().get();
@@ -387,22 +403,27 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			}
 			
 		}
+		LeaveSetOutput getSetForLeave = absenceTenProcess.getSetForLeave(paramInput.getCid(), paramInput.getSid(), paramInput.getBaseDate());
 		for (InterimRecMng interimRecMng : lstRecMng) {
 			InterimRemain remainData = lstInterimMngOfRec.stream().filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
 					.collect(Collectors.toList()).get(0);
-			AbsRecDetailPara outputData = this.getUnUseDayOfRecInterim(interimRecMng, remainData);
+			AbsRecDetailPara outputData = this.getUnUseDayOfRecInterim(interimRecMng, remainData,getSetForLeave, paramInput.getDateData().start(),
+					paramInput.getBaseDate(), paramInput.getCid(), paramInput.getSid());
 			lstOutputOfRec.add(outputData);
 		}
 		return lstOutputOfRec;
 	}
 
 	@Override
-	public AbsRecDetailPara getUnUseDayOfRecInterim(InterimRecMng interimRecMng, InterimRemain remainData) {
+	public AbsRecDetailPara getUnUseDayOfRecInterim(InterimRecMng interimRecMng, InterimRemain remainData,LeaveSetOutput getSetForLeave,
+			GeneralDate startDate, GeneralDate baseDate, String cid, String sid) {
 		//ドメインモデル「暫定振出振休紐付け管理」を取得する
 		List<InterimRecAbsMng> lstInterimMng = recAbsRepo.getRecOrAbsMng(interimRecMng.getRecruitmentMngId(), true, DataManagementAtr.INTERIM);
+		//未使用日数←SELF.発生日数
 		double unUseDays = interimRecMng.getOccurrenceDays().v();
 		if(!lstInterimMng.isEmpty()) {
 			for (InterimRecAbsMng interimMng : lstInterimMng) {
+				//未使用日数：INPUT.暫定振出管理データ.発生日数－合計(暫定振出振休紐付け管理.使用日数)
 				unUseDays -= interimMng.getUseDays().v();
 			}
 		}
@@ -412,7 +433,34 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 				interimRecMng.getStatutoryAtr(),
 				unUseDays,
 				DigestionAtr.USED,
+				Optional.empty(),
 				Optional.empty());
+		//INPUT．振休使用期限をチェックする //ExpirationTime 0: "当月", 2: "年度末クリア"
+		if(getSetForLeave.getExpirationOfLeave() == 0 ||getSetForLeave.getExpirationOfLeave() == 2) {
+			//社員に対応する処理締めを取得する
+			Closure period = closureService.getClosureDataByEmployee(sid, baseDate);
+			//指定した年月日時点の締め期間を取得する
+			Optional<ClosurePeriod> optClosurePeriod = period.getClosurePeriodByYmd(remainData.getYmd());			
+			if(getSetForLeave.getExpirationOfLeave() == 0) {
+				unUseInfo.setStartDate(optClosurePeriod.isPresent() ? Optional.ofNullable(optClosurePeriod.get().getPeriod().start()) : Optional.empty());
+			} else {
+				//会社の期首月を取得する
+				CompanyDto compInfor = companyAdapter.getFirstMonth(cid);
+				
+				//「締め期間」．年月の月と期首月を比較する
+				if(optClosurePeriod.isPresent() && optClosurePeriod.get().getYearMonth().v() >= compInfor.getStartMonth()) {
+					//使用開始日=「締め期間」．期間．開始日.AddMonths(「締め期間」．年月の月 - 期首月)
+					int months = optClosurePeriod.get().getYearMonth().v() - compInfor.getStartMonth();
+					unUseInfo.setStartDate(Optional.of(optClosurePeriod.get().getPeriod().start().addMonths(months)));
+				} else {
+					//使用開始日=「締め期間」．期間．開始日.AddMonths(12 + 「締め期間」．年月の月 - 期首月)
+					int months = optClosurePeriod.get().getYearMonth().v() - compInfor.getStartMonth();
+					unUseInfo.setStartDate(Optional.of(optClosurePeriod.get().getPeriod().start().addMonths(12 + months)));
+				}
+			}
+		} else {
+			unUseInfo.setStartDate(Optional.empty());
+		}
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
 		if(remainData.getCreatorAtr() == CreateAtr.SCHEDULE) {
@@ -450,13 +498,15 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			//「振出振休明細」(振出)をループする
 			for (AbsRecDetailPara recDetailData : lstRecDetailData) {
 				UnUseOfRec recData = recDetailData.getUnUseOfRec().get();
-				//期限切れかをチェックする
+				
 				//日付不明の場合、false：期限切れてない、相殺可
 				GeneralDate chkDate = absDetailPara.getYmdData().getDayoffDate().isPresent() ? absDetailPara.getYmdData().getDayoffDate().get() : GeneralDate.min();
 				
-				//ループ中の「振出未使用」．未使用日数をチェックする
-				if(recData.getExpirationDate().before(chkDate)
-						|| recData.getUnUseDays() < 0) {
+				
+				if(recData.getExpirationDate().before(chkDate) //期限切れかをチェックする
+						|| (recData.getStartDate().isPresent() && !recData.getStartDate().get().beforeOrEquals(absDetailPara.getYmdData().getDayoffDate().get()))//使用可能かチェックする
+						|| recData.getUnUseDays() < 0 //ループ中の「振出未使用」．未使用日数をチェックする
+						) {
 					continue;
 				}
 				//振出振休相殺できる日数の大小チェックする
@@ -499,7 +549,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 
 	@Override
 	public AbsDaysRemain getOccurrenceUseDays(List<AbsRecDetailPara> lstDetailData, DatePeriod dateData) {
-		AbsDaysRemain outputData = new AbsDaysRemain(0, 0);
+		AbsDaysRemain outputData = new AbsDaysRemain(0, 0, false);
 		
 		//パラメータ「List<振休振出明細>」を取得
 		for (AbsRecDetailPara detailData : lstDetailData) {
@@ -556,31 +606,43 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		//INPUT．モードをチェックする
 		if(paramInput.isMode()) {
 			//暫定残数管理データを作成する
-			Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemainData(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData());
+			//Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemainData(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData());
 			
-			if(!interimData.isEmpty()) {				
-				List<DailyInterimRemainMngData> lstRemainMngData = interimData.values().stream().collect(Collectors.toList());
-				for (DailyInterimRemainMngData x : lstRemainMngData) {
-					//メモリ上からドメインモデル「暫定振休管理データ」を取得する
-					Optional<InterimAbsMng> optAbsMng = x.getInterimAbsData();
-					if (optAbsMng.isPresent()) {
-						lstAbsMng.add(optAbsMng.get());
-					}					
-					List<InterimRemain> lstInterimCreateOfAbs = x.getRecAbsData();
-					if(!lstInterimCreateOfAbs.isEmpty()) {
-						lstInterimMngOfAbs.addAll(lstInterimCreateOfAbs);
-					}
+			//if(!interimData.isEmpty()) {				
+				//List<DailyInterimRemainMngData> lstRemainMngData = interimData.values().stream().collect(Collectors.toList());
+				//for (DailyInterimRemainMngData x : lstRemainMngData) {
+					//INPUT．上書き用の暫定管理データを受け取る
+					lstInterimMngOfAbs = paramInput.getInterimMng().stream()
+							.filter(x -> x.getYmd().afterOrEquals(paramInput.getDateData().start())
+									&& x.getYmd().beforeOrEquals(paramInput.getDateData().end())
+									&& x.getRemainType() == RemainType.PAUSE)
+							.collect(Collectors.toList());
+					
+					lstInterimMngOfAbs.stream().forEach(x -> {
+						List<InterimAbsMng> temp = paramInput.getUseAbsMng()
+								.stream()
+								.filter(y -> y.getAbsenceMngId().equals(x.getRemainManaID()))
+								.collect(Collectors.toList());
+						lstAbsMng.addAll(temp);
+						
+					});
+					
 					//メモリ上からドメインモデル「暫定振出管理データ」を取得する
-					Optional<InterimRecMng> optRecMng = x.getRecData();
-					if(optRecMng.isPresent()) {
-						lstRecMng.add(optRecMng.get());
-					}
-					List<InterimRemain> lstInterimCreateOfRec = x.getRecAbsData();
-					if(!lstInterimCreateOfRec.isEmpty()) {
-						lstInterimMngOfRec.addAll(lstInterimCreateOfRec);	
-					}
-				}				
-			}
+					lstInterimMngOfRec =  paramInput.getInterimMng().stream()
+							.filter(x -> x.getYmd().afterOrEquals(paramInput.getDateData().start())
+									&& x.getYmd().beforeOrEquals(paramInput.getDateData().end())
+									&& x.getRemainType() == RemainType.PICKINGUP)
+							.collect(Collectors.toList());
+					lstInterimMngOfRec.stream().forEach(a -> {
+						List<InterimRecMng> temp = paramInput.getUseRecMng()
+								.stream()
+								.filter(b -> b.getRecruitmentMngId().equals(a.getRemainManaID()))
+								.collect(Collectors.toList());
+						lstRecMng.addAll(temp);
+					});
+					
+				//}				
+			//}
 		} else {
 			//ドメインモデル「暫定振休管理データ」を取得する
 			lstInterimMngOfAbs =  interimRepo.getRemainBySidPriod(paramInput.getSid(), paramInput.getDateData(), RemainType.PAUSE);
@@ -614,7 +676,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getAbsenceMngId().equals(temp.getRemainManaID()))
 							.collect(Collectors.toList());
 					if(!tmpAbsUsen.isEmpty()) {
-						lstAbsUsen.remove(tmpAbsUsen.get(0));
+						lstAbsMng.remove(tmpAbsUsen.get(0));
 					}
 				}
 				List<InterimRemain> lstRecUsen = lstTmpRec.stream()
@@ -659,25 +721,30 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					InterimRemain inputData = lstInputData.get(0);
 					List<InterimRemain> lstMngTmp = lstInterimMngTmp.stream()
 							.filter(x -> x.getYmd().equals(inputData.getYmd()))
-							.collect(Collectors.toList());
+							.collect(Collectors.toList());					
 					if(!lstMngTmp.isEmpty()) {
-						InterimRemain interimMngTmp = lstMngTmp.get(0);					
+						InterimRemain interimMngTmp = lstMngTmp.get(0);
+						lstInterimMngOfAbs.remove(interimMngTmp);
 						List<InterimAbsMng> lstAbsTmp = lstAbsMngTmp.stream().filter(x -> x.getAbsenceMngId().equals(interimMngTmp.getRemainManaID()))
 								.collect(Collectors.toList());
 						if(!lstAbsTmp.isEmpty()) {
 							InterimAbsMng absMngTmp = lstAbsTmp.get(0);
 							lstAbsMng.remove(absMngTmp);
-							lstAbsMng.add(absMng);
 						}
 					}
+					lstAbsMng.add(absMng);
 					lstInterimMngOfAbs.add(inputData);
 				}
 			}
 		}
 		List<AbsRecDetailPara> lstOutputOfAbs = new ArrayList<>();
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
-			InterimRemain remainData = lstInterimMngOfAbs.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
-					.collect(Collectors.toList()).get(0);
+			List<InterimRemain> lstRemainData = lstInterimMngOfAbs.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
+					.collect(Collectors.toList());
+			if(lstRemainData.isEmpty()) {
+				continue;
+			}
+			InterimRemain remainData = lstRemainData.get(0);
 			//アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
 			AbsRecDetailPara outputData = this.getNotTypeRec(interimAbsMng, remainData);
 			lstOutputOfAbs.add(outputData);
@@ -709,25 +776,27 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 						.collect(Collectors.toList());				
 					if(!lstRemainTmp.isEmpty()) {
 						InterimRemain remainTmp = lstRemainTmp.get(0);
+						lstInterimMngOfRec.remove(remainTmp);
 						List<InterimRecMng> lstRecTmp = lstRecMngTmp.stream().filter(y -> y.getRecruitmentMngId() == remainTmp.getRemainManaID())
 								.collect(Collectors.toList());
 						if(!lstRecTmp.isEmpty()) {
 							InterimRecMng recMngTmp = lstRecTmp.get(0);
 							lstRecMng.remove(recMngTmp);
-							lstRecMng.add(recMng);
 						}
 					}
-					
+					lstRecMng.add(recMng);
 					lstInterimMngOfRec.add(inputRemainData);
 				}
 			}
 		}
 		List<AbsRecDetailPara> lstOutputOfRec = new ArrayList<>();
+		LeaveSetOutput getSetForLeave = absenceTenProcess.getSetForLeave(paramInput.getCid(), paramInput.getSid(), paramInput.getBaseDate());
 		//「暫定振出管理データ」
 		for (InterimRecMng interimRecMng : lstRecMng) {
 			InterimRemain remainData = lstInterimMngOfRec.stream().filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
 					.collect(Collectors.toList()).get(0);
-			AbsRecDetailPara outputData = this.getUnUseDayOfRecInterim(interimRecMng, remainData);
+			AbsRecDetailPara outputData = this.getUnUseDayOfRecInterim(interimRecMng, remainData, getSetForLeave, paramInput.getDateData().start(),
+					paramInput.getBaseDate(), paramInput.getCid(), paramInput.getSid());
 			lstOutputOfRec.add(outputData);
 		}
 		return lstOutputOfRec;

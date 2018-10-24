@@ -300,10 +300,11 @@
 #agree-time, #agree-excess {
 	height: inherit;
 	text-align: center;
+	border: 1px solid #CCC;
 }
 
 .state-exception {
-	background-color: #FCD5B4;
+	background-color: #EB9152;
 }
 
 .state-alarm {
@@ -312,6 +313,14 @@
 
 .state-error {
 	background-color: #FD4D4D;
+}
+
+.text-alarm{
+	color: #ff0000;
+}
+
+.text-error{
+	color: #ffffff;
 }
 
 .Row {
@@ -387,7 +396,7 @@ table#employ_view tr{
 	height: 25px !important;
 }
 #ccg001 * {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 #cbDisplayFormat{
 	height: 27px;

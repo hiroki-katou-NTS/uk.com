@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
@@ -80,8 +82,13 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 			+ " WHERE a.eralCheckId IN :erAlCheckIds ";
 	@Override
 	public void removeErrorAlarmCondition(List<String> listErAlCheckID) {
-		List<KrcmtErAlCondition> listEralCon = this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
-                .setParameter("erAlCheckIds", listErAlCheckID).getList();
+		List<KrcmtErAlCondition> listEralCon = new ArrayList<>();
+		CollectionUtil.split(listErAlCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listEralCon.addAll(this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
+                .setParameter("erAlCheckIds", subList)
+                .getList());
+		});
+		
 		if(!listEralCon.isEmpty()) {
 			this.commandProxy().removeAll(listEralCon);
 		}
@@ -105,18 +112,27 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
     }
 	@Override
 	public List<ErrorAlarmCondition> findConditionByListErrorAlamCheckId(List<String> listEralCheckId) {
-		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
-                .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
+		if(listEralCheckId.isEmpty()) return new ArrayList<ErrorAlarmCondition>();
+		List<KrcmtErAlCondition> entities = new ArrayList<>();
+		CollectionUtil.split(listEralCheckId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
+								.setParameter("erAlCheckIds", subList)
+								.getList());
+		});
+		return entities.stream().map(item -> 
                 KrcmtErAlCondition.toDomain(item, "", "")).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ErrorAlarmCondition> findMessageConByListErAlCheckId(List<String> listEralCheckId) {
-		
 		if(listEralCheckId.isEmpty()) return new ArrayList<ErrorAlarmCondition>();
-		
-		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
-                .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
+		List<KrcmtErAlCondition> entities = new ArrayList<>();
+		CollectionUtil.split(listEralCheckId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
+                							 .setParameter("erAlCheckIds", subList)
+                							 .getList());
+		});
+		return entities.stream().map(item -> 
                 	new ErrorAlarmCondition(item.eralCheckId, item.messageDisplay)).collect(Collectors.toList());
 	}
 }

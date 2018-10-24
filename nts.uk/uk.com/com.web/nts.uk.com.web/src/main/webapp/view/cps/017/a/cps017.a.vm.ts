@@ -571,9 +571,11 @@
             setShared('selectedHisId', self.historySelection().histId());
             block.invisible();
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
-
+                if(getShared('closeButton') == true){
+                    block.clear();
+                    return;
+                }
                 hist.histId.valueHasMutated();
-
                 block.clear();
             });
         }

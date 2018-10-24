@@ -198,7 +198,7 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 						ctgs.putIfAbsent(ctg[0].toString(), ctg[1] == null ? -1 : new Integer(ctg[1].toString()));
 					});
 
-			if (itemDefinitionIds != null && itemDefinitionIds.isEmpty()) {
+			if (!CollectionUtil.isEmpty(itemDefinitionIds)) {
 				CollectionUtil.split(itemDefinitionIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, _itemIds -> {
 					this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", _catIds)
 							.setParameter("itIds", _itemIds).getList().forEach(it -> {

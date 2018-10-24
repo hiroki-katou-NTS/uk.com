@@ -76,7 +76,7 @@ module nts.uk.time {
             let startEraYear = moment(i.start).year(),
                 endEraYear = moment(i.end).year();
             if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
-                let diff = formattedYear - startEraYear;
+                let diff = formattedYear - startEraYear + 1;
                 return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
             }               
         }
@@ -198,7 +198,7 @@ module nts.uk.time {
     export function formatPattern(date: any, inputFormat?: string, outputFormat?: string) {
         outputFormat = text.getISOFormat(outputFormat);
         var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-        return moment.utc(date, inputFormats).format(outputFormat);
+        return moment(date, inputFormats).format(outputFormat);
     }
 
     export abstract class ParseResult {
@@ -974,7 +974,7 @@ module nts.uk.time {
             let inputEraDate = inputDate.substring(endEraSymbolIndex);
             let tempEra: any = moment.utc(inputEraDate, eraAcceptFormats, true); 
             if (tempEra.isValid()) {
-                return startEraDate.add(tempEra.format("YY"), "Y")
+                return startEraDate.add(parseInt(tempEra.format("YY")) - 1, "Y")
                                     .set({'month': tempEra.month(), "date": tempEra.date()})
                                     .format("YYYY/MM/DD");      
             }

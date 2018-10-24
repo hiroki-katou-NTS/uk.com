@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -92,7 +93,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	public List<EmployeeInformation> find(EmployeeInformationQuery param) {
 		List<Object[]> persons = new ArrayList<>();
 
-		CollectionUtil.split(param.getEmployeeIds(), 1000, (subList) -> {
+		CollectionUtil.split(param.getEmployeeIds(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			persons.addAll(this.getEntityManager().createQuery(EMPLOYEE_QUERY).setParameter("listSid", subList)
 					.getResultList());
 		});
@@ -227,7 +228,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	@SuppressWarnings("unchecked")
 	private List<Object[]> getOptionalResult(EmployeeInformationQuery param, String query) {
 		List<Object[]> results = new ArrayList<>();
-		CollectionUtil.split(param.getEmployeeIds(), 1000, (subList) -> {
+		CollectionUtil.split(param.getEmployeeIds(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			results.addAll(this.getEntityManager().createQuery(query).setParameter("listSid", subList)
 					.setParameter("refDate", param.getReferenceDate()).getResultList());
 		});

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.app.command.application.remainingnumber.checkfunc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,10 +35,13 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
     @Override
 	protected void handle(ExportServiceContext<List<ExcelInforCommand>> context) {
     	List<ExcelInforCommand> listOuput = context.getQuery();
+    	Collections.sort(listOuput, Comparator.comparing(ExcelInforCommand :: getEmployeeCode));
     	if (listOuput == null) {
     		listOuput = new ArrayList<>();
     	}
     	List<String> listHeader = new ArrayList<>();
+    	// update ver 6  社員コード　ASC
+    	listHeader.add("KDM002_35");
     	listHeader.add("KDM002_11");
     	listHeader.add("KDM002_12");
     	listHeader.add("KDM002_13");
@@ -72,13 +77,14 @@ public class ExcelExportService extends ExportService<List<ExcelInforCommand>> {
 					.stream()
 	        		.map(infoLine -> {
 			        	 Map<String, Object> map = new HashMap<>();
-						 map.put(head.get(0), infoLine.getName());
-						 map.put(head.get(1), infoLine.getDateStart());
-						 map.put(head.get(2), infoLine.getDateEnd());
-						 map.put(head.get(3), infoLine.getDateOffYear());
-						 map.put(head.get(4), infoLine.getDateTargetRemaining());
-						 map.put(head.get(5), infoLine.getDateAnnualRetirement());
-						 map.put(head.get(6), infoLine.getDateAnnualRest());
+			        	 map.put(head.get(0), infoLine.getEmployeeCode());
+						 map.put(head.get(1), infoLine.getName());
+						 map.put(head.get(2), infoLine.getDateStart());
+						 map.put(head.get(3), infoLine.getDateEnd());
+						 map.put(head.get(4), infoLine.getDateOffYear());
+						 map.put(head.get(5), infoLine.getDateTargetRemaining());
+						 map.put(head.get(6), infoLine.getDateAnnualRetirement());
+						 map.put(head.get(7), infoLine.getDateAnnualRest());
 						 //for(int i = 0; i < finalMaxSize; i++){
 						 int i = 0;
 						for (String wtCode :  htbPlanneds.keySet()) {

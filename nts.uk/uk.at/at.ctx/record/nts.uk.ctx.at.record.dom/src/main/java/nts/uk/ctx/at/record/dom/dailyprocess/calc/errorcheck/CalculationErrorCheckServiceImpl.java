@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -30,8 +32,10 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckService{
 	@Inject
+	/*システム固定エラーアラームに対する処理*/
 	private DivTimeSysFixedCheckService divTimeSysFixedCheckService;
 	
 	@Inject
@@ -41,6 +45,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private AttendanceItemConvertFactory converterFactory;
 	
 	@Inject
+	/*日別作成側に実装されていたエラーアラーム処理*/
 	private DailyRecordCreateErrorAlermService dailyRecordCreateErrorAlermService;
 	
 	@Override
@@ -223,7 +228,6 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 				return dailyRecordCreateErrorAlermService.stampIncorrectOrderAlgorithm(integrationOfDaily);
 			//休日打刻
 			case HOLIDAY_STAMP:
-				//アルゴリズムが存在しない(2018.07.02)
 				val result = dailyRecordCreateErrorAlermService.checkHolidayStamp(integrationOfDaily);
 				if(!result.isPresent()) {
 					return Collections.emptyList();
