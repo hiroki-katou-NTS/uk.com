@@ -3,10 +3,6 @@
 	box-sizing: border-box;
 }
 
-#functions-area {
-	height: 80px;
-}
-
 .myLinkButton {
 	margin-top: 20px;
 	display: inline-block;
@@ -35,9 +31,9 @@
 	width: 682px !important;
 }
 
-.proceed {
+/* .proceed {
 	margin-left: 80px !important;
-}
+} */
 
 .mylabel {
 	margin-top: 56px;

@@ -372,6 +372,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             self.ageSelected.subscribe(function(value) {
+                $("#startAge").ntsError('clear');
+                $("#endAge").ntsError('clear');
                 if(value) {
                     self.startAgeEnable(true);
                     self.endAgeEnable(true);
@@ -646,6 +648,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#ageBaseDate").trigger("validate");
             $("#startDate").trigger("validate");
             $("#endDate").trigger("validate");
+            $("#startAge").trigger("validate");
+            $("#endAge").trigger("validate");
             let dataItem = self.preData();
             
             if(self.yearReq() && self.dayReq()) {

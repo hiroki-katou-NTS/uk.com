@@ -563,9 +563,17 @@ module nts.uk.com.view.cps005.b {
                 self.numericItemMinus(data.numericItemMinus);
 
                 if (currentItemData.currentItemSelected.fixedAtr === ISFIXED.FIXED) {
-                    self.decimalPart(data.decimalPart || 0);
+                     if(data.decimalPart == 0){
+                        self.decimalPart(0);
+                    }else{
+                        self.decimalPart(data.decimalPart || null);
+                    }
                 } else {
-                    self.decimalPart(data.decimalPart == 0 ? 0 : data.decimalPart || data.decimalPart == null ? null : data.decimalPart);
+                     if(data.decimalPart == 0){
+                        self.decimalPart(0);
+                    }else{
+                        self.decimalPart(data.decimalPart || null);
+                    }
                 }
 
                 self.integerPart(data.integerPart || 0);

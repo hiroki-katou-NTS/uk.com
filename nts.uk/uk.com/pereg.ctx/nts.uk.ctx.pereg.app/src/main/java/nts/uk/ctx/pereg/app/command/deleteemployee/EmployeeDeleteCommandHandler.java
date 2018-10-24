@@ -71,31 +71,31 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 			if (!listEmpData.isEmpty()) {
 				
 				// begin process write log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				
-				EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
-				GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
-				empInfo.setDeleteDateTemporary(currentDatetime);
-				empInfo.setRemoveReason(new RemoveReason(command.getReason()));
-				empInfo.setDeletedStatus(EmployeeDeletionAttr.TEMPDELETED);
-				EmpDataMngRepo.updateRemoveReason(empInfo);
-				
-				List<StampCard> stampCards = stampCardRepo.getListStampCard(command.getSId());
-				List<String> cardNos = new ArrayList<>();
-				if(!stampCards.isEmpty()) {
-					cardNos = stampCards.stream().map(i -> i.getStampNumber().toString()).collect(Collectors.toList());
-				}
-				
-				stampCardRepo.deleteBySid(command.getSId());
-				
-				setDataLogPersonCorrection(command);
-				List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command,cardNos);
-				if (!ctgs.isEmpty()) {
-					ctgs.forEach(cat -> {
-						DataCorrectionContext.setParameter(cat.getHashID(), cat);
-					});
-				}
-				DataCorrectionContext.transactionFinishing();
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+					
+					EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
+					GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
+					empInfo.setDeleteDateTemporary(currentDatetime);
+					empInfo.setRemoveReason(new RemoveReason(command.getReason()));
+					empInfo.setDeletedStatus(EmployeeDeletionAttr.TEMPDELETED);
+					EmpDataMngRepo.updateRemoveReason(empInfo);
+					
+					List<StampCard> stampCards = stampCardRepo.getListStampCard(command.getSId());
+					List<String> cardNos = new ArrayList<>();
+					if(!stampCards.isEmpty()) {
+						cardNos = stampCards.stream().map(i -> i.getStampNumber().toString()).collect(Collectors.toList());
+					}
+					
+					stampCardRepo.deleteBySid(command.getSId());
+					
+					setDataLogPersonCorrection(command);
+					List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command,cardNos);
+					if (!ctgs.isEmpty()) {
+						ctgs.forEach(cat -> {
+							DataCorrectionContext.setParameter(cat.getHashID(), cat);
+						});
+					}
+				});
 			} 
 		}
 	}

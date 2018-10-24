@@ -117,7 +117,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Override
 	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTime, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			boolean reCreateWorkType , boolean reCreateWorkPlace, boolean reCreateRestTime , EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
@@ -164,7 +164,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
 		for (List<GeneralDate> listDay : exectedList) {
 			ProcessState processState = this.self.createDailyResultEmployeeNew(asyncContext, employeeId, listDay,
-					companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType, employeeGeneralInfoImport,
+					companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType , reCreateWorkPlace , reCreateRestTime , employeeGeneralInfoImport,
 					stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, employmentHisOptional,
 					employmentCode, periodInMasterList, closureStatusManagement);
 			if (processState == ProcessState.INTERRUPTION) {
@@ -203,6 +203,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	public ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
 			List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			 boolean reCreateWorkPlace, boolean reCreateRestTime,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
@@ -254,13 +255,13 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 										employeeGeneralInfoImport);
 							} else {
 								this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-										empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
+										empCalAndSumExecLogID, reCreateAttr , reCreateWorkType, reCreateWorkPlace ,
 										employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
 										mapDateHistoryItem, periodInMasterList);
 							}
 						} else {
 							this.reflectWorkInforDomainService.reflectWorkInformation(companyId, employeeId, day,
-									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, employeeGeneralInfoImport,
+									empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, employeeGeneralInfoImport,
 									stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
 									periodInMasterList);
 						}
@@ -287,7 +288,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext,
 			String employeeId, DatePeriod periodTime, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			Optional<StampReflectionManagement> stampReflectionManagement) {
 
 		// 正常終了 : 0
@@ -329,7 +330,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
 		for (List<GeneralDate> listDay : exectedList) {
 			ProcessState processState = this.self.createDailyResultEmployeeWithNoInfoImportNew(asyncContext, employeeId,
-					listDay, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType,
+					listDay, companyId, empCalAndSumExecLogID, executionLog, reCreateWorkType, reCreateWorkPlace, reCreateRestTime,
 					stampReflectionManagement, employmentHisOptional, employmentCode);
 			stateList.add(processState);
 		}
@@ -360,7 +361,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
 			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode) {
 
@@ -404,12 +405,12 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 									empCalAndSumExecLogID, reCreateAttr, null, null);
 						} else {
 							this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId,
-									employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
+									employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace,
 									stampReflectionManagement);
 						}
 					} else {
 						this.reflectWorkInforDomainService.reflectWorkInformationWithNoInfoImport(companyId, employeeId,
-								day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, stampReflectionManagement);
+								day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, reCreateWorkPlace, stampReflectionManagement);
 					}
 				}
 				

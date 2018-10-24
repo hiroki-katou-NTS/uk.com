@@ -63,7 +63,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
@@ -243,9 +242,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private EmployeeDailyPerErrorRepository employeeErrorRepo;
 
 	@Inject
-	private DailyRecordWorkFinder finder;
-
-	@Inject
 	private CheckPairDeviationReason checkPairDeviationReason;
 
 	@Inject
@@ -272,7 +268,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private OptionalItemRepository optionalMasterRepo;
 
-	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
@@ -319,7 +315,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handler(List<DailyRecordWorkCommand> commands,
 			boolean isUpdate) {
-		registerNotCalcDomain(commands, isUpdate);
 
 		List<IntegrationOfDaily> calced = calcIfNeed(commands);
 
@@ -328,6 +323,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if (!items.isEmpty()) {
 			return items;
 		}
+		registerNotCalcDomain(commands, isUpdate);
 		updateDomainAfterCalc(calced, null);
 
 		registerErrorWhenCalc(toMapParam(commands),

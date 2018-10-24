@@ -5421,9 +5421,10 @@ div .ex-area-line.x-stay {
   padding-top: 8px;
   padding-left: 5px;
   white-space: nowrap;
+  overflow: hidden;
 }
 
-/* line 9, ../sass/frame/_functions.scss */
+/* line 10, ../sass/frame/_functions.scss */
 #functions-area-bottom {
   position: absolute;
   bottom: 0px;

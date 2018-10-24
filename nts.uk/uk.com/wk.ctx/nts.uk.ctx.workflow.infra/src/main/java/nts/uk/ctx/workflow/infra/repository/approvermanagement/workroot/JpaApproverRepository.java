@@ -65,6 +65,7 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 		.setParameter("companyId", companyId)
 		.setParameter("approvalPhaseId", approvalPhaseId)
 		.executeUpdate();
+		this.getEntityManager().flush();
 	}
 	/**
 	 * updateEmployeeIdApprover

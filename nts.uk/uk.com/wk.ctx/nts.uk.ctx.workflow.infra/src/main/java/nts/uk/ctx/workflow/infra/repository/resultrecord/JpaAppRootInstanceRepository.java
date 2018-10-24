@@ -492,4 +492,27 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		}
 	}
 
+	@Override
+	public List<AppRootInstance> findByApproverDateCID(String companyID, String approverID, GeneralDate date, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String query = FIND_BY_APPROVER_PERIOD;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("approverID", approverID);
+		query = query.replaceAll("startDate", date.toString("yyyy-MM-dd"));
+		query = query.replaceAll("endDate", date.toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(!CollectionUtil.isEmpty(listResult)){
+				return listResult;
+			} else {
+				return Collections.emptyList();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
 }

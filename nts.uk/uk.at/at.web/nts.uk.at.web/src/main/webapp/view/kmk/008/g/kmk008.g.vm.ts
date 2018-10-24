@@ -35,7 +35,7 @@ module nts.uk.at.view.kmk008.g {
 
             //list
             listComponentOption: any;
-            selectedCode: KnockoutObservable<string>;
+            selectedEmpCode: KnockoutObservable<string>;
             isDialog: KnockoutObservable<boolean>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isShowWorkPlaceName: KnockoutObservable<boolean>;
@@ -44,7 +44,7 @@ module nts.uk.at.view.kmk008.g {
 
             //search
             ccg001ComponentOption: any;
-            selectedCode: KnockoutObservableArray<string>;
+           // selectedEmpCode: KnockoutObservableArray<string>;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
             // Options
@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk008.g {
                 //list
                 self.isShowWorkPlaceName = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
-                self.selectedCode = ko.observable("");
+                self.selectedEmpCode = ko.observable("");
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.listComponentOption = {
@@ -83,7 +83,7 @@ module nts.uk.at.view.kmk008.g {
                     isMultiSelect: false,
                     listType: 4,
                     selectType: 1,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedEmpCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     isShowWorkPlaceName: true,
@@ -195,12 +195,12 @@ module nts.uk.at.view.kmk008.g {
                 self.currentCode = ko.observable();
                 self.currentCode2 = ko.observable();
 
-                self.selectedCode.subscribe(newValue => {
+                self.selectedEmpCode.subscribe(newValue => {
 
                     if (!nts.uk.text.isNullOrEmpty(newValue)){
                         let data = self.selectedEmployee();
                         let employee = _.find(data, function(o) {
-                            return o.employeeCode == self.selectedCode();
+                            return o.employeeCode == self.selectedEmpCode();
                         });
                         self.getDetail(employee.employeeId);
                         self.selectedId(employee.employeeId);
@@ -284,7 +284,7 @@ module nts.uk.at.view.kmk008.g {
                             return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
                         if (self.employeeList() && self.employeeList().length > 0){
-                            self.selectedCode(self.employeeList()[0].code);
+                            self.selectedEmpCode(self.employeeList()[0].code);
                         }
                     }
                 }
@@ -297,7 +297,7 @@ module nts.uk.at.view.kmk008.g {
                 let self = this;
                 let dfd = $.Deferred();
 
-                if (!self.selectedCode()) {
+                if (!self.selectedEmpCode()) {
                     self.isShowButton(false);
                 }
 
@@ -311,7 +311,7 @@ module nts.uk.at.view.kmk008.g {
                 if (self.selectedTab() == "tab-1") {
                     isYearMonth = true;
                 }
-                setShared("KMK_008_PARAMS", { employeeCode: self.selectedCode(), employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
+                setShared("KMK_008_PARAMS", { employeeCode: self.selectedEmpCode(), employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
                 modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
                     //                    let data: string = getShared('KDL007_VALUES');
                     if (self.selectedId()) {

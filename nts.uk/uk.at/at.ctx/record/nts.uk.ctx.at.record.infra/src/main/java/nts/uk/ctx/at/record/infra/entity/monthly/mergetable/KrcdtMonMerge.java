@@ -4699,7 +4699,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
 	private void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
-		this.excessTime_1_1 = domain == null ? 0 : domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork2(ExcessOutsideWork domain) {
@@ -5019,7 +5019,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @return 集計乖離時間
 	 */
 	private AggregateDivergenceTime toDomainDivergenceTime1() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(1,
 				new AttendanceTimeMonth(this.divergenceTime1),
 				new AttendanceTimeMonth(this.deductionTime1),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction1),
@@ -5027,7 +5027,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime2() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(2,
 				new AttendanceTimeMonth(this.divergenceTime2),
 				new AttendanceTimeMonth(this.deductionTime2),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction2),
@@ -5035,7 +5035,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime3() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(3,
 				new AttendanceTimeMonth(this.divergenceTime3),
 				new AttendanceTimeMonth(this.deductionTime3),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction3),
@@ -5043,7 +5043,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime4() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(4,
 				new AttendanceTimeMonth(this.divergenceTime4),
 				new AttendanceTimeMonth(this.deductionTime4),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction4),
@@ -5051,7 +5051,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime5() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(5,
 				new AttendanceTimeMonth(this.divergenceTime5),
 				new AttendanceTimeMonth(this.deductionTime5),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction5),
@@ -5059,7 +5059,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime6() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(6,
 				new AttendanceTimeMonth(this.divergenceTime6),
 				new AttendanceTimeMonth(this.deductionTime6),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction6),
@@ -5067,7 +5067,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime7() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(7,
 				new AttendanceTimeMonth(this.divergenceTime7),
 				new AttendanceTimeMonth(this.deductionTime7),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction7),
@@ -5075,7 +5075,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime8() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(8,
 				new AttendanceTimeMonth(this.divergenceTime8),
 				new AttendanceTimeMonth(this.deductionTime8),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction8),
@@ -5083,7 +5083,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime9() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(9,
 				new AttendanceTimeMonth(this.divergenceTime9),
 				new AttendanceTimeMonth(this.deductionTime9),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction9),
@@ -5091,7 +5091,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateDivergenceTime toDomainDivergenceTime10() {
-		return AggregateDivergenceTime.of(
+		return AggregateDivergenceTime.of(10,
 				new AttendanceTimeMonth(this.divergenceTime10),
 				new AttendanceTimeMonth(this.deductionTime10),
 				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction10),
@@ -6112,7 +6112,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** PCログオフ乖離 */
 		AggrPCLogonDivergence logonDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOnDivDays), new AttendanceTimeMonth(this.logOnDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
 		/** PCログオフ乖離 */
-		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
+		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOffDivAveTime));
 		val workClock = WorkClockOfMonthly.of(endClock,
 				PCLogonOfMonthly.of(logOnClock, PCLogonDivergenceOfMonthly.of(logonDivergence, logoffDivergence)));
 		
@@ -6464,12 +6464,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays19() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay19)),
+		return AggregateAbsenceDays.of(19, new AttendanceDaysMonth(new Double(this.absenceDay19)),
 				new AttendanceTimeMonth((int) this.absenceTime19));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays20() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay20)),
+		return AggregateAbsenceDays.of(20, new AttendanceDaysMonth(new Double(this.absenceDay20)),
 				new AttendanceTimeMonth((int) this.absenceTime20));
 	}
 
@@ -6494,12 +6494,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays25() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay25)),
+		return AggregateAbsenceDays.of(25,new AttendanceDaysMonth(new Double(this.absenceDay25)),
 				new AttendanceTimeMonth((int) this.absenceTime25));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays26() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay26)),
+		return AggregateAbsenceDays.of(26, new AttendanceDaysMonth(new Double(this.absenceDay26)),
 				new AttendanceTimeMonth((int) this.absenceTime26));
 	}
 
