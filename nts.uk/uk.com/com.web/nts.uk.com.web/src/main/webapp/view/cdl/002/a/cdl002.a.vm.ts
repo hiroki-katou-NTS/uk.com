@@ -56,6 +56,13 @@ module nts.uk.com.view.cdl002.a {
                     isSelectAllAfterReload: false,
                     tabindex: 1
                 };
+                
+                if (params.selectedCodes.length > 0) {
+                    self.getClosureByEmployment(params.selectedCodes[0]).done((data: any) => {
+                        self.listComponentOption.selectedClosureId(data);
+                    });
+                }
+                
                 if (self.isMultiSelect()) {
                     self.listComponentOption.selectedCode = self.selectedMulEmployment;
                 }
@@ -70,6 +77,15 @@ module nts.uk.com.view.cdl002.a {
             closeDialog(): void {
                 setShared('CDL002Cancel', true);
                 nts.uk.ui.windows.close();
+            }
+            
+            getClosureByEmployment(employmentId: string): JQueryPromise<any> {
+                let dfd = $.Deferred<any>();
+
+                nts.uk.request.ajax('at', "ctx/at/shared/workrule/closure/getclosuretiedbyemployment/" + employmentId).done((closureId: any) => {
+                    dfd.resolve(closureId);
+                });
+                    return dfd.promise();
             }
 
             /**
