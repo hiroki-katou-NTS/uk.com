@@ -341,7 +341,7 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.screenModel;
                     
                     if(self.statementItemDataSelected().checkCreate()) {
-                        oldKey = self.statementItemDataSelected().statementItem().categoryAtr().toString() + self.statementItemDataSelected().statementItem().itemNameCd;
+                        oldKey = self.statementItemDataSelected().statementItem().categoryAtr().toString() + self.statementItemDataSelected().statementItem().itemNameCd();
                     }
 
                     // clear all tax value if not visible
@@ -432,6 +432,17 @@ module nts.uk.pr.view.qmm012.b {
                         command.deductionItemSet.alarmLoRangeVal = null;
                         command.timeItemSet.alarmLoRangeValNum = null;
                         command.timeItemSet.alarmLoRangeValTime = null;
+                    }
+
+                    // Optional fields: set null value if isEmpty
+                    if (_.isEmpty(command.paymentItemSet.note)) {
+                        command.paymentItemSet.note = null;
+                    }
+                    if (_.isEmpty(command.deductionItemSet.note)) {
+                        command.deductionItemSet.note = null;
+                    }
+                    if (_.isEmpty(command.timeItemSet.note)) {
+                        command.timeItemSet.note = null;
                     }
 
                     // set value cho ValueAtr
@@ -889,14 +900,14 @@ module nts.uk.pr.view.qmm012.b {
                 
                 // mapping 2 thuộc tính của 2 domain từ cùng 1 item
                 self.breakdownItemUseAtr.subscribe(x => {
-                    if(x) {
+                    if(x != null) {
                         screenModel.statementItemDataSelected().deductionItemSet().breakdownItemUseAtr(x);
                     }
                 });
                 
                 // mapping 3 thuộc tính của 3 domain từ cùng 1 item
                 self.note.subscribe(x => {
-                    if(x) {
+                    if(x != null) {
                         screenModel.statementItemDataSelected().deductionItemSet().note(x);
                         screenModel.statementItemDataSelected().timeItemSet().note(x);
                     }
@@ -1263,6 +1274,15 @@ module nts.uk.pr.view.qmm012.b {
                         self.alarmLowerLimitSetAtr(1);
                     } else {
                         self.alarmLowerLimitSetAtr(0);
+                        $('#E1_30').ntsError('clear');
+                    }
+                });
+
+                self.timeCountAtr.subscribe(x => {
+                    if (x != null) {
+                        $('#E1_20').ntsError('clear');
+                        $('#E1_23').ntsError('clear');
+                        $('#E1_27').ntsError('clear');
                         $('#E1_30').ntsError('clear');
                     }
                 });
