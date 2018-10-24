@@ -220,7 +220,7 @@ public class QpbmtPaymentItemSt extends UkJpaEntity implements Serializable {
         entity.paymentItemStPk = new QpbmtPaymentItemStPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCode().v());
         entity.taxAtr = domain.getTaxAtr().value;
         entity.taxableAmountAtr = domain.getLimitAmountSetting().getTaxableAmountAtr().map(i -> i.value).orElse(null);
-        entity.limitAmountAtr = domain.getLimitAmountSetting().getTaxableAmountAtr().map(i -> i.value).orElse(null);
+        entity.limitAmountAtr = domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null);
         entity.limitAmount = domain.getLimitAmountSetting().getLimitAmount().map(i -> i.v()).orElse(null);
         entity.taxLimitAmountCode = domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null);
         entity.socialInsuranceCategory = domain.getSocialInsuranceCategory().value;
