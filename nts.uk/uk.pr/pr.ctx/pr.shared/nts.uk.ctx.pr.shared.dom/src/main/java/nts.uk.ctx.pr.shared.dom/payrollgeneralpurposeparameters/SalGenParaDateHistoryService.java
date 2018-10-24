@@ -28,7 +28,7 @@ public class SalGenParaDateHistoryService {
         }
         dateHistory.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(start, end));
         salGenParaDateHistRepository.update(itemToBeUpdate.get(), cId, paraNo);
-        this.updateItemBefore(dateHistory.get(), itemToBeUpdate.get(), cId, paraNo);
+        this.updateItemBefore(dateHistory.get(), itemToBeUpdate.get(), paraNo, cId);
     }
 
     private void updateItemBefore(SalGenParaDateHistory dateHistory, DateHistoryItem item, String cId, String paraNo){
@@ -36,7 +36,7 @@ public class SalGenParaDateHistoryService {
         if (!itemToBeUpdated.isPresent()){
             return;
         }
-        salGenParaDateHistRepository.update(itemToBeUpdated.get(), cId, paraNo);
+        salGenParaDateHistRepository.update(itemToBeUpdated.get(),paraNo, cId);
     }
 
     public void deleteYearMonthHistory(String cId, String hisId, String paraNo){
