@@ -571,7 +571,6 @@ module nts.uk.com.view.cps005.b {
                         self.decimalPart(data.decimalPart);
                     }
                 }
-
                 self.integerPart(data.integerPart || 0);
             }
 
