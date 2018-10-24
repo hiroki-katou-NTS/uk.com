@@ -585,8 +585,7 @@ module nts.uk.request {
             uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
                 window.location.href = path;
             }).ifEmpty(() => {
-                //request.jump('/view/ccg/007/a/index.xhtml');
-                request.jump('com', '/view/ccg/007/b/index.xhtml');
+                request.jump('com', '/view/ccg/007/d/index.xhtml');
             });
         }
         

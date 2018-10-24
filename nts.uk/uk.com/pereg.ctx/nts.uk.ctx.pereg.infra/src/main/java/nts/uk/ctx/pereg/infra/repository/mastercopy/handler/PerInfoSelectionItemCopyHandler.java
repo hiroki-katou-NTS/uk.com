@@ -148,15 +148,16 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 			// set [SelectionHistory]
 			newPpemtHistorySelections.add(new PpemtHistorySelection(new PpemtHistorySelectionPK(newHistId),
 					item.selectionItemId, targetCid, item.startDate, item.endDate));
+			String selectionId = IdentifierUtil.randomUniqueId();
 			// set [Seletion]
 			newPpemtSelections.addAll(ppemtSelectionsZero.stream()
-					.map(selectionItem -> new PpemtSelection(new PpemtSelectionPK(IdentifierUtil.randomUniqueId()),
+					.map(selectionItem -> new PpemtSelection(new PpemtSelectionPK(selectionId),
 							newHistId, selectionItem.selectionCd, selectionItem.selectionName, selectionItem.externalCd,
 							selectionItem.memo))
 					.collect(Collectors.toList()));
 			// set [OrderSelectionAndDefaultValues]
 			newPpemtSelItemOrders.addAll(ppemtSelItemOrdersZero.stream()
-					.map(selOrderItem -> new PpemtSelItemOrder(new PpemtSelItemOrderPK(IdentifierUtil.randomUniqueId()),
+					.map(selOrderItem -> new PpemtSelItemOrder(new PpemtSelItemOrderPK(selectionId),
 							newHistId, selOrderItem.dispOrder, selOrderItem.initSelection))
 					.collect(Collectors.toList()));
 		});

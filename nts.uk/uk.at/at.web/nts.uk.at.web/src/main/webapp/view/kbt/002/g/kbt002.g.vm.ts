@@ -23,6 +23,7 @@ module nts.uk.at.view.kbt002.g {
                 let self = this;
                 var dfd = $.Deferred();
                 var sharedData = nts.uk.ui.windows.getShared('inputDialogG');
+                sharedData.execLog.taskLogList = _.sortBy(sharedData.execLog.taskLogList, [function(o) { return o.taskId; }]);
                 if (sharedData) {
                     self.execLog = sharedData.execLog;
                     
