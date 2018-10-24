@@ -39,7 +39,7 @@ public class SalGenParaDateHistoryService {
         salGenParaDateHistRepository.update(itemToBeUpdated.get(), cId, paraNo);
     }
 
-    public void deleteYearMonthHistory(String hisId, String cId, String paraNo){
+    public void deleteYearMonthHistory(String cId, String hisId, String paraNo){
         Optional<SalGenParaDateHistory> dateHistory = salGenParaDateHistRepository.getAllSalGenParaDateHist(cId, paraNo);
         Optional<DateHistoryItem> itemToBeDelete = dateHistory.get().getDateHistoryItem().stream()
                 .filter(h -> h.identifier().equals(hisId))

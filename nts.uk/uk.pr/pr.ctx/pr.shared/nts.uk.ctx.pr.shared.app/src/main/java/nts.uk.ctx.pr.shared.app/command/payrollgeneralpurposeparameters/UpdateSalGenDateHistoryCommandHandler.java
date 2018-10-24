@@ -24,7 +24,7 @@ public class UpdateSalGenDateHistoryCommandHandler extends CommandHandler<SalGen
         if(EditMethod.UPDATE.value == command.getMode()) {
             salGenParaDateHistoryService.updateDateHistory(cId, command.getParaNo(), hisId, command.getStart(), command.getEnd());
         } else {
-            salGenParaDateHistoryService.deleteYearMonthHistory(cId, command.getParaNo(), hisId);
+            salGenParaDateHistoryService.deleteYearMonthHistory(cId, hisId, command.getParaNo());
         }
     }
 }
