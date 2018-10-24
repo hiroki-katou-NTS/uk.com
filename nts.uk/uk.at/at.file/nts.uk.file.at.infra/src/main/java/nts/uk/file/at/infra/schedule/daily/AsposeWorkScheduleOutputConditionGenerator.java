@@ -2786,14 +2786,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	private String getTimeAttr(String rawValue, boolean isConvertAttr) {
 		int value = Integer.parseInt(rawValue);
+		TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
 		if (isConvertAttr && value != 0) {
-			TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
 		}
 		else {
-			int minute = value % 60;
-			return String.valueOf(value / 60) + ":" + (minute < 10 ? "0" + minute : String.valueOf(minute));
+			return timeFormat.getTimeText();
 		}
 	}
 	
