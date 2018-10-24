@@ -35,7 +35,9 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public DayAttr dayAttr(){
-		
+		if(getInDayTimeWithFormat().equals("0:00")){
+			return DayAttr.THE_PRESENT_DAY;
+		}
 		switch (this.daysOffset()) {
 		case 0:
 			return DayAttr.THE_PRESENT_DAY;
