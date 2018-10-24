@@ -306,13 +306,27 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
                 self.useSealValue(useSeal);
                 attendanceRecExpDaily.forEach((item: any) => {
-                    self.attendanceRecExpDaily().push(new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition));
+                    var columnIndex: number = item.columnIndex;
+                    self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
                 });
+                
+                for (var i: number = 1; i <= 9; i++) {
+                        if (!self.attendanceRecExpDaily()[i]) {
+                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                        }
+                    }
 
                 attendanceRecExpMonthly.forEach((item: any) => {
-                    self.attendanceRecExpMonthly().push(new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition, item.lowwerPosition));
+                    var columnIndex: number = item.columnIndex;
+                    self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
 
                 });
+                
+                 for (var i: number = 1; i <= 12; i++) {
+                        if (!self.attendanceRecExpMonthly()[i]) {
+                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                        }
+                    }
 
                 self.attendanceRecItemList(attendanceRecItemList);
                 self.sealName1(sealStamp[0]);
