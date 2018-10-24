@@ -36,6 +36,11 @@ public class SalGenParaYearMonthHistory extends AggregateRoot implements Continu
     }
 
     @Override
+    public void exCorrectToRemove(YearMonthHistoryItem latest) {
+        latest.changeSpan(latest.span().newSpanWithMaxEnd());
+    }
+
+    @Override
     public List<YearMonthHistoryItem> items() {
         return this.history;
     }

@@ -150,7 +150,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
 
         validateYearMonth() {
             let self = this;
-            if (!(self.startLastYearMonth() < self.startYearMonth())) {
+            if ((!(self.startLastYearMonth() < self.startYearMonth())) && self.hasRequired()) {
                 dialog.error({messageId: "Msg_79"});
                 return true;
             }
@@ -159,7 +159,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
 
         validateYearMonthDay(){
             let self = this;
-            if (!(self.startLastDate() < self.startDate())) {
+            if ((!(self.startLastDate() < self.startDate())) && self.hasRequired()) {
                 dialog.error({messageId: "Msg_79"});
                 return true;
             }
