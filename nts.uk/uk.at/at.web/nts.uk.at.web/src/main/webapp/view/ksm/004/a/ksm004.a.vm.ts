@@ -834,14 +834,15 @@ module nts.uk.at.view.ksm004.a {
                 }
                 let a = [];
                 if(!autoFill) {
-                    _.forEach(inputArray, item => {
+                    for (let i = 1; i <= dayOfMonth; i++) {
+                        let item = inputArray[i];
                         a.push({
                             date: (moment(item.start).format('YYYY/MM/DD')),
                             workingDayAtr: self.convertEnumNametoNumber(item.listText[0]),
                             classId: self.currentCalendarClass().key(),
                             workPlaceId: self.currentCalendarWorkPlace().key()
-                        });    
-                    });
+                        });
+                    }
                 } else {
                     for(let i=1; i<=dayOfMonth; i++){
                         let indexDate = yearMonth+("00"+i).slice(-2);

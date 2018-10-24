@@ -15,6 +15,10 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate);
 	
+	List<AnnualLeaveGrantRemainingData> findByPeriod(String employeeId, GeneralDate startDate, GeneralDate endDate);
+	
+	List<AnnualLeaveGrantRemainingData> findByGrantDateAndDeadline(String employeeId, GeneralDate grantDate, GeneralDate deadline);
+	
 	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState);
 	
 	List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);
