@@ -34,6 +34,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepositor
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
@@ -370,8 +371,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
             return Collections.emptyList();
         List<String> listHistoryId = listAffJobTitleHistoryItem.stream().map(c->c.getHistoryId()).collect(Collectors.toList());
         
-        List<AffJobTitleHistory> listAffJobTitleHistory = affJobTitleHisRepo
-                .getListByListHidSid(listHistoryId, employeeIds);
+        List<AffJobTitleHistory> listAffJobTitleHistory = affJobTitleHisRepo.getListByListHidSid(listHistoryId, employeeIds);
         
         if(listAffJobTitleHistory.isEmpty())
             return Collections.emptyList();
@@ -420,6 +420,48 @@ public class JobTitlePubImp implements SyJobTitlePub {
             }
             
         }
+        
+        return listEmployeeJobHistExport;
+    }
+    
+    @Override
+    public List<EmployeeJobHistExport> findSJobHistByListSIdV2(List<String> employeeIds, GeneralDate baseDate) {
+        if(employeeIds.isEmpty())
+            return Collections.emptyList();
+        // Query
+        List<AffJobTitleHistoryItem> jobHisItem = affJobTitleHisItemRepo.getAllByListSidDate(employeeIds, baseDate);
+        if(jobHisItem.isEmpty())
+            return Collections.emptyList();
+        
+        List<AffJobTitleHistory> jobHisList = affJobTitleHisRepo.getListByListHidSid(employeeIds, baseDate);
+        
+        if(jobHisList.isEmpty())
+            return Collections.emptyList();
+        
+        List<JobTitleInfo> listJobTitleInfo = this.jobTitleInfoRepository.findByIds(jobHisItem.stream().map(c->c.getJobTitleId()).collect(Collectors.toList()),
+        																				baseDate);
+        if(listJobTitleInfo.isEmpty())
+            return Collections.emptyList();
+        
+        List<EmployeeJobHistExport> listEmployeeJobHistExport = new ArrayList<>();
+        GeneralDate today = GeneralDate.today();
+        employeeIds.stream().forEach(s -> {
+        	jobHisItem.stream().filter(jh -> jh.getEmployeeId().equals(s)).findFirst().ifPresent(jh -> {
+        		DateHistoryItem jobHis = jobHisList.stream().filter(jth -> jth.getEmployeeId().equals(s)).findFirst().orElseGet(() -> 
+        				new AffJobTitleHistory("", s, Arrays.asList(new DateHistoryItem("", new DatePeriod(today, today))))).items().get(0);
+        		
+        		JobTitleInfo jobInfo = listJobTitleInfo.stream().filter(ji -> ji.getJobTitleId().equals(jh.getJobTitleId())).findFirst().orElseGet(() -> 
+						new JobTitleInfo(null, "", false, "", null, new JobTitleName(""), null));
+                
+                EmployeeJobHistExport data = EmployeeJobHistExport.builder().employeeId(s)
+													                        .jobTitleID(jobInfo.getJobTitleId())
+													                        .jobTitleName(jobInfo.getJobTitleName().v())
+													                        .startDate(jobHis.start())
+													                        .endDate(jobHis.end())
+													                        .build();
+                listEmployeeJobHistExport.add(data);
+        	});
+        });
         
         return listEmployeeJobHistExport;
     }

@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Co
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
@@ -42,7 +43,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -56,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalDat
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
@@ -63,6 +64,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
@@ -113,6 +115,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+	
+	@Inject
+	private DailyPerformanceScreenRepo repo;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -357,7 +362,7 @@ public class DailyModifyResCommandFacade {
 					val errorSign = validatorDataDaily.releaseDivergence(resultIU.getLstDailyDomain());
 					if(!errorSign.isEmpty()) {
 						//resultError.putAll(errorSign);
-						releaseSign(dataParent.getDataCheckSign(), errorSign, dailyEdits, AppContexts.user().employeeId(), false);
+						errorRelease = releaseSign(dataParent.getDataCheckSign(), errorSign, dailyEdits, AppContexts.user().employeeId(), false);
 					}
 					
 					if (!hasError) {
@@ -379,6 +384,7 @@ public class DailyModifyResCommandFacade {
 																			.collect(Collectors.toList());
 						
 						registerTempData(dataParent.getMode(), resultOlds, resultNews);
+						dataResultAfterIU.setShowErrorDialog(showError(resultIU.getLstDailyDomain(), new ArrayList<>()));
 					}
 				} else {
 					if (dataParent.getDataCheckSign() != null && !dataParent.getDataCheckSign().isEmpty())
@@ -386,6 +392,7 @@ public class DailyModifyResCommandFacade {
 					// insert approval
 					if (dataParent.getDataCheckApproval() != null && !dataParent.getDataCheckApproval().isEmpty())
 						insertApproval(dataParent.getDataCheckApproval());
+					dataResultAfterIU.setShowErrorDialog(showError(new ArrayList<>(), dailyEdits));
 				}
 			}
 		} else {
@@ -588,7 +595,7 @@ public class DailyModifyResCommandFacade {
 		val dailyClone = dailys.stream().map(x -> x.clone()).collect(Collectors.toList());
 		val dailyTemps = dailyClone.stream().filter(x -> x.getEmployeeId().equals(employeeId))
 				.sorted((x, y) -> x.getDate().compareTo(y.getDate())).collect(Collectors.toList());
-		if (dailys.isEmpty())
+		if (dailys.isEmpty() || dailyTemps.isEmpty())
 			return itemUi;
 		
 		val lstEmployeeId = dailys.stream().map(x -> x.getEmployeeId()).collect(Collectors.toSet());
@@ -642,4 +649,13 @@ public class DailyModifyResCommandFacade {
 		return itemUi;
 	}
 	
+	private boolean showError(List<IntegrationOfDaily> dailys, List<DailyRecordDto> dailyRecord) {
+		// アルゴリズム「実績修正画面で利用するフォーマットを取得する」を実行する(thực hiện xử lý 「実績修正画面で利用するフォーマットを取得する」)
+		val lstError = dailys.stream().flatMap(x -> x.getEmployeeError().stream()).collect(Collectors.toList());
+		val lstErrorDto = dailyRecord.stream().flatMap(x -> x.getErrors().stream()).collect(Collectors.toList());
+		OperationOfDailyPerformanceDto settingMaster = repo.findOperationOfDailyPerformance();
+		if (lstError.isEmpty() && lstErrorDto.isEmpty())
+			return false;
+		return settingMaster == null ? false : settingMaster.isShowError();
+	}
 }

@@ -676,7 +676,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getAbsenceMngId().equals(temp.getRemainManaID()))
 							.collect(Collectors.toList());
 					if(!tmpAbsUsen.isEmpty()) {
-						lstAbsUsen.remove(tmpAbsUsen.get(0));
+						lstAbsMng.remove(tmpAbsUsen.get(0));
 					}
 				}
 				List<InterimRemain> lstRecUsen = lstTmpRec.stream()

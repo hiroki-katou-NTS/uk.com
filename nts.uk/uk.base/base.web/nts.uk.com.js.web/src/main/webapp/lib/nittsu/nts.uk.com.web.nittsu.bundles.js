@@ -324,7 +324,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -2335,7 +2335,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -5985,11 +5984,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -8745,7 +8742,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) { // Don't set textColor
+                                    else if (makeup.textColor) {
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -15562,7 +15559,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -15593,7 +15589,6 @@ var nts;
                                     }
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -15602,7 +15597,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -15622,7 +15616,6 @@ var nts;
                                     }
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -15919,7 +15912,6 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
-                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -15932,7 +15924,6 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -15952,7 +15943,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -18192,7 +18183,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -20766,7 +20757,6 @@ var nts;
                                 var btn = $('<button>').text(text)
                                     .addClass('nts-switch-button unselectable')
                                     .data('swbtn', value)
-                                    //                        .attr('tabindex', "-1")
                                     .attr('unselectable', "on")
                                     .on('click', function () {
                                     var selectedValue = $(this).data('swbtn');
@@ -24987,7 +24977,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) { //&& check.getAttribute("checked") !== "checked") {
+                                if (val) {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -24996,7 +24986,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) { // && check.getAttribute("checked") === "checked") {
+                                else if (!val) {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -28785,7 +28775,7 @@ var nts;
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
-/// <reference path="ui/mgrid.ts"/>
+/// <reference path="ui/mgrid.ts"/> 
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -30165,7 +30155,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -35559,7 +35549,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -36319,7 +36309,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -38045,7 +38035,7 @@ var nts;
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.name,
+                            name: parentBinding.startName ? self.startName : parentBinding.name,
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
@@ -38057,7 +38047,7 @@ var nts;
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.name,
+                            name: parentBinding.endName ? self.endName : parentBinding.name,
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
@@ -39385,6 +39375,9 @@ var nts;
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var required = _.isNil(data.required) ? false : ko.unwrap(data.required);
+                        if (dataName) {
+                            dataName = nts.uk.resource.getControlName(dataName);
+                        }
                         $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
                         $container.addClass("ntsControl ntsMonthDays_Container");
                         var $control = $('<div>', { class: 'ntsMonthDays' }), $monthPicker = $("<div>", { "class": "ntsMonthPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }), $dayPicker = $("<div>", { "class": "ntsDayPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }), $monthLabel = $("<div>", {
@@ -39433,6 +39426,7 @@ var nts;
                         $container.on("validate", function (evt) {
                             if (!$container.is(evt.target))
                                 return;
+                            var required = $container.data("required");
                             if (required && (monthValueAccessor.value() === 0 || _.isNil(monthValueAccessor.value()))) {
                                 $monthPicker.addClass("error").ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [dataName + "の月"]), "FND_E_REQ_SELECT");
                             }
@@ -39455,7 +39449,7 @@ var nts;
                      * Update
                      */
                     NtsMonthDaysBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $container = $(element), value = ko.unwrap(data.value), enable = data.enable === undefined ? true : ko.unwrap(data.enable), $monthPicker = $container.find(".ntsMonthPicker"), $dayPicker = $container.find(".ntsDayPicker"), bindedVal = $container.data("cusVal");
+                        var data = valueAccessor(), $container = $(element), value = ko.unwrap(data.value), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = _.isNil(data.required) ? false : ko.unwrap(data.required), $monthPicker = $container.find(".ntsMonthPicker"), $dayPicker = $container.find(".ntsDayPicker"), bindedVal = $container.data("cusVal");
                         //            if(enable !== false){
                         //                $monthPicker.igCombo('option', 'disabled', false);
                         //                $dayPicker.igCombo('option', 'disabled', false);    
@@ -39464,6 +39458,7 @@ var nts;
                         //                $monthPicker.igCombo('option', 'disabled', true);
                         //                $dayPicker.igCombo('option', 'disabled', true); 
                         $container.find("input").attr("tabindex", "-1");
+                        $container.data("required", required);
                         ko.bindingHandlers["ntsComboBox"].update($monthPicker[0], function () { return bindedVal.month; }, allBindingsAccessor, viewModel, bindingContext);
                         ko.bindingHandlers["ntsComboBox"].update($dayPicker[0], function () { return bindedVal.day; }, allBindingsAccessor, viewModel, bindingContext);
                     };
@@ -39679,7 +39674,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -39707,7 +39701,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
