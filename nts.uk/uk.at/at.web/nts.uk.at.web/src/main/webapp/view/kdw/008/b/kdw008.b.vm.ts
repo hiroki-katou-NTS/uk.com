@@ -294,7 +294,8 @@ module nts.uk.at.view.kdw008.b {
             mapAttItemFormatDetail(attItems: Array<AttendanceItemDto>, details): Array<AttendanceItemDto> {
                 details = BusinessTypeFormatDetailDto.fromApp(details);
                 let attItemDetail: Array<AttendanceItemDto> = [];
-                attItemDetail = _.map(details, function(item: BusinessTypeFormatDetailDto) {
+                for(let i = 0;i<details.length;i++){
+                    let item = details[i];
                     let dto: AttendanceItemDto = new AttendanceItemDto(null);
                     dto.attendanceItemId = item.attendanceItemId;
                     dto.columnWidth = item.columnWidth;
@@ -304,9 +305,22 @@ module nts.uk.at.view.kdw008.b {
                     if (attItem) {
                         dto.attendanceItemName = attItem.attendanceItemName;
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                        attItemDetail.push(dto);
                     }
-                    return dto;
-                })
+                }
+//                attItemDetail = _.map(details, function(item: BusinessTypeFormatDetailDto) {
+//                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
+//                    dto.attendanceItemId = item.attendanceItemId;
+//                    dto.columnWidth = item.columnWidth;
+//                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
+//                        return att.attendanceItemId == item.attendanceItemId;
+//                    })
+//                    if (attItem) {
+//                        dto.attendanceItemName = attItem.attendanceItemName;
+//                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+//                    }
+//                    return dto;
+//                })
                 return attItemDetail;
             }
 
@@ -344,7 +358,9 @@ module nts.uk.at.view.kdw008.b {
 
             mapAttItemMonthRightDetail(attItems: Array<AttendanceItemDto>, details: Array<DisplayTimeItemDto>): Array<AttendanceItemDto> {
                 let attItemDetail: Array<AttendanceItemDto> = [];
-                attItemDetail = _.map(details, function(item: DisplayTimeItemDto) {
+//                attItemDetail = _.map(details, function(item: DisplayTimeItemDto) {
+                for(let i = 0;i<details.length;i++){
+                    let item = details[i];
                     let dto: AttendanceItemDto = new AttendanceItemDto(null);
                     dto.attendanceItemId = item.itemDaily;
                     dto.columnWidth = item.columnWidthTable;
@@ -354,9 +370,21 @@ module nts.uk.at.view.kdw008.b {
                     if (attItem) {
                         dto.attendanceItemName = attItem.attendanceItemName;
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                        attItemDetail.push(dto);
                     }
-                    return dto;
-                })
+                }
+//                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
+//                    dto.attendanceItemId = item.itemDaily;
+//                    dto.columnWidth = item.columnWidthTable;
+//                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
+//                        return att.attendanceItemId == item.itemDaily;
+//                    })
+//                    if (attItem) {
+//                        dto.attendanceItemName = attItem.attendanceItemName;
+//                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+//                    }
+//                    return dto;
+//                })
                 return attItemDetail;
             }
 
