@@ -23,7 +23,7 @@
 		<div id="functions-area">
 
 			<button id="A1_1" tabindex="1" class="proceed"
-					data-bind="click : register, enable: true">#{i18n.getText('QMM001_4')}</button>
+					data-bind="click : register, enable: isEnableSubmit()">#{i18n.getText('QMM001_4')}</button>
 			<button id="A1_2" tabindex="2"
 					data-bind="click : creatPdf, enable: false">#{i18n.getText('QMM001_5')}</button>
 			<button id="A1_3" tabindex="3"
