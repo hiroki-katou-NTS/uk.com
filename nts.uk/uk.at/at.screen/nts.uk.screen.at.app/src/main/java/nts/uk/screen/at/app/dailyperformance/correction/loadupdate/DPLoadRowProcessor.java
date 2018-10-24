@@ -335,12 +335,14 @@ public class DPLoadRowProcessor {
 			// TimeWithDay
 			if (atr.isNumber()
 					&& ((itemNew.getValue() == null && x.getValue() != null && Double.parseDouble(x.getValue()) == 0)
-					|| (x.getValue() == null && itemNew.getValue() != null && Double.parseDouble(itemNew.getValue()) == 0))) {
+					   || (x.getValue() == null && itemNew.getValue() != null && Double.parseDouble(itemNew.getValue()) == 0) 
+					   || (itemNew.getValue() != null && x.getValue() != null && Double.parseDouble(x.getValue()) == 0 && Double.parseDouble(itemNew.getValue()) == 0))) {
 				itemNew.value(0);
 				x.value(0);
 			}
-
-			if (!x.equals(itemNew)) {
+            if(x.getValue() != null && itemNew.getValue() != null) {
+            	if(!x.getValue().equals(itemNew.getValue())) result.add(itemNew);
+            }else if (!x.equals(itemNew)) {
 				result.add(itemNew);
 			}
 		});
