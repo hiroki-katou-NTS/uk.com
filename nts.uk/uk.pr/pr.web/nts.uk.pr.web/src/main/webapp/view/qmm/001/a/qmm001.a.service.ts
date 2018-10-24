@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm001.a.service {
         getSalGenParaYearMonthHistory: "shared/payrollgeneralpurposeparameters/getSalGenParaYearMonthHistory/{0}",
         getSalGenParaValue: "shared/payrollgeneralpurposeparameters/getSalGenParaValue/{0}",
         addSelectionProcess: "shared/payrollgeneralpurposeparameters/addSelectionProcess",
+        getListHistory: "shared/payrollgeneralpurposeparameters/getListHistory"
     };
 
     export function getAllSalGenParaIdentification(): JQueryPromise<any> {
@@ -31,6 +32,9 @@ module nts.uk.pr.view.qmm001.a.service {
     }
     export function addSelectionProcess(data :any): JQueryPromise<any> {
         return ajax(paths.addSelectionProcess, data);
+    }
+    export function getListHistory(data :any): JQueryPromise<any> {
+        return ajax(paths.getListHistory, data);
     }
 
 

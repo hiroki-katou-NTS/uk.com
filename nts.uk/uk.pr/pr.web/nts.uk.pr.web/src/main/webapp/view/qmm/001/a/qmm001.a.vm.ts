@@ -333,7 +333,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             }
             service.addSelectionProcess(dataHisValue).done(() => {
                 if (self.modeScreen()== MODESCREEN.ADD){
-                    self.initView();
+                    self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
                 }
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(error => {
@@ -352,8 +352,16 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 let month:string = start.toString().slice(4,6);
                 let day:string = start.toString().slice(6,8);
                 let startDate :string = year+"-"+month+"-"+day;
-                service.getListHistory(new SalGenParaDateParams(self.selectedSalGenParaIdent(), "", self.selectedSalGenParaHistory(), startDate, "9999-12-31")).done((data) => {
-                    self.listHistory(data);
+                let data:any = {
+                    paraNo : self.selectedSalGenParaIdent(),
+                    cID :"",
+                    historyId : self.selectedSalGenParaHistory(),
+                    startDate :startDate,
+                    endDate:"9999-12-31"
+                };
+                service.getListHistory(data).done((data) => {
+                    self.listHistory(SalGenParaDateHistory.convertToDisplayHis(data));
+                    self.listHistory(_.orderBy(self.listHistory(), ['startDate'], ['desc']));
                     self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
                 }).fail(error => {
                     dialog.alertError(error);
@@ -421,17 +429,58 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             setShared('QMM001_PARAMS_TO_SCREEN_B', data);
             modal("/view/qmm/001/b/index.xhtml").onClosed(() => {
                 let params = getShared('QMM011_A');
+                let start :number = 0;
                 if (params == null || params === undefined) {
                     return;
                 }
-                self.addHistory(params.startYearMonth,params.takeOver);
+                if(self.modeHistory()== MODEHISTORY.YEARMONTH){
+                    start = params.startYearMonth;
+                }
+                else{
+                    start = Number(params.startYearMonthDay);
+                }
+                self.addHistory(start,params.takeOver);
                 self.modeScreen(MODESCREEN.ADD);
             });
         }
         openDialogC(){
             let self = this;
+            let historyId : string = self.selectedSalGenParaHistory();
+            let isFirst :boolean = (_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; }) == 0) ? true :false ;
+            let index : number =_.findIndex(self.listHistory(), function(o) { return o.historyId == historyId; });
+            let data:any = null ;
+            if(self.modeHistory() == MODEHISTORY.YEARMONTH){
+                data = {
+                    start : self.listHistory()[index].startYearMonth ,
+                    end : self.listHistory()[index].endYearMonth ,
+                    code: self.salGenParaIdent().paraNo,
+                    name: self.salGenParaIdent().name,
+                    historyAtr : self.salGenParaIdent().historyAtr,
+                    hisId : historyId,
+                    isFirst : isFirst
+
+                };
+            }
+            else{
+                data  = {
+                    start : self.listHistory()[index].startDate ,
+                    end : self.listHistory()[index].endDate ,
+                    code: self.salGenParaIdent().paraNo,
+                    name: self.salGenParaIdent().name,
+                    historyAtr : self.salGenParaIdent().historyAtr,
+                    hisId : historyId,
+                    isFirst : isFirst
+
+                };
+            }
+            setShared('QMM001_PARAMS_TO_SCREEN_C', data);
             modal("/view/qmm/001/c/index.xhtml").onClosed(() => {
                 self.modeScreen(MODESCREEN.ADD);
+                let params = getShared('QMM001_C_PARAMS_OUTPUT');
+                if(params && params.result){
+                    self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                }
+
             });
         }
         removeHistory(){

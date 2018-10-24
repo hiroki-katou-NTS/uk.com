@@ -44,7 +44,7 @@ public class SalGenHistoryService {
         else{
             DateHistoryItem dateHistoryItem = new DateHistoryItem(newHistID, new DatePeriod(GeneralDate.fromString(start,"yyyy/MM/dd"),GeneralDate.fromString(end,"yyyy/MM/dd")));
             Optional<SalGenParaDateHistory> objectHis = mSalGenParaDateHistRepository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);
-            SalGenParaDateHistory salGenParaDateHistory = new SalGenParaDateHistory(paraNo,AppContexts.user().companyId(), objectHis.get().getDateHistoryItem());
+            SalGenParaDateHistory salGenParaDateHistory = new SalGenParaDateHistory(paraNo,AppContexts.user().companyId(), new ArrayList<DateHistoryItem>());
             if (objectHis.isPresent()) {
                 salGenParaDateHistory = objectHis.get();
             }
@@ -79,14 +79,14 @@ public class SalGenHistoryService {
         if(itemtoBeAdded == null){
             return;
         }
-        mSalGenParaDateHistRepository.add(itemtoBeAdded, cId,paraNo);
+        mSalGenParaDateHistRepository.add(itemtoBeAdded,paraNo,cId);
     }
     private void updateItemDateBefore(SalGenParaDateHistory salGenParaDateHistory, DateHistoryItem item, String cId, String paraNo){
         Optional<DateHistoryItem> itemToBeUpdated = salGenParaDateHistory.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
             return;
         }
-        mSalGenParaDateHistRepository.update(itemToBeUpdated.get(), cId,paraNo);
+        mSalGenParaDateHistRepository.update(itemToBeUpdated.get(), paraNo,cId);
     }
 
 

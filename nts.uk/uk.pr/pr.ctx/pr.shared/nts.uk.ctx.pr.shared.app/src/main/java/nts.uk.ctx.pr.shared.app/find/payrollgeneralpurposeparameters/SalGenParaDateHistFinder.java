@@ -24,6 +24,8 @@ public class SalGenParaDateHistFinder
     @Inject
     private SalGenParaDateHistRepository repository;
 
+    private final static String HIS_ID_TEMP = "00000devphuc.tc";
+
     public List<SalGenParaDateHistDto> getAllSalGenParaDateHist(String paraNo){
         String cId = AppContexts.user().companyId();
         Optional<SalGenParaDateHistory> salGenParaDateHis = repository.getAllSalGenParaDateHist(cId,paraNo);
@@ -34,10 +36,9 @@ public class SalGenParaDateHistFinder
         return salGenParaDateHisDto;
     }
     public List<SalGenParaDateHistDto> getListHistory(String paraNo,GeneralDate startDate,GeneralDate end){
-        String newHistID = IdentifierUtil.randomUniqueId();
         Optional<SalGenParaDateHistory> objectHis = repository.getAllSalGenParaDateHist(AppContexts.user().companyId(),paraNo);
         SalGenParaDateHistory salGenParaDateHistory = new SalGenParaDateHistory(paraNo,AppContexts.user().companyId(), objectHis.get().getDateHistoryItem());
-        DateHistoryItem dateHistoryItem = new DateHistoryItem(newHistID, new DatePeriod(startDate,end));
+        DateHistoryItem dateHistoryItem = new DateHistoryItem(HIS_ID_TEMP, new DatePeriod(startDate,end));
         salGenParaDateHistory.add(dateHistoryItem);
         List<SalGenParaDateHistDto> salGenParaDateHisDto = new ArrayList<SalGenParaDateHistDto>();
         if (salGenParaDateHistory.getDateHistoryItem() != null) {
