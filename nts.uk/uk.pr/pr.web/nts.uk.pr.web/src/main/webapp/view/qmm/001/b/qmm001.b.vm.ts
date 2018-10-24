@@ -13,8 +13,8 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         takeOver: KnockoutObservable<number> = ko.observable(0);
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
-        startYearMonth: KnockoutObservable<number> = ko.observable(0);
-        startLastYearMonth: KnockoutObservable<number> = ko.observable();
+        startYearMonth: KnockoutObservable<number> = ko.observable();
+        startLastYearMonth: KnockoutObservable<number> = ko.observable(0);
         end: KnockoutObservable<string> = ko.observable('');
         historyAtr: KnockoutObservable<number> = ko.observable(1);
         startYearMonthDay: KnockoutObservable<string> = ko.observable('');
@@ -57,7 +57,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
 
         validateYearMonth(){
             let self = this;
-            if(!(self.startLastYearMonth() < self.startYearMonth())) {
+            if(!(self.startLastYearMonth() < self.startYearMonth())){
                 $('#B1_7').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }
@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
 
         validateYearMonthDay(){
             let self = this;
-            if(!(Number(self.startLastYearMonthDay()) < Number(self.startYearMonthDay()))) {
+            if(!(Number(self.startLastYearMonthDay()) < Number(self.startYearMonthDay()))){
                 $('#B1_6').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }

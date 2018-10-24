@@ -42,13 +42,13 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                 self.isFirst(params.isFirst);
                 self.historyAtr(params.historyAtr);
                 if (params.historyAtr == 1) {
-                    self.startLastYearMonth(params.start);
+                    self.startLastYearMonth(params.startLastYearMonth);
                     self.end(getText('QMM001_31', [self.convertMonthYearToString(params.end)]));
                     self.startYearMonth(params.start);
                     self.endYearMonth(params.end);
                 }
                 if (params.historyAtr == 0) {
-                    self.startLastDate(self.convertStringToDate(params.start));
+                    self.startLastDate(self.convertStringToDate(params.startLastDate));
                     self.end(getText('QMM001_31', [params.end]));
                     self.startDate(params.start);
                     self.endDate(params.end);
@@ -150,7 +150,10 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
 
         validateYearMonth() {
             let self = this;
-            if ((!(self.startLastYearMonth() < self.startYearMonth())) && self.hasRequired()) {
+            if (!this.hasRequired()) {
+                return false;
+            }
+            if ((!(self.startLastYearMonth() < self.startYearMonth())) || (self.startYearMonth() > Number(self.endYearMonth()))) {
                 $('#C1_12').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }
@@ -158,8 +161,11 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
         }
 
         validateYearMonthDay(){
+            if (!this.hasRequired()) {
+                return false;
+            }
             let self = this;
-            if ((!(self.startLastDate() < self.startDate())) && self.hasRequired()) {
+            if ((!(self.startLastDate() < self.startDate())) ||  (self.startYearMonth() > Number(self.endDate())) ) {
                 $('#C1_11').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }
