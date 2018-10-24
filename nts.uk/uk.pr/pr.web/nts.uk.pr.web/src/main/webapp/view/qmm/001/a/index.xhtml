@@ -10,10 +10,9 @@
         <com:ValidatorScript>
             nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamTime
             nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamCharacter
-
+            nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamNumber
         </com:ValidatorScript>
 		<com:scriptfile set="IGNITE"/>
-		<com:scriptfile path="../../001/share/layout-control-ko-ext.js"/>
 		<com:stylefile path="qmm001.a.style.css"/>
 		<com:scriptfile path="qmm001.a.service.js"/>
 		<com:scriptfile path="qmm001.a.start.js"/>
@@ -198,7 +197,7 @@
 																name: '#{i18n.getText('QMM001_22')}',
 																value: value,
 																required: true,
-																constraint: 'InsuranceRate',
+																constraint: 'ParamNumber',
 																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 																placeHolder: 'クリア',
 																} "/>

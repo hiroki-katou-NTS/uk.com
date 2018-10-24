@@ -243,7 +243,24 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         return;
                     }
                     self.salGenParaValue(item);
-                    self.value(Number(item.timeValue));
+                    if(item.numValue != null){
+                        self.value(Number(item.numValue));
+                    }
+                    else{
+                        if(item.charValue != null){
+                            self.value(item.numValue);
+                        }
+                        else{
+                            if(item.timeValue != null){
+                                self.value(Number(item.timeValue));
+                            }
+                            else{
+                                self.value(null);
+                            }
+                        }
+
+                    }
+
                     self.selectedSwitchParaAvai(item.availableAtr);
                     self.selectedSwitchParaTargetAtr(item.targetAtr);
                     self.valueComboBox((item.selection == null)? 0 : item.selection);
@@ -253,28 +270,43 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             }
             else{
                 let dataSalGenValueTemp : any = null;
-                if(type == TAKEOVER.DONTCOPY){
-                     dataSalGenValueTemp  ={
+                if(self.listHistory().length > 1){
+                    if(type == TAKEOVER.DONTCOPY){
+                        dataSalGenValueTemp  = {
+                            historyId :hisId ,
+                            selection :null ,
+                            availableAtr: SWITCH_EFF_CATEGORY.UNAVAILABLE,
+                            numValue :null,
+                            charValue :null,
+                            timeValue :null,
+                            targetAtr: null
+                        };
+                        self.value(null);
+                    }
+                    else{
+                        dataSalGenValueTemp  ={
+                            historyId :hisId ,
+                            selection :self.salGenParaValue().selection ,
+                            availableAtr: self.salGenParaValue().availableAtr,
+                            numValue :self.salGenParaValue().numValue,
+                            charValue :self.salGenParaValue().charValue ,
+                            timeValue :self.salGenParaValue().timeValue,
+                            targetAtr: self.salGenParaValue().targetAtr
+                        };
+                    }
+                }
+                else{
+                    dataSalGenValueTemp  = {
                         historyId :hisId ,
                         selection :null ,
                         availableAtr: SWITCH_EFF_CATEGORY.UNAVAILABLE,
                         numValue :null,
-                        charValue :null ,
+                        charValue :null,
                         timeValue :null,
                         targetAtr: null
                     };
                     self.value(null);
-                }
-                else{
-                     dataSalGenValueTemp  ={
-                        historyId :hisId ,
-                        selection :self.salGenParaValue().selection ,
-                        availableAtr: self.salGenParaValue().availableAtr,
-                        numValue :self.salGenParaValue().numValue,
-                        charValue :self.salGenParaValue().charValue ,
-                        timeValue :self.salGenParaValue().timeValue,
-                        targetAtr: self.salGenParaValue().targetAtr
-                    };
+                    self.isDisplayHis(true);
                 }
                 self.salGenParaValue(dataSalGenValueTemp);
 
@@ -493,20 +525,12 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if (params == null || params === undefined) {
                     return;
                 }
-                if(params && params.methodEditing){
-                    if(params.methodEditing == 0) /*xóa*/
-                    {
-                        let paraNo : number =  self.selectedSalGenParaIdent();
-                        self.itemSelectionProcess(paraNo);
-                        self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
-                        self.modeScreen(MODESCREEN.ADD);
-                        return;
-                    }
+
                     let paraNo : number =  self.selectedSalGenParaIdent();
                     self.itemSelectionProcess(paraNo);
                     self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
                     self.modeScreen(MODESCREEN.ADD);
-                }
+
 
 
             });

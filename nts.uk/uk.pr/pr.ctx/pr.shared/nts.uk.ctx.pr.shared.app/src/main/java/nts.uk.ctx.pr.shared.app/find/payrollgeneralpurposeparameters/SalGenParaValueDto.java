@@ -50,7 +50,14 @@ public class SalGenParaValueDto
     
     public static SalGenParaValueDto fromDomain(SalGenParaValue domain)
     {
-        return new SalGenParaValueDto(domain.getHistoryId(), domain.getSelection().get(), domain.getAvailableAtr().value, domain.getNumValue().map(i->i.v()).orElse(null), domain.getCharValue().map(i->i.v()).orElse(null), domain.getTimeValue().map(i->i.v()).orElse(null), domain.getTargetAtr().map(i->i.value).orElse(null));
+        return new SalGenParaValueDto(domain.getHistoryId(),
+                domain.getSelection().map(i->i.intValue()).orElse(null),
+                domain.getAvailableAtr().value,
+                domain.getNumValue().map(i->i.v()).orElse(null),
+                domain.getCharValue().map(i->i.v()).orElse(null),
+                domain.getTimeValue().map(i->i.v()).orElse(null),
+                domain.getTargetAtr().map(i->i.value).orElse(null)
+        );
     }
     
 }
