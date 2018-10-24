@@ -37,4 +37,6 @@ public interface AppRootInstanceRepository {
 	
 	public Optional<AppRootInstance> findByContainDate(String companyID, String employeeID, GeneralDate recordDate, RecordRootType rootType);
 	
+	public List<AppRootInstance> findByApproverDateCID(String companyID, String approverID, GeneralDate date, RecordRootType rootType);
+	
 }

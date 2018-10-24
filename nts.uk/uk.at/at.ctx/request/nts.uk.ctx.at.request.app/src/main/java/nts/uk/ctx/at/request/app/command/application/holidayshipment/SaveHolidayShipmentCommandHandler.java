@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewA
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -147,6 +148,8 @@ public class SaveHolidayShipmentCommandHandler
 	private InterimRemainDataMngCheckRegister checkRegister;
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlg;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -191,7 +194,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void checkForlackOfRest(String companyID, String sID, SaveHolidayShipmentCommand command) {
 		//4.社員の当月の期間を算出する
-		this.ortherAl.employeePeriodCurrentMonthCalculate(companyID, sID, GeneralDate.today());
+		PeriodCurrentMonth cls =  this.ortherAl.employeePeriodCurrentMonthCalculate(companyID, sID, GeneralDate.today());
 		//INPUT.振休申請をチェックする
 		if(isSaveAbs(command.getComType())){
 			//INPUT.振休申請＝設定あり
@@ -219,7 +222,7 @@ public class SaveHolidayShipmentCommandHandler
 			}
 			
 			InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, sID,
-					new DatePeriod(GeneralDate.today(), GeneralDate.today().addYears(1).addDays(-1)), false,
+					new DatePeriod(cls.getStartDate(), cls.getEndDate().addYears(1).addDays(-1)), false,
 					command.getAbsCmd().getAppDate(),
 					new DatePeriod(command.getAbsCmd().getAppDate(), command.getAbsCmd().getAppDate()), true,
 					Collections.emptyList(), Collections.emptyList(),getAppData(command,sID) , chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual, chkSpecial,

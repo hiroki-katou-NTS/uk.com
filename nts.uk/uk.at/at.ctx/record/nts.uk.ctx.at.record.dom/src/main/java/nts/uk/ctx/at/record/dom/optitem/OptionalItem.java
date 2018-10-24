@@ -238,10 +238,10 @@ public class OptionalItem extends AggregateRoot {
 				   											 resultOfCalcFormula.getMoney());
         //小数点以下存在すればif内へ
         //countの少数点以下の桁数を取得
-    	int decimalCount = getPrecision(result.getCount().get());
-        if(decimalCount > 0) {
-        	result = result.reCreateCalcResultOfAnyItem(controlCountValue(result.getCount().get(),decimalCount), OptionalItemAtr.NUMBER);
-        }
+//    	int decimalCount = getPrecision(result.getCount().get());
+//        if(decimalCount > 0) {
+//        	result = result.reCreateCalcResultOfAnyItem(controlCountValue(result.getCount().get(),decimalCount), OptionalItemAtr.NUMBER);
+//        }
         
         //上限下限チェック
         result = this.calcResultRange.checkRange(result, this.optionalItemAtr);
