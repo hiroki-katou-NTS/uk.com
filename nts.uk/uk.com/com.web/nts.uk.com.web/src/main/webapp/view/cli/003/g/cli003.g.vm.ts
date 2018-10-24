@@ -292,7 +292,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         obsSelectedLogRecordType() {
             var self = this;
             self.recordType.subscribe(function(newValue) {
-                if (typeof newValue !== "undefined") {
+                if (typeof newValue !== "undefined" && newValue !=null ) {
                     if (newValue != -1) {
                         self.getLogItemByRecordType(newValue.toString());
                     }
@@ -306,7 +306,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         obsSelectedLogDataType() {
             var self = this;
             self.dataType.subscribe(function(newValue) {
-                if (typeof newValue !== "undefined") {
+                if (typeof newValue !== "undefined" && newValue !=null ) {
                     if (newValue != -1) {
                         self.showLogItems(newValue);
                     }

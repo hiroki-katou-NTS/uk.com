@@ -237,6 +237,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         itemInputName: any = [];
 
         periodCdl027: KnockoutObservable<any> = ko.observable({});
+        showDialogError: boolean = false;
         constructor(dataShare: any) {
             var self = this;
 
@@ -683,6 +684,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             console.log("thoi gian load 0: " + (performance.now() - startTime));
             //set SPR
             if (data.showErrorDialog) {
+                self.showDialogError = true; 
                 self.showErrorDialog();
             }
             //alert("time load ALL: "+ (performance.now() - startTime));
@@ -1056,6 +1058,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                             if (dataAfter.errorMap[6] != undefined) {
                                  nts.uk.ui.dialog.info({ messageId: "Msg_1455" });
+                            }
+                            
+                            if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog) {
+                                self.showDialogError = true;
+                                self.showErrorDialog();
+                            }else{
+                                self.showDialogError = false;
                             }
                             nts.uk.ui.block.clear();
                         } else {
@@ -1796,6 +1805,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.loadKcp009();
                             self.hasEmployee = true;
                         }
+                        if (data.showErrorDialog) {
+                            self.showDialogError = true;
+                            self.showErrorDialog();
+                        }
                    }
                     nts.uk.ui.block.clear();
                 }).fail(function(error) {
@@ -2297,7 +2310,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataRowEnd = dataSource[dataSource.length - 1];
             service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail }).done((data) => {
                 self.processLockButton(self.showLock());
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() =>{
+                    if( self.showDialogError) self.showErrorDialog();
+                });
                 nts.uk.ui.block.clear();
             });
             nts.uk.ui.block.clear();
@@ -2312,7 +2327,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataRowEnd = dataSource[dataSource.length - 1];
             service.releaseClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail }).done((data) => {
                 self.processLockButton(self.showLock());
-                nts.uk.ui.dialog.info({ messageId: "Msg_1445" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_1445" }).then(() =>{
+                    if( self.showDialogError) self.showErrorDialog();
+                });
                 nts.uk.ui.block.clear();
             });
             nts.uk.ui.block.clear();
@@ -3476,6 +3493,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 })
             }
 
+            //remove error
+            _.remove(__viewContext.vm.workTypeNotFound, error => {
+               return error.columnKey == columnKey && error.rowId == rowId;
+            })
+            
             if (typeGroup != undefined && typeGroup != null) {
                 let param = {
                     typeDialog: typeGroup.split(":")[1],
@@ -3500,6 +3522,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 return data.columnKey == columnKey && data.rowId == rowId;
                             });
                             if (data.errorFind == 1) {
+                                let e = document.createEvent("HTMLEvents");
+                                e.initEvent("mouseup", false, true);
+                                $("#dpGrid")[0].dispatchEvent(e);
                                 if (typeError == undefined) {
                                     __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId, message: nts.uk.resource.getMessage("Msg_1293") });
                                 } else {
@@ -3507,6 +3532,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 }
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1293" })
                             } else if (data.errorFind == 2) {
+                                let e = document.createEvent("HTMLEvents");
+                                e.initEvent("mouseup", false, true);
+                                $("#dpGrid")[0].dispatchEvent(e);
                                 if (typeError == undefined) {
                                     __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId, message: nts.uk.resource.getMessage("Msg_1314") });
                                 } else {
@@ -3544,6 +3572,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             __viewContext.vm.flagCalculation = false;
             $("#next-month").ntsError("clear");
             
+            _.remove(__viewContext.vm.listCheck28(), error => {
+                return error.rowId == rowId;
+            })
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
