@@ -49,9 +49,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             });
             self.selectedSalGenParaHistory.subscribe((data) => {
                 errors.clearAll();
-                if(data == HIS_ID_TEMP)
-                    return;
-                self.getSalGenParaValue(data);
+                self.getSalGenParaValue(data,TAKEOVER.DONTCOPY);
                 self.salGenParaHistory(_.find(self.listHistory(), {'historyId': data}));
             });
             self.selectedSwitchParaAvai.subscribe((data) => {
@@ -237,20 +235,40 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             return year + "/" + month;
         }
 
-        getSalGenParaValue(hisId: string) {
+        getSalGenParaValue(hisId: string, type:number) {
             let self  = this;
-            service.getSalGenParaValue(hisId).done((item: SalGenParaValue) => {
-                if(item==null){
-                    return;
+            if(hisId != HIS_ID_TEMP){
+                service.getSalGenParaValue(hisId).done((item: SalGenParaValue) => {
+                    if(item==null){
+                        return;
+                    }
+                    self.salGenParaValue(item);
+                    self.value(Number(item.timeValue));
+                    self.selectedSwitchParaAvai(item.availableAtr);
+                    self.selectedSwitchParaTargetAtr(item.targetAtr);
+                    self.valueComboBox(item.selection);
+                }).fail(error => {
+                    dialog.alertError(error);
+                });
+            }
+            else{
+                if(type == TAKEOVER.DONTCOPY){
+                    let dataSalGenValueTemp : any ={
+                        historyId :hisId ,
+                        selection :null ,
+                        availableAtr: null,
+                        numValue :null,
+                        charValue :null ,
+                        timeValue :null,
+                        targetAtr: null
+                    }
+                    self.value(null);
+                    self.salGenParaValue(dataSalGenValueTemp);
+
                 }
-                self.salGenParaValue(item);
-                self.value(Number(item.timeValue));
-                self.selectedSwitchParaAvai(item.availableAtr);
-                self.selectedSwitchParaTargetAtr(item.targetAtr);
-                self.valueComboBox(item.selection);
-            }).fail(error => {
-                dialog.alertError(error);
-            });
+
+            }
+
         }
 
         register() {
@@ -274,7 +292,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 }
 
             };
-            let data: any = {
+            let dataHisValue: any = null;
+            let dataValue: any = {
                 historyId: self.selectedSalGenParaHistory(),
                 selection: self.salGenParaValue().selection,
                 availableAtr: self.selectedSwitchParaAvai(),
@@ -284,7 +303,35 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 targetAtr: self.selectedSwitchParaTargetAtr(),
                 modeScreen: self.modeScreen()
             };
-            service.addSelectionProcess(data).done(() => {
+            dataHisValue = {
+                paraNo: "",
+                startTime: "",
+                endTime: "",
+                modeHistory :self.modeHistory(),
+                mSalGenParaValueCommand: dataValue
+            };
+            if(self.modeScreen() == MODESCREEN.ADD){
+
+                if(self.modeHistory() == MODEHISTORY.YEARMONTH){
+                    dataHisValue = {
+                        paraNo: self.listHistory()[0].paraNo,
+                        startTime: self.listHistory()[0].startYearMonth,
+                        endTime: self.listHistory()[0].endYearMonth,
+                        modeHistory : self.modeHistory(),
+                        mSalGenParaValueCommand: dataValue
+                    };
+                }
+                else{
+                    dataHisValue = {
+                        paraNo: self.listHistory()[0].paraNo,
+                        startTime: self.listHistory()[0].startDate,
+                        endTime: self.listHistory()[0].endDate,
+                        modeHistory : self.modeHistory(),
+                        mSalGenParaValueCommand: dataValue
+                    };
+                }
+            }
+            service.addSelectionProcess(dataHisValue).done(() => {
                 if (self.modeScreen()== MODESCREEN.ADD){
                     self.initView();
                 }
@@ -295,24 +342,22 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
 
         }
-        addHistory(start: number){
+        addHistory(start: number,type:number){
             let self = this;
             let to :string = getText('QMM001_13');
             let list: Array<any> = self.listHistory();
             let newHistory :any = null;
             if(self.modeHistory() == MODEHISTORY.DATE){
-                newHistory = new SalGenParaDateHistory();
-                newHistory.paraNo = self.selectedSalGenParaIdent();
-                newHistory.cID ='';
-                newHistory.historyId = HIS_ID_TEMP;
-                newHistory.startDate = start;
-                newHistory.endDate = '99991231';
-                newHistory.display= newHistory.startDate+ " " + to + " "+newHistory.endDate;
-                if (list && list.length > 0) {
-                    let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
-                    list[FIRST].display =list[FIRST].startYearMonth + " "+ to + " "+end;
-                }
-
+                let year :string = start.toString().slice(0,4);
+                let month:string = start.toString().slice(4,6);
+                let day:string = start.toString().slice(6,8);
+                let startDate :string = year+"-"+month+"-"+day;
+                service.getListHistory(new SalGenParaDateParams(self.selectedSalGenParaIdent(), "", self.selectedSalGenParaHistory(), startDate, "9999-12-31")).done((data) => {
+                    self.listHistory(data);
+                    self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                }).fail(error => {
+                    dialog.alertError(error);
+                });
             }
             else{
                 newHistory = new SalGenParaYearMonthHistory();
@@ -326,10 +371,10 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
                     list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " "+ to + " "+ self.convertMonthYearToString((end).toString());
                 }
+                self.listHistory().push(newHistory);
+                self.listHistory(_.orderBy(self.listHistory(), ['startYearMonth'], ['desc']));
+                self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
             }
-
-
-        self.listHistory().push(newHistory);
 
         }
         isEnableSwitchButton(){
@@ -359,14 +404,15 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         openDialogB(){
             let self = this;
             let  startDate :any = null;
-            if(self.salGenParaIdent().historyAtr == MODEHISTORY.DATE){
-                startDate = self.listHistory()[0].startYearMonth;
+            if(self.listHistory()[0] != null){
+                if(self.salGenParaIdent().historyAtr == MODEHISTORY.YEARMONTH){
+                    startDate = self.listHistory()[0].startYearMonth;
+                }
+                else{
+                    startDate = self.listHistory()[0].startDate;
+                }
             }
-            else{
-                startDate = self.listHistory()[0].startDate;
-            }
-
-            let data:any = {
+             let data:any = {
                 start : startDate ,
                 code: self.salGenParaIdent().paraNo,
                 name: self.salGenParaIdent().name,
@@ -378,7 +424,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if (params == null || params === undefined) {
                     return;
                 }
-                self.addHistory(params.startYearMonth);
+                self.addHistory(params.startYearMonth,params.takeOver);
                 self.modeScreen(MODESCREEN.ADD);
             });
         }
@@ -626,6 +672,18 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         constructor() {
 
         }
+        static fromapp(params:ISalGenParaValue){
+            let dto: SalGenParaValue = new SalGenParaValue();
+            dto.historyId = ko.observable(params.historyId);
+            dto.numValue = ko.observable(params.numValue);
+            dto.charValue = ko.observable(params.charValue);
+
+            dto.selection = ko.observable(params.selection);
+            dto.availableAtr = ko.observable(params.availableAtr);
+            dto.timeValue = ko.observable(params.timeValue);
+            dto.targetAtr = ko.observable(params.targetAtr);
+            return dto;
+        }
 
 
     }
@@ -712,6 +770,40 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         modeScreen: number;
     }
 
+    class SalGenParaDateParams {
+        /**
+         * パラメータNo
+         */
+        paraNo: string;
+
+        /**
+         * 会社ID
+         */
+        cID: string;
+
+        /**
+         * 履歴ID
+         */
+        historyId: string;
+
+        /**
+         * 開始日
+         */
+        startDate: string;
+
+        /**
+         * 終了日
+         */
+        endDate: string;
+        constructor(paraNo: string,cID: string,historyId: string,startDate: string,endDate: string) {
+            this.paraNo = paraNo;
+            this.cID = cID;
+            this.historyId = historyId;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+    }
+
 
     export enum PARAATTRITYPE {
         TEXT = 0,
@@ -767,6 +859,11 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         TARGET = 0,
         /*対象外*/
         NOT_COVERED = 1
+    }
+    export enum TAKEOVER {
+
+        COPY = 0,
+        DONTCOPY = 1
     }
 
 
