@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.monthly.roundingset;
+package nts.uk.ctx.at.record.infra.entity.monthly.roundingset;
 
 import java.io.Serializable;
 
