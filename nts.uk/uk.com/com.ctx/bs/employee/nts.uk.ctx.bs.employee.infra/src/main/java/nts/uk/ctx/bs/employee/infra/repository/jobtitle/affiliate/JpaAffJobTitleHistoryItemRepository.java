@@ -173,26 +173,28 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 
 	@Override
 	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
-		List<BsymtAffJobTitleHistItem> data = new ArrayList<>();
+		List<AffJobTitleHistoryItem> data = new ArrayList<>();
 		CollectionUtil.split(lstSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			data.addAll(this.queryProxy().query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
-				.setParameter("lstSid", subList)
-				.setParameter("referDate", referDate)
-				.getList());
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT hi.HIST_ID, hi.SID, hi.JOB_TITLE_ID, hi.NOTE from BSYMT_AFF_JOB_HIST_ITEM hi"
+						+ " INNER JOIN BSYMT_AFF_JOB_HIST h ON hi.HIST_ID = h.HIST_ID"
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(referDate.localDate()));
+				statement.setDate(2, Date.valueOf(referDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return AffJobTitleHistoryItem.createFromJavaType(rec.getString("HIST_ID"), rec.getString("SID"),
+																	rec.getString("JOB_TITLE_ID"), rec.getString("NOTE"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		});
 		
-		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();
-		
-		if (data != null && !data.isEmpty()) {
-			data.stream().forEach((item) -> {
-				lstAffJobTitleHistoryItems.add(AffJobTitleHistoryItem.createFromJavaType(item.hisId, item.sid, item.jobTitleId, item.note));
-			});
-		}
-		
-		if (lstAffJobTitleHistoryItems != null && !lstAffJobTitleHistoryItems.isEmpty()) {
-			return lstAffJobTitleHistoryItems;
-		}
-		return null;
+		return data;
 	}
 
 	@Override

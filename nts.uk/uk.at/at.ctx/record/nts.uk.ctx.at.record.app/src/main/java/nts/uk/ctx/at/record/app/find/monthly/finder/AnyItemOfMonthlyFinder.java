@@ -67,7 +67,7 @@ public class AnyItemOfMonthlyFinder extends MonthlyFinderFacade {
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 		
-		return (List<T>) repo.findBySidsAndMonths(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
+		return (List<T>) repo.findBySidsAndMonthsV2(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
 				.stream().collect(Collectors.groupingBy(c -> StringUtils.join(c.getEmployeeId(), c.getYearMonth()), 
 						Collectors.collectingAndThen(Collectors.toList(), 
 								list -> AnyItemOfMonthlyDto.fromWith(list, optionalMaster))))

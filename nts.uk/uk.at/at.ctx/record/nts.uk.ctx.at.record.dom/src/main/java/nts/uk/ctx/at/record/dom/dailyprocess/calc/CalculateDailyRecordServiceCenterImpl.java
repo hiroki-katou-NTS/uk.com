@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -122,7 +123,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 									  Collections.emptyList()).getLst();
 		//勤務情報のステータスを変更
 		result.forEach(tc ->{
-			dailyCalculationEmployeeService.upDateCalcState(tc);
+			tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
+			//dailyCalculationEmployeeService.upDateCalcState(tc);
 		});
 		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
 	}

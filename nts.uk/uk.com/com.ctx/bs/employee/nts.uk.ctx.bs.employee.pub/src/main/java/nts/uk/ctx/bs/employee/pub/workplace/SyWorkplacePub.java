@@ -154,6 +154,8 @@ public interface SyWorkplacePub {
 	// RequestList 227
 	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
 	
+	List<AffAtWorkplaceExport> findBySIdAndBaseDateV2(List<String> sids, GeneralDate baseDate);
+	
 	
 	
 	/**

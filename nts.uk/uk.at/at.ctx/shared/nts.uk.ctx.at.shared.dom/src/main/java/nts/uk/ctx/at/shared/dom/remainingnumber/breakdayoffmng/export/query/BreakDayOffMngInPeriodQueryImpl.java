@@ -755,7 +755,9 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		List<InterimDayOffMng> lstDayoffUsen = new ArrayList<>(lstDayoffMng);
 		List<InterimRemain> lstTmpBreak = new ArrayList<>(lstInterimBreak);
 		List<InterimBreakMng> lstBreakMngUsen = new ArrayList<>(lstBreakMng);
-		if(inputParam.isReplaceChk() && !inputParam.getInterimMng().isEmpty()) {
+		if(inputParam.isReplaceChk() 
+				&& !inputParam.getInterimMng().isEmpty()
+				&& !inputParam.isMode()) {
 			for (InterimRemain interimRemain : inputParam.getInterimMng()) {
 				List<InterimRemain> lstInterimDayoffUsen = lstTmpDayoff.stream()
 						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());

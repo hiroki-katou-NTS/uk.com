@@ -119,6 +119,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	public void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId) {
 		WwfmtPsApprovalRootPK comPK = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		this.commandProxy().remove(WwfmtPsApprovalRoot.class,comPK);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * add Person Approval Root
