@@ -9,6 +9,8 @@ public interface EmpTiedProYearRepository {
 
     Optional<EmpTiedProYear> getEmpTiedProYearById(String cid, int processCateNo);
 
+    Optional<EmpTiedProYear> getEmpTiedProYearByEmployment(String cid, String employmentCode);
+
     void add(EmpTiedProYear domain);
 
     void update(EmpTiedProYear oldDomain, EmpTiedProYear newDomain);
