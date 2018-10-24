@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth;
+package nts.uk.ctx.at.record.dom.monthly.roundingset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class RoundingMonth extends AggregateRoot {
 	private String companyId;
 
 	/** 勤怠項目ID */
-	private TimeItemId timeItemId;
+	private Integer timeItemId;
 
 	/** 丸め単位 */
 	public RoundingTimeUnit unit;
@@ -38,8 +38,8 @@ public class RoundingMonth extends AggregateRoot {
 	 * @param rounding
 	 * @return
 	 */
-	public static RoundingMonth createFromJavaType(String companyId, String timeItemId, int unit, int rounding) {
-		return new RoundingMonth(companyId, new TimeItemId(timeItemId),
+	public static RoundingMonth createFromJavaType(String companyId, Integer timeItemId, int unit, int rounding) {
+		return new RoundingMonth(companyId, timeItemId,
 				EnumAdaptor.valueOf(unit, RoundingTimeUnit.class), EnumAdaptor.valueOf(rounding, Rounding.class));
 	}
 }
