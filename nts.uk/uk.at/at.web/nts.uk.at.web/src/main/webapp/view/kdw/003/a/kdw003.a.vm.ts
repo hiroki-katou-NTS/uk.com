@@ -1773,7 +1773,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
                         //self.showLock(self.showButton().available12());
                         //self.unLock(false);
-                        if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
+                        if (data.lstControlDisplayItem.lstHeader.length == 0){
+                            self.hasLstHeader = false;
+                        }else{
+                            self.hasLstHeader = true;
+                        }
+                        
                         if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                             self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                             self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[7], self.fixHeaders()[4]];
@@ -2812,11 +2817,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }));
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     self.selectedEmployee(self.lstEmployee()[0].id);
-                    if (self.hasEmployee) {
-                        self.loadKcp009();
-                    }
                     self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.hasEmployee = true;
+                    self.loadKcp009();
                     self.btnExtraction_Click();
                 },
             }
