@@ -25,7 +25,7 @@ public interface AnnualBreakManageAdapter {
 	 * @param confirmDay
 	 * @return
 	 */
-	List<YearlyHolidaysTimeRemainingImport> getYearHolidayTimeAnnualRemaining(String employeeId, GeneralDate confirmDay);
+	List<YearlyHolidaysTimeRemainingImport> getYearHolidayTimeAnnualRemaining(String employeeId, GeneralDate confirmDay, GeneralDate holidayGrantStart, GeneralDate holidayGrantEnd);
 
 	/**
 	 * 次回年休付与を計算
