@@ -79,7 +79,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 			if (checkUrl == NotUseAtr.USE) {
-				urlInfo = I18NText.getText("KDL030_30") + "\n"
+				urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
 						+ registerEmbededURL.registerEmbeddedForApp(
 						application.getAppID(), 
 						application.getAppType().value, 
@@ -88,7 +88,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 						applicantID);
 			}
 		}
-		String mailContent1 = mailBody + "\n" + urlInfo;
+		String mailContent1 = mailBody + urlInfo;
 		//※同一メール送信者に複数のメールが送られないよう
 		//　一旦メール送信した先へのメールは送信しない。
 		//list sID da gui
