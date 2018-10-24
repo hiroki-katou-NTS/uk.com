@@ -135,7 +135,7 @@ public interface DailyPerformanceScreenRepo {
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String>errorCodes);
 	
 	/** Get error settings */
-	List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode);
+	List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode, boolean showError, boolean showAlarm, boolean showOther);
 	
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);

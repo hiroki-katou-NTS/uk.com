@@ -16,4 +16,6 @@ public class DataResultAfterIU {
 	Map<Integer, List<DPItemValue>> errorMap;
 	
 	FlexShortageRCDto flexShortage;
+	
+	boolean showErrorDialog;
 }

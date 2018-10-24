@@ -251,9 +251,10 @@ input[type=text]::-ms-clear {
   background: #666;
   border-bottom: solid 3px #1AC911;
   white-space: nowrap;
+  overflow: hidden;
 }
 
-/* line 118, ../sass/base/_menu.scss */
+/* line 119, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav {
   list-style-type: none;
   height: 28px;
@@ -264,12 +265,12 @@ input[type=text]::-ms-clear {
   position: relative;
 }
 
-/* line 128, ../sass/base/_menu.scss */
+/* line 129, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav li {
   position: relative;
 }
 
-/* line 132, ../sass/base/_menu.scss */
+/* line 133, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category {
   display: inline-block;
   margin: 0;
@@ -278,13 +279,13 @@ input[type=text]::-ms-clear {
   border-right: solid 2px #1AC911;
 }
 
-/* line 140, ../sass/base/_menu.scss */
+/* line 141, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category:first-child {
   border-left: solid 2px #1AC911;
   width: 48px;
 }
 
-/* line 145, ../sass/base/_menu.scss */
+/* line 146, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > div.category-name {
   padding: 5px 20px;
   background: #666;
@@ -294,23 +295,23 @@ input[type=text]::-ms-clear {
   line-height: 18px;
 }
 
-/* line 154, ../sass/base/_menu.scss */
+/* line 155, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category:not(.menu-select) > div.category-name:hover {
   background: #90F203 !important;
 }
 
-/* line 158, ../sass/base/_menu.scss */
+/* line 159, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category:not(.menu-select) > div.category-name.opening {
   background: #FFF !important;
   color: #000 !important;
 }
 
-/* line 163, ../sass/base/_menu.scss */
+/* line 164, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav li.menu-select > div.category-name {
   text-align: center;
 }
 
-/* line 167, ../sass/base/_menu.scss */
+/* line 168, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav li.menu-select ul.menu-items > li.menu-item {
   width: 200px;
   cursor: pointer;
@@ -318,7 +319,7 @@ input[type=text]::-ms-clear {
   white-space: nowrap;
 }
 
-/* line 174, ../sass/base/_menu.scss */
+/* line 175, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav li.menu-select ul.menu-items > li.menu-item:first-child {
   font-size: medium;
   font-weight: bold;
@@ -326,13 +327,13 @@ input[type=text]::-ms-clear {
   padding: 8px;
 }
 
-/* line 181, ../sass/base/_menu.scss */
+/* line 182, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav li.menu-select ul.menu-items > li.menu-item:not(:first-child):hover {
   background: #F7F7D1;
   color: #000;
 }
 
-/* line 186, ../sass/base/_menu.scss */
+/* line 187, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items {
   display: none;
   position: absolute;
@@ -347,7 +348,7 @@ input[type=text]::-ms-clear {
 }
 
 /* Title menu */
-/* line 200, ../sass/base/_menu.scss */
+/* line 201, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div {
   width: 192px;
   position: absolute;
@@ -355,7 +356,7 @@ input[type=text]::-ms-clear {
   top: 5px;
 }
 
-/* line 207, ../sass/base/_menu.scss */
+/* line 208, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > div.title-name {
   height: 60px;
   display: flex;
@@ -365,7 +366,7 @@ input[type=text]::-ms-clear {
   cursor: pointer;
 }
 
-/* line 216, ../sass/base/_menu.scss */
+/* line 217, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > img.title-image {
   height: 80px;
   width: 100%;
@@ -373,19 +374,19 @@ input[type=text]::-ms-clear {
   border-radius: 16px;
 }
 
-/* line 223, ../sass/base/_menu.scss */
+/* line 224, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item {
   cursor: pointer;
   padding: 8px;
   white-space: pre-wrap;
 }
 
-/* line 229, ../sass/base/_menu.scss */
+/* line 230, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item:hover {
   background: #F7F7D1;
 }
 
-/* line 233, ../sass/base/_menu.scss */
+/* line 234, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category:not(.menu-select) > ul.menu-items > li.menu-item,
 #header #menu-header #logo-area > #user-info > #company > .company-select > ul.company-list > li.company-item {
   width: 230px;
@@ -394,7 +395,7 @@ input[type=text]::-ms-clear {
   white-space: nowrap;
 }
 
-/* line 241, ../sass/base/_menu.scss */
+/* line 242, ../sass/base/_menu.scss */
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options > li {
   width: 180px;
   cursor: pointer;
@@ -402,7 +403,7 @@ input[type=text]::-ms-clear {
   white-space: nowrap;
 }
 
-/* line 248, ../sass/base/_menu.scss */
+/* line 249, ../sass/base/_menu.scss */
 #header #menu-header #nav-area #menu-nav > li.category:not(.menu-select) > ul.menu-items > li.menu-item:hover,
 #header #menu-header #logo-area > #user-info > #company > .company-select > ul.company-list > li.company-item:hover,
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options > li:hover {
@@ -410,7 +411,7 @@ input[type=text]::-ms-clear {
   color: #000;
 }
 
-/* line 255, ../sass/base/_menu.scss */
+/* line 256, ../sass/base/_menu.scss */
 #header #menu-header #pg-area {
   height: 30px;
   border-bottom: 1px solid #ABA6A9;
@@ -5421,9 +5422,10 @@ div .ex-area-line.x-stay {
   padding-top: 8px;
   padding-left: 5px;
   white-space: nowrap;
+  overflow: hidden;
 }
 
-/* line 9, ../sass/frame/_functions.scss */
+/* line 10, ../sass/frame/_functions.scss */
 #functions-area-bottom {
   position: absolute;
   bottom: 0px;

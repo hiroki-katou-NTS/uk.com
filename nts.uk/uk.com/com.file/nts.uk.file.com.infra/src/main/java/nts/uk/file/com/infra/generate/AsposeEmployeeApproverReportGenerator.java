@@ -259,10 +259,10 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 						setTitleStyle(style_Name);
 					}
 					//merge row(column 1 & 2) + set value (column 1 & 2) : TH sang trang moi ma chua het nv cu
-					if(i == rowMergered || lstRowMered.contains(i)){
-						cells.merge(firstRow + i, 1, (totalMerger - i), 1, true);
+					if(i == rowMergered || lstRowMered.contains(firstRow + i)){
+						cells.merge(firstRow + i, 1, (totalMerger - i) > 51 ? 51 : (totalMerger - i), 1, true);
 						Cell em_Code1 = cells.get(firstRow + i, COLUMN_INDEX[1]);
-						cells.merge(firstRow + i, 2, (totalMerger - i), 1, true);
+						cells.merge(firstRow + i, 2, (totalMerger - i) > 51 ? 51 : (totalMerger - i), 1, true);
 						Cell em_Name1 = cells.get(firstRow + i, COLUMN_INDEX[2]);
 						em_Code1.setValue(output.getEmployeeInfor().getEmpCD());
 						em_Name1.setValue(output.getEmployeeInfor().getEName());

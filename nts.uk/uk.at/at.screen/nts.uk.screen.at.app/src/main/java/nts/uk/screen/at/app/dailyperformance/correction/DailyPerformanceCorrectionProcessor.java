@@ -493,8 +493,11 @@ public class DailyPerformanceCorrectionProcessor {
 				// Get list error setting
 				long timeT = System.currentTimeMillis();
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
 				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
@@ -1208,7 +1211,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			// Get list error setting
 			List<DPErrorSettingDto> lstErrorSetting = this.repo
-					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
 			int rowId = 0;

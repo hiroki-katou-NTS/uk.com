@@ -23,7 +23,7 @@ public class CalcResultOfAnyItem {
 	
 	
 	/**
-	 * 指定された属性の項目のみ渡された値で更新する
+	 * 指定された属性の項目のみ渡された値で更新するx
 	 * @param value
 	 * @param optionalItemAtr
 	 * @return
