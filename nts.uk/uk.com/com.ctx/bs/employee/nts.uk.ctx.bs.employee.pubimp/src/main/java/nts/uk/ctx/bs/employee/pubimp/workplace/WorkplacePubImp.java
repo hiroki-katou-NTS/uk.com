@@ -636,6 +636,14 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			return affWkp;
 		}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<AffAtWorkplaceExport> findBySIdAndBaseDateV2(List<String> sids, GeneralDate baseDate) {
+
+		return affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByListEmpIdAndDateV2(baseDate, sids).stream().map(x -> {
+			return new AffAtWorkplaceExport(x.getEmployeeId(), x.getWorkplaceId(), x.getHistoryId(), x.getNormalWorkplaceId());
+		}).collect(Collectors.toList());
+	}
 
 	/*
 	 * (non-Javadoc)

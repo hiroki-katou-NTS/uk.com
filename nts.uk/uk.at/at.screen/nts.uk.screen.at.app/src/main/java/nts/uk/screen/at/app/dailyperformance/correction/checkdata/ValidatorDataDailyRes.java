@@ -196,6 +196,9 @@ public class ValidatorDataDailyRes {
 	
 	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date, List<WorkInfoOfDailyPerformance> workInfos) {
 		List<DPItemValue> r = new ArrayList<>();
+		
+		employeeErrorRepo.removeContinuosErrorIn(employeeId, new DatePeriod(date.getStartDate(), date.getEndDate()), ErAlWorkRecordCheckService.CONTINUOUS_CHECK_CODE);
+		
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
 				new DatePeriod(date.getStartDate(), date.getEndDate()), workInfos);
 		if (result == null)
@@ -230,18 +233,18 @@ public class ValidatorDataDailyRes {
 		// });
 	}
 
-	public List<DPItemValue> checkInput28And1(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
+	public List<DPItemValue> checkInput28And1(List<DPItemValue> itemChanges, List<DailyModifyResult> allItemValues) {
 		List<DPItemValue> result = new ArrayList<>();
-		result = checkInputItem28(items, itemValues);
-		result.addAll(checkInputItem1(items, itemValues));
+		result = checkInputItem28(itemChanges, allItemValues);
+		result.addAll(checkInputItem1(itemChanges, allItemValues));
 		return result;
 	}
 
-	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
+	public List<DPItemValue> checkInputItem28(List<DPItemValue> itemChanges, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
 		DPItemValue valueTemp;
-		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
-		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
+		Optional<DPItemValue> item28 = itemChanges.stream().filter(x -> x.getItemId() == 28).findFirst();
+		Optional<DPItemValue> item29 = itemChanges.stream().filter(x -> x.getItemId() == 29).findFirst();
 		if (!item28.isPresent() && !item29.isPresent()) {
 			return result;
 		}
@@ -455,6 +458,30 @@ public class ValidatorDataDailyRes {
 		return resultError;
 	}
 
+	public List<DPItemValue> getErrorMonthAll(String companyId, List<EmployeeMonthlyPerError> monthErrors){
+		List<DPItemValue> items = new ArrayList<>();
+		// not flex
+		val lstEmpError = monthErrors.stream()
+				.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
+		val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
+		
+		Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByCompanyIdNoMaster(companyId, listNo)
+				.stream().filter(x -> x.getSpecialHolidayCode() != null)
+				.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
+		
+		lstEmpError.stream().forEach(error -> {
+			createMessageError(error).stream().forEach(message -> {
+				if(message.equals("Msg_1414")){
+					val sh = sHolidayMap.get(error.getNo());
+					message =  TextResource.localize(message, sh == null ? "" : sh.getSpecialHolidayName().v());
+				}else{
+					message = TextResource.localize(message);
+				}
+				items.add(new DPItemValue(error.getEmployeeID(), message));
+			});
+		});
+		return items;
+	}
 	/**
 	 * 乖離エラー発生時の本人確認解除
 	 */
@@ -478,7 +505,7 @@ public class ValidatorDataDailyRes {
 		return divergenceErrors;
 	}
 	
-	private List<String> createMessageError(EmployeeMonthlyPerError errorEmployeeMonth) {
+	public List<String> createMessageError(EmployeeMonthlyPerError errorEmployeeMonth) {
 		List<String> messageIds = new ArrayList<>();
 		ErrorType errroType = errorEmployeeMonth.getErrorType();
 		// 年休: 年休エラー

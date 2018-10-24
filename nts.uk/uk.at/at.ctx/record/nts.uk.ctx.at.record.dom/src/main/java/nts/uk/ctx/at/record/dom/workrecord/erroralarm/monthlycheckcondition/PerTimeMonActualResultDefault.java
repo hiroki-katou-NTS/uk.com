@@ -61,7 +61,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 		//勤怠項目をチェックする
 		return attendanceItemCondition.check(item->{
 			if (item.isEmpty()) {
-				return item;
+				return new ArrayList<>();
 			}
 			return monthly.convert(item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
@@ -113,7 +113,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 				}			
 					boolean check = attendanceItemCondition.check(item->{
 						if (item.isEmpty()) {
-							return item;
+							return new ArrayList<>();
 						}
 						return monthly.convert(item).stream().map(iv -> getValueNew(iv))
 								.collect(Collectors.toList());
@@ -129,24 +129,22 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 		return results;
 	}
 	//HoiDD
-	private Integer getValueNew(ItemValue value) {
+	private Double getValueNew(ItemValue value) {
 		if(value.getValueType()==ValueType.DATE){
-			return 0;
+			return 0d;
 		}
 		if (value.value() == null) {
-			return 0;
+			return 0d;
 		}
-		else if (value.getValueType().isDouble()||value.getValueType().isInteger()) {
-			return value.getValueType().isDouble() ? ((Double) value.value()).intValue() : (Integer) value.value();
-		}
-		return 0;
+		
+		return value.getValueType().isDouble() ? ((Double) value.value()) : Double.valueOf((Integer) value.value());
 	}
 	
-	private Integer getValue(ItemValue value) {
+	private Double getValue(ItemValue value) {
 		if (value.value() == null) {
-			return 0;
+			return 0d;
 		}
-		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
-				: (Integer) value.value();
+		return value.getValueType().isDouble() ? ((Double) value.value())
+				: Double.valueOf((Integer) value.value());
 	}
 }

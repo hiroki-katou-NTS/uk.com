@@ -36,9 +36,11 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSituationMonth;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
@@ -279,7 +281,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// fix bug 
 			if (results.isEmpty()) {
-				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get());
+				String mess = new String("Msg_1450");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
 				return screenDto;
 			}
 
@@ -291,7 +294,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 			if (formatPerformance.isPresent()) {
 				monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
 			} else {
-				throw new BusinessException("FormatPerformance hasn't data");
+				String mess = new String("Msg_1452");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
+				return screenDto;
+			}
+			if (screenDto.getParam().getLstAtdItemUnique().isEmpty()){
+				String mess = new String("Msg_1452");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
+				return screenDto;
 			}
 
 			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
@@ -310,6 +320,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			//アルゴリズム「承認モードで起動する」を実行する
 			this.startUpInApprovalMode(optApprovalProcessingUseSetting, formatPerformance,screenDto,yearMonth, companyId);
+			if(screenDto.getMess() != null && !screenDto.getMess().isEmpty()) {
+				return screenDto;
+			}
 		}
 		
 		// set data of lstControlDisplayItem
@@ -380,8 +393,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 						.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), 
 								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
 				
-				if (approvalRootOfEmloyee == null) {
-					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting);
+				if (approvalRootOfEmloyee == null || approvalRootOfEmloyee.getApprovalRootSituations().isEmpty()) {
+					String mess = new String("Msg_1451");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting,mess);
 					return;
 				}
 
@@ -398,7 +412,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 				}
 				if (employeeIds.isEmpty()) {
-					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting);
+					String mess = new String("Msg_1450");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting, mess);
 					return;
 				}
 
@@ -430,7 +445,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(),
 							screenDto);
 				} else {
-					throw new BusinessException("FormatPerformance hasn't data");
+					throw new BusinessException("Msg_1452");
 				}
 
 				List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
@@ -505,8 +520,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private List<MonthlyPerformanceAuthorityDto> getAuthority(MonthlyPerformanceCorrectionDto screenDto) {
 		String roleId = AppContexts.user().roles().forAttendance();
 		if (roleId != null) {
-			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId,
-					new BigDecimal(1));
+			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId, new BigDecimal(1));
 			if (!dailyPerformans.isEmpty()) {
 				return dailyPerformans;
 			}
@@ -624,7 +638,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
 		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
-			throw new BusinessException("Msg_1261");
+			throw new BusinessException("Msg_1450");
 		}
 
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
@@ -709,8 +723,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}
 		
 		//get data approve
-		List<ApproveRootStatusForEmpImport> approvalByListEmplAndListApprovalRecordDate = null;
-		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
+		List<AppRootSttMonthEmpImport> approvalByListEmplAndListApprovalRecordDate = null;
+		AppRootOfEmpMonthImport approvalRootOfEmloyee = null;
 		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) { // neu hien thi cot approve
 			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) { // lay data approve mode normal hoac unlock
 				// *10 request list 533
@@ -774,7 +788,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			// set state approval
 			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
 				if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
-					for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
+					for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
 						// 基準社員の承認状況　＝　フェーズ最中　の場合 => unlock
 						if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalAtr() != ApproverEmployeeState.PHASE_DURING){
 							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
@@ -816,13 +830,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 				if(param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1){ //lay gia tri checkbox approve mode normal hoac unlock theo no.533
 					//*10 
 					if (approvalByListEmplAndListApprovalRecordDate != null) {
-						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
+						for (AppRootSttMonthEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
 							// 承認状況 ＝ 承認済 or 承認中 の場合
 							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)
-									&& approvalApprovalRecordDate
+									&& (approvalApprovalRecordDate
 											.getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL
 									|| approvalApprovalRecordDate
-											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
+											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED)) {
 								approve = true;
 								break;
 							}
@@ -831,7 +845,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				} else if (param.getInitMenuMode() == 2) { //lay gia tri checkbox approve theo ket qua no.534
 					//*8 
 					if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
-						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
+						for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
 							//◆基準社員の承認アクション　＝　承認した　の場合
 							if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED){
 								approve = true;
@@ -1020,7 +1034,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		return StringUtils.join(x);
 	}
 	private void createFixedHeader(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId,
-			ApprovalProcessingUseSetting approvalProcessingUseSetting) {
+			ApprovalProcessingUseSetting approvalProcessingUseSetting, String mess) {
 		/**
 		 * Create Grid Sheet DTO
 		 */
@@ -1067,5 +1081,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 		displayItem.setLstHeader(lstHeader);
 		// Fixed header
 		screenDto.setLstFixedHeader(lstMPHeaderDto);
+		screenDto.setMess(mess);
 		}
 }

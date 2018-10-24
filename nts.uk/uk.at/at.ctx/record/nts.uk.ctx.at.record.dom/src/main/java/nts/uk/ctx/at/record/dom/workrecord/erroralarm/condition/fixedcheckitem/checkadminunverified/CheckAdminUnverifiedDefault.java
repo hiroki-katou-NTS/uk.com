@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionDataRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkadminunverified.checkbossconfirmed.CheckBossConfirmedService;
@@ -60,8 +61,13 @@ public class CheckAdminUnverifiedDefault implements CheckAdminUnverifiedService 
 			DatePeriod datePeriod) {
 		List<ValueExtractAlarmWR> listValueExtractAlarmWR = new ArrayList<>();
 		//管理者の確認が完了しているかチェックする
-	
-		List<StateConfirm> listState =	checkBossConfirmedService.checkBossConfirmed(employeeID, datePeriod);
+		List<StateConfirm> listState= new ArrayList<>();
+		try {
+		 listState =checkBossConfirmedService.checkBossConfirmed(employeeID, datePeriod);
+		} catch (BusinessException e) {
+			throw new BusinessException("Msg_1430", "承認者");
+		}
+	//	List<StateConfirm> listState =	checkBossConfirmedService.checkBossConfirmed(employeeID, datePeriod);
 		if(listState.isEmpty()) {
 			return Collections.emptyList();
 		}

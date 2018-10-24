@@ -72,7 +72,6 @@ public class GetHeaderOfCPS001Finder {
 	private SyWorkplacePub wkpPublish;
 
 	public EmployeeInfo getEmployeeInfo(String sid) {
-		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.today();
 		String cid = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
@@ -156,7 +155,7 @@ public class GetHeaderOfCPS001Finder {
 		if (isPosition) {
 			Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
 			if (jobTitleHisItem.isPresent()) {
-				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),
+				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(cid, jobTitleHisItem.get().getJobTitleId(),
 						date);
 				if (jobInfo.isPresent()) {
 					_emp.setPosition(jobInfo.get().getJobTitleName().toString());
@@ -169,7 +168,7 @@ public class GetHeaderOfCPS001Finder {
 		}
 
 		if (isEmployeement) {
-			Optional<EmploymentInfo> employment = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId,
+			Optional<EmploymentInfo> employment = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(cid,
 					sid, date);
 			if (employment.isPresent()) {
 				_emp.setContractCodeType(employment.get().getEmploymentName());

@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.monthflex;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,7 +121,7 @@ public class DPMonthFlexProcessor {
 						.closureId(firstDT.getClosureId())
 						.yearMonth(firstDT.getYearMonth())
 						.employeeId(firstDT.getEmployeeId())
-						.items(firstDT.getItems().stream().filter(c -> itemIds.contains(c.itemId())).collect(Collectors.toList()))
+						.items(new ArrayList<>(firstDT.getItems().stream().filter(c -> itemIds.contains(c.itemId())).collect(Collectors.toSet())))
 						.completed());
 			}
 
@@ -161,14 +162,14 @@ public class DPMonthFlexProcessor {
 			return authorityFormatMonthlyRepository
 					.getListAuthorityFormatDaily(companyId, param.getFormatCode()).stream()
 					.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),
-							x.getColumnWidth(), x.getDisplayOrder()))
+							x.getColumnWidth() == null ? BigDecimal.valueOf(100l): x.getColumnWidth(), x.getDisplayOrder()))
 					.collect(Collectors.toList());
 		}
 		
 		return businessTypeFormatMonthlyRepository
 				.getListBusinessTypeFormat(companyId, param.getFormatCode()).stream()
 				.map(x -> new FormatDailyDto(x.getBusinessTypeCode().v(), new Integer(x.getAttendanceItemId()),
-						x.getColumnWidth(), x.getOrder()))
+						x.getColumnWidth() == null ? BigDecimal.valueOf(100l): x.getColumnWidth(), x.getOrder()))
 				.collect(Collectors.toList());
 	}
 

@@ -569,18 +569,21 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			}
 			content += workTypeName + workTimeName;
 			if (!Objects.isNull(appWork.getWorkTimeStart1()) && !Objects.isNull(appWork.getWorkTimeEnd1())) {
-				content += !Objects.isNull(appWork.getGoWorkAtr1())
-						? (appWork.getGoWorkAtr1() == 1
-								? " " + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeStart1())
-										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd1())
-								: "")
-						: "";
-				content += !Objects.isNull(appWork.getGoWorkAtr2())
-						? (appWork.getGoWorkAtr2() == 1
-								? " " + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeStart2())
-										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd2())
-								: "")
-						: "";
+				 String go1 = appWork.getGoWorkAtr1() != null && appWork.getGoWorkAtr1() == 0 ?  
+						 I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeStart1()) :
+						 repoAppDetailInfo.convertTime(appWork.getWorkTimeStart1());
+		         String back1 = appWork.getBackHomeAtr1() != null && appWork.getBackHomeAtr1() == 0 ?
+		        		 I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd1()) :
+		        			 repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd1());
+        		 String go2 = appWork.getGoWorkAtr2() != null && appWork.getGoWorkAtr2() == 0 ?  
+						 I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeStart2()) :
+						 repoAppDetailInfo.convertTime(appWork.getWorkTimeStart2());
+		         String back2 = appWork.getBackHomeAtr2() != null && appWork.getBackHomeAtr2() == 0 ?
+		        		 I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd2()) :
+		        			 repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd2());
+	        	String time1 = go1 == "" ? "" : go1 + I18NText.getText("CMM045_100") + back1;
+	        	String time2 = go2 == "" ? "" : go2 + I18NText.getText("CMM045_100") + back2;
+				content += time1 + time2;
 			}
 			if (!Objects.isNull(appWork.getBreakTimeStart1()) && !Objects.isNull(appWork.getBreakTimeEnd1())) {
 				content += I18NText.getText("CMM045_251")

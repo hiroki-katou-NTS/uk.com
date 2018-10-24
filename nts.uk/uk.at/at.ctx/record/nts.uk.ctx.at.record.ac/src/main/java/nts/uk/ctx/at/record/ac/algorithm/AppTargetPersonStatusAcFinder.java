@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.algorithm.AppTargetPersonStatusAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.checkconfirm.StateConfirm;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
@@ -46,7 +47,7 @@ public class AppTargetPersonStatusAcFinder implements AppTargetPersonStatusAdapt
 	@Override
 	public List<StateConfirm> appTargetPersonStatus(String employeeID, DatePeriod date, Integer routeType) {
 		List<AppRootStateStatusSprExport> listState=intermediateDataPub.getAppRootStatusByEmpPeriod(employeeID, date, routeType);
-		if(!listState.isEmpty()) {
+		if(!CollectionUtil.isEmpty(listState)) {
 			return listState.stream().map(c->convertToStateConfirms(c)).collect(Collectors.toList());
 		}
 		return Collections.emptyList();

@@ -65,7 +65,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLoc
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -81,9 +80,6 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DailyPerformanceErrorCodeProcessor errorProcessor;
-	
-	@Inject
-	private DailyPerformanceSelectItemProcessor selectProcessor;
 	
 	@Inject
 	private DPUpdateColWidthCommandHandler commandHandler;
@@ -155,19 +151,6 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
 		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
-		HttpSession session = httpRequest.getSession();
-		session.setAttribute("domainOlds", results.getDomainOld());
-		session.setAttribute("domainEdits", null);
-		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
-		session.setAttribute("dataSource", results.getLstData());
-		results.setDomainOld(Collections.emptyList());
-		return results;
-	}
-	
-	@POST
-	@Path("selectCode")
-	public DailyPerformanceCorrectionDto selectFormatCode(DPParams params ) throws InterruptedException{
-		val results = this.selectProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes);
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute("domainOlds", results.getDomainOld());
 		session.setAttribute("domainEdits", null);
