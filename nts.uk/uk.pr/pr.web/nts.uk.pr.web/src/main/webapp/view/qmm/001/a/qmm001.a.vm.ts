@@ -39,6 +39,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         // value edit text
         value: KnockoutObservable<number>= ko.observable(null);
+        // Var check can copy hisstory befor
+        isCopy :KnockoutObservable<number>= ko.observable(null);
 
         constructor() {
             let self = this;
@@ -49,7 +51,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             });
             self.selectedSalGenParaHistory.subscribe((data) => {
                 errors.clearAll();
-                self.getSalGenParaValue(data,TAKEOVER.DONTCOPY);
+                self.getSalGenParaValue(data, self.isCopy());
                 self.salGenParaHistory(_.find(self.listHistory(), {'historyId': data}));
             });
             self.selectedSwitchParaAvai.subscribe((data) => {
@@ -68,6 +70,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if (itemList && itemList.length > 0) {
                     self.listItems(itemList);
                     self.selectedSalGenParaIdent(self.listItems()[0].paraNo);
+                    $('#A4_2').focus();
 
                 } else {
                     self.listItems(new Array<ISalGenParaIdentification>());
@@ -249,20 +252,31 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 });
             }
             else{
+                let dataSalGenValueTemp : any = null;
                 if(type == TAKEOVER.DONTCOPY){
-                    let dataSalGenValueTemp : any ={
+                     dataSalGenValueTemp  ={
                         historyId :hisId ,
                         selection :null ,
-                        availableAtr: null,
+                        availableAtr: SWITCH_EFF_CATEGORY.UNAVAILABLE,
                         numValue :null,
                         charValue :null ,
                         timeValue :null,
-                        targetAtr: null
-                    }
+                        targetAtr: PARATARGETATR.TARGET
+                    };
                     self.value(null);
-                    self.salGenParaValue(dataSalGenValueTemp);
-
                 }
+                else{
+                     dataSalGenValueTemp  ={
+                        historyId :hisId ,
+                        selection :self.salGenParaValue().selection ,
+                        availableAtr: self.salGenParaValue().availableAtr,
+                        numValue :self.salGenParaValue().numValue,
+                        charValue :self.salGenParaValue().charValue ,
+                        timeValue :self.salGenParaValue().timeValue,
+                        targetAtr: self.salGenParaValue().targetAtr
+                    };
+                }
+                self.salGenParaValue(dataSalGenValueTemp);
 
             }
 
@@ -270,6 +284,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         register() {
             let self = this;
+            $('#A4_2').focus();
             if(errors.hasError()){
                 return;
             }
@@ -308,7 +323,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 mSalGenParaValueCommand: dataValue
             };
             if(self.modeScreen() == MODESCREEN.ADD){
-
                 if(self.modeHistory() == MODEHISTORY.YEARMONTH){
                     dataHisValue = {
                         paraNo: self.listHistory()[0].paraNo,
@@ -316,8 +330,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         endTime: self.listHistory()[0].endYearMonth,
                         modeHistory : self.modeHistory(),
                         mSalGenParaValueCommand: dataValue
-                    };
-                }
+                    };                }
                 else{
                     dataHisValue = {
                         paraNo: self.listHistory()[0].paraNo,
@@ -330,7 +343,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             }
             service.addSelectionProcess(dataHisValue).done(() => {
                 if (self.modeScreen()== MODESCREEN.ADD){
-                    self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                    let paraNo : number =  self.selectedSalGenParaIdent();
+                    self.itemSelectionProcess(paraNo);
+                    self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
                 }
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(error => {
@@ -339,7 +354,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
 
         }
-        addHistory(start: number,type:number){
+        addHistory(start: number){
             let self = this;
             let to :string = getText('QMM001_13');
             let list: Array<any> = self.listHistory();
@@ -436,7 +451,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 else{
                     start = Number(params.startYearMonthDay);
                 }
-                self.addHistory(start,params.takeOver);
+                self.isCopy(params.takeOver);
+                self.addHistory(start);
                 self.modeScreen(MODESCREEN.ADD);
             });
         }
@@ -474,9 +490,13 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             modal("/view/qmm/001/c/index.xhtml").onClosed(() => {
                 self.modeScreen(MODESCREEN.ADD);
                 let params = getShared('QMM001_C_PARAMS_OUTPUT');
+                if (params == null || params === undefined) {
+                    return;
+                }
                 if(params && params.result){
                     self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
                 }
+                self.modeScreen(MODESCREEN.ADD);
 
             });
         }
