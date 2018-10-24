@@ -1097,6 +1097,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											   leaveEarlyTime
 											   );
 		//時間休暇との相殺処理(いずれ実装が必要)
+		//丸め
+		if(commonSetting.isPresent()) {
+			val setting = commonSetting.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getRoundingSetByDedAtr(deductionAtr.isDeduction());
+			lateTime = new AttendanceTime(setting.round(lateTime.valueAsMinutes()));
+		}
 		
 		//遅刻早退の自動計算設定．遅刻をチェック
 		if(late) {

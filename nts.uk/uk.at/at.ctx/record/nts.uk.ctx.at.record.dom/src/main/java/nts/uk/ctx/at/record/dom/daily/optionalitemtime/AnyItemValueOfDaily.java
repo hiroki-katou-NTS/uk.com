@@ -90,7 +90,7 @@ public class AnyItemValueOfDaily {
             														 calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
             		}
             		dailyAnyItem.get().items = forcsItem;
-            		dailyRecordDto.get().withAnyItems(dailyAnyItem.get());
+            		dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
             	}
             	//-------
         	}
