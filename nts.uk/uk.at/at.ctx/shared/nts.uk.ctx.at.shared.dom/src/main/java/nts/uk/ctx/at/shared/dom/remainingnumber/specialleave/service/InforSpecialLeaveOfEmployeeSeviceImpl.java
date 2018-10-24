@@ -157,9 +157,9 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		else {
 			grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
 		}
+		GrantDaysInforByDates outputData = new GrantDaysInforByDates(grantDate,new ArrayList<>());
 		//パラメータ「期間」に一致する付与日数を生成する
 		for(GeneralDate loopDate = grantDate; loopDate.beforeOrEquals(period.end());) {
-			nextTime = loopDate;
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
 			if(period.start().beforeOrEquals(loopDate)
 					&& loopDate.beforeOrEquals(period.end())) {//「期間．開始日」≦「比較年月日」≦「期間．終了日」
@@ -179,8 +179,10 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 				}
 			}
 			loopDate = loopDate.addYears(interval);
+			outputData.setGrantDate(loopDate);
 		}
-		return new GrantDaysInforByDates(nextTime, lstOutput);
+		outputData.setLstGrantDaysInfor(lstOutput);
+		return outputData;
 	}
 	@Override
 	public ErrorFlg checkUse(String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday) {
