@@ -76,8 +76,8 @@ public class SalGenParaIdentificationWebService extends WebService {
     @POST
     @Path("getListHistory")
     public void getListHistory(SalGenParaValueCommand command) {
-        mSalGenParaDateHistFinder.getListHistory("2", GeneralDate.fromString("2018-01-06","yyyy-MM-dd"), GeneralDate.fromString("9999-12-31","yyyy-MM-dd"),"000000000000-0001");
-        mAddSalGenParaValueCommandHandler.handle(command);
+       // mSalGenParaDateHistFinder.getListHistory("2", GeneralDate.fromString("2018-01-06","yyyy-MM-dd"), GeneralDate.fromString("9999-12-31","yyyy-MM-dd"),"000000000000-0001");
+       // mAddSalGenParaValueCommandHandler.handle(command);
     }
 
     @POST

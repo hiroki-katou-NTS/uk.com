@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 600, height: 450 };</script>
+        <script>var dialogSize = { width: 580, height: 360 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm001.c.vm.js" />
@@ -30,14 +30,12 @@
                 <!-- C1_4 保険名称 -->
                 <span id="C1_4" class="label"  style="margin-left: 15px" data-bind = "text: name"></span>
             </div>
-            <div>
-                <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 100px 10px;">
+            <div class = "control-group" style ="display: inline-flex;">
+                <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px;">
                     <span class="label">#{i18n.getText('QMM001_38')}</span>
                 </div>
-
-            </div>
-                    <div id="C1_6" tabindex="1">
-                         <div style="" class="cell"
+                <div id="C1_6" tabindex="1" style="margin-right: 20px">
+                         <div class="cell"
                                  data-bind="ntsRadioButton: {
 										checked: methodEditing,
 										option: itemList()[0],
@@ -47,7 +45,7 @@
 										group: 'periodOption'}">
                          </div>
                           <br/>
-                          <div class="cell" style=""
+                          <div class="cell" style="margin-top: 20px;"
                                  data-bind="ntsRadioButton: {
 										checked: methodEditing,
 										option: itemList()[1],
@@ -56,11 +54,9 @@
 										optionText: 'name',
 										group: 'periodOption'}">
                             </div>
-
                         </div>
-                    <div id ="C1_9" style="margin: 10px 10px 10px 20px;">
-                        <span class="label warning" style="">#{i18n.getText('QMM001_42')}</span>
-                    </div>
+                        <span id = "C1_9" class="label warning" style="">#{i18n.getText('QMM001_42')}</span>
+            </div>
             <div  style="margin: 10px 0px 0px 165px;">
 
                 <div id = "C1_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM001_29')}</div>

@@ -6,14 +6,8 @@ import nts.arc.time.GeneralDate;
 @Value
 public class SalGenYearMonthHistoryCommand {
 
-    /**
-     * パラメータNo
-     */
     private String paraNo;
 
-    /**
-     * 会社ID
-     */
     private String cId;
 
     private String hisId;
