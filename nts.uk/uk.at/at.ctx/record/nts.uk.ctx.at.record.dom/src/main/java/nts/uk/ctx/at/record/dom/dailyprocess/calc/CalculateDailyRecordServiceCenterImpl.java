@@ -123,8 +123,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 									  Collections.emptyList()).getLst();
 		//勤務情報のステータスを変更
 		result.forEach(tc ->{
-			dailyCalculationEmployeeService.upDateCalcState(tc);
-			//tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
+			tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
+			//dailyCalculationEmployeeService.upDateCalcState(tc);
 		});
 		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
 	}
