@@ -237,20 +237,22 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		oldEntity.taxNo = entity.taxNo;
 		this.commandProxy().update(oldEntity);
 
-		Optional<BcmmtAddInfor> oldAddEntityOpt = this.queryProxy().find(entity.bcmmtAddInfor.bcmmtAddInforPK, BcmmtAddInfor.class);
-		BcmmtAddInfor newAddEntity = entity.bcmmtAddInfor;
-		if (oldAddEntityOpt.isPresent()) {
-			BcmmtAddInfor oldAddEntity = oldAddEntityOpt.get();
-			oldAddEntity.add_1 = newAddEntity.add_1;
-			oldAddEntity.add_2 = newAddEntity.add_2;
-			oldAddEntity.addKana_1 = newAddEntity.addKana_1;
-			oldAddEntity.addKana_2 = newAddEntity.addKana_2;
-			oldAddEntity.faxNum = newAddEntity.faxNum;
-			oldAddEntity.phoneNum = newAddEntity.phoneNum;
-			oldAddEntity.postCd = newAddEntity.postCd;
-			this.commandProxy().update(oldAddEntity);
-		} else {
-			this.commandProxy().insert(newAddEntity);
+		if (company.getAddInfor() != null) {
+			Optional<BcmmtAddInfor> oldAddEntityOpt = this.queryProxy().find(entity.bcmmtAddInfor.bcmmtAddInforPK, BcmmtAddInfor.class);
+			BcmmtAddInfor newAddEntity = entity.bcmmtAddInfor;
+			if (oldAddEntityOpt.isPresent()) {
+				BcmmtAddInfor oldAddEntity = oldAddEntityOpt.get();
+				oldAddEntity.add_1 = newAddEntity.add_1;
+				oldAddEntity.add_2 = newAddEntity.add_2;
+				oldAddEntity.addKana_1 = newAddEntity.addKana_1;
+				oldAddEntity.addKana_2 = newAddEntity.addKana_2;
+				oldAddEntity.faxNum = newAddEntity.faxNum;
+				oldAddEntity.phoneNum = newAddEntity.phoneNum;
+				oldAddEntity.postCd = newAddEntity.postCd;
+				this.commandProxy().update(oldAddEntity);
+			} else {
+				this.commandProxy().insert(newAddEntity);
+			}
 		}
 	}
 

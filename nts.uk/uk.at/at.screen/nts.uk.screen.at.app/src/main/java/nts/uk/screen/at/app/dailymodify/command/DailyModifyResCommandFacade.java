@@ -328,6 +328,7 @@ public class DailyModifyResCommandFacade {
 				insertSign(dataParent.getDataCheckSign());
 				// insert approval
 				insertApproval(dataParent.getDataCheckApproval());
+				dataResultAfterIU.setShowErrorDialog(null);
 				
 			} else {
 				// if (querys.isEmpty() ? !dataParent.isFlagCalculation() :

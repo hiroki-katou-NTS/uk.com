@@ -3809,8 +3809,7 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        //request.jump('/view/ccg/007/a/index.xhtml');
-                        request.jump('com', '/view/ccg/007/b/index.xhtml');
+                        request.jump('com', '/view/ccg/007/d/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
@@ -5623,7 +5622,7 @@ var nts;
                     });
                 });
                 function isOverflow($label) {
-                    if (($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")
+                    if ($label[0].nodeName === "INPUT"
                         && (window.navigator.userAgent.indexOf("MSIE") > -1
                             || !!window.navigator.userAgent.match(/trident/i))) {
                         var $div = $("<div/>").appendTo($(document.body));
@@ -5633,20 +5632,13 @@ var nts;
                                 $div[0].style[p] = style[p];
                             }
                         }
-                        var text_4;
-                        if ($label[0].nodeName === "DIV") {
-                            text_4 = $label.html();
-                        }
-                        else {
-                            text_4 = $label.val();
-                        }
-                        $div.html(text_4);
+                        $div.html($label.val());
                         var width = $div.outerWidth();
                         var scrollWidth = $div[0].scrollWidth;
                         $div.remove();
                         return width < scrollWidth;
                     }
-                    return $label.outerWidth() < $label[0].scrollWidth;
+                    return $label[0].offsetWidth < $label[0].scrollWidth;
                 }
             })(smallExtensions || (smallExtensions = {}));
             var keyboardStream;
@@ -5840,7 +5832,7 @@ var nts;
                             //                    var widget= this.$dialog.dialog("widget");
                             //                    widget.draggable("option","containment",false);
                             if (autoResize) {
-                                $(window.top).on('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                                window.addEventListener('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
                             }
                         });
                         this.globalContext.location.href = path;
@@ -23868,6 +23860,14 @@ var nts;
                             //                $container.stop().animate({ scrollTop: value }, 10);
                             var os = ti.isIE() ? 25 : 50;
                             $_container.scrollTop(value + direction * os);
+                            if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
+                                var cbx = dkn.controlType[_mEditor.columnKey];
+                                var $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
+                                if (cbx.dropdown && cbx.dropdown.style.top !== "-99999px") {
+                                    dkn.closeDD(cbx.dropdown);
+                                    $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
+                                }
+                            }
                             event.preventDefault();
                             event.stopImmediatePropagation();
                         });
@@ -25140,6 +25140,17 @@ var nts;
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                 $.data($cell, v.DATA, val);
                             }
+                            else {
+                                var cbx = dkn.controlType[key];
+                                if (_.isObject(cbx) && cbx.type === dkn.COMBOBOX) {
+                                    var sel = _.find(cbx.options, function (o) { return o.code === val; });
+                                    if (sel) {
+                                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                                        $.data($cell, lo.CBX_SELECTED_TD, val);
+                                        $cell.textContent = sel ? sel.name : "";
+                                    }
+                                }
+                            }
                             return idx;
                         },
                         checkAll: function (key, fixed) {
@@ -25681,6 +25692,9 @@ var nts;
                                 var sCol_1 = _specialColumn[editor.columnKey];
                                 if (sCol_1) {
                                     var cbx = dkn.controlType[sCol_1];
+                                    if (_.toLower(column_1[0].dataType) === "number") {
+                                        inputVal_1 = parseFloat(inputVal_1);
+                                    }
                                     wedgeCell($grid, { rowIdx: editor.rowIdx, columnKey: sCol_1 }, inputVal_1);
                                     var selectedOpt = _.find(cbx.options, function (o) { return o.code === inputVal_1; });
                                     if (!_.isNil(selectedOpt)) {
@@ -25743,6 +25757,10 @@ var nts;
                         var origDs = _mafollicle[_currentPage].origDs;
                         if (!origDs)
                             return;
+                        var column = _columnsMap[coord.columnKey];
+                        if (column && _.toLower(column[0].dataType) === "number") {
+                            cellValue = parseFloat(cellValue);
+                        }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
                         }
@@ -25900,13 +25918,9 @@ var nts;
                                 }
                             });
                         };
-                        var column = _columnsMap[coord.columnKey];
                         if (!column) {
                             osht(true);
                             return;
-                        }
-                        if (_.toLower(column[0].dataType) === "number") {
-                            cellValue = parseFloat(cellValue);
                         }
                         res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
                         osht();
@@ -27436,6 +27450,11 @@ var nts;
                             isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
+                                isSelecting = false;
+                                $grid.onselectstart = null;
+                                window.removeXEventListener(ssk.MOUSE_UP + ".block");
+                            });
                             if (evt.shiftKey) {
                                 selectRange($grid, $target);
                                 $grid.onselectstart = function () {

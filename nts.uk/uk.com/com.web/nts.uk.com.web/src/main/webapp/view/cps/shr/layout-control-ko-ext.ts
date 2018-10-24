@@ -1609,6 +1609,7 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
+                                        constraint.charType = 'AnyHalfWidth';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                         break;
                                     case ITEM_STRING_TYPE.EMPLOYEE_CODE:
