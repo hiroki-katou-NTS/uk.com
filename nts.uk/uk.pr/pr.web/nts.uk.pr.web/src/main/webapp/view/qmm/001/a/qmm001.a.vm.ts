@@ -104,7 +104,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.value(null);
                             self.salGenParaValue(null);
                             self.listHistory(itemList);
-                            self.selectedSalGenParaHistory(HIS_ID_TEMP);
                             self.modeScreen(MODESCREEN.NEW);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
                             self.isDisplayHis(false);
@@ -126,7 +125,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.value(null);
                             self.salGenParaValue(null);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
-                            self.selectedSalGenParaHistory(HIS_ID_TEMP);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
                             self.isDisplayHis(false);
@@ -149,7 +147,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.value(null);
                             self.salGenParaValue(null);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
-                            self.selectedSalGenParaHistory(HIS_ID_TEMP);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
                             self.isDisplayHis(false);
