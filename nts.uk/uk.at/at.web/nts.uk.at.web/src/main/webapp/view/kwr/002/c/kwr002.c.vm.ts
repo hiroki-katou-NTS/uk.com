@@ -341,52 +341,43 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             else {
                 self.useSealValue(useSeal)
                 var code: number = Number(self.attendanceCode());
-                service.findAllAttendanceRecExportDaily(code).done(function(listattendanceRecExpDailyList: Array<model.AttendanceRecExp>) {
-                    if (listattendanceRecExpDailyList.length > 0) {
-                        listattendanceRecExpDailyList.forEach(item => {
-                            var columnIndex: number = item.columnIndex;
-                            self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                        })
-                    }
-                    for (var i: number = 1; i <= 9; i++) {
-                        if (!self.attendanceRecExpDaily()[i]) {
-                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
-                        }
-                    }
+                   $.when(service.findAllAttendanceRecExportDaily(code), service.findAllAttendanceRecExportMonthly(code),service.getSealStamp(code)).done((listattendanceRecExpDailyList: Array<model.AttendanceRecExp>, listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>,sealStampList: Array<String>) => {
+                       if (listattendanceRecExpDailyList.length > 0) {
+                           listattendanceRecExpDailyList.forEach(item => {
+                               var columnIndex: number = item.columnIndex;
+                               self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                           })
+                       }
+                       for (var i: number = 1; i <= 9; i++) {
+                           if (!self.attendanceRecExpDaily()[i]) {
+                               self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                           }
+                       }
 
-                });
+                       if (listattendanceRecExpMonthlyList.length > 0) {
+                           listattendanceRecExpMonthlyList.forEach(item => {
+                               var columnIndex: number = item.columnIndex;
+                               self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                           })
+                       }
+                       for (var i: number = 1; i <= 12; i++) {
+                           if (!self.attendanceRecExpMonthly()[i]) {
+                               self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                           }
+                       }
 
-                service.findAllAttendanceRecExportMonthly(code).done(function(listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>) {
-                    if (listattendanceRecExpMonthlyList.length > 0) {
-                        listattendanceRecExpMonthlyList.forEach(item => {
-                            var columnIndex: number = item.columnIndex;
-                            self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                        })
-                    }
-                    for (var i: number = 1; i <= 12; i++) {
-                        if (!self.attendanceRecExpMonthly()[i]) {
-                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
-                        }
-                    }
+                       if (sealStampList.length > 0) {
+                           self.sealName1(sealStampList[0]);
+                           self.sealName2(sealStampList[1]);
+                           self.sealName3(sealStampList[2]);
+                           self.sealName4(sealStampList[3]);
+                           self.sealName5(sealStampList[4]);
+                           self.sealName6(sealStampList[5]);
 
-
+                       }
+                       
+                       dfd.resolve();
                 })
-
-
-                service.getSealStamp(code).done(function(sealStampList: Array<String>) {
-                    if (sealStampList.length > 0) {
-                        self.sealName1(sealStampList[0]);
-                        self.sealName2(sealStampList[1]);
-                        self.sealName3(sealStampList[2]);
-                        self.sealName4(sealStampList[3]);
-                        self.sealName5(sealStampList[4]);
-                        self.sealName6(sealStampList[5]);
-
-                    }
-                }).done(() => {
-
-                    dfd.resolve();
-                });
 
             }
             blockUI.clear();
