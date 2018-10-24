@@ -13,12 +13,12 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         takeOver: KnockoutObservable<number> = ko.observable(0);
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
-        startYearMonth: KnockoutObservable<number> = ko.observable();
+        startYearMonth: KnockoutObservable<number> = ko.observable(0);
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
         end: KnockoutObservable<string> = ko.observable('');
         historyAtr: KnockoutObservable<number> = ko.observable(1);
         startYearMonthDay: KnockoutObservable<string> = ko.observable('');
-        startLastYearMonthDay: KnockoutObservable<number> = ko.observable();
+        startLastYearMonthDay: KnockoutObservable<number> = ko.observable(0);
         isFisrtHistory: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
@@ -30,17 +30,15 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                 self.name(params.name);
                 self.historyAtr(params.historyAtr);
                 if ( params.historyAtr == 1) {
-                    self.startLastYearMonth(params.start);
-                    self.historyAtr(params.historyAtr);
                     self.end(getText('QMM001_31', ['9999/12']));
                     if(params.start) {
+                        self.startLastYearMonth(params.start);
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [self.convertMonthYearToString(params.start)]));
-                        self.isFisrtHistory(params.isFirst);
+                        self.isFisrtHistory(false);
                         self.startYearMonth(params.start);
                         $('#B1_7').focus();
                     }
-                }
-                if ( params.historyAtr == 0) {
+                } else {
                     self.end(getText('QMM001_31', ['9999/12/31']));
                     if(params.start) {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [params.start]));
