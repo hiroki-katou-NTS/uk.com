@@ -13,8 +13,8 @@
 .bg-daily-alter-self {background-color:#94B7FE;}
 .bg-daily-alter-other {background-color:#CEE6FF;}
 .bg-daily-reflect-application {background-color:#BFEA60;}
-.bg-daily-error {background-color:#FEC6C6 !important;}
-.bg-daily-alarm {background-color:#E3F385 !important;}
+.bg-daily-error {background-color:#FD4D4D !important;}
+.bg-daily-alarm {background-color:#F6F636 !important;}
 .bg-daily-calculated {background-color:#E4C9FF !important;}
 
 .color-schedule-performance {color:#92D050;}
@@ -59,3 +59,20 @@
 .bg-added-row {background-color:#AFEEEE !important;}
 .bg-actual-superior-unverified {background-color:#FF7F27 !important;}
 .bg-error-actual {background-color:#ffc0cb !important;}
+
+.bg-36contract-error {
+	background-color: #FD4D4D; 
+}
+.bg-36contract-alarm {
+	background-color: #F6F636;
+}
+.bg-36contract-exception {
+	background-color: #EB9152;
+}
+.color-36contract-error {
+	color: #FFFFFF;
+}
+.color-36contract-alarm {
+	color: #FF0000;
+}
+

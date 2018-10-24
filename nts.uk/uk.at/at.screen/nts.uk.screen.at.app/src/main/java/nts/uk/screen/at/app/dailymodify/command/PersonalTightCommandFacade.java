@@ -18,6 +18,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class PersonalTightCommandFacade {
@@ -36,22 +37,42 @@ public class PersonalTightCommandFacade {
 	public void insertPersonalTight(String employeeId, GeneralDate date) {
 		String companyId = AppContexts.user().companyId();
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, getEmploymentCode(companyId, new DateRange(null, date), employeeId));
+				.findByEmploymentCD(companyId, getEmploymentCode(companyId, date, employeeId));
 		if (closureEmploymentOptional.isPresent()) {
 			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
 					closureEmploymentOptional.get().getClosureId(), date);
 			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date) && closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
 				registerConfirmationMonth.registerConfirmationMonth(new ParamRegisterConfirmMonth(
 						closingPeriod.get().getProcessingYm(), Arrays.asList(new SelfConfirm(employeeId, true)),
-						closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureEndDate().day(),
+						closureEmploymentOptional.get().getClosureId(), new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+								closingPeriod.get().getClosureDate().getLastDayOfMonth()),
 						GeneralDate.today()));
 			}
 		}
 	}
 	
-	private String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
-		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
-		return employmentCode;
+	public void releasePersonalTight(String employeeId, GeneralDate date) {
+		String companyId = AppContexts.user().companyId();
+		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+				.findByEmploymentCD(companyId, getEmploymentCode(companyId, date, employeeId));
+		if (closureEmploymentOptional.isPresent()) {
+			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
+					closureEmploymentOptional.get().getClosureId(), date);
+			if (closingPeriod.isPresent() && (closingPeriod.get().getClosureStartDate().beforeOrEquals(date)
+					&& closingPeriod.get().getClosureEndDate().afterOrEquals(date))) {
+				registerConfirmationMonth
+						.registerConfirmationMonth(new ParamRegisterConfirmMonth(closingPeriod.get().getProcessingYm(),
+								Arrays.asList(new SelfConfirm(employeeId, false)),
+								closureEmploymentOptional.get().getClosureId(),
+								new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+										closingPeriod.get().getClosureDate().getLastDayOfMonth()),
+								GeneralDate.today()));
+			}
+		}
+	}
+	
+	private String getEmploymentCode(String companyId, GeneralDate date, String sId) {
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, date);
+		return employment == null ? "" : employment.getEmploymentCode();
 	}
 }

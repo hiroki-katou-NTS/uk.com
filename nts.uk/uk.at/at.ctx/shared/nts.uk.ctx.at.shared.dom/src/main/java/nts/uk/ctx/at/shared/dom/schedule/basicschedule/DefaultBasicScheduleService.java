@@ -31,7 +31,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author sonnh1
  *
  */	
-@Transactional(value = TxType.NOT_SUPPORTED)
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class DefaultBasicScheduleService implements BasicScheduleService {
 
@@ -188,6 +188,41 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public WorkStyle checkWorkDay(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
+
+		if (!workTypeOpt.isPresent()) {
+			return null;
+		}
+
+		WorkType workType = workTypeOpt.get();
+		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+
+		// All day
+		if (workType.isOneDay()) {
+			if (dailyWork.IsLeaveForADay()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.ONE_DAY_WORK;
+		}
+
+		// Half day
+		if (dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.AFTERNOON_WORK;
+		}
+
+		if (dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		}
+
+		return WorkStyle.ONE_DAY_WORK;
+	}
+	
+	@Override
+	public WorkStyle checkWorkDay(Optional<WorkType> workTypeOpt) {
 
 		if (!workTypeOpt.isPresent()) {
 			return null;

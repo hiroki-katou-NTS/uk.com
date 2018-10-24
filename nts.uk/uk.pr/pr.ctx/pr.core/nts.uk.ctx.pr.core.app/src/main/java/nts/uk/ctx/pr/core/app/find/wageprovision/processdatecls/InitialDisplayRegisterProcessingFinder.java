@@ -29,10 +29,12 @@ public class InitialDisplayRegisterProcessingFinder {
 	private SetDaySupportRepository finderSetDaySupport;
 	@Inject
 	private CurrProcessDateRepository finderCurrProcessDate;
+
 	@Inject
 	private EmpTiedProYearRepository finderEmpTiedProYear;
-	//@Inject
-	//private SysEmploymentAdapter syEmploymentAdapter;
+
+	@Inject
+	private SysEmploymentAdapter syEmploymentAdapter;
 
 	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing() {
 		String cid = AppContexts.user().companyId();
@@ -75,6 +77,5 @@ public class InitialDisplayRegisterProcessingFinder {
 		}
 
 		return null;
-
 	}
 }

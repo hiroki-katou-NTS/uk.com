@@ -485,12 +485,12 @@ input[type=text]::-ms-clear {
 
 /* line 16, ../sass/components/_color.scss */
 .bg-daily-error {
-  background-color: #FEC6C6 !important;
+  background-color: #FD4D4D !important;
 }
 
 /* line 17, ../sass/components/_color.scss */
 .bg-daily-alarm {
-  background-color: #E3F385 !important;
+  background-color: #F6F636 !important;
 }
 
 /* line 18, ../sass/components/_color.scss */
@@ -696,6 +696,31 @@ input[type=text]::-ms-clear {
 /* line 61, ../sass/components/_color.scss */
 .bg-error-actual {
   background-color: #ffc0cb !important;
+}
+
+/* line 63, ../sass/components/_color.scss */
+.bg-36contract-error {
+  background-color: #FD4D4D;
+}
+
+/* line 66, ../sass/components/_color.scss */
+.bg-36contract-alarm {
+  background-color: #F6F636;
+}
+
+/* line 69, ../sass/components/_color.scss */
+.bg-36contract-exception {
+  background-color: #EB9152;
+}
+
+/* line 72, ../sass/components/_color.scss */
+.color-36contract-error {
+  color: #FFFFFF;
+}
+
+/* line 75, ../sass/components/_color.scss */
+.color-36contract-alarm {
+  color: #FF0000;
 }
 
 /*****************************
@@ -980,7 +1005,7 @@ div.popup-panel {
 #func-notifier-errors {
   position: absolute;
   display: none;
-  z-index: 1000005;
+  z-index: 10005;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -4560,7 +4585,7 @@ button.nts-switch-button[disabled].selected {
 .extable td .column-icon {
   position: absolute;
   left: 6px;
-  top: 50%;
+  /**top: 50%;**/
   margin-top: -8px;
 }
 
@@ -5012,23 +5037,23 @@ div .ex-area-line.x-stay {
 }
 
 /* line 82, ../sass/components/_mgrid.scss */
-.mgrid table tr td.mgrid-calc {
-  background-color: #F69164;
-}
-
-/* line 86, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-reflect {
   background-color: #BFEA60;
 }
 
-/* line 90, ../sass/components/_mgrid.scss */
+/* line 86, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-manual-edit-other {
   background-color: #CEE6FF;
 }
 
-/* line 94, ../sass/components/_mgrid.scss */
+/* line 90, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-manual-edit-target {
   background-color: #94B7FE;
+}
+
+/* line 94, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-calc {
+  background-color: #F69164;
 }
 
 /* line 98, ../sass/components/_mgrid.scss */
@@ -5409,7 +5434,7 @@ div .ex-area-line.x-stay {
   padding-top: 8px;
   white-space: nowrap;
   background-color: #fff;
-  z-index: 1000001;
+  z-index: 10001;
 }
 
 /* line 1, ../sass/frame/_contents.scss */

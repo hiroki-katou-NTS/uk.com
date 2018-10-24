@@ -159,8 +159,8 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	}	
 	//HoiDD No.257
 	@Override
-	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition,List<Integer> attendanceIds) {
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition) {
 		return checkResultMonthlyPub.checkPerTimeMonActualResult(yearMonth, employeeID, 
-				convertToAttendanceItemCon(attendanceItemCondition), attendanceIds);
+				convertToAttendanceItemCon(attendanceItemCondition));
 	}
 }

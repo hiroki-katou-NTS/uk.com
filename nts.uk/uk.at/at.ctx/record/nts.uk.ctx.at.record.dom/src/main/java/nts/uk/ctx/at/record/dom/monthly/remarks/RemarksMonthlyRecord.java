@@ -32,9 +32,6 @@ public class RemarksMonthlyRecord extends AggregateRoot{
 	/** 締め日 */
 	private ClosureDate closureDate;
 	
-	/** 期間 */
-	private DatePeriod remarksPeriod;
-	
 	/** 備考 */
 	public RecordRemarks recordRemarks;
 

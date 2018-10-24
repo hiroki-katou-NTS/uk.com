@@ -12,6 +12,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -33,6 +34,8 @@ public interface ApprovalStatusAdapter {
 	 * @return
 	 */
 	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
+	
+	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(DatePeriod date, String approverID, Integer rootType);
 	
 	/**
 	 * <=>RequestList133
@@ -164,4 +167,9 @@ public interface ApprovalStatusAdapter {
 	 * @return
 	 */
 	public boolean cancelMonth(String approverID, List<EmpPerformMonthParamImport> empPerformMonthParamLst);
+	
+	/**
+	 * RequestList 115
+	 */
+	public List<ApproverApproveImport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst, Integer rootType); 
 }

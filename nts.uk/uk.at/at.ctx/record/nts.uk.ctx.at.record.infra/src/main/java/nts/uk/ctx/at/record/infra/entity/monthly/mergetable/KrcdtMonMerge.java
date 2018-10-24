@@ -3560,7 +3560,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.calcTotalTransferTime = 0;
 		toEntityAggregateHolidayWorkTime(new HashMap<>());
 		
-		this.workTime = 0;
+		this.dayWorkMedicalTime = 0;
 		this.dayDeductionTime = 0;
 		this.dayTakeOverTime = 0;
 		this.nightMedicalTime = 0;
@@ -3695,7 +3695,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		toEntityDivergenceTimeOfMonthly(null);
 		
 		/** 医療時間 */
-		this.workTime = 0;
+		this.dayWorkMedicalTime = 0;
 		this.dayDeductionTime = 0;
 		this.dayTakeOverTime = 0;
 		this.nightMedicalTime = 0;
@@ -3909,7 +3909,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 			MedicalTimeOfMonthly domain = (MedicalTimeOfMonthly) medicalTime.get(i);
 			switch (i) {
 			case DAY_SHIFT:
-				this.workTime = domain.getWorkTime().v();
+				this.dayWorkMedicalTime = domain.getWorkTime().v();
 				this.dayDeductionTime = domain.getDeducationTime().v();
 				this.dayTakeOverTime = domain.getTakeOverTime().v();
 				break;
@@ -4699,7 +4699,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
 	private void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
-		this.excessTime_1_1 = domain == null ? 0 : domain == null ? 0 : domain.getExcessTime().v();
+		this.excessTime_1_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	private void toEntityExcessOutsideWork2(ExcessOutsideWork domain) {
@@ -5886,7 +5886,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		List<MedicalTimeOfMonthly> medicalTimeLst = new ArrayList<>();
 		medicalTimeLst.add(MedicalTimeOfMonthly.of(
 				WorkTimeNightShift.DAY_SHIFT,
-				new AttendanceTimeMonth(this.workTime),
+				new AttendanceTimeMonth(this.dayWorkMedicalTime),
 				new AttendanceTimeMonth(this.dayDeductionTime),
 				new AttendanceTimeMonth(this.dayTakeOverTime)));
 		medicalTimeLst.add(MedicalTimeOfMonthly.of(
@@ -6112,7 +6112,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** PCログオフ乖離 */
 		AggrPCLogonDivergence logonDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOnDivDays), new AttendanceTimeMonth(this.logOnDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
 		/** PCログオフ乖離 */
-		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOnDivAveTime));
+		AggrPCLogonDivergence logoffDivergence = AggrPCLogonDivergence.of(new AttendanceDaysMonth(this.logOffDivDays), new AttendanceTimeMonth(this.logOffDivTotalTime), new AttendanceTimeMonth(this.logOffDivAveTime));
 		val workClock = WorkClockOfMonthly.of(endClock,
 				PCLogonOfMonthly.of(logOnClock, PCLogonDivergenceOfMonthly.of(logonDivergence, logoffDivergence)));
 		

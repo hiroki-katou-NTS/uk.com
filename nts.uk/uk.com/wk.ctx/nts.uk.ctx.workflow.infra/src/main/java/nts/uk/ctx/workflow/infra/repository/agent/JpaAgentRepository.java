@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
@@ -214,11 +216,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 
 	@Override
 	public List<Agent> find(String companyId, List<String> employeeIds, GeneralDate baseDate) {
-		return this.queryProxy().query(SELECT_AGENT_SID_DATE, CmmmtAgent.class)
+		List<Agent> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_AGENT_SID_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
-				.setParameter("employeeIds", employeeIds)
+				.setParameter("employeeIds", subList)
 				.setParameter("baseDate", baseDate)
-				.getList(c -> convertToDomain(c));
+				.getList(c -> convertToDomain(c)));
+		});
+		return results;
 	}
 	
 	/**

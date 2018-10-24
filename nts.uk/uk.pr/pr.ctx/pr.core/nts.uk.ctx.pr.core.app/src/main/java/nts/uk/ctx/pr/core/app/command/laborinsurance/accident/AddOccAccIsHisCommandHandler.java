@@ -23,9 +23,6 @@ import java.util.Optional;
 public class AddOccAccIsHisCommandHandler extends CommandHandler<AccInsurHisCommand> {
 
     @Inject
-    private OccAccIsHisRepository repository;
-
-    @Inject
     private OccAccIsPrRateRepository occAccIsPrRateRepository;
 
     @Inject
@@ -42,8 +39,9 @@ public class AddOccAccIsHisCommandHandler extends CommandHandler<AccInsurHisComm
         for (NameOfEachBusiness nameOfEachBusiness: occAccInsurBus.get().getEachBusiness() ) {
             temp.add(new OccAccInsurBusiBurdenRatio(nameOfEachBusiness.getOccAccInsurBusNo(), EnumAdaptor.valueOf(nameOfEachBusiness.getToUse(),InsuPremiumFractionClassification.class),new InsuranceRate(new BigDecimal(0))));
         }
-        occAccIsPrRateRepository.add(temp,newHistID);
-        repository.add(new YearMonthHistoryItem(newHistID, new YearMonthPeriod(new YearMonth(addCommand.getStartMonthYear()),new YearMonth(999912))), cId);
+        
+        YearMonthHistoryItem item = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(new YearMonth(addCommand.getStartMonthYear()),new YearMonth(999912)));
+        occAccIsPrRateRepository.add(temp, newHistID, item);
     }
 
 }

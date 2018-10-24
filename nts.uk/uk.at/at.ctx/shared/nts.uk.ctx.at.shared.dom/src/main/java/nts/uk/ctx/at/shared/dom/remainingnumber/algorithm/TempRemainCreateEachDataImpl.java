@@ -181,33 +181,57 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 		return mngData;
 	}
 	/**
-	 * 振休使用期限日を取得する
+	 * 振休使用期限日を取得する, 
 	 * @return
 	 */
 	private GeneralDate getUseDays(InforFormerRemainData inforData) {
 		//雇用別休暇管理設定の振休をチェックする
 		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
 		SubstVacationSetting subSetting = null;
-		if(employmentHolidaySetting != null && employmentHolidaySetting.getAbsSetting().isPresent()) {
+		if(employmentHolidaySetting != null
+				&& employmentHolidaySetting.getAbsSetting().isPresent()) {
 			subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
+			
 		} else {
-			if (inforData.getCompanyHolidaySetting().getAbsSetting().isPresent()) {
-				ComSubstVacation companyHolidaySetting = inforData.getCompanyHolidaySetting().getAbsSetting().get();
-				subSetting = companyHolidaySetting.getSetting();
-			}
+			ComSubstVacation companyHolidaySetting = inforData.getCompanyHolidaySetting().getAbsSetting().get();
+			subSetting = companyHolidaySetting.getSetting();
 		}
-		if(subSetting == null) {
+		if (subSetting == null) {
 			return GeneralDate.max();
+		} 
+		
+		return this.commonDate(subSetting.getExpirationDate(), inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
+	}
+	
+	/**
+	 * 代休使用期限日を取得する
+	 * @param inforData
+	 * @return
+	 */
+	private GeneralDate getDayDaikyu(InforFormerRemainData inforData) {
+		//雇用別休暇管理設定の振休をチェックする
+		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
+		ExpirationTime expriTime = ExpirationTime.UNLIMITED;
+		if(employmentHolidaySetting != null 
+				&& employmentHolidaySetting.getDayOffSetting() != null) {
+			expriTime = employmentHolidaySetting.getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
+		} else {
+			expriTime = inforData.getCompanyHolidaySetting().getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
 		}
+		
+		return this.commonDate(expriTime, inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
+	}
+	
+	private GeneralDate commonDate(ExpirationTime expriTime, String employmentCode, GeneralDate dateInfor) {
 		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
-		if(subSetting.getExpirationDate() == ExpirationTime.END_OF_YEAR) {
+		if(expriTime == ExpirationTime.END_OF_YEAR) {
 			//TODO 
-		} else if (subSetting.getExpirationDate() == ExpirationTime.UNLIMITED) {
+		} else if (expriTime == ExpirationTime.UNLIMITED) {
 			return GeneralDate.max();
 		} else {
 			//期限指定のある使用期限日を作成する
-			if(inforData.getEmploymentHolidaySetting() != null) {
-				return useDateService.useDateDeadline(inforData.getEmploymentHolidaySetting().getEmploymentCode(),subSetting.getExpirationDate(), inforData.getYmd());
+			if(expriTime != null) {
+				return useDateService.useDateDeadline(employmentCode, expriTime, dateInfor);
 			}
 		}
 		return GeneralDate.max();
@@ -231,7 +255,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			return mngData;
 		}
 		//代休使用期限日を取得する
-		GeneralDate useDate = this.getUseDays(inforData);
+		GeneralDate useDate = this.getDayDaikyu(inforData);
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain recAbsData = new InterimRemain(mngId,
 				inforData.getSid(),

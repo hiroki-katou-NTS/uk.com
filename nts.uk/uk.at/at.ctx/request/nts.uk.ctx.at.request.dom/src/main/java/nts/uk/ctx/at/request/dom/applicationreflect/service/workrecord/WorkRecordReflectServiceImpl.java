@@ -21,7 +21,6 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 		if (!checkReflect) {
 			return ReflectInformationResult.CHECKFALSE;
 		}
-		boolean isReflect = true;
 		//事前事後区分を取得
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類

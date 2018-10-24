@@ -317,6 +317,8 @@ module nts.uk.at.view.kdw008.b {
                 service.getListMonthRight(code).done(function(data) {
                     if (data) {
                         self.sheetCorrectedMonthly(SheetCorrectedMonthlyDto.fromApp(data.displayItem.listSheetCorrectedMonthly));
+                    }else{
+                        self.sheetCorrectedMonthly(SheetCorrectedMonthlyDto.fromApp([]));
                     }
                     dfd.resolve();
                 }).fail(err => {

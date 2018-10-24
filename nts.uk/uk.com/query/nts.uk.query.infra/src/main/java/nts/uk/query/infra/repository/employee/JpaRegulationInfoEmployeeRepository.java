@@ -56,6 +56,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 	/** The Constant MAX_WHERE_IN. */
 	private static final int MAX_WHERE_IN = 1000;
+	
+	/** The Constant MAX_PARAMETERS. */
+	private static final int MAX_PARAMETERS = 2000;
 
 	/** The Constant NAME_TYPE. */
 	// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
@@ -282,14 +285,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		conditions.add(cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition, retireCondition));
 		countParameter += 10;
 
-		// getSortConditions
-		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
-				paramQuery.getSortOrderNo());
-
 		// sort
 		if (paramQuery.getSystemType() != CCG001SystemType.ADMINISTRATOR.value) {
 			List<Order> orders = this.getOrders(paramQuery.getSystemType(), NAME_TYPE,
-					this.toSortingConditionQueryModel(sortConditions));
+					this.getSortConditions(comId, paramQuery.getSystemType(), paramQuery.getSortOrderNo()));
 			cq.orderBy(orders);
 		}
 		List<EmployeeDataView> resultList = new ArrayList<>();
@@ -351,13 +350,21 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * @param sortOrderNo the sort order no
 	 * @return the sort conditions
 	 */
-	private List<BsymtEmpOrderCond> getSortConditions(String comId, Integer systemType, Integer sortOrderNo) {
+	private List<SortingConditionOrder> getSortConditions(String comId, Integer systemType, Integer sortOrderNo) {
 		if (sortOrderNo == null) {
 			return Collections.emptyList();
 		}
 		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
 		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
-		return empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond() : Collections.emptyList();
+		List<BsymtEmpOrderCond> conditions = empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond()
+				: Collections.emptyList();
+
+		return conditions.stream().map(cond -> {
+			SortingConditionOrder mapped = new SortingConditionOrder();
+			mapped.setOrder(cond.getConditionOrder());
+			mapped.setType(RegularSortingType.valueOf(cond.getId().getOrderType()));
+			return mapped;
+		}).sorted(((a, b) -> a.getOrder() - b.getOrder())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -370,21 +377,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	private <T> java.util.function.Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 	    Set<Object> seen = ConcurrentHashMap.newKeySet();
 	    return t -> seen.add(keyExtractor.apply(t));
-	}
-
-	/**
-	 * To sorting condition query model.
-	 *
-	 * @param sortConditions the sort conditions
-	 * @return the list
-	 */
-	private List<SortingConditionOrder> toSortingConditionQueryModel(List<BsymtEmpOrderCond> sortConditions) {
-		return sortConditions.stream().map(cond -> {
-			SortingConditionOrder mapped = new SortingConditionOrder();
-			mapped.setOrder(cond.getConditionOrder());
-			mapped.setType(RegularSortingType.valueOf(cond.getId().getOrderType()));
-			return mapped;
-		}).collect(Collectors.toList());
 	}
 
 	/**
@@ -622,19 +614,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		}
 		List<EmployeeDataView> resultList = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
-		CriteriaQuery<EmployeeDataView> cq = this.getCriteriaQueryOfSortingEmployees(comId, sIds, referenceDate);
 
-		// getSortConditions
-		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, systemType, orderNo);
+		CollectionUtil.split(sIds, MAX_PARAMETERS, splitData -> {
+			CriteriaQuery<EmployeeDataView> cq = this.getCriteriaQueryOfSortingEmployees(comId, splitData,
+					referenceDate);
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
-		// sort
-		List<Order> orders = this.getOrders(systemType, nameType, this.toSortingConditionQueryModel(sortConditions));
-		cq.orderBy(orders);
-
-		// execute query & add to resultList
-		resultList.addAll(em.createQuery(cq).getResultList());
-
-		return resultList.stream().map(EmployeeDataView::getSid).distinct().collect(Collectors.toList());
+		List<SortingConditionOrder> sortConditions = this.getSortConditions(comId, systemType, orderNo);
+		return this.sortByListConditions(resultList, sortConditions);
 	}
 
 	/*
@@ -651,14 +639,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			return Collections.emptyList();
 		}
 		EntityManager em = this.getEntityManager();
-		CriteriaQuery<EmployeeDataView> cq = this.getCriteriaQueryOfSortingEmployees(comId, sIds, referenceDate);
 
-		// System type is required when sorting by workTypeCd
-		List<Order> listOrder = this.getOrders(CCG001SystemType.ADMINISTRATOR.value, NAME_TYPE, orders);
-		cq.orderBy(listOrder);
+		List<EmployeeDataView> resultList = new ArrayList<>();
+		CollectionUtil.split(sIds, MAX_PARAMETERS, splitData -> {
+			CriteriaQuery<EmployeeDataView> cq = this.getCriteriaQueryOfSortingEmployees(comId, splitData,
+					referenceDate);
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
-		return em.createQuery(cq).getResultList().stream().map(EmployeeDataView::getSid).distinct()
-				.collect(Collectors.toList());
+		return this.sortByListConditions(resultList, orders);
 	}
 	
 	/**
@@ -736,6 +725,92 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			countFilterTrue--;
 		}
 		return resultListInFunc;
+	}
+
+	
+	/**
+	 * Sort by list conditions.
+	 *
+	 * @param resultList the result list
+	 * @param sortConditions the sort conditions
+	 * @return the list
+	 */
+	private List<String> sortByListConditions(List<EmployeeDataView> resultList,
+			List<SortingConditionOrder> sortConditions) {
+		return resultList.stream().sorted((a, b) -> {
+			Iterator<SortingConditionOrder> iterator = sortConditions.iterator();
+			int comparator = 0;
+
+			while (iterator.hasNext()) {
+				if (comparator == 0) {
+					SortingConditionOrder cond = iterator.next();
+					switch (cond.getType()) {
+					case EMPLOYMENT: // EMPLOYMENT
+						String empCda = a.getEmpCd();
+						String empCdb = b.getEmpCd();
+						if (empCda != null && empCdb != null) {
+							comparator = empCda.compareTo(empCdb);
+						}
+						break;
+					case DEPARTMENT: // DEPARTMENT
+						// TODO: not covered
+						break;
+					case WORKPLACE: // WORKPLACE
+						String wplCda = a.getWplHierarchyCode();
+						String wplCdb = b.getWplHierarchyCode();
+						if (wplCda != null && wplCdb != null) {
+							comparator = wplCda.compareTo(wplCdb);
+						}
+						break;
+					case CLASSIFICATION: // CLASSIFICATION
+						String clsCda = a.getClassificationCode();
+						String clsCdb = b.getClassificationCode();
+						if (clsCda != null && clsCdb != null) {
+							comparator = clsCda.compareTo(clsCdb);
+						}
+						break;
+					case POSITION: // POSITION
+						String seqCda = a.getJobSeqDisp();
+						String seqCdb = b.getJobSeqDisp();
+						if (seqCda != null && seqCdb != null) {
+							comparator = seqCda.compareTo(seqCdb);
+						}
+						if (comparator == 0) {
+							String jobCda = a.getJobCd();
+							String jobCdb = b.getJobCd();
+							if (jobCda != null && jobCdb != null) {
+								comparator = jobCda.compareTo(jobCdb);
+							}
+						}
+						break;
+					case HIRE_DATE: // HIRE_DATE
+						GeneralDateTime comStrDa = a.getComStrDate();
+						GeneralDateTime comStrDb = b.getComStrDate();
+						if (comStrDa != null && comStrDb != null) {
+							comparator = comStrDa.compareTo(comStrDb);
+						}
+						break;
+					case NAME: // NAME
+						// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
+						// => 「氏名カナ」 ＝ 「ビジネスネームカナ」
+						String businessNameA = a.getBusinessNameKana();
+						String businessNameB = b.getBusinessNameKana();
+						if (businessNameA != null && businessNameB != null) {
+							comparator = businessNameA.compareTo(businessNameB);
+						}
+						// TODO:
+						// orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+			if (comparator == 0) {
+				comparator = a.getScd().compareTo(b.getScd());
+			}
+			return comparator;
+		}).map(EmployeeDataView::getSid).distinct().collect(Collectors.toList());
 	}
 
 }

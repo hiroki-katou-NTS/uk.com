@@ -188,9 +188,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				// nếu tổng số dòng trên một trang bị vượt qua > 42*x
 				// thì sẽ ngắt trang
 				HorizontalPageBreakCollection hPageBreaks = worksheets.get(0).getHorizontalPageBreaks();
-				hPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+				hPageBreaks.add("P" + (42 * numberOfPage + 4));
 				VerticalPageBreakCollection vPageBreaks = worksheets.get(0).getVerticalPageBreaks();
-				vPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+				vPageBreaks.add("P" + (42 * numberOfPage + 4));
 
 				// tăng chỉ số của row lên
 				firstRow = firstRow + sizeOfApp;
@@ -338,11 +338,10 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				
 				// nếu tổng số dòng trên một trang bị vượt qua > 42*x
 				// thì sẽ ngắt trang
-				HorizontalPageBreakCollection hPageBreaks = worksheets.get(1).getHorizontalPageBreaks();
-				hPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
-				VerticalPageBreakCollection vPageBreaks = worksheets.get(1).getVerticalPageBreaks();
-				vPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
-
+				HorizontalPageBreakCollection hPageBreaks = worksheets.get(2).getHorizontalPageBreaks();
+				hPageBreaks.add("P" + (42 * page + 4));
+				VerticalPageBreakCollection vPageBreaks = worksheets.get(2).getVerticalPageBreaks();
+				vPageBreaks.add("P" + (42 * page + 4));
 				// tăng chỉ số của row lên
 				firstRow = firstRow + sizeOfForm;
 			}
@@ -462,9 +461,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 				// ngắt trang
 				HorizontalPageBreakCollection hPageBreaks = worksheets.get(1).getHorizontalPageBreaks();
-				hPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+				hPageBreaks.add("P" + (42 * numberOfPage + 4));
 				VerticalPageBreakCollection vPageBreaks = worksheets.get(1).getVerticalPageBreaks();
-				vPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+				vPageBreaks.add("P" + (42 * numberOfPage + 4));
 
 				// tăng chỉ số của row lên
 				firstRow = firstRow + numberOfRowMerge;

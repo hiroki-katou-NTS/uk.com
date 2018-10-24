@@ -178,14 +178,16 @@
 						data-bind="enable: $vm.editable,click : openDialogKdl003">#{i18n.getText('KAF010_36')}</button>
 				</div>
 				<div class="cell valign-center">
-					<!--A4_2 勤務種類コード-->
-					<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
-					<!--A4_3 勤務種類名称-->
-					<LABEL data-bind="text: workTypeName"></LABEL> <BR />
-					<!--A4_5 就業時間コード-->
-					<label class="lblSiftCd" data-bind="text: siftCD"></label>
-					<!--A4_6 就業時間名称-->
-					<LABEL data-bind="text: siftName"></LABEL>
+					<div id="kaf010-workType-workTime-div" style="padding-right: 10px;margin-left: 10px;">
+						<!--A4_2 勤務種類コード-->
+						<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
+						<!--A4_3 勤務種類名称-->
+						<LABEL data-bind="text: workTypeName"></LABEL> <BR />
+						<!--A4_5 就業時間コード-->
+						<label class="lblSiftCd" data-bind="text: siftCD"></label>
+						<!--A4_6 就業時間名称-->
+						<LABEL data-bind="text: siftName"></LABEL>
+					</div>
 				</div>
 			</div>
 		</div>
