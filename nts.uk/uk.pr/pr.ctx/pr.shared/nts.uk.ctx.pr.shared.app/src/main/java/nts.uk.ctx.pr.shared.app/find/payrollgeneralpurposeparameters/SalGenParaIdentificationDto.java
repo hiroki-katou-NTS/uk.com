@@ -45,7 +45,7 @@ public class SalGenParaIdentificationDto
     
     public static SalGenParaIdentificationDto fromDomain(SalGenParaIdentification domain)
     {
-        return new SalGenParaIdentificationDto(domain.getParaNo(), domain.getCID(), domain.getName(), domain.getAttributeType().value, domain.getHistoryAtr().value, domain.getExplanation().get());
+        return new SalGenParaIdentificationDto(domain.getParaNo().v(), domain.getCID(), domain.getName().v(), domain.getAttributeType().value, domain.getHistoryAtr().value, domain.getExplanation().get());
     }
     
 }

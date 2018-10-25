@@ -11,6 +11,8 @@
             nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamTime
             nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamCharacter
             nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParamNumber
+			nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.GenPurposeParamNo
+			nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.GenPurposeParamName
         </com:ValidatorScript>
 		<com:scriptfile set="IGNITE"/>
 		<com:stylefile path="qmm001.a.style.css"/>
@@ -21,18 +23,16 @@
 
 	<ui:define name="content">
 		<div id="functions-area">
-
 			<button id="A1_1" tabindex="1" class="proceed"
 					data-bind="click : register, enable: isEnableSubmit()">#{i18n.getText('QMM001_4')}</button>
 			<button id="A1_2" tabindex="2"
 					data-bind="click : creatPdf, enable: false">#{i18n.getText('QMM001_5')}</button>
 			<button id="A1_3" tabindex="3"
 					data-bind="click : remove, enable: false ">#{i18n.getText('QMM001_6')}</button>
-
 		</div>
 		<div id="contents-area" class="cf">
 
-			<!-- phần trái của màn hình -->
+			<!-- left sign screen -->
 			<div id="content-left" class="pull-left">
 				<!-- panel -->
 				<div
@@ -43,22 +43,21 @@
 							visible: true}">
 
 					<!-- thanh tìm kiếm  -->
-					<div tabindex="4"
+					<div  id="A2_2" tabindex="4"
 						 data-bind="ntsSearchBox: {
 								searchMode: 'highlight',
 								targetKey: 'paraNo',
 								mode: 'igGrid',
 								comId: 'sel_item_grid',
 								items: listItems ,
-								placeHolder: '名称で検索…',
 								searchText: '検索',
 								selected: '',
 								selectedKey: 'paraNo',
 								fields: ['paraNo'],
 								mode: 'igGrid'
 								}"/>
-					<!-- kết quả tìm kiếm  -->
-					<table id="sel_item_grid" tabindex="5"
+					<!-- value search resulf  -->
+					<table  id="sel_item_grid" tabindex="5"
 						   data-bind="ntsGridList: {
 								options: listItems,
 								primaryKey: 'paraNo',
@@ -71,20 +70,16 @@
 								rows: 9,
 								value: selectedSalGenParaIdent}">
 					</table>
-
-					<!-- mũi tên -->
+					<!-- arrow -->
 					<span id="caret" class="caret-bottom outline"></span>
-
 					<!-- khu vực thêm lịch sử, sửa lịch sử  -->
 					<div id="history" class="cf">
 						<button tabindex="6" id="A2_9"
 								data-bind="click: openDialogB, enable: isOpenDialogB()">#{i18n.getText('QMM001_10')}</button>
 						<button style="float: right" tabindex="7" id="A2_10" class="danger"
 								data-bind="click: openDialogC, enable: isOpenDiaLogC() ">#{i18n.getText('QMM001_11')}</button>
-
 					</div>
-
-					<!-- khu vực history list -->
+					<!-- History place -->
 					<div id="history_lst" tabindex="8"
 						 data-bind="ntsListBox: {
 							options: listHistory,
@@ -103,7 +98,7 @@
 
 			</div>
 
-			<!-- phần bên giữa của màn hình  -->
+			<!-- middle sign  -->
 			<div id="content-right" class="control-group"
 				 style="width: 100%">
 
@@ -183,7 +178,7 @@
 							}">
 				</div>
 				<br></br>
-				<!--trường hợp 1-->
+				<!--case 1-->
 				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.NUMBER">
 
 					<div class="form-lable"
@@ -202,7 +197,7 @@
 																placeHolder: 'クリア',
 																} "/>
 				</div>
-				<!--trường hợp 2-->
+				<!--case 2-->
 				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TIME">
 					<div class="form-lable"
 						 data-bind="ntsFormLabel: { required: true } ">
@@ -221,14 +216,14 @@
 																placeHolder: 'クリア',
 																} "/>
 				</div>
-				<!--trường hợp 3-->
+				<!--case 3-->
 				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TEXT">
 					<div class="form-lable"
 						 data-bind="ntsFormLabel: { required: true } ">
 						<label id="A4_9">#{i18n.getText('QMM001_24')}</label>
 
 					</div>
-					<input id="A4_10" tabindex="12" class="B3_7"
+					<input id="A4_10" style="margin-left: 3px" tabindex="12" class="B3_7"
 						   data-bind="ntsTextEditor: {
 																option : {width: '70px', decimallength: 3},
 																name: '#{i18n.getText('QMM001_24')}',
@@ -239,7 +234,7 @@
 																placeHolder: 'クリア',
 																} "/>
                 </div>
-				<!--trường hợp 4-->
+				<!--case 4-->
 				<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TARGET_EXEMPT">
 					<div class="form-lable"
 						 data-bind="ntsFormLabel: { required: true }">
@@ -256,7 +251,7 @@
 					<br></br>
 					<span id="A4_15" style="margin-left: 100px;" data-bind="text: salGenParaIdent().explanation"/>
 				</div>
-				<!--trường hợp 5-->
+				<!--case 5-->
 					<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.SELECTION">
 						<div class="form-lable"
 							 data-bind="ntsFormLabel: { required: true } ">
@@ -267,6 +262,8 @@
 							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 							optionsValue: 'code',
 							optionsText: 'name',
+							editable : false,
+							required:true,
 							value: valueComboBox,
 							columns: [{ prop: 'code'},
 							{ prop: 'name' }],

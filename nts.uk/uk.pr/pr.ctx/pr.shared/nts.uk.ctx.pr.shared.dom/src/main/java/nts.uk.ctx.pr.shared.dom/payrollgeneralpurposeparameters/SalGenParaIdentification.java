@@ -1,15 +1,10 @@
 package nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters;
 
-import java.util.Optional;
-import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParaAttributeType;
-import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.ParaHistoryAtr;
+import nts.arc.layer.dom.AggregateRoot;
+
+import java.util.Optional;
 
 /**
 * 給与汎用パラメータ識別
@@ -20,7 +15,7 @@ public class SalGenParaIdentification extends AggregateRoot {
     /**
     * パラメータNo
     */
-    private String paraNo;
+    private GenPurposeParamNo paraNo;
     
     /**
     * 会社ID
@@ -30,7 +25,7 @@ public class SalGenParaIdentification extends AggregateRoot {
     /**
     * 名称
     */
-    private String name;
+    private GenPurposeParamName name;
     
     /**
     * 属性区分
@@ -49,9 +44,9 @@ public class SalGenParaIdentification extends AggregateRoot {
     
     public SalGenParaIdentification(String paraNo, String cid, String name, int attributeType, int historyAtr, String explanation) {
         this.cID = cid;
-        this.paraNo =paraNo ;
+        this.paraNo = new GenPurposeParamNo(paraNo);
         this.attributeType = EnumAdaptor.valueOf(attributeType, ParaAttributeType.class);
-        this.name =name ;
+        this.name = new GenPurposeParamName(name) ;
         this.historyAtr = EnumAdaptor.valueOf(historyAtr, ParaHistoryAtr.class);
         this.explanation = Optional.ofNullable(explanation);
     }

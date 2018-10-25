@@ -24,7 +24,6 @@ public class SalGenHistoryService {
     @Inject
     private SalGenParaDateHistRepository mSalGenParaDateHistRepository;
 
-    private final static int MODE_HISTORY_DATE = 0;
     private final static int MODE_HISTORY_YEARMONTH = 1;
 
     public void addEmpInsurBusBurRatio(String newHistID,String paraNo, String start, String end, SalGenParaValue salGenParaValue,int modeHistory){

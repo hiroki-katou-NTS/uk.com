@@ -46,10 +46,14 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             let self = this;
             self.initView();
             self.selectedSalGenParaIdent.subscribe((data) => {
-                self.itemSelectionProcess(data);
+                errors.clearAll();
+                self.itemSelectionProcess(data,FIRST);
                 self.salGenParaIdent(_.find(self.listItems(), {'paraNo': data}));
             });
             self.selectedSalGenParaHistory.subscribe((data) => {
+                if(data == null){
+                    return;
+                }
                 errors.clearAll();
                 self.getSalGenParaValue(data, self.isCopy());
                 self.salGenParaHistory(_.find(self.listHistory(), {'historyId': data}));
@@ -57,9 +61,11 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             self.selectedSwitchParaAvai.subscribe((data) => {
                 if(data == SWITCH_EFF_CATEGORY.AVAILABLE){
                     errors.clearAll();
+                    self.value(null);
                 }
 
             });
+
 
         }
 
@@ -82,7 +88,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
 
         /*アルゴリズム「項目選択処理」を実行する*/
-        itemSelectionProcess(paraNo: number) {
+        itemSelectionProcess(paraNo: number,indexFocus:number) {
             let self = this;
             let dataSelected: SalGenParaIdentification = _.find(self.listItems(), {'paraNo': paraNo});
             if (dataSelected.attributeType == PARAATTRITYPE.SELECTION) {
@@ -99,7 +105,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         self.modeHistory(MODEHISTORY.DATE);
                         if (itemList && itemList.length > 0) {
                             self.listHistory(SalGenParaDateHistory.convertToDisplayHis(itemList));
-                            self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                            self.selectedSalGenParaHistory(null);
+                            self.selectedSalGenParaHistory(self.listHistory()[indexFocus].historyId);
                             self.modeScreen(MODESCREEN.UPDATE);
                             self.isDisplayHis(true);
                         }
@@ -120,7 +127,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         self.modeHistory(MODEHISTORY.YEARMONTH);
                         if (itemList && itemList.length > 0) {
                             self.listHistory(SalGenParaYearMonthHistory.convertToDisplayHis(itemList));
-                            self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                            self.selectedSalGenParaHistory(null);
+                            self.selectedSalGenParaHistory(self.listHistory()[indexFocus].historyId);
                             self.modeScreen(MODESCREEN.UPDATE);
                             self.isDisplayHis(true);
                         }
@@ -142,7 +150,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         self.modeHistory(MODEHISTORY.YEARMONTH);
                         if (itemList && itemList.length > 0) {
                             self.listHistory(SalGenParaYearMonthHistory.convertToDisplayHis(itemList));
-                            self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
+                            self.selectedSalGenParaHistory(null);
+                            self.selectedSalGenParaHistory(self.listHistory()[indexFocus].historyId);
                             self.modeScreen(MODESCREEN.UPDATE);
                             self.isDisplayHis(true);
                         }
@@ -250,9 +259,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         return;
                     }
                     self.salGenParaValue(item);
-                    switch (item.availableAtr){
+                    switch (this.salGenParaIdent().attributeType){
                         case PARAATTRITYPE.TIME:{
-                            self.value(Number(item.timeValue));
+                            self.value(item.timeValue);
                             break;
                         };
                         case PARAATTRITYPE.TEXT:{
@@ -260,7 +269,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             break;
                         };
                         case PARAATTRITYPE.NUMBER:{
-                            self.value(Number(item.numValue));
+                            self.value(item.numValue);
                             break;
                         };
                         default :{
@@ -285,7 +294,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             numValue :null,
                             charValue :null,
                             timeValue :null,
-                            targetAtr: null
+                            targetAtr: PARATARGETATR.TARGET
                         };
                         self.value(null);
                     }
@@ -309,7 +318,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         numValue :null,
                         charValue :null,
                         timeValue :null,
-                        targetAtr: null
+                        targetAtr: PARATARGETATR.TARGET
                     };
                     self.value(null);
                     self.isDisplayHis(true);
@@ -320,36 +329,47 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         }
 
+
         register() {
             let self = this;
             $('#A4_2').focus();
+            if( self.selectedSwitchParaAvai() == SWITCH_EFF_CATEGORY.UNAVAILABLE ){
+                self.validate();
+            }
+
             if(errors.hasError()){
                 return;
             }
+            if(self.salGenParaValue() != null)
+            {
+                switch (self.salGenParaIdent().attributeType){
+                    case PARAATTRITYPE.NUMBER:{
+                        self.salGenParaValue().numValue = self.value();
+                        break;
+                    }
+                    case PARAATTRITYPE.TIME :{
+                        self.salGenParaValue().timeValue = self.value();
+                        break;
+                    }
+                    case PARAATTRITYPE.TEXT :{
+                        self.salGenParaValue().charValue = self.value();
+                        break;
+                    }
 
-            switch (self.salGenParaIdent().attributeType){
-                case PARAATTRITYPE.NUMBER:{
-                    self.salGenParaValue().numValue = self.value();
-                    break;
-                }
-                case PARAATTRITYPE.TIME :{
-                    self.salGenParaValue().timeValue = self.value();
-                    break;
-                }
-                case PARAATTRITYPE.TEXT :{
-                    self.salGenParaValue().charValue = self.value();
-                    break;
-                }
-
-            };
+                };
+            }
             let dataHisValue: any = null;
+            let valueCombobox : number = null;
+            if(self.salGenParaIdent().attributeType == PARAATTRITYPE.SELECTION){
+                valueCombobox =self.valueComboBox();
+            }
             let dataValue: any = {
                 historyId: self.selectedSalGenParaHistory(),
-                selection: self.salGenParaValue().selection,
+                selection: valueCombobox,
                 availableAtr: self.selectedSwitchParaAvai(),
-                numValue: self.salGenParaValue().numValue,
-                charValue: self.salGenParaValue().charValue,
-                timeValue: self.salGenParaValue().timeValue,
+                numValue: (self.salGenParaValue().numValue == null ? null : self.salGenParaValue().numValue),
+                charValue: (self.salGenParaValue().charValue == null ? null : self.salGenParaValue().charValue),
+                timeValue:(self.salGenParaValue().timeValue == null ? null : self.salGenParaValue().timeValue),
                 targetAtr: self.selectedSwitchParaTargetAtr(),
                 modeScreen: self.modeScreen()
             };
@@ -383,7 +403,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             service.addSelectionProcess(dataHisValue).done(() => {
                 if (self.modeScreen()== MODESCREEN.ADD){
                     let paraNo : number =  self.selectedSalGenParaIdent();
-                    self.itemSelectionProcess(paraNo);
+                    self.itemSelectionProcess(paraNo,FIRST);
                     self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
                 }
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -392,6 +412,23 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             });
 
 
+        }
+        setFocusEditText(){
+            let self = this;
+            switch (this.salGenParaIdent().attributeType){
+                case PARAATTRITYPE.TIME:{
+                    $('#A4_8').focus();
+                    break;
+                };
+                case PARAATTRITYPE.TEXT:{
+                    $('#A4_10').focus();
+                    break;
+                };
+                case PARAATTRITYPE.NUMBER:{
+                    $('#A4_6').focus();
+                    break;
+                };
+            }
         }
         addHistory(start: number){
             let self = this;
@@ -435,6 +472,12 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 self.selectedSalGenParaHistory(self.listHistory()[0].historyId);
             }
 
+        }
+        validate(){
+            $("#A4_10").trigger("validate");
+            $("#A4_6").trigger("validate");
+            $("#A4_8").trigger("validate");
+            $("#A4_17").trigger("validate");
         }
         isEnableSwitchButton(){
             let self = this;
@@ -506,7 +549,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
             let data:any = null ;
             if(self.modeHistory() == MODEHISTORY.YEARMONTH){
-                if(self.listHistory().length ==1 ){
+                if(self.listHistory().length ==1 || index ==self.listHistory().length-1){
                     startLastYearMonth = 0;
                 }
                 else {
@@ -549,13 +592,10 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if (params == null || params === undefined) {
                     return;
                 }
-
-                    let paraNo : number =  self.selectedSalGenParaIdent();
-                    self.itemSelectionProcess(paraNo);
-                    self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
-                    self.modeScreen(MODESCREEN.ADD);
-
-
+                let paraNo : number =  self.selectedSalGenParaIdent();
+                self.itemSelectionProcess(paraNo,index);
+                self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
+                self.modeScreen(MODESCREEN.ADD);
 
             });
         }
