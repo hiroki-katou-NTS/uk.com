@@ -287,7 +287,7 @@ public class ErAlWorkRecordCheckService {
 		ContinuousHolidayCheckResult r = new ContinuousHolidayCheckResult();
 		
 		checkSetting.findSpecial(AppContexts.user().companyId()).ifPresent(setting -> {
-			if(setting.isUseAtr()){
+			if(setting.isUseAtr() && setting.getMaxContinuousDays().greaterThan(0) && !setting.getTargetWorkType().isEmpty()){
 				Map<GeneralDate, Integer> result = new HashMap<>();
 				
 				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true, new HashSet<>(workInfos));
@@ -307,7 +307,12 @@ public class ErAlWorkRecordCheckService {
 		boolean finishing = false;
 		List<WorkInfoOfDailyPerformance> subWorkInfos = getWorkInfoInRange(range, employeeId, workInfos);
 
-		if (subWorkInfos.isEmpty()) { return; }
+		if (subWorkInfos.isEmpty()) {
+			if (count >= setting.getMaxContinuousDays().v()) {
+				result.put(markDate, count);
+			}
+			return;	
+		}
 		
 		for (WorkInfoOfDailyPerformance info : subWorkInfos) {
 			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
