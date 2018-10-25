@@ -429,7 +429,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					.stream().collect(Collectors.toList());
 			//メモリ上の「特別休暇暫定データ」を取得する
 			for(DailyInterimRemainMngData y : lstDailyInterimRemainMngData) {*/
-				List<InterimSpecialHolidayMng> specialHolidayData = param.getInterimSpecialData();
+				List<InterimSpecialHolidayMng> specialHolidayData = param.getInterimSpecialData().stream()
+						.filter(x -> x.getSpecialHolidayCode() == param.getSpeCode())
+						.collect(Collectors.toList());
 				for(InterimSpecialHolidayMng specialData : specialHolidayData) {
 					lstOutput.add(specialData);
 					List<InterimRemain> mngData = param.getRemainData().stream()
