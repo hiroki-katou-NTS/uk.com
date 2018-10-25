@@ -8,9 +8,14 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
 
     export class ScreenModel {
 
+        itemList: KnockoutObservableArray<shareModel.BoxModel>;
+        selectedId: KnockoutObservable<number>;
+
         constructor() {
             let self = this;
 
+            self.itemList = ko.observableArray(shareModel.getSpecCreateAtr());
+            self.selectedId = ko.observable(shareModel.SpecCreateAtr.NEW);
         }
 
         startPage(): JQueryPromise<any> {
@@ -20,11 +25,11 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             return dfd.promise();
         }
 
-        decide(){
+        decide() {
             nts.uk.ui.windows.close();
         }
 
-        cancel(){
+        cancel() {
             nts.uk.ui.windows.close();
         }
     }

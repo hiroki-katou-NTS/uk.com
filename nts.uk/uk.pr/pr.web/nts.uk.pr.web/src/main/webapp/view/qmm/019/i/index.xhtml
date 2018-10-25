@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 550,
-                height: 400
+                width: 340,
+                height: 650
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -23,7 +23,18 @@
 
     <ui:define name="content">
         <div id="contents-area">
-
+            <!--I1_1-->
+            <div id="I1_1" class="label">#{i18n.getText('QMM019_184')}</div>
+            <!--I1_2-->
+            <table id="I1_2" data-bind="ntsGridList: {
+                name: '#[QMM019_185]',
+                rows: 20,
+                dataSource: amounts,
+                primaryKey: 'code',
+                columns: columns,
+                multiple: false,
+                value: amountSelected
+            }"></table>
         </div>
         <div id="functions-area-bottom">
             <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>

@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm019.j {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $("#J1_2").focus();
         });
     });
 }

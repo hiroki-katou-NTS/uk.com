@@ -8,9 +8,24 @@ module nts.uk.pr.view.qmm019.i.viewmodel {
 
     export class ScreenModel {
 
+        columns: KnockoutObservableArray<any>;
+        amounts: KnockoutObservableArray<any>;
+        amountSelected: KnockoutObservable<any>;
+
         constructor() {
             let self = this;
 
+            self.amounts = ko.observableArray([]);
+            self.amountSelected = ko.observable(null);
+
+            this.columns = ko.observableArray([
+                {headerText: getText("QMM019_108"), key: 'code', width: 60, formatter: _.escape},
+                {headerText: getText("QMM019_109"), key: 'name', width: 240, formatter: _.escape}
+            ]);
+
+            for (let i = 1; i < 100; i++) {
+                this.amounts.push({code: i, name: "item name " + i});
+            }
         }
 
         startPage(): JQueryPromise<any> {

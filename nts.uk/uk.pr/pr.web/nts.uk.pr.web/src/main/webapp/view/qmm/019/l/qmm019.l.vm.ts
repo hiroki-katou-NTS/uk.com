@@ -8,9 +8,17 @@ module nts.uk.pr.view.qmm019.l.viewmodel {
 
     export class ScreenModel {
 
+        itemList: KnockoutObservableArray<shareModel.BoxModel>;
+        selectedId: KnockoutObservable<number>;
+
         constructor() {
             let self = this;
-
+            self.itemList = ko.observableArray([
+                new shareModel.BoxModel(1, getText("QMM019_194")),
+                new shareModel.BoxModel(2, getText("QMM019_195")),
+                new shareModel.BoxModel(3, getText("QMM019_196"))
+            ]);
+            self.selectedId = ko.observable(1);
         }
 
         startPage(): JQueryPromise<any> {

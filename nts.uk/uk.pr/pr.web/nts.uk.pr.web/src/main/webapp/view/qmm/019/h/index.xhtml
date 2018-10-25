@@ -23,7 +23,22 @@
 
     <ui:define name="content">
         <div id="contents-area">
-
+            <div class="table">
+                <div class="cell">
+                    <!--H1_1-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_176')}</div>
+                </div>
+                <div class="cell">
+                    <!--H1_2-->
+                    <div id="H1_2" data-bind="ntsRadioBoxGroup: {
+                        name: '#[QMM019_177]',
+                        options: itemList,
+                        optionsValue: 'id',
+                        optionsText: 'name',
+                        value: selectedId,
+                        enable: true}"></div>
+                </div>
+            </div>
         </div>
         <div id="functions-area-bottom">
             <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>

@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 550,
-                height: 400
+                width: 650,
+                height: 250
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -23,7 +23,16 @@
 
     <ui:define name="content">
         <div id="contents-area">
-
+            <!--J1_1-->
+            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_186')}</div>
+            <!--J1_2-->
+            <div id="J1_2" data-bind="ntsRadioBoxGroup: {
+                name: '#[QMM019_187]',
+                options: itemList,
+                optionsValue: 'id',
+                optionsText: 'name',
+                value: selectedId,
+                enable: true}"></div>
         </div>
         <div id="functions-area-bottom">
             <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
