@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth;
+package nts.uk.ctx.at.record.app.command.holiday.roundingmonth;
 
 import lombok.Value;
 
@@ -12,7 +12,7 @@ import lombok.Value;
 @Value
 public class RoundingMonthCommand {
 	/**勤怠項目ID*/
-	private String timeItemId;
+	private int timeItemId;
 
 	/** 丸め単位*/
 	public int unit;

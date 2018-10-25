@@ -117,7 +117,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 											if(!CollectionUtil.isEmpty(approverPhaseDest)){
 												List<OutGoingMail> approverPhaseOuts = approverPhaseDest.get(0).getOutGoingMails();
 												if(!CollectionUtil.isEmpty(approverPhaseOuts)){
-													approverPhaseMail = approverPhaseOuts.get(0).getEmailAddress();
+													approverPhaseMail = Strings.isNotBlank(approverPhaseOuts.get(0).getEmailAddress())
+															? approverPhaseOuts.get(0).getEmailAddress() : "";
 												}
 											}
 										}
@@ -126,7 +127,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 											if(!CollectionUtil.isEmpty(representerPhaseDest)){
 												List<OutGoingMail> representerPhaseOuts = representerPhaseDest.get(0).getOutGoingMails();
 												if(!CollectionUtil.isEmpty(representerPhaseOuts)){
-													representerPhaseMail = representerPhaseOuts.get(0).getEmailAddress();
+													representerPhaseMail = Strings.isNotBlank(representerPhaseOuts.get(0).getEmailAddress())
+															? representerPhaseOuts.get(0).getEmailAddress() : "";
 												}
 											}
 										}
@@ -141,7 +143,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 													if(!CollectionUtil.isEmpty(approverDest)){
 														List<OutGoingMail> approverOuts = approverDest.get(0).getOutGoingMails();
 														if(!CollectionUtil.isEmpty(approverOuts)){
-															approverMail = approverOuts.get(0).getEmailAddress();
+															approverMail = Strings.isNotBlank(approverOuts.get(0).getEmailAddress())
+																	? approverOuts.get(0).getEmailAddress() : "";
 														}
 													}
 													if(Strings.isNotBlank(z.getRepresenterID())){
@@ -149,7 +152,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 														if(!CollectionUtil.isEmpty(representerDest)){
 															List<OutGoingMail> representerOuts = representerDest.get(0).getOutGoingMails();
 															if(!CollectionUtil.isEmpty(representerOuts)){
-																representerMail = representerOuts.get(0).getEmailAddress();
+																representerMail = Strings.isNotBlank(representerOuts.get(0).getEmailAddress())
+																		? representerOuts.get(0).getEmailAddress() : "";
 															}
 														}
 													}

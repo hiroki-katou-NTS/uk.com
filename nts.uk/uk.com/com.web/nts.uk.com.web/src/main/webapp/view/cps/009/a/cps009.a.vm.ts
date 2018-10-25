@@ -1385,7 +1385,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 selectedCodes: [self.selectedCode()],
                 baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
                 isMultiple: false,
-                selectedSystemType: 5,
+                selectedSystemType: 1,// 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                 isrestrictionOfReferenceRange: false,
                 isShowBaseDate: false
             }, true);

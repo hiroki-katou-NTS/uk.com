@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth;
+package nts.uk.ctx.at.record.app.find.holiday.roundingmonth;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import lombok.Data;
 public class RoundingMonthDto {
 
 	/**勤怠項目ID*/
-	private String timeItemId;
+	private int timeItemId;
 
 	/** 丸め単位*/
 	public int unit;
