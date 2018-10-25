@@ -2,3 +2,7 @@
     margin-left: 100px;
     margin-top: 8px;
 }
+
+.sidebar-content{
+    overflow:inherit !important;
+}

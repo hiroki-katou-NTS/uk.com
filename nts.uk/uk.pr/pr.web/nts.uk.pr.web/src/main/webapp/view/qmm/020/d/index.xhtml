@@ -1,5 +1,5 @@
-<div class="fixed-flex-layout">
-    <div class="functions-area sidebar-content-header flex" >
+<div>
+    <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
 
         <div id="A">
             <span>#{i18n.getText('QMM020_5')}</span>
@@ -17,10 +17,49 @@
         </div>
 
     </div>
-    <div class="fixed-flex-layout-left">
-        <!-- some contents in left column -->
-    </div>
-    <div class="fixed-flex-layout-right">
-        <!-- some contents in right column -->
+    <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+        <div class="fixed-flex-layout-left" style="margin-left: 25px">
+            <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+                <div>
+                    <button id="D1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
+
+                    <button id="D1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <table  id="D1_5"  data-bind="ntsGridList: {
+                                            height: 250,
+                                            dataSource: listStateCorrelationHis,
+                                            primaryKey: 'code',
+                                            columns: [
+                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'name', width: 150, hidden: true },
+                                                        { headerText: '', key: 'display', width: 180},
+                                                    ],
+                                            multiple: false,
+                                            value: currentSelect
+                                        }"></table>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-flex-layout-right">
+            <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
+                <div id="D2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_29')}</div>
+            </div>
+
+            <div>
+                <span  id="D2_3" class="label with-image">
+                    <i class="image image-calendar"/>
+                    <span>#{i18n.getText('QMM020_30')}</span>
+                </span>
+            </div>
+            <div>
+                <div style="width: 390px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid', items: items, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"></div>
+
+                <table id="treegrid" data-bind="ntsTreeGridView:{           width: 1000,            height: 250,           options: items,           virtualization: true,            virtualizationMode: 'continuous',           selectedValues: selectedCode,           optionsValue: 'code',           optionsChild: 'childs',           optionsText: 'nodeText',           multiple: true,           enable: true,           columns: columns,           showCheckBox: false}">
+                </table>
+
+            </div>
+        </div>
     </div>
 </div>

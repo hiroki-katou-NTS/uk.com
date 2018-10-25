@@ -1,12 +1,28 @@
 module nts.uk.pr.view.qmm020.b.viewmodel {
-    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
+
+        listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
+        currentSelect: KnockoutObservable<any> = ko.observable();
+        specCode: KnockoutObservable<string> = ko.observable('TaiTT');
+        specName: KnockoutObservable<string> = ko.observable('TaiTT');
         constructor(){
-            var self = this;
-        }
-        openE(){
-            modal("/view/qmm/020/e/index.xhtml");
+            let self = this;
+
+            for(let i = 1; i < 100; i++) {
+                self.listStateCorrelationHis.push(new ItemModel('00' + i, '基本給', i + 'TaiTT'));
+            }
         }
 
     }
+    export class ItemModel {
+        code: string;
+        name: string;
+        display: string;
+        constructor(code: string, name: string, display: string) {
+            this.code = code;
+            this.name = name;
+            this.display = display;
+        }
+    }
+
 }
