@@ -1,17 +1,12 @@
 package nts.uk.ctx.pr.core.infra.entity.payrollgeneralpurposeparameters;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaIdentification;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
 * 給与汎用パラメータ識別
@@ -68,7 +63,7 @@ public class QpbmtSalGenParamIdent extends UkJpaEntity implements Serializable
         return new SalGenParaIdentification(this.salGenParamIdentPk.paraNo, this.salGenParamIdentPk.cid, this.name, this.attributeType, this.historyAtr, this.explanation);
     }
     public static QpbmtSalGenParamIdent toEntity(SalGenParaIdentification domain) {
-        return new QpbmtSalGenParamIdent(new QpbmtSalGenParamIdentPk(domain.getParaNo(), domain.getCID()),domain.getName(),domain.getAttributeType().value, domain.getHistoryAtr().value, domain.getExplanation().get());
+        return new QpbmtSalGenParamIdent(new QpbmtSalGenParamIdentPk(domain.getParaNo().v(), domain.getCID()),domain.getName().v(),domain.getAttributeType().value, domain.getHistoryAtr().value, domain.getExplanation().get());
     }
 
 }

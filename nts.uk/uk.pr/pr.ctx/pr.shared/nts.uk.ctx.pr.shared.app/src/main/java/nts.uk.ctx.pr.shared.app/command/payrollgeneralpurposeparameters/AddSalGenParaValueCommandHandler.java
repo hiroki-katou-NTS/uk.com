@@ -19,7 +19,6 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaY
     @Inject
     private SalGenParaValueRepository repository;
 
-    private final static int MODE_SCREEN_UPDATE = 0;
     private final static int MODE_SCREEN_ADD = 1;
 
     @Inject
