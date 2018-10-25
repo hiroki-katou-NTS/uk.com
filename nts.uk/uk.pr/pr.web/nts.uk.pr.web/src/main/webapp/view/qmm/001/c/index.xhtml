@@ -61,7 +61,7 @@
 
                 <div id = "C1_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM001_29')}</div>
                 <com:ko-if bind ="historyAtr() == 1">
-                <div id = "C1_12" tabindex = "2" data-bind="ntsDatePicker: {
+                <div id = "C1_12" tabindex = "3" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM011_30')}',
 												value: startYearMonth,
 												required: hasRequired(),
@@ -87,10 +87,10 @@
         </div>
         <div id= "functions-area-bottom" style="z-index: auto;">
             <!-- C2_1 登録 -->
-            <button id="C2_1" tabindex="3" class="proceed large"
+            <button id="C2_1" tabindex="4" class="proceed large"
                     data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_43')}</button>
             <!-- C2_2 削除 -->
-            <button id="C2_2" tabindex="4"
+            <button id="C2_2" tabindex="5"
                     data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
         </div>
     </ui:define>
