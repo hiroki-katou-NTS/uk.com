@@ -775,7 +775,7 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setCellSate(data.getId(), nameColKey, DPText.STATE_DISABLE);
 						}
 						cellDatas.add(new DPCellDataDto(noColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LABEL));
-						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, DPText.TYPE_LINK));
+						cellDatas.add(new DPCellDataDto(nameColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LINK));
 						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
 						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
 					}
