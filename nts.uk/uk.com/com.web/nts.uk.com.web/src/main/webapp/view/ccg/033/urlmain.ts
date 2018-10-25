@@ -98,6 +98,10 @@ __viewContext.ready(function() {
                 }
                 nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});    
             }
+            case "kdw004": {
+                nts.uk.request.jump("at", "/view/kdw/004/a/index.xhtml");  
+                break;   
+            } 
             default: nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml");
         }
     })
