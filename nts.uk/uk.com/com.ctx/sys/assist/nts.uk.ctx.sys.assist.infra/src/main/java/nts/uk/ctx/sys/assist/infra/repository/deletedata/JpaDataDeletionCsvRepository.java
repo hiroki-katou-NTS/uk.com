@@ -19,7 +19,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 
 /**
