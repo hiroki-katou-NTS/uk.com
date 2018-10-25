@@ -23,7 +23,7 @@ public class AddSalIndAmountNameCommandHandler extends CommandHandler<SalIndAmou
     protected void handle(CommandHandlerContext<SalIndAmountNameCommand> context) {
         SalIndAmountNameCommand command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        if(repository.getSalIndAmountNameById(cid, command.getIndividualPriceCode()).isPresent()){
+        if(repository.getSalIndAmountNameById(cid, command.getIndividualPriceCode(), command.getCateIndicator()).isPresent()){
             throw new BusinessException("Msg_3");
         }
         SalIndAmountName salIndAmountName = new SalIndAmountName(cid, command.getIndividualPriceCode(), command.getCateIndicator(), command.getIndividualPriceName());
