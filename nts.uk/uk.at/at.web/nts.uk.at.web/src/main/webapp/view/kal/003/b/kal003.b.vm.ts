@@ -1092,7 +1092,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 let holidayCode;
                 _.map(self.extraResultMonthly().conditions(), (d) => {
                     if (d.haveComboboxFrame()) {
-                        holidayCode = d.listItemID()[0];
+                        if (!nts.uk.util.isNullOrUndefined(d.listItemID()) && d.listItemID() > 0) {
+                            holidayCode = d.listItemID()[0];
+                        }
                     }
                 });
                 if (!nts.uk.util.isNullOrUndefined(holidayCode)) {
