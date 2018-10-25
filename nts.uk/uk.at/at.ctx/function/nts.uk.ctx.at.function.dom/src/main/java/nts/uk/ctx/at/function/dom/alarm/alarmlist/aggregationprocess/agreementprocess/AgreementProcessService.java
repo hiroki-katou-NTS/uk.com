@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,20 +10,32 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckRecordAgreementAdapter;
-import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementImport;
+import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementResult;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedOvertimeImport;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
+import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -39,14 +52,61 @@ public class AgreementProcessService {
 	@Inject
 	private IAgreeNameErrorRepository agreeNameRepo;
 	
-	public List<ValueExtractAlarm> agreementProcess(List<String> checkConditionCodes, List<DatePeriod> periods, List<EmployeeSearchDto> employees){
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	
+	@Inject
+	private ClosureRepository closureRepository;
+
+	
+	public List<ValueExtractAlarm> agreementProcess(List<String> checkConditionCodes, List<PeriodByAlarmCategory> periodAlarms, List<EmployeeSearchDto> employees, Optional<AgreementOperationSettingImport> agreementSetObj){
 		
 		List<ValueExtractAlarm> result = new ArrayList<ValueExtractAlarm>();
-		
 		List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
+		List<DatePeriod> periods = periodAlarms.stream().map(e -> new DatePeriod(e.getStartDate(), e.getEndDate())).collect(Collectors.toList());
+		String comId = AppContexts.user().companyId();
+		List<Closure> closureList = new ArrayList<>();
+		Map<String,Integer> mapEmpIdClosureID = new HashMap<>();
+		Map<String,String> mapEmpCodeEmpId = new HashMap<>();
+		/**社員ID（List）と指定期間から社員の雇用履歴を取得 */
+		List<SharedSidPeriodDateEmploymentImport> employmentHistList = this.shareEmploymentAdapter
+				.getEmpHistBySidAndPeriod(employeeIds, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		if (!CollectionUtil.isEmpty(employmentHistList)) {
+			List<String> empCds = new ArrayList<>();
+			for (SharedSidPeriodDateEmploymentImport objecCheck : employmentHistList) {
+				for (AffPeriodEmpCodeImport affPeriodEmpCodeImport : objecCheck.getAffPeriodEmpCodeExports()) {
+					if (!mapEmpCodeEmpId.containsKey(affPeriodEmpCodeImport.getEmploymentCode())) {
+						empCds.add(affPeriodEmpCodeImport.getEmploymentCode());
+						mapEmpCodeEmpId.put(affPeriodEmpCodeImport.getEmploymentCode(), objecCheck.getEmployeeId());
+					}
+				}
+			}
+			
+			/** ドメインモデル「雇用に紐づく就業締め」を取得する */
+			List<ClosureEmployment> closureEmploymentList = closureEmploymentRepo.findListEmployment(comId, empCds);
+
+			if (!CollectionUtil.isEmpty(closureEmploymentList)) {
+				List<Integer> closureIds = new ArrayList<>();
+				for (ClosureEmployment closureEmployment : closureEmploymentList) {
+					String empCode = closureEmployment.getEmploymentCD();
+					if(mapEmpCodeEmpId.containsKey(empCode)){
+						mapEmpIdClosureID.put(mapEmpCodeEmpId.get(empCode), closureEmployment.getClosureId());
+						closureIds.add(closureEmployment.getClosureId());
+					}
+				}
+				/** ドメインモデル「締め」を取得する*/
+				closureList = closureRepository.findByListId(comId, closureIds);
+			}
+
+		}
+		
+		
 		
 		// get List<カテゴリ別アラームチェック条件>
-		List<AlarmCheckConditionByCategory> listAlarmCheck= alarmCheckRepo.findByCategoryAndCode(AppContexts.user().companyId()	, AlarmCategory.AGREEMENT.value	, checkConditionCodes);
+		List<AlarmCheckConditionByCategory> listAlarmCheck= alarmCheckRepo.findByCategoryAndCode(comId, AlarmCategory.AGREEMENT.value	, checkConditionCodes);
 		
 		Map<String, EmployeeSearchDto> mapEmployee = employees.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x ->x));
 		
@@ -55,47 +115,103 @@ public class AgreementProcessService {
 			AlarmChkCondAgree36 alarmChkCon36 = alarmCheck.getAlarmChkCondAgree36();
 			
 			// List<36協定エラーアラームのチェック条件>
-			List<AgreeConditionError> listCondErrorAlarm  = alarmChkCon36.getListCondError().stream().filter( e ->e.getUseAtr()==UseClassification.Use).collect(Collectors.toList());
-
-			List<CheckedAgreementImport> checkAgreements = checkAgreementAdapter.checkArgreement(employeeIds, periods, listCondErrorAlarm);
-
-			for(CheckedAgreementImport check:  checkAgreements) {
-					
-					Optional<AgreeNameError> optAgreeName = agreeNameRepo.findById(check.getPeriod().value, check.getErrorAlarm().value);
-					if(!optAgreeName.isPresent()) throw new RuntimeException("Not found name of 36 agreement!");
-					String agreeName =  optAgreeName.get().getName().v();
-					
-					String datePeriod = check.getDatePeriod().start().toString() + "~" + check.getDatePeriod().end().toString();
-					
-					result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(), check.getEmployeeId(), datePeriod, 
-							TextResource.localize("KAL010_208"), agreeName, TextResource.localize("KAL010_203", agreeName), check.getMessageDisp().v()));
-
+			List<AgreeConditionError> listCheck  = alarmChkCon36.getListCondError().stream().filter( e ->e.getUseAtr()==UseClassification.Use).collect(Collectors.toList());
+				
+			//抽出条件に対応する期間を取得する 
+			for (AgreeConditionError agreeConditionError : listCheck) {
+				//ドメインモデル「36協定エラーアラームチェック名称」を取得する
+				Optional<AgreeNameError> optAgreeName = agreeNameRepo.findById(agreeConditionError.getPeriod().value,
+						agreeConditionError.getErrorAlarm().value);
+				Period periodCheck = agreeConditionError.getPeriod();
+				if (periodCheck == Period.One_Week || periodCheck == Period.Two_Week || periodCheck == Period.Four_Week) {
+					periodCheck = Period.One_Week;
+				}
+				for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
+					if(periodAlarm.getPeriod36Agreement() == periodCheck.value){
+						DatePeriod period = new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate());
+						// アルゴリズム「36協定実績をチェックする」を実行する
+						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
+								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID);
+						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
+							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName));	
+						}
+					}
+				}
 			}
 			
-						
-			
-			// List<36協定時間超過回数のチェック条件>
-			List<AgreeCondOt> listCondOt = alarmChkCon36.getListCondOt();
-			List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds, periods, listCondOt);
-			
-			for(CheckedOvertimeImport  check : checkOvertimes) {
-					
-					String hour = check.getOt36().hour() +"";
-					if(hour.length()<2) hour = "0" + hour;
-					String minute = check.getOt36().minute() +"";
-					if(minute.length()<2) minute ="0" + minute;
-					String ot36 =hour +":" + minute ;
-					
-					String datePeriod = check.getDatePeriod().start().toString() + "~" + check.getDatePeriod().end().toString();
-					
-					result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(), check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
-							TextResource.localize("KAL010_201"), TextResource.localize("KAL010_202", check.getNo()+"", ot36, check.getExcessNum().v()+"" ), check.getMessageDisp().v()));
+			// アルゴリズム「超過回数チェック」を実行する
+			for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
+				if(Period.Yearly.value == periodAlarm.getCategory()){
+					List<DatePeriod> periodsYear = new ArrayList<>();
+					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
+					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds, periods,
+							alarmChkCon36.getListCondOt());
+					for (CheckedOvertimeImport check : checkOvertimes) {
+
+						String hour = check.getOt36().hour() + "";
+						if (hour.length() < 2)
+							hour = "0" + hour;
+						String minute = check.getOt36().minute() + "";
+						if (minute.length() < 2)
+							minute = "0" + minute;
+						String ot36 = hour + ":" + minute;
+
+						String datePeriod = check.getDatePeriod().start().toString() + "~"
+								+ check.getDatePeriod().end().toString();
+
+						result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(),
+								check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
+								TextResource.localize("KAL010_201"), TextResource.localize("KAL010_202",
+										check.getNo() + "", ot36, check.getExcessNum().v() + ""),
+								check.getMessageDisp().v()));
+					}
+				}
 			}
-			
-			
 		}
-		
-		
 		return result;
+	}
+	
+	private List<ValueExtractAlarm> generationValueExtractAlarm(Map<String, EmployeeSearchDto> mapEmployee, List<CheckedAgreementResult> checkAgreementsResult,AgreeConditionError agreeConditionError,Optional<AgreeNameError> optAgreeName){
+		List<ValueExtractAlarm> lstReturn = new ArrayList<>();
+		for (CheckedAgreementResult checkedAgreementResult : checkAgreementsResult) {
+			if(checkedAgreementResult.isCheckResult()){
+				// workplaceID
+				String workPlaceId = mapEmployee.get(checkedAgreementResult.getEmpId()).getWorkplaceId();
+				
+				//年月日
+				String alarmValueDate = yearmonthToString(checkedAgreementResult.getAgreementTimeByPeriod().getStartMonth()) +" ～ " + yearmonthToString(checkedAgreementResult.getAgreementTimeByPeriod().getEndMonth());
+				//alarm name
+				String alarmItem = optAgreeName.isPresent() ? optAgreeName.get().getName().v() : "" ;
+				//カテゴリ
+				String alarmContent = TextResource.localize("KAL010_203",alarmItem,formatHourData(checkedAgreementResult.getUpperLimit()),formatHourData(checkedAgreementResult.getAgreementTimeByPeriod().getAgreementTime().toString()));
+				lstReturn.add(new ValueExtractAlarm(workPlaceId,checkedAgreementResult.getEmpId(),alarmValueDate,
+						TextResource.localize("KAL010_208"),alarmItem,alarmContent,agreeConditionError.getMessageDisp().v()));
+			}
+		}
+		return lstReturn;
+	}
+	
+	private String yearmonthToString(YearMonth yearMonth){
+		if(yearMonth.month()<10){
+			return  String.valueOf(yearMonth.year())+"/0"+  String.valueOf(yearMonth.month());
+		}
+		return String.valueOf(yearMonth.year())+"/"+  String.valueOf(yearMonth.month());
+	}
+	
+	private String formatHourData(String minutes) {
+		String h = "", m = "";
+		if (minutes != null && !minutes.equals("")) {
+			Integer hour = Integer.parseInt(minutes);
+			h = hour.intValue() / 60 + "";
+			m = hour.intValue() % 60 + "";
+			if (h.length() < 2)
+				h = "0" + h;
+			if (m.length() < 2)
+				m = "0" + m;
+
+			return h + ":" + m;
+		} else {
+			return "0:00";
+		}
 	}
 }

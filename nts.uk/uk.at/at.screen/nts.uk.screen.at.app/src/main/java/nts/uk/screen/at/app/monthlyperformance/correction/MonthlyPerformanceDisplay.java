@@ -58,6 +58,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
@@ -317,9 +318,17 @@ public class MonthlyPerformanceDisplay {
 		if (lstBusinessTypeCode.size() == 0) {
 			// エラーメッセージ（#Msg_1403）を表示する(hiển thị error message （#Msg_1403）)
 			BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
-			screenDto.getLstEmployee().stream().forEach(x ->{
-				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
-			});
+			for(String emp : lstEmployeeId ) {
+				for(MonthlyPerformanceEmployeeDto dto  :screenDto.getLstEmployee()) {
+					if(emp.equals(dto.getId())) {
+						bundleExeption.addMessage(new BusinessException("Msg_1403", dto.getCode() + " " + dto.getBusinessName()));
+						break;
+					}
+				}
+			}
+//			screenDto.getLstEmployee().stream().forEach(x ->{
+//				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
+//			});
 			throw bundleExeption;
 		}
 		param.setFormatCodes(lstBusinessTypeCode);
