@@ -9,7 +9,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnit
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateUseUnitSet;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateUseUnitSetPk;
 
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -18,12 +17,6 @@ public class JpaStateUseUnitSettingRepository extends JpaRepository implements S
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateUseUnitSet f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateUseUnitSetPk.cid =:cid ";
-
-    @Override
-    public List<StateUseUnitSetting> getAllStateUseUnitSetting(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStateUseUnitSet.class)
-                .getList(item -> item.toDomain());
-    }
 
     @Override
     public Optional<StateUseUnitSetting> getStateUseUnitSettingById(String cid){

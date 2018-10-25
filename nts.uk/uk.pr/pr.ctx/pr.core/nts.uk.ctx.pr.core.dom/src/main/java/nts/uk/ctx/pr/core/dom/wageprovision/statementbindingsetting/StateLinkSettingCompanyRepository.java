@@ -8,8 +8,6 @@ import java.util.List;
 */
 public interface StateLinkSettingCompanyRepository {
 
-    List<StateLinkSettingCompany> getAllStateLinkSettingCompany();
-
     Optional<StateLinkSettingCompany> getStateLinkSettingCompanyById(String hisId);
 
     void add(StateLinkSettingCompany domain);

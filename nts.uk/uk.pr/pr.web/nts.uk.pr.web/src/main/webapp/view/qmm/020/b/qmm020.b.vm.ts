@@ -13,6 +13,12 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             }
         }
 
+        todo(){
+            service.getStateLinkSettingCompanyById().done((data: any)=>{
+                console.dir(data);
+            });
+        }
+
     }
     export class ItemModel {
         code: string;
