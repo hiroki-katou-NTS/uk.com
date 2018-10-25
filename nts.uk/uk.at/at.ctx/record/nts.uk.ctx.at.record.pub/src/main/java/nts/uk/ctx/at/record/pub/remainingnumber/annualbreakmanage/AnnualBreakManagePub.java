@@ -22,9 +22,11 @@ public interface AnnualBreakManagePub {
 	 * 指定年月日時点の年休残数を取得
 	 * @param employeeId
 	 * @param confirmDay
+	 * @param holidayGrantStart
+	 * @param holidayGrantEnd
 	 * @return
 	 */
-	List<YearlyHolidaysTimeRemainingExport> getYearHolidayTimeAnnualRemaining(String employeeId, GeneralDate confirmDay);
+	List<YearlyHolidaysTimeRemainingExport> getYearHolidayTimeAnnualRemaining(String employeeId, GeneralDate confirmDay, GeneralDate holidayGrantStart, GeneralDate holidayGrantEnd);
 
 	/**
 	 * 次回年休付与を計算
@@ -39,8 +41,9 @@ public interface AnnualBreakManagePub {
 	 * @param employeeId
 	 * @param companyId
 	 * @param startDate
-	 * @param designatedStartDate
+	 * @param calculateStartDate
+	 * @param calculateEndDate
 	 * @return
 	 */
-	List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String employeeId, String companyId, GeneralDate startDate, GeneralDate designatedStartDate);
+	List<YearlyHolidaysTimeRemainingExport> getNumberOfAnnualHolidayGrantedBeforeCloseDate(String employeeId, String companyId, GeneralDate startDate, GeneralDate calcStartDate, GeneralDate calcEndDate);
 }

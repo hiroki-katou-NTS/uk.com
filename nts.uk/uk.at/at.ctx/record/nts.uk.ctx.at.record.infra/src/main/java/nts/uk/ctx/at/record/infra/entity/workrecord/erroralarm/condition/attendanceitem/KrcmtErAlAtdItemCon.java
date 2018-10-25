@@ -185,8 +185,10 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                 startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
                 endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
             }else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
-                startValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getStartValue()).v();
-                endValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getEndValue()).v();
+               /* startValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+                endValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getEndValue()).v();*/
+                startValue =Double.valueOf(String.valueOf(erAlAtdItemCon.getCompareRange().getStartValue()))  ;
+                endValue = Double.valueOf(String.valueOf(erAlAtdItemCon.getCompareRange().getEndValue()))  ;
             }
             
             erAlCompareRange = new KrcstErAlCompareRange(
@@ -214,7 +216,8 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                             ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
                 }else if( erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS){
                 	fixedValue =
-                           ((CheckedTimesValueDay) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
+                           /*((CheckedTimesValueDay) erAlAtdItemCon.getCompareSingleValue().getValue()).v();*/
+                	Double.valueOf(String.valueOf(erAlAtdItemCon.getCompareSingleValue().getValue()))   ;
                 }
                 erAlSingleFixed = new KrcstErAlSingleFixed(new KrcstErAlSingleFixedPK(atdItemConditionGroup1,
                         erAlAtdItemCon.getTargetNO()), fixedValue);

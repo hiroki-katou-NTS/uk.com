@@ -300,16 +300,25 @@ module nts.uk.at.view.kdm002.a {
                 }
                 
                 if (lstSelectedEployee.length > 0) {
-                    if (new Date(self.date()) >= new Date(self.periodDate().endDate)) {
-                        nts.uk.ui.windows.setShared('KDM002Params', {
-                            empployeeList: lstSelectedEployee,
-                            startDate: self.periodDate().startDate,
-                            endDate: self.periodDate().endDate,
-                            date: self.date(),
-                            maxday: self.maxDaysCumulationByEmp()
-                        });
+                    let date : Date = new Date(self.date()),
+                        startDate: Date = new Date(self.periodDate().startDate),
+                        endDate: Date = new Date(self.periodDate().endDate);
+                    
+                    if (date >= endDate ) {
+                         startDate.setFullYear(startDate.getFullYear() + 1)
+                         if( date >= new Date(self.periodDate().startDate)  && date < startDate){
+                                nts.uk.ui.windows.setShared('KDM002Params', {
+                                empployeeList: lstSelectedEployee,
+                                startDate: self.periodDate().startDate,
+                                endDate: self.periodDate().endDate,
+                                date: self.date(),
+                                maxday: self.maxDaysCumulationByEmp()
+                            });
+                                nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
+                         }else{
+                             nts.uk.ui.dialog.error({ messageId: "Msg_1457", messageParams: [nts.uk.resource.getText('KDM002_6')] });
+                         }
 
-                        nts.uk.ui.windows.sub.modal("/view/kdm/002/b/index.xhtml");
                     }
                     else {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_1064' });

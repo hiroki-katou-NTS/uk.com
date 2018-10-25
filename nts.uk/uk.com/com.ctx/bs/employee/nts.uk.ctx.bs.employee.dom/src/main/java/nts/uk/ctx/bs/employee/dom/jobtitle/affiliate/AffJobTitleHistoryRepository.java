@@ -60,6 +60,8 @@ public interface AffJobTitleHistoryRepository {
 	
 	List<AffJobTitleHistory> getListByListHidSid(List<String> hid, List<String> sid);
 	
+	List<AffJobTitleHistory> getListByListHidSid(List<String> sid, GeneralDate targetDate);
+	
 	/**
 	 * Search job title history.
 	 *

@@ -120,9 +120,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 		}
 		//特休チェック区分をチェックする
-		if(inputParam.isChkSpecial()) {
+		if(inputParam.isChkSpecial() && !specialHolidayData.isEmpty()) {
 			//暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
-			specialHolidayData.stream().forEach(a -> {
+			for (InterimSpecialHolidayMng a : specialHolidayData) {
 				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
 						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
 				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(inputParam.getCid(),
@@ -143,8 +143,10 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						break;
 					}
 				}
-				
-			});
+				if(outputData.isChkSpecial()) {
+					break;
+				}
+			}
 		}
 		//年休チェック区分をチェックする
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
