@@ -97,6 +97,7 @@ __viewContext.ready(function() {
                     individualTarget: null,
                 }
                 nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});    
+                break;
             }
             case "kdw004": {
                 nts.uk.request.jump("at", "/view/kdw/004/a/index.xhtml");  
