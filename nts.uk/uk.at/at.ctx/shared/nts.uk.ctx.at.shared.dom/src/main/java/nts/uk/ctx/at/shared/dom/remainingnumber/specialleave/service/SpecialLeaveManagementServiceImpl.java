@@ -209,8 +209,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	@Override
 	public ManagaData getMngData(String cid, String sid, int specialLeaveCode,
 			DatePeriod complileDate) {
+		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = new ArrayList<>();
 		//ドメインモデル「特別休暇付与残数データ」を取得する
-		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = speLeaveRepo.getByPeriodStatus(sid, specialLeaveCode, LeaveExpirationStatus.AVAILABLE,
+		List<SpecialLeaveGrantRemainingData> lstDataBase = speLeaveRepo.getByPeriodStatus(sid, specialLeaveCode, LeaveExpirationStatus.AVAILABLE,
 				complileDate.start());
 		//ドメインモデル「特別休暇」を取得する
 		Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
@@ -253,17 +254,20 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				lstDataSpeDataMemory.add(grantMemoryData);
 			}
 			//付与日が同じ管理データを排除する
-			lstDataSpeDataBase = this.adjustGrantData(lstDataSpeDataBase, lstDataSpeDataMemory);
+			lstDataSpeDataBase = this.adjustGrantData(lstDataBase, lstDataSpeDataMemory);
 			//ドメインモデル「期限情報」．期限指定方法をチェックする
 			if(specialHoliday.getGrantPeriodic().getTimeSpecifyMethod() == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
 				
 				List<SpecialLeaveGrantRemainingData> lstTmp = new ArrayList<>(lstDataSpeDataBase);
 				for (SpecialLeaveGrantRemainingData x : lstTmp) {
-					lstDataSpeDataBase.remove(x);
 					//付与済の「特別休暇付与残数データ」．期限日= (先頭の付与予定の「特別休暇付与残数データ」．付与日).AddDays(-1)
-					GeneralDate kigenBi = lstDataSpeDataMemory.get(0).getGrantDate().addDays(-1);
-					x.setDeadlineDate(kigenBi);
-					lstDataSpeDataBase.add(x);
+					if (lstDataBase.contains(x)) {
+						lstDataSpeDataBase.remove(x);
+						GeneralDate kigenBi = lstDataSpeDataMemory.get(0).getGrantDate().addDays(-1);
+						x.setDeadlineDate(kigenBi);
+						lstDataSpeDataBase.add(x);	
+					}
+					
 				}
 				
 			}
