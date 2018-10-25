@@ -85,6 +85,8 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
         getData(): JQueryPromise<any> {
             let self = this;
             block.invisible();
+            nts.uk.ui.errors.clearAll();
+
             service.getStatementItemAndStatementItemName(self.categoryAtr()).done(function(data: Array<IDataScreen>) {
                 self.statementItems = [];
                 $("#gridStatement").ntsGrid("destroy");
