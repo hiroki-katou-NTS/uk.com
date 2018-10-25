@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm035.a.service {
     var paths = {
         defaultData: "pr/core/printdata/start",
         findByCode: "pr/core/printdata/getbycode/{0}",
-        update: "ctx/pr/core/socialinsurance/socialinsuranceoffice/update",
+        update: "pr/core/printdata/update",
         create: "pr/core/printdata/create",
         delete: "pr/core/printdata/delete"
     }
@@ -16,8 +16,7 @@ module nts.uk.pr.view.qmm035.a.service {
         return ajax('pr', _path);
     }
     export function update(command) : JQueryPromise<any>{
-        return null;
-        /*return ajax('pr', paths.update, command);*/
+        return ajax('pr', paths.update, command);
     }
     export function create(command) : JQueryPromise<any>{
         return ajax('pr', paths.create, command);

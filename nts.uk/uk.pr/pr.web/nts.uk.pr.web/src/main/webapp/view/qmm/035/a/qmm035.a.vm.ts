@@ -131,7 +131,7 @@ module nts.uk.pr.view.qmm035.a {
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 
-                                self.currentCode(response.code);
+                                self.currentCode(response.codeSelected);
                                 self.isEnableCode(false);
 
                             });
@@ -142,23 +142,23 @@ module nts.uk.pr.view.qmm035.a {
                         block.clear();
                     });
                 } else {
-                    /*nts.uk.pr.view.qmm035.a.service.update(ko.toJS(self.detail)).done(function(response) {
+                    nts.uk.pr.view.qmm035.a.service.update(ko.toJS(self.detail)).done(function(response) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            /!**
+                            /**
                              *  selected
-                             *!/
-                            for (let i = 0; i < self.items().length; i++) {
-                                if (self.items()[i].code == response[0]) {
+                             */
+                            for (let i = 0; i < self.items().length; i++) {{
+                                if (self.items()[i].code == response[0])
                                     self.items()[i].name = response[1];
-                                    self.items.valueHasMutated()
+                                    self.items.valueHasMutated();
                                 }
                             }
                             self.isEnableCode(false);
-                            $("#D4_3").focus();
+                            $("#A4_5").focus();
 
                         });
                         block.clear();
-                    });*/
+                    });
                 }
 
             }
@@ -196,6 +196,7 @@ module nts.uk.pr.view.qmm035.a {
                     let command = { code: self.currentCode() };
                     nts.uk.pr.view.qmm035.a.service.deleteCompany(command).done(function(response) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            let parameter;
                             for (let i = 0; i < self.items().length; i++) {
                                 if (self.items()[i].code == response[0]) {
                                     //delete self.items()[i];
@@ -204,9 +205,9 @@ module nts.uk.pr.view.qmm035.a {
                                     if (self.items().length == 0) {
                                         self.create();
                                     } else if (self.items().length == i) {
-                                        let parameter = i - 1;
+                                         parameter = i - 1;
                                     } else {
-                                        let parameter = i;
+                                         parameter = i;
 
                                     }
                                     if (!self.isEnableCode()) {
@@ -237,19 +238,19 @@ module nts.uk.pr.view.qmm035.a {
             public setTabIndex(){
                 let self = this;
                 setTimeout(function () {
-                    $('#D4_23').keydown(function (e) {
+                    $('#A4_35').keydown(function (e) {
                         var code = e.keyCode || e.which;
                         if (code === 9 && !e.shiftKey) {
                             e.preventDefault();
                             self.selectedTab("tab-2");
-                            $('#D5_4').focus();
+                            $('#A5_2').focus();
                         }
                     });
-                    $('#D5_4').keydown(function (e) {
+                    $('#A5_2').keydown(function (e) {
                         if (e.shiftKey && e.key === 'Tab') {
                             e.preventDefault();
                             self.selectedTab("tab-1");
-                            $('#D4_23').focus();
+                            $('#A4_35').focus();
                         }
                     });
                 }, 2000);

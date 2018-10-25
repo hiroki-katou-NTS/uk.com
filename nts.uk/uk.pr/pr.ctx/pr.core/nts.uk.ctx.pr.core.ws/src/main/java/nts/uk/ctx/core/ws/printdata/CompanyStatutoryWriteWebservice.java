@@ -2,14 +2,10 @@ package nts.uk.ctx.core.ws.printdata;
 
 
 
-import nts.uk.ctx.core.app.command.printdata.companystatuwrite.command.CompanyStatutoryWriteCommand;
-import nts.uk.ctx.core.app.command.printdata.companystatuwrite.command.CreateCompanyWriteHandler;
-import nts.uk.ctx.core.app.command.printdata.companystatuwrite.command.DeleteCompanyWriteCommand;
-import nts.uk.ctx.core.app.command.printdata.companystatuwrite.command.DeleteCompanyWriteHandler;
+import nts.uk.ctx.core.app.command.printdata.companystatuwrite.command.*;
 import nts.uk.ctx.core.app.find.printdata.companystatuwrite.CompanyStatutoryWriteDto;
 import nts.uk.ctx.core.app.find.printdata.companystatuwrite.CompanyStatutoryWriteFinder;
 import nts.uk.ctx.core.app.find.printdata.companystatuwrite.CreateCompanyWriteDto;
-import nts.uk.ctx.core.dom.printdata.CompanyStatutoryWrite;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,7 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -34,11 +29,17 @@ public class CompanyStatutoryWriteWebservice {
     @Inject
     private DeleteCompanyWriteHandler deleteCompanyWriteHandler;
 
+    @Inject
+    private UpdateCompanyWriteHandler updateCompanyWriteHandler;
+
+
+
     @POST
     @Path("/start")
     public List<CompanyStatutoryWriteDto> startScreen() {
 
-        // ドメインモデル「現在処理年月」を取得する - to do
+        // ドメインモデル「現在処理年月」を取得する
+
 
         // ドメインモデル「給与支払日設定」を取得する - to do
 
@@ -63,6 +64,12 @@ public class CompanyStatutoryWriteWebservice {
     @Path("/delete")
     public List<String> deleteCompany(DeleteCompanyWriteCommand data) {
         return deleteCompanyWriteHandler.handle(data);
+    }
+
+    @POST
+    @Path("/update")
+    public List<String> updateCompany(CompanyStatutoryWriteCommand data) {
+        return updateCompanyWriteHandler.handle(data);
     }
 
 

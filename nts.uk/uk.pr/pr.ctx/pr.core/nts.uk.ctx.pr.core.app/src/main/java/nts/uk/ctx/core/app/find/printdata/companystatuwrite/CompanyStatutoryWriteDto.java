@@ -81,7 +81,7 @@ public class CompanyStatutoryWriteDto
     * 紐付け部門
     */
     private String linkingDepartment;
-    
+
     /**
     * 法人番号
     */

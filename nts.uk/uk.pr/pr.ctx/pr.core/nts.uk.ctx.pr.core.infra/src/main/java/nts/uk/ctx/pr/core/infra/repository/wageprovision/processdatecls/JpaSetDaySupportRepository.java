@@ -1,12 +1,15 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.processdatecls;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.core.infra.entity.fromsetting.printdata.companystatuwrite.QpbmtComStatutoryWritePk;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSetDaySupport;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSetDaySupportPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -54,4 +57,10 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
         List<QpbmtSetDaySupport> entities = domains.stream().map(QpbmtSetDaySupport::toEntity).collect(Collectors.toList());
         this.commandProxy().insertAll(entities);
     }
+
+    @Override
+    public Optional<SetDaySupport> findById(String cid, int processCateNo , int processDate) {
+        return Optional.ofNullable(this.getEntityManager().find(QpbmtSetDaySupport.class, new QpbmtSetDaySupportPk(cid,processCateNo,processDate)).toDomain());
+    }
+
 }

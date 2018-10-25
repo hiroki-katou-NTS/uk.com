@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 給与支払日設定
@@ -18,6 +19,8 @@ public interface SetDaySupportRepository {
     void update(SetDaySupport domain);
 
     void addAll(List<SetDaySupport> domains);
+
+    Optional<SetDaySupport> findById(String cid, int processCateNo , int processDate);
 
 
 }

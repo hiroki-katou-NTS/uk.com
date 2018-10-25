@@ -6,14 +6,9 @@
 
 <body>
 
-<ui:composition template="../../../../master/dialog.xhtml">
+<ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="htmlHead">
-        <script>
-            var dialogSize = {
-                width: 1140,
-                height: 830
-            };
-        </script>
+
         <com:ValidatorScript>
             nts.uk.ctx.core.dom.printdata.Code
             nts.uk.ctx.core.dom.printdata.Name
@@ -47,21 +42,21 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area">
-            <button id="A1_1" tabindex="1" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
+        <div id="functions-area" >
+            <button id="A1_1" tabindex="1" style="margin-left: 50px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
             <button class="proceed"  id="A1_2" data-bind="click: update ,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('QMM035_3')}</button>
             <button id="A1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM035_4')}</button>
             <button  id="A1_4" tabindex="4" >#{i18n.getText('QMM035_5')}</button>
             <button id="A1_5" class="danger" tabindex="5" data-bind="click: deleteCompany ,enable: $vm.isEnableBtnDelete()" >#{i18n.getText('QMM035_6')}</button>
         </div>
-        <div id="contents-area" class="fixed-flex-layout">
+        <div id="contents-area" class="fixed-flex-layout" style="margin-left: 15px;">
             <div id="content-left" class="fixed-flex-layout-left">
                 <div data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
                      id="A2_1" style="margin-left: 10px;">
-                    <div id="A2_2" style="width: 330px" tabindex="7"
+                    <div id="A2_2" style="width: 330px" tabindex="6"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'single-list',
                         items: items, selected: currentCode, selectedKey: 'code', fields: ['code','name'], mode: 'igGrid'}"/>
-                    <table id="single-list" tabindex="8"
+                    <table id="single-list" tabindex="7"
                            data-bind="ntsGridList: {
                             rows: 20,
                             name: '#[QMM008_109]',
@@ -74,7 +69,7 @@
                 </div>
             </div>
 
-            <div id="fixed-flex-layout-right" tabindex="9">
+            <div id="fixed-flex-layout-right">
                 <div id="A3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
                      style="width: 665px;">
                     <div class="tab-content-1" tabindex="-1" data-bind="with: $vm.detail">
@@ -85,39 +80,39 @@
                         <div class="flex valign-center">
                             <div id="A4_3" class="column-1"
                                  data-bind="ntsFormLabel: {required: true, constraint: ['Code', 'Name']}">#{i18n.getText('QMM035_13')}</div>
-                            <input id="A4_4" tabindex="10"
+                            <input id="A4_4" tabindex="8"
                                    data-bind="ntsTextEditor: {constraint: 'Code', value: code, name: '#[QMM008_110]', required: true ,enable: $vm.isEnableCode()}"/>
-                            <input id="A4_5" tabindex="11" width="100px"
+                            <input id="A4_5" tabindex="9" width="100px"
                                    data-bind="ntsTextEditor: {constraint: 'Name',value: name, name: '#[QMM008_111]', required: true}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_6" class="column-1"
-                                 data-bind="ntsFormLabel: { constraint: 'KanaName', required: false }">#{i18n.getText('QMM035_16')}</div>
-                            <input id="A4_7" tabindex="18"
-                                   data-bind="ntsTextEditor: {constraint: 'KanaName',value: kanaName, name: '#[QMM035_16]'}"/>
+                                 data-bind="ntsFormLabel: { constraint: 'KanaName' }">#{i18n.getText('QMM035_16')}</div>
+                            <input id="A4_7" tabindex="10"
+                                   data-bind="ntsTextEditor: {constraint: 'KanaName',value: kanaName, required: true, name: '#[QMM035_16]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_8" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'CorporateNumber', required: false }">#{i18n.getText('QMM035_17')}</div>
-                            <input id="A4_9" tabindex="18"
+                            <input id="A4_9" tabindex="11"
                                    data-bind="ntsTextEditor: {constraint: 'CorporateNumber',value: corporateNumber, name: '#[QMM035_17]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_10" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'RepresentativeName', required: false }">#{i18n.getText('QMM035_18')}</div>
-                            <input id="A4_11" tabindex="18"
+                            <input id="A4_11" tabindex="12"
                                    data-bind="ntsTextEditor: {constraint: 'RepresentativeName',value: clubRepresentativeName, name: '#[QMM035_18]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_12" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'RepresentativePosition', required: false }">#{i18n.getText('QMM035_19')}</div>
-                            <input id="A4_13" tabindex="18"
+                            <input id="A4_13" tabindex="13"
                                    data-bind="ntsTextEditor: {constraint: 'RepresentativePosition',value: clubRepresentativePosition, name: '#[QMM035_19]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_14" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: '', required: false }">#{i18n.getText('QMM035_20')}</div>
-                            <button id="A4_15" tabindex="1" >#{i18n.getText('QMM035_21')}</button>
+                            <button id="A4_15" tabindex="14" >#{i18n.getText('QMM035_21')}</button>
                             <span id ="A4_16" style="margin-left: 15px;">code</span>
                             <span id ="A4_17" style="margin-left: 15px;">name</span>
 
@@ -129,44 +124,44 @@
                         <div class="flex valign-center">
                             <div id="A4_20" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'PostalCode', required: false }">#{i18n.getText('QMM035_23')}</div>
-                            <input id="A4_21" tabindex="18"
+                            <input id="A4_21" tabindex="15"
                                    data-bind="ntsTextEditor: {constraint: 'PostalCode',value: postalCode, name: '#[QMM035_23]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_23" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'Address1', required: false }">#{i18n.getText('QMM035_25')}</div>
-                            <input id="A4_24" tabindex="18"
+                            <input id="A4_24" tabindex="16"
                                    data-bind="ntsTextEditor: {constraint: 'Address1',value: address1, name: '#[QMM035_25]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_25" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'AddressKana1', required: false }">#{i18n.getText('QMM035_26')}</div>
-                            <input id="A4_26" tabindex="18"
+                            <input id="A4_26" tabindex="17"
                                    data-bind="ntsTextEditor: {constraint: 'AddressKana1',value: address2, name: '#[QMM035_26]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_27" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'Address2', required: false }">#{i18n.getText('QMM035_27')}</div>
-                            <input id="A4_28" tabindex="18"
+                            <input id="A4_28" tabindex="19"
                                    data-bind="ntsTextEditor: {constraint: 'Address2',value: addressKana1, name: '#[QMM035_27]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_29" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'AddressKana2', required: false }">#{i18n.getText('QMM035_28')}</div>
-                            <input id="A4_30" tabindex="18"
+                            <input id="A4_30" tabindex="20"
                                    data-bind="ntsTextEditor: {constraint: 'AddressKana2',value: addressKana2, name: '#[QMM035_28]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_31" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'PhoneNumber', required: false }">#{i18n.getText('QMM035_29')}</div>
-                            <input id="A4_32" tabindex="18"
+                            <input id="A4_32" tabindex="21"
                                    data-bind="ntsTextEditor: {constraint: 'PhoneNumber',value: phoneNumber, name: '#[QMM035_29]'}"/>
                         </div>
                         <hr id="A4_33" style="margin-bottom: 15px; width: auto"></hr>
                         <div class="flex valign-center">
                             <div id="A4_34" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM035_30')}</div>
-                            <textarea id="A4_35" tabindex="36"
+                            <textarea id="A4_35" tabindex="22"
                                       data-bind="ntsMultilineEditor: { constraint: 'Memo', value: notes, name: '#[QMM035_30]'}"/>
                         </div>
                     </div>
@@ -174,39 +169,39 @@
                         <div class="flex valign-center">
                             <div id="A5_1" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'AccountManaName', required: false }">#{i18n.getText('QMM035_31')}</div>
-                            <input id="A5_2" tabindex="18"
+                            <input id="A5_2" tabindex="23"
                                    data-bind="ntsTextEditor: {constraint: 'AccountManaName',value: accountManagerName, name: '#[QMM035_31]'}"/>
                         </div>
                         <hr id="A5_3" style="margin-bottom: 15px; width: auto"></hr>
                         <div class="flex valign-center">
                             <div id="A5_4" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'ContactClass', required: false }">#{i18n.getText('QMM035_32')}</div>
-                            <input id="A5_5" tabindex="18"
+                            <input id="A5_5" tabindex="24"
                                    data-bind="ntsTextEditor: {constraint: 'ContactClass',value: contactClass, name: '#[QMM035_32]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A5_6" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'ContactName', required: false }">#{i18n.getText('QMM035_33')}</div>
-                            <input id="A5_7" tabindex="18"
+                            <input id="A5_7" tabindex="25"
                                    data-bind="ntsTextEditor: {constraint: 'ContactName',value: contactName, name: '#[QMM035_33]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A5_8" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'PhoneNumber', required: false }">#{i18n.getText('QMM035_34')}</div>
-                            <input id="A5_9" tabindex="18"
+                            <input id="A5_9" tabindex="26"
                                    data-bind="ntsTextEditor: {constraint: 'PhoneNumber',value: contactPhoneNumber, name: '#[QMM035_34]'}"/>
                         </div>
                         <hr id="A5_10" style="margin-bottom: 15px; width: auto"></hr>
                         <div class="flex valign-center">
                             <div id="A5_11" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'AccountingOffName', required: false }">#{i18n.getText('QMM035_35')}</div>
-                            <input id="A5_12" tabindex="18"
+                            <input id="A5_12" tabindex="27"
                                    data-bind="ntsTextEditor: {constraint: 'AccountingOffName',value: accountingOfficeName, name: '#[QMM035_35]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A5_13" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'PhoneNumber', required: false }">#{i18n.getText('QMM035_36')}</div>
-                            <input id="A5_14" tabindex="18"
+                            <input id="A5_14" tabindex="28"
                                    data-bind="ntsTextEditor: {constraint: 'PhoneNumber',value: accountingOfficeTelephoneNumber, name: '#[QMM035_36]'}"/>
                         </div>
                         <hr id="A5_15" style="margin-bottom: 15px; width: auto"></hr>
@@ -214,17 +209,17 @@
                             <div id="A5_16" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'SalaPayMethodDueDate', required: false }">#{i18n.getText('QMM035_37')}</div>
                             <span id="A5_17" class="labelSpan">#{i18n.getText('QMM035_38')}</span>
-                            <input id="A5_18" tabindex="18"
+                            <input id="A5_18" tabindex="29"
                                    data-bind="ntsTextEditor: {constraint: 'SalaPayMethodDueDate',value: salaryPaymentMethodAndDueDate1, name: '#[QMM035_39]'}"/>
                         </div>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <span id="A5_19" class="labelSpan">#{i18n.getText('QMM035_40')}</span>
-                            <input id="A5_20" tabindex="18"
+                            <input id="A5_20" tabindex="30"
                                    data-bind="ntsTextEditor: {constraint: 'SalaPayMethodDueDate',value: salaryPaymentMethodAndDueDate2, name: '#[QMM035_41]'}"/>
                         </div>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <span id="A5_21" class="labelSpan">#{i18n.getText('QMM035_42')}</span>
-                            <input id="A5_22" tabindex="18"
+                            <input id="A5_22" tabindex="31"
                                    data-bind="ntsTextEditor: {constraint: 'SalaPayMethodDueDate',value: salaryPaymentMethodAndDueDate3, name: '#[QMM035_43]'}"/>
                         </div>
                         <hr id="A5_23" style="margin-bottom: 15px; width: auto"></hr>
@@ -232,36 +227,36 @@
                             <div id="A5_24" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'BusinessLine', required: false }">#{i18n.getText('QMM035_44')}</div>
                             <span id="A5_25" class="labelSpan">#{i18n.getText('QMM035_38')}</span>
-                            <input id="A5_26" tabindex="18"
+                            <input id="A5_26" tabindex="32"
                                    data-bind="ntsTextEditor: {constraint: 'BusinessLine',value: businessLine1, name: '#[QMM035_45]'}"/>
                         </div>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <span id="A5_27" class="labelSpan">#{i18n.getText('QMM035_40')}</span>
-                            <input id="A5_28" tabindex="18"
+                            <input id="A5_28" tabindex="33"
                                    data-bind="ntsTextEditor: {constraint: 'BusinessLine',value: businessLine2, name: '#[QMM035_46]'}"/>
                         </div>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <span id="A5_29" class="labelSpan">#{i18n.getText('QMM035_42')}</span>
-                            <input id="A5_30" tabindex="18"
+                            <input id="A5_30" tabindex="34"
                                    data-bind="ntsTextEditor: {constraint: 'BusinessLine',value: businessLine3, name: '#[QMM035_47]'}"/>
                         </div>
                         <hr id="A5_31" style="margin-bottom: 15px; width: auto"></hr>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <div id="A5_32" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'TaxOffice', required: false }">#{i18n.getText('QMM035_48')}</div>
-                            <input id="A5_33" tabindex="18"
+                            <input id="A5_33" tabindex="35"
                                    data-bind="ntsTextEditor: {constraint: 'TaxOffice',value: taxOffice, name: '#[QMM035_48]'}"/>
                         </div>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <div id="A5_34" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'NameBankTranfeIns', required: false }">#{i18n.getText('QMM035_49')}</div>
-                            <input id="A5_35" tabindex="18"
+                            <input id="A5_35" tabindex="36"
                                    data-bind="ntsTextEditor: {constraint: 'NameBankTranfeIns',value: nameBankTransferInstitution, name: '#[QMM035_49]'}"/>
                         </div>
                         <div class="flex valign-center" style="margin-top: 5px;">
                             <div id="A5_36" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'VibLocaFinIns', required: false }">#{i18n.getText('QMM035_50')}</div>
-                            <input id="A5_37" tabindex="18"
+                            <input id="A5_37" tabindex="37"
                                    data-bind="ntsTextEditor: {constraint: 'VibLocaFinIns',value: vibrantLocationFinancialInstitutions, name: '#[QMM035_50]'}"/>
                         </div>
                     </div>

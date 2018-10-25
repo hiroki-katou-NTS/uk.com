@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 現在処理年月
@@ -17,5 +18,7 @@ public interface CurrProcessDateRepository
     void update(CurrProcessDate domain);
 
     void remove(String cid, int processCateNo);
+
+    Optional<CurrProcessDate> getByIds(String cid, int processCateNo);
 
 }
