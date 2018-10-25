@@ -10,12 +10,12 @@ public interface StatementItemDisplaySetRepository {
 
 	List<StatementItemDisplaySet> getAllSpecItemDispSet();
 
-	Optional<StatementItemDisplaySet> getSpecItemDispSetById(String cid, String salaryItemId);
+	Optional<StatementItemDisplaySet> getSpecItemDispSetById(String cid, int categoryAtr, String itemNameCd);
 
 	void add(StatementItemDisplaySet domain);
 
 	void update(StatementItemDisplaySet domain);
 
-	void remove(String cid, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }
