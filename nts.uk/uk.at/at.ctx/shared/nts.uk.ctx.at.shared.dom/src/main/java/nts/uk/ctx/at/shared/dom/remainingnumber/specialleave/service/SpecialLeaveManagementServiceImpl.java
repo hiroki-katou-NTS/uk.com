@@ -209,10 +209,29 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	@Override
 	public ManagaData getMngData(String cid, String sid, int specialLeaveCode,
 			DatePeriod complileDate) {
-		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = new ArrayList<>();
+		
 		//ドメインモデル「特別休暇付与残数データ」を取得する
 		List<SpecialLeaveGrantRemainingData> lstDataBase = speLeaveRepo.getByPeriodStatus(sid, specialLeaveCode, LeaveExpirationStatus.AVAILABLE,
 				complileDate.start());
+		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = new ArrayList<>();
+		if(!lstDataBase.isEmpty()) {
+			for (SpecialLeaveGrantRemainingData c : lstDataBase) {
+				SpecialLeaveGrantNumber a = new SpecialLeaveGrantNumber(c.getDetails().getGrantNumber().getDayNumberOfGrant(), c.getDetails().getGrantNumber().getTimeOfGrant());
+				SpecialLeaveUsedNumber b = new SpecialLeaveUsedNumber(c.getDetails().getUsedNumber().getDayNumberOfUse(), c.getDetails().getUsedNumber().getTimeOfUse(),c.getDetails().getUsedNumber().getUseSavingDays(), c.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber());
+				SpecialLeaveRemainingNumber d = new SpecialLeaveRemainingNumber(c.getDetails().getRemainingNumber().getDayNumberOfRemain(), c.getDetails().getRemainingNumber().getTimeOfRemain());
+				SpecialLeaveGrantRemainingData tmp = new SpecialLeaveGrantRemainingData(c.getSpecialId(),
+					c.getCId(),
+					c.getEmployeeId(),
+					c.getSpecialLeaveCode(),
+					c.getGrantDate(),
+					c.getDeadlineDate(),
+					c.getExpirationStatus(),
+					c.getRegisterType(),
+					new SpecialLeaveNumberInfo(a, b, d));
+				lstDataSpeDataBase.add(tmp);
+			}	
+		}
+		
 		//ドメインモデル「特別休暇」を取得する
 		Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findBySingleCD(cid, specialLeaveCode);
 		if(!optSpecialHoliday.isPresent()) {
