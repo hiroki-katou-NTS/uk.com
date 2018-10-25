@@ -4461,7 +4461,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.messageNoForward(messageNotForward);
 
             //フレックス不足(内前月繰越)
-            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21))), self.convertToHours(Number(val21))]));
             //翌月繰越
             self.nextMonthTransferredMoneyTime(getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
             //年休
