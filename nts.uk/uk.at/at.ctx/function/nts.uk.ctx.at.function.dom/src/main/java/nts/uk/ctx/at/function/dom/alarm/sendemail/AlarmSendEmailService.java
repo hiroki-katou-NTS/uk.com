@@ -164,7 +164,6 @@ public class AlarmSendEmailService implements SendEmailService {
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
 			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
 			String bodyEmail) throws BusinessException {
-		FileGeneratorContext generatorContext = new FileGeneratorContext();		
 		// call request list 397 return email address
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
@@ -177,7 +176,7 @@ public class AlarmSendEmailService implements SendEmailService {
 					subjectEmail = TextResource.localize("KAL010_300");
 				}
 				// Genarate excel
-				AlarmExportDto alarmExportDto = alarmListGenerator.generate(generatorContext, listDataAlarmExport);
+				AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport);
 				// Get all mail address
 				for (OutGoingMailAlarm outGoingMailAlarm : emails) {
 					List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
