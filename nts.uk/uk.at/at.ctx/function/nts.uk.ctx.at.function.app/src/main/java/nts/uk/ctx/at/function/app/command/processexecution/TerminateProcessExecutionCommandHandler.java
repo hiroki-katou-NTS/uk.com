@@ -210,7 +210,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		this.interupt(execId, ExeStateOfCalAndSum.END_INTERRUPTION.value);
 		
 		//ドメインモデル「更新処理自動実行ログ履歴」を更新する
-		for(ExecutionTaskLog task : procExecLog.getTaskLogList()) {
+		for(ExecutionTaskLog task : processExecutionLogHistory.getTaskLogList()) {
 			if (task.getProcExecTask() != ProcessExecutionTask.APP_ROUTE_U_DAI && 
 					task.getProcExecTask() != ProcessExecutionTask.APP_ROUTE_U_MON) {
 				if(task.getStatus() == null) {
@@ -227,6 +227,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 			}
 		}
 		
+		this.processExecutionLogHistRepo.update(processExecutionLogHistory);;
 	}
 	
 	/**
