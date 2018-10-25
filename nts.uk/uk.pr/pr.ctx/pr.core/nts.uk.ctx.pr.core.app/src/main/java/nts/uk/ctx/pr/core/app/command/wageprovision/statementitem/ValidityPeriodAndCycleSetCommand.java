@@ -6,9 +6,14 @@ import lombok.Value;
 public class ValidityPeriodAndCycleSetCommand {
 
 	/**
-	 * 給与項目ID
+	 * カテゴリ区分
 	 */
-	private String salaryItemId;
+	private int categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	private String itemNameCd;
 	
 	/**
 	 * サイクル設定区分
