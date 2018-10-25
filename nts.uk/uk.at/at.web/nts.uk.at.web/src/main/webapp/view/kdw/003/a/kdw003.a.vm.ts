@@ -308,7 +308,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (1038) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 250) + 'px !IMPORTANT');
+
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 250) + 'px !IMPORTANT');
+            });
 
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime)
@@ -2909,11 +2914,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 subWidth : subWidth,
-                height: (window.screen.availHeight - 250) + "px",
+                subHeight: '285px',
+                height: (window.screen.availHeight - 240) + "px",
                 headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
-                minRows: 31,
-                maxRows: 50,
+//                minRows: 31,"
+//                maxRows: 50,
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
