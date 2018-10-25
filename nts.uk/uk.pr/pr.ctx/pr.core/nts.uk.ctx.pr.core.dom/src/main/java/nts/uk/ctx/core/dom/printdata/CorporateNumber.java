@@ -6,8 +6,8 @@ import nts.arc.primitive.constraint.*;
 /**
  * 法人番号
  */
-@IntegerMinValue(1)
-@IntegerMaxValue(13)
+@StringMaxLength(13)
+@StringCharType(CharType.NUMERIC)
 public class CorporateNumber extends IntegerPrimitiveValue<CorporateNumber> {
     private static final long serialVersionUID = 1L;
 

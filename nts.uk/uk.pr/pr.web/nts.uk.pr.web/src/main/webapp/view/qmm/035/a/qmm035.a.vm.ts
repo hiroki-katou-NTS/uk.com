@@ -40,10 +40,11 @@ module nts.uk.pr.view.qmm035.a {
                         self.isEnableBtnDelete(true);
                         self.isEnableBtnCreate(true);
                     }
+                    self.detail(new CompanyStatutoryWrite());
 
-                    self.currentCode(response[0].code);
 
                     if (response.length > 0) {
+                        self.currentCode(response[0].code);
                         _.defer(function() {
                             $("#A4_5").focus();
                         });
