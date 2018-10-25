@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification;
+package nts.uk.ctx.at.record.dom.daily.dailyperformance.classification;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
