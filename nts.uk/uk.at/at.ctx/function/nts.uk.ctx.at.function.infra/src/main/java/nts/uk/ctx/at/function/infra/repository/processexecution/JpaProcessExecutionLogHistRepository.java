@@ -51,7 +51,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	
 	@Override
 	public void update(ProcessExecutionLogHistory domain) {
-		KfnmtProcessExecutionLogHistory newEntity = KfnmtProcessExecutionLogHistory.toEntity(domain);
+		KfnmtProcessExecutionLogHistory newEntity = KfnmtProcessExecutionLogHistory.toEntity2(domain);
 		
 		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
 		.setParameter("companyId", domain.getCompanyId())
