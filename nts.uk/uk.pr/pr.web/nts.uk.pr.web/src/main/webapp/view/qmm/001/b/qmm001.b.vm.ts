@@ -36,8 +36,8 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                         self.listTakeOver()[0] = new model.ItemModel(0, getText('QMM001_33', [self.convertMonthYearToString(params.start)]));
                         self.isFisrtHistory(false);
                         self.startYearMonth(params.start);
-                        $('#B1_7').focus();
                     }
+
                 } else {
                     self.end(getText('QMM001_31', ['9999/12/31']));
                     if(params.start) {
@@ -45,7 +45,6 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                         self.isFisrtHistory(false);
                         self.startYearMonthDay(self.convertStringToDate(params.start));
                         self.startLastYearMonthDay(self.convertStringToDate(params.start));
-                        $('#B1_6').focus();
                     }
                 }
             }
@@ -55,10 +54,19 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
             block.clear();
         }
 
+        setFocus(){
+            let self = this;
+            if(self.historyAtr() == PARAHISTORYATR.YMDHIST) {
+                $('#B1_6').focus();
+            } else {
+                $('#B1_7').focus();
+            }
+        }
+
         validateYearMonth(){
             let self = this;
             if(!(self.startLastYearMonth() < self.startYearMonth())){
-                $('#B1_7').ntsError('set', { messageId: "Msg_107" });
+                $('#B1_7').ntsError('set', { messageId: "Msg_79" });
                 return true;
             }
             return false;
@@ -67,7 +75,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         validateYearMonthDay(){
             let self = this;
             if(!(Number(self.startLastYearMonthDay()) < Number(self.startYearMonthDay()))){
-                $('#B1_6').ntsError('set', { messageId: "Msg_107" });
+                $('#B1_6').ntsError('set', { messageId: "Msg_79" });
                 return true;
             }
             return false;

@@ -40,7 +40,7 @@
 																dateFormat: 'yearmonth',
 																valueFormat: 'YYYYMM',
 																required: true
-																}" tabindex="1"></div>
+																}" tabindex="2"></div>
 					</com:ko-if>
 					<!-- B1_7 開始年月和暦 -->
 					<com:ko-if bind ="historyAtr() == 0"><!-- B1_7 開始年月和暦 -->
@@ -50,7 +50,7 @@
 																dateFormat: 'YYYY/MM/DD',
 																valueFormat: 'YYYYMMDD',
 																required: true
-																}" tabindex="2"></div>
+																}" tabindex="1"></div>
 					</com:ko-if>
 
 					<!-- B1_8 9999/12 -->
@@ -61,8 +61,8 @@
 					<com:ko-if bind="!isFisrtHistory()">
 					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM001_32')}</span>
 
-					<div id = "B1_10" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
-							<div  class="cell"
+					<div id = "B1_10" tabIndex = "3" style= "display: inline-block;text-align: left;margin-left: 30px">
+							<div  class="cell" tabindex="-1"
 							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[0],
@@ -71,7 +71,7 @@
 										group: 'periodOption'}" >
 							</div>
 							<br/>
-							<div  class="cell"
+							<div  class="cell" tabindex="-1"
 							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],
@@ -83,7 +83,7 @@
 					</com:ko-if>
 					<com:ko-if bind="isFisrtHistory()">
 						<span class="label" >#{i18n.getText('QMM001_32')}</span>
-						<div  class="cell" tabindex="2" style= "display: inline-block;text-align: left; margin-left:32px;"
+						<div  class="cell" tabindex="3" style= "display: inline-block;text-align: left; margin-left:32px;"
 							  data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],
@@ -96,10 +96,10 @@
 			</div>
 			<div id="functions-area-bottom" style="z-index: auto;">
 				<!-- E2_1 登録 -->
-				<button id="B2_1" tabindex="3" class="proceed large"
+				<button id="B2_1" tabindex="4" class="proceed large"
 					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_35')}</button>
 				<!-- E2_2 削除 -->
-				<button id="B2_2" tabindex="4"
+				<button id="B2_2" tabindex="5"
 					data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
 			</div>
 		</ui:define>
