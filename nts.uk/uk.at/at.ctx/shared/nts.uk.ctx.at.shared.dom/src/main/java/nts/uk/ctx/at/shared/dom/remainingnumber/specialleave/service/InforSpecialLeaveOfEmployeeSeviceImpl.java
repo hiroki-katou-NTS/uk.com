@@ -300,7 +300,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		if(elapseYear.isEmpty()) {
 			return new GrantDaysInforByDates(outputDate, lstOutput);
 		}
-		for (ElapseYear yearData : elapseYear) {//TODO xem lai
+		for (ElapseYear yearData : elapseYear) {
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
 			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
