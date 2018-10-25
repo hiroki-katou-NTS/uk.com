@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         validateYearMonth(){
             let self = this;
             if(!(self.startLastYearMonth() < self.startYearMonth())){
-                $('#B1_7').ntsError('set', { messageId: "Msg_107" });
+                $('#B1_7').ntsError('set', { messageId: "Msg_79" });
                 return true;
             }
             return false;
@@ -75,7 +75,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
         validateYearMonthDay(){
             let self = this;
             if(!(Number(self.startLastYearMonthDay()) < Number(self.startYearMonthDay()))){
-                $('#B1_6').ntsError('set', { messageId: "Msg_107" });
+                $('#B1_6').ntsError('set', { messageId: "Msg_79" });
                 return true;
             }
             return false;
