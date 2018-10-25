@@ -118,4 +118,10 @@ public class ApprovalStatusWebservice extends WebService {
 	public ApplicationListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
 		return this.finder.initApprovalSttRequestContentDis(appSttContent);
 	}
+	
+	@POST
+	@Path("checkSendUnConfirMail")
+	public boolean checkSendMailUnConf(List<UnApprovalSendMail> listWkp){
+		return finder.checkSendUnConfMail(listWkp);
+	}
 }
