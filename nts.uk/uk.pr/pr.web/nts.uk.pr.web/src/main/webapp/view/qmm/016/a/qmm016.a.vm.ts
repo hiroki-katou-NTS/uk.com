@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         // screen state
         isOnStartUp: boolean = true;
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
 
         // tab panel
@@ -21,16 +22,18 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         selectedWageTableIdentifier: KnockoutObservable<string> = ko.observable(null);
         selectedWageTable: KnockoutObservable<model.WageTable> = ko.observable(new model.WageTable(null));
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
-        wageTableList: Array<model.IWageTable> = [];
         wageTableTreeList: any = ko.observable();
         constructor() {
             let self = this;
             self.initTabPanel();
             self.initWageTableList();
-            self.convertToTreeList();
             self.selectedWageTableIdentifier.subscribe(function (newValue){
-                self.showWageTableInfoByValue(newValue);
+                if (newValue) self.showWageTableInfoByValue(newValue);
+            });
+            self.screenMode.subscribe(function (newValue){
+                self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
             })
+            $('#A8_2').ntsFixedTable({width: 300});
         }
 
         initWageTableList () {
@@ -89,17 +92,21 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     ]
                 }
             ]
-            self.wageTableList = wageTableData;
+            if (wageTableData.length == 0) self.changeToNewMode();
+            self.convertToTreeList(wageTableData)
         }
 
-        convertToTreeList () {
+        convertToTreeList (wageTableData) {
             let self = this;
-            let wageTableTreeData = self.wageTableList.map(function (item){
+            let wageTableTreeData = wageTableData.map(function (item){
                 item.nodeText = item.wageTableCode + " " + item.wageTableName;
                 item.identifier = item.wageTableCode;
                 item.history = item.history.map(function (historyItem){
                     historyItem.nodeText = historyItem.startMonth + " ~ " + historyItem.endMonth;
                     historyItem.identifier = item.wageTableCode + historyItem.historyID;
+                    // prevent handler from null value exception when use search box
+                    historyItem.wageTableCode = "";
+                    historyItem.wageTableName = "";
                     return historyItem;
                 })
                 return item;
@@ -111,7 +118,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: getText("QMM016_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)}
+                {id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: self.isUpdateMode, visible: ko.observable(true)}
             ]);
             self.selectedTab = ko.observable('tab-1');
         }
@@ -123,7 +130,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
         showWageTableInfoByValue (identifier: string) {
             let self = this;
-            let currentWageTableList = ko.toJS(self.wageTableList), selectedWageTableCode, selectedHistoryID, selectedWageTable, selectedHistory;
+            let currentWageTableList = ko.toJS(self.wageTableTreeList), selectedWageTableCode, selectedHistoryID, selectedWageTable, selectedHistory;
             selectedWageTableCode = identifier.substring(0, 3);
             selectedWageTable = _.find(currentWageTableList, {wageTableCode: selectedWageTableCode});
             self.selectedWageTable(new model.WageTable(selectedWageTable));
@@ -135,6 +142,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
             }
+            self.changeToUpdateMode();
         }
 
         showSettingDataByValue (identifier: string) {
@@ -163,10 +171,24 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
         changeToNewMode () {
             let self = this;
+            self.screenMode(model.SCREEN_MODE.NEW);
             self.selectedWageTableIdentifier(null);
             self.selectedWageTable(new model.WageTable(null));
             nts.uk.ui.errors.clearAll();
         }
+        changeToUpdateMode () {
+            let self = this;
+            self.screenMode(model.SCREEN_MODE.UPDATE);
+            nts.uk.ui.errors.clearAll();
+        }
+
+        createNewHistory () {
+
+        }
+        editHistory () {
+
+        }
+
     }
 }
 

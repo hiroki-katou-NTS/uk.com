@@ -11,6 +11,7 @@
         <com:ValidatorScript>
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableCode
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableName
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.Memo
         </com:ValidatorScript>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm016.a.service.js"/>
@@ -21,17 +22,23 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <div id="">
+            <div>
+                <!--A1_1 新規-->
                 <button id="A1_1" tabindex="1"
-                        data-bind="click: createNewWageTable, enable: screenMode() == 1">#{i18n.getText('QMM016_1')}</button>
+                        data-bind="click: createNewWageTable, enable: isUpdateMode">#{i18n.getText('QMM016_1')}</button>
+                <!--A1_2 登録-->
                 <button id="A1_2" class="proceed" tabindex="2"
                         data-bind="click: registerWageTable, enable: $root.errors.isEmpty">#{i18n.getText('QMM016_2')}</button>
+                <!--A1_3 コピー-->
                 <button style="margin-left: 70px;" id="A1_3" tabindex="3"
                         data-bind="click: copy, enable: false">#{i18n.getText('QMM016_3')}</button>
+                <!--A1_4 Excel出力-->
                 <button id="A1_4" tabindex="4"
                         data-bind="click: outputExcel, enable: false">#{i18n.getText('QMM016_4')}</button>
+                <!--A1_5 資格グループの設定-->
                 <button id="A1_5" tabindex="5"
                         data-bind="click: settingQualificationGroup, enable: true">#{i18n.getText('QMM016_5')}</button>
+                <!--A1_6 マスタ修正ログ-->
                 <button id="A1_6" tabindex="6"
                         data-bind="click: correctMasterDialog, , enable: false">#{i18n.getText('QMM016_6')}</button>
             </div>
@@ -40,8 +47,11 @@
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div style="margin-left: 10px; margin-top: 20px;" class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{width: '335px', height: '440px', direction: 'right', showIcon: true, visible: true}"
+                <!--A2_1 賃金テーブル一覧パネル-->
+                <div data-bind="ntsPanel:{width: '335px', height: '485px', direction: 'right', showIcon: true, visible: true}"
                      style="margin-left: 10px; margin-bottom: 20px;">
+                    <!--A2_2 検索コード/名称-->
+                    <!--A2_3 検索-->
                     <div style="width: 335px" data-bind="ntsSearchBox: {
                                 label: '#{i18n.getText('QMM016_8')}',
                                 targetKey: 'identifier',
@@ -53,7 +63,17 @@
                                 childField: 'history',
                                 fields: ['wageTableCode', 'wageTableName']}">
                     </div>
-                    <table id="A2_6" data-bind="ntsTreeGridView:{
+                    <div>
+                        <!--A2_4 履歴追加ボタン-->
+                        <button id="A2_4" tabindex="1"
+                                data-bind="click: createNewHistory, enable: isUpdateMode">#{i18n.getText('QMM008_8')}</button>
+                        <!--A2_5 履歴編集ボタン-->
+                        <button style="float: right" id="A2_5" tabindex="1"
+                                data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
+                    </div>
+                    <div style ="margin-top: 15px;" >
+                        <!--A2_6 賃金テーブル一覧	-->
+                        <table id="A2_6" data-bind="ntsTreeGridView:{
                                width: 335,
                                rows: 15,
                                dataSource: wageTableTreeList,
@@ -65,25 +85,34 @@
                                multiple: false,
                                enable: true,
                                showCheckBox: false}">
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div id="fixed-flex-layout-right" tabindex="9">
-                <div id="D3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
-                     style="width: 800px;">
+                <!--A3_1 タブ-->
+                <div id="A3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+                     style="width: 800px; margin-bottom: 20px;">
+                    <!--A3_2 タブ（基本情報）-->
                     <div class="tab-content-1" data-bind = "with: selectedWageTable">
-                        <span class="label warning tab-row">#{i18n.getText('QMM016_7')}</span>
+                        <!--A4_1 注意メッセージ-->
+                        <div data-bind="if: $vm.screenMode() == 1" ><span id ="A4_1" class="label warning tab-row">#{i18n.getText('QMM016_7')}</span></div>
                         <div class="flex valign-center tab-row">
+                            <!--A5_1 賃金テーブルコード/名称-->
                             <div id="A5_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true, constraint: ['WageTableCode', 'WageTableName']}">#{i18n.getText('QMM016_8')}</div>
-                            <input id="A4_2" tabindex="10"
+                            <!--A5_2 コード-->
+                            <input id="A5_2" tabindex="10"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableCode', value: wageTableCode, name: '#[QMM016_14]', required: true , enable: $vm.screenMode() == 0}"/>
+                            <!--A5_3 名称-->
                             <input style ="margin-left: 15px;" id="A4_3" tabindex="11" width="230px"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableName',value: wageTableName, name: '#[QMM016_15]', required: true}"/>
                         </div>
                         <div class="flex valign-center tab-row" data-bind ="with: $vm.selectedHistory">
+                            <!--A6_1 開始年月-->
                             <div id="A6_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_16')}</div>
+                            <!--A6_2 開始年月（西暦）-->
                             <div id ="A6_2"
                                  data-bind="ntsDatePicker: {
                                     name: '#[QMM016_16]',
@@ -91,17 +120,22 @@
                                     dateFormat: 'yearmonth',
                                     valueFormat: 'YYYYMM',
                                     required: true,
-                                    enable: true}"
+                                    enable: $vm.isUpdateMode}"
                                  tabindex="1" />
+                            <!--A6_3 開始年月（和暦）-->
                             <div style ="margin-left: 10px;" id ="A6_3"
                                  data-bind="text: displayJapanStartYearMonth" />
                         </div>
-                        <hr></hr>
                         <div class="tab-row" >
+                            <!--A7_1 次元設定-->
                             <div id="A7_1" class="column-1" style="vertical-align: top"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_17')}</div>
                             <div style = "width: 200px; display: inline-block; vertical-align: top">
+                                <!--A7_2 汎用テーブル-->
                                 <div id ="A7_2">#{i18n.getText('QMM016_18')}</div>
+                                <!--A7_3 罫線-->
+                                <hr></hr>
+                                <!--A7_4 利用次元区分-->
                                 <div class="flex valign-center tab-row">
                                     <div class="cf" data-bind="ntsSwitchButton: {
                                 name: '#[QMM016_19]',
@@ -110,11 +144,14 @@
                                 optionsText: 'name',
                                 value: elementSetting,
                                 required: true,
-                                enable: true }"></div>
+                                enable: !$vm.isUpdateMode() }"></div>
                                 </div>
                                 <div class="flex valign-center tab-row">
                                     <div id ="A7_10">#{i18n.getText('QMM016_20')}</div>
                                 </div>
+                                <!--A7_11 罫線-->
+                                <hr></hr>
+                                <!--A7_4 利用次元区分-->
                                 <div class="flex valign-center tab-row">
                                     <div class="cf" data-bind="ntsSwitchButton: {
                                 name: '#[QMM016_19]',
@@ -123,18 +160,84 @@
                                 optionsText: 'name',
                                 value: elementSetting,
                                 required: true,
-                                enable: true }"></div>
+                                enable: !$vm.isUpdateMode() }"></div>
                                 </div>
                             </div>
-
-                            <div style = "display: inline-block; height: 165px; width: 330px;" class="panel panel-gray-bg">
-                                <img src = '/' data-bind="attr:{src: imagePath}" />
+                            <!--A7_12 凡例パネル-->
+                            <div style = "display: inline-block; height: 185px; width: 330px;" class="panel panel-gray-bg">
+                                <div style ="margin-left: 10px;" data-bind = "text: elementSettingDisplayText"></div>
+                                <img style ="margin-top: 5px;" src = '/' data-bind="attr:{src: imagePath}" />
                             </div>
+                        </div>
+                        <div class="tab-row" id ="A8">
+                            <!--A8_1 要素指定-->
+                            <div id="A8_1" class="column-2" style="vertical-align: top"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_17')}</div>
+                            <!--A8_2 要素テーブル-->
+                            <table id="A8_2">
+                                <colgroup>
+                                    <col width="30px" />
+                                    <col width="200px" />
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th class="ui-widget-header"></th>
+                                    <!--A8_3 要素-->
+                                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <!--A8_4 要素番号1-->
+                                    <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                                    <td>
+                                        <!--A8_5 参照ボタン1-->
+                                        <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
+                                            <button data-bind = "enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                        </div>
+
+                                        <!--A8_6 選択要素1-->
+                                        <div>test</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!--A8_7 要素番号2-->
+                                    <td data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4" class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
+                                    <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
+                                        <!--A8_8 参照ボタン2-->
+                                        <div >
+                                            <button data-bind = "enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                        </div>
+                                        <!--A8_9 選択要素2-->
+                                        <div>test</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!--A8_10  要素番号3-->
+
+                                    <td data-bind="if: elementSetting() == 2 || elementSetting() == 4"  class="ui-widget-header">#{i18n.getText('QMM016_44')}</td>
+                                    <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
+                                        <!--A8_11 参照ボタン3-->
+                                        <button data-bind = "enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                        <!--A8_12 選択要素3-->
+                                        <div>test</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-row">
+                            <!--A9_1 メモ-->
+                            <div id="A9_1" style = "vertical-align: top" class="column-1"
+                                 data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM016_24')}</div>
+                            <!--A9_2 メモ欄-->
+                            <textarea id="A9_2" style = "height: 80px; width: 400px;"
+                                      data-bind="ntsMultilineEditor: { constraint: 'Memo', value: remarkInformation, name: '#[QMM016_25]'}"/>
                         </div>
 
                     </div>
                     <div class="tab-content-2">
-                        das
+                        <h1>Tab 2 content</h1>
 
                     </div>
                 </div>

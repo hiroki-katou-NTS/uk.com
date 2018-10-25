@@ -46,15 +46,15 @@ public class WageTable extends AggregateRoot {
      */
     private ElementInformation elementInformation;
 
-    public WageTable(String cid, String wageTableCode, String wageTableName, Integer firstMasterNumericClassification, Integer firstFixedElement, String firstOptionalAddinationElement,
-                     Integer secondMasterNumericClassification, Integer secondFixedElement, String secondOptionalAddinationElement,
-                     Integer thirdMasterNumericClassification, Integer thirdFixedElement, String thirdOptionalAddinationElement, Integer elementSetting, String remarkInformation) {
+    public WageTable(String cid, String wageTableCode, String wageTableName, Integer oneMasterNumericClassification, Integer oneFixedElement, String oneOptionalAdditionalElement,
+                     Integer twoMasterNumericClassification, Integer twoFixedElement, String twoOptionalAdditionalElement,
+                     Integer threeMasterNumericClassification, Integer threeFixedElement, String threeOptionalAdditionalElement, Integer elementSetting, String remarkInformation) {
         this.cid = cid;
         this.wageTableCode = new WageTableCode(wageTableCode);
         this.wageTableName = new WageTableName(wageTableName);
-        this.elementInformation = new ElementInformation(firstMasterNumericClassification, firstFixedElement, firstOptionalAddinationElement,
-                secondMasterNumericClassification, secondFixedElement, secondOptionalAddinationElement,
-                thirdMasterNumericClassification, thirdFixedElement, thirdOptionalAddinationElement);
+        this.elementInformation = new ElementInformation(oneMasterNumericClassification, oneFixedElement, oneOptionalAdditionalElement,
+                twoMasterNumericClassification, twoFixedElement, twoOptionalAdditionalElement,
+                threeMasterNumericClassification, threeFixedElement, threeOptionalAdditionalElement);
         this.elementSetting = EnumAdaptor.valueOf(elementSetting, ElementSetting.class);
         this.remarkInformation = remarkInformation == null ? Optional.empty() : Optional.of(new Memo(remarkInformation));
     }
