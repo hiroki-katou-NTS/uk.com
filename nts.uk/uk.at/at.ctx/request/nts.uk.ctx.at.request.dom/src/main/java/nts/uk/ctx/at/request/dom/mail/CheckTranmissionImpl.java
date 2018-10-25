@@ -135,7 +135,8 @@ public class CheckTranmissionImpl implements CheckTransmission {
 						int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 						NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 						if (checkUrl == NotUseAtr.USE) {
-							urlInfo = registerEmbededURL.registerEmbeddedForApp(
+							urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
+									+ registerEmbededURL.registerEmbeddedForApp(
 									application.getAppID(), 
 									application.getAppType().value, 
 									application.getPrePostAtr().value, 
@@ -143,7 +144,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 									employeeToSendId);
 						}
 					}
-					String mailContent = mailBody + "\n" + urlInfo;
+					String mailContent = mailBody + urlInfo;
 					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContent));
 					successList.add(employeeToSendId);
 				} catch (Exception ex) {
