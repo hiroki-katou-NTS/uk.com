@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.A
 import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.RemoveSalIndAmountNameCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.SalIndAmountNameCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.UpdateSalIndAmountNameCommandHandler;
+import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisDisplayDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisPackDto;
@@ -97,4 +98,9 @@ public class IndividualWageContract {
         addIndividualwagecontractCommandHandler.handle(command);
     }
 
+    @POST
+    @Path("salIndAmountHisDisplay")
+    public List<SalIndAmountHisPackDto> salIndAmountHisDisplay(SalIndAmountHisDisplayDto dto) {
+        return salIndAmountHisFinder.salIndAmountHisDisplay(dto);
+    }
 }

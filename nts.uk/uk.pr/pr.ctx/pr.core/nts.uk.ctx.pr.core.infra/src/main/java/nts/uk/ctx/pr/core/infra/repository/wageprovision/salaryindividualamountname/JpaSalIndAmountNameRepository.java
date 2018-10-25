@@ -16,7 +16,7 @@ public class JpaSalIndAmountNameRepository extends JpaRepository implements SalI
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountName f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.individualPriceCode =:individualPriceCode ";
-    private static final String SELECT_ALL_BY_CATEINDICATOR = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.cateIndicator =:cateIndicator ";
+    private static final String SELECT_ALL_BY_CATEINDICATOR = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.cateIndicator =:cateIndicator ";
 
     @Override
     public List<SalIndAmountName> getAllSalIndAmountName() {
@@ -51,7 +51,9 @@ public class JpaSalIndAmountNameRepository extends JpaRepository implements SalI
     }
 
     @Override
-    public void remove(String cid, String individualPriceCode) {
-        this.commandProxy().remove(QpbmtSalIndAmountName.class, new QpbmtSalIndAmountNamePk(cid, individualPriceCode));
+    public void remove(String cid, String individualPriceCode,int cateIndicator){
+        this.commandProxy().remove(QpbmtSalIndAmountName.class, new QpbmtSalIndAmountNamePk(cid, individualPriceCode,cateIndicator));
     }
+
+
 }

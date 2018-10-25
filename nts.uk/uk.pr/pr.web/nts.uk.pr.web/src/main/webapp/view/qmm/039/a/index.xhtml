@@ -47,7 +47,7 @@
             <div class="sidebar-content-header">
                 <span class="title" data-bind="text : titleTab"></span>
                 <!--A1_1 登録-->
-                <button tabindex="1" data-bind="click: registration, enable: isRegistrationable"
+                <button tabindex="1" data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
                         class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
                 <a tabindex="11" class="goout" style="margin-left: 720px;"
@@ -55,20 +55,20 @@
             </div>
             <div class="contents-area">
                 <!--A3_3 社員検索-->
-                <div style="display: flex; margin: 15px 0px 15px 65px;">
+                <div style="display: table; margin: 15px 0px 15px 65px;">
                     <!--A3_1 対象者-->
-                    <div tabindex="2" id="emp-component" style="float: left;"></div>
+                    <div tabindex="2" id="emp-component" style="display: table-cell;"></div>
                     <!--A3_2 金額の一覧を表示する-->
-                    <div style="float: left; margin: auto 0">
+                    <div style="display: table-cell; vertical-align: middle;">
                         <button tabindex="3" data-bind="click: toScreenD">#{i18n.getText('QMM039_11')}</button>
                     </div>
                 </div>
-                <div tabindex="4" id="com-ccg001"></div>
+                <div id="com-ccg001"></div>
                 <div class="row">
                     <div class="cell group-master">
                         <!--A4_1 項目選択パネル-->
                         <div class="panel" style="margin-left: 30px"
-                             data-bind="ntsPanel:{width: '220px', height: '220px',showIcon: true, direction: 'bottom', visible: true}">
+                             data-bind="ntsPanel:{width: '220px', height: '260px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
                             <div tabindex="5" style="width: 220px"
                                  data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',          items: dataSource, searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
@@ -81,12 +81,12 @@
                                    data-bind="ntsGridList:{
                                    name: '#[QMM039_12]',
                                 width: 220,
-                                height: 150,
+                                height: 210,
                                 dataSource: dataSource,
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
-                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 2},
-                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 4}
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', width: 60},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', width: 100}
                                 ],
                                 value: singleSelectedCode,
                                 primaryText: 'name',
@@ -98,7 +98,7 @@
                         </div>
                         <!--A5_1 履歴選択パネル-->
                         <div class="panel"
-                             data-bind="ntsPanel:{width: '270px', height: '160px', direction: 'none', visible: true}">
+                             data-bind="ntsPanel:{width: '270px', height: '185px', direction: 'none', visible: true}">
                             <div class="row margin-bottom-12">
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
@@ -121,7 +121,7 @@
                                     multiple: false,
                                     value: selectedHisCode,
                                     enable: true,
-                                    rows: 4,
+                                    rows: 5,
                                     columns: [
                                         { key: 'index', length: 0, hidden: true},
                                         { key: 'period', length: 8 },

@@ -19,6 +19,8 @@ public interface SalIndAmountNameRepository
 
     void update(SalIndAmountName domain);
 
-    void remove(String cid, String individualPriceCode);
+    void remove(String cid, String individualPriceCode,int cateIndicator);
+
+
 
 }
