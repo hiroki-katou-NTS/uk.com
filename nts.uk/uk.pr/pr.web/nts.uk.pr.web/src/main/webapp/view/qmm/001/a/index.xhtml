@@ -63,8 +63,8 @@
 								primaryKey: 'paraNo',
 								showNumbering: false,
 								columns: [
-					                { headerText: '#{i18n.getText('QMM001_8')}', key: 'paraNo'},
-					                { headerText: '#{i18n.getText('QMM001_9')}', key: 'name', formatter: _.escape}
+					                { headerText: '#{i18n.getText('QMM001_8')}', width: 75, key: 'paraNo'},
+					                { headerText: '#{i18n.getText('QMM001_9')}', width: 184, key: 'name', formatter: _.escape}
 					            ],
 								multiple: false,
 								rows: 9,
@@ -225,7 +225,8 @@
 					</div>
 					<input id="A4_10" style="margin-left: 3px" tabindex="12" class="B3_7"
 						   data-bind="ntsTextEditor: {
-																option : {width: '70px', decimallength: 3},
+																option : {width: '70px'},
+																option : {width: '70px'},
 																name: '#{i18n.getText('QMM001_24')}',
 																value: value,
 																required: true,
