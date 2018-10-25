@@ -42,7 +42,8 @@
 				<button id="setting" tabindex="3" class="group-button-1"
 					data-bind="click: openEDialog, enable: true">#{i18n.getText('CMM001_3')}</button>
 				<!-- A1_4 -->
-				<button id="masterLog" tabindex="4" class="group-button-1">#{i18n.getText('CMM001_4')}</button>
+				<button id="masterLog" tabindex="4" class="group-button-1"
+				    data-bind="visible: false">#{i18n.getText('CMM001_4')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">

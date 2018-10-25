@@ -621,11 +621,10 @@ module nts.uk.at.view.kmk010.a {
             premiumExtra60HRates: PremiumExtra60HRateModel[];
 
             constructor() {
-                this.roundingTime = ko.observable(null);
-                this.rounding = ko.observable(1);
+                this.roundingTime = ko.observable(0);
+                this.rounding = ko.observable(0);
                 this.superHolidayOccurrenceUnit = ko.observable(0);
                 this.premiumExtra60HRates = [];
-
             }
 
             updateData(dto: SuperHD60HConMedDto): void {

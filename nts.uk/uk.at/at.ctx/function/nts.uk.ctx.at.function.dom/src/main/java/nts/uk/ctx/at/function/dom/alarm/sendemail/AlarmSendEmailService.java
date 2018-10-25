@@ -68,10 +68,10 @@ public class AlarmSendEmailService implements SendEmailService {
 						.filter(c -> employeeId.equals(c.getEmployeeID())).collect(Collectors.toList());
 				try {
 					// Do send email
-					boolean isError = sendMail(companyID, employeeId, functionID,
+					boolean isSucess = sendMail(companyID, employeeId, functionID,
 							valueExtractAlarmEmpDtos, mailSettingsParamDto.getSubject(),
 							mailSettingsParamDto.getText());
-					if (isError) {
+					if (!isSucess) {
 						errors.add(employeeId);
 					}
 				} catch (SendMailFailedException e) {
@@ -84,32 +84,42 @@ public class AlarmSendEmailService implements SendEmailService {
 		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = new ArrayList<>();
-			Map<String, String> mapCheck = new HashMap<>();
+			Map<String, List<ValueExtractAlarmDto>> mapCheckAlarm = new HashMap<>();
+			List<ValueExtractAlarmDto> listTemp = null;
+			// Get list workplace to send
+			List<String> workplaceIds = new ArrayList<>();
 			for (ValueExtractAlarmDto obj : valueExtractAlarmDtos) {
 				if(managerTagetIds.contains(obj.getEmployeeID())){
-					valueExtractAlarmManagerDtos.add(obj);
+					String workplaceID = obj.getWorkplaceID();
 					// 管理者送信対象のアラーム抽出結果を職場でグループ化する
-					String key = obj.getWorkplaceID()+obj.getEmployeeID();
-					if(!mapCheck.containsKey(key)){
-						mapCheck.put(key, obj.getWorkplaceID());
+					if(!mapCheckAlarm.containsKey(workplaceID)){
+						workplaceIds.add(workplaceID);
+						// New list alarm to send
+						listTemp = new ArrayList<>();
+					}else{
+						listTemp = mapCheckAlarm.get(workplaceID);
 					}
+					listTemp.add(obj);
+					mapCheckAlarm.put(workplaceID, listTemp);
 				}
 			}
-			// Get list workplace to send
-			List<String> workplaceIds = new ArrayList<String>(mapCheck.values());
+			
 			for (String workplaceId : workplaceIds) {
 				// call request list 218 return list employee Id
 				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
-
+				// 抽出結果：ループ中の職場単位のアラーム抽出結果 
+				valueExtractAlarmManagerDtos = mapCheckAlarm.get(workplaceId);
 				if (!CollectionUtil.isEmpty(listEmployeeId)) {
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
+							
+							
 							// Get subject , body mail
-							boolean isError = sendMail(companyID, employeeId, functionID,
+							boolean isSucess = sendMail(companyID, employeeId, functionID,
 									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
 									mailSettingsParamDto.getTextAdmin());
-							if (isError) {
+							if (!isSucess) {
 								errors.add(employeeId);
 							}
 						} catch (SendMailFailedException e) {
@@ -154,11 +164,11 @@ public class AlarmSendEmailService implements SendEmailService {
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
 			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
 			String bodyEmail) throws BusinessException {
-		FileGeneratorContext generatorContext = new FileGeneratorContext();		
 		// call request list 397 return email address
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
 		if (mailDestinationAlarmImport != null) {
+			// Get all mail address
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
 			if (CollectionUtil.isEmpty(emails)) {
 				return true;
@@ -167,27 +177,28 @@ public class AlarmSendEmailService implements SendEmailService {
 					subjectEmail = TextResource.localize("KAL010_300");
 				}
 				// Genarate excel
-				AlarmExportDto alarmExportDto = alarmListGenerator.generate(generatorContext, listDataAlarmExport);
-				// Get all mail address
+				AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport);
+				// Create file attack
+				List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
+				attachedFiles.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
+				
+				// Create mail content
+				MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
+				
 				for (OutGoingMailAlarm outGoingMailAlarm : emails) {
-					List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
-					attachedFiles
-							.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
-					MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
+					// If not email to return false
+					if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
+						return false;
+					}
+					// Do send mail
 					try {
-						if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
-							return true;
-						}
-						else{
-							mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
-						}
-						
+						mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
 					} catch (SendMailFailedException e) {
-						throw  e ;
+						throw e;
 					}
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 }

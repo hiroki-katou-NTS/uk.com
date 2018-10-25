@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.record.dom.application.realitystatus;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -156,7 +154,7 @@ public class RealityStatusService {
 				// Request list 532
 				// imported(申請承認）「上司確認の状況」を取得する
 				List<ApproveRootStatusForEmpImport> listApproval = approvalStatusAdapter
-						.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(emp.getStartDate(), emp.getEndDate()));
+						.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cid, 2);
 				Optional<ApproveRootStatusForEmpImport> approval = listApproval.stream().findFirst();
 				// 承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
 				if (approval.isPresent()
@@ -507,7 +505,7 @@ public class RealityStatusService {
 			// imported（申請承認）「List<日付、状態＞」を取得する
 			// RequestList 532
 			List<ApproveRootStatusForEmpImport> listAppRootStatus = approvalStatusAdapter
-					.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(emp.getStartDate(), emp.getEndDate()));
+					.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cId, 2);
 			Optional<ApproveRootStatusForEmpImport> appRootStatus = listAppRootStatus.stream().findFirst();
 			// 承認ルートの状況
 			if (appRootStatus.isPresent()
@@ -577,7 +575,7 @@ public class RealityStatusService {
 				// Request list 532
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Optional<ApproveRootStatusForEmpImport> appRootStatus = approvalStatusAdapter
-						.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(startDate, endDate)).stream().findFirst();
+						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream().findFirst();
 				if (appRootStatus.isPresent()) {
 					routeStatus = appRootStatus.get();
 				}

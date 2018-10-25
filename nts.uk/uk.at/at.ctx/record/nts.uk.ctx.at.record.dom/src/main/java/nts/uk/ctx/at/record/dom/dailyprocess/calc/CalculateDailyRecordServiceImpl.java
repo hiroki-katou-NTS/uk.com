@@ -352,6 +352,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//休暇加算時間設定
 		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
+		//休暇加算設定が取得できなかった時のエラー
 		if(!holidayAddtionSetting.isPresent()) {
 			throw new BusinessException("Msg_1446");
 		}
@@ -903,6 +904,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//総拘束時間の計算
 		Optional<CalculateOfTotalConstraintTime> optionalCalculateOfTotalConstraintTime = companyCommonSetting.getCalculateOfTotalCons();
 		if(!optionalCalculateOfTotalConstraintTime.isPresent()) {
+			//総拘束時間が取得できない場合のエラー
 			throw new BusinessException("Msg_1447");
 		}
 		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = optionalCalculateOfTotalConstraintTime.get();
@@ -927,7 +929,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		//乖離時間計算用　勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(copyIntegrationOfDaily);
-		
+		//スケジュール側の補正
+		Optional<PredetermineTimeSetForCalc> schePred = Optional.empty();
+		if(scheduleReGetClass.getIntegrationOfDaily().getWorkInformation().getScheduleInfo().getWorkTimeCode()==null) {
+			if(personCommonSetting.getPersonInfo().isPresent() && personCommonSetting.getPersonInfo().get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
+				val getschePredSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, personCommonSetting.getPersonInfo().get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
+				if(getschePredSet.isPresent()) {
+					schePred = Optional.of(PredetermineTimeSetForCalc.convertMastarToCalc(getschePredSet.get()));
+				}
+			}
+		}
 
 		/*時間の計算*/
 		recordReGetClass.setIntegrationOfDaily(
@@ -947,8 +958,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
             				personCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 							:Optional.empty()),
             		recordReGetClass.getLeaveLateSet().isPresent()?recordReGetClass.getLeaveLateSet().get():new DeductLeaveEarly(1, 1),
-            		scheduleReGetClass.getLeaveLateSet().isPresent()?scheduleReGetClass.getLeaveLateSet().get():new DeductLeaveEarly(1, 1)
-
+            		scheduleReGetClass.getLeaveLateSet().isPresent()?scheduleReGetClass.getLeaveLateSet().get():new DeductLeaveEarly(1, 1),
+            		schePred
 					));
 	
 	//  // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
