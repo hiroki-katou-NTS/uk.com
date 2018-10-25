@@ -19,7 +19,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 
 /**
@@ -713,129 +712,143 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		if (fieldParent1 != null && !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent1);
+			buffer.append(parentTblName + "." + fieldParent1);
 		}
 		
 		if (fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent2);
+			buffer.append(parentTblName + "." + fieldParent2);
 		}
 		
 		if (fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent3);
+			buffer.append(parentTblName + "." + fieldParent3);
 		}
 		
 		if (fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent4);
+			buffer.append(parentTblName + "." + fieldParent4);
 		}
 		
 		if (fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent5);
+			buffer.append(parentTblName + "." + fieldParent5);
 		}
 		
 		if (fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent6);
+			buffer.append(parentTblName + "." + fieldParent6);
 		}
 		
 		if (fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent7);
+			buffer.append(parentTblName + "." + fieldParent7);
 		}
 		
 		if (fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent8);
+			buffer.append(parentTblName + "." + fieldParent8);
 		}
 		
 		if (fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent9);
+			buffer.append(parentTblName + "." + fieldParent9);
 		}
 		
 		if (fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
 			buffer.append(prefix);
 			prefix = ",";
-			buffer.append(fieldParent10);
+			buffer.append(parentTblName + "." + fieldParent10);
 		}
 		
 			
 		buffer.append(" FROM " + parentTblName);
 		
+		
+		//build inner joint
+		buffer.append(" INNER JOIN " + tblName + " ON ");
+		prefix = "";
+		if (fieldChild1 != null && !"null".equals(fieldChild1) && !fieldChild1.isEmpty() && fieldParent1 != null
+				&& !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild1 + " = " + parentTblName + "." + fieldParent1);
+		}
+
+		if (fieldChild2 != null && !"null".equals(fieldChild2) && !fieldChild2.isEmpty() && fieldParent2 != null
+				&& !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild2 + " = " + parentTblName + "." + fieldParent2);
+		}
+
+		if (fieldChild3 != null && !"null".equals(fieldChild3) && !fieldChild3.isEmpty() && fieldParent3 != null
+				&& !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild3 + " = " + parentTblName + "." + fieldParent3);
+		}
+
+		if (fieldChild4 != null && !"null".equals(fieldChild4) && !fieldChild4.isEmpty() && fieldParent4 != null
+				&& !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild4 + " = " + parentTblName + "." + fieldParent4);
+		}
+
+		if (fieldChild5 != null && !"null".equals(fieldChild5) && !fieldChild5.isEmpty() && fieldParent5 != null
+				&& !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild5 + " = " + parentTblName + "." + fieldParent5);
+		}
+
+		if (fieldChild6 != null && !"null".equals(fieldChild6) && !fieldChild6.isEmpty() && fieldParent6 != null
+				&& !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild6 + " = " + parentTblName + "." + fieldParent6);
+		}
+
+		if (fieldChild7 != null && !"null".equals(fieldChild7) && !fieldChild7.isEmpty() && fieldParent7 != null
+				&& !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild7 + " = " + parentTblName + "." + fieldParent7);
+		}
+
+		if (fieldChild8 != null && !"null".equals(fieldChild8) && !fieldChild8.isEmpty() && fieldParent8 != null
+				&& !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild8 + " = " + parentTblName + "." + fieldParent8);
+		}
+
+		if (fieldChild9 != null && !"null".equals(fieldChild9) && !fieldChild9.isEmpty() && fieldParent9 != null
+				&& !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild9 + " = " + parentTblName + "." + fieldParent9);
+		}
+
+		if (fieldChild10 != null && !"null".equals(fieldChild10) && !fieldChild10.isEmpty() && fieldParent10 != null
+				&& !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
+			buffer.append(prefix);
+			prefix = " AND ";
+			buffer.append(tblName + "." + fieldChild10 + " = " + parentTblName + "." + fieldParent10);
+		}
+		
 		//where for select
 		buildWherePart(buffer, tableDelData, employeeDeletions, parrams);
 		
-		//build 
-		if (fieldChild1 != null && !"null".equals(fieldChild1) && !fieldChild1.isEmpty() 
-				&& fieldParent1 != null && !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild1 
-				+ " = " + parentTblName + "." + fieldParent1);
-		}
-		
-		if (fieldChild2 != null && !"null".equals(fieldChild2) && !fieldChild2.isEmpty() 
-				&& fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild2 
-				+ " = " + parentTblName + "." + fieldParent2);
-		}
-		
-		if (fieldChild3 != null && !"null".equals(fieldChild3) && !fieldChild3.isEmpty() 
-				&& fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild3 
-				+ " = " + parentTblName + "." + fieldParent3);
-		}
-		
-		if (fieldChild4 != null && !"null".equals(fieldChild4) && !fieldChild4.isEmpty() 
-				&& fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild4 
-				+ " = " + parentTblName + "." + fieldParent4);
-		}
-		
-		if (fieldChild5 != null && !"null".equals(fieldChild5) && !fieldChild5.isEmpty() 
-				&& fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild5 
-				+ " = " + parentTblName + "." + fieldParent5);
-		}
-		
-		if (fieldChild6 != null && !"null".equals(fieldChild6) && !fieldChild6.isEmpty() 
-				&& fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild6 
-				+ " = " + parentTblName + "." + fieldParent6);
-		}
-		
-		if (fieldChild7 != null && !"null".equals(fieldChild7) && !fieldChild7.isEmpty() 
-				&& fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild7 
-				+ " = " + parentTblName + "." + fieldParent7);
-		}
-		
-		if (fieldChild8 != null && !"null".equals(fieldChild8) && !fieldChild8.isEmpty() 
-				&& fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild8 
-				+ " = " + parentTblName + "." + fieldParent8);
-		}
-		
-		if (fieldChild9 != null && !"null".equals(fieldChild9) && !fieldChild9.isEmpty() 
-				&& fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild9 
-				+ " = " + parentTblName + "." + fieldParent9);
-		}
-		
-		if (fieldChild10 != null && !"null".equals(fieldChild10) && !fieldChild10.isEmpty() 
-				&& fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
-			buffer.append(" AND " + tblName + "." + fieldChild10 
-				+ " = " + parentTblName + "." + fieldParent10);
-		}
 		
 		buffer.append(" )");
 	}

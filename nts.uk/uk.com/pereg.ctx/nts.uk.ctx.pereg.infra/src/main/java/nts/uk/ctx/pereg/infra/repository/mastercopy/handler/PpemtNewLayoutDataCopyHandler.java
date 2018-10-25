@@ -142,58 +142,49 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 							.filter(e -> e.ppemtPerInfoCtgPK.perInfoCtgId.equals(i.categoryId))
 							.findFirst().orElse(null);
 
-					if (infoCtgComZero != null) {
-						String categoryID = this.checkCategoryCd(perInfoCtgCurrentCom,
-								infoCtgComZero);
+					String categoryID = infoCtgComZero != null
+							? this.checkCategoryCd(perInfoCtgCurrentCom, infoCtgComZero) : null;
 
-						if (categoryID != null) {
-							PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId,
-									i.ppemtLayoutItemClsPk.dispOrder);
-							PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, categoryID,
-									i.itemType);
-							this.entityManager.persist(item);
+					PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId,
+							i.ppemtLayoutItemClsPk.dispOrder);
+					PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, categoryID, i.itemType);
+					this.entityManager.persist(item);
 
-							List<PpemtLayoutItemClsDf> itemListDfFilter = itemListDf.stream()
-									.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
-									.collect(Collectors.toList());
+					List<PpemtLayoutItemClsDf> itemListDfFilter = itemListDf.stream()
+							.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
+							.collect(Collectors.toList());
 
-							// get data PPEMT_PER_INFO_CTG currentCom
-							List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
-									.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
-									.setParameter("perInfoCtgId", categoryID).getResultList();
+					// get data PPEMT_PER_INFO_CTG currentCom
+					List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
+							.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+							.setParameter("perInfoCtgId", categoryID).getResultList();
 
-							// get data PPEMT_PER_INFO_CTG ZeroCom
-							List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
-									.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
-									.setParameter("perInfoCtgId", i.categoryId).getResultList();
+					// get data PPEMT_PER_INFO_CTG ZeroCom
+					List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
+							.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+							.setParameter("perInfoCtgId", i.categoryId).getResultList();
 
-							for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
-								PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
-										.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId
-												.equals(layoutItem.itemDfID))
-										.findFirst().orElse(null);
+					for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
+						PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
+								.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId
+										.equals(layoutItem.itemDfID))
+								.findFirst().orElse(null);
 
-								if (infoItemZero != null) {
-									String defineID = this.checkItemDfId(perInfoItemCurrentCom,
-											infoItemZero);
+						if (infoItemZero != null) {
+							String defineID = this.checkItemDfId(perInfoItemCurrentCom,
+									infoItemZero);
 
-									if (defineID != null) {
-										PpemtLayoutItemClsDfPk layoutItemPK = new PpemtLayoutItemClsDfPk(
-												layoutId,
-												layoutItem.ppemtLayoutItemClsDfPk.layoutDispOrder,
-												layoutItem.ppemtLayoutItemClsDfPk.dispOrder);
-										PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(
-												layoutItemPK, defineID);
-										this.entityManager.persist(itemDf);
-									}
-								}
+							if (defineID != null) {
+								PpemtLayoutItemClsDfPk layoutItemPK = new PpemtLayoutItemClsDfPk(
+										layoutId, layoutItem.ppemtLayoutItemClsDfPk.layoutDispOrder,
+										layoutItem.ppemtLayoutItemClsDfPk.dispOrder);
+								PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(layoutItemPK,
+										defineID);
+								this.entityManager.persist(itemDf);
 							}
-
 						}
 					}
-
 				}
-
 			});
 			break;
 		case ADD_NEW:
@@ -241,60 +232,52 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 								.filter(e -> e.ppemtPerInfoCtgPK.perInfoCtgId.equals(i.categoryId))
 								.findFirst().orElse(null);
 
-						if (infoCtgComZero != null) {
-							String categoryID = this.checkCategoryCd(perInfoCtgCurrentCom,
-									infoCtgComZero);
+						String categoryID = infoCtgComZero != null
+								? this.checkCategoryCd(perInfoCtgCurrentCom, infoCtgComZero) : null;
 
-							if (categoryID != null) {
-								PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId,
-										i.ppemtLayoutItemClsPk.dispOrder);
-								PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, categoryID,
-										i.itemType);
-								this.entityManager.persist(item);
+						PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId,
+								i.ppemtLayoutItemClsPk.dispOrder);
+						PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, categoryID,
+								i.itemType);
+						this.entityManager.persist(item);
 
-								List<PpemtLayoutItemClsDf> itemListDfFilter = itemListDf.stream()
-										.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
-										.collect(Collectors.toList());
+						List<PpemtLayoutItemClsDf> itemListDfFilter = itemListDf.stream()
+								.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
+								.collect(Collectors.toList());
 
-								// get data PPEMT_PER_INFO_CTG currentCom
-								List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
-										.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
-										.setParameter("perInfoCtgId", categoryID).getResultList();
+						// get data PPEMT_PER_INFO_CTG currentCom
+						List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
+								.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+								.setParameter("perInfoCtgId", categoryID).getResultList();
 
-								// get data PPEMT_PER_INFO_CTG ZeroCom
-								List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
-										.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
-										.setParameter("perInfoCtgId", i.categoryId).getResultList();
+						// get data PPEMT_PER_INFO_CTG ZeroCom
+						List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
+								.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+								.setParameter("perInfoCtgId", i.categoryId).getResultList();
 
-								for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
-									PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
-											.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId
-													.equals(layoutItem.itemDfID))
-											.findFirst().orElse(null);
+						for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
+							PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
+									.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId
+											.equals(layoutItem.itemDfID))
+									.findFirst().orElse(null);
 
-									if (infoItemZero != null) {
-										String defineID = this.checkItemDfId(perInfoItemCurrentCom,
-												infoItemZero);
+							if (infoItemZero != null) {
+								String defineID = this.checkItemDfId(perInfoItemCurrentCom,
+										infoItemZero);
 
-										if (defineID != null) {
-											PpemtLayoutItemClsDfPk layoutItemPK = new PpemtLayoutItemClsDfPk(
-													layoutId,
-													layoutItem.ppemtLayoutItemClsDfPk.layoutDispOrder,
-													layoutItem.ppemtLayoutItemClsDfPk.dispOrder);
-											PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(
-													layoutItemPK, defineID);
-											this.entityManager.persist(itemDf);
-										}
-									}
+								if (defineID != null) {
+									PpemtLayoutItemClsDfPk layoutItemPK = new PpemtLayoutItemClsDfPk(
+											layoutId,
+											layoutItem.ppemtLayoutItemClsDfPk.layoutDispOrder,
+											layoutItem.ppemtLayoutItemClsDfPk.dispOrder);
+									PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(
+											layoutItemPK, defineID);
+									this.entityManager.persist(itemDf);
 								}
-
 							}
 						}
-
 					}
-
 				});
-
 			}
 			break;
 		case DO_NOTHING:

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -21,6 +20,8 @@ public class PeriodByAlarmCategory {
 	GeneralDate startDate;
 	
 	GeneralDate endDate;
+	
+	int period36Agreement;
 	
 	public List<GeneralDate> getListDate() {
 		List<GeneralDate> result = new ArrayList<GeneralDate>();
