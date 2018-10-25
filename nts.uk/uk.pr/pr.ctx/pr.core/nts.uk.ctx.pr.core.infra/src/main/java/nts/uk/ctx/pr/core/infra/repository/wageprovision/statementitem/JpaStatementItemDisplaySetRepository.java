@@ -16,7 +16,8 @@ public class JpaStatementItemDisplaySetRepository extends JpaRepository implemen
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItemDisp f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.statementItemDispPk.cid =:cid AND  f.statementItemDispPk.salaryItemId =:salaryItemId ";
+			+ " WHERE  f.statementItemDispPk.cid =:cid AND  f.statementItemDispPk.categoryAtr =:categoryAtr "
+			+ " AND f.statementItemDispPk.itemNameCd =:itemNameCd";
 
 	@Override
 	public List<StatementItemDisplaySet> getAllSpecItemDispSet() {
@@ -25,9 +26,9 @@ public class JpaStatementItemDisplaySetRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public Optional<StatementItemDisplaySet> getSpecItemDispSetById(String cid, String salaryItemId) {
+	public Optional<StatementItemDisplaySet> getSpecItemDispSetById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementItemDisp.class).setParameter("cid", cid)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd).getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -41,9 +42,9 @@ public class JpaStatementItemDisplaySetRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void remove(String cid, String salaryItemId) {
-		if (this.getSpecItemDispSetById(cid, salaryItemId).isPresent()) {
-			this.commandProxy().remove(QpbmtStatementItemDisp.class, new QpbmtStatementItemDispPk(cid, salaryItemId));
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getSpecItemDispSetById(cid, categoryAtr, itemNameCd).isPresent()) {
+			this.commandProxy().remove(QpbmtStatementItemDisp.class, new QpbmtStatementItemDispPk(cid, categoryAtr, itemNameCd));
 		}
 	}
 }
