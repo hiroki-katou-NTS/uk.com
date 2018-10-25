@@ -242,7 +242,7 @@ module nts.uk.ui.koExtentions {
                 if(!_.isEmpty(errors)){
                     let mesArr = [], mesCodeArr = _.map(errors, (error) => error.errorCode );
                     _.forEach(errors, (error) => {
-                        mesArr.push(error.message);
+                        mesArr.push(error.messageText);
                         mesCodeArr.push(error.errorCode); 
                     });
                     let totalMes = _.join(_.uniq(mesArr), '\n');
