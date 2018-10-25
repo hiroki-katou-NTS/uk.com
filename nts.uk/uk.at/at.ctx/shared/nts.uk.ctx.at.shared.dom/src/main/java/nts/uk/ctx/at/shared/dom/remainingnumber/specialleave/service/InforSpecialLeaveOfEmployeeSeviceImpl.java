@@ -157,9 +157,9 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		else {
 			grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
 		}
+		GrantDaysInforByDates outputData = new GrantDaysInforByDates(grantDate,new ArrayList<>());
 		//パラメータ「期間」に一致する付与日数を生成する
 		for(GeneralDate loopDate = grantDate; loopDate.beforeOrEquals(period.end());) {
-			nextTime = loopDate;
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
 			if(period.start().beforeOrEquals(loopDate)
 					&& loopDate.beforeOrEquals(period.end())) {//「期間．開始日」≦「比較年月日」≦「期間．終了日」
@@ -179,8 +179,10 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 				}
 			}
 			loopDate = loopDate.addYears(interval);
+			outputData.setGrantDate(loopDate);
 		}
-		return new GrantDaysInforByDates(nextTime, lstOutput);
+		outputData.setLstGrantDaysInfor(lstOutput);
+		return outputData;
 	}
 	@Override
 	public ErrorFlg checkUse(String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday) {
@@ -298,7 +300,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		if(elapseYear.isEmpty()) {
 			return new GrantDaysInforByDates(outputDate, lstOutput);
 		}
-		for (ElapseYear yearData : elapseYear) {//TODO xem lai
+		for (ElapseYear yearData : elapseYear) {
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
 			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
@@ -343,8 +345,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			SpecialVacationDeadline speDeadline = specialHoliday.getGrantPeriodic().getExpirationDate();
 			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
 				GeneralDate dealineDate = x.getYmd().addYears(speDeadline.getYears().v());
-				dealineDate.addMonths(speDeadline.getMonths().v());
-				dealineDate.addDays(-1);
+				dealineDate = dealineDate.addMonths(speDeadline.getMonths().v());
+				dealineDate = dealineDate.addDays(-1);
 				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(dealineDate));
 				lstOutput.add(output);
 			});	

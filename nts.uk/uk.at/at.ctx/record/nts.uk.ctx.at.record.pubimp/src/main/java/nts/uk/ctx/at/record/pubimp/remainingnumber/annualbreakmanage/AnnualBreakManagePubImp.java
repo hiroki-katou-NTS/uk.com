@@ -59,7 +59,8 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
 
-	AnnLeaGrantRemDataRepository grantDataRep;
+	@Inject
+	private AnnLeaGrantRemDataRepository grantDataRep;
 	
 	@Override
 	public List<AnnualBreakManageExport> getEmployeeId(List<String> employeeId, GeneralDate startDate,

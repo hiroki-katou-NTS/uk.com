@@ -46,12 +46,31 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	@Override
 	public void insert(ProcessExecutionLogHistory domain) {
 		this.commandProxy().insert(KfnmtProcessExecutionLogHistory.toEntity(domain));
+		this.getEntityManager().flush();
 	}
 	
 	@Override
 	public void update(ProcessExecutionLogHistory domain) {
-		// TODO Auto-generated method stub
+		KfnmtProcessExecutionLogHistory newEntity = KfnmtProcessExecutionLogHistory.toEntity(domain);
 		
+		KfnmtProcessExecutionLogHistory updateEntity = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
+		.setParameter("companyId", domain.getCompanyId())
+		.setParameter("execItemCd", domain.getExecItemCd())
+		.setParameter("execId", domain.getExecId()).getSingle().get();
+		updateEntity.overallStatus = newEntity.overallStatus;
+		updateEntity.errorDetail = newEntity.errorDetail;
+		updateEntity.prevExecDateTime = newEntity.prevExecDateTime;
+		updateEntity.schCreateStart = newEntity.schCreateStart;
+		updateEntity.schCreateEnd = newEntity.schCreateEnd;
+		updateEntity.dailyCreateStart = newEntity.dailyCreateStart;
+		updateEntity.dailyCreateEnd = newEntity.dailyCreateEnd;
+		updateEntity.dailyCalcStart = newEntity.dailyCalcStart;
+		updateEntity.dailyCalcEnd = newEntity.dailyCalcEnd;
+		updateEntity.reflectApprovalResultStart = newEntity.reflectApprovalResultStart;
+		updateEntity.reflectApprovalResultEnd = newEntity.reflectApprovalResultEnd;
+		updateEntity.taskLogList = newEntity.taskLogList;
+		this.commandProxy().update(updateEntity);		
+		this.getEntityManager().flush();
 	}
 	
 	@Override

@@ -82,7 +82,7 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 	
 	@OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL)
     @JoinTable(name = "KFNMT_EXEC_TASK_LOG")
-    private List<KfnmtExecutionTaskLog> taskLogList;
+    public List<KfnmtExecutionTaskLog> taskLogList;
 	
 	@Override
 	protected Object getKey() {
@@ -152,6 +152,6 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 				dailyCalcEnd,
 				reflectApprovalResultStart,
 				reflectApprovalResultEnd,
-				null);
+				KfnmtExecutionTaskLog.toEntity(domain.getCompanyId(), domain.getExecItemCd().v(), domain.getExecId(), domain.getTaskLogList()));
 	}
 }

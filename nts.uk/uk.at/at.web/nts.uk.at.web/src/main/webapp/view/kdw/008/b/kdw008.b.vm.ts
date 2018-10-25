@@ -244,6 +244,7 @@ module nts.uk.at.view.kdw008.b {
                 let self = this,
                     dfd = $.Deferred();
                 service.getDailyDetail(businessTypeCode, self.selectedSheetNo()).done(data => {
+                    $("#swap-list2-grid2").igGridSelection("clearSelection") ;
                     self.businessTypeFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
@@ -343,6 +344,7 @@ module nts.uk.at.view.kdw008.b {
 
             getMonthRightDetail(sheetNo: string) {
                 let self = this;
+                $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                 self.selectedSheetName(null);
                 self.monthlyCorrected.removeAll();
                 self.monthlyCorrectedDataSource.removeAll();

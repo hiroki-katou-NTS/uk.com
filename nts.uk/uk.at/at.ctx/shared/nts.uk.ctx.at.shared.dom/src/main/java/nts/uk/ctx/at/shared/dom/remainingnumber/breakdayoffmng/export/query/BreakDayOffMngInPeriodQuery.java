@@ -87,7 +87,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param inputParam
 	 * @return
 	 */
-	List<BreakDayOffDetail> lstInterimBreakDetail(BreakDayOffRemainMngParam inputParam);
+	//List<BreakDayOffDetail> lstInterimBreakDetail(BreakDayOffRemainMngParam inputParam);
 	/**
 	 * 4-1.代休と紐付けをしない休出を取得する
 	 * @param breakMng
