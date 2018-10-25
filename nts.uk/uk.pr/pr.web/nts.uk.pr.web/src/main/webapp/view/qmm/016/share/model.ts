@@ -1,5 +1,7 @@
 module nts.uk.pr.view.qmm016.share.model {
 
+    import getText = nts.uk.resource.getText;
+
     export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1
@@ -74,51 +76,74 @@ module nts.uk.pr.view.qmm016.share.model {
         // Item
         elementSettingItem1: KnockoutObservableArray<ItemModel> = ko.observableArray(getElementItemModel().splice(0, 3));
         elementSettingItem2: KnockoutObservableArray<ItemModel> = ko.observableArray(getElementItemModel().splice(3, 5));
+        // display item
         imagePath: KnockoutObservable<string> = ko.observable(null);
+        elementSettingDisplayText: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IWageTable) {
             let self = this;
             this.cid(params ? params.cid : null);
             this.wageTableCode(params ? params.wageTableCode : null);
             this.wageTableName(params ? params.wageTableName : null);
             this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
-            this.elementSetting(params ? params.elementSetting : null);
+            this.elementSetting(params ? params.elementSetting : 0);
             this.remarkInformation(params ? params.remarkInformation : null);
             this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
             this.elementSetting.subscribe(newValue => {
                 self.changeImagePath(newValue);
             });
-            self.changeImagePath(params ? params.elementSetting : null);
+            self.changeImagePath(self.elementSetting());
         }
         changeImagePath (elementSetting: number) {
             let self = this;
-            let imgName = "";
+            let imgName = "", elementSettingDisplayText = "";
             switch (elementSetting) {
-                case ELEMENT_SETTING.FIRST_DIMENSION: {imgName = "QMM017_1.png"; break;}
-                case ELEMENT_SETTING.SECOND_DIMENSION: {imgName = "QMM017_2.png"; break;}
-                case ELEMENT_SETTING.THIRD_DIMENSION: {imgName = "QMM017_3.png"; break;}
-                case ELEMENT_SETTING.QUALIFICATION: {imgName = "QMM017_4.png"; break;}
-                case ELEMENT_SETTING.FINE_WORK: {imgName = "QMM017_5.png"; break;}
+                case ELEMENT_SETTING.FIRST_DIMENSION: {
+                    imgName = "QMM016_1.png";
+                    elementSettingDisplayText = getText('QMM016_69');
+                    break;
+                }
+                case ELEMENT_SETTING.SECOND_DIMENSION: {
+                    imgName = "QMM016_2.png";
+                    elementSettingDisplayText = getText('QMM016_70');
+                    break;
+                }
+                case ELEMENT_SETTING.THIRD_DIMENSION: {
+                    imgName = "QMM016_3.png";
+                    elementSettingDisplayText = getText('QMM016_71');
+                    break;
+                }
+                case ELEMENT_SETTING.QUALIFICATION: {
+                    imgName = "QMM016_4.png";
+                    elementSettingDisplayText = getText('QMM016_72');
+                    break;
+                }
+                case ELEMENT_SETTING.FINE_WORK: {
+                    imgName = "QMM016_5.png";
+                    elementSettingDisplayText = getText('QMM016_73');
+                    break;
+                }
             }
             if (imgName) self.imagePath("../resource/" + imgName);
             else self.imagePath("");
+            self.elementSettingDisplayText(elementSettingDisplayText);
         }
     }
 
     // 要素情報
     export interface IElementInformation{
-        firstDimensionElement: IElementAttribute,
-        secondDimensionElement: IElementAttribute,
-        thirdDimensionElement: IElementAttribute,
+        oneDimensionElement: IElementAttribute,
+        twoDimensionElement: IElementAttribute,
+        threeDimensionElement: IElementAttribute,
     }
     // 要素情報
     export class ElementInformation{
-        firstDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        secondDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        thirdDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
+        oneDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
+        twoDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
+        threeDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
         constructor (params: IElementInformation) {
-            this.firstDimensionElement(new ElementAttribute(params ? params.firstDimensionElement: null));
-            this.secondDimensionElement(new ElementAttribute(params ? params.secondDimensionElement: null));
-            this.thirdDimensionElement(new ElementAttribute(params ? params.thirdDimensionElement: null));
+            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionElement: null));
+            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionElement: null));
+            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionElement: null));
         }
     }
 
