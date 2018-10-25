@@ -434,6 +434,21 @@ module nts.uk.pr.view.qmm012.b {
                         command.timeItemSet.alarmLoRangeValTime = null;
                     }
 
+                    // clear rangeSet of attend_item value if other mode
+                    if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
+                        if((command.timeItemSet.timeCountAtr == 0) || (command.timeItemSet.timeCountAtr == '0')) {
+                            command.timeItemSet.errorUpRangeValNum = null;
+                            command.timeItemSet.errorLoRangeValNum = null;
+                            command.timeItemSet.alarmUpRangeValNum = null;
+                            command.timeItemSet.alarmLoRangeValNum = null;
+                        } else {
+                            command.timeItemSet.errorUpRangeValTime = null;
+                            command.timeItemSet.errorLoRangeValTime = null;
+                            command.timeItemSet.alarmUpRangeValTime = null;
+                            command.timeItemSet.alarmLoRangeValTime = null;
+                        }
+                    }
+
                     // Optional fields: set null value if isEmpty
                     if (_.isEmpty(command.paymentItemSet.note)) {
                         command.paymentItemSet.note = null;
