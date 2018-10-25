@@ -68,10 +68,10 @@ public class AlarmSendEmailService implements SendEmailService {
 						.filter(c -> employeeId.equals(c.getEmployeeID())).collect(Collectors.toList());
 				try {
 					// Do send email
-					boolean isError = sendMail(companyID, employeeId, functionID,
+					boolean isSucess = sendMail(companyID, employeeId, functionID,
 							valueExtractAlarmEmpDtos, mailSettingsParamDto.getSubject(),
 							mailSettingsParamDto.getText());
-					if (isError) {
+					if (!isSucess) {
 						errors.add(employeeId);
 					}
 				} catch (SendMailFailedException e) {
@@ -116,10 +116,10 @@ public class AlarmSendEmailService implements SendEmailService {
 							
 							
 							// Get subject , body mail
-							boolean isError = sendMail(companyID, employeeId, functionID,
+							boolean isSucess = sendMail(companyID, employeeId, functionID,
 									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
 									mailSettingsParamDto.getTextAdmin());
-							if (isError) {
+							if (!isSucess) {
 								errors.add(employeeId);
 							}
 						} catch (SendMailFailedException e) {
@@ -168,6 +168,7 @@ public class AlarmSendEmailService implements SendEmailService {
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
 		if (mailDestinationAlarmImport != null) {
+			// Get all mail address
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
 			if (CollectionUtil.isEmpty(emails)) {
 				return true;
@@ -177,26 +178,27 @@ public class AlarmSendEmailService implements SendEmailService {
 				}
 				// Genarate excel
 				AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport);
-				// Get all mail address
+				// Create file attack
+				List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
+				attachedFiles.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
+				
+				// Create mail content
+				MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
+				
 				for (OutGoingMailAlarm outGoingMailAlarm : emails) {
-					List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
-					attachedFiles
-							.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
-					MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
+					// If not email to return false
+					if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
+						return false;
+					}
+					// Do send mail
 					try {
-						if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
-							return true;
-						}
-						else{
-							mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
-						}
-						
+						mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
 					} catch (SendMailFailedException e) {
-						throw  e ;
+						throw e;
 					}
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 }
