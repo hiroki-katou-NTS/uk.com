@@ -23,7 +23,7 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 
 		StoredProcedureQuery stQuery = this.getEntityManager().createNamedStoredProcedureQuery("SSPR_DAIKYUZAN_PRC");
 
-		stQuery.setParameter("CId", comId).setParameter("SId", workInfo.getEmployeeId())
+		stQuery.setParameter("CID", comId).setParameter("SID", workInfo.getEmployeeId())
 				.setParameter("YMD", Date.valueOf(workInfo.getYmd().localDate()))
 				.setParameter("WorkTypeCode", workInfo.getRecordInfo().getWorkTypeCode().v())
 				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode().v())
