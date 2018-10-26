@@ -1276,11 +1276,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		List<EmpCondition> empCondition = companyCommonSetting.getEmpCondition();
 		//項目選択による計算時に必要なので取得
 		converter.setData(integrationOfDaily); 
-			
-		//任意項目の計算
-		AnyItemValueOfDaily result = AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
-				empCondition, Optional.of(converter),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
-		
 		
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId().equals(employeeId)
@@ -1288,11 +1283,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		        .map(editState -> editState.getAttendanceItemId())
 		        .distinct()
 		        .collect(Collectors.toList());
+		List<ItemValue> itemValueList = new ArrayList<>();
+		if(!attendanceItemIdList.isEmpty()) {
+			itemValueList = converter.convert(attendanceItemIdList);  
+		}
+			
+		//任意項目の計算
+		AnyItemValueOfDaily.caluculationAnyItem(companyId, employeeId, targetDate, optionalItems, formulaList,
+				empCondition, Optional.of(converter),bsEmploymentHistOpt,integrationOfDaily.getAnyItemValue());
 
 		IntegrationOfDaily calcResultIntegrationOfDaily = integrationOfDaily;  
-		if(!attendanceItemIdList.isEmpty()) {
-			List<ItemValue> itemValueList = converter.convert(attendanceItemIdList);  
-			converter.withAnyItems(result); 
+		if(!itemValueList.isEmpty()) {
+//			List<ItemValue> itemValueList = converter.convert(attendanceItemIdList);  
+//			converter.withAnyItems(result); 
 			converter.merge(itemValueList);
 			//手修正された項目の値を計算前に戻す   
 			calcResultIntegrationOfDaily.setAnyItemValue(converter.anyItems());
