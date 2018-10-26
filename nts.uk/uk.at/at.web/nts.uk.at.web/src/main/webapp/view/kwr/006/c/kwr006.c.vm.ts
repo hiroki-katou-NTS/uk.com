@@ -134,6 +134,11 @@ module nts.uk.at.view.kwr006.c {
                                 value.code = self.mapIdCodeAtd[value.id];
                             })
                             const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.id));
+                            var sortArr = _.map(KWR006DOutput.lstAtdChoose, 'itemDaily');
+                            chosen = _.sortBy(chosen, function(item) {
+                                return sortArr.indexOf(item.id)
+                            });
+                            
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
                                 self.currentCodeListSwap(chosen);
