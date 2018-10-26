@@ -1,10 +1,8 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.speclayout.itemrangeset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.RangeValueEnum;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.*;
+import nts.arc.layer.dom.AggregateRoot;
 
 import java.math.BigDecimal;
 
