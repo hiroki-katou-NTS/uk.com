@@ -43,7 +43,7 @@ public class InitialDisplayRegisterProcessingFinder {
 		List<SetDaySupportDto> setDaySupportDto = new ArrayList<SetDaySupportDto>();
 		List<ProcessInformationDto> informationDto = new ArrayList<ProcessInformationDto>();
 		List<CurrProcessDateDto> currProcessDateDto = new ArrayList<CurrProcessDateDto>();
-		List<EmpCdNameImport> employeeList = syEmploymentAdapter.findAll(cid);
+		List<EmpCdNameImport> employeeList = null;
 
 		List<EmpTiedProYearDto> empTiedProYearDto = new ArrayList<EmpTiedProYearDto>();
 

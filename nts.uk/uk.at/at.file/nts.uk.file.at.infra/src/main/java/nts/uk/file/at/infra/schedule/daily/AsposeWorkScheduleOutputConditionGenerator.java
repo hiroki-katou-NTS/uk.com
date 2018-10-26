@@ -382,6 +382,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				hideFooter(sheet);
 			}
 			
+			alignTopCotent(sheet);
+			
 			// Rename sheet
 			sheet.setName(WorkScheOutputConstants.SHEET_NAME_MONTHLY);
 			
@@ -2907,6 +2909,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         }
         return sortedMap;
     }
+	
+	private void alignTopCotent(Worksheet sheet) {
+		PageSetup pageSetup = sheet.getPageSetup();
+		pageSetup.setCenterHorizontally(true);
+		pageSetup.setCenterVertically(false);
+	}
 	
 	/**
 	 * Gets the remark content.

@@ -21,9 +21,9 @@ public class ValidityPeriodAndCycleSetWebService {
 	private RegisterValidityPeriodAndCycleSetCommandHandler commandHandler;
 
 	@POST
-	@Path("getValidityPeriodAndCycleSet/{salaryItemId}")
-	public ValidityPeriodAndCycleSetDto getValidityPeriodAndCycleSet(@PathParam("salaryItemId") String salaryItemId) {
-		return this.validityPeriodAndCycleSetFinder.getAllSetValidityPeriodCycle(salaryItemId);
+	@Path("getValidityPeriodAndCycleSet/{categoryAtr}/{itemNameCd}")
+	public ValidityPeriodAndCycleSetDto getValidityPeriodAndCycleSet(@PathParam("categoryAtr") String categoryAtr, @PathParam("itemNameCd") String itemNameCd) {
+		return this.validityPeriodAndCycleSetFinder.getAllSetValidityPeriodCycle(Integer.valueOf(categoryAtr).intValue(), itemNameCd);
 	}
 
 	@POST

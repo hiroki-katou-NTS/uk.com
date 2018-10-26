@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWo
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
@@ -80,6 +81,9 @@ public class ApprovalStatusFinder {
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
     
+	@Inject
+	private ApprovalStatusService approvalStatusSv;
+	
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -276,7 +280,30 @@ public class ApprovalStatusFinder {
 		return appSttService.getAppSttSendingUnapprovedMail(listAppSttApp);
 
 	}
+	/**
+	 * @author hoatt
+	 * KAF018 - E
+	 * 承認状況未確認メール送信
+	 */
+	public boolean checkSendUnConfMail(List<UnApprovalSendMail> listWkp) {
+		//hoatt - 2018.10.24
+//		2018/10/24　EA2864
+//		#102263
+		// アルゴリズム「承認状況メール本文取得」を実行する
+		//input： ・メール種類　＝　日別未確認(本人)
+		ApprovalStatusMailTemp domain = approvalStatusSv.getApprovalStatusMailTemp(ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.value);
+		//対象が存在しない場合
+		if(domain == null){
+			//メッセージ（#Msg_1458）を表示する
+			throw new BusinessException("Msg_1458");
+		}
+		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
+		if (listWkp.stream().filter(x -> x.isChecked()).count() == 0) {
+			throw new BusinessException("Msg_794");
+		}
+		return false;
 
+	}
 	/**
 	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
 	 */
