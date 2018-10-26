@@ -308,10 +308,32 @@
 	<!--RIGHT CONTENT -->
 	<div class="right-contents">
 		<div class="panel panel-gray-bg panel-frame kaf009-panel">
-			<label>#{i18n.getText('KAF009_30')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_31')}
-				:</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_32')} :</label> <BR />
-			<label>#{i18n.getText('KAF009_33')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_34')}
-				:</label> <BR /> <label>#{i18n.getText('KAF009_35')} :</label>
+			<div>
+				<label>#{i18n.getText('KAF009_30')} :</label>
+			</div>
+			<BR /> 
+			<div>
+				<label>#{i18n.getText('KAF009_31')}: </label>
+				<label data-bind="text: realTimeDate"></label>
+			</div>
+			<BR /> 
+			<div>
+				<label>#{i18n.getText('KAF009_32')} :</label>
+				<label data-bind="text: realTimeWorkType"></label> 
+			</div>
+			<div>
+				<label>#{i18n.getText('KAF009_33')} :</label>
+				<label data-bind="text: realTimeWorkTime"></label> 
+			</div>
+			<BR /> 
+			<div>
+				<label>#{i18n.getText('KAF009_34')} :</label>
+				<label data-bind="text: realTimeHour1"></label> 
+			</div>
+			<div>
+				<label>#{i18n.getText('KAF009_35')} :</label>
+				<label data-bind="text: realTimeHour2"></label>
+			</div>
 		</div>
 	</div>
 </div>

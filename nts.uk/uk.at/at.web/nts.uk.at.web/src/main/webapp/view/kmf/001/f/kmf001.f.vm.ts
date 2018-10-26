@@ -67,7 +67,7 @@ module nts.uk.pr.view.kmf001.f {
             enableDigestiveUnit: KnockoutObservable<boolean>;
             //for list employment
             alreadySettingList: KnockoutObservableArray<any>;
-            listComponentOption: KnockoutObservable<any>;
+            listComponentOption: KnockoutObservable<ComponentOption>;
             
             firstLoad: KnockoutObservable<boolean>;
             employmentVisible: KnockoutObservable<boolean>;
@@ -259,15 +259,15 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 //for list em
-                this.alreadySettingList = ko.observableArray([]);
-                this.listComponentOption = {
+                self.alreadySettingList = ko.observableArray([]);
+                self.listComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: this.emSelectedCode,
+                    selectedCode: self.emSelectedCode,
                     isDialog: false,
-                    alreadySettingList: this.alreadySettingList
+                    alreadySettingList: self.alreadySettingList
                 };
                 self.firstLoad = ko.observable(true);
                 self.employmentVisible = ko.observable(self.compenManage() == 1);
@@ -708,13 +708,9 @@ module nts.uk.pr.view.kmf001.f {
                 nts.uk.ui.block.grayout();
                 
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.loadEmploymentList().done(() => {
-                        //reload list employment
-                        $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
-                            self.loadEmploymentSetting(self.emSelectedCode());
-                            self.checkDeleteAvailability();
-                        });
+                    self.alreadySettingList.push({ "code": self.collectEmploymentData().employmentCode, "isAlreadySetting": true });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.checkDeleteAvailability();
                     });
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -726,13 +722,11 @@ module nts.uk.pr.view.kmf001.f {
                 var self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     service.deleteEmploymentSetting(self.collectEmploymentData()).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        self.loadEmploymentList().done(() => {
-                            //reload list employment
-                            $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
-                                self.loadEmploymentSetting(self.emSelectedCode());
-                                self.checkDeleteAvailability();
-                            });
+                        self.loadEmploymentSetting(self.emSelectedCode());
+                        // Remove item from setting list (un-tick)
+                        self.alreadySettingList.remove(function(item){ return item.code == self.emSelectedCode()});
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            self.checkDeleteAvailability();
                         });
                     });
                 });

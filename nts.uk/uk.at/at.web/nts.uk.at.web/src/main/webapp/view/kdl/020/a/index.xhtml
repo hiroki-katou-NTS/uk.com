@@ -18,7 +18,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 1080 , height: 700};</script>
+			<script>var dialogSize = { width: 1080 , height: 560};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
@@ -30,7 +30,7 @@
 				</div>
 				<div id="content-right">
 					<div id="content-right_top">
-						<div class="div_line">
+						<div style="margin-top: 0px;" class="div_line">
 							<div id="employeeInfo" class="div_line">
 								<!-- A3_1 -->
 								<label data-bind="text:selectedCode"> </label>
@@ -40,7 +40,7 @@
 							</div>
 
 						</div>
-						<div class="div_line" style="margin-top: 18px">
+						<div class="div_line" style="margin-top: 5px">
 							<!-- A4 -->
 							<table id="holiday-info_table">
 								<colgroup>
@@ -90,7 +90,7 @@
 								</div>
 								<!-- A5_1_2-->
 								<div style="margin-left: 20px;">
-									<label data-bind="text:numberOfRemainGrantPre"></label>
+									<label data-bind="text:numberOfRemainGrant"></label>
 									<!-- A5_1_3 -->
 									<label>#{i18n.getText('KDL020_17')}</label>
 								</div>
@@ -104,7 +104,7 @@
 								<!-- A5_2_2 -->
 								<div style="margin-left: 20px;">
 									<label
-										data-bind="text:$parent.genTime(timeAnnualLeaveWithMinusGrantPre())">
+										data-bind="text:$parent.genTime(timeAnnualLeaveWithMinusGrant())">
 									</label>
 								</div>
 							</div>

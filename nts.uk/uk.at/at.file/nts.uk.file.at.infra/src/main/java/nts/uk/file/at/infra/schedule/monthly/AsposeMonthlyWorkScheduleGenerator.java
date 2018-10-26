@@ -52,6 +52,8 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisp
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
@@ -86,7 +88,6 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
 import nts.uk.file.at.app.export.monthlyschedule.DetailedMonthlyPerformanceReportData;
-import nts.uk.file.at.app.export.monthlyschedule.MonthlyAttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleCondition;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleGenerator;
@@ -109,6 +110,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The company repository. */
 	@Inject
 	private CompanyRepository companyRepository;
+
+	@Inject
+	private AttendanceItemValueService  attendanceItemValueService;
 	
 	/** The workplace adapter. */
 	@Inject
@@ -141,10 +145,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The output item repo. */
 	@Inject
 	private OutputItemMonthlyWorkScheduleRepository outputItemRepo;
-	
-	/** The monthly record adapter. */
-	@Inject
-	private MonthlyAttendanceResultImportAdapter monthlyRecordAdapter;
 	
 	/** The company monthly item service. */
 	@Inject
@@ -643,16 +643,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (outputItem.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
 			listAttendanceId.add(outputItem.getRemarkInputNo().value + 1283);
 		}
-		
-		Map<String, List<MonthlyRecordValuesExport>> mapMonthlyRecordValueExport = monthlyRecordAdapter.algorithm(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
-		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = new ArrayList<>();
-		mapMonthlyRecordValueExport.entrySet().forEach(values -> {
-			lstMonthlyRecordValueExport.addAll(values.getValue().stream().map(x -> {
-				x.employeeId = values.getKey();
-				return x;
-			}).collect(Collectors.toList()));
-		});
-		
+
+		List<MonthlyAttendanceItemValueResult> itemValues = attendanceItemValueService.getMonthlyValueOf(
+				query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
+		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = itemValues.stream()
+				.map(item -> new MonthlyRecordValuesExport(item.getYearMonth(), item.getClosureId(),
+						new ClosureDate(item.getClouseDate(), item.isLastDayOfMonth()), item.getAttendanceItems(),
+						item.getEmployeeId()))
+				.collect(Collectors.toList());
+
 		queryData.setLstAttendanceResultImport(lstMonthlyRecordValueExport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data

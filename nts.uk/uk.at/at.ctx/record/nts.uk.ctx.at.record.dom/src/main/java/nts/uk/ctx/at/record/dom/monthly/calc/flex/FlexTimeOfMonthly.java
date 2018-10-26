@@ -876,6 +876,10 @@ public class FlexTimeOfMonthly {
 					// 「フレックス時間」と「休暇加算時間」を比較する
 					if (this.flexTime.getFlexTime().getTime().greaterThan(vacationAddTime.v())){
 						
+						// 「休暇加算時間」を「法定内フレックス時間」に入れる
+						this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(
+								this.flexTime.getLegalFlexTime().v() + vacationAddTime.v()));
+						
 						// 「フレックス時間（休暇加算前）」を求める
 						int beforeAddVacation = this.flexTime.getFlexTime().getTime().v() - vacationAddTime.v();
 						

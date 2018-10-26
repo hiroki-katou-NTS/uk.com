@@ -85,7 +85,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 					 getType(result, "TARGET"), 
 					 getType(result, "NONTARGET"), 
 					 true, new DisplayMessage(result.get(0).get("MESSAGE_DISPLAY").toString()), 
-					 new ContinuousVacationDays(Integer.parseInt(result.get(0).get("CONTINUOUS_DAYS").toString())))); 
+					 new ContinuousVacationDays((int) result.get(0).get("CONTINUOUS_DAYS")))); 
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

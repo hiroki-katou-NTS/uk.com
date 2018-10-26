@@ -180,7 +180,7 @@ module nts.uk.ui {
                     //                    widget.draggable("option","containment",false);
                     
 					if (autoResize) {
-						$(window.top).on('resize', evt => this.resizeDialog(evt.target, this.$dialog));
+						window.addEventListener('resize', evt => this.resizeDialog(evt.target, this.$dialog));
 					}
                     
                     

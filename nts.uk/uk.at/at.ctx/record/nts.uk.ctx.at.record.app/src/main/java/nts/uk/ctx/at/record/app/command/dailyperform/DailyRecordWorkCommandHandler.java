@@ -63,7 +63,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
@@ -243,9 +242,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private EmployeeDailyPerErrorRepository employeeErrorRepo;
 
 	@Inject
-	private DailyRecordWorkFinder finder;
-
-	@Inject
 	private CheckPairDeviationReason checkPairDeviationReason;
 
 	@Inject
@@ -272,7 +268,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private OptionalItemRepository optionalMasterRepo;
 
-	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
@@ -319,7 +315,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handler(List<DailyRecordWorkCommand> commands,
 			boolean isUpdate) {
-		registerNotCalcDomain(commands, isUpdate);
 
 		List<IntegrationOfDaily> calced = calcIfNeed(commands);
 
@@ -328,7 +323,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if (!items.isEmpty()) {
 			return items;
 		}
-		updateDomainAfterCalc(calced, null);
+		registerNotCalcDomain(commands, isUpdate);
+		updateDomainAfterCalcAndRunStored(calced, null);
 
 		registerErrorWhenCalc(toMapParam(commands),
 				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
@@ -362,11 +358,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		}
 		// TODO update data
 		registerNotCalcDomain(commandNewAfter, isUpdate);
-		List<IntegrationOfDaily> lastDt = updateDomainAfterCalc(domainDailyNew, correctResult);
+		List<IntegrationOfDaily> lastDt = updateDomainAfterCalcAndRunStored(domainDailyNew, correctResult);
 
 		registerErrorWhenCalc(domainDailyNew);
 
-		updateMonthAfterProcessDaily.updateMonth(commandNewAfter, domainDailyNew,
+		updateMonthAfterProcessDaily.updateMonth(commandNewAfter, lastDt,
 				month == null ? Optional.empty() : month.getDomainMonth(), month);
 
 		System.out.print("time insert: " + (System.currentTimeMillis() - time));
@@ -379,19 +375,19 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private <T extends DailyWorkCommonCommand> RCDailyCorrectionResult handlerResWithNoEvent(
 			List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
 			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
-		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>();
+		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
 		List<IntegrationOfMonthly> lstMonthDomain = new ArrayList<>();
 		if (month == null || !month.getDomainMonth().isPresent()) {
 			// remove domain error
 			employeeErrorRepo.removeParam(toMapParam(commandNew));
-			
-			// merge item is edited into old domain
-			domainDailyNew = convertToDomain(commandNew);
 
 			// caculator
 			domainDailyNew = calcService.calculate(domainDailyNew);
 
 		}
+		
+		domainDailyNew = registerCalcedService.runStoredProcess(domainDailyNew);
+		
 		if (mode == 0 && month != null && month.getNeedCallCalc() != null && month.getNeedCallCalc()) {
 			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew,
 					(month == null || !month.getDomainMonth().isPresent()) ? domainDailyNew : Collections.emptyList(),
@@ -409,7 +405,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		// update data
 		long time = System.currentTimeMillis();
 		registerNotCalcDomain(commandNew, isUpdate);
-		List<IntegrationOfDaily> lastDt =  updateDomainAfterCalc(domainDailyNew, null);
+		List<IntegrationOfDaily> lastDt =  updateDomainAfterCalc(domainDailyNew);
 		
 //		lstMonthDomain.forEach(x ->{
 		if (month != null && month.getEmployeeId() != null) {
@@ -435,13 +431,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 				.build(() -> {
 					Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 							.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
-
-//					Map<String, List<GeneralDate>> mapSidDate = commandOld.stream()
-//							.collect(Collectors.groupingBy(x -> x.getEmployeeId(),
-//									Collectors.collectingAndThen(Collectors.toList(),
-//											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
 					
-//					List<DailyRecordDto> dtos = finder.find(mapSidDate);
 					List<DailyRecordDto> dtos = lastDt.stream().map(c -> DailyRecordDto.from(c)).collect(Collectors.toList());
 
 					dtos.stream().forEach(o -> {
@@ -467,12 +457,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 		registerNotCalcDomain(commandNew, isUpdate);
 
-		List<IntegrationOfDaily> lastDt = updateDomainAfterCalc(domainDailyNew, null);
+		List<IntegrationOfDaily> lastDt = updateDomainAfterCalcAndRunStored(domainDailyNew, null);
 
 		registerErrorWhenCalc(lstError);
 
 		if (mode == 0 && month.getNeedCallCalc()) {
-			List<IntegrationOfMonthly> lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
+			List<IntegrationOfMonthly> lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, lastDt,
 					month == null ? Optional.empty() : month.getDomainMonth(), month);
 			
 			lstMonthDomain.forEach(x -> {
@@ -488,7 +478,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		excuteLog(lastDt, lstAttendanceItem, commandOld, commandNew, dailyItems);
 	}
 
-	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalc(List<IntegrationOfDaily> calced, CorrectResult correctResult) {
+	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
+		
+		return registerCalcedService.saveOnly(calced);
+	}
+	
+	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalcAndRunStored(List<IntegrationOfDaily> calced, CorrectResult correctResult) {
 		if(correctResult != null){
 			return registerCalcedService.addAndUpdate(calced, correctResult.getWorkType());
 		}

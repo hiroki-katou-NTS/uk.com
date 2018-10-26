@@ -51,12 +51,15 @@ import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppFrameInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppPhaseInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationMonthExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -144,6 +147,13 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				approvalRootStateStatus.getDate(), 
 				approvalRootStateStatus.getEmployeeID(), 
 				approvalRootStateStatus.getDailyConfirmAtr().value);
+	}
+	
+	private AppRootSttMonthExport convertSttToMonthFromDomain(ApprovalRootStateStatus approvalRootStateStatus, YearMonth yearMonth, Integer closureID, ClosureDate closureDate){
+		return new AppRootSttMonthExport(
+				approvalRootStateStatus.getEmployeeID(), 
+				approvalRootStateStatus.getDailyConfirmAtr().value,
+				yearMonth, closureID, closureDate);
 	}
 
 	@Override
@@ -405,7 +415,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
+	public List<AppRootSttMonthExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
 		String companyID = AppContexts.user().employeeId();
 		// ドメインモデル「就業実績確認状態」を取得する
 		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
@@ -416,14 +426,15 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 		// 承認ルート状況を取得する
 		return approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState))
-				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+				.stream().map(x -> convertSttToMonthFromDomain(x, appRootConfirm.getYearMonth().get(), appRootConfirm.getClosureID().get(), appRootConfirm.getClosureDate().get()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsMonth(
+	public List<AppRootSttMonthExport> getAppRootStatusByEmpsMonth(
 			List<EmpPerformMonthParam> empPerformMonthParamLst) {
 		String companyID = AppContexts.user().companyId();
-		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<>();
+		List<AppRootSttMonthExport> appRootSttMonthLst = new ArrayList<>();
 		// INPUT．対象者社員IDの先頭から最後へループ
 		empPerformMonthParamLst.forEach(employee -> {
 			// 対象者と期間から承認ルート中間データを取得する
@@ -443,13 +454,18 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			// 中間データから承認ルートインスタンスに変換する
 			ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 			// 承認ルート状況を取得する
-			appRootStatusLst.addAll(approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState)));
+			List<ApprovalRootStateStatus> approvalRootStateStatusLst = approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState));
+			if(!CollectionUtil.isEmpty(approvalRootStateStatusLst)){
+			appRootSttMonthLst.add(this.convertSttToMonthFromDomain(
+					approvalRootStateStatusLst.get(0),
+					employee.getYearMonth(), employee.getClosureID(), employee.getClosureDate()));
+			}
 		});
-		return appRootStatusLst.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+		return appRootSttMonthLst;
 	}
 
 	@Override
-	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+	public AppEmpSttMonthExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
 			ClosureDate closureDate, GeneralDate baseDate) {
 		DatePeriod period = new DatePeriod(baseDate, baseDate);
 		// 承認者(承認代行を含め)と期間から承認ルート中間データを取得する
@@ -475,11 +491,13 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		List<RouteSituation> mergeLst = appRootInstanceService.mergeRouteSituationLst(approverRouteLst, agentRouteLst);
 		// 「ルート状況」リスト整合処理後をoutput「基準社員の承認対象者」に追加する
 		approvalEmpStatus.getRouteSituationLst().addAll(mergeLst);
-		return new AppEmpStatusExport(
+		return new AppEmpSttMonthExport(
 				approvalEmpStatus.getEmployeeID(), 
-				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationExport(
-						x.getDate(), 
+				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationMonthExport(
 						x.getEmployeeID(), 
+						yearMonth,
+						closureID,
+						closureDate,
 						x.getApproverEmpState().value, 
 						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
 				.collect(Collectors.toList()));

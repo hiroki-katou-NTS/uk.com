@@ -9,6 +9,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
@@ -136,7 +138,7 @@ public interface ApprovalStatusAdapter {
 	 * @param empPerformMonthParamLst
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpsMonth(List<EmpPerformMonthParamImport> empPerformMonthParamLst);
+	public List<AppRootSttMonthEmpImport> getAppRootStatusByEmpsMonth(List<EmpPerformMonthParamImport> empPerformMonthParamLst);
 	
 	/**
 	 * RequestList 534
@@ -148,7 +150,7 @@ public interface ApprovalStatusAdapter {
 	 * @param baseDate
 	 * @return
 	 */
-	public ApprovalRootOfEmployeeImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+	public AppRootOfEmpMonthImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
 			ClosureDate closureDate, GeneralDate baseDate);
 	
 	/**
