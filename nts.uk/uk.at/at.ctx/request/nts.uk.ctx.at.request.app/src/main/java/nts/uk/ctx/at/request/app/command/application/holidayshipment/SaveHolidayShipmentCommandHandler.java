@@ -246,7 +246,7 @@ public class SaveHolidayShipmentCommandHandler
 			apps.add(new AppRemainCreateInfor(sID, absCmd.getAppID(), GeneralDateTime.now(), absCmd.getAppDate(),
 					EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.COMPLEMENT_LEAVE_APPLICATION,
 					Optional.ofNullable(absCmd.getWkTypeCD()), Optional.ofNullable(absCmd.getWkTimeCD()), Optional.empty(), Optional.empty(), Optional.empty(),
-					Optional.ofNullable(absCmd.getAppDate()), Optional.ofNullable(absCmd.getAppDate())));
+					Optional.ofNullable(absCmd.getAppDate()), Optional.ofNullable(absCmd.getAppDate()), Collections.emptyList()));
 		}
 
 		if (isSaveRec(command.getComType())) {
@@ -254,7 +254,7 @@ public class SaveHolidayShipmentCommandHandler
 			apps.add(new AppRemainCreateInfor(sID, recCmd.getAppID(), GeneralDateTime.now(), recCmd.getAppDate(),
 					EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.COMPLEMENT_LEAVE_APPLICATION,
 					Optional.ofNullable(recCmd.getWkTypeCD()), Optional.ofNullable(recCmd.getWkTimeCD()), Optional.empty(), Optional.empty(), Optional.empty(),
-					Optional.ofNullable(recCmd.getAppDate()), Optional.ofNullable(recCmd.getAppDate())));
+					Optional.ofNullable(recCmd.getAppDate()), Optional.ofNullable(recCmd.getAppDate()), Collections.emptyList()));
 		}
 		return apps;
 	}
