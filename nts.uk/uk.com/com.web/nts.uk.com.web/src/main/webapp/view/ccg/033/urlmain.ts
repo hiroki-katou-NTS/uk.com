@@ -69,7 +69,7 @@ __viewContext.ready(function() {
                     //画面モード
                     screenMode: success.urlTaskValueList["screenMode"]=="normal" ? 0 : 1,
                     //社員一覧
-                    lstEmployee: [],
+                    lstEmployee: [success.sID],
                     //エラー参照を起動する
                     errorRefStartAtr: success.urlTaskValueList["errorRef"],
                     //期間を変更する
@@ -87,14 +87,14 @@ __viewContext.ready(function() {
                     //表示形式
                     displayFormat: 0, // DPCorrectionDisplayFormat.INDIVIDUAl(個人別)
                     //期間
-                    startDate: null,
-                    endDate: null,
+                    startDate: moment.utc(success.issueDate).format("YYYY/MM/DD"),
+                    endDate: moment.utc(success.issueDate).format("YYYY/MM/DD"),
                     //抽出した社員一覧
-                    lstExtractedEmployee: [],
+                    lstExtractedEmployee: [success.sID],
                     //Optional
                     //日付別で起動
-                    dateTarget: null,
-                    individualTarget: null,
+                    dateTarget: moment.utc(success.issueDate).format("YYYY/MM/DD"),
+                    individualTarget: success.sID,
                 }
                 nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});    
                 break;
