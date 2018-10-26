@@ -26,7 +26,7 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 		stQuery.setParameter("CID", comId).setParameter("SID", workInfo.getEmployeeId())
 				.setParameter("YMD", Date.valueOf(workInfo.getYmd().localDate()))
 				.setParameter("WorkTypeCode", workInfo.getRecordInfo().getWorkTypeCode().v())
-				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode().v())
+				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode()==null ? null : workInfo.getRecordInfo().getWorkTimeCode().v())
 				.setParameter("HoliWorkTimes", calcHolWorkTime(attendanceTime));
 
 		stQuery.execute();
