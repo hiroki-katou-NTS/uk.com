@@ -143,7 +143,6 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		if(interval == 0) {
 			return null;
 		}
-		GeneralDate nextTime = grantDate;
 		double grantDays = 0;
 		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
 		//　　付与日数　←　特別休暇基本情報．付与設定．付与日数
@@ -170,11 +169,10 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 						|| checkUser.isEmploymentError()
 						|| checkUser.isGenderError()) {
 					//パラメータ「付与日数一覧」を追加する
-					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), grantDays);
+					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.of(checkUser), 0);
 					lstOutput.add(outPut);
 				} else {
-					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), 
-							speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v());
+					GrantDaysInfor outPut = new GrantDaysInfor(loopDate, Optional.empty(), grantDays);
 					lstOutput.add(outPut);
 				}
 			}
