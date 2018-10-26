@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
 /**
  * @author hungnm

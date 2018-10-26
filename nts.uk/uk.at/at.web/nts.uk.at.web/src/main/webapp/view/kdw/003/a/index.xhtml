@@ -235,9 +235,11 @@
                                         <div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
                                         <br />
                                         <div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
-                                        <br />
-                                        <div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
-                                        <br />
+										<br />
+                                        <div data-bind="if: false">
+	                                        <div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
+	                                        <br />
+										</div>
                                     </div>
                                 </div>
                             </div>
@@ -245,7 +247,7 @@
                                 <div id="dpGrid"></div>
                                 <div id="sample-component"></div>
                             </div>
-                            <div style="margin-top: 5px" data-bind="visible: isVisibleMIGrid">
+                            <div style="margin-top: 100px" data-bind="visible: isVisibleMIGrid">
                                 <table id="miGrid"></table>
                             </div>
                             <div class="Row">
