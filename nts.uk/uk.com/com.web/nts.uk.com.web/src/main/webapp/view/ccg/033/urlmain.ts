@@ -14,50 +14,50 @@ __viewContext.ready(function() {
             }
             case "kaf002": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });    
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });    
                 break;
             }
             case "kaf004": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });   
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });   
                 break;   
             }
             case "kaf005": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] }); 
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) }); 
                 break;     
             }
             case "kaf006": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });  
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });  
                 break;  
             }
             case "kaf007": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });   
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });   
                 break;   
             }
             case "kaf009": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });     
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });     
                 break;
             }
             case "kaf010": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });  
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });  
                 break;    
             }   
             case "kaf011": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });  
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });  
                 break;    
             }   
             case "cmm045": {
