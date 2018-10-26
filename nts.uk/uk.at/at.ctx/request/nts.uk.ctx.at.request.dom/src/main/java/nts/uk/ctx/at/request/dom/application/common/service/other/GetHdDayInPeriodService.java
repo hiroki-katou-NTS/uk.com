@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -18,7 +19,7 @@ public class GetHdDayInPeriodService {
 	@Inject
 	private CollectAchievement collectAchievement;
 	@Inject
-	private JudgeHdSystemOneDayService judgeHdSysOneDaySv;
+	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
 	/**
 	 * 19.指定する期間での休日日数を取得する
 	 * 20.指定する期間での休日日数を取得する
@@ -43,10 +44,13 @@ public class GetHdDayInPeriodService {
 			}
 			//#100574 - #100575 2018.10.02
 			//1日半日出勤・1日休日系の判定
-			AttendanceHolidayAttr checkOneDay = judgeHdSysOneDaySv.judgeHdOnDayWorkPer(ach.getWorkType().getWorkTypeCode());
+//			AttendanceHolidayAttr checkOneDay = judgeHdSysOneDaySv.judgeHdOnDayWorkPer(ach.getWorkType().getWorkTypeCode());
+			//#102184 - 2018.10.25
+			//1日休日の判定
+			boolean checkOneDay = specHdWkpTypeSv.jubgeHdOneDay(companyID, ach.getWorkType().getWorkTypeCode());
 			//outputがTrue：1日休日系 (True)
 			//休日日数+=1-(holidayNumber + =1)
-			hdDays = checkOneDay.equals(AttendanceHolidayAttr.HOLIDAY) ? hdDays + 1 : hdDays;
+			hdDays = checkOneDay ? hdDays + 1 : hdDays;
 			date = period.start().addDays(i);
 		}
 		return hdDays;

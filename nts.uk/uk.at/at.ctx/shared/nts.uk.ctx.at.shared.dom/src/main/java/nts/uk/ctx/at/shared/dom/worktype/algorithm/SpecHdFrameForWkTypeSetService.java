@@ -6,10 +6,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 @Stateless
 public class SpecHdFrameForWkTypeSetService {
 	@Inject
@@ -62,5 +65,28 @@ public class SpecHdFrameForWkTypeSetService {
 			}
 		}
 		return null;
+	}
+	/**
+	 * @author hoatt
+	 * 1日休日の判定
+	 * @return
+	 */
+	public boolean jubgeHdOneDay(String companyId, String workTypeCD){
+		//ドメイン「勤務種類」を取得する
+		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyId, workTypeCD);
+		if(!wkTypeOpt.isPresent()){
+			return false;
+		}
+		//勤務区分チェック
+		//1日の勤務
+		DailyWork dailyWork = wkTypeOpt.get().getDailyWork();
+		if(!dailyWork.getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){//午前と午後
+			return false;
+		}
+		//1日をチェックする
+		if(dailyWork.getOneDay().equals(WorkTypeClassification.Holiday)){//1日 == 「勤務種類の分類」．休日
+			return true;
+		}
+		return false;
 	}
 }
