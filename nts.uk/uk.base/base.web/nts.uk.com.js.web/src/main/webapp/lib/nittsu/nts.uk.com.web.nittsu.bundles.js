@@ -3809,8 +3809,7 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        //request.jump('/view/ccg/007/a/index.xhtml');
-                        request.jump('com', '/view/ccg/007/b/index.xhtml');
+                        request.jump('com', '/view/ccg/007/d/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
@@ -4230,20 +4229,20 @@ var nts;
                                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                                 var userOptions;
                                 if (show)
-                                    userOptions = [new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト")];
+                                    userOptions = [/*new MenuItem("個人情報の設定"),*/ new MenuItem("マニュアル"), new MenuItem("ログアウト")];
                                 else
-                                    userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
+                                    userOptions = [/*new MenuItem("個人情報の設定"),*/ new MenuItem("ログアウト")];
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
                                     $userOptions.append($li);
-                                    if (i === 0) {
-                                        $li.on(constants.CLICK, function () {
-                                            // TODO: Jump to personal information settings.
-                                        });
-                                        return;
-                                    }
-                                    if (userOptions.length === 3 && i === 1) {
+                                    //                        if (i === 0) {
+                                    //                            $li.on(constants.CLICK, function() {
+                                    //                                // TODO: Jump to personal information settings.
+                                    //                            });
+                                    //                            return;
+                                    //                        }
+                                    if (userOptions.length === 2 && i === 0) {
                                         $li.on(constants.CLICK, function () {
                                             // jump to index page of manual
                                             var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
@@ -5623,7 +5622,7 @@ var nts;
                     });
                 });
                 function isOverflow($label) {
-                    if (($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")
+                    if ($label[0].nodeName === "INPUT"
                         && (window.navigator.userAgent.indexOf("MSIE") > -1
                             || !!window.navigator.userAgent.match(/trident/i))) {
                         var $div = $("<div/>").appendTo($(document.body));
@@ -5639,7 +5638,7 @@ var nts;
                         $div.remove();
                         return width < scrollWidth;
                     }
-                    return $label.outerWidth() < $label[0].scrollWidth;
+                    return $label[0].offsetWidth < $label[0].scrollWidth;
                 }
             })(smallExtensions || (smallExtensions = {}));
             var keyboardStream;
@@ -5833,7 +5832,7 @@ var nts;
                             //                    var widget= this.$dialog.dialog("widget");
                             //                    widget.draggable("option","containment",false);
                             if (autoResize) {
-                                $(window.top).on('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                                window.addEventListener('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
                             }
                         });
                         this.globalContext.location.href = path;
@@ -16107,12 +16106,15 @@ var nts;
                                 }
                                 //                    container.data("changed", true);
                                 if (typeof result.parsedValue === "string") {
+                                    $input.data("change", true);
                                     if (_.has(data, "type") && ko.toJS(data.type) === "date") {
-                                        value(new Date(result.parsedValue));
+                                        var momentDate = moment(result.parsedValue);
+                                        value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
                                     }
                                     else {
                                         value(result.parsedValue);
                                     }
+                                    $input.data("change", false);
                                     var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                                     if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                         $input.data("change", true);
@@ -17149,12 +17151,13 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var isNotFunctionArea = _.isEmpty($('#functions-area')) && _.isEmpty($('#functions-area-bottom'));
+                        var isNotSideBar = _.isEmpty($('#sidebar'));
                         var isFrame = nts.uk.util.isInFrame();
-                        if (isNotFunctionArea && isFrame) {
+                        if (isNotFunctionArea && isNotSideBar && isFrame) {
                             if (!_.isEmpty(errors)) {
                                 var mesArr_1 = [], mesCodeArr_1 = _.map(errors, function (error) { return error.errorCode; });
                                 _.forEach(errors, function (error) {
-                                    mesArr_1.push(error.message);
+                                    mesArr_1.push(error.messageText);
                                     mesCodeArr_1.push(error.errorCode);
                                 });
                                 var totalMes = _.join(_.uniq(mesArr_1), '\n');
@@ -22146,7 +22149,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _remainHeight = 190, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = /** @class */ (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -22175,6 +22178,7 @@ var nts;
                      */
                     MGrid.prototype.makeDefault = function () {
                         var self = this;
+                        self.$container.tabIndex = -1;
                         self.fixedHeader = _.assignIn(self.fixedHeader, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
                         self.fixedBody = _.assignIn(self.fixedBody, _.cloneDeep(defaultOptions));
                         self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
@@ -22185,6 +22189,9 @@ var nts;
                         }
                         if (!_.isNil(self.subWidth)) {
                             _remainWidth = parseFloat(self.subWidth);
+                        }
+                        if (!_.isNil(self.subHeight)) {
+                            _remainHeight = parseFloat(self.subHeight);
                         }
                         _$grid.mGrid({});
                     };
@@ -22222,7 +22229,7 @@ var nts;
                                 _mafollicle[_currentPage] = { dataSource: self.dataSource, origDs: _.cloneDeep(self.dataSource) };
                             }
                             var sheetFt = tn.find(self.features, tn.SHEET);
-                            var savingFt = tn.find(self.features, tn.WIDTH_SAVE);
+                            var headerStyles = void 0, savingFt = tn.find(self.features, tn.WIDTH_SAVE);
                             var sheetDef_1 = {};
                             if (sheetFt) {
                                 _sheeting = true;
@@ -22278,7 +22285,7 @@ var nts;
                                 self.header.height = self.headerHeight;
                                 self.body.columns = colParts[1];
                                 _hasFixed = true;
-                                var headerStyles = tn.find(self.features, tn.HEADER_STYLE);
+                                headerStyles = tn.find(self.features, tn.HEADER_STYLE);
                                 if (headerStyles) {
                                     var styleParts = _.partition(headerStyles.columns, function (c) {
                                         return _.some(fixedColumns_1, function (f) { return f.columnKey === c.key; });
@@ -22291,14 +22298,25 @@ var nts;
                                 self.header.columns = self.columns;
                                 self.body.columns = self.columns;
                                 kt.turfSurf(self.columns);
+                                colParts = [self.columns];
+                                headerStyles = tn.find(self.features, tn.HEADER_STYLE);
+                                if (headerStyles) {
+                                    self.header.features.push({ name: tn.HEADER_STYLE, columns: headerStyles.columns });
+                                }
                             }
                             var summaries = tn.find(self.features, tn.SUMMARIES);
                             if (summaries) {
                                 _summaries = {};
-                                self.fixedSummaries.columns = colParts[0];
-                                self.fixedSummaries.height = SUM_HEIGHT + "px";
-                                self.summaries.columns = colParts[1];
-                                self.summaries.height = SUM_HEIGHT + "px";
+                                if (colParts.length > 1) {
+                                    self.fixedSummaries.columns = colParts[0];
+                                    self.fixedSummaries.height = SUM_HEIGHT + "px";
+                                    self.summaries.columns = colParts[1];
+                                    self.summaries.height = SUM_HEIGHT + "px";
+                                }
+                                else {
+                                    self.summaries.columns = colParts[0];
+                                    self.summaries.height = SUM_HEIGHT + "px";
+                                }
                                 _.forEach(summaries.columnSettings, function (s) {
                                     var sum = { calculator: s.summaryCalculator, formatter: s.formatter };
                                     if (s.summaryCalculator === "Time") {
@@ -22337,7 +22355,7 @@ var nts;
                         var $frag = document.createDocumentFragment();
                         var freeWrapperWidth;
                         self.headers.forEach(function (headPart, i) {
-                            if (!_.isNil(self.headers[i])) {
+                            if (!_.isNil(self.headers[i]) && headPart.columns.length > 0) {
                                 headPart.overflow = "hidden";
                                 if (headPart.containerClass === FREE) {
                                     freeWrapperWidth = parseFloat(self.width) - _maxFixedWidth;
@@ -22358,7 +22376,8 @@ var nts;
                                     _fixedControlMap = tablePart.controlMap;
                                 }
                                 else {
-                                    $fixedHeaderTbl.style.height = self.headerHeight;
+                                    if ($fixedHeaderTbl)
+                                        $fixedHeaderTbl.style.height = self.headerHeight;
                                     $tbl.style.height = self.headerHeight;
                                     top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
                                     _mafollicle[_currentPage][_currentSheet] = {};
@@ -22379,7 +22398,7 @@ var nts;
                         var bodyHeight = parseFloat(self.height) - parseFloat(self.headerHeight);
                         self.bodies.forEach(function (bodyPart, i) {
                             var $bodyWrapper, alignLeft = 0;
-                            if (!_.isNil(bodyPart)) {
+                            if (!_.isNil(bodyPart) && bodyPart.columns.length > 0) {
                                 bodyPart.rowHeight = BODY_ROW_HEIGHT + "px";
                                 if (bodyPart.containerClass === FIXED) {
                                     bodyPart.height = bodyHeight + "px";
@@ -22397,7 +22416,7 @@ var nts;
                                 if (bodyPart.containerClass === FREE && !_.isNil($bodyWrapper)) {
                                     bodyPart.overflow = "scroll";
                                     tc.syncDoubDirVerticalScrolls(bodyWrappers);
-                                    if (!self.fixedSummaries || !self.fixedSummaries.columns) {
+                                    if (!self.summaries || !self.summaries.columns) {
                                         tc.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
                                     }
                                     tc.bindVertWheel($bodyWrapper, true);
@@ -22426,11 +22445,13 @@ var nts;
                         }
                         v.construe(self.$container, bodyWrappers, artifactOptions);
                         _bodyWrappers = bodyWrappers;
-                        var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrapper[0];
+                        var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
                         _vessel().$bBody = dWrapper.querySelector("tbody");
                         top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
                         ti.calcTotal();
                         [self.fixedSummaries, self.summaries].filter(function (s) { return s && s.columns; }).forEach(function (sumPart, i) {
+                            if (!sumPart.columns || sumPart.columns.length === 0)
+                                return;
                             var alignLeft = i === 0 ? 0 : left;
                             if (sumPart.containerClass === FREE + "-summaries") {
                                 sumPart.width = self.headers[i].width;
@@ -22447,12 +22468,15 @@ var nts;
                             $tr.style.height = "27px";
                             $tbody.appendChild($tr);
                             if (sumPart.containerClass === FREE + "-summaries") {
-                                _.forEach(bodyColGroup[1], function (c) {
+                                _.forEach(bodyColGroup[bodyColGroup.length > 1 ? 1 : 0], function (c) {
                                     var col = c.cloneNode(true);
                                     $colGroup.appendChild(col);
                                     cols.push(col);
                                 });
-                                ptr = painters[1];
+                                if (painters.length > 1)
+                                    ptr = painters[1];
+                                else
+                                    ptr = painters[0];
                                 tc.syncDoubDirHorizontalScrolls([headerWrappers[i], bodyWrappers[i], $sumDiv]);
                                 _mafollicle[SheetDef][_currentSheet].sumColArr = cols;
                             }
@@ -22950,6 +22974,8 @@ var nts;
                                 tdStyle += "; display: none;";
                                 if (self.$container.classList.contains(FIXED))
                                     _fixedHiddenColumns.push(key);
+                                else
+                                    _hiddenColumns.push(key);
                             }
                             var hStyle;
                             if (self.styles && (hStyle = self.styles[key])) {
@@ -23011,8 +23037,13 @@ var nts;
                                 $td.setAttribute("rowspan", cell.rowspan);
                             if (!_.isNil(cell.colspan) && cell.colspan > 1)
                                 $td.setAttribute("colspan", cell.colspan);
-                            else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key])
+                            else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) {
                                 tdStyle += "; display: none;";
+                                if (self.options.containerClass === FIXED)
+                                    _fixedHiddenColumns.push(cell.key);
+                                else
+                                    _hiddenColumns.push(cell.key);
+                            }
                             var column = self.columnsMap[cell.key];
                             var hStyle;
                             if (self.styles && ((hStyle = self.styles[cell.key])
@@ -23077,9 +23108,18 @@ var nts;
                         ConcurrentPainter.prototype.cell = function (rData, rowIdx, key, fixed) {
                             var self = this;
                             var cData = rData[key];
-                            var data = cData, columnsMap, visibleColumnsMap;
-                            columnsMap = self.painters[fixed ? 0 : 1].columnsMap;
-                            visibleColumnsMap = self.painters[fixed ? 0 : 1].visibleColumnsMap;
+                            var data = cData, columnsMap, visibleColumnsMap, paint;
+                            if (fixed) {
+                                paint = self.painters[0];
+                            }
+                            else if (self.painters.length > 1) {
+                                paint = self.painters[1];
+                            }
+                            else {
+                                paint = self.painters[0];
+                            }
+                            columnsMap = paint.columnsMap;
+                            visibleColumnsMap = paint.visibleColumnsMap;
                             var column = columnsMap[key];
                             if (_.isNil(column))
                                 return;
@@ -23200,32 +23240,43 @@ var nts;
                          */
                         ConcurrentPainter.prototype.row = function (data, config, rowIdx) {
                             var self = this;
-                            var fixedColumns, fixedCount;
-                            if (rowIdx === 0) {
+                            var fixedColumns, fixedCount = 0;
+                            if (rowIdx === 0 && self.painters.length > 1) {
                                 fixedColumns = self.painters[0].columns;
                                 fixedCount = fixedColumns.length;
                             }
-                            var fixedVColumnsMap = self.painters[0].visibleColumnsMap;
-                            var dVColumnsMap = self.painters[1].visibleColumnsMap;
+                            var fixedVColumnsMap, dVColumnsMap, hiddenFixed, hiddenDV;
+                            if (self.painters.length > 1) {
+                                fixedVColumnsMap = self.painters[0].visibleColumnsMap;
+                                hiddenFixed = self.painters[0].hiddenColumnsMap;
+                                dVColumnsMap = self.painters[1].visibleColumnsMap;
+                                hiddenDV = self.painters[1].hiddenColumnsMap;
+                            }
+                            else {
+                                dVColumnsMap = self.painters[0].visibleColumnsMap;
+                                hiddenDV = self.painters[0].hiddenColumnsMap;
+                            }
                             var fixedColIdxes = {}, colIdxes = {}, fixedElements = [], elements = [], fixedTr, tr = self.protoRow.cloneNode(true); //document.createElement("tr");
-                            if (fixedVColumnsMap) {
+                            if (fixedVColumnsMap && _.keys(fixedVColumnsMap).length > 0) {
                                 //                    fixedTr = document.createElement("tr");
                                 fixedTr = self.protoRow.cloneNode(true);
                             }
                             if (config) {
-                                fixedTr.style.height = parseFloat(config.css.height) + "px";
+                                if (fixedTr) {
+                                    fixedTr.style.height = parseFloat(config.css.height) + "px";
+                                }
                                 tr.style.height = parseFloat(config.css.height) + "px";
                             }
                             _.forEach(self.columns, function (key, index) {
                                 var cell;
-                                if (dVColumnsMap[key]) {
+                                if (dVColumnsMap[key] || hiddenDV[key]) {
                                     cell = self.cell(data, rowIdx, key);
                                     tr.appendChild(cell);
                                     elements.push(cell);
                                     if (rowIdx === 0)
                                         colIdxes[key] = index - fixedCount;
                                 }
-                                else {
+                                else if (fixedVColumnsMap[key] || hiddenFixed[key]) {
                                     cell = self.cell(data, rowIdx, key, true);
                                     fixedTr.appendChild(cell);
                                     fixedElements.push(cell);
@@ -23233,14 +23284,16 @@ var nts;
                                         fixedColIdxes[key] = index;
                                 }
                             });
-                            fixedTr.addXEventListener(ssk.MOUSE_OVER, function (evt) {
-                                self.hoover(evt);
-                            });
+                            if (fixedTr) {
+                                fixedTr.addXEventListener(ssk.MOUSE_OVER, function (evt) {
+                                    self.hoover(evt);
+                                });
+                                fixedTr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
+                                    self.hoover(evt, true);
+                                });
+                            }
                             tr.addXEventListener(ssk.MOUSE_OVER, function (evt) {
                                 self.hoover(evt);
-                            });
-                            fixedTr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
-                                self.hoover(evt, true);
                             });
                             tr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
                                 self.hoover(evt, true);
@@ -23585,8 +23638,12 @@ var nts;
                     aho.NULL = null;
                     var Platrer = /** @class */ (function () {
                         function Platrer(containers, options) {
-                            this.$fixedContainer = containers[0];
-                            this.$container = containers[1];
+                            if (containers && containers.length > 1) {
+                                this.$fixedContainer = containers[0];
+                                this.$container = containers[1];
+                            }
+                            else
+                                this.$container = containers[0];
                             this.options = options;
                             this.primaryKey = options.primaryKey;
                             this.rowsOfBlock = options.noBlocRangee || 30;
@@ -23809,6 +23866,14 @@ var nts;
                             //                $container.stop().animate({ scrollTop: value }, 10);
                             var os = ti.isIE() ? 25 : 50;
                             $_container.scrollTop(value + direction * os);
+                            if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
+                                var cbx = dkn.controlType[_mEditor.columnKey];
+                                var $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
+                                if (cbx.dropdown && cbx.dropdown.style.top !== "-99999px") {
+                                    dkn.closeDD(cbx.dropdown);
+                                    $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
+                                }
+                            }
                             event.preventDefault();
                             event.stopImmediatePropagation();
                         });
@@ -23945,8 +24010,12 @@ var nts;
                             this.widths = widths;
                             this.height = height;
                             this.$ownerDoc = this.headerWrappers[0].ownerDocument;
-                            kt._widths._fixed = parseFloat(widths[0]);
-                            kt._widths._unfixed = parseFloat(widths[1]);
+                            if (widths.length > 1) {
+                                kt._widths._fixed = parseFloat(widths[0]);
+                                kt._widths._unfixed = parseFloat(widths[1]);
+                            }
+                            else
+                                kt._widths._unfixed = parseFloat(widths[0]);
                         }
                         /**
                          * Nostal.
@@ -23974,57 +24043,87 @@ var nts;
                          */
                         ColumnAdjuster.prototype.handle = function () {
                             var self = this;
-                            self.$fixedAgency = document.createElement("div");
-                            self.$fixedAgency.className = kt.AGENCY;
-                            self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
-                            var $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
-                            $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
-                            var left = 0, hiddenCount = 0;
-                            _.forEach(self.headerColGroup[0], function ($targetCol, i) {
-                                if ($targetCol.style.display === "none") {
-                                    hiddenCount++;
-                                    return;
-                                }
-                                var $line = document.createElement("div");
-                                $line.className = kt.FIXED_LINE;
-                                $.data($line, kt.RESIZE_COL, $targetCol);
-                                $.data($line, kt.RESIZE_NO, i - hiddenCount);
-                                self.$fixedAgency.appendChild($line);
-                                left += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
-                                $line.style.left = left + "px";
-                                $line.style.height = self.height;
-                                self.fixedLines.push($line);
-                            });
-                            self.fixedHiddenCount = hiddenCount;
-                            left = 0;
-                            self.$agency = document.createElement("div");
-                            self.$agency.className = kt.AGENCY;
-                            self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
-                            var $headerTable = self.headerWrappers[1].querySelector("table");
-                            $headerTable.insertAdjacentElement("beforebegin", self.$agency);
-                            hiddenCount = 0;
-                            _.forEach(self.headerColGroup[1], function ($targetCol, i) {
-                                if (i === self.headerColGroup[1].length - 1)
-                                    return;
-                                if ($targetCol.style.display === "none") {
-                                    hiddenCount++;
-                                    return;
-                                }
-                                var $line = document.createElement("div");
-                                $line.className = kt.LINE;
-                                $.data($line, kt.RESIZE_COL, $targetCol);
-                                $.data($line, kt.RESIZE_NO, i - hiddenCount);
-                                self.$agency.appendChild($line);
-                                left += parseFloat($targetCol.style.width);
-                                $line.style.left = left + "px";
-                                $line.style.height = self.height;
-                                self.lines.push($line);
-                            });
-                            self.hiddenCount = hiddenCount;
-                            self.$fixedAgency.removeXEventListener(ssk.MOUSE_DOWN);
-                            self.$fixedAgency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
-                            self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
-                            self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                            if (self.headerColGroup.length > 1) {
+                                self.$fixedAgency = document.createElement("div");
+                                self.$fixedAgency.className = kt.AGENCY;
+                                self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
+                                var $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
+                                $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
+                                var left_1 = 0, hiddenCount_1 = 0;
+                                _.forEach(self.headerColGroup[0], function ($targetCol, i) {
+                                    if ($targetCol.style.display === "none") {
+                                        hiddenCount_1++;
+                                        return;
+                                    }
+                                    var $line = document.createElement("div");
+                                    $line.className = kt.FIXED_LINE;
+                                    $.data($line, kt.RESIZE_COL, $targetCol);
+                                    $.data($line, kt.RESIZE_NO, i - hiddenCount_1);
+                                    self.$fixedAgency.appendChild($line);
+                                    left_1 += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
+                                    $line.style.left = left_1 + "px";
+                                    $line.style.height = self.height;
+                                    self.fixedLines.push($line);
+                                });
+                                self.fixedHiddenCount = hiddenCount_1;
+                                left_1 = 0;
+                                self.$agency = document.createElement("div");
+                                self.$agency.className = kt.AGENCY;
+                                self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
+                                var $headerTable = self.headerWrappers[1].querySelector("table");
+                                $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                                hiddenCount_1 = 0;
+                                _.forEach(self.headerColGroup[1], function ($targetCol, i) {
+                                    if (i === self.headerColGroup[1].length - 1)
+                                        return;
+                                    if ($targetCol.style.display === "none") {
+                                        hiddenCount_1++;
+                                        return;
+                                    }
+                                    var $line = document.createElement("div");
+                                    $line.className = kt.LINE;
+                                    $.data($line, kt.RESIZE_COL, $targetCol);
+                                    $.data($line, kt.RESIZE_NO, i - hiddenCount_1);
+                                    self.$agency.appendChild($line);
+                                    left_1 += parseFloat($targetCol.style.width);
+                                    $line.style.left = left_1 + "px";
+                                    $line.style.height = self.height;
+                                    self.lines.push($line);
+                                });
+                                self.hiddenCount = hiddenCount_1;
+                                self.$fixedAgency.removeXEventListener(ssk.MOUSE_DOWN);
+                                self.$fixedAgency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                                self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
+                                self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                            }
+                            else {
+                                var left_2 = 0, hiddenCount_2 = 0;
+                                self.$agency = document.createElement("div");
+                                self.$agency.className = kt.AGENCY;
+                                self.$agency.style.cssText = "; position: relative; width: " + self.widths[0];
+                                var $headerTable = self.headerWrappers[0].querySelector("table");
+                                $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                                _.forEach(self.headerColGroup[0], function ($targetCol, i) {
+                                    if (i === self.headerColGroup[0].length - 1)
+                                        return;
+                                    if ($targetCol.style.display === "none") {
+                                        hiddenCount_2++;
+                                        return;
+                                    }
+                                    var $line = document.createElement("div");
+                                    $line.className = kt.LINE;
+                                    $.data($line, kt.RESIZE_COL, $targetCol);
+                                    $.data($line, kt.RESIZE_NO, i - hiddenCount_2);
+                                    self.$agency.appendChild($line);
+                                    left_2 += parseFloat($targetCol.style.width);
+                                    $line.style.left = left_2 + "px";
+                                    $line.style.height = self.height;
+                                    self.lines.push($line);
+                                });
+                                self.hiddenCount = hiddenCount_2;
+                                self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
+                                self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                            }
                         };
                         /**
                          * Cursor down.
@@ -24045,8 +24144,11 @@ var nts;
                                 headerGroup = self.headerColGroup[0];
                                 isFixed = true;
                             }
-                            else {
+                            else if (self.headerColGroup.length > 1) {
                                 headerGroup = self.headerColGroup[1];
+                            }
+                            else {
+                                headerGroup = self.headerColGroup[0];
                             }
                             var breakArea, wrapperLeft, wrapperRight, maxWrapperRight, leftAlign;
                             if (isFixed && self.headerColGroup.length > 1 && gripIndex === self.headerColGroup[0].length - 1) {
@@ -24146,12 +24248,13 @@ var nts;
                                     sumGroup = self.sumColGroup[0];
                             }
                             else {
-                                bodyGroup = self.bodyColGroup[1];
-                                self.bodyWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
-                                self.headerWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                                var i_1 = self.bodyColGroup.length > 1 ? 1 : 0;
+                                bodyGroup = self.bodyColGroup[i_1];
+                                self.bodyWrappers[i_1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
+                                self.headerWrappers[i_1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
                                 if (self.sumWrappers.length > 0) {
-                                    sumGroup = self.sumColGroup[1];
-                                    self.sumWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                                    sumGroup = self.sumColGroup[i_1];
+                                    self.sumWrappers[i_1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
                                 }
                             }
                             if (self.actionDetails.$leftCol) {
@@ -24181,8 +24284,9 @@ var nts;
                                 }
                                 kt._widths._unfixed = rightAreaWidth;
                             }
+                            var i = self.bodyWrappers.length > 1 ? 1 : 0;
                             if (!self.actionDetails.isFixed && distance < 0) {
-                                var width = parseFloat(self.bodyWrappers[1].style.width), maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth);
+                                var width = parseFloat(self.bodyWrappers[i].style.width), maxWidth = parseFloat(self.bodyWrappers[i].style.maxWidth);
                                 if (maxWidth < width) {
                                     var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS), sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS), btw = _maxFixedWidth + maxWidth;
                                     if (pageDiv) {
@@ -24237,9 +24341,15 @@ var nts;
                                 replenLargeur(leftCol, self.actionDetails.changedWidths.left, "reparer");
                             }
                             else {
+                                _.forEach(_hiddenColumns, function (c) {
+                                    var idx = _vessel().desc.colIdxes[c];
+                                    if (parseFloat(idx) <= self.actionDetails.gripIndex) {
+                                        tidx++;
+                                    }
+                                });
                                 _.forEach(_.keys(_vessel().desc.colIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.colIdxes[k]);
-                                    if (i === self.actionDetails.gripIndex) {
+                                    if (i === tidx) {
                                         leftCol = k;
                                         return false;
                                     }
@@ -24397,9 +24507,15 @@ var nts;
                          * Sync lines.
                          */
                         ColumnAdjuster.prototype.syncLines = function () {
-                            var self = this;
-                            self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                            var left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
+                            var i, self = this;
+                            if (self.actionDetails.isFixed)
+                                i = 0;
+                            else if (self.headerWrappers.length > 1)
+                                i = 1;
+                            else
+                                i = 0;
+                            self.$agency.style.width = self.headerWrappers[i].style.width;
+                            var left = 0, group = self.headerColGroup[i];
                             _.forEach(group, function ($td, index) {
                                 if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
                                     return;
@@ -24496,7 +24612,7 @@ var nts;
                     function screenLargeur(noRowsMin, noRowsMax) {
                         if (!_headerWrappers || _headerWrappers.length === 0)
                             return;
-                        var width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
+                        var width, height = window.innerHeight - _remainHeight - parseFloat(_headerHeight), btmw;
                         var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
@@ -24566,7 +24682,7 @@ var nts;
                             sheetDiv.style.width = btmw + "px";
                             sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
                         }
-                        _bodyWrappers[1].style.height = height + "px";
+                        _bodyWrappers[0].style.height = height + "px";
                     }
                     kt.screenLargeur = screenLargeur;
                     /**
@@ -25030,6 +25146,17 @@ var nts;
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                 $.data($cell, v.DATA, val);
                             }
+                            else {
+                                var cbx = dkn.controlType[key];
+                                if (_.isObject(cbx) && cbx.type === dkn.COMBOBOX) {
+                                    var sel = _.find(cbx.options, function (o) { return o.code === val; });
+                                    if (sel) {
+                                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                                        $.data($cell, lo.CBX_SELECTED_TD, val);
+                                        $cell.textContent = sel ? sel.name : "";
+                                    }
+                                }
+                            }
                             return idx;
                         },
                         checkAll: function (key, fixed) {
@@ -25229,6 +25356,7 @@ var nts;
                             _specialColumn = {};
                             _specialLinkColumn = {};
                             _fixedHiddenColumns = [];
+                            _hiddenColumns = [];
                             _fixedColumns = null;
                             _selected = {};
                             _dirties = {};
@@ -25570,6 +25698,9 @@ var nts;
                                 var sCol_1 = _specialColumn[editor.columnKey];
                                 if (sCol_1) {
                                     var cbx = dkn.controlType[sCol_1];
+                                    if (_.toLower(column_1[0].dataType) === "number") {
+                                        inputVal_1 = parseFloat(inputVal_1);
+                                    }
                                     wedgeCell($grid, { rowIdx: editor.rowIdx, columnKey: sCol_1 }, inputVal_1);
                                     var selectedOpt = _.find(cbx.options, function (o) { return o.code === inputVal_1; });
                                     if (!_.isNil(selectedOpt)) {
@@ -25632,6 +25763,10 @@ var nts;
                         var origDs = _mafollicle[_currentPage].origDs;
                         if (!origDs)
                             return;
+                        var column = _columnsMap[coord.columnKey];
+                        if (column && _.toLower(column[0].dataType) === "number") {
+                            cellValue = parseFloat(cellValue);
+                        }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
                         }
@@ -25789,13 +25924,9 @@ var nts;
                                 }
                             });
                         };
-                        var column = _columnsMap[coord.columnKey];
                         if (!column) {
                             osht(true);
                             return;
-                        }
-                        if (_.toLower(column[0].dataType) === "number") {
-                            cellValue = parseFloat(cellValue);
                         }
                         res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
                         osht();
@@ -27325,6 +27456,11 @@ var nts;
                             isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
+                                isSelecting = false;
+                                $grid.onselectstart = null;
+                                window.removeXEventListener(ssk.MOUSE_UP + ".block");
+                            });
                             if (evt.shiftKey) {
                                 selectRange($grid, $target);
                                 $grid.onselectstart = function () {

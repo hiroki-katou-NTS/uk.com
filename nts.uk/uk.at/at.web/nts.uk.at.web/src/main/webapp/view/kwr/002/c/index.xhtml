@@ -529,20 +529,24 @@
 						</div>
 					</div>
 					<div class="clear"></div>
-					<hr style="margin-top: 35px;margin-left: 38px; "></hr>
+					<!-- <hr style="margin-top: 35px;margin-left: 38px; "></hr>
 					<div id="foot-area" class="fixed-flex-layout clear">
 						<div class="buttons">
 							<button tabindex="53" class="proceed x-large"
 								data-bind="click: decision">#{i18n.getText('KWR002_120')}</button>
 							<button tabindex="54" data-bind="click: cancel">#{i18n.getText('KWR002_121')}</button>
 						</div>
-					</div>
+					</div> -->
 
 				</div>
 
 
 			</div>
-
+			<div id="functions-area-bottom">
+					<button tabindex="53" class="proceed x-large"
+								data-bind="click: decision">#{i18n.getText('KWR002_120')}</button>
+					<button tabindex="54" data-bind="click: cancel">#{i18n.getText('KWR002_121')}</button>
+			</div>
 
 		</ui:define>
 	</ui:composition>

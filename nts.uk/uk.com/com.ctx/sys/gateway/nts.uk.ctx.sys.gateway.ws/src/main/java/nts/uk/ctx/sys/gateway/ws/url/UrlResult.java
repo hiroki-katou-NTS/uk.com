@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.ws.url;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 
@@ -16,6 +16,6 @@ public class UrlResult {
 	
 	public String screenID;
 	
-	public List<String> urlTaskValueList;
+	public Map<String, String> urlTaskValueList;
 	
 }

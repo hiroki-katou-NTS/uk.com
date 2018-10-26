@@ -33,7 +33,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	
 	private static final String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate DESC";
 	
-	private static final String FIND_BY_EMP_AND_DATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate >= :startDate AND a.grantDate <= : endDate ORDER BY a.grantDate DESC";
+	private static final String FIND_BY_EMP_AND_DATE = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate >= :startDate AND a.grantDate <= :endDate ORDER BY a.grantDate DESC";
 
 	@Override
 	public List<AnnualLeaveGrantRemainingData> find(String employeeId) {

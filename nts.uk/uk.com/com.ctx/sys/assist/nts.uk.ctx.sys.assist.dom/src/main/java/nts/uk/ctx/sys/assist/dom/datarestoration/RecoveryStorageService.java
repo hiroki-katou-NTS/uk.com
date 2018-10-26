@@ -173,7 +173,7 @@ public class RecoveryStorageService {
 
 	}
 
-	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public DataRecoveryOperatingCondition recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode,
 			String employeeId, List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
 		

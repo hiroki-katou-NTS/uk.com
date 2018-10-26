@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
@@ -38,9 +39,14 @@ import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInfor;
+import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInputParam;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
@@ -53,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -64,6 +71,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
@@ -118,6 +126,12 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private DailyPerformanceScreenRepo repo;
+	
+	@Inject
+	private GetClosureStartForEmployee getClosureStartForEmployee;
+	
+	@Inject
+	private TimeOffRemainErrorInfor timeOffRemainErrorInfor;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -328,6 +342,7 @@ public class DailyModifyResCommandFacade {
 				insertSign(dataParent.getDataCheckSign());
 				// insert approval
 				insertApproval(dataParent.getDataCheckApproval());
+				dataResultAfterIU.setShowErrorDialog(null);
 				
 			} else {
 				// if (querys.isEmpty() ? !dataParent.isFlagCalculation() :
@@ -352,7 +367,10 @@ public class DailyModifyResCommandFacade {
 							if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), dataParent.getMonthValue()));
 						}
 					}
-					val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
+					// 残数系のエラーチェック（月次集計なし）
+					val sidChange = itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
+					val errorMonth = validatorDataDaily.errorMonthNew(mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),dataParent.getDateRange()));
+					//val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
 					
 					if (!errorMonth.isEmpty()) {
 						resultError.putAll(errorMonth);
@@ -467,6 +485,60 @@ public class DailyModifyResCommandFacade {
 		return t -> seen.add(keyExtractor.apply(t));
 	}
 
+	public List<EmployeeMonthlyPerError> mapDomainMonthChange(List<Pair<String, GeneralDate>> employeeChange,
+			List<IntegrationOfDaily> domainDailyNew, List<IntegrationOfMonthly> domainMonthNew, DateRange dateRange) {
+		Set<String> employeeIds = employeeChange.stream().map(x -> x.getLeft()).collect(Collectors.toSet());
+		String companyId = AppContexts.user().companyId();
+		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
+		employeeIds.stream().forEach(emp -> {
+			// Acquire closing date corresponding to employee
+			List<IntegrationOfDaily> dailyOfEmp = domainDailyNew.stream()
+					.filter(x -> x.getWorkInformation().getEmployeeId().equals(emp)).collect(Collectors.toList());
+			List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData = dailyOfEmp.stream()
+					.filter(x -> x.getAttendanceTimeOfDailyPerformance().isPresent())
+					.map(x -> x.getAttendanceTimeOfDailyPerformance().get()).collect(Collectors.toList());
+
+			List<WorkInfoOfDailyPerformance> lstWorkInfor = dailyOfEmp.stream()
+					.filter(x -> x.getWorkInformation() != null).map(x -> x.getWorkInformation())
+					.collect(Collectors.toList());
+
+			Optional<GeneralDate> date = getClosureStartForEmployee.algorithm(emp);
+			
+			if (!domainMonthNew.isEmpty()) {
+				domainMonthNew.forEach(month -> {
+					TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
+							new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
+							new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false,
+							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime());
+					monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
+				});
+			} else {
+				Optional<AttendanceTimeOfMonthly> optMonthlyData = domainMonthNew.isEmpty() ? Optional.empty()
+						: domainMonthNew.get(0).getAttendanceTime();
+				TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
+						new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
+						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false, lstAttendanceTimeData,
+						lstWorkInfor, optMonthlyData);
+				monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
+			}
+		});
+		return monthPer;
+	}
+	
+	public List<Pair<String, GeneralDate>> itemInGroupChange(List<IntegrationOfDaily> domainDailyNew, List<DailyModifyResult> resultOlds) {
+		List<DailyRecordDto> dtoNews = domainDailyNew.stream().map(x -> DailyRecordDto.from(x)).collect(Collectors.toList());
+		// 暫定データを登録する - Register provisional data
+		List<DailyModifyResult> resultNews = AttendanceItemUtil.toItemValues(dtoNews).entrySet()
+															.stream().map(dto -> DailyModifyResult.builder()
+																	.								items(dto.getValue())
+																									.employeeId(dto.getKey().getEmployeeId())
+																									.workingDate(dto.getKey().getDate())
+																									.completed())
+															.collect(Collectors.toList());
+		return checkEditedItems(resultOlds, resultNews);
+		
+	}
+	
 	public void registerTempData(int displayFormat, List<DailyModifyResult> resultOlds,
 			List<DailyModifyResult> resultNews) {
 		switch (displayFormat) {
@@ -655,6 +727,15 @@ public class DailyModifyResCommandFacade {
 		val lstErrorDto = dailyRecord.stream().flatMap(x -> x.getErrors().stream()).collect(Collectors.toList());
 		OperationOfDailyPerformanceDto settingMaster = repo.findOperationOfDailyPerformance();
 		if (lstError.isEmpty() && lstErrorDto.isEmpty())
+			return false;
+		//fix bug 102116
+		//them thuat toan ドメインモデル「勤務実績のエラーアラーム」を取得する
+		//check table 'era set'
+		List<String> errorList = lstError.stream().map(e -> e.getErrorAlarmWorkRecordCode().toString()).collect(Collectors.toList());
+		errorList.addAll(lstErrorDto.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+		boolean isErAl = repo.isErAl(AppContexts.user().companyId(), 
+			 lstError.stream().map(e -> e.getErrorAlarmWorkRecordCode().toString()).collect(Collectors.toList()));
+		if(isErAl == false)
 			return false;
 		return settingMaster == null ? false : settingMaster.isShowError();
 	}

@@ -120,3 +120,6 @@ table#fixed-tablePsB tbody tr {
 .overflow-visible {
 	overflow: visible !important;
 }
+.aaa{
+	 text-overflow: clip !important;
+}
