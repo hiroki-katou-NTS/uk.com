@@ -103,6 +103,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
+        
+        realTimeDate: KnockoutObservable<string> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
+        realTimeWorkType: KnockoutObservable<string> = ko.observable("");
+        realTimeWorkTime: KnockoutObservable<string> = ko.observable("");
+        realTimeHour1: KnockoutObservable<string> = ko.observable("");
+        realTimeHour2: KnockoutObservable<string> = ko.observable("");
         constructor(transferData :any) {
             let self = this;
             if(!nts.uk.util.isNullOrEmpty(transferData)){
@@ -124,6 +130,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.startPage().done(function() {
                 self.kaf000_a.start(self.employeeID, 1, 4, self.targetDate).done(function(data) {
                     self.defaultPrePost = data.defaultPrePostAtr;
+                    self.setRealData(data);
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
                         if (!$('#inputdate').ntsError('hasError')) {
@@ -131,6 +138,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                                 nts.uk.ui.block.invisible();
                                 self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false,self.employeeID)
                                     .done((changeDateData) => {
+                                        self.setRealData(changeDateData);
                                         self.defaultPrePost = changeDateData.defaultPrePostAtr;
                                         nts.uk.ui.block.clear();
                                     }).fail(() => {
@@ -671,6 +679,40 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         openCMM018() {
             let self = this;
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
+        }
+        
+        setRealData(data: any){
+            let self = this;
+            self.realTimeDate(data.achievementOutput.date);
+            self.realTimeWorkType(data.achievementOutput.workType.workTypeCode+"   "+data.achievementOutput.workType.name);
+            self.realTimeWorkTime(data.achievementOutput.workTime.workTimeCD+"   "+data.achievementOutput.workTime.workTimeName);
+            let startTime1 = data.achievementOutput.startTime1;
+            let endTime1 = data.achievementOutput.endTime1;
+            let startTime2 = data.achievementOutput.startTime2;
+            let endTime2 = data.achievementOutput.endTime2;
+            self.realTimeHour1(self.createRealTime(startTime1, endTime1));
+            self.realTimeHour2(self.createRealTime(startTime2, endTime2));     
+        }
+        
+        checkBlank(value: any){
+            if(nts.uk.util.isNullOrUndefined(value)||nts.uk.util.isNullOrEmpty(value)){
+                return false;    
+            } else {
+                return true;    
+            }   
+        }
+        
+        createRealTime(startTime: any, endTime: any){
+            let self = this;
+            if(self.checkBlank(startTime)&&self.checkBlank(endTime)){
+                return nts.uk.time.format.byId("ClockDay_Short_HM", startTime)+" - "+nts.uk.time.format.byId("ClockDay_Short_HM", endTime);                   
+            } else if(self.checkBlank(startTime)&&!self.checkBlank(endTime)){
+                return nts.uk.time.format.byId("ClockDay_Short_HM", startTime)+" -     ";            
+            } else if(!self.checkBlank(startTime)&&self.checkBlank(endTime)){
+                return +"     - "+nts.uk.time.format.byId("ClockDay_Short_HM", endTime);    
+            } else {
+                return "";    
+            }          
         }
     }
 

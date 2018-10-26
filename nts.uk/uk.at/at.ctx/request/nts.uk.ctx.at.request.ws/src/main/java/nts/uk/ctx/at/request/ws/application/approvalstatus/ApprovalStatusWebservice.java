@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 
 @Path("at/request/application/approvalstatus")
@@ -121,7 +122,7 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("checkSendUnConfirMail")
-	public boolean checkSendMailUnConf(List<UnApprovalSendMail> listWkp){
+	public boolean checkSendMailUnConf(List<UnConfrSendMailParam> listWkp){
 		return finder.checkSendUnConfMail(listWkp);
 	}
 }
