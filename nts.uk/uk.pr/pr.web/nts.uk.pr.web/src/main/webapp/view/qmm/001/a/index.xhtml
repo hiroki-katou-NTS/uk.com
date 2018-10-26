@@ -254,21 +254,24 @@
 				</div>
 				<!--case 5-->
 					<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.SELECTION">
-						<div class="form-lable"
-							 data-bind="ntsFormLabel: { required: true } ">
-							<label id="A4_16">#{i18n.getText('QMM001_44')}</label>
-						</div>
-						<input  id="A4_17" tabindex="14" class="B3_7"
-							   data-bind="ntsComboBox: {
+						<div style="display: inline-flex;">
+							<div class="form-lable"
+								 data-bind="ntsFormLabel: { required: true } ">
+								<label id="A4_16">#{i18n.getText('QMM001_44')}</label>
+							</div>
+							<div  id="A4_17" tabindex="14" class="B3_7" style="margin-top: 2px;"
+								  data-bind="ntsComboBox: {
+							   name :'#{i18n.getText('QMM001_44')}',
 							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
 							optionsValue: 'code',
 							optionsText: 'name',
-							editable : false,
 							required:true,
 							value: valueComboBox,
 							columns: [{ prop: 'code'},
 							{ prop: 'name' }],
 							options: listSalGenOptions()} "/>
+						</div>
+
 					</div>
 			</div>
 		</div>
