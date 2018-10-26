@@ -7,7 +7,7 @@
 	display:flex;
 }
 
-#contentH{
+#content-area{
 	padding-left: 30px;
 	padding-top:20px;
 }
@@ -68,4 +68,8 @@
 }
 .notUse {
 	background-color:grey;
+}
+
+#functions-area-bottom {
+	text-align: center
 }
