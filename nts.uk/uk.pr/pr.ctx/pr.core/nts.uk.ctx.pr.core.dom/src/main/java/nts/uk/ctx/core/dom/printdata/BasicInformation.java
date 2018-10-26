@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.printdata;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -50,9 +51,9 @@ public class BasicInformation extends DomainObject
     */
     private AddressInformation addressInformation;
     
-    public BasicInformation(String kanaName, String note, String representativePosition, String representativeName, String linkedDepartment, Integer corporateNumber,AddressInformation addressInformation) {
+    public BasicInformation(String kanaName, String note, String representativePosition, String representativeName, String linkedDepartment, BigDecimal corporateNumber, AddressInformation addressInformation) {
         this.kanaName = new KanaName(kanaName);
-        this.corporateNumber = corporateNumber == null ? Optional.empty() : Optional.of(new CorporateNumber(corporateNumber));
+        this.corporateNumber = corporateNumber == null ? Optional.empty() : Optional.of(new CorporateNumber(corporateNumber.toString()));
         this.clubRepresentativeName = representativeName == null ? Optional.empty() : Optional.of(new RepresentativeName(representativeName));
         this.clubRepresentativePosition = representativePosition == null ? Optional.empty() : Optional.of(new RepresentativePosition(representativePosition));
         this.notes = note == null ? Optional.empty() : Optional.of(new Memo(note));

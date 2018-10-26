@@ -392,11 +392,11 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             let windowSize = nts.uk.ui.windows.getSelf();
 
             if (!self.isAdvanceSetting()) {
-                windowSize.$dialog.height(510);
+                windowSize.$dialog.height(550);
                 self.isAdvanceSetting(true);
             }else {
                 self.isAdvanceSetting(false);
-                windowSize.$dialog.height(420);
+                windowSize.$dialog.height(460);
             }
         }
 

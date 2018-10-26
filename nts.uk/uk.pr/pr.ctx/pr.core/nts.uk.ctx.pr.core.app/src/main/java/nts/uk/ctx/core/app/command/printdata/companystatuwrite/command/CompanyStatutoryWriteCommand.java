@@ -2,6 +2,8 @@ package nts.uk.ctx.core.app.command.printdata.companystatuwrite.command;
 
 import lombok.Value;
 
+import java.math.BigDecimal;
+
 @Value
 public class CompanyStatutoryWriteCommand
 {
@@ -79,7 +81,7 @@ public class CompanyStatutoryWriteCommand
     /**
      * 法人番号
      */
-    private Integer corporateNumber;
+    private BigDecimal corporateNumber;
 
     /**
      * 会計事務所電話番号

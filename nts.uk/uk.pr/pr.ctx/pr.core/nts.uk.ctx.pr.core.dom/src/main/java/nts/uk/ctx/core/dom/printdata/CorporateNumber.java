@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.dom.printdata;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.*;
 
 /**
@@ -8,10 +9,10 @@ import nts.arc.primitive.constraint.*;
  */
 @StringMaxLength(13)
 @StringCharType(CharType.NUMERIC)
-public class CorporateNumber extends IntegerPrimitiveValue<CorporateNumber> {
+public class CorporateNumber extends StringPrimitiveValue<CorporateNumber> {
     private static final long serialVersionUID = 1L;
 
-    public CorporateNumber(Integer rawValue)
+    public CorporateNumber(String rawValue)
     {
         super(rawValue);
     }

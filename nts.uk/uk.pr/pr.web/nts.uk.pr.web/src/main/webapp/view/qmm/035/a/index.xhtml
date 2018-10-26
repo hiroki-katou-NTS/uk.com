@@ -46,7 +46,7 @@
             <button id="A1_1" tabindex="1" style="margin-left: 50px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
             <button class="proceed"  id="A1_2" data-bind="click: update ,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('QMM035_3')}</button>
             <button id="A1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM035_4')}</button>
-            <button  id="A1_4" tabindex="4" >#{i18n.getText('QMM035_5')}</button>
+            <button  id="A1_4" tabindex="4" data-bind="enable: $vm.isEnableBtnPdf() " >#{i18n.getText('QMM035_5')}</button>
             <button id="A1_5" class="danger" tabindex="5" data-bind="click: deleteCompany ,enable: $vm.isEnableBtnDelete()" >#{i18n.getText('QMM035_6')}</button>
         </div>
         <div id="contents-area" class="fixed-flex-layout" style="margin-left: 15px;">
@@ -137,13 +137,13 @@
                             <div id="A4_25" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'AddressKana1', required: false }">#{i18n.getText('QMM035_26')}</div>
                             <input id="A4_26" tabindex="17"
-                                   data-bind="ntsTextEditor: {constraint: 'AddressKana1',value: address2, name: '#[QMM035_26]'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'AddressKana1',value: addressKana1, name: '#[QMM035_26]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_27" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'Address2', required: false }">#{i18n.getText('QMM035_27')}</div>
                             <input id="A4_28" tabindex="19"
-                                   data-bind="ntsTextEditor: {constraint: 'Address2',value: addressKana1, name: '#[QMM035_27]'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'Address2',value: address2, name: '#[QMM035_27]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_29" class="column-1"

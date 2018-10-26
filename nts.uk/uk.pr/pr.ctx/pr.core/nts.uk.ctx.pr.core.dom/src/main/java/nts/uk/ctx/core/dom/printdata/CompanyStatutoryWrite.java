@@ -3,6 +3,8 @@ package nts.uk.ctx.core.dom.printdata;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
+import java.math.BigDecimal;
+
 /**
 * 法定調書用会社
 */
@@ -34,7 +36,7 @@ public class CompanyStatutoryWrite extends AggregateRoot {
     */
     private SummaryTableInformation summaryTableInformation;
     
-    public CompanyStatutoryWrite(String cid, String code, String name, String kanaName, String address1, String address2, String addressKana1, String addressKana2, String phoneNumber, String postalCode, String note, String representativePosition, String representativeName, String linkedDepartment, Integer corporateNumber, String acountingOffTeleNumber, String accountingOffName, String salaPayMethodDueDate1, String salaPayMethodDueDate2, String salaPayMethodDueDate3, String accountManaName, String businessLine1, String businessLine2, String businessLine3, String taxOffice, String vibLocaFinIunstitution, String nameBankTranInstitustion, String contactName, String contactClass, String contactPhoneNumber) {
+    public CompanyStatutoryWrite(String cid, String code, String name, String kanaName, String address1, String address2, String addressKana1, String addressKana2, String phoneNumber, String postalCode, String note, String representativePosition, String representativeName, String linkedDepartment, BigDecimal corporateNumber, String acountingOffTeleNumber, String accountingOffName, String salaPayMethodDueDate1, String salaPayMethodDueDate2, String salaPayMethodDueDate3, String accountManaName, String businessLine1, String businessLine2, String businessLine3, String taxOffice, String vibLocaFinIunstitution, String nameBankTranInstitustion, String contactName, String contactClass, String contactPhoneNumber) {
         this.cID = cid;
         this.code = new Code(code);
         this.name = new Name(name);

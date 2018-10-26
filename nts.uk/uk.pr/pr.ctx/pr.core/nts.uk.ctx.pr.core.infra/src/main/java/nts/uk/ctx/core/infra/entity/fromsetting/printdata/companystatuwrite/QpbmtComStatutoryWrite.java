@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.infra.entity.fromsetting.printdata.companystatuwrite;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -119,7 +120,7 @@ public class QpbmtComStatutoryWrite extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "CORPORATE_NUMBER")
-    public Integer corporateNumber;
+    public BigDecimal corporateNumber;
     
     /**
     * 会計事務所電話番号
@@ -248,7 +249,7 @@ public class QpbmtComStatutoryWrite extends UkJpaEntity implements Serializable
                 domain.getBasicInformation().getClubRepresentativePosition().map(i->i.v()).orElse(null),
                 domain.getBasicInformation().getClubRepresentativeName().map(i->i.v()).orElse(null),
                 domain.getBasicInformation().getLinkingDepartment().isPresent() ? domain.getBasicInformation().getLinkingDepartment().get() : null,
-                domain.getBasicInformation().getCorporateNumber().map(i->i.v()).orElse(null),
+                domain.getBasicInformation().getCorporateNumber().isPresent() ? new BigDecimal(domain.getBasicInformation().getCorporateNumber().get().v()) : null,
                 domain.getSummaryTableInformation().getAccountingOfficeTelephoneNumber().map(i->i.v()).orElse(null),
                 domain.getSummaryTableInformation().getAccountingOfficeName().map(i->i.v()).orElse(null),
                 domain.getSummaryTableInformation().getSalaryPaymentMethodAndDueDate1().map(i->i.v()).orElse(null),

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.core.dom.printdata.CompanyStatutoryWrite;
 
+import java.math.BigDecimal;
+
 /**
 * 法定調書用会社: DTO
 */
@@ -85,7 +87,7 @@ public class CompanyStatutoryWriteDto
     /**
     * 法人番号
     */
-    private Integer corporateNumber;
+    private BigDecimal corporateNumber;
     
     /**
     * 会計事務所電話番号
@@ -177,7 +179,7 @@ public class CompanyStatutoryWriteDto
                 domain.getBasicInformation().getClubRepresentativePosition().isPresent()? domain.getBasicInformation().getClubRepresentativePosition().get().v() : null,
                 domain.getBasicInformation().getClubRepresentativeName().isPresent() ? domain.getBasicInformation().getClubRepresentativeName().get().v() : null,
                 domain.getBasicInformation().getLinkingDepartment().isPresent() ? domain.getBasicInformation().getLinkingDepartment().get() : null,
-                domain.getBasicInformation().getCorporateNumber().isPresent() ? domain.getBasicInformation().getCorporateNumber().get().v() : null,
+                domain.getBasicInformation().getCorporateNumber().isPresent() ? new BigDecimal(domain.getBasicInformation().getCorporateNumber().get().v()) : null,
                 domain.getSummaryTableInformation().getAccountingOfficeTelephoneNumber().isPresent() ? domain.getSummaryTableInformation().getAccountingOfficeTelephoneNumber().get().v() : null,
                 domain.getSummaryTableInformation().getAccountingOfficeName().isPresent() ? domain.getSummaryTableInformation().getAccountingOfficeName().get().v() : null,
                 domain.getSummaryTableInformation().getSalaryPaymentMethodAndDueDate1().isPresent() ? domain.getSummaryTableInformation().getSalaryPaymentMethodAndDueDate1().get().v() : null,
