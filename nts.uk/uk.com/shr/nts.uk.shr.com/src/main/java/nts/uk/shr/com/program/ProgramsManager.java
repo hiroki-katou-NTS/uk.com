@@ -1714,6 +1714,11 @@ public class ProgramsManager {
 	/** KSC001K */
 	public static final Program KSC001K = new Program(WebAppId.AT, ProgramIdConsts.KSC001K, "KSC001_80",
 			"/view/ksc/001/k/index.xhtml");
+	/** KAF001 */
+	public static final Program KAF001A = new Program(WebAppId.AT, ProgramIdConsts.KAF001A, "KAF001_1",
+			"/view/kaf/001/a/index.xhtml");
+	public static final Program KAF001B = new Program(WebAppId.AT, ProgramIdConsts.KAF001B, "KAF001_2",
+			"/view/kaf/001/b/index.xhtml");
 	/** KAF002A */
 	public static final Program KAF002A = new Program(WebAppId.AT, ProgramIdConsts.KAF002A, null,
 			"/view/kaf/002/a/index.xhtml");

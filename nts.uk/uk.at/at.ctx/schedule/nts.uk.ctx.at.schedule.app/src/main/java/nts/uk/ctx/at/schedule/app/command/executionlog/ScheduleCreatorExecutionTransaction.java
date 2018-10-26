@@ -2,9 +2,7 @@ package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,7 +12,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
@@ -22,9 +19,6 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthl
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
-import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistItemImported;
-import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistoryImported;
-import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
@@ -35,7 +29,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
@@ -45,11 +38,6 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -63,10 +51,10 @@ public class ScheduleCreatorExecutionTransaction {
 	/** The schedule creator repository. */
 	@Inject
 	private ScheduleCreatorRepository scheduleCreatorRepository;
-
-	/** The schedule execution log repository. */
-	@Inject
-	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
+//
+//	/** The schedule execution log repository. */
+//	@Inject
+//	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 	
 	/** The schedule error log repository. */
 	@Inject
@@ -85,15 +73,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private I18NResourcesForUK internationalization;
-
-	@Inject
-	private ClosureEmploymentRepository closureEmployment;
-
-	@Inject
-	private ClosureRepository closureRepository;
-
-	@Inject
-	private ClosureService closureService;
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
@@ -104,73 +83,61 @@ public class ScheduleCreatorExecutionTransaction {
 			final nts.arc.layer.app.command.AsyncCommandHandlerContext<nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand> asyncTask,
 			Object companySetting, ScheduleCreator scheduleCreator) {
 		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
+	
+		ScheduleCreateContent content = command.getContent();
 		
-		// check is client submit cancel
-		if (asyncTask.hasBeenRequestedToCancel()) {
-			// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-			this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-			return;
-		}
-
-		// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-		StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-				command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
-				masterCache.getEmpGeneralInfo());
-		if (stateAndValueDatePeriod.state) {
-			DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-			ScheduleCreateContent content = command.getContent();
-			List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
-			
-			if (masterCache.getListWorkingConItem().size() > 1) {
-				// 労働条件が途中で変化するなら、計算キャッシュは利用しない
-				// do not cache result of calculation if working condition of the employee is changed in the period
-				CalculationCache.clear();
-			} else {
-				CalculationCache.initialize();
-			}
-			try {
-				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
-						companySetting, scheduleCreator, registrationListDateSchedule, content, betweenDates);
-			} finally {
-				CalculationCache.clear();
-			}
-
-			scheduleCreator.updateToCreated();
-			this.scheduleCreatorRepository.update(scheduleCreator);
+		if (masterCache.getListWorkingConItem().size() > 1) {
+			// 労働条件が途中で変化するなら、計算キャッシュは利用しない
+			// do not cache result of calculation if working condition of the employee is changed in the period
+			CalculationCache.clear();
 		} else {
-			scheduleCreator.updateToCreated();
-			this.scheduleCreatorRepository.update(scheduleCreator);
-			// EA修正履歴　No2378
-			// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
-			ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
-			if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
-				this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
-			}
+			CalculationCache.initialize();
 		}
+		try {
+			this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
+					companySetting, scheduleCreator, registrationListDateSchedule, content);
+		} finally {
+			CalculationCache.clear();
+		}
+
+		scheduleCreator.updateToCreated();
+		this.scheduleCreatorRepository.update(scheduleCreator);
 
 		// 暫定データを作成する (Tạo data tạm)
 		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
 			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
 			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
 		});
+		
 	}
 
-	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod period,
-			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule, Object companySetting,
-			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
-			ScheduleCreateContent content, List<GeneralDate> betweenDates) {
+	private void createSchedule(
+			ScheduleCreatorExecutionCommand command,
+			ScheduleExecutionLog scheduleExecutionLog,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
+			DatePeriod period,
+			CreateScheduleMasterCache masterCache,
+			List<BasicSchedule> listBasicSchedule,
+			Object companySetting,
+			ScheduleCreator scheduleCreator,
+			RegistrationListDateSchedule registrationListDateSchedule,
+			ScheduleCreateContent content) {
 		
 		// 実施区分を判断, 処理実行区分を判断
 		// EA No2115
 		if (content.getImplementAtr() == ImplementAtr.RECREATE
 				&& content.getReCreateContent().getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
 			BasicScheduleResetCommand commandReset = BasicScheduleResetCommand.create(
-					command, period, companySetting, scheduleCreator, content);
+					command, companySetting, scheduleCreator, content);
 			// スケジュールを再設定する (Thiết lập lại schedule)
-			this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
-					masterCache.getEmpGeneralInfo(), masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule);
+			this.resetScheduleWithMultiThread(
+					commandReset,
+					context,
+					period,
+					masterCache.getEmpGeneralInfo(),
+					masterCache.getListBusTypeOfEmpHis(),
+					listBasicSchedule,
+					registrationListDateSchedule);
 		} else {
 			// 入力パラメータ「作成方法区分」を判断-check parameter
 			// CreateMethodAtr
@@ -181,34 +148,13 @@ public class ScheduleCreatorExecutionTransaction {
 						scheduleCreator,
 						scheduleExecutionLog,
 						context,
-						betweenDates,
+						period,
 						masterCache,
 						listBasicSchedule,
 						registrationListDateSchedule);
 			}
 		}
 	}
-
-	/**
-	 * Update status schedule execution log.
-	 *
-	 * @param domain
-	 *            the domain
-	 */
-	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain) {
-		List<ScheduleErrorLog> scheduleErrorLogs = this.scheduleErrorLogRepository
-				.findByExecutionId(domain.getExecutionId());
-
-		// check exist data schedule error log
-		if (CollectionUtil.isEmpty(scheduleErrorLogs)) {
-			domain.setCompletionStatus(CompletionStatus.DONE);
-		} else {
-			domain.setCompletionStatus(CompletionStatus.COMPLETION_ERROR);
-		}
-		domain.updateExecutionTimeEndToNow();
-		this.scheduleExecutionLogRepository.update(domain);
-	}
-	
 
 	
 	/**
@@ -224,7 +170,8 @@ public class ScheduleCreatorExecutionTransaction {
 	// スケジュールを再設定する
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, List<GeneralDate> betweenDates,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
+			DatePeriod targetPeriod,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule) {
 		
@@ -233,7 +180,7 @@ public class ScheduleCreatorExecutionTransaction {
 		
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(command.getEmployeeId(), new ArrayList<>());
 		// loop start period date => end period date
-		for(val toDate : betweenDates) {
+		for(val toDate : targetPeriod.datesBetween()) {
 			// 中断フラグを判断
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				// ドメインモデル「スケジュール作成実行ログ」を更新する
@@ -264,19 +211,6 @@ public class ScheduleCreatorExecutionTransaction {
 			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);
 		}
 	}
-
-	/**
-	 * Update status schedule execution log.
-	 *
-	 * @param domain
-	 *            the domain
-	 */
-	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
-		// check exist data schedule error log
-		domain.setCompletionStatus(completionStatus);
-		domain.updateExecutionTimeEndToNow();
-		this.scheduleExecutionLogRepository.update(domain);
-	}
 	
 	/**
 	 * tra ve true la muon ket thuc vong lap
@@ -301,17 +235,6 @@ public class ScheduleCreatorExecutionTransaction {
 			CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
-
-		// get info by context
-		val asyncTask = context.asAsync();
-
-		// check is client submit cancel ［中断］(Interrupt)
-		if (asyncTask.hasBeenRequestedToCancel()) {
-			asyncTask.finishedAsCancelled();
-			// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-			this.updateStatusScheduleExecutionLog(domain, CompletionStatus.INTERRUPTION);
-			return true;
-		}
 		
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA修正履歴　No2716
@@ -417,7 +340,7 @@ public class ScheduleCreatorExecutionTransaction {
 			ScheduleCreator creator,
 			ScheduleExecutionLog domain,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
-			List<GeneralDate> betweenDates,
+			DatePeriod targetPeriod,
 			CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule) {
@@ -425,7 +348,7 @@ public class ScheduleCreatorExecutionTransaction {
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
 //		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
-		betweenDates.forEach(dateInPeriod -> {
+		targetPeriod.datesBetween().forEach(dateInPeriod -> {
 //			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 //					.build(() -> {
 						boolean isEndLoop = this.createScheduleBasedPersonOneDate(
@@ -554,59 +477,5 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 
 
-	/**
-	 * アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-	 * 
-	 * @param companyId
-	 * @param employeeId
-	 * @param dateBeforeCorrection
-	 * @param empGeneralInfo
-	 * @return
-	 */
-	private StateAndValueDatePeriod correctTargetPeriodAfterClosingStartDate(String companyId, String employeeId,
-			DatePeriod dateBeforeCorrection, EmployeeGeneralInfoImported empGeneralInfo) {
-		// EA No1676
-		Map<String, List<ExEmploymentHistItemImported>> mapEmploymentHist = empGeneralInfo.getEmploymentDto().stream()
-				.collect(Collectors.toMap(ExEmploymentHistoryImported::getEmployeeId,
-						ExEmploymentHistoryImported::getEmploymentItems));
-
-		List<ExEmploymentHistItemImported> listEmpHistItem = mapEmploymentHist.get(employeeId);
-		Optional<ExEmploymentHistItemImported> optEmpHistItem = Optional.empty();
-		if (listEmpHistItem != null) {
-			optEmpHistItem = listEmpHistItem.stream()
-					.filter(empHistItem -> empHistItem.getPeriod().contains(dateBeforeCorrection.end())).findFirst();
-		}
-
-		if (!optEmpHistItem.isPresent()) {
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
-		}
-
-		// ドメインモデル「雇用に紐づく就業締め」を取得
-		Optional<ClosureEmployment> optionalClosureEmployment = this.closureEmployment.findByEmploymentCD(companyId,
-				optEmpHistItem.get().getEmploymentCode());
-		if (!optionalClosureEmployment.isPresent())
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
-		// ドメインモデル「締め」を取得
-		Optional<Closure> optionalClosure = this.closureRepository.findById(companyId,
-				optionalClosureEmployment.get().getClosureId());
-		if (!optionalClosure.isPresent())
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
-		// アルゴリズム「当月の期間を算出する」を実行
-		DatePeriod dateP = this.closureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
-				optionalClosure.get().getClosureMonth().getProcessingYm());
-		// Input「対象開始日」と、取得した「開始年月日」を比較
-		DatePeriod dateAfterCorrection = dateBeforeCorrection;
-		if (dateBeforeCorrection.start().before(dateP.start())) {
-			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
-		}
-		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
-		if (dateAfterCorrection.start().beforeOrEquals(dateBeforeCorrection.end())) {
-			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
-			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
-			return new StateAndValueDatePeriod(dateAfterCorrection, true);
-		}
-
-		return new StateAndValueDatePeriod(dateAfterCorrection, false);
-	}
 
 }

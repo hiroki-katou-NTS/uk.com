@@ -308,7 +308,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (1038) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 250) + 'px !IMPORTANT');
+
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 250) + 'px !IMPORTANT');
+            });
 
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime)
@@ -1773,7 +1778,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
                         //self.showLock(self.showButton().available12());
                         //self.unLock(false);
-                        if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
+                        if (data.lstControlDisplayItem.lstHeader.length == 0){
+                            self.hasLstHeader = false;
+                        }else{
+                            self.hasLstHeader = true;
+                        }
+                        
                         if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                             self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                             self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[7], self.fixHeaders()[4]];
@@ -2775,8 +2785,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                 /** Required parameter */
                 //baseDate: self.baseDate().toISOString(), // 基準日
-                periodStartDate: self.dateRanger() == null ? new Date().toISOString() :  self.dateRanger().startDate, // 対象期間開始日
-                periodEndDate: self.dateRanger() == null ? new Date().toISOString() : self.dateRanger().endDate, // 対象期間終了日
+//                periodStartDate: self.dateRanger() == null ? new Date().toISOString() :  self.dateRanger().startDate, // 対象期間開始日
+//                periodEndDate: self.dateRanger() == null ? new Date().toISOString() : self.dateRanger().endDate, // 対象期間終了日
+                dateRangePickerValue:  self.dateRanger,
                 inService: true, // 在職区分
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
@@ -2812,11 +2823,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }));
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     self.selectedEmployee(self.lstEmployee()[0].id);
-                    if (self.hasEmployee) {
-                        self.loadKcp009();
-                    }
                     self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.hasEmployee = true;
+                    self.loadKcp009();
                     self.btnExtraction_Click();
                 },
             }
@@ -2905,11 +2914,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 subWidth : subWidth,
-                height: (window.screen.availHeight - 250) + "px",
+                subHeight: '285px',
+                height: (window.screen.availHeight - 240) + "px",
                 headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
-                minRows: 31,
-                maxRows: 50,
+//                minRows: 31,"
+//                maxRows: 50,
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
@@ -3493,6 +3503,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 })
             }
 
+            //remove error
+            _.remove(__viewContext.vm.workTypeNotFound, error => {
+               return error.columnKey == columnKey && error.rowId == rowId;
+            })
+            
             if (typeGroup != undefined && typeGroup != null) {
                 let param = {
                     typeDialog: typeGroup.split(":")[1],
@@ -3517,6 +3532,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 return data.columnKey == columnKey && data.rowId == rowId;
                             });
                             if (data.errorFind == 1) {
+                                let e = document.createEvent("HTMLEvents");
+                                e.initEvent("mouseup", false, true);
+                                $("#dpGrid")[0].dispatchEvent(e);
                                 if (typeError == undefined) {
                                     __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId, message: nts.uk.resource.getMessage("Msg_1293") });
                                 } else {
@@ -3524,6 +3542,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 }
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1293" })
                             } else if (data.errorFind == 2) {
+                                let e = document.createEvent("HTMLEvents");
+                                e.initEvent("mouseup", false, true);
+                                $("#dpGrid")[0].dispatchEvent(e);
                                 if (typeError == undefined) {
                                     __viewContext.vm.workTypeNotFound.push({ columnKey: columnKey, rowId: rowId, message: nts.uk.resource.getMessage("Msg_1314") });
                                 } else {
@@ -3561,6 +3582,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             __viewContext.vm.flagCalculation = false;
             $("#next-month").ntsError("clear");
             
+            _.remove(__viewContext.vm.listCheck28(), error => {
+                return error.rowId == rowId;
+            })
             if (columnKey.indexOf("Code") != -1) {
                 keyId = columnKey.substring(4, columnKey.length);
                 valueError = _.find(__viewContext.vm.workTypeNotFound, data => {
@@ -4443,7 +4467,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.messageNoForward(messageNotForward);
 
             //フレックス不足(内前月繰越)
-            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val21))), self.convertToHours(Number(val21))]));
             //翌月繰越
             self.nextMonthTransferredMoneyTime(getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
             //年休

@@ -51,7 +51,7 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
-            isEmployeeCharge: KnockoutObservable<boolean> =  ko.observableArray(false);
+            isEmployeeCharge: KnockoutObservable<boolean> = ko.observableArray(false);
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
@@ -112,7 +112,7 @@ module nts.uk.at.view.kwr008.a {
                         self.showClosure(true);
                     }
                 });
-                
+
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
                 });
@@ -146,7 +146,12 @@ module nts.uk.at.view.kwr008.a {
                     data.startYearMonth = self.dateValue().startDate;
                     data.endYearMonth = self.dateValue().endDate;
                 } else {
-                    data.fiscalYear = self.fiscalYear();
+                    let year = self.fiscalYear();
+                    if (year.match(/\d{4}/)) {
+                        data.fiscalYear = year;
+                    } else {
+                        data.fiscalYear = moment.utc(year).get('year');
+                    }
                 }
                 data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage = self.selectedBreakPage().toString();
@@ -371,7 +376,7 @@ module nts.uk.at.view.kwr008.a {
                 let self = this;
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
-                }else{
+                } else {
                     $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');

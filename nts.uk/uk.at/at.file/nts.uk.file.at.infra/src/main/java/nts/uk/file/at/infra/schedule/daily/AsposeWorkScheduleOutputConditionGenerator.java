@@ -41,7 +41,6 @@ import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -78,8 +77,6 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
@@ -138,6 +135,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -230,7 +228,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private OptionalItemRepository optionalItemRepo;
 	
 	/** The filename. */
-	private final String filename = "report/KWR001.xlsx";
+	private static final String filename = "report/KWR001.xlsx";
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
@@ -270,17 +268,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int ATTENDANCE_ID_OPTIONAL_END = 740;
 	
 	/** The font family. */
-	private final String FONT_FAMILY = "ＭＳ ゴシック";
+	private static final String FONT_FAMILY = "ＭＳ ゴシック";
 	
 	/** The font size. */
-	private final int FONT_SIZE = 9;
+	private static final int FONT_SIZE = 9;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, WorkScheduleOutputQuery query) {
-		val reportContext = this.createContext(filename);
+		AsposeCellsReportContext reportContext = this.createContext(filename);
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
 		// ドメインモデル「日別勤務表の出力項目」を取得する
@@ -288,7 +286,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (!optOutputItemDailyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
-		
 		
 		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
 		
@@ -381,9 +378,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			// Delete footer if user doesn't set remark content
-			if (outputItemDailyWork.getLstRemarkContent().stream().filter(remark -> remark.isUsedClassification()).count() > 0) {
+			if (!outputItemDailyWork.getLstRemarkContent().stream().anyMatch(remark -> remark.isUsedClassification())) {
 				hideFooter(sheet);
 			}
+			
+			alignTopCotent(sheet);
 			
 			// Rename sheet
 			sheet.setName(WorkScheOutputConstants.SHEET_NAME_MONTHLY);
@@ -2789,14 +2788,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	private String getTimeAttr(String rawValue, boolean isConvertAttr) {
 		int value = Integer.parseInt(rawValue);
-		if (isConvertAttr && value != 0) {
-			TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
+		TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
+		if (isConvertAttr) {
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
 		}
 		else {
-			int minute = value % 60;
-			return String.valueOf(value / 60) + ":" + (minute < 10 ? "0" + minute : String.valueOf(minute));
+			return timeFormat.getTimeText();
 		}
 	}
 	
@@ -2911,6 +2909,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         }
         return sortedMap;
     }
+	
+	private void alignTopCotent(Worksheet sheet) {
+		PageSetup pageSetup = sheet.getPageSetup();
+		pageSetup.setCenterHorizontally(true);
+		pageSetup.setCenterVertically(false);
+	}
 	
 	/**
 	 * Gets the remark content.
