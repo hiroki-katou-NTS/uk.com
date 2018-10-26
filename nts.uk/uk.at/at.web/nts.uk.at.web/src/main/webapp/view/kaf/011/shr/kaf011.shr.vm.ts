@@ -234,9 +234,6 @@ module nts.uk.at.view.kaf011.shr {
                             wkTypeCD: newWkType,
                             wkTimeCD: self.wkTimeCD()
                         };
-                        if (self.wkTimeCD()) {
-                            return;
-                        }
                         block.invisible();
                         service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                             self.setDataFromWkDto(data);
