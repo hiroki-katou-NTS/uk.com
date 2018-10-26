@@ -1860,7 +1860,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Write detail work schedule.
+	 * Write detail work schedule.+
 	 *
 	 * @param currentRow the current row
 	 * @param templateSheetCollection the template sheet collection
@@ -1950,7 +1950,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					for (DetailedDailyPerformanceReportData detailedDailyPerformanceReportData: lstDetailedDailyPerformance) {
 						Range dateRangeTemp;
 						
-						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 							sheet.getHorizontalPageBreaks().add(currentRow);
 							rowPageTracker.resetRemainingRow();
 						}
@@ -2048,7 +2048,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// Personal total
 				if (totalOutput.isPersonalTotal()) {
-					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 						sheet.getHorizontalPageBreaks().add(currentRow);
 						rowPageTracker.resetRemainingRow();
 					}
@@ -2144,7 +2144,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// Skip writing total for root, use gross total instead
 		if (lstEmployeeReportData != null && lstEmployeeReportData.size() > 0 && totalOutput.isWorkplaceTotal()) {
-			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
@@ -2257,7 +2257,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						tagStr = null;
 					
 					if (tagStr != null) {
-						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 							sheet.getHorizontalPageBreaks().add(currentRow);
 							rowPageTracker.resetRemainingRow();
 						}
@@ -2383,7 +2383,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		if (condition.getSettingDetailTotalOutput().isGrossTotal()) {
 			// Gross total after all the rest of the data
-			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 				sheet.getHorizontalPageBreaks().add(currentRow);
 				rowPageTracker.resetRemainingRow();
 			}
@@ -2451,7 +2451,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				// Skip to next employee when there is no actual value
 				if (lstItem == null || lstItem.isEmpty()) continue;
 				
-				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 					sheet.getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();
 				}
@@ -2559,7 +2559,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// Workplace total, root workplace use gross total instead
 		if (condition.getSettingDetailTotalOutput().isWorkplaceTotal() && rootWorkplace.getLevel() != 0) {
-			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 				sheet.getHorizontalPageBreaks().add(currentRow);
 				rowPageTracker.resetRemainingRow();
 			}
@@ -2627,7 +2627,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (levelIterator != null && levelIterator.hasNext()) 
 					level = (int) levelIterator.next();
 				if (!settingTotalHierarchy.checkLevelEnabled(level)) break;
-				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0 || (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0 && dataRowCount == 1)) {
 					sheet.getHorizontalPageBreaks().add(currentRow);
 					rowPageTracker.resetRemainingRow();
 				}
