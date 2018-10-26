@@ -14,8 +14,8 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Stateless
 @Transactional
