@@ -29,7 +29,7 @@ public class MonthlyRemarksFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public MonthlyRemarksDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return MonthlyRemarksDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
+		return MonthlyRemarksDto.from(this.repo.find(employeeId, closureId, null, yearMonth, closureDate).orElse(null));
 	}
 	
 	@Override

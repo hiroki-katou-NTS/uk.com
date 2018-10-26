@@ -12,15 +12,20 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class StatementItemDisplaySet extends AggregateRoot {
 
-	/**
-	 * 会社ID
-	 */
-	private String cid;
+    /**
+     * 会社ID
+     */
+    private String cid;
 
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
+    /**
+     * カテゴリ区分
+     */
+    private CategoryAtr categoryAtr;
+
+    /**
+     * 項目名コード
+     */
+    private ItemNameCode itemNameCd;
 
 	/**
 	 * ゼロ表示区分
@@ -32,9 +37,10 @@ public class StatementItemDisplaySet extends AggregateRoot {
 	 */
 	private Optional<ItemNameDisplayEnum> itemNameDisplay;
 
-	public StatementItemDisplaySet(String cid, String salaryItemId, int zeroDisplayAtr, Integer itemNameDisplay) {
-		this.cid = cid;
-		this.salaryItemId = salaryItemId;
+	public StatementItemDisplaySet(String cid, int categoryAtr, String itemNameCd, int zeroDisplayAtr, Integer itemNameDisplay) {
+        this.cid = cid;
+        this.categoryAtr = EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class);
+        this.itemNameCd = new ItemNameCode(itemNameCd);
 		this.zeroDisplayAtr = EnumAdaptor.valueOf(zeroDisplayAtr, ZeroDisplayEnum.class);
 		this.itemNameDisplay = itemNameDisplay == null ? Optional.empty()
 				: Optional.of(EnumAdaptor.valueOf(itemNameDisplay, ItemNameDisplayEnum.class));

@@ -14,8 +14,11 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,6 +34,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmou
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlBusinessType;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlEmployment;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlJobTitle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemCon;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemConPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTarget;
@@ -69,6 +75,32 @@ public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "MESSAGE_DISPLAY")
 	public String messageDisplay;
+
+	// not used for monthly --start
+	@Column(name = "FILTER_BY_BUSINESS_TYPE")
+	public int filterByBusinessType = 0;
+
+	@Column(name = "FILTER_BY_JOB_TITLE")
+	public int filterByJobTitle = 0;
+
+	@Column(name = "FILTER_BY_EMPLOYMENT")
+	public int filterByEmployment = 0;
+
+	@Column(name = "FILTER_BY_CLASSIFICATION")
+	public int filterByClassification = 0;
+	
+	@Column(name = "WORKTYPE_USE_ATR")
+	public int workTypeUseAtr = 0;
+
+	@Column(name = "WT_PLAN_ACTUAL_OPERATOR")
+	public int wtPlanActualOperator = 0;
+	
+	@Column(name = "WORKING_HOURS_USE_ATR")
+	public int workingHoursUseAtr = 0;
+
+	@Column(name = "WH_PLAN_ACTUAL_OPERATOR")
+	public int whPlanActualOperator = 0;
+	// not used for monthly --end
 
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
 	public int operatorBetweenGroups;

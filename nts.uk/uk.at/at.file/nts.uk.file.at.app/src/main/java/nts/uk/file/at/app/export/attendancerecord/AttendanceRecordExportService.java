@@ -135,6 +135,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<Employee> unknownEmployeeList = new ArrayList<>();
 		List<Employee> nullDataEmployeeList = new ArrayList<>();
 		List<Employee> employeeListAfterSort = new ArrayList<>();
+		List<Employee> distinctEmployeeListAfterSort = new ArrayList<>();
 		// Get workType info
 		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(companyId);
 
@@ -196,6 +197,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		if (!unknownEmployeeList.isEmpty()) {
 			employeeListAfterSort.addAll(unknownEmployeeList);
 		}
+		distinctEmployeeListAfterSort = employeeListAfterSort.stream().distinct().collect(Collectors.toList());
+
 		List<Integer> attendanceItemList = new ArrayList<>();
 		// get upper-daily-singleItem list
 		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(companyId,
@@ -224,7 +227,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
-		for (Employee employee : employeeListAfterSort) {
+		for (Employee employee : distinctEmployeeListAfterSort) {
 
 			// Number of real data
 			Integer realDataOfEmployee = 0;
@@ -875,7 +878,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		if (!invidual.isEmpty()) {
 			setter.setData("invidual", invidual);
 		}
-		if (employeeListAfterSort.size() <= nullDataEmployeeList.size()) {
+		if (distinctEmployeeListAfterSort.size() <= nullDataEmployeeList.size()) {
 			// If real data of employee isn't exist
 			if (!invidual.isEmpty()) {
 				exceptions.addMessage("Msg_1269", invidual);
@@ -883,10 +886,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			exceptions.throwExceptions();
 
 		} else {
-			employeeListAfterSort.removeAll(nullDataEmployeeList);
+			distinctEmployeeListAfterSort.removeAll(nullDataEmployeeList);
 
 		}
-		for (Employee employee : employeeListAfterSort) {
+		for (Employee employee : distinctEmployeeListAfterSort) {
 			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
 			for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
 

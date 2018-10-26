@@ -21,4 +21,11 @@ public class SpecialLeavaRemainTime extends TimeDurationPrimitiveValue<SpecialLe
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(0);
+		if (rawValue > 48 * 60) rawValue = 48 * 60;
+		if (rawValue < 0) rawValue = 0;
+		return super.reviseRawValue(rawValue);
+	}
 }

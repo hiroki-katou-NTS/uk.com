@@ -58,10 +58,10 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	@Override
 	public boolean checkScheTimeCanReflect(String workTimeCode, ScheAndRecordSameChangeFlg scheAndRecordSameChange) {
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(scheAndRecordSameChange == ScheAndRecordSameChangeFlg.NOTAUTO) {
+		if(scheAndRecordSameChange == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO) {
 			return false;
-		} else if (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.ALWAY
-				|| (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.FLUIDWORK
+		} else if (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO
+				|| (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK
 						&& isFluidWork.checkWorkTimeIsFluidWork(workTimeCode))){
 			return true;
 		} 

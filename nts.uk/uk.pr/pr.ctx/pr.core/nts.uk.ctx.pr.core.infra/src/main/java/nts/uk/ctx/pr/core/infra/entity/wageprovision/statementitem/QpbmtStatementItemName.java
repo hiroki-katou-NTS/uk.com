@@ -63,12 +63,12 @@ public class QpbmtStatementItemName extends UkJpaEntity implements Serializable 
 	}
 
 	public StatementItemName toDomain() {
-		return new StatementItemName(this.statementItemNamePk.cid, this.statementItemNamePk.salaryItemId, this.name,
+		return new StatementItemName(this.statementItemNamePk.cid, this.statementItemNamePk.categoryAtr, this.statementItemNamePk.itemNameCd, this.name,
 				this.shortName, this.otherLanguageName, this.englishName);
 	}
 
 	public static QpbmtStatementItemName toEntity(StatementItemName domain) {
-		return new QpbmtStatementItemName(new QpbmtStatementItemNamePk(domain.getCid(), domain.getSalaryItemId()),
+		return new QpbmtStatementItemName(new QpbmtStatementItemNamePk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v()),
 				domain.getName().v(), domain.getShortName().v(),
 				domain.getOtherLanguageName().map(i -> i.v()).orElse(null),
 				domain.getEnglishName().map(i -> i.v()).orElse(null));

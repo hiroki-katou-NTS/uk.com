@@ -25,7 +25,7 @@ public class LayoutControlComBoBox {
 	private ComboBoxRetrieveFactory comboBoxFactory;
 
 	public void getComboBoxListForSelectionItems(String employeeId, PersonInfoCategory perInfoCategory,
-			List<LayoutPersonInfoClsDto> classItemList, GeneralDate comboBoxStandardDate, String workPlaceId) {
+			List<LayoutPersonInfoClsDto> classItemList, GeneralDate comboBoxStandardDate) {
 
 		Map<String, Map<Boolean, List<ComboBoxObject>>> comboBoxMap = new HashMap<>();
 
@@ -38,7 +38,7 @@ public class LayoutControlComBoBox {
 
 					List<ComboBoxObject> comboBoxList = getCombo(selectionItemDto, comboBoxMap, employeeId,
 							comboBoxStandardDate, valueItem.isRequired(), perInfoCategory.getPersonEmployeeType(),
-							isDataType6, perInfoCategory.getCategoryCode().v(), workPlaceId);
+							isDataType6, perInfoCategory.getCategoryCode().v());
 
 					valueItem.setLstComboBoxValue(comboBoxList);
 				}
@@ -50,7 +50,7 @@ public class LayoutControlComBoBox {
 	private List<ComboBoxObject> getCombo(SelectionItemDto selectionItemDto,
 			Map<String, Map<Boolean, List<ComboBoxObject>>> combobox, String employeeId,
 			GeneralDate comboBoxStandardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6,
-			String categoryCode, String workPlaceId) {
+			String categoryCode) {
 		String referenceCode = null;
 		switch (selectionItemDto.getReferenceType()) {
 		case DESIGNATED_MASTER:
@@ -72,14 +72,14 @@ public class LayoutControlComBoBox {
 				return mapComboInRefCode.get(isRequired);
 			} else {
 				List<ComboBoxObject> returnList = comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-						comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode,workPlaceId);
+						comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode,null, false);
 				mapComboInRefCode.put(isRequired, returnList);
 				combobox.put(referenceCode, mapComboInRefCode);
 				return returnList;
 			}
 		} else {
 			List<ComboBoxObject> returnList = comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-					comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode,workPlaceId);
+					comboBoxStandardDate, isRequired, perEmplType, isDataType6, categoryCode,null, false);
 			Map<Boolean, List<ComboBoxObject>> mapComboInRefCode = new HashMap<>();
 			mapComboInRefCode.put(isRequired, returnList);
 			combobox.put(referenceCode, mapComboInRefCode);

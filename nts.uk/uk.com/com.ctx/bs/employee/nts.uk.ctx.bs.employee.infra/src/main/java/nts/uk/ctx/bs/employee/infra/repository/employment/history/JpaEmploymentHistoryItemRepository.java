@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,9 +17,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
@@ -75,8 +79,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		builder.append(" ON h.HIST_ID = i.HIST_ID AND h.SID = i.SID AND a.CODE = i.EMP_CD");
 		builder.append(" WHERE a.CID = ? AND h.SID = ? ");
 		builder.append(" AND h.START_DATE <= ? AND h.END_DATE >= ?");
-		try {
-			val statement = this.connection().prepareStatement(builder.toString());
+		try (val statement = this.connection().prepareStatement(builder.toString())) {
 			statement.setString(1, companyId);
 			statement.setString(2, sid);
 			statement.setDate(3, Date.valueOf(date.localDate()));
@@ -202,7 +205,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		// Split query.
 		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(employmentCodes, 1000, (subList) -> {
+		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -262,8 +265,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		cq.select(root);
 
 		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, employeeSubList -> {
-			CollectionUtil.split(employmentCodes, 1000, employmentSubList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employeeSubList -> {
+			CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employmentSubList -> {
 				// add where
 				List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -346,7 +349,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		
 		// Split employee ids.
 		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
@@ -437,44 +440,66 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	}
 
 	@Override
+	@SneakyThrows
 	public List<EmploymentHistoryItem> getByListHistoryId(List<String> historyIds) {
 		if (CollectionUtil.isEmpty(historyIds)) {
 			return new ArrayList<>();
 		}
 		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
-		CollectionUtil.split(historyIds, 1000, subList -> {
-			listHistItem.addAll(this.queryProxy().query(SELECT_BY_HISTIDS, BsymtEmploymentHistItem.class)
-					.setParameter("historyId", subList).getList());
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				try(PreparedStatement statement = this.connection().prepareStatement(
+						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+					  + " where a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")")){
+					for (int i = 0; i < subList.size(); i++) {
+						statement.setString(i + 1, subList.get(i));
+					}
+					
+					List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
+						entity.hisId = rec.getString("HIST_ID");
+						entity.sid = rec.getString("SID");
+						entity.empCode = rec.getString("EMP_CD");
+						entity.salarySegment  = rec.getInt("SALARY_SEGMENT");
+						return entity;
+					});
+					
+					listHistItem.addAll(results);
+					
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				};
 		});
 		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	
 	}
-
-	@Override
-	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
-			List<String> employmentCodes) {
-		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
-		CollectionUtil.split(employmentCodes, 1000, subList -> {
-			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
-					.setParameter("employmentCodes", subList)
-					.setParameter("startDate", dateperiod.start())
-					.setParameter("endDate", dateperiod.end())
-					.getList());
-		});
-		if(listHistItem.isEmpty()){
-			return Collections.emptyList();
-		}
-		return listHistItem.stream().map(e -> {
-			EmploymentHistoryItem domain = this.toDomain(e);
-			return domain;
-		}).collect(Collectors.toList());
-	}
+//
+//	"SELECT aw FROM BsymtEmploymentHistItem aw"
+//	+ " WHERE aw.hisId IN :historyId"
+//	@Override
+//	public List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod,
+//			List<String> employmentCodes) {
+//		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
+//		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+//			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, BsymtEmploymentHistItem.class)
+//					.setParameter("employmentCodes", subList)
+//					.setParameter("startDate", dateperiod.start())
+//					.setParameter("endDate", dateperiod.end())
+//					.getList());
+//		});
+//		if(listHistItem.isEmpty()){
+//			return Collections.emptyList();
+//		}
+//		return listHistItem.stream().map(e -> {
+//			EmploymentHistoryItem domain = this.toDomain(e);
+//			return domain;
+//		}).collect(Collectors.toList());
+//	}
 
 	@Override
 	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
 		List<String> listSid = new ArrayList<>();
-		CollectionUtil.split(employmentCodes, 1000, subList -> {
+		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_EMPTCODE_DATEPERIOD, String.class)
 					.setParameter("employmentCodes", subList)
 					.setParameter("startDate", dateperiod.start())

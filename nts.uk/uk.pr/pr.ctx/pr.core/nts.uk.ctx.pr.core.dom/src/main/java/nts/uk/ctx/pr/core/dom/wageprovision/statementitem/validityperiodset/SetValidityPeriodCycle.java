@@ -1,7 +1,10 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode;
 
 /**
  * 
@@ -13,9 +16,20 @@ import nts.arc.layer.dom.AggregateRoot;
 public class SetValidityPeriodCycle extends AggregateRoot {
 
 	/**
-	 * 給与項目ID
+	 * 会社ID
 	 */
-	private String salaryItemId;
+	private String cid;
+
+	/**
+	 * カテゴリ区分
+	 */
+	private CategoryAtr categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	private ItemNameCode itemNameCd;
+
 	/**
 	 * サイクル設定
 	 */
@@ -26,11 +40,13 @@ public class SetValidityPeriodCycle extends AggregateRoot {
 	 */
 	private ValidityPeriodSet validityPeriodSetting;
 
-	public SetValidityPeriodCycle(String salaryItemId, int cycleSettingAtr, Integer january, Integer february, Integer march, Integer april,
+	public SetValidityPeriodCycle(String cid, int categoryAtr, String itemNameCd, int cycleSettingAtr, Integer january, Integer february, Integer march, Integer april,
 			Integer may, Integer june, Integer july, Integer august, Integer september, Integer october, Integer november, Integer december,
 			int periodAtr, Integer startYear, Integer endYear) {
 		super();
-		this.salaryItemId = salaryItemId;
+		this.cid = cid;
+		this.categoryAtr = EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class);
+		this.itemNameCd = new ItemNameCode(itemNameCd);
 		this.cycleSetting = new CycleSetting(cycleSettingAtr, january, february, march, april, may, june, july, august,
 				september, october, november, december);
 		this.validityPeriodSetting = new ValidityPeriodSet(periodAtr, startYear, endYear);

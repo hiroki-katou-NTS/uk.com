@@ -12,4 +12,6 @@ public class RsvLeaveInfoImport {
 	private Double aftRemainDay;
 	//付与日
 	private Double grantDay;
+	//残数
+	private Double remainingDays;
 }

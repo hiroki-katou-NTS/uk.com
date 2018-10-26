@@ -27,6 +27,7 @@ import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDat
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -207,7 +208,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Set header value
 					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
-					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16" + dataSource.getData().getReportName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + dataSource.getData().getReportName());
 					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9&D　&T\npage&P");
 					
 					// Delete template column
@@ -305,17 +306,17 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				(startNewPage + START_EMPLOYEE_DATA_ROW), (startNewPage + START_EMPLOYEE_DATA_ROW)));
 
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
-				.setValue(employeeInfoL.get(0, EMPL_INVIDUAL_INDEX).getValue() + " " + employeeData.getInvidual());
+				.setValue(TextResource.localize("KWR002_212") + " " + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
-				.setValue(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX).getValue() + " " + employeeData.getWorkplace());
+				.setValue(TextResource.localize("KWR002_213", "#Com_Workplace") + " " + employeeData.getWorkplace());
 		employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX).getValue() + " " + employeeData.getEmployment());
+				.setValue(TextResource.localize("KWR002_214", "#Com_Employment") + " " + employeeData.getEmployment());
 		employeeInfoR.get(0, EMPL_TITLE_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_TITLE_INDEX).getValue() + " " + employeeData.getTitle());
+				.setValue(TextResource.localize("KWR002_215", "#Com_Jobtitle") + " " + employeeData.getTitle());
 		employeeInfoR.get(0, EMPL_WORKTYPE_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_WORKTYPE_INDEX).getValue() + " " + employeeData.getWorkType());
+				.setValue(TextResource.localize("KWR002_216") + " " + employeeData.getWorkType());
 		employeeInfoR.get(0, EMPL_YEARMONTH_INDEX)
-				.setValue(employeeInfoR.get(0, EMPL_YEARMONTH_INDEX).getValue() + " " + employeeData.getYearMonth());
+				.setValue(TextResource.localize("KWR002_217") + " " + employeeData.getYearMonth());
 
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();

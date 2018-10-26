@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.resultrecord;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,9 +16,12 @@ import javax.ejb.Stateless;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -55,7 +59,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
 			"appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, "+
-			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+   
+			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+
 			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
 			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
 			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
@@ -71,9 +75,25 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER = 
+			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = 'companyID' " +
+			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+			"AND appRoot.ROOT_TYPE = rootType " +
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
+	
+	private final String DELETE_PHASE_APPROVER_FROM_DATE = 
+			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = 'companyID' " +
+			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+			"AND appRoot.ROOT_TYPE = rootType " +
+			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+	
+	private final String DELETE_FRAME_APPROVER_FROM_DATE = 
 			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
 			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
 			"WHERE appRoot.CID = 'companyID' " +
@@ -92,7 +112,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE CID = 'companyID' " +
 			"AND EMPLOYEE_ID = 'employeeID' " +
 			"AND ROOT_TYPE = rootType " +
-			"AND RECORD_DATE >= 'recordDate' ";
+			"AND RECORD_DATE = 'recordDate' ";
 	
 	private final String DELETE_PHASE_APPROVER_FOR_424 = 
 			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
@@ -100,7 +120,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String DELETE_FRAME_APPROVER_FOR_424 = 
 			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
@@ -108,7 +128,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"WHERE appRoot.CID = 'companyID' " +
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String FIND_BY_EMP_MONTH = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
@@ -135,10 +155,9 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	public Optional<AppRootConfirm> findByID(String rootID) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_ID;
-			query = query.replaceAll("rootID", rootID);
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_ID;
+		query = query.replaceAll("rootID", rootID);
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -168,6 +187,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 	
 	@Override
+	@SneakyThrows
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
 		
 		//delete phase
@@ -182,7 +202,6 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query2 = query2.replaceAll("rootType", String.valueOf(rootType));
 		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
 		
-		
 		//delete root
 		String query3 = DELETE_APP_ROOT_CONFIRM.replaceAll("employeeID", employeeID);
 		query3 = query3.replaceAll("companyID", companyID);
@@ -191,26 +210,14 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		
-		try {
-			PreparedStatement pstatement1 = con.prepareStatement(query1);
+		try (PreparedStatement pstatement1 = con.prepareStatement(query1)) {
 			pstatement1.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
 		}
-		try {
-			PreparedStatement pstatement2 = con.prepareStatement(query2);
+		try (PreparedStatement pstatement2 = con.prepareStatement(query2)) {
 			pstatement2.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
 		}
-		try {
-			PreparedStatement pstatement3 = con.prepareStatement(query3);
+		try (PreparedStatement pstatement3 = con.prepareStatement(query3)) {
 			pstatement3.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
 		}
 		
 	}
@@ -325,15 +332,13 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query2 = query2.replaceAll("rootType", String.valueOf(rootType.value));
 		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			PreparedStatement pstatement1 = con.prepareStatement(query1);
+		try (PreparedStatement pstatement1 = con.prepareStatement(query1)) {
 			pstatement1.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new BusinessException(e.getMessage());
 		}
-		try {
-			PreparedStatement pstatement2 = con.prepareStatement(query2);
+		try (PreparedStatement pstatement2 = con.prepareStatement(query2)) {
 			pstatement2.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -353,13 +358,12 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	public Optional<AppRootConfirm> findByEmpDate(String companyID, String employeeID, GeneralDate date,
 			RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_DATE;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_DATE;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -374,19 +378,49 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 
 	@Override
+	public List<AppRootConfirm> findByEmpDate(String companyID, List<String> employeeIDs, DatePeriod date,
+			RecordRootType rootType) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, ");
+		sql.append(" appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, ");
+		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
+		sql.append(" FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase ");
+		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
+		sql.append(" LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame ");
+		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
+		sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE <= ? AND appRoot.RECORD_DATE >= ?");
+		sql.append(" AND appRoot.EMPLOYEE_ID IN (");
+		sql.append(employeeIDs.stream().map(s -> "?").collect(Collectors.joining(",")));
+		sql.append(" )");
+		
+		try (PreparedStatement statement = this.connection().prepareStatement(sql.toString())) {
+			statement.setString(1, companyID);
+			statement.setInt(2, rootType.value);
+			statement.setDate(3, Date.valueOf(date.end().localDate()));
+			statement.setDate(4, Date.valueOf(date.start().localDate()));
+			for (int i = 0; i < employeeIDs.size(); i++) {
+				statement.setString(i + 5, employeeIDs.get(i));
+			}
+			return toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootConfirm(rs)));
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
 	public Optional<AppRootConfirm> findByEmpMonth(String companyID, String employeeID, YearMonth yearMonth,
 			Integer closureID, ClosureDate closureDate, RecordRootType rootType) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_MONTH;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("rootType", String.valueOf(rootType.value));
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("yearMonth", yearMonth.v().toString());
-			query = query.replaceAll("closureID", closureID.toString());
-			query = query.replaceAll("closureDay", closureDate.getClosureDay().v().toString());
-			query = query.replaceAll("lastDayFlg", closureDate.getLastDayOfMonth() ? "1" : "0");
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_MONTH;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("yearMonth", yearMonth.v().toString());
+		query = query.replaceAll("closureID", closureID.toString());
+		query = query.replaceAll("closureDay", closureDate.getClosureDay().v().toString());
+		query = query.replaceAll("lastDayFlg", closureDate.getLastDayOfMonth() ? "1" : "0");
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -403,14 +437,13 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	public Optional<AppRootConfirm> findByEmpPeriodMonth(String companyID, String employeeID, DatePeriod period) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_PERIOD_MONTH;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
-			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_PERIOD_MONTH;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -427,13 +460,12 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			String query = FIND_BY_EMP_YEARMONTH;
-			query = query.replaceAll("companyID", companyID);
-			query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
-			query = query.replaceAll("employeeID", employeeID);
-			query = query.replaceAll("yearMonth", yearMonth.v().toString());
-			PreparedStatement pstatement = con.prepareStatement(query);
+		String query = FIND_BY_EMP_YEARMONTH;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("yearMonth", yearMonth.v().toString());
+		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
 			if(CollectionUtil.isEmpty(listResult)){
@@ -447,4 +479,50 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		}
 	}
 	
+	private FullJoinAppRootConfirm createFullJoinAppRootConfirm(NtsResultRecord rs){
+		return new FullJoinAppRootConfirm(
+				rs.getString("ROOT_ID"), 
+				rs.getString("CID"), 
+				rs.getString("EMPLOYEE_ID"), 
+				rs.getGeneralDate("RECORD_DATE"), 
+				rs.getInt("ROOT_TYPE"), 
+				rs.getInt("YEARMONTH"),//yearMonth
+				rs.getInt("CLOSURE_ID"),//closureID
+				rs.getInt("CLOSURE_DAY"),//closureDay
+				rs.getInt("LAST_DAY_FLG"),//lastDayFlg
+				rs.getInt("PHASE_ORDER"), 
+				rs.getInt("APP_PHASE_ATR"), 
+				rs.getInt("FRAME_ORDER"), 
+				rs.getString("APPROVER_ID"), 
+				rs.getString("REPRESENTER_ID"), 
+				rs.getGeneralDate("APPROVAL_DATE"));
+			
+	}
+
+	@Override
+	public void clearStatusFromDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType) {
+		String query1 = DELETE_PHASE_APPROVER_FROM_DATE.replaceAll("employeeID", employeeID);
+		query1 = query1.replaceAll("companyID", companyID);
+		query1 = query1.replaceAll("rootType", String.valueOf(rootType.value));
+		query1 = query1.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		String query2 = DELETE_FRAME_APPROVER_FROM_DATE.replaceAll("employeeID", employeeID);
+		query2 = query2.replaceAll("companyID", companyID);
+		query2 = query2.replaceAll("rootType", String.valueOf(rootType.value));
+		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			PreparedStatement pstatement1 = con.prepareStatement(query1);
+			pstatement1.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
+		try {
+			PreparedStatement pstatement2 = con.prepareStatement(query2);
+			pstatement2.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
+	}
 }

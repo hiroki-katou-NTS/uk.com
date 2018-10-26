@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -40,6 +41,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
@@ -62,7 +65,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLoc
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -78,9 +80,6 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DailyPerformanceErrorCodeProcessor errorProcessor;
-	
-	@Inject
-	private DailyPerformanceSelectItemProcessor selectProcessor;
 	
 	@Inject
 	private DPUpdateColWidthCommandHandler commandHandler;
@@ -141,6 +140,9 @@ public class DailyPerformanceCorrectionWebService {
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute("domainOlds", dtoResult.getDomainOld());
 		session.setAttribute("domainEdits", null);
+		session.setAttribute("itemIdRCs", dtoResult.getLstControlDisplayItem() == null ? null : dtoResult.getLstControlDisplayItem().getMapDPAttendance());
+		session.setAttribute("dataSource", dtoResult.getLstData());
+		
 		dtoResult.setDomainOld(Collections.emptyList());
 		return dtoResult;
 	}
@@ -152,17 +154,8 @@ public class DailyPerformanceCorrectionWebService {
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute("domainOlds", results.getDomainOld());
 		session.setAttribute("domainEdits", null);
-		results.setDomainOld(Collections.emptyList());
-		return results;
-	}
-	
-	@POST
-	@Path("selectCode")
-	public DailyPerformanceCorrectionDto selectFormatCode(DPParams params ) throws InterruptedException{
-		val results = this.selectProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes);
-		HttpSession session = httpRequest.getSession();
-		session.setAttribute("domainOlds", results.getDomainOld());
-		session.setAttribute("domainEdits", null);
+		session.setAttribute("itemIdRCs", results.getLstControlDisplayItem() == null ? null : results.getLstControlDisplayItem().getMapDPAttendance());
+		session.setAttribute("dataSource", results.getLstData());
 		results.setDomainOld(Collections.emptyList());
 		return results;
 	}
@@ -205,7 +198,7 @@ public class DailyPerformanceCorrectionWebService {
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		
+		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
         return dailyModifyResCommandFacade.insertItemDomain(dataParent);
 	}
 	
@@ -213,6 +206,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("insertClosure")
 	public void insertClosure(EmpAndDate empAndDate){
 		personalTightCommandFacade.insertPersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
+	}
+	
+	@POST
+	@Path("releaseClosure")
+	public void releaseClosure(EmpAndDate empAndDate){
+		personalTightCommandFacade.releasePersonalTight(empAndDate.getEmployeeId(), empAndDate.getDate());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -328,6 +327,10 @@ public class DailyPerformanceCorrectionWebService {
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		
+		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
+		dataParent.setLstData((List<DPDataDto>) session.getAttribute("dataSource"));
+		
 		val result = dailyCalculationService.calculateCorrectedResults(dataParent);
 		session.setAttribute("domainEdits", result.getCalculatedRows());
 		result.setCalculatedRows(Collections.emptyList());

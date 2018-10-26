@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -101,8 +102,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 				dateTime.toDate(), true, false, false, true, false, false);
 		List<EmployeeInformationImport> employeeInformation = employeeInformationAdapter.getEmployeeInfo(params);
 
-		List<String> listEmploymentCode = employeeInformation.stream().map(c -> c.getEmployment().getEmploymentCode())
-				.collect(Collectors.toList());
+		Set<String> listEmploymentCode = employeeInformation.stream().map(c -> c.getEmployment().getEmploymentCode())
+				.collect(Collectors.toSet());
 		// ドメインモデル「雇用に紐づく就業締め」を取得する
 		List<ClosureEmployment> listClosureEmp = new ArrayList<>();
 		for (String empCode : listEmploymentCode) {
@@ -113,15 +114,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		}
 		// if (listClosureEmp.isEmpty())
 		// return new OutputExecAlarmListPro(false,errorMessage);
-
-		RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listEmploymentCode, dateTime.toDate(),
-				dateTime.toDate(),workplaceIdList);
-		List<RegulationInfoEmployeeAdapterDto> lstRegulationInfoEmployee = this.regulationInfoEmployeeAdapter
-				.find(employeeInfo);
-		// if (lstRegulationInfoEmployee.isEmpty())
-		// return new OutputExecAlarmListPro(false,errorMessage);
-		List<EmployeeSearchDto> listEmployeeSearch = lstRegulationInfoEmployee.stream().map(c -> convertToImport(c))
-				.collect(Collectors.toList());
+		
+		
 		// 「締め」を取得する
 		List<Closure> listClosure = closureRepository.findAllActive(companyId, UseClassification.UseClass_Use);
 
@@ -130,6 +124,16 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		// 雇用毎に集計処理をする
 		List<ExtractedAlarmDto> listExtractedAlarmDto = new ArrayList<>();
 		for (ClosureEmployment closureEmployment : listClosureEmp) {
+			List<String> listOneCode = new ArrayList<>();
+			listOneCode.add(closureEmployment.getEmploymentCD());
+			RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listOneCode , dateTime.toDate(),
+					dateTime.toDate(),workplaceIdList);
+			List<RegulationInfoEmployeeAdapterDto> lstRegulationInfoEmployee = this.regulationInfoEmployeeAdapter
+					.find(employeeInfo);
+			// if (lstRegulationInfoEmployee.isEmpty())
+			// return new OutputExecAlarmListPro(false,errorMessage);
+			List<EmployeeSearchDto> listEmployeeSearch = lstRegulationInfoEmployee.stream().map(c -> convertToImport(c))
+					.collect(Collectors.toList());
 			Integer processingYm = null;
 			for (Closure closure : listClosure) {
 				if (closureEmployment.getClosureId() == closure.getClosureId().value) {
@@ -149,7 +153,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getEndDate(), "yyyy/MM/dd");
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-								endDate);
+								endDate,checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.MONTHLY.value
 							|| checkConditionTime.getCategory() == AlarmCategory.MULTIPLE_MONTH.value) {
@@ -160,7 +164,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 								.addDays(-1);
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-								endDate);
+								endDate,checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.AGREEMENT.value) {
 						if (checkConditionTime.getCategoryName().equals("36協定　1・2・4週間")) {
@@ -170,7 +174,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									"yyyy/MM/dd");
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate);
+									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else if (checkConditionTime.getCategoryName().equals("36協定　年間")) {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getYear() + "/"
@@ -183,7 +187,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									.addYears(1).addMonths(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate);
+									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01",
@@ -193,7 +197,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									.addDays(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate);
+									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						}
 					}
@@ -244,8 +248,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		RegulationInfoEmployeeAdapterImport query = new RegulationInfoEmployeeAdapterImport();
 		query.setBaseDate(GeneralDateTime.now());
 		query.setReferenceRange(EmployeeReferenceRange.ONLY_MYSELF.value);
-		query.setFilterByEmployment(false);
-		query.setEmploymentCodes(Collections.emptyList());
+		query.setFilterByEmployment(true);
+		query.setEmploymentCodes(employeeCodes);
 		// query.setFilterByDepartment(false);
 		// query.setDepartmentCodes(Collections.emptyList());
 		query.setFilterByWorkplace(true);

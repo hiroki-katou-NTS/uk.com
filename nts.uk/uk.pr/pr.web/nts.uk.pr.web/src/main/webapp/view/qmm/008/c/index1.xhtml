@@ -1,0 +1,766 @@
+<!-- all tabindex will be set to 1 to prevent user from tab to tree grid, button in switch button and wrong tabindex after binding in IE-->
+<div class="tab-c">
+	<div class="sidebar-content-header" style="min-width: 1000px;">
+		<!-- A2_3 厚生年金 -->
+		<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_7')}</span>
+		<!-- A2_1 -> A1_5 -->
+		<button id="A1_1" class="proceed" tabindex="1"
+			data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
+		<button id="A1_2" tabindex="1"
+			data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
+		<button id="A1_3" tabindex="1"
+			data-bind="click: standardRemunerationMonthlyAmount, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
+		<button id="A1_4" tabindex="1"
+			data-bind="click: registerBusinessEstablishment, enable: true">#{i18n.getText('QMM008_4')}</button>
+		<button id="A1_5" tabindex="1"
+			data-bind="click: masterCorrectionLog, enable: false">#{i18n.getText('QMM008_5')}</button>
+	</div>
+	<div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+		<!-- C1_1 厚生年金保険料率一覧 -->
+		<div class="fixed-flex-layout-left">
+			<div style="margin-left: 30px; margin-bottom: 30px;"
+				data-bind="ntsPanel:{width: '290px', height: '700px', direction: 'right', showIcon: true, visible: true}">
+				<!-- C1_2 厚生年金保険料率一覧 -->
+				<div style="width: 290px" tabindex="1"
+					data-bind="ntsSearchBox: {
+								targetKey: 'code', 
+								mode:'igTreeDrag', 
+								comId:'C1_5_content',
+								items: welfareInsuranceRateTreeList, 
+								selected: selectedWelfareInsurance, 
+								selectedKey: 'code', 
+								childField: 'child', 
+								fields: ['officeCode', 'officeName']}" />
+				<div>
+					<button id="C1_3" tabindex="1"
+						data-bind="click: createNewHistory, enable: $vm.viewmodelC.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
+					<button style="float: right" id="C1_4" tabindex="1"
+						data-bind="click: editHistory, enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
+				</div>
+				<div id="C1_5" tabindex="1">
+					<div id="C1_5_content"
+						style="background-color: white; margin-top: 15px;"
+						data-bind="ntsTreeDragAndDrop:{
+										width: 290,
+										height: treeGridHeight,
+										dataSource: welfareInsuranceRateTreeList,
+										value: selectedWelfareInsurance,
+										primaryKey: 'code',
+										childDataKey: 'child',
+										primaryText: 'displayText',
+										maxDeepLeaf: 1,
+										maxChildInNode: 12,
+										multiple: false,
+										enable: true}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="fixed-flex-layout-right right-panel"
+			data-bind="with: employeeMonthlyInsuFee">
+			<!-- C2_1 期間 -> C2_5 終了年月  -->
+			<div data-bind="with: $vm.viewmodelC.selectedHistoryPeriod"
+				style="min-width: 700px;">
+				<div style="width: 130px;" class="inline-element"
+					data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_12')}</div>
+				<div class="inline-element"
+					 data-bind="text: displayStart"></div>
+				<div style="margin-left: 5px;" class="inline-element"
+					 data-bind="text: displayJapanYearMonth"></div>
+				<div style=" margin-left: 5px;" data-bind="if: displayStart.length > 1" class="inline-element">#{i18n.getText('QMM008_11')}</div>
+				<div style=" margin-left: 5px;" class="inline-element"
+					 data-bind="text: displayEnd"></div>
+			</div>
+
+			<!-- C2_6  期間 -> C2_9 無  -->
+			<div style="min-width: 700px;">
+				<div style="margin-top: 15px; display: inline-block"
+					data-bind="with: $vm.viewmodelC.welfareInsuranceClassification">
+					<div style="width: 130px;" data-bind="ntsFormLabel: {}" id="C2_6">#{i18n.getText('QMM008_53')}</div>
+					<!-- C2_7 厚生年金基金加入区分 -->
+					<div class="cf" id="C2_7" tabindex="1"
+						data-bind="ntsSwitchButton: {
+									name: '#[QMM008_53]',
+									options: fundClsItem,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: fundClassification,
+									required: true,
+									enable: $vm.viewmodelC.isSelectedHistory }"></div>
+				</div>
+				<!-- C2_10  自動計算 -> C2_14 終了年月  -->
+				<div style="display: inline-block; margin-left: 50px;">
+					<div data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_13')}</div>
+					<!-- C2_11 自動計算区分 -->
+					<div class="cf" tabindex="1"
+						data-bind="ntsSwitchButton: {
+									name: '#[QMM008_13]',
+									options: autoCalculationClsItem,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: autoCalculationCls,
+									required: true,
+									enable: $vm.viewmodelC.isSelectedHistory }"></div>
+				</div>
+				<button style="display: inline-block" tabindex="1"
+					data-bind="ntsHelpButton: {image: '../resource/QMM008_01.png', position: 'bottom left', enable: $vm.viewmodelC.isSelectedHistory}">?</button>
+			</div>
+			<hr></hr>
+			<div id="C2_16" style="min-width: 700px;">#{i18n.getText('QMM008_56')}</div>
+			<hr></hr>
+			<!-- C3 - Group -->
+			<div id="C3_container"
+				class="nts-fixed-header-container ui-iggrid nts-fixed-header">
+				<table id="C3">
+					<colgroup>
+						<col width="170px" />
+						<col width="140px" />
+						<col width="140px" />
+						<col width="140px" />
+						<col width="140px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" rowspan="2"></th>
+							<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_20')}</th>
+							<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_21')}</th>
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_22')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_23')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_24')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_25')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-widget"><div>#{i18n.getText('QMM008_62')}</div></td>
+							<td>
+								<div>
+									<!--C3_9 男子給与個人負担率-->
+									<input id="C3_9" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_63]',
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div>
+									<!-- C3_11 男子給与事業主負担率	-->
+									<input id="C3_11" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_64]',
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().employeeContributionRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
+									<!-- C3_13 男子賞与個人負担率 -->
+									<input id="C3_13" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_65]',
+ 													value: individualBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
+									<!-- C3_15 男子賞与事業主負担率 -->
+									<input id="C3_15" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_66]',
+ 													value: employeeContributionRatio,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-widget"><div>#{i18n.getText('QMM008_67')}</div></td>
+							<td>
+								<div>
+									<!-- C3_18  女子給与個人負担率 -->
+									<input id="C3_18" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_68]',
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().individualBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div>
+									<!-- C3_20  女子給与事業主負担率 -->
+									<input id="C3_20" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_69]',
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().employeeContributionRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
+									<!-- C3_22  女子賞与個人負担率 -->
+									<input id="C3_22" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_70]',
+ 													value: individualBurdenRatio,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
+									<!-- C3_24  女子賞与事業主負担率 -->
+									<input id="C3_24" tabindex="1"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_71]',
+ 													value: employeeContributionRatio,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div
+				data-bind="if: $vm.viewmodelC.welfareInsuranceClassification().fundClassification() == 1">
+				<div style="margin-top: 10px; min-width: 700px;">#{i18n.getText('QMM008_57')}</div>
+				<hr></hr>
+			</div>
+			<div
+				data-bind="if: $vm.viewmodelC.welfareInsuranceClassification().fundClassification() == 1"
+				id="C4_container"
+				class="nts-fixed-header-container ui-iggrid nts-fixed-header">
+				<table id="C4">
+					<colgroup>
+						<col width="80px" />
+						<col width="90px" />
+						<col width="140px" />
+						<col width="140px" />
+						<col width="140px" />
+						<col width="140px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" rowspan="2" colspan="2"></th>
+							<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_20')}</th>
+							<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_21')}</th>
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_22')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_23')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_24')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_25')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-widget" rowspan="2">#{i18n.getText('QMM008_77')}</td>
+							<td class="td-widget"><div>#{i18n.getText('QMM008_78')}</div></td>
+							<td>
+								<div>
+									<!-- C4_10 男子給与個人保険料率 -->
+									<input id="C4_10"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_79]',
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: false, 
+ 													enable: false}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div>
+									<!-- C4_12 男子給与個人保険料率 -->
+									<input id="C4_12"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_80]',
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: false, 
+ 													enable: false}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
+									<!-- C4_14  男子賞与個人保険料率 -->
+									<input id="C4_14"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+ 													value: remainBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: false}" />
+								</div>
+
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
+									<!-- C4_16  男子賞与事業主保険料率 -->
+									<input id="C4_16"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+ 													value: remainEmployeeContributionRatio,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: false}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-widget"><div>#{i18n.getText('QMM008_83')}</div></td>
+							<td>
+								<div>
+									<!-- C4_19  男子給与個人免除保険料率 -->
+									<input tabindex="1" id = "C4_19"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_84]',
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualExemptionRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div>
+									<!-- C4_21  男子給与事業主免除保険料率 -->
+									<input tabindex="1" id = "C4_21"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_85]',
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().employeeExemptionRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
+									<!-- C4_23  男子賞与個人免除保険料率 -->
+									<input tabindex="1" id = "C4_23"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_86]',
+ 													value: individualExemptionRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
+									<!-- C4_25  男子賞与事業主免除保険料率 -->
+									<input tabindex="1" id = "C4_25"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_87]',
+ 													value: employeeExemptionRate,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-widget" rowspan="2">#{i18n.getText('QMM008_88')}</td>
+							<td class="td-widget"><div>#{i18n.getText('QMM008_78')}</div></td>
+							<td>
+								<div>
+									<!-- C4_29 女子給与個人保険料率 -->
+									<input
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_87]',
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().remainBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: false}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div>
+									<!-- C4_31  女子給与事業主保険料率 -->
+									<input
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().remainEmployeeContributionRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: false}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
+									<!-- C4_33  女子賞与個人保険料率 -->
+									<input
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+ 													value: remainBurdenRatio, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: false}" />
+								</div>
+
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
+									<!-- C4_35  女子賞与事業主保険料率 -->
+									<input
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+ 													value: remainEmployeeContributionRatio,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: false}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="td-widget"><div>#{i18n.getText('QMM008_83')}</div></td>
+							<td>
+								<div>
+									<!-- C4_38  女子給与個人免除保険料率 -->
+									<input tabindex="1" id = "C4_38"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_93]',
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().individualExemptionRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div>
+									<!-- C4_40  女子給与事業主免除保険料率 -->
+									<input tabindex="1" id = "C4_40"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_94]',
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().employeeExemptionRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
+									<!-- C4_42  女子賞与個人免除保険料率 -->
+									<input tabindex="1" id = "C4_42"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_95]',
+ 													value: individualExemptionRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+							<td>
+								<div
+									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
+									<!-- C4_44  女子賞与事業主免除保険料率 -->
+									<input tabindex="1" id = "C4_44"
+										data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_96]',
+ 													value: employeeExemptionRate,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true}" />
+								</div>
+								<div>#{i18n.getText('QMM008_28')}</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div style="margin-top: 10px; min-width: 700px;">#{i18n.getText('QMM008_58')}</div>
+			<hr></hr>
+			<div id="C5_container"
+				class="nts-fixed-header-container ui-iggrid nts-fixed-header">
+				<table id="C5">
+					<colgroup>
+						<col width="170px" />
+						<col width="140px" />
+						<col width="140px" />
+						<col width="140px" />
+						<col width="140px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="ui-widget-header" style="border-bottom-color: #CFF1A5;"
+								rowspan="3"></th>
+							<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_20')}</th>
+							<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_21')}</th>
+						</tr>
+						<tr>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_22')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_23')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_24')}</th>
+							<th class="ui-widget-header">#{i18n.getText('QMM008_25')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="td-widget" style="border-top: none;"></td>
+							<td
+								data-bind="with: salaryEmployeesPensionInsuranceRate().fractionClassification">
+								<!-- C5_8  給与個人端数区分 -->
+								<div id="C5_8" class="table-combobox" tabindex="1"
+									data-bind="ntsComboBox: {
+													width: '120px',
+													name: '#[QMM008_48]',
+													options: insurancePremiumFractionClassification,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: personalFraction,
+													optionsText: 'name',
+													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true,
+													required: true,
+													columns: [
+														{ prop: 'name', length: 10 }
+													]}"></div>
+							</td>
+							<td
+								data-bind="with: salaryEmployeesPensionInsuranceRate().fractionClassification">
+								<!-- C5_10  給与事業主端数区分 -->
+								<div id="C5_10" class="table-combobox" tabindex="1"
+									data-bind="ntsComboBox: {
+													width: '120px',
+													name: '#[QMM008_49]',
+													options: insurancePremiumFractionClassification,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: businessOwnerFraction,
+													optionsText: 'name',
+													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true,
+													required: true,
+													columns: [
+														{ prop: 'name', length: 10 }
+													]}"></div>
+							</td>
+							<td
+								data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().fractionClassification">
+								<!-- C5_12 賞与個人端数区分 -->
+								<div id="C5_14" class="table-combobox" tabindex="1"
+									data-bind="ntsComboBox: {
+													width: '120px',
+													name: '#[QMM008_50]',
+													options: insurancePremiumFractionClassification,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: personalFraction,
+													optionsText: 'name',
+													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true,
+													required: true,
+													columns: [
+														{ prop: 'name', length: 10 }
+													]}"></div>
+							</td>
+							<td
+								data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().fractionClassification">
+								<!-- C5_14 賞与事業主端数区分 -->
+								<div id="C5_14" class="table-combobox" tabindex="1"
+									data-bind="ntsComboBox: {
+													width: '120px',
+													name: '#[QMM008_51]',
+													options: insurancePremiumFractionClassification,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: businessOwnerFraction,
+													optionsText: 'name',
+													enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : true,
+													required: true,
+													columns: [
+														{ prop: 'name', length: 10 }
+													]}"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div style="margin-top: 10px; min-width: 700px;">#{i18n.getText('QMM008_183')}</div>
+			<hr></hr>
+			<div style="margin-bottom: 30px; min-width: 725px;">
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_20')}</div>
+				<div style="display: inline-block"
+					data-bind="with: salaryEmployeesPensionInsuranceRate">
+					<!-- C2_34 賞与事業主端数区分 -->
+					<div id="C2_34" class="table-combobox" tabindex="1"
+						data-bind="ntsComboBox: {
+													width: '280px',
+													name: '#[QMM008_184]',
+													options: shareAmountMethodItem,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: employeeShareAmountMethod,
+													optionsText: 'name',
+													enable: true,
+													required: true,
+													dropDownAttachedToBody: true,
+													columns: [
+														{ prop: 'fix_length', length: 0},
+														{ prop: 'name', length: 10 }
+													]}"></div>
+				</div>
+				<div style="display: inline-block; margin-left: 25px;"
+					data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_21')}</div>
+				<div style="display: inline-block"
+					data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate">
+					<!-- C2_37賞与事業主負担分計算方法 -->
+					<div id="C2_37" class="table-combobox" tabindex="1"
+						data-bind="ntsComboBox: {
+													width: '280px',
+													name: '#[QMM008_185]',
+													options: shareAmountMethodItem,
+													optionsValue: 'value',
+													visibleItemsCount: 2,
+													value: employeeShareAmountMethod,
+													optionsText: 'name',
+													enable: true,
+													required: true,
+													dropDownAttachedToBody: true,
+													columns: [
+														{ prop: 'fix_length', length: 0},
+														{ prop: 'name', length: 10 }
+													]}"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

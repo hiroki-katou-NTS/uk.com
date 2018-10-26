@@ -70,18 +70,169 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
 		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = interimCreateData.createInterimRemainDataMng(dataCreate, comHolidaySetting);
+		InterimEachData eachData = this.interimInfor(mapDataOutput);
+		List<InterimRemain> interimMngAbsRec = eachData.getInterimMngAbsRec();
+		List<InterimAbsMng> useAbsMng = eachData.getUseAbsMng();
+		List<InterimRecMng> useRecMng = eachData.getUseRecMng();
+		List<InterimRemain> interimMngBreakDayOff = eachData.getInterimMngBreakDayOff();
+		List<InterimBreakMng> breakMng = eachData.getBreakMng();
+		List<InterimDayOffMng> dayOffMng = eachData.getDayOffMng();
+		List<InterimSpecialHolidayMng> specialHolidayData = eachData.getSpecialHolidayData();
+		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
+		List<TmpAnnualHolidayMng> annualHolidayData = eachData.getAnnualHolidayData();
+		List<InterimRemain> annualMng = eachData.getAnnualMng();
+		List<TmpResereLeaveMng> resereLeaveData = eachData.getResereLeaveData();
+		List<InterimRemain> resereMng = eachData.getResereMng();
+		
+		//代休チェック区分をチェックする
+		if(inputParam.isChkSubHoliday()) {
+			
+			//期間内の休出代休残数を取得する
+			BreakDayOffRemainMngParam mngParam = new BreakDayOffRemainMngParam(inputParam.getCid(),
+					inputParam.getSid(),
+					inputParam.getDatePeriod(),
+					inputParam.isMode(),
+					inputParam.getBaseDate(),
+					true,
+					interimMngBreakDayOff, 
+					breakMng, 
+					dayOffMng);
+			BreakDayOffRemainMngOfInPeriod remainMng = breakDayOffMngService.getBreakDayOffMngInPeriod(mngParam);
+			if(!remainMng.getLstError().isEmpty()) {
+				outputData.setChkSubHoliday(true);
+			}
+		}
+		//振休不足区分をチェックする
+		if(inputParam.isChkPause()) {
+			//振出振休残数を取得する
+			AbsRecMngInPeriodParamInput mngParam = new AbsRecMngInPeriodParamInput(inputParam.getCid(),
+					inputParam.getSid(),
+					inputParam.getDatePeriod(),
+					inputParam.getBaseDate(),
+					inputParam.isMode(),
+					true,
+					useAbsMng,
+					interimMngAbsRec,
+					useRecMng);
+			AbsRecRemainMngOfInPeriod remainMng = absRecMngService.getAbsRecMngInPeriod(mngParam);
+			if(!remainMng.getPError().isEmpty()) {
+				outputData.setChkPause(true);
+			}
+		}
+		//特休チェック区分をチェックする
+		if(inputParam.isChkSpecial() && !specialHolidayData.isEmpty()) {
+			//暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
+			for (InterimSpecialHolidayMng a : specialHolidayData) {
+				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
+						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
+				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(inputParam.getCid(),
+						inputParam.getSid(),
+						inputParam.getDatePeriod(),
+						inputParam.isMode(),
+						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
+						a.getSpecialHolidayCode(),
+						false,
+						true,
+						interimSpecial,
+						specialHolidayData);
+				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
+				for (SpecialLeaveError speError : speOutCheck.getLstError()) {
+					if(speError == SpecialLeaveError.AFTERGRANT
+							|| speError == SpecialLeaveError.BEFOREGRANT) {
+						outputData.setChkSpecial(true);
+						break;
+					}
+				}
+				if(outputData.isChkSpecial()) {
+					break;
+				}
+			}
+		}
+		//年休チェック区分をチェックする
+		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
+		if(inputParam.isChkAnnual()) {
+			mngWork = annualHolidayData.stream()
+					.map(o -> {
+						InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
+								.collect(Collectors.toList()).get(0);
+						return TmpAnnualLeaveMngWork.of(annualInterim, o);
+					}).collect(Collectors.toList());
+			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
+					inputParam.getSid(),
+					inputParam.getDatePeriod(),
+					inputParam.isMode(),
+					inputParam.getBaseDate(),
+					false,
+					false, Optional.of(true),
+					Optional.of(mngWork),
+					Optional.empty());
+			for (AnnualLeaveErrorSharedImport errorcheck : lstError) {
+				if(errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT
+						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT
+						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_TIMEAL_AFTER_GRANT
+						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_TIMEAL_BEFORE_GRANT) {
+					outputData.setChkAnnual(true);
+					break;
+				}
+			}
+		}
+		//期間中の年休積休残数を取得
+		if(inputParam.isChkFundingAnnual()) {
+			List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
+					.map(l -> {
+						InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+								.collect(Collectors.toList()).get(0);
+						return TmpReserveLeaveMngWork.of(reserveInterim, l);
+					}).collect(Collectors.toList());
+			List<ReserveLeaveErrorImport> reserveLeaveErrors = annualService.reserveLeaveErrors(inputParam.getCid(),
+					inputParam.getSid(),
+					inputParam.getDatePeriod(), 
+					inputParam.isMode(), 
+					inputParam.getBaseDate(), 
+					false, false, Optional.of(true), 
+					Optional.of(mngWork), 
+					Optional.of(lstReserve), Optional.empty(),
+					Optional.empty());
+			for (ReserveLeaveErrorImport errorCheck : reserveLeaveErrors) {
+				if(errorCheck == ReserveLeaveErrorImport.SHORTAGE_RSVLEA_AFTER_GRANT
+						|| errorCheck == ReserveLeaveErrorImport.SHORTAGE_RSVLEA_BEFORE_GRANT) {
+					outputData.setChkFundingAnnual(true);
+					break;
+				}
+			}
+		}
+
+		return outputData;
+	}
+	@Override
+	public InterimEachData interimInfor(Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput) {
+		/**
+		 * 振休か振出の暫定残数管理
+		 */
 		List<InterimRemain> interimMngAbsRec = new ArrayList<>();
 		List<InterimAbsMng> useAbsMng = new ArrayList<>();
 		List<InterimRecMng> useRecMng = new ArrayList<>();
+		/**
+		 * 休出か代休の暫定残数管理
+		 */
 		List<InterimRemain> interimMngBreakDayOff = new ArrayList<>();
 		List<InterimBreakMng> breakMng = new ArrayList<>();
 		List<InterimDayOffMng> dayOffMng = new ArrayList<>();
-		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>();
+		/**
+		 * 特別休暇の暫定残数管理
+		 */
 		List<InterimRemain> interimSpecial = new ArrayList<>();
-		List<TmpAnnualHolidayMng> annualHolidayData = new ArrayList<>();
+		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>();
+		/**
+		 * 年休の暫定残数管理
+		 */
 		List<InterimRemain> annualMng = new ArrayList<>();
-		List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
+		List<TmpAnnualHolidayMng> annualHolidayData = new ArrayList<>();
+		/**
+		 * 積立年休の暫定残数管理
+		 */
 		List<InterimRemain> resereMng = new ArrayList<>();
+		List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
 		mapDataOutput.forEach((x,y) -> {
 			//積立年休
 			y.getResereData().ifPresent(z -> {
@@ -140,123 +291,17 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				interimMngAbsRec.addAll(lstTmp);
 			});
 		});
-		//代休チェック区分をチェックする
-		if(inputParam.isChkSubHoliday()) {
-			
-			//期間内の休出代休残数を取得する
-			BreakDayOffRemainMngParam mngParam = new BreakDayOffRemainMngParam(inputParam.getCid(),
-					inputParam.getSid(),
-					inputParam.getDatePeriod(),
-					inputParam.isMode(),
-					inputParam.getBaseDate(),
-					true,
-					interimMngBreakDayOff, 
-					breakMng, 
-					dayOffMng);
-			BreakDayOffRemainMngOfInPeriod remainMng = breakDayOffMngService.getBreakDayOffMngInPeriod(mngParam);
-			if(remainMng.getRemainDays() < 0) {
-				outputData.setChkSubHoliday(true);
-			}
-		}
-		//振休不足区分をチェックする
-		if(inputParam.isChkPause()) {
-			//振出振休残数を取得する
-			AbsRecMngInPeriodParamInput mngParam = new AbsRecMngInPeriodParamInput(inputParam.getCid(),
-					inputParam.getSid(),
-					inputParam.getDatePeriod(),
-					inputParam.getBaseDate(),
-					inputParam.isMode(),
-					true,
-					useAbsMng,
-					interimMngAbsRec,
-					useRecMng);
-			AbsRecRemainMngOfInPeriod remainMng = absRecMngService.getAbsRecMngInPeriod(mngParam);
-			if(remainMng.getRemainDays() < 0) {
-				outputData.setChkPause(true);
-			}
-		}
-		//特休チェック区分をチェックする
-		if(inputParam.isChkSpecial()) {
-			//暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
-			specialHolidayData.stream().forEach(a -> {
-				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
-						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
-				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(inputParam.getCid(),
-						inputParam.getSid(),
-						inputParam.getDatePeriod(),
-						inputParam.isMode(),
-						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
-						a.getSpecialHolidayCode(),
-						false,
-						true,
-						interimSpecial,
-						specialHolidayData);
-				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
-				for (SpecialLeaveError speError : speOutCheck.getLstError()) {
-					if(speError == SpecialLeaveError.AFTERGRANT
-							|| speError == SpecialLeaveError.BEFOREGRANT) {
-						outputData.setChkSpecial(true);
-						break;
-					}
-				}
-				
-			});
-		}
-		//年休チェック区分をチェックする
-		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
-		if(inputParam.isChkAnnual()) {
-			mngWork = annualHolidayData.stream()
-					.map(o -> {
-						InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-								.collect(Collectors.toList()).get(0);
-						return TmpAnnualLeaveMngWork.of(annualInterim, o);
-					}).collect(Collectors.toList());
-			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
-					inputParam.getSid(),
-					inputParam.getDatePeriod(),
-					inputParam.isMode(),
-					inputParam.getBaseDate(),
-					false,
-					false, Optional.of(true),
-					Optional.of(mngWork),
-					Optional.empty());
-			for (AnnualLeaveErrorSharedImport errorcheck : lstError) {
-				if(errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT
-						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT
-						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_TIMEAL_AFTER_GRANT
-						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_TIMEAL_BEFORE_GRANT) {
-					outputData.setChkAnnual(true);
-					break;
-				}
-			}
-		}
-		//期間中の年休積休残数を取得
-		if(inputParam.isChkFundingAnnual()) {
-			List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
-					.map(l -> {
-						InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
-								.collect(Collectors.toList()).get(0);
-						return TmpReserveLeaveMngWork.of(reserveInterim, l);
-					}).collect(Collectors.toList());
-			List<ReserveLeaveErrorImport> reserveLeaveErrors = annualService.reserveLeaveErrors(inputParam.getCid(),
-					inputParam.getSid(),
-					inputParam.getDatePeriod(), 
-					inputParam.isMode(), 
-					inputParam.getBaseDate(), 
-					false, false, Optional.of(true), 
-					Optional.of(mngWork), 
-					Optional.of(lstReserve), Optional.empty(),
-					Optional.empty());
-			for (ReserveLeaveErrorImport errorCheck : reserveLeaveErrors) {
-				if(errorCheck == ReserveLeaveErrorImport.SHORTAGE_RSVLEA_AFTER_GRANT
-						|| errorCheck == ReserveLeaveErrorImport.SHORTAGE_RSVLEA_BEFORE_GRANT) {
-					outputData.setChkFundingAnnual(true);
-					break;
-				}
-			}
-		}
-
-		return outputData;
+		return new InterimEachData(interimMngAbsRec,
+				useAbsMng,
+				useRecMng,
+				interimMngBreakDayOff,
+				breakMng, dayOffMng,
+				interimSpecial,
+				specialHolidayData,
+				annualMng,
+				annualHolidayData,
+				resereMng,
+				resereLeaveData);
 	}
 
 }

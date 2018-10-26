@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTyp
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
+	/** use lesser value for nested split WHERE IN parameters to make sure total parameters < 2100 */
+	private static final int SPLIT_650 = 650;
+	
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
@@ -57,7 +61,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR = "SELECT a FROM KshmtWorkTypeSet a LEFT JOIN KshmtWorkType c"
 			+ " ON a.kshmtWorkTypeSetPK.companyId = c.kshmtWorkTypePK.companyId AND a.kshmtWorkTypeSetPK.workTypeCode = c.kshmtWorkTypePK.workTypeCode"
-			+ " WHERE a.kshmtWorkTypeSetPK.companyId = :companyId AND a.closeAtr = :closeAtr AND c.deprecateAtr = :deprecateAtr" 
+			+ " WHERE a.kshmtWorkTypeSetPK.companyId = :companyId AND a.closeAtr = :closeAtr AND c.deprecateAtr = :deprecateAtr "
+			+ " AND (c.oneDayAtr = 12 OR c.oneDayAtr = 13) " //fix bug 102299
 			+ " ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
 
 	private static final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
@@ -304,7 +309,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible) {
 		List<WorkType> datas = new ArrayList<WorkType>();
-		CollectionUtil.split(lstPossible, 1000, subPossibleList -> {
+		CollectionUtil.split(lstPossible, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subPossibleList -> {
 			datas.addAll(
 					this.queryProxy().query(SELECT_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
 							.setParameter("lstPossible", subPossibleList).getList(x -> toDomain(x)));
@@ -317,8 +322,18 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		if(CollectionUtil.isEmpty(lstPossible)){
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_WORKTYPE_AND_ORDER, WorkTypeInfor.class).setParameter("companyId", companyId)
-							.setParameter("lstPossible", lstPossible).getList();
+		List<WorkTypeInfor> resultList = new ArrayList<>();
+		CollectionUtil.split(lstPossible, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_WORKTYPE_AND_ORDER, WorkTypeInfor.class)
+								.setParameter("companyId", companyId)
+								.setParameter("lstPossible", subList)
+								.getList());
+		});
+		resultList.sort((info1, info2) -> {
+			if (info1.getDispOrder() == null || info2.getDispOrder() == null) return -1; 
+			return info1.getDispOrder().compareTo(info2.getDispOrder());
+		});
+		return resultList;
 	}
 	
 	@Override
@@ -415,8 +430,15 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	 */
 	@Override
 	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
-		return this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KshmtWorkType.class)
-				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
+		List<WorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KshmtWorkType.class)
+								.setParameter("companyId", companyId)
+								.setParameter("codes", subList)
+								.getList(c -> toDomain(c)));
+		});
+		resultList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
+		return resultList;
 	}
 
 	/*
@@ -429,10 +451,17 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public List<WorkType> findWorkType(String companyId, int abolishAtr, List<Integer> allDayAtrs,
 			List<Integer> halfAtrs) {
-		return this.queryProxy().query(FIND_WORKTYPE_ALLDAY_AND_HALFDAY, KshmtWorkType.class)
-				.setParameter("companyId", companyId).setParameter("abolishAtr", abolishAtr)
-				.setParameter("oneDayAtrs", allDayAtrs).setParameter("morningAtrs", halfAtrs)
-				.setParameter("afternoonAtrs", halfAtrs).getList(c -> toDomain(c));
+		List<WorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(allDayAtrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAllDay -> {
+			CollectionUtil.split(halfAtrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstHalfDays -> {
+				resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_ALLDAY_AND_HALFDAY, KshmtWorkType.class)
+									.setParameter("companyId", companyId).setParameter("abolishAtr", abolishAtr)
+									.setParameter("oneDayAtrs", lstAllDay).setParameter("morningAtrs", lstHalfDays)
+									.setParameter("afternoonAtrs", lstHalfDays).getList(c -> toDomain(c)));
+			});
+		});
+		resultList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
+		return resultList;
 	}
 
 	/**
@@ -542,50 +571,85 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	@Override
 	public List<WorkType> findWorkTypeForAppHolidayAppType(String companyId,List<Integer> allDayAtrs, List<Integer> mornings,List<Integer> afternoons,Integer morning,Integer afternoon) {
-		return this.queryProxy().query(FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE, KshmtWorkType.class)
-				.setParameter("companyId", companyId)
-				.setParameter("oneDayAtrs", allDayAtrs)
-				.setParameter("morningAtr", morning)
-				.setParameter("afternoonAtrs", afternoons)
-				.setParameter("afternoonAtr", afternoon)
-				.setParameter("morningAtrs", mornings).getList(x -> toDomain(x));
+		List<WorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(allDayAtrs, SPLIT_650, lstAll -> {
+			CollectionUtil.split(mornings, SPLIT_650, lstMorning -> {
+				CollectionUtil.split(afternoons, SPLIT_650, lstAfternoon -> {
+					resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_FOR_HOLIDAY_APP_TYPE, KshmtWorkType.class)
+										.setParameter("companyId", companyId)
+										.setParameter("oneDayAtrs", lstAll)
+										.setParameter("morningAtr", morning)
+										.setParameter("afternoonAtrs", lstAfternoon)
+										.setParameter("afternoonAtr", afternoon)
+										.setParameter("morningAtrs", lstMorning)
+										.getList(x -> toDomain(x)));
+				});
+			});
+		});
+		resultList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
+		return resultList;
 	}
 
 	@Override
 	public List<WorkType> findWorkTypeForHalfDay(String companyId, List<Integer> halfDay, List<String> workTypeCodes) {
-		return this.queryProxy().query(FIND_WORKTYPE_BY_LIST_WORKTYPECODES, KshmtWorkType.class)
+		List<WorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(halfDay, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstHalf -> {
+			CollectionUtil.split(workTypeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstCodes -> {
+				resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_BY_LIST_WORKTYPECODES, KshmtWorkType.class)
 				.setParameter("companyId", companyId)
-				.setParameter("workTypeCodes", workTypeCodes)
-				.setParameter("morningAtrs", halfDay)
-				.setParameter("afternoonAtrs", halfDay).getList(x -> toDomain(x));
+				.setParameter("workTypeCodes", lstCodes)
+				.setParameter("morningAtrs", lstHalf)
+				.setParameter("afternoonAtrs", lstHalf).getList(x -> toDomain(x)));
+			});
+		});
+		resultList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
+		return resultList;
 	}
 
 	@Override
 	public List<WorkType> findWorkTypeForAllDayAndHalfDay(String companyId, List<Integer> halfDay,
 			List<String> workTypeCodes, List<Integer> oneDays) {
-		return this.queryProxy().query(FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES, KshmtWorkType.class)
-				.setParameter("companyId", companyId)
-				.setParameter("workTypeCodes", workTypeCodes)
-				.setParameter("oneDayAtrs", oneDays)
-				.setParameter("morningAtrs", halfDay)
-				.setParameter("afternoonAtrs", halfDay).getList(x -> toDomain(x));
+		List<WorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(halfDay, SPLIT_650, lstHalf -> {
+			CollectionUtil.split(workTypeCodes, SPLIT_650, lstCodes -> {
+				CollectionUtil.split(oneDays, SPLIT_650, lstAll -> {
+					resultList.addAll(this.queryProxy().query(FIND_WORKTYPE_AllDAY_HALFDAY_BY_CODES, KshmtWorkType.class)
+										.setParameter("companyId", companyId)
+										.setParameter("workTypeCodes", lstCodes)
+										.setParameter("oneDayAtrs", lstAll)
+										.setParameter("morningAtrs", lstHalf)
+										.setParameter("afternoonAtrs", lstHalf).getList(x -> toDomain(x)));
+				});
+			});
+		});
+		resultList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
+		return resultList;
 	}
 
 	@Override
 	public List<WorkType> findWorkTypeByCodes(String companyId, List<String> workTypeCodes, int abolishAtr,
 			int worktypeAtr) {
-		// FIND_BY_CODES
-		return this.queryProxy().query(FIND_BY_CODES, KshmtWorkType.class)
-				.setParameter("companyId", companyId)
-				.setParameter("workTypeCodes", workTypeCodes)
-				.setParameter("abolishAtr", abolishAtr)
-				.setParameter("worktypeAtr", worktypeAtr).getList(x -> toDomain(x));
+		List<WorkType> resultList = new ArrayList<>();
+		CollectionUtil.split(workTypeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_CODES, KshmtWorkType.class)
+								.setParameter("companyId", companyId)
+								.setParameter("workTypeCodes", subList)
+								.setParameter("abolishAtr", abolishAtr)
+								.setParameter("worktypeAtr", worktypeAtr).getList(x -> toDomain(x)));
+		});
+		resultList.sort(Comparator.comparing(WorkType::getWorkTypeCode));
+		return resultList;
 	}
 
 	@Override
 	public Map<String, String> getCodeNameWorkType(String companyId, List<String> listWorktypeCode) {
-		List<Object[]> listObject = this.queryProxy().query(SELECT_CODE_AND_NAME_BY_WORKTYPE_CODE, Object[].class)
-				.setParameter("companyId", companyId).setParameter("listWorktypeCode", listWorktypeCode).getList();
+		List<Object[]> listObject = new ArrayList<>();
+		CollectionUtil.split(listWorktypeCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listObject.addAll(this.queryProxy().query(SELECT_CODE_AND_NAME_BY_WORKTYPE_CODE, Object[].class)
+								.setParameter("companyId", companyId)
+								.setParameter("listWorktypeCode", subList)
+								.getList());
+		});
 		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
 	}
 }

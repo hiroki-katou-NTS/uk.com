@@ -10,9 +10,9 @@ public interface StatementItemNameRepository {
 
 	List<StatementItemName> getAllStatementItemName();
 
-	Optional<StatementItemName> getStatementItemNameById(String cid, String salaryItemId);
+	Optional<StatementItemName> getStatementItemNameById(String cid, int categoryAtr, String itemNameCd);
 	
-	List<StatementItemName> getStatementItemNameByListSalaryItemId(String cid, List<String> salaryItemIds);
+	List<StatementItemName> getStatementItemNameByListCode(String cid, int categoryAtr, List<String> codes);
 
 	void add(StatementItemName domain);
 
@@ -20,6 +20,6 @@ public interface StatementItemNameRepository {
 	
 	void updateListStatementItemName(List<StatementItemName> domain);
 
-	void remove(String cid, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }

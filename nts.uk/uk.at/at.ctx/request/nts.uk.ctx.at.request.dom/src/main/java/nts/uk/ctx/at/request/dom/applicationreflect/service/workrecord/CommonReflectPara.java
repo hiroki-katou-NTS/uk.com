@@ -6,6 +6,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 @AllArgsConstructor
 @Getter
 @Setter
@@ -21,7 +22,7 @@ public class CommonReflectPara {
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
+	private ClassifyScheAchieveAtr scheAndRecordSameChangeFlg;
 	/**
 	 * 予定反映区分
 	 */
