@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm016.i.viewmodel {
                 self.wageTableCode(selectedWageTable.wageTableCode);
                 self.wageTableName(selectedWageTable.wageTableName);
                 if (displayLastHistory.length > 0) {
-                    self.takeoverItem.push(new model.ItemModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY, getText('QMM008_200', [displayLastHistory])));
+                    self.takeoverItem.push(new model.ItemModel(model.TAKEOVER_METHOD.FROM_LAST_HISTORY, getText('QMM008_200', [displayLastHistory])));
                     self.takeoverMethod(0);
                 }
                 self.takeoverItem.push(new model.ItemModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));

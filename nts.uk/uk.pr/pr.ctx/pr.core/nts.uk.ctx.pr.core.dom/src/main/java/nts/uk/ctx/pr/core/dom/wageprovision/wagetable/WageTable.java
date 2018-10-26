@@ -46,9 +46,9 @@ public class WageTable extends AggregateRoot {
      */
     private ElementInformation elementInformation;
 
-    public WageTable(String cid, String wageTableCode, String wageTableName, Integer oneMasterNumericClassification, Integer oneFixedElement, String oneOptionalAdditionalElement,
-                     Integer twoMasterNumericClassification, Integer twoFixedElement, String twoOptionalAdditionalElement,
-                     Integer threeMasterNumericClassification, Integer threeFixedElement, String threeOptionalAdditionalElement, Integer elementSetting, String remarkInformation) {
+    public WageTable(String cid, String wageTableCode, String wageTableName, Integer oneMasterNumericClassification, String oneFixedElement, String oneOptionalAdditionalElement,
+                     Integer twoMasterNumericClassification, String twoFixedElement, String twoOptionalAdditionalElement,
+                     Integer threeMasterNumericClassification, String threeFixedElement, String threeOptionalAdditionalElement, Integer elementSetting, String remarkInformation) {
         this.cid = cid;
         this.wageTableCode = new WageTableCode(wageTableCode);
         this.wageTableName = new WageTableName(wageTableName);

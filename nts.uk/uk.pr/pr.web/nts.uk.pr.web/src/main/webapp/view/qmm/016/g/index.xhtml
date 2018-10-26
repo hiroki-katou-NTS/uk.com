@@ -7,39 +7,35 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 520, height: 620 };</script>
+        <script>var dialogSize = { width: 325, height: 545 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
-        <com:scriptfile path="qmm010.b.service.js" />
-        <com:scriptfile path="qmm010.b.vm.js" />
-        <com:stylefile path="qmm010.b.style.css" />
-        <com:scriptfile path="qmm010.b.start.js" />
+        <com:scriptfile path="qmm016.g.service.js" />
+        <com:scriptfile path="qmm016.g.vm.js" />
+        <com:stylefile path="qmm016.g.style.css" />
+        <com:scriptfile path="qmm016.g.start.js" />
     </ui:define>
     <ui:define name="content">
-        <div class="contents-area" style="margin-left: 40px;">
-            <div class="label dialog-title">#{i18n.getText('QMM010_30')}</div>
-            <div style="margin-top: 20px; min-width: 330px">
-                <i id = "B1_2"></i>
-                <div style = "margin-left: 40px;">
-                    <table id="G2_1" tabindex="3"
-                           data-bind="ntsGridList: {
-                            rows: 15,
-                            name: '#[QMM016_56]',
-                            options: statementItemNameList,
-                            optionsValue: 'name',
-                            columns: [
-								{ headerText: '#{i18n.getText('QMM016_57')}', key: 'name', width: 120, formatter: _.escape}
-							],
-                            multiple: false,
-                            value: selectedStatementItem
-                        }"></table>
-                </div>
+        <div class="contents-area">
+            <div style = "color: white">to fix scroll</div>
+            <div  style="margin-left: 40px;margin-top: 20px">
+                <table id="G2_1" tabindex="3"
+                       data-bind="ntsGridList: {
+                        rows: 15,
+                        name: '#[QMM016_56]',
+                        options: statementItemNameList,
+                        optionsValue: 'name',
+                        columns: [
+                            { headerText: '#{i18n.getText('QMM016_57')}', key: 'name', width: 220, formatter: _.escape}
+                        ],
+                        multiple: false,
+                        value: selectedStatementItemName
+                    }"></table>
             </div>
-
         </div>
         <div id="functions-area-bottom">
             <button tabindex="2" class="x-large proceed "
-                    data-bind="click: decideSelect, enable: socialInsuranceOfficeList().length > 0">#{i18n.getText('QMM016_54')}</button>
+                    data-bind="click: decideSelect, enable: statementItemNameList().length > 0">#{i18n.getText('QMM016_54')}</button>
             <button tabindex="3" class="large" data-bind="click: cancelSelect">#{i18n.getText('QMM016_55')}</button>
         </div>
     </ui:define>

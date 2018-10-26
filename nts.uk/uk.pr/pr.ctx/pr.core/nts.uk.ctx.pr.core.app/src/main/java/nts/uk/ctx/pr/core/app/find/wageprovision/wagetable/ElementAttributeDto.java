@@ -25,7 +25,7 @@ public class ElementAttributeDto{
     /**
      * 固定の要素
      */
-    private Integer fixedElement;
+    private String fixedElement;
 
     /**
      * 任意追加の要素

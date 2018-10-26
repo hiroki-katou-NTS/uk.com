@@ -7,7 +7,7 @@ module nts.uk.pr.view.qmm016.share.model {
         UPDATE = 1
     }
     export enum TAKEOVER_METHOD {
-        FROM_LASTEST_HISTORY = 0,
+        FROM_LAST_HISTORY = 0,
         FROM_BEGINNING = 1
     }
 
@@ -30,16 +30,16 @@ module nts.uk.pr.view.qmm016.share.model {
     }
     // 要素種類
     export enum ELEMENT_TYPE {
-        M0001 = 0,
-        M0002 = 1,
-        M0003 = 2,
-        M0004 = 3,
-        M0005 = 4,
-        M0006 = 5,
-        M0007 = 6,
-        N0001 = 7,
-        N0002 = 8,
-        N0003 = 9,
+        M001 = '雇用',
+        M002 = '部門',
+        M003 = '分類',
+        M004 = '職位',
+        M005 = '給与分類',
+        M006 = '資格',
+        M007 = '精皆勤レベル',
+        N001 = '年齢',
+        N002 = '勤続年数',
+        N003 = '家族人数',
     }
 
     export function getElementItemModel () {
@@ -52,11 +52,31 @@ module nts.uk.pr.view.qmm016.share.model {
         ];
     }
 
+    export function getFixedElementItemModel () {
+        return [
+            new ItemModel(null, '一次元'),
+            new ItemModel(null, '二次元'),
+            new ItemModel(null, '三次元'),
+            new ItemModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
+            new ItemModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+        ];
+    }
+
     export class ItemModel {
         value: number;
         name: string;
 
         constructor(value: number, name: string) {
+            this.value = value;
+            this.name = name;
+        }
+    }
+
+    export class StringItemModel {
+        value: string;
+        name: string;
+
+        constructor(value: string, name: string) {
             this.value = value;
             this.name = name;
         }
@@ -160,18 +180,22 @@ module nts.uk.pr.view.qmm016.share.model {
     // 要素の属性
     export interface IElementAttribute {
         masterNumericClassification: number,
-        fixedElement: number,
-        optionalAdditionalElement: string
+        fixedElement: string,
+        optionalAdditionalElement: string,
     }
     // 要素の属性
     export class ElementAttribute {
         masterNumericClassification: KnockoutObservable<number> = ko.observable(null);
-        fixedElement: KnockoutObservable<number> = ko.observable(null);
+        fixedElement: KnockoutObservable<string> = ko.observable(null);
         optionalAdditionalElement: KnockoutObservable<string> = ko.observable(null);
+        // for display data
+        fixedElementName: KnockoutObservable<string> = ko.observable(null);
         constructor (params: IElementAttribute) {
             this.masterNumericClassification(params ? params.masterNumericClassification : null);
             this.fixedElement(params ? params.fixedElement : null);
             this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
+            let fixedElementValue = this.fixedElement();
+            this.fixedElementName(ELEMENT_TYPE[fixedElementValue]);
         }
     }
 
@@ -316,7 +340,7 @@ module nts.uk.pr.view.qmm016.share.model {
     }
 
     // 資格グループ設定
-    export interface ICredentialGroupSetting {
+    export interface IQualificationGroupSetting {
         qualificationGroupCode: string;
         paymentMethod: number;
         eligibleQualificationCode: Array<string>;
@@ -324,13 +348,13 @@ module nts.uk.pr.view.qmm016.share.model {
         companyID: string;
     }
     // 資格グループ設定
-    export class CredentialGroupSetting {
+    export class QualificationGroupSetting {
         qualificationGroupCode: KnockoutObservable<string> = ko.observable(null);
         paymentMethod: KnockoutObservable<number> = ko.observable(null);
         eligibleQualificationCode: KnockoutObservableArray<string> = ko.observableArray([]);
         qualificationGroupName: KnockoutObservable<string> = ko.observable(null);
         companyID: KnockoutObservable<string> = ko.observable(null);
-        constructor(params: ICredentialGroupSetting) {
+        constructor(params: IQualificationGroupSetting) {
             this.qualificationGroupCode(params ? params.qualificationGroupCode : null);
             this.paymentMethod(params ? params.paymentMethod : null);
             this.eligibleQualificationCode(params ? params.eligibleQualificationCode : []);

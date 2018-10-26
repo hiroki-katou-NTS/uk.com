@@ -176,6 +176,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             self.screenMode(model.SCREEN_MODE.NEW);
             self.selectedWageTableIdentifier(null);
             self.selectedWageTable(new model.WageTable(null));
+            self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
+            self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
         }
         changeToUpdateMode () {
@@ -211,7 +213,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.convertToTreeList(wageTableTreeList);
                     self.selectedWageTableIdentifier(selectedWageTable.wageTableCode + historyID);
                     // clone data
-                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
+                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
 
                     } else {
 
@@ -238,6 +240,17 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                             self.selectedWageTableIdentifier(selectedWageTable.wageTableCode + history[1].historyID)
                         }
                     }
+                }
+            });
+        }
+
+        selectElement (dimension) {
+            let self = this;
+            setShared("QMM016_G_PARAMS", {});
+            modal("/view/qmm/016/g/index.xhtml").onClosed(() => {
+                let params = getShared("QMM016_G_RES_PARAMS");
+                if (params) {
+                    console.log(params);
                 }
             });
         }
