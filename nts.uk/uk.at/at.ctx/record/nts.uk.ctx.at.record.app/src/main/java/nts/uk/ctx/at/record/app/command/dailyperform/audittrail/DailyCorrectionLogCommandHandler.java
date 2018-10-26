@@ -40,24 +40,18 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 	
     @Override
 	protected void handle(CommandHandlerContext<DailyCorrectionLogCommand> context) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.DAILY);
-        
-		Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(ITEM_ID_ALL)
-				.stream().filter(x -> x.getAttendanceItemName() != null).collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-						x -> x.getAttendanceItemName()));
-		
-		val correctionLogParameter = new DailyCorrectionLogParameter(
-				mapToDailyCorrection(convertToItemValueFtomItems(context.getCommand().getDailyNew()),
-						convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap), context.getCommand().getLstAttendanceItem());
-		DataCorrectionContext.setParameter(correctionLogParameter);
-		AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
-
-	}
-
-	@Override
-	protected void postHandle(CommandHandlerContext<DailyCorrectionLogCommand> context) {
-		super.postHandle(context);
-		DataCorrectionContext.transactionFinishing();
+		DataCorrectionContext.transactional(CorrectionProcessorId.DAILY, () -> {
+	        
+			Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(ITEM_ID_ALL)
+					.stream().filter(x -> x.getAttendanceItemName() != null).collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName()));
+			
+			val correctionLogParameter = new DailyCorrectionLogParameter(
+					mapToDailyCorrection(convertToItemValueFtomItems(context.getCommand().getDailyNew()),
+							convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap), context.getCommand().getLstAttendanceItem());
+			DataCorrectionContext.setParameter(correctionLogParameter);
+			AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
+		});
 	}
 	
 //	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValue(List<IntegrationOfDaily> domains){

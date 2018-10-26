@@ -15,8 +15,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -28,6 +26,7 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -122,7 +121,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 									  Collections.emptyList()).getLst();
 		//勤務情報のステータスを変更
 		result.forEach(tc ->{
-			dailyCalculationEmployeeService.upDateCalcState(tc);
+			tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
+			//dailyCalculationEmployeeService.upDateCalcState(tc);
 		});
 		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
 	}
@@ -133,8 +133,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<ManagePerCompanySet> companySet){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
-								.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+		return commonPerCompany(
+				calcOption,
+				integrationOfDaily,
+				true,
+				Optional.empty(),
+				Optional.empty(),
+				companySet,
+				Collections.emptyList())
+				.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 	}
 	
 	

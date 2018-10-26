@@ -128,6 +128,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param ootsukaFixCalsSet 
 	 * @param workTimeDailyAtr2 
 	 * @param scheduleReGetClass 
+	 * @param schePred 
 	 * @param integrationOfDaily2 
 	 * @return 日別実績(Work)クラス
 	 */
@@ -138,7 +139,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTime> divergenceTimeList,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 			ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet) {
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred) {
 
 		recordReGetClass.getIntegrationOfDaily().setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(
 																						vacation,
@@ -154,7 +155,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																		conditionItem,
 				   																		predetermineTimeSetByPersonInfo,
 				   																		leaveLateSet,
-				   																		scheleaveLateSet)));
+				   																		scheleaveLateSet,
+				   																		schePred)));
 		
 		/* 乖離時間の計算 */
 //		val attendanceTime = recordReGetClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get();
@@ -173,6 +175,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	/**
 	 * 時間の計算結果をまとめて扱う
+	 * @param schePred 
 	 * @param schePreTimeSet 
 	 * @param breakTimeCount 
 	 * @param ootsukaFixCalsSet 
@@ -187,7 +190,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTime> divergenceTimeList,
 				CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
 				ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
-				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet) {
+				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred) {
 		
 		/*日別実績の勤務予定時間の計算*/
 		//実績,予定で渡す予定(今は実績のみ渡してる)　****要修正***
@@ -195,7 +198,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 													vacation, 
 												   flexCalcMethod, bonusPayAutoCalcSet, 
 												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
-												    predetermineTimeSetByPersonInfo,scheleaveLateSet);
+												    predetermineTimeSetByPersonInfo,scheleaveLateSet,schePred);
 		
 			/*日別実績の実績時間の計算*/
 		Optional<WorkTimeDailyAtr> workDailyAtr = recordReGetClass.getWorkTimeSetting() != null && recordReGetClass.getWorkTimeSetting().isPresent()?
@@ -273,6 +276,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param calcAtrOfDaily 
 	 * @param eachWorkTimeSet 
 	 * @param eachCompanyTimeSet 
+	 * @param schePred 
 	 * @param breakTimeCount 
 	 * @param integrationOfDaily 
 	 * @param flexAutoCalSet 
@@ -289,7 +293,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   ManageReGetClass scheRegetManage
 															   ,WorkingConditionItem conditionItem,
 															   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-															   DeductLeaveEarly leaveLateSet) {
+															   DeductLeaveEarly leaveLateSet, Optional<PredetermineTimeSetForCalc> schePred) {
 		//勤務予定時間を計算
 		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformastionOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		AttendanceTime scheTotalTime = new AttendanceTime(0);
@@ -339,6 +343,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					                  ? schePreTimeSet.get().getpredetermineTime(scheRegetManage.getWorkType().get().getDailyWork())
 									  :new AttendanceTime(0);
 		}
+		shedulePreWorkTime = schePred.isPresent()?schePred.get().getpredetermineTime(scheRegetManage.getWorkType().get().getDailyWork()):shedulePreWorkTime;
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),shedulePreWorkTime,actualPredWorkTime);
 	}
 

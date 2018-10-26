@@ -813,8 +813,34 @@ public class ManualSetDeletionService extends ExportService<Object>{
 					String categoryId = category.getCategoryId().v();
 					List<TableDeletionDataCsv> catDatas = mapCatWithDatas.get(categoryId);
 					if (catDatas != null) {
+						List<TableDeletionDataCsv> parentTables = new ArrayList<>();
+						List<TableDeletionDataCsv> childTables = new ArrayList<>();
+						
 						for (TableDeletionDataCsv tableDataDel : catDatas) {
-	
+							if (tableDataDel.hasParentTblFlg()) {
+								childTables.add(tableDataDel);
+							} else {
+								parentTables.add(tableDataDel);
+							}
+						}
+						
+						//delete child
+						for (TableDeletionDataCsv tableDataDel : childTables) {
+							// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
+							String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
+							if (msgError != null) {
+								ManagementDeletion managementDeletion = maOptional.get();
+								int errorCount = managementDeletion.getErrorCount();
+								managementDeletion.setErrorCount(errorCount + 1);
+								repoManagementDel.update(managementDeletion);
+								// ドメインモデル「データ削除の結果ログ」を追加する
+								saveErrorLogResult(domain, msgError);
+//								return ResultState.ABNORMAL_END;
+							}
+						}
+						
+						//delete parent
+						for (TableDeletionDataCsv tableDataDel : parentTables) {
 							// アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
 							String msgError = deleteDataForCategory(tableDataDel, employeeDeletions);
 							if (msgError != null) {
