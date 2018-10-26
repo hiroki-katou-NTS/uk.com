@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -285,7 +286,7 @@ public class ApprovalStatusFinder {
 	 * KAF018 - E
 	 * 承認状況未確認メール送信
 	 */
-	public boolean checkSendUnConfMail(List<UnApprovalSendMail> listWkp) {
+	public boolean checkSendUnConfMail(List<UnConfrSendMailParam> listWkp) {
 		//hoatt - 2018.10.24
 //		2018/10/24　EA2864
 //		#102263
@@ -298,7 +299,11 @@ public class ApprovalStatusFinder {
 			throw new BusinessException("Msg_1458");
 		}
 		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
-		if (listWkp.stream().filter(x -> x.isChecked()).count() == 0) {
+		int count = 0;
+		for (UnConfrSendMailParam wkp : listWkp) {
+			count = count + wkp.getIsCheckOn();
+		}
+		if (count == 0) {
 			throw new BusinessException("Msg_794");
 		}
 		return false;
