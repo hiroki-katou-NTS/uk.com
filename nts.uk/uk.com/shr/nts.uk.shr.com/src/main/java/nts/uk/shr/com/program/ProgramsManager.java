@@ -44,6 +44,15 @@ public class ProgramsManager {
             "/view/qmm/007/b/index.xhtml");
     public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM007_47",
             "/view/qmm/007/c/index.xhtml");
+	/**
+	 * QMM001
+	 */
+	public static final Program QMM001A = new Program(WebAppId.PR, ProgramIdConsts.QMM001A, "QMM001_1",
+			"/view/qmm/001/a/index.xhtml");
+	public static final Program QMM001B = new Program(WebAppId.PR, ProgramIdConsts.QMM001B, "QMM001_2",
+			"/view/qmm/001/b/index.xhtml");
+	public static final Program QMM001C = new Program(WebAppId.PR, ProgramIdConsts.QMM001C, "QMM001_3",
+			"/view/qmm/001/c/index.xhtml");
 	
 	/**
 	 * CCG008A
