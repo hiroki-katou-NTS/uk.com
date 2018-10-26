@@ -141,6 +141,13 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Check performance atr
+             */
+            public isDaily(): boolean {
+                return this.performanceAtr() == 1;
+            }
+
+            /**
              * Get symbol value by formula id.
              */
             public getSymbolById(id: string): string {
@@ -475,7 +482,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private getSelectableFormulas(orderNo: number): Array<FormulaDto> {
                 let self = this;
-                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() > orderNo);
+                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() < orderNo);
                 return _.map(filtered, item => item.toDto());
             }
 
@@ -771,7 +778,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dto: OptionalItemDto = <OptionalItemDto>{};
 
-                if (self.usageAtr() == 0) {
+                if (!self.isUsed()) {
                     // get original data from stash
                     dto = jQuery.extend(true, {}, self.optionalItemDtoStash);
 
@@ -1247,7 +1254,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // useAtr == not used
                 // skip all check except input name
-                if (self.optionalItem.usageAtr() == 0) {
+                if (!self.optionalItem.isUsed()) {
                     // check has error.
                     if ($('.nts-editor').ntsError('hasError')) {
                         return false;
@@ -1353,7 +1360,8 @@ module nts.uk.at.view.kmk002.a {
                 return self.optionalItemHeaders()
                     .filter(item => item.itemNo >= selectedNo
                         || item.usageAtr == 0
-                        || item.performanceAtr != self.optionalItem.performanceAtr())
+                        // if performanceAtr is monthly, only exclude below optional item.
+                        || (self.optionalItem.isDaily() && item.performanceAtr != self.optionalItem.performanceAtr()))
                     .map(item => item.itemNo);
             }
         }
@@ -1446,9 +1454,9 @@ module nts.uk.at.view.kmk002.a {
 
                 // Rounding
                 this.timeMonthlyRounding = ko.observable(0);
-                this.timeMonthlyUnit = ko.observable(1);
+                this.timeMonthlyUnit = ko.observable(0);
                 this.timeDailyRounding = ko.observable(0);
-                this.timeDailyUnit = ko.observable(1);
+                this.timeDailyUnit = ko.observable(0);
                 this.numberMonthlyRounding = ko.observable(0);
                 this.numberMonthlyUnit = ko.observable(0);
                 this.numberDailyRounding = ko.observable(0);

@@ -156,4 +156,13 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		// エラーチェック
 		this.agreementTime.errorCheck();
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AgreementTimeOfManagePeriod target){
+		this.agreementTime.sum(target.agreementTime);
+		this.breakdown.sum(target.breakdown);
+	}
 }

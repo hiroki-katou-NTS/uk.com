@@ -12,4 +12,11 @@ public class ReserveLeaveRemainingDayNumber extends HalfIntegerPrimitiveValue<Re
 		super(rawValue);
 	}
 
+	@Override
+	protected Double reviseRawValue(Double rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 999.5) rawValue = 999.5;
+		if (rawValue < -999.5) rawValue = -999.5;
+		return super.reviseRawValue(rawValue);
+	}
 }

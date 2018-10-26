@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * 月次任意時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @TimeRange(min = "-999999:59", max = "999999:59")
 public class AnyTimeMonth extends TimeDurationPrimitiveValue<AnyTimeMonth> {
@@ -18,5 +18,13 @@ public class AnyTimeMonth extends TimeDurationPrimitiveValue<AnyTimeMonth> {
 	 */
 	public AnyTimeMonth(int minutes){
 		super(minutes);
+	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(0);
+		if (rawValue > 999999 * 60 + 59) rawValue = 999999 * 60 + 59;
+		if (rawValue < -(999999 * 60 + 59)) rawValue = -(999999 * 60 + 59);
+		return super.reviseRawValue(rawValue);
 	}
 }

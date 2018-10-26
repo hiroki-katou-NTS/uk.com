@@ -6,15 +6,14 @@ package nts.uk.ctx.at.shared.infra.entity.outsideot;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshstOutsideOtSet.
@@ -23,15 +22,13 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSHST_OUTSIDE_OT_SET")
-public class KshstOutsideOtSet implements Serializable {
+public class KshstOutsideOtSet extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The cid. */
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
@@ -40,8 +37,6 @@ public class KshstOutsideOtSet implements Serializable {
     private String note;
     
     /** The calculation method. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CALCULATION_METHOD")
     private int calculationMethod;
 
@@ -49,6 +44,7 @@ public class KshstOutsideOtSet implements Serializable {
      * Instantiates a new kshst over time set.
      */
     public KshstOutsideOtSet() {
+    	super();
     }
 
     /**
@@ -87,7 +83,6 @@ public class KshstOutsideOtSet implements Serializable {
      */
 	@Override
 	public boolean equals(Object object) {
-		// not set
 		if (!(object instanceof KshstOutsideOtSet)) {
 			return false;
 		}
@@ -99,14 +94,12 @@ public class KshstOutsideOtSet implements Serializable {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
-	public String toString() {
-		return "entity.KshstOverTimeSet[ cid=" + cid + " ]";
+	protected Object getKey() {
+		return this.cid;
 	}
-    
+
 }

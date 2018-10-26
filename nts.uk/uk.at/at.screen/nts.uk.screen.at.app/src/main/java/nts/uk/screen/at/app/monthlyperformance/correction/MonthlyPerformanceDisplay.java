@@ -58,6 +58,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
@@ -177,8 +178,7 @@ public class MonthlyPerformanceDisplay {
 			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
 			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
 			// Update Attendance Name
-			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds,
-					2);
+			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds, 2);
 			lstAttendanceData.forEach(c -> {
 				PAttendanceItem item = lstAtdItemUnique.get(c.getAttendanceItemId());
 				item.setDisplayNumber(c.getDisplayNumber());
@@ -187,6 +187,8 @@ public class MonthlyPerformanceDisplay {
 				item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
 				item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
 			});
+			param.setLstAtdItemUnique(lstAtdItemUnique);
+		} else {
 			param.setLstAtdItemUnique(lstAtdItemUnique);
 		}
 		// アルゴリズム「ロック状態をチェックする」を実行する
@@ -316,9 +318,17 @@ public class MonthlyPerformanceDisplay {
 		if (lstBusinessTypeCode.size() == 0) {
 			// エラーメッセージ（#Msg_1403）を表示する(hiển thị error message （#Msg_1403）)
 			BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
-			screenDto.getLstEmployee().stream().forEach(x ->{
-				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
-			});
+			for(String emp : lstEmployeeId ) {
+				for(MonthlyPerformanceEmployeeDto dto  :screenDto.getLstEmployee()) {
+					if(emp.equals(dto.getId())) {
+						bundleExeption.addMessage(new BusinessException("Msg_1403", dto.getCode() + " " + dto.getBusinessName()));
+						break;
+					}
+				}
+			}
+//			screenDto.getLstEmployee().stream().forEach(x ->{
+//				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
+//			});
 			throw bundleExeption;
 		}
 		param.setFormatCodes(lstBusinessTypeCode);
@@ -471,14 +481,12 @@ public class MonthlyPerformanceDisplay {
 		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(empIds, closureTime.end());
 		
 		Optional<IdentityProcess> identityOp = identityProcessRepo.getIdentityProcessById(cid);
-		boolean checkIdentityOp = false;
+		boolean checkIdentityOp = true;
 		//対応するドメインモデル「本人確認処理の利用設定」を取得する
-		if(!identityOp.isPresent()) {
-			checkIdentityOp = true;
-		} else {
+		if(identityOp.isPresent()) {
 			//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
-			if(identityOp.get().getUseDailySelfCk() == 0){
-				checkIdentityOp = true;
+			if(identityOp.get().getUseDailySelfCk() != 0){
+				checkIdentityOp = false;
 			}
 		}
 		
@@ -508,6 +516,7 @@ public class MonthlyPerformanceDisplay {
 			// 月の実績の状況を取得する
 			AcquireActualStatus param = new AcquireActualStatus(cid, affWorkplaceImport.getEmployeeId(), processDateYM,
 					closureId, closureTime.end(), closureTime, affWorkplaceImport.getWorkplaceId());
+			/** TODO: */
 			MonthlyActualSituationOutput monthlymonthlyActualStatusOutput = monthlyActualStatus
 					.getMonthlyActualSituationStatus(param,approvalProcOp,listShareAff,checkIdentityOp,listIdenByEmpID,checkExistRecordErrorListDate);
 			// Output「月の実績の状況」を元に「ロック状態一覧」をセットする

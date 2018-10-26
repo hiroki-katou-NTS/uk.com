@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,29 +17,14 @@ public class OccAccidentInsurService {
     private OccAccInsurBusRepository occAccInsurBusRepository;
     
     @Inject
-    private OccAccIsHisRepository occAccIsHisRepository;
-    
-    @Inject
     private OccAccIsPrRateRepository occAccIsPrRateRepository;
-
-
 
     /*
     * 初期データ取得処理
     * */
-    public Optional<OccAccIsHis> initDataAcquisition(String cId){
-
-        /*
-        *ドメインモデル「労災保険履歴」を全て取得する
-        * */
-        Optional<OccAccIsHis> getEmpInsurHisByCid = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
-        if(getEmpInsurHisByCid.get().getHistory().isEmpty() ){
-            /*選択処理*/
-          return Optional.ofNullable(new OccAccIsHis(cId,new ArrayList<>()));
-        }
+    public OccAccIsHis initDataAcquisition(String cId){
+        OccAccIsHis getEmpInsurHisByCid = occAccIsPrRateRepository.getOccAccIsHisByCid(cId);
         return getEmpInsurHisByCid;
-
-
     }
 
     public Optional<OccAccInsurBus> getOccAccInsurBus(String companyId){
@@ -49,40 +33,39 @@ public class OccAccidentInsurService {
     }
     
     public void historyDeletionProcessing(String hisId, String cId){
-    	Optional<OccAccIsHis> accInsurHis = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
-    	if (!accInsurHis.isPresent()) {
+    	OccAccIsHis accInsurHis = occAccIsPrRateRepository.getOccAccIsHisByCid(cId);
+    	if (accInsurHis.getHistory() == null || accInsurHis.getHistory().isEmpty()) {
     		throw new RuntimeException("invalid employmentHistory"); 
     	}
-    	Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+    	Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.getHistory().stream()
                 .filter(h -> h.identifier().equals(hisId))
                 .findFirst();
-    	accInsurHis.get().remove(itemToBeDelete.get());
-    	occAccIsPrRateRepository.remove(hisId);
-    	occAccIsHisRepository.remove(cId, hisId);
-    	if (accInsurHis.get().getHistory().size() > 0 ){
-    		YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-    		accInsurHis.get().exCorrectToRemove(lastestItem);
-    		occAccIsHisRepository.update(lastestItem, cId);
+    	accInsurHis.remove(itemToBeDelete.get());
+    	occAccIsPrRateRepository.remove(cId, hisId);
+    	if (accInsurHis.getHistory().size() > 0 ){
+    		YearMonthHistoryItem lastestItem = accInsurHis.getHistory().get(0);
+    		accInsurHis.exCorrectToRemove(lastestItem);
+    		occAccIsPrRateRepository.update(cId, lastestItem);
     	}
     }
     
     public void historyCorrectionProcecessing(String cId, String hisId, YearMonth start, YearMonth end){
-    	Optional<OccAccIsHis> accInsurHis = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
-    	if (!accInsurHis.isPresent()) {
+    	OccAccIsHis accInsurHis = occAccIsPrRateRepository.getOccAccIsHisByCid(cId);
+    	if (accInsurHis.getHistory() == null || accInsurHis.getHistory().isEmpty()) {
     		return;
     	}
-    	Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+    	Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.getHistory().stream()
 				.filter(h -> h.identifier().equals(hisId)).findFirst();
     	if (!itemToBeUpdate.isPresent()) {
     		return;
     	}
-    	accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+    	accInsurHis.changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
     	this.updateAccInsurHis(itemToBeUpdate.get(), cId);
-    	this.updateItemBefore(accInsurHis.get(), itemToBeUpdate.get(), cId);
+    	this.updateItemBefore(accInsurHis, itemToBeUpdate.get(), cId);
     }
     
     private void updateAccInsurHis(YearMonthHistoryItem itemToBeUpdated, String cId){
-    	occAccIsHisRepository.update(itemToBeUpdated, cId);
+    	occAccIsPrRateRepository.update(cId, itemToBeUpdated);
     }
     
     private void updateItemBefore(OccAccIsHis accIsHis, YearMonthHistoryItem item, String cId){
@@ -90,7 +73,7 @@ public class OccAccidentInsurService {
 		if (!itemToBeUpdated.isPresent()){
 			return;
 		}
-		occAccIsHisRepository.update(itemToBeUpdated.get(), cId);
+		occAccIsPrRateRepository.update(cId, itemToBeUpdated.get());
 	}
 
 

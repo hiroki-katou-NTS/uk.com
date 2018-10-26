@@ -39,23 +39,23 @@ public class NumberRoundingSetting extends DomainObject{
 	}
 	
 	
-	public double round(double timeAsMinutes) {
+	public BigDecimal round(BigDecimal timeAsMinutes) {
 		
 		//単位が「なし」の場合は丸めない
 		if(!unit.asNumber().isPresent())return timeAsMinutes;
 		
-		BigDecimal calctime = BigDecimal.valueOf(timeAsMinutes);
+		BigDecimal calctime = timeAsMinutes;
 		
 		switch (this.rounding) {
 		case TRUNCATION:
 			calctime = calctime.setScale(unit.asNumber().get(), BigDecimal.ROUND_DOWN);
-			return calctime.intValue();
+			return calctime;
 		case ROUND_UP:
 			calctime = calctime.setScale(unit.asNumber().get(), BigDecimal.ROUND_UP);
-			return calctime.intValue();
+			return calctime;
 		case DOWN_4_UP_5:
 			calctime = calctime.setScale(unit.asNumber().get(), BigDecimal.ROUND_HALF_UP);
-			return calctime.intValue();
+			return calctime;
 		default:
 			throw new RuntimeException("invalid case: " + this.rounding);
 		}

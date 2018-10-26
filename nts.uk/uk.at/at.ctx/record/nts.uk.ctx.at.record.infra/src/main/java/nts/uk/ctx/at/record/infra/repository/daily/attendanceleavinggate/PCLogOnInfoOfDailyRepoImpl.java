@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayPcL
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
 
@@ -56,10 +56,14 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		if (baseDate.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return toList(this.queryProxy()
-				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
-						KrcdtDayPcLogonInfo.class)
-				.setParameter("ymd", baseDate).setParameter("sid", employeeId).getList().stream());
+		List<PCLogOnInfoOfDaily> resultList = new ArrayList<>();
+		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(toList(this.queryProxy()
+					.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
+							KrcdtDayPcLogonInfo.class)
+					.setParameter("ymd", subList).setParameter("sid", employeeId).getList().stream()));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -156,7 +160,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		removeByKey(domain.getEmployeeId(), domain.getYmd());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
 		

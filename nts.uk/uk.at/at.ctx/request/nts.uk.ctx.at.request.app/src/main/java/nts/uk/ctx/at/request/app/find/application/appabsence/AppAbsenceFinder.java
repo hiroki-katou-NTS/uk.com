@@ -406,8 +406,10 @@ public class AppAbsenceFinder {
 		//残数取得する
 		List<AppEmploymentSetting> appEmpSetAs = appCommonSet.getAppEmploymentWorkType().stream()
 				.filter(c -> c.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)).collect(Collectors.toList());
+		//Bug#101904
+		//・基準日＝システム日付
 		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, appAbsence.getApplication().getEmployeeID(),
-				appAbsence.getApplication().getAppDate(), appEmpSetAs);
+				GeneralDate.today(), appEmpSetAs);
 		result.setNumberRemain(numberRemain);
 		return result;
 	}

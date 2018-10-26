@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,13 +79,29 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	}
 	
 	@Override
-	public void addAndUpdate(List<IntegrationOfDaily> daily) {
-		addAndUpdate(daily, null);
+	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily) {
+		return addAndUpdate(daily, null);
 	}
 	
 	@Override
-	public void addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
-		storedProcedureProcess.dailyProcessing(daily, workTypes).stream().forEach(d -> {
+	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
+		
+		return saveOnly(runStoredProcess(daily, workTypes));
+	}
+	
+	@Override
+	public IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily) {
+		return addAndUpdate(Arrays.asList(daily)).get(0);
+	}
+
+	@Override
+	public List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily) {
+		return runStoredProcess(daily, new HashMap<>());
+	}
+
+	@Override
+	public List<IntegrationOfDaily> saveOnly(List<IntegrationOfDaily> daily) {
+		daily.stream().forEach(d -> {
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				attendanceTimeRepository.update(at);
@@ -94,11 +111,13 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 				anyItemValueOfDailyRepo.persistAndUpdate(ai);
 			});
 		});
+		return daily;
 	}
-	
+
 	@Override
-	public void addAndUpdate(IntegrationOfDaily daily) {
-		addAndUpdate(Arrays.asList(daily));
+	public List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily,
+			Map<WorkTypeCode, WorkType> workTypes) {
+		return storedProcedureProcess.dailyProcessing(daily, workTypes);
 	}
 
 }

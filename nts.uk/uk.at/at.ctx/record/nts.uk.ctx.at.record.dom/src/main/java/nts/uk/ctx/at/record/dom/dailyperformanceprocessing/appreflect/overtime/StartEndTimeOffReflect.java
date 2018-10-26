@@ -21,7 +21,7 @@ public interface StartEndTimeOffReflect {
 	 * @param worktypeCode
 	 * @param isClearAuto
 	 */
-	public void clearAutomaticEmbossing(String employeeId, GeneralDate dateData, String worktypeCode, boolean isClearAuto, Integer timeData);
+	public void clearAutomaticEmbossing(String employeeId, GeneralDate dateData, String worktypeCode, boolean isClearAuto, OvertimeAppParameter overInfor);
 	/**
 	 * 開始終了時刻の反映(事前)
 	 * @param param

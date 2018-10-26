@@ -5,13 +5,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -28,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWo
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChangeFull;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
@@ -78,6 +81,9 @@ public class ApprovalStatusFinder {
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
     
+	@Inject
+	private ApprovalStatusService approvalStatusSv;
+	
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -274,7 +280,30 @@ public class ApprovalStatusFinder {
 		return appSttService.getAppSttSendingUnapprovedMail(listAppSttApp);
 
 	}
+	/**
+	 * @author hoatt
+	 * KAF018 - E
+	 * 承認状況未確認メール送信
+	 */
+	public boolean checkSendUnConfMail(List<UnApprovalSendMail> listWkp) {
+		//hoatt - 2018.10.24
+//		2018/10/24　EA2864
+//		#102263
+		// アルゴリズム「承認状況メール本文取得」を実行する
+		//input： ・メール種類　＝　日別未確認(本人)
+		ApprovalStatusMailTemp domain = approvalStatusSv.getApprovalStatusMailTemp(ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.value);
+		//対象が存在しない場合
+		if(domain == null){
+			//メッセージ（#Msg_1458）を表示する
+			throw new BusinessException("Msg_1458");
+		}
+		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
+		if (listWkp.stream().filter(x -> x.isChecked()).count() == 0) {
+			throw new BusinessException("Msg_794");
+		}
+		return false;
 
+	}
 	/**
 	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
 	 */
@@ -455,22 +484,21 @@ public class ApprovalStatusFinder {
 		}
 		appContent += appHoliday.getEndTime2();
 		List<OverTimeFrame> lstFrame = appHoliday.getLstFrame();
-		int totalTime = 0;
-		for (OverTimeFrame overTime : lstFrame) {
-			totalTime += overTime.getApplicationTime();
-		}
 		int countItem = 0;
+		int countRest = 0;
 		String contentOther = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				contentOther += overFrame.getName() + " " + clockShorHm(overFrame.getApplicationTime());
-				countItem++;
-				if (countItem > 1) {
-					break;
+				if(countItem <= 2){
+					contentOther += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+					countItem++;
 				}
+				countRest++;
 			}
 		}
-		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
+		int countTemp = countRest -3;
+		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
+		appContent += contentOther + "　" + other;
 		return appContent;
 	}
 
@@ -528,7 +556,6 @@ public class ApprovalStatusFinder {
 			appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
 			appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
 		}
-		appContent += I18NText.getText("CMM045_269");
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
@@ -542,7 +569,7 @@ public class ApprovalStatusFinder {
 				if (countItem > 2) {
 					time += overFrame.getApplicationTime();
 				} else {
-					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+					frameName += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 					time += overFrame.getApplicationTime();
 					countItem++;
 				}
@@ -551,15 +578,19 @@ public class ApprovalStatusFinder {
 		}
 		int countTemp = countRest -3;
 		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
-		String otherFull = (frameName != "" || other != "") ? "（" + frameName + other + "）" : "";
-		appContent += clockShorHm(time) + "　" + otherFull;
+		String otherFull = (frameName != "" || other != "") ? frameName + "　" + other : "";
+		appContent += otherFull;
 		return appContent;
 	}
 
 	private String getAbsenceApplication(HdAppSetDto hdAppSetDto, ApplicationDto_New applicaton_N, String companyID,
 			String appId) {
 		String appContent = "";
-		AppAbsenceFull appabsence = appDetailInfoRepo.getAppAbsenceInfo(companyID, appId, 0);
+		Integer dayNumber = 0;
+		if(!Strings.isBlank(applicaton_N.getStartDate()) && !Strings.isBlank(applicaton_N.getEndDate())){
+			dayNumber = GeneralDate.fromString(applicaton_N.getStartDate(), "yyyy/MM/dd").daysTo(GeneralDate.fromString(applicaton_N.getEndDate(), "yyyy/MM/dd")) + 1;
+		}
+		AppAbsenceFull appabsence = appDetailInfoRepo.getAppAbsenceInfo(companyID, appId, dayNumber);
 		HolidayAppType holidayAppType = EnumAdaptor.valueOf(appabsence.getHolidayAppType(), HolidayAppType.class);
 		String value = "";
 		switch (holidayAppType) {
@@ -593,16 +624,16 @@ public class ApprovalStatusFinder {
 		}
 		AllDayHalfDayLeaveAtr allDayHaflDay = EnumAdaptor.valueOf(appabsence.getAllDayHalfDayLeaveAtr(),
 				AllDayHalfDayLeaveAtr.class);
-		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)
-				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
+		if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE)//※休暇申請.終日半日休暇区分　＝　終日休暇
+				&& !holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {//休暇申請.休暇種類　≠ 特別休暇
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
 					+ I18NText.getText("CMM045_230", value);
-		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
-			//TODO
-			appContent += I18NText.getText("KAF018_279");
-			appContent += value + appabsence.getRelationshipName();
-			appContent += appabsence.getMournerFlag() == true ? I18NText.getText("CMM045_277") + appabsence.getDay() + I18NText.getText("CMM045_278") : "";
-		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {
+		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {//※休暇申請.休暇種類　＝ 特別休暇
+			String day = appabsence.getMournerFlag() == true ? I18NText.getText("KAF018_277") + appabsence.getDay() 
+					+ I18NText.getText("KAF018_278") : appabsence.getDay() + I18NText.getText("KAF018_278");
+			appContent += I18NText.getText("KAF018_279") + appabsence.getWorkTypeName() 
+					+ appabsence.getRelationshipName() + day;
+		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {//※休暇申請.終日半日休暇区分　＝　半日休暇
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_249");
 			// 休暇申請.就業時間帯コード
 			appContent += I18NText.getText("KAF018_230", appabsence.getWorkTimeName());

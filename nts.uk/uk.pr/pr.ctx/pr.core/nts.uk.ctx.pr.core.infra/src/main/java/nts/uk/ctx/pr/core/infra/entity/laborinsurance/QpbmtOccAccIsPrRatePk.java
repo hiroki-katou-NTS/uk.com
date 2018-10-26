@@ -17,21 +17,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtOccAccIsPrRatePk implements Serializable
-{
+	public class QpbmtOccAccIsPrRatePk implements Serializable {
+	
     private static final long serialVersionUID = 1L;
-
+    
     /**
-     * 労災保険事業No
-     */
+    * 会社ID
+    */
     @Basic(optional = false)
-    @Column(name = "OCC_ACC_IS_BUS_NO")
-    public int occAccInsurBusNo;
+    @Column(name = "CID")
+    public String cid;
+    
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HIS_ID")
-    public String hisId;
+    @Column(name = "HISTORY_ID")
+    public String historyId;
+    
+    /**
+    * 労災保険事業No
+    */
+    @Basic(optional = false)
+    @Column(name = "OCC_ACC_IS_BUS_NO")
+    public int occAccIsBusNo;
     
 }

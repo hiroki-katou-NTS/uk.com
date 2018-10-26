@@ -16,21 +16,10 @@ public class SampleCorrectionLogCommandHandler extends CommandHandler<SampleCorr
 	@Override
 	protected void handle(CommandHandlerContext<SampleCorrectionLogCommand> context) {
 		
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.SAMPLE);
-		
-		val correctionLogParameter = new SampleCorrectionLogParameter(new ArrayList<>());
-		DataCorrectionContext.setParameter(correctionLogParameter);
-		
-		DataCorrectionContext.transactionFinishing();
-		
-	}
-
-	// transactionFinishingはhandleの中に実装しても良いが、
-	// handleの途中でreturnする場合でも実行する必要があるので、postHandleに記述するとミスが少ないはず
-	@Override
-	protected void postHandle(CommandHandlerContext<SampleCorrectionLogCommand> context) {
-		super.postHandle(context);
-		DataCorrectionContext.transactionFinishing();
+		DataCorrectionContext.transactional(CorrectionProcessorId.SAMPLE, () -> {
+			val correctionLogParameter = new SampleCorrectionLogParameter(new ArrayList<>());
+			DataCorrectionContext.setParameter(correctionLogParameter);
+		});
 	}
 
 }

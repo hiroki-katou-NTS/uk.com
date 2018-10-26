@@ -19,6 +19,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -34,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -49,11 +54,14 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private RecruitmentAppRepository recAppRepo;
 	@Inject
-	private AppAbsenceRepository absAppRepo;
+	private AbsenceLeaveAppRepository absAppRepo;
 	@Inject
 	private OvertimeRepository overtimeRepo;
 	@Inject
 	private AppHolidayWorkRepository holidayWorkRepo; 
+	@Inject
+	private CompltLeaveSimMngRepository compltLeaveRepo;
+	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {
 		
@@ -125,19 +133,20 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				});
 				break;
 			case COMPLEMENT_LEAVE_APPLICATION:
-				Optional<AppAbsence> absApp = absAppRepo.getAbsenceByAppId(cid, appData.getAppID());
-				absApp.ifPresent(x -> {
-					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
-					if(x.isChangeWorkHour()) {
-						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));						
+				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
+				optAbsApp.ifPresent(x -> {
+					outData.setWorkTypeCode(x.getWorkTypeCD() == null ? Optional.empty() : Optional.of(x.getWorkTypeCD().v()));
+					if(x.getChangeWorkHoursType() == NotUseAtr.USE) {
+						outData.setWorkTimeCode(x.getWorkTimeCD() == null ? Optional.empty() : Optional.of(x.getWorkTimeCD()));						
 					}
-				});
+				});	
 				
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
 					outData.setWorkTimeCode(Optional.of(y.getWorkTimeCD().v()));
 					outData.setWorkTypeCode(Optional.of(y.getWorkTypeCD().v()));
-				});
+				});	
+				
 				break;
 			case OVER_TIME_APPLICATION:
 				Optional<AppOverTime> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());

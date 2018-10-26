@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
@@ -44,4 +45,9 @@ public class WorkChangeDetail {
 	List<String> workTimeCodes;
 	
 	boolean isTimeRequired;
+	
+	/**
+	 * 勤務就業ダイアログ用データ取得
+	 */
+	DataWork dataWork;
 }

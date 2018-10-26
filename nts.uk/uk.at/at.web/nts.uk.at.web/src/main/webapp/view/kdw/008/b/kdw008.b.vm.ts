@@ -244,6 +244,7 @@ module nts.uk.at.view.kdw008.b {
                 let self = this,
                     dfd = $.Deferred();
                 service.getDailyDetail(businessTypeCode, self.selectedSheetNo()).done(data => {
+                    $("#swap-list2-grid2").igGridSelection("clearSelection") ;
                     self.businessTypeFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
@@ -294,7 +295,8 @@ module nts.uk.at.view.kdw008.b {
             mapAttItemFormatDetail(attItems: Array<AttendanceItemDto>, details): Array<AttendanceItemDto> {
                 details = BusinessTypeFormatDetailDto.fromApp(details);
                 let attItemDetail: Array<AttendanceItemDto> = [];
-                attItemDetail = _.map(details, function(item: BusinessTypeFormatDetailDto) {
+                for(let i = 0;i<details.length;i++){
+                    let item = details[i];
                     let dto: AttendanceItemDto = new AttendanceItemDto(null);
                     dto.attendanceItemId = item.attendanceItemId;
                     dto.columnWidth = item.columnWidth;
@@ -304,9 +306,22 @@ module nts.uk.at.view.kdw008.b {
                     if (attItem) {
                         dto.attendanceItemName = attItem.attendanceItemName;
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                        attItemDetail.push(dto);
                     }
-                    return dto;
-                })
+                }
+//                attItemDetail = _.map(details, function(item: BusinessTypeFormatDetailDto) {
+//                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
+//                    dto.attendanceItemId = item.attendanceItemId;
+//                    dto.columnWidth = item.columnWidth;
+//                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
+//                        return att.attendanceItemId == item.attendanceItemId;
+//                    })
+//                    if (attItem) {
+//                        dto.attendanceItemName = attItem.attendanceItemName;
+//                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+//                    }
+//                    return dto;
+//                })
                 return attItemDetail;
             }
 
@@ -317,6 +332,8 @@ module nts.uk.at.view.kdw008.b {
                 service.getListMonthRight(code).done(function(data) {
                     if (data) {
                         self.sheetCorrectedMonthly(SheetCorrectedMonthlyDto.fromApp(data.displayItem.listSheetCorrectedMonthly));
+                    }else{
+                        self.sheetCorrectedMonthly(SheetCorrectedMonthlyDto.fromApp([]));
                     }
                     dfd.resolve();
                 }).fail(err => {
@@ -327,6 +344,7 @@ module nts.uk.at.view.kdw008.b {
 
             getMonthRightDetail(sheetNo: string) {
                 let self = this;
+                $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                 self.selectedSheetName(null);
                 self.monthlyCorrected.removeAll();
                 self.monthlyCorrectedDataSource.removeAll();
@@ -342,7 +360,9 @@ module nts.uk.at.view.kdw008.b {
 
             mapAttItemMonthRightDetail(attItems: Array<AttendanceItemDto>, details: Array<DisplayTimeItemDto>): Array<AttendanceItemDto> {
                 let attItemDetail: Array<AttendanceItemDto> = [];
-                attItemDetail = _.map(details, function(item: DisplayTimeItemDto) {
+//                attItemDetail = _.map(details, function(item: DisplayTimeItemDto) {
+                for(let i = 0;i<details.length;i++){
+                    let item = details[i];
                     let dto: AttendanceItemDto = new AttendanceItemDto(null);
                     dto.attendanceItemId = item.itemDaily;
                     dto.columnWidth = item.columnWidthTable;
@@ -352,9 +372,21 @@ module nts.uk.at.view.kdw008.b {
                     if (attItem) {
                         dto.attendanceItemName = attItem.attendanceItemName;
                         dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                        attItemDetail.push(dto);
                     }
-                    return dto;
-                })
+                }
+//                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
+//                    dto.attendanceItemId = item.itemDaily;
+//                    dto.columnWidth = item.columnWidthTable;
+//                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
+//                        return att.attendanceItemId == item.itemDaily;
+//                    })
+//                    if (attItem) {
+//                        dto.attendanceItemName = attItem.attendanceItemName;
+//                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+//                    }
+//                    return dto;
+//                })
                 return attItemDetail;
             }
 

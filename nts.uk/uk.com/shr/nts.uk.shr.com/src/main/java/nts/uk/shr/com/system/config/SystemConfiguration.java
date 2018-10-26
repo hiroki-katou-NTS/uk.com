@@ -41,7 +41,7 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 		this.systemName = this.getValue("SystemName").asString().orElse("");
 		this.installationType = this.getValue("InstallationType").asEnum(InstallationType.class).get();
 		this.installedProducts = this.loadInstalledProducts();
-		this.pathToManual = this.getValue("pathToManual").asString().orElse("");
+		this.pathToManual = this.getValue("PathToManual").asString().orElse("");
 		
 		log.info("[INIT END] nts.uk.shr.com.system.config.SystemConfiguration");
 	}

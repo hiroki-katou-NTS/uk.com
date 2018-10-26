@@ -10,7 +10,15 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -56,5 +64,15 @@ public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Seriali
 		this.yearlyReserved = domain.getYearlyReserved().isPresent() ? domain.getYearlyReserved().get().value : null;
 		
 		return this;
+	}
+	
+	public EmployeeMonthlyPerError convertToDomain() {
+		val key = this.krcdtEmployeeMonthlyPerErrorPK;
+		EmployeeMonthlyPerError domain = new EmployeeMonthlyPerError(key.no, ErrorType.valueOf(key.errorType),
+				new YearMonth(key.yearMonth), key.employeeID, ClosureId.valueOf(key.closureId),
+				new ClosureDate(key.closeDay, key.isLastDay == 1), flex == null ? null : Flex.valueOf(flex),
+				annualHoliday == null ? null : EnumAdaptor.valueOf(annualHoliday, AnnualLeaveError.class),
+				yearlyReserved == null ? null : EnumAdaptor.valueOf(yearlyReserved, ReserveLeaveError.class));
+		return domain;
 	}
 }

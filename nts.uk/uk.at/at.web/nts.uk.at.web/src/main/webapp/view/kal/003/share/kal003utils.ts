@@ -147,7 +147,7 @@ module nts.uk.at.view.kal003.share {
                 checkOperatorType: 0,
                 compareRangeEx: getDefaultCompareRangeImport(),
                 compareSingleValueEx : getDefaultCompareSingleValueImport(),
-                listItemID: [0]
+                listItemID: []
             });
         }
         
@@ -184,7 +184,7 @@ module nts.uk.at.view.kal003.share {
                 messageColor: '',
                 displayMessage : '',
                 erAlAtdItem: null,
-                continuonsMonths : 0,
+                continuousMonths : 0,
                 times : 0,
                 compareOperator: 0, 
                 rowId : 0

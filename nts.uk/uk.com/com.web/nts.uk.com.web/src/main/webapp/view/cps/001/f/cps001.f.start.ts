@@ -28,7 +28,13 @@ module cps001.f {
                 }
             });
 
-            $('.browser-button').focus();
+            
+            setTimeout(() => {
+                $('.browser-button').focus();
+                $('.browser-button').attr("tabindex", 2);
+                $(".link-button").attr("tabindex", 2);
+                $(".delete-button").attr("tabindex", 2);
+            }, 500);
         });
 
 

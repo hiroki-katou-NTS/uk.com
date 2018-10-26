@@ -20,9 +20,11 @@
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
-					<div id="functions-area">
-						<button class="large" data-bind="click: openDialogCDL008">CDL008</button>
-					</div>
+				
+				<h1>CDL008 職場選択ダイアログ Workplace Selection Dialog</h1>
+				<hr />
+				<h2>Overview</h2>
+				<h4 style="margin-top: 30px; margin-bottom: 10px; font-size: 17px">Parameters:</h4>
 					<div>
 						<table>
 							<tr>
@@ -76,13 +78,41 @@
 							</tr>
 
 						</table>
-
+						<button class="large" style="margin-top: 10px;" data-bind="click: openDialogCDL008">Open
+						CDL008 dialog</button>
 						<br />
 						<div style="font-weight: bold">Returned Data:</div>
 						<div>Selected Work place id:</div>
-						<div style="word-break: break-all;"
-							data-bind="text: selectWorkplaceIds"></div>
-
+						<div style="word-break: break-all;" data-bind="text: selectWorkplaceIds"></div>
+						<h2 style="margin-top: 50px;">Guide</h2>
+						<pre>
+						<![CDATA[
+						//open dialog cdl008
+						public openDialogCDL008(): void {
+				           let self = this;
+				           let canSelected = self.canSelectWorkplaceIds() ? self.canSelectWorkplaceIds().split(',') : [];
+				           nts.uk.ui.windows.setShared('inputCDL008', {
+				               baseDate: self.baseDate(),//基準日
+				               selectedCodes: self.selectMode() ? canSelected : canSelected[0],//職場ID 選択済項目
+				               isMultiple: self.selectMode(),//選択モード
+				               selectedSystemType: self.selectedSystemType(),//システム区分
+				               isrestrictionOfReferenceRange: self.restrictionOfReferenceRange,//参照範囲の絞込
+				               showNoSelection: self.isDisplayUnselect(),//Unselection Item
+				               isShowBaseDate: self.isShowBaseDate()//Show base date	
+				           }, true);
+				
+				           nts.uk.ui.windows.sub.modal('/view/cdl/008/a/index.xhtml').onClosed(function(): any {
+				               // Check is cancel.
+				               if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+				                   return;
+				               }
+				               //view all code of selected item 
+				               var output = nts.uk.ui.windows.getShared('outputCDL008');
+				               self.selectWorkplaceIds(output);
+				           })
+				       }
+						]]>
+						</pre>
 					</div>
 				</div>
 			</div>

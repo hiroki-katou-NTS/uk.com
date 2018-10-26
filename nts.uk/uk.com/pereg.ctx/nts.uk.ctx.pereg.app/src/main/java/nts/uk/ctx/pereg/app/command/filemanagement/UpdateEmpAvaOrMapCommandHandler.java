@@ -44,26 +44,26 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 			EmployeeDataMngInfo emp = employee.get();
 			if (command.isAvatar()) {
 				// start ghi log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 0, null));
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), 3, null));
-				
-				setParamPersonLog(command);
-				setDataLogCategory(command).forEach(cat -> {
-					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+	
+					this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 0, null));
+					this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), 3, null));
+					
+					setParamPersonLog(command);
+					setDataLogCategory(command).forEach(cat -> {
+						DataCorrectionContext.setParameter(cat.getHashID(), cat);
+					});
 				});
-				DataCorrectionContext.transactionFinishing();
 				
 			}else {
 				// start ghi log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 1, null));
-				setParamPersonLog(command);
-				setDataLogCategory(command).forEach(cat -> {
-					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+					this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 1, null));
+					setParamPersonLog(command);
+					setDataLogCategory(command).forEach(cat -> {
+						DataCorrectionContext.setParameter(cat.getHashID(), cat);
+					});
 				});
-				DataCorrectionContext.transactionFinishing();
 			}
 		}
 	}

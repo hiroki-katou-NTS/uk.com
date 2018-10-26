@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.application.realitystatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.dto.RealityStatusEmp
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
@@ -152,7 +154,7 @@ public class RealityStatusService {
 				// Request list 532
 				// imported(申請承認）「上司確認の状況」を取得する
 				List<ApproveRootStatusForEmpImport> listApproval = approvalStatusAdapter
-						.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(emp.getStartDate(), emp.getEndDate()));
+						.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cid, 2);
 				Optional<ApproveRootStatusForEmpImport> approval = listApproval.stream().findFirst();
 				// 承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
 				if (approval.isPresent()
@@ -471,21 +473,18 @@ public class RealityStatusService {
 	 * @return 結果（あり/なし)
 	 */
 	private List<String> checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
-		String cId = AppContexts.user().companyId();
 		List<String> listEmpId = new ArrayList<>();
-		// imported（ワークフロー）「承認ルート状況」を取得する
-		// RequestList113
-		List<ApproveRootStatusForEmpImport> listAppRootStatus = approvalStatusAdapter
-				.getApprovalByEmplAndDate(startDate, endDate, sId, cId, 1);
-		// 承認ルートの状況
-		for (ApproveRootStatusForEmpImport appRoot : listAppRootStatus) {
-			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRoot.getApprovalStatus())
-					|| ApprovalStatusForEmployee.DURING_APPROVAL.equals(appRoot.getApprovalStatus())) {
-				// 上司社員ID（リスト）に承認ルートの承認者を追加する
-				listEmpId.add(appRoot.getEmployeeID());
-			}
+		List<GeneralDate> dateLst = new ArrayList<>();
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+			dateLst.add(loopDate);
 		}
-		// 上司社員ID（リスト）の存在状態を確認
+		// imported（ワークフロー）「社員」を取得する
+		List<ApproverApproveImport> listResult = approvalStatusAdapter.getApproverByDateLst(Arrays.asList(sId), dateLst, 1);
+		listResult.stream().forEach(x -> {
+			x.getAuthorList().stream().forEach(y -> {
+				listEmpId.add(y.getEmployeeID());
+			});
+		});
 		return listEmpId;
 	}
 
@@ -506,7 +505,7 @@ public class RealityStatusService {
 			// imported（申請承認）「List<日付、状態＞」を取得する
 			// RequestList 532
 			List<ApproveRootStatusForEmpImport> listAppRootStatus = approvalStatusAdapter
-					.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(emp.getStartDate(), emp.getEndDate()));
+					.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cId, 2);
 			Optional<ApproveRootStatusForEmpImport> appRootStatus = listAppRootStatus.stream().findFirst();
 			// 承認ルートの状況
 			if (appRootStatus.isPresent()
@@ -576,7 +575,7 @@ public class RealityStatusService {
 				// Request list 532
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Optional<ApproveRootStatusForEmpImport> appRootStatus = approvalStatusAdapter
-						.getAppRootStatusByEmpPeriodMonth(emp.getSId(), new DatePeriod(startDate, endDate)).stream().findFirst();
+						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream().findFirst();
 				if (appRootStatus.isPresent()) {
 					routeStatus = appRootStatus.get();
 				}
