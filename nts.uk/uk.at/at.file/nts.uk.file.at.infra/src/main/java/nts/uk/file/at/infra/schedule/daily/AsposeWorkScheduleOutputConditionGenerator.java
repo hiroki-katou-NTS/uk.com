@@ -403,12 +403,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
 			
+			// Create print area
+			createPrintArea(currentRow, sheet);
+			
 			// Save workbook
-			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
+			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL) {
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate + ".xlsx"));
-			else {
-				// Create print area
-				createPrintArea(currentRow, sheet);
+			} else {
 				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate + ".pdf"));
 			}
 			
@@ -1568,7 +1569,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (targetWorkplace != null) {
 					wrp.parent = targetWorkplace;
 					targetWorkplace.lstChildWorkplaceReportData.put(k, wrp);
-					targetWorkplace.lstChildWorkplaceReportData = sortByWorkplaceCodeExportByEmployee(targetWorkplace.lstChildWorkplaceReportData);
+					//targetWorkplace.lstChildWorkplaceReportData = sortByWorkplaceCodeExportByEmployee(targetWorkplace.lstChildWorkplaceReportData);
 					isFoundParent = true;
 					break;
 				}
@@ -1578,7 +1579,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (!isFoundParent) {
 				wrp.parent = parent;
 				parent.lstChildWorkplaceReportData.put(k, wrp);
-				parent.lstChildWorkplaceReportData = sortByWorkplaceCodeExportByEmployee(parent.lstChildWorkplaceReportData);
+				//parent.lstChildWorkplaceReportData = sortByWorkplaceCodeExportByEmployee(parent.lstChildWorkplaceReportData);
 			}
 		}
 	}
@@ -1646,7 +1647,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (targetWorkplace != null) {
 					wrp.parent = targetWorkplace;
 					targetWorkplace.lstChildWorkplaceData.put(k, wrp);
-					sortByWorkplaceCodeExportByDate(targetWorkplace.lstChildWorkplaceData);
+					//sortByWorkplaceCodeExportByDate(targetWorkplace.lstChildWorkplaceData);
 					isFoundParent = true;
 					break;
 				}
@@ -1656,7 +1657,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (!isFoundParent) {
 				wrp.parent = parent;
 				parent.lstChildWorkplaceData.put(k, wrp);
-				sortByWorkplaceCodeExportByDate(parent.lstChildWorkplaceData);
+				//sortByWorkplaceCodeExportByDate(parent.lstChildWorkplaceData);
 			}
 		}
 	}
@@ -1882,11 +1883,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Iterator<EmployeeReportData> iteratorEmployee = lstEmployeeReportData.iterator();
 			while (iteratorEmployee.hasNext()) {
 				EmployeeReportData employeeReportData = iteratorEmployee.next();
-				
 				Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 				Range workplaceRange = cells.createRange(currentRow, 0, 1, 39);
 				workplaceRange.copy(workplaceRangeTemp);
-				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+					sheet.getHorizontalPageBreaks().add(currentRow);
+					rowPageTracker.useRemainingRow(dataRowCount);
+					rowPageTracker.resetRemainingRow();
+				}
+				else {
+					rowPageTracker.useRemainingRow(dataRowCount);
+				}
 				
 				// A3_1
 				Cell workplaceTagCell = cells.get(currentRow, 0);
@@ -1897,11 +1904,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				workplaceInfo.setValue(workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
 				
 				currentRow++;
-				
+
 				Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 				Range employeeRange = cells.createRange(currentRow, 0, 1, 39);
 				employeeRange.copy(employeeRangeTemp);
-				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+					sheet.getHorizontalPageBreaks().add(currentRow);
+					rowPageTracker.useRemainingRow(dataRowCount);
+					rowPageTracker.resetRemainingRow();
+				}
+				else {
+					rowPageTracker.useRemainingRow(dataRowCount);
+				}
 				
 				// A4_1
 				Cell employeeTagCell = cells.get(currentRow, 0);
@@ -2854,66 +2868,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		return lstEnabledLevel;
 	}
 	
-	/*
-	 * Sort by workplace code within the same parent workplace (export by date)
-	 * @param unsortMap the unsort map
-	 * @return the map
-	 */
-	private static Map<String, DailyWorkplaceData> sortByWorkplaceCodeExportByDate(Map<String, DailyWorkplaceData> unsortMap) {
-
-        // 1. Convert Map to List of Map
-        List<Map.Entry<String, DailyWorkplaceData>> list =
-                new LinkedList<Map.Entry<String, DailyWorkplaceData>>(unsortMap.entrySet());
-
-        // 2. Sort list with Collections.sort(), provide a custom Comparator
-        //    Try switch the o1 o2 position for a different order
-        Collections.sort(list, new Comparator<Map.Entry<String, DailyWorkplaceData>>() {
-            public int compare(Map.Entry<String, DailyWorkplaceData> o1,
-                               Map.Entry<String, DailyWorkplaceData> o2) {
-                return (o1.getValue()).getWorkplaceCode().compareTo(o2.getValue().getWorkplaceCode());
-            }
-        });
-
-        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
-        Map<String, DailyWorkplaceData> sortedMap = new LinkedHashMap<String, DailyWorkplaceData>();
-        for (Map.Entry<String, DailyWorkplaceData> entry : list) {
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-        return sortedMap;
-    }
-	
-	/*
-	 * Sort by workplace code within the same parent workplace (export by employee)
-	 * @param unsortMap the unsort map
-	 * @return the map
-	 */
-	private static Map<String, WorkplaceReportData> sortByWorkplaceCodeExportByEmployee(Map<String, WorkplaceReportData> unsortMap) {
-
-        // 1. Convert Map to List of Map
-        List<Map.Entry<String, WorkplaceReportData>> list =
-                new LinkedList<Map.Entry<String, WorkplaceReportData>>(unsortMap.entrySet());
-
-        // 2. Sort list with Collections.sort(), provide a custom Comparator
-        //    Try switch the o1 o2 position for a different order
-        Collections.sort(list, new Comparator<Map.Entry<String, WorkplaceReportData>>() {
-            public int compare(Map.Entry<String, WorkplaceReportData> o1,
-                               Map.Entry<String, WorkplaceReportData> o2) {
-                return (o1.getValue()).getWorkplaceCode().compareTo(o2.getValue().getWorkplaceCode());
-            }
-        });
-
-        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
-        Map<String, WorkplaceReportData> sortedMap = new LinkedHashMap<String, WorkplaceReportData>();
-        for (Map.Entry<String, WorkplaceReportData> entry : list) {
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-        return sortedMap;
-    }
 	
 	private void alignTopCotent(Worksheet sheet) {
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setCenterHorizontally(true);
-		pageSetup.setCenterVertically(false);
+		pageSetup.setCenterVertically(false); 
 	}
 	
 	/**
