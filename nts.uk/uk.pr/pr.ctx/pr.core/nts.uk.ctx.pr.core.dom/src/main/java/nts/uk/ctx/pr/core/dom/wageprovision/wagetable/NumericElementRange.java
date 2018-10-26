@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Optional;
 /**
  * 数値要素範囲
  */
+@Getter
 public class NumericElementRange extends DomainObject{
     /**
      * きざみ単位

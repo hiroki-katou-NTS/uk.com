@@ -1,112 +1,68 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
+<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 600, height: 460 };</script>
+		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="../share/model.js" />
+		<com:scriptfile path="qmm016.j.service.js" />
+		<com:scriptfile path="qmm016.j.vm.js" />
+		<com:stylefile path="qmm016.j.style.css" />
+		<com:scriptfile path="qmm016.j.start.js" />
+	</ui:define>
+	<ui:define name="content">
+		<div class="contents-area" style="margin-left: 20px;">
+			<div class="label dialog-title">#{i18n.getText('QMM016_78')}</div>
+			<div style="margin-top: 20px; min-width: 550px">
+				<div style="width: 130px; display: inline-block;"
+					 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+				<div style="display: inline-block;"
+					 data-bind="text: wageTableCode"></div>
+				<span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class = "limited-label"
+					  data-bind="text: wageTableName"></span>
+			</div>
+			<div style="margin-top: 20px; min-width: 550px">
+				<div style="width: 130px;"
+					 data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM016_79')}</div>
+				<div style="width: 200px; display: inline-flex; position: absolute">
+					<div id="J3_2" tabindex="1"
+						 data-bind="ntsRadioBoxGroup: {
+										value: modifyMethod,
+										enable: isLastHistory,
+										options: modifyItem,
+										optionsValue: 'value',
+										optionsText: 'name'}"></div>
 
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 950,
-					height : 600
-				};
-			</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-					nts.arc.time.YearMonth
-					nts.uk.shr.com.primitive.sample.ResidenceCode
-					nts.uk.ctx.core.dom.socialinsurance.InsuranceFee
-   				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm008.j.vm.js" />
-			<com:scriptfile path="qmm008.j.start.js" />
-			<com:scriptfile path="qmm008.j.service.js" />
-			<com:stylefile path="qmm008.j.style.css" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<div style="margin-bottom: 15px;">
-					<button class="proceed" id="J1_1" style="margin-left: 50px;" tabindex="1" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
-					<button id="J1_2" tabindex="2" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM008_2')}</button>
-					<button id="J1_3" tabindex="3" data-bind="click: countReview">#{i18n.getText('QMM008_141')}</button>
-					<button id="J1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
+				</div>
+				<span style = "position: absolute; z-index: -1; margin-top: 30px; margin-left: 10px;" class="label warning tab-row">#{i18n.getText('QMM016_80')}</span>
+				<div style="margin-top: 100px; margin-left: 150px;  min-width: 420px">
+					<div style="width: 100px; display: inline-block"
+						 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_75')}</div>
+					<div id="J4_2" style="display: inline-block"
+						 data-bind="ntsDatePicker: {
+							name: '#[QMM016_16]',
+							value: startMonth,
+							dateFormat: 'yearmonth',
+							valueFormat: 'YYYYMM',
+							required: true,
+							enable: modifyMethod() == 1}"
+						 tabindex="2" />
+					<div style= "width: 100px; display: inline-block; margin-left: 5px;" data-bind="text: displayEndMonth"></div>
 				</div>
 			</div>
-			<div id="contents-area" style="margin-left: 15px;">
-				<div id="content" class="cf">
-					<div style="min-width: 900px;">
-						<div id="J2_1" style="margin-left: 32px;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
-						<span style="margin-bottom: 15px;" id="J2_2"
-							data-bind="text: officeCode"></span> <span
-							style="margin-left: 30px;width: 250px;margin-bottom: -3px;" id="J2_3"
-							data-bind="text: socialInsuranceName" class="limited-label"></span>
-						<div id="J2_4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_12')}</div>
-						<span style="margin-bottom: 15px;" id="J2_5"
-							data-bind="text: displayStart"></span> <span
-							style="margin-bottom: 15px;" id="J2_6">~</span> <span
-							style="margin-bottom: 15px;" id="J2_7"
-							data-bind="text: displayEnd"></span>
-					</div>
 
-					<div class="flex"  id="J3_1_container" style="margin-left: 35px; width: 800px;min-width: 390px;" >
-						<table id="fixed-table" >
-							<colgroup >
-								<col width="40px" />
-								<col width="150px" />
-								<col width="150px" />
-								<col width="150px" />
-								<col width="250px" />
-							</colgroup>
-							<thead >
-								<tr>
-									<th class="ui-widget-header" style="text-align: center;"
-										rowspan="2" id="J3_2">#{i18n.getText('QMM008_145')}</th>
-									<th class="ui-widget-header" style="text-align: center;"
-										rowspan="2" id="J3_3">#{i18n.getText('QMM008_146')}</th>
-									<th class="ui-widget-header" style="text-align: center;"
-										colspan="2" id="J3_4">#{i18n.getText('QMM008_147')}</th>
-									<th class="ui-widget-header" style="text-align: center;"
-										rowspan="2" id="J3_7">#{i18n.getText('QMM008_166')}</th>
-								</tr>
-								<tr>
-									<th class="ui-widget-header" style="text-align: center;"
-										rowspan="2" id="J3_5">#{i18n.getText('QMM008_148')}</th>
-									<th class="ui-widget-header" style="text-align: center;"
-										rowspan="2" id="J3_6">#{i18n.getText('QMM008_149')}</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: dataList" >
-								<tr>
-									<td class="td-widget"><span data-bind="text: welfarePensionGrade()" style="float: right;"></span></td>
-									<td class="td-widget"><span data-bind="text: $parent.genNumber(standardMonthlyFee(),0)" style="float: right;"></span></td>
-									<td class="td-widget"><span data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)" style="float: right;"></span></td>
-									<td class="td-widget"><span data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)" style="float: right;"></span></td>
-									<td >
-										<input tabindex="6" class="focusTest" data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '223px',
-														decimallength: 2,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_179]',
- 													value: childCareContribution, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />			
-									
-									</td>
-
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+		</div>
+		<div id="functions-area-bottom">
+			<button tabindex="3" class="x-large proceed "
+					data-bind="click: editHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM016_81')}</button>
+			<button tabindex="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM016_55')}</button>
+		</div>
+	</ui:define>
+</ui:composition>
 </body>
 </html>

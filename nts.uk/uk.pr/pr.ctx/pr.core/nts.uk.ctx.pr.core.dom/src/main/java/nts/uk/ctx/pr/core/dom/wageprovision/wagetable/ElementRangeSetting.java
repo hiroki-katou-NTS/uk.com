@@ -15,6 +15,7 @@ import javax.xml.bind.Element;
 * 要素範囲設定
 */
 @Getter
+@AllArgsConstructor
 public class ElementRangeSetting extends AggregateRoot {
     
     /**
@@ -25,12 +26,12 @@ public class ElementRangeSetting extends AggregateRoot {
     /**
     * 第二要素範囲
     */
-    private Optional<ElementRange> thirdElementRange;
+    private Optional<ElementRange> secondElementRange;
     
     /**
     * 第三要素範囲
     */
-    private Optional<ElementRange> secondElementRange;
+    private Optional<ElementRange> thirdElementRange;
     
     /**
     * 履歴ID
@@ -45,5 +46,12 @@ public class ElementRangeSetting extends AggregateRoot {
         this.secondElementRange = Optional.of(new ElementRange(thirdStepIncrement, thirdRangeLowerLimit, thirdRangeUpperLimit));
         this.historyID = historyID;
     }
-    
+
+    public ElementRangeSetting(ElementRange secondElementRange, ElementRange thirdElementRange, ElementRange firstElementRange, String historyID) {
+        this.firstElementRange = secondElementRange;
+        this.thirdElementRange = Optional.of(thirdElementRange);
+        this.secondElementRange = Optional.of(secondElementRange);
+        this.historyID = historyID;
+    }
+
 }

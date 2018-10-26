@@ -59,4 +59,13 @@ public class WageTable extends AggregateRoot {
         this.remarkInformation = remarkInformation == null ? Optional.empty() : Optional.of(new Memo(remarkInformation));
     }
 
+    public WageTable(String cid, String wageTableCode, String wageTableName, Integer elementSetting, String remarkInformation, ElementInformation elementInformation) {
+        this.cid = cid;
+        this.wageTableCode = new WageTableCode(wageTableCode);
+        this.wageTableName = new WageTableName(wageTableName);
+        this.elementSetting = EnumAdaptor.valueOf(elementSetting, ElementSetting.class);
+        this.remarkInformation = remarkInformation == null ? Optional.empty() : Optional.of(new Memo(remarkInformation));
+        this.elementInformation = elementInformation;
+    }
+
 }

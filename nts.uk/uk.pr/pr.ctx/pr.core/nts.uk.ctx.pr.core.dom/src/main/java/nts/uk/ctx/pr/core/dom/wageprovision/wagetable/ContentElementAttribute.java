@@ -47,4 +47,9 @@ public class ContentElementAttribute extends DomainObject {
             this.secondElementItem = Optional.of(new ElementItem(thirdMasterCode, thirdFrameNumber, thirdFrameLowerLimit, thirdFrameUpperLimit));
     }
 
+    public ContentElementAttribute(ElementItem firstElementItem, ElementItem secondElementItem, ElementItem thirdElementItem) {
+        this.firstElementItem = firstElementItem;
+        this.secondElementItem = Optional.of(secondElementItem);
+        this.thirdElementItem = Optional.of(thirdElementItem);
+    }
 }

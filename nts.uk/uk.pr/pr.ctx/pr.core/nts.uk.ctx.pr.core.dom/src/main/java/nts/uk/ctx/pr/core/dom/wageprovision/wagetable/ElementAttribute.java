@@ -1,10 +1,16 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 
 import java.util.Optional;
-
+/**
+ * 要素の属性
+ */
+@Getter
+@AllArgsConstructor
 public class ElementAttribute extends DomainObject{
 
     /**

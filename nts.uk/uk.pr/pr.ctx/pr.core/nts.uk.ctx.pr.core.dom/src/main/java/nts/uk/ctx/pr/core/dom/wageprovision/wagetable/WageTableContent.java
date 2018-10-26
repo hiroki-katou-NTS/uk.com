@@ -13,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 * 賃金テーブル内容
 */
 @Getter
+@AllArgsConstructor
 public class WageTableContent extends AggregateRoot {
     
     /**

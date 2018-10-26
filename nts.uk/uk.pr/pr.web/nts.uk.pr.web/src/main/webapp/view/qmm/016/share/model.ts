@@ -6,6 +6,15 @@ module nts.uk.pr.view.qmm016.share.model {
         NEW = 0,
         UPDATE = 1
     }
+    export enum TAKEOVER_METHOD {
+        FROM_LASTEST_HISTORY = 0,
+        FROM_BEGINNING = 1
+    }
+
+    export enum MODIFY_METHOD {
+        DELETE = 0,
+        UPDATE = 1
+    }
     // 要素設定
     export enum ELEMENT_SETTING {
         FIRST_DIMENSION = 0,

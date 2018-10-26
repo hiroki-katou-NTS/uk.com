@@ -33,5 +33,6 @@ public class ElementItem extends DomainObject
         if (frameNumber == null && frameLowerLimit == null && frameUpperLimit == null) this.numericElementItem = Optional.empty();
         else this.numericElementItem = Optional.of(new NumericElementItem(frameNumber, frameLowerLimit, frameUpperLimit));
     }
-    
+
+
 }

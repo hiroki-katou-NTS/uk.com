@@ -1,5 +1,7 @@
 module nts.uk.pr.view.qmm016.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
@@ -26,7 +28,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         constructor() {
             let self = this;
             self.initTabPanel();
-            self.initWageTableList();
+            self.getWageTableList();
             self.selectedWageTableIdentifier.subscribe(function (newValue){
                 if (newValue) self.showWageTableInfoByValue(newValue);
             });
@@ -36,7 +38,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             $('#A8_2').ntsFixedTable({width: 300});
         }
 
-        initWageTableList () {
+        getWageTableList () {
             let self = this;
             let wageTableData: Array<any> = [
                 {
@@ -183,10 +185,61 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
 
         createNewHistory () {
+            let self = this;
+            let selectedWageTable = ko.toJS(self.selectedWageTable);
+            let history = selectedWageTable.history;
+            setShared("QMM016_I_PARAMS", { selectedWageTable: selectedWageTable, history: history });
+            modal("/view/qmm/016/i/index.xhtml").onClosed(() => {
+                let params = getShared("QMM016_I_RES_PARAMS");
+                if (params) {
+                    let wageTableTreeList = ko.toJS(self.wageTableTreeList);
+                    let historyID = nts.uk.util.randomId();
+                    // update previous history
+                    if (history.length > 0) {
+                        let beforeLastMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
+                        history[0].endMonth = beforeLastMonth.format('YYYYMM');
+                    }
+                    // add new history
+                    history.unshift({ historyID: historyID, startMonth: params.startMonth, endMonth: '999912' });
+                    wageTableTreeList.forEach(wageTable => {
+                        if (wageTable.wageTableCode == selectedWageTable.wageTableCode) {
+                            wageTable.history = history;
+                            wageTable = new model.WageTable(wageTable);
+                        }
+                    });
+                    // update wage table and tree grid
+                    self.convertToTreeList(wageTableTreeList);
+                    self.selectedWageTableIdentifier(selectedWageTable.wageTableCode + historyID);
+                    // clone data
+                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
 
+                    } else {
+
+                    }
+                    self.isUpdateMode(false);
+                }
+            });
         }
         editHistory () {
+            let self = this;
+            let selectedWageTable = ko.toJS(self.selectedWageTable), selectedHistory = ko.toJS(self.selectedHistory);
+            let history = selectedWageTable.history;
+            setShared("QMM016_J_PARAMS", { selectedWageTable: selectedWageTable, history: history, selectedHistory: selectedHistory });
+            modal("/view/qmm/016/j/index.xhtml").onClosed(() => {
+                let params = getShared("QMM016_J_RES_PARAMS");
+                if (params) {
+                    self.getWageTableList();
+                    // change selected value
+                    if (params.modifyMethod == model.MODIFY_METHOD.DELETE) {
+                        if (history.length <= 1) {
+                            self.selectedWageTableIdentifier(selectedWageTable.wageTableCode);
 
+                        } else {
+                            self.selectedWageTableIdentifier(selectedWageTable.wageTableCode + history[1].historyID)
+                        }
+                    }
+                }
+            });
         }
 
     }

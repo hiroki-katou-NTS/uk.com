@@ -36,5 +36,11 @@ public class ElementInformation extends DomainObject
         this.twoDimensionalElement = Optional.of(new ElementAttribute(twoMasterNumericClassification, twoFixedElement, twoOptionalAdditionalElement));
         this.threeDimensionalElement = Optional.of(new ElementAttribute(threeMasterNumericClassification, threeFixedElement, threeOptionalAdditionalElement));
     }
+
+    public ElementInformation(ElementAttribute oneDimensionalElement, ElementAttribute twoDimensionalElement, ElementAttribute threeDimensionalElement) {
+        this.oneDimensionalElement = oneDimensionalElement;
+        this.twoDimensionalElement = Optional.of(twoDimensionalElement);
+        this.threeDimensionalElement = Optional.of(threeDimensionalElement);
+    }
     
 }
