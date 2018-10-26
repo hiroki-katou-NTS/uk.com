@@ -15,8 +15,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -135,8 +133,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<ManagePerCompanySet> companySet){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
-								.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+		return commonPerCompany(
+				calcOption,
+				integrationOfDaily,
+				true,
+				Optional.empty(),
+				Optional.empty(),
+				companySet,
+				Collections.emptyList())
+				.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 	}
 	
 	

@@ -728,6 +728,15 @@ public class DailyModifyResCommandFacade {
 		OperationOfDailyPerformanceDto settingMaster = repo.findOperationOfDailyPerformance();
 		if (lstError.isEmpty() && lstErrorDto.isEmpty())
 			return false;
+		//fix bug 102116
+		//them thuat toan ドメインモデル「勤務実績のエラーアラーム」を取得する
+		//check table 'era set'
+		List<String> errorList = lstError.stream().map(e -> e.getErrorAlarmWorkRecordCode().toString()).collect(Collectors.toList());
+		errorList.addAll(lstErrorDto.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+		boolean isErAl = repo.isErAl(AppContexts.user().companyId(), 
+			 lstError.stream().map(e -> e.getErrorAlarmWorkRecordCode().toString()).collect(Collectors.toList()));
+		if(isErAl == false)
+			return false;
 		return settingMaster == null ? false : settingMaster.isShowError();
 	}
 }
