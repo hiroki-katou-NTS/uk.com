@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaFormulaRepository extends JpaRepository implements FormulaRepository
+public class JpaCalcFormulaRepository extends JpaRepository implements FormulaRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtFormula f";
