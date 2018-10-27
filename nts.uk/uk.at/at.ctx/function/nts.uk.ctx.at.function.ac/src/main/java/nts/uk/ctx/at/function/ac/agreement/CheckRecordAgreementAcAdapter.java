@@ -239,7 +239,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					// Convert AgreementTimeByPeriod to AgreementTimeByPeriodImport
 					AgreementTimeByPeriodImport agreementTimeByPeriodImport = new AgreementTimeByPeriodImport(
 							agreementTimeByPeriod.getStartMonth(), agreementTimeByPeriod.getEndMonth(), agreementTimeByPeriod.getAgreementTime(),
-							agreementTimeByPeriod.getLimitAlarmTime().toString(), agreementTimeByPeriod.getLimitAlarmTime().toString(),
+							agreementTimeByPeriod.getLimitErrorTime().toString(), agreementTimeByPeriod.getLimitAlarmTime().toString(),
 							agreementTimeByPeriod.getExceptionLimitErrorTime().toString(),
 							agreementTimeByPeriod.getExceptionLimitAlarmTime().toString(), agreementTimeByPeriod.getStatus());
 					
@@ -260,9 +260,9 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					case EXCESS_EXCEPTION_LIMIT_ALARM:
 					case EXCESS_EXCEPTION_LIMIT_ERROR:
 						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
-							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().toString();
+							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
 						} else {
-							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().toString();
+							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
 						}
 
 						// All 36協定チェック結果 to list return
@@ -299,12 +299,16 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 		switch (period) {
 		case One_Month:
 			enumReturn = PeriodAtrOfAgreement.ONE_MONTH;
+			break;
 		case Two_Month:
 			enumReturn = PeriodAtrOfAgreement.TWO_MONTHS;
+			break;
 		case Three_Month:
 			enumReturn = PeriodAtrOfAgreement.THREE_MONTHS;
+			break;
 		case Yearly:
 			enumReturn = PeriodAtrOfAgreement.ONE_YEAR;
+			break;
 		default:
 			break;
 		}
