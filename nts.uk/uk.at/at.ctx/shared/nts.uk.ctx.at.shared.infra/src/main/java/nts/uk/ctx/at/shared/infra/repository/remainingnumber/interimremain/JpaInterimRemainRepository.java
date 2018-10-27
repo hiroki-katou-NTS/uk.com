@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.interimremain;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +71,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			List<InterimRemain> entities = new NtsResultSet(sql.executeQuery())
 					.getList(x -> toDomain(x));
 			if(entities.isEmpty()) {
-				return Collections.emptyList();
+				return new ArrayList<>();
 			}
 			return entities;
 		}		
@@ -155,33 +156,29 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	@SneakyThrows
 	@Override
 	public List<InterimRemain> getDataBySidDates(String sid, List<GeneralDate> baseDates) {
-		//List<InterimRemain> resultList = new ArrayList<>();
-		try(
-				PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
-						+ " WHERE SID = ?"
-						+ " AND YMD  IN ("
-						+ NtsStatement.In.createParamsString(baseDates) + ")");
-						
-				)
-		{
-			sql.setString(1, sid);
-			for (int i = 0; i < baseDates.size(); i++) {
-				GeneralDate loopDate = baseDates.get(i);
-				sql.setDate(i + 2, Date.valueOf(loopDate.localDate()));
-			}
-			List<InterimRemain> entities = new NtsResultSet(sql.executeQuery())
-					.getList(x -> toDomain(x));			
-			if(entities.isEmpty()) {
-				return Collections.emptyList();
-			}
-			return entities;
-		}	/*
+		List<InterimRemain> resultList = new ArrayList<>();
 		CollectionUtil.split(baseDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(QUERY_BY_SID_YMDs, KrcmtInterimRemainMng.class)
-								.setParameter("sId", sid)
-								.setParameter("ymd", subList)
-								.getList(c -> convertToDomainSet(c)));
+			try(
+					PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+							+ " WHERE SID = ?"
+							+ " AND YMD  IN ("
+							+ NtsStatement.In.createParamsString(subList) + ")");
+							
+					)
+			{
+				sql.setString(1, sid);
+				for (int i = 0; i < subList.size(); i++) {
+					GeneralDate loopDate = subList.get(i);
+					sql.setDate(i + 2, Date.valueOf(loopDate.localDate()));
+				}
+				List<InterimRemain> entities = new NtsResultSet(sql.executeQuery())
+						.getList(x -> toDomain(x));			
+				resultList.addAll(entities);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		});
-		return resultList;*/
+		return resultList;
 	}
 }
