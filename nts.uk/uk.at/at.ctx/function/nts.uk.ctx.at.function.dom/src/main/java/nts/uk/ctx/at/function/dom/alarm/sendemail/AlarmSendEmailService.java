@@ -15,7 +15,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.mail.send.MailAttachedFile;
+import nts.gul.mail.send.MailAttachedFileItf;
+import nts.gul.mail.send.MailAttachedFilePath;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeePubAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeSprPubAlarmAdapter;
@@ -105,7 +106,7 @@ public class AlarmSendEmailService implements SendEmailService {
 			}
 			
 			for (String workplaceId : workplaceIds) {
-				// call request list 218 return list employee Id
+				// Call request list 218 return list employee Id
 				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
 				// 抽出結果：ループ中の職場単位のアラーム抽出結果 
 				valueExtractAlarmManagerDtos = mapCheckAlarm.get(workplaceId);
@@ -113,8 +114,6 @@ public class AlarmSendEmailService implements SendEmailService {
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
-							
-							
 							// Get subject , body mail
 							boolean isSucess = sendMail(companyID, employeeId, functionID,
 									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
@@ -156,10 +155,9 @@ public class AlarmSendEmailService implements SendEmailService {
 	 * @param employeeId
 	 * @param functionID
 	 * @param listDataAlarmExport
-	 * @param generatorContext
 	 * @param subjectEmail
 	 * @param bodyEmail
-	 * @return true/false
+	 * @return true : send mail successful/false : send mail error
 	 */
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
 			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
@@ -178,12 +176,12 @@ public class AlarmSendEmailService implements SendEmailService {
 				}
 				// Genarate excel
 				AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport);
-				// Create file attack
-				List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
-				attachedFiles.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
+				// Create file attach
+				List<MailAttachedFileItf> attachedFiles = new ArrayList<MailAttachedFileItf>();
+				attachedFiles.add(new MailAttachedFilePath(alarmExportDto.getPath(), alarmExportDto.getFileName()));
 				
 				// Create mail content
-				MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
+				MailContents mailContent = new MailContents(subjectEmail, bodyEmail,attachedFiles);
 				
 				for (OutGoingMailAlarm outGoingMailAlarm : emails) {
 					// If not email to return false

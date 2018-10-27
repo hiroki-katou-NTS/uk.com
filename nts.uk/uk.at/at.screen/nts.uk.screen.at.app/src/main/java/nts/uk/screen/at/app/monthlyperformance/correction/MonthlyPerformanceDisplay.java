@@ -180,24 +180,30 @@ public class MonthlyPerformanceDisplay {
 			// ドメインモデル「月次の勤怠項目」を取得する
 			List<Integer> attdanceIds = lstAtdItemUnique.keySet().stream().collect(Collectors.toList());
 			List<MonthlyAttendanceItemDto> lstAttendanceData = repo.findByAttendanceItemId(cId, attdanceIds);
-			lstAttendanceData.sort((t1, t2) -> t1.getDisplayNumber() - t2.getDisplayNumber());
-
-			// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
-			// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
-			// Update Attendance Name
-			Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(attdanceIds, 2);
-			lstAttendanceData.forEach(c -> {
-				PAttendanceItem item = lstAtdItemUnique.get(c.getAttendanceItemId());
-				item.setDisplayNumber(c.getDisplayNumber());
-				item.setAttendanceAtr(c.getMonthlyAttendanceAtr());
-				item.setName(attdanceNames.get(c.getAttendanceItemId()));
-				item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
-				item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
-			});
+			if(lstAttendanceData.size() > 0){
+				lstAttendanceData.sort((t1, t2) -> t1.getDisplayNumber() - t2.getDisplayNumber());
+				
+				List<Integer> mItemId = lstAttendanceData.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
+				attdanceIds.removeAll(mItemId);
+				attdanceIds.forEach(c -> lstAtdItemUnique.remove(c));
+				// 対応するドメインモデル「勤怠項目と枠の紐付け」を取得する - attendanceItemLinkingRepository
+				// 取得したドメインモデルの名称をドメインモデル「勤怠項目．名称」に埋め込む
+				// Update Attendance Name
+				Map<Integer, String> attdanceNames = attendanceItemNameAdapter.getAttendanceItemNameAsMapName(mItemId, 2);
+				lstAttendanceData.forEach(c -> {
+					PAttendanceItem item = lstAtdItemUnique.get(c.getAttendanceItemId());
+					item.setDisplayNumber(c.getDisplayNumber());
+					item.setAttendanceAtr(c.getMonthlyAttendanceAtr());
+					item.setName(attdanceNames.get(c.getAttendanceItemId()));
+					item.setUserCanChange(c.getNameLineFeedPosition() == 1 ? true : false);
+					item.setUserCanUpdateAtr(c.getUserCanUpdateAtr());
+				});
+			}
 			param.setLstAtdItemUnique(lstAtdItemUnique);
 		} else {
 			param.setLstAtdItemUnique(lstAtdItemUnique);
 		}
+		
 		// アルゴリズム「ロック状態をチェックする」を実行する
 		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(cId, lstEmployeeIds,
 				screenDto.getProcessDate(), screenDto.getClosureId(),
