@@ -150,16 +150,10 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						interimSpecial,
 						specialHolidayData);
 				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
-				for (SpecialLeaveError speError : speOutCheck.getLstError()) {
-					if(speError == SpecialLeaveError.AFTERGRANT
-							|| speError == SpecialLeaveError.BEFOREGRANT) {
-						outputData.setChkSpecial(true);
-						break;
-					}
-				}
-				if(outputData.isChkSpecial()) {
+				if(!speOutCheck.getLstError().isEmpty()) {
+					outputData.setChkSpecial(true);
 					break;
-				}
+				}				
 			}
 		}
 		//年休チェック区分をチェックする
