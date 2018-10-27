@@ -70,7 +70,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			List<InterimRemain> entities = new NtsResultSet(sql.executeQuery())
 					.getList(x -> toDomain(x));
 			if(entities.isEmpty()) {
-				return Collections.emptyList();
+				return new ArrayList<>();
 			}
 			return entities;
 		}		
