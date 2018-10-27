@@ -248,6 +248,25 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					
 					if(agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm){
 						switch (checkLimitTime) {
+						case EXCESS_LIMIT_ALARM:
+							upperLimit = agreementTimeByPeriod.getLimitAlarmTime().toString();
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
+									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
+									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+							break;
+						case EXCESS_EXCEPTION_LIMIT_ALARM:
+							upperLimit = exceptionLimitAlarmTime;
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
+									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
+									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+							break;
+						default:
+							break;
+						}
+					}else {
+						switch (checkLimitTime) {
 						case EXCESS_LIMIT_ERROR:
 							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
 
@@ -259,25 +278,6 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 						case EXCESS_EXCEPTION_LIMIT_ERROR:
 							upperLimit = exceptionLimitErrorTime;
 
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
-									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-							break;
-						default:
-							break;
-						}
-					}else {
-						switch (checkLimitTime) {
-						case EXCESS_LIMIT_ALARM:
-							upperLimit = agreementTimeByPeriod.getLimitAlarmTime().toString();
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
-									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-							break;
-						case EXCESS_EXCEPTION_LIMIT_ALARM:
-							upperLimit = exceptionLimitAlarmTime;
 							// All 36協定チェック結果 to list return
 							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
 									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
