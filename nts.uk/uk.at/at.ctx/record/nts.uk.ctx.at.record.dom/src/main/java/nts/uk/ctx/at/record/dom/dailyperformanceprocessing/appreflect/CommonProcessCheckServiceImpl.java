@@ -60,6 +60,9 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//ドメインモデル「日別実績の勤務情報」を取得する
 			WorkInformation recordWorkInformation = dailyInfo.getRecordInfo();
+			if(recordWorkInformation.getWorkTimeCode() == null) {
+				return true;
+			}
 			//流動勤務かどうかの判断処理
 			return workTimeisFluidWork.checkWorkTimeIsFluidWork(recordWorkInformation.getWorkTimeCode().v());
 		}
