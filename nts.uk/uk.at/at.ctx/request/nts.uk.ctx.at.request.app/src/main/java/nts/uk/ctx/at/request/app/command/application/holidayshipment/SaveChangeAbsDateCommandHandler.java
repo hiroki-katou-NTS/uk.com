@@ -69,6 +69,7 @@ public class SaveChangeAbsDateCommandHandler
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		String companyID = AppContexts.user().companyId();
 		String sID =   AppContexts.user().employeeId();
+		String oldAppID = absCmd.getAppID();
 		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
 		String appReason = errorCheckBeforeReg(command, absCmd);
 		
@@ -120,7 +121,7 @@ public class SaveChangeAbsDateCommandHandler
 		
 
 		// アルゴリズム「振休振出申請の取消」を実行する
-		cancelOldAbsApp(command, absCmd);
+		cancelOldAbsApp(command, absCmd, oldAppID);
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		Application_New commonApp = createNewCommonApp(command, absCmd, appReason);
 		command.getAbsCmd().setAppID(commonApp.getAppID());
@@ -189,9 +190,9 @@ public class SaveChangeAbsDateCommandHandler
 		absRepo.insert(absApp);
 	}
 
-	private void cancelOldAbsApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd) {
+	private void cancelOldAbsApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd, String oldAppID) {
 		String companyID = AppContexts.user().companyId();
-		HolidayShipmentCommand shipmentCmd = new HolidayShipmentCommand(absCmd.getAppID(), null,
+		HolidayShipmentCommand shipmentCmd = new HolidayShipmentCommand(oldAppID, null,
 				command.getAppCmd().getAppVersion(), "");
 		cancelHanler.cancelAppForPaidLeave(companyID, shipmentCmd);
 
