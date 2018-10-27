@@ -1347,7 +1347,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 				Range workplaceRange = cells.createRange(currentRow, 0, 1, 33);
 				workplaceRange.copy(workplaceRangeTemp);
-				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 				
 				// A3_1
 				Cell workplaceTagCell = cells.get(currentRow, 0);
@@ -1362,7 +1362,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 				Range employeeRange = cells.createRange(currentRow, 0, 1, 33);
 				employeeRange.copy(employeeRangeTemp);
-				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 				
 				// A4_1
 				Cell employeeTagCell = cells.get(currentRow, 0);
@@ -1854,7 +1854,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
-			rowPageTracker.useOneRowAndCheckResetRemainingRow();
+			rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 			//dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// B3_1
@@ -1926,7 +1926,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		List<MonthlyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
-			rowPageTracker.useOneRowAndCheckResetRemainingRow();
+			rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 			// B4_1
 			Cell workplaceTagCell = cells.get(currentRow, 0);
 			workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
