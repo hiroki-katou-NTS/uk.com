@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workinformation;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,10 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -36,14 +32,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAI_PER_WORK_INFO")
-@NamedStoredProcedureQuery(name = "SSPR_DAIKYUZAN_PRC", procedureName = "SSPR_DAIKYUZAN_PRC", parameters = {
-		@StoredProcedureParameter(name = "CID", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "SID", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "YMD", mode = ParameterMode.IN, type = Date.class),
-		@StoredProcedureParameter(name = "WorkTypeCode", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "WorkTimeCode", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "HoliWorkTimes", mode = ParameterMode.IN, type = Integer.class) },
-		resultClasses = Integer.class)
 public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
