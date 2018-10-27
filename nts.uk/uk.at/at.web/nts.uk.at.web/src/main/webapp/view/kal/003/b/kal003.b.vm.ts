@@ -1105,12 +1105,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         let length = data.length;
                         _.map(data, (d) => {
                             if (index == 0 && holidayCode < d.specialHolidayCode) {
-                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL002_120') });
+                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
                                 newdata.push(d);
                             } else if ((holidayCode > d.specialHolidayCode && index == length - 1)
                                 || (holidayCode > d.specialHolidayCode && index < length - 1 && holidayCode < data[index + 1].specialHolidayCode)) {
                                 newdata.push(d);
-                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL002_120') });
+                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
                             } else {
                                 newdata.push(d);
                             }
@@ -1121,7 +1121,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             index++;
                         });
                     } else {
-                        newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL002_120') });
+                        newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
                     }
 
                     if (!haveInList) {
