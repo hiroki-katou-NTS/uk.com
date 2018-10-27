@@ -135,7 +135,7 @@ public class SaveChangeAbsDateCommandHandler
 	private List<AppRemainCreateInfor> getAppData(SaveHolidayShipmentCommand command, String sID,
 			AchievementOutput achievement, Application_New oldApp) {
 		List<AppRemainCreateInfor> apps = new ArrayList<AppRemainCreateInfor>();
-
+		// add oldapp
 		apps.add(new AppRemainCreateInfor(sID, oldApp.getAppID(), GeneralDateTime.now(), oldApp.getAppDate(),
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(),
 						nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class),
@@ -149,7 +149,7 @@ public class SaveChangeAbsDateCommandHandler
 		String newAppID = IdentifierUtil.randomUniqueId();
 
 		absCmd.setAppID(newAppID);
-
+		// add newApp
 		apps.add(new AppRemainCreateInfor(sID, newAppID, GeneralDateTime.now(), absCmd.getAppDate(),
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(),
 						nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class),
