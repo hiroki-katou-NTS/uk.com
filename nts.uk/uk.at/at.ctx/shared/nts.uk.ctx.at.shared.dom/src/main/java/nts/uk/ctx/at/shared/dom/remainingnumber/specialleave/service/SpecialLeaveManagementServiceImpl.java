@@ -57,7 +57,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//ドメインモデル「特別休暇基本情報」を取得する
 		Optional<SpecialLeaveBasicInfo> optBasicInfor = leaveBasicInfoRepo.getBySidLeaveCdUser(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
 		if(!optBasicInfor.isPresent()) {
-			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty());
+			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
 			return new InPeriodOfSpecialLeave(Collections.emptyList(), remainDays, Collections.emptyList(), Collections.emptyList());
 		}
 		//管理データを取得する
@@ -120,6 +120,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			SpecialHolidayInterimMngData interimBefore = new SpecialHolidayInterimMngData(lstSpecialInterimMng, lstInterimMng);
 			//(付与前)管理データと暫定データの相殺
 			useInfor = this.remainDaysBefore(param.getCid(), param.getSid(), shuukeiDate, speRemainData, interimBefore, useInfor, param.getBaseDate());
+			
 			//管理データと暫定データの相殺
 			getOffsetDay = this.getOffsetDay1004(param.getCid(), param.getSid(), param.getComplileDate(), param.getBaseDate(),
 					param.getSpecialLeaveCode(), speRemainData, specialHolidayInterimDataMng, 
@@ -129,6 +130,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			//付与後の残数情報をまとめる
 			grantDetailAfter = this.grantDetailAfter(getOffsetDay.getLstSpeLeaveGrantDetails(), grantDetailAfter);
 			getOffsetDay.getRemainDays().setGrantDetailAfter(Optional.of(grantDetailAfter));
+			getOffsetDay.setUseOutPeriod(useInfor.getUseDaysOutPeriod());
 		}
 		if(param.isMngAtr()) {
 			//社員の特別休暇情報を取得する
@@ -474,7 +476,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			grantDetailAfter.setUseDays(useDaysAfter);
 		}
 		return new RemainDaysOfSpecialHoliday(grantDetailBefore, 0, 
-				grantDetailAfter.getUseDays() == 0 ? Optional.empty() : Optional.of(grantDetailAfter));
+				grantDetailAfter.getUseDays() == 0 ? Optional.empty() : Optional.of(grantDetailAfter), new ArrayList<>());
 	}
 
 	@Override
@@ -774,6 +776,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		useInfor.getGrantDetailBefore().setGrantDays(0);
 		//パラメータ．特別休暇の残数．付与前明細．残数 = 残数
 		useInfor.getGrantDetailBefore().setRemainDays(remainDays);
+		if(!subtractUseDays.getSpeLeaveResult().getUseOutPeriod().isEmpty()) {
+			useInfor.setUseDaysOutPeriod(subtractUseDays.getSpeLeaveResult().getUseOutPeriod());
+		}
 		return useInfor;
 	}
 
