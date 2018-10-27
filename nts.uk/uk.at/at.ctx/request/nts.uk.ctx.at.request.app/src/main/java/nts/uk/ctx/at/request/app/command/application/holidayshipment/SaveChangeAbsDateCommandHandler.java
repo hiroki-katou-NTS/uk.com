@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -62,6 +64,8 @@ public class SaveChangeAbsDateCommandHandler
 	private InterimRemainDataMngCheckRegister checkRegister;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange registerDateChange;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -128,6 +132,8 @@ public class SaveChangeAbsDateCommandHandler
 		saveHanler.CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振休申請」を1件登録する
 		createNewAbsApp(commonApp, command);
+		//暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(command.getAbsCmd().getAppDate()));
 		// アルゴリズム「新規画面登録後の処理」を実行する
 		return newAfterReg.processAfterRegister(commonApp);
 
