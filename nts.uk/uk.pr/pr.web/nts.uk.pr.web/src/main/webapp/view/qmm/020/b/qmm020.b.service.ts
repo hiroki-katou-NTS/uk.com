@@ -1,0 +1,19 @@
+module nts.uk.pr.view.qmm020.b {
+    export module service {
+        /**
+         * define path to service
+         */
+        var path: any = {
+            getStateLinkSettingCompanyById: "core/wageprovision/statementbindingsetting/getStateLinkSettingCompanyById",
+            register: "core/wageprovision/statementbindingsetting/register",
+        };
+
+        export function getStateLinkSettingCompanyById(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getStateLinkSettingCompanyById);
+        }
+
+        export function register(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.register, data);
+        }
+    }
+}

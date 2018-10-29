@@ -1,0 +1,73 @@
+<div>
+    <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
+
+        <div id="A">
+            <span>#{i18n.getText('QMM020_5')}</span>
+            <button id="A1_1" tabindex="1" class="proceed"
+                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+
+            <button id="A1_2" tabindex="2"
+                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
+
+            <button id="A1_3" tabindex="3"
+                    data-bind="enable: false">#{i18n.getText('QMM020_3')}</button>
+
+            <button id="A1_4" tabindex="4"
+                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
+        </div>
+
+    </div>
+    <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+        <div class="fixed-flex-layout-left" style="margin-left: 25px">
+            <div id = "E1_2" data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+                <div>
+                    <button id="E1_3" data-bind="click: openJscreen, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_13')}</button>
+
+                    <button id="E1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <table  id="E1_5"  data-bind="ntsGridList: {
+                                            name: '#QMM020_14',
+                                            height: 250,
+                                            dataSource: listStateCorrelationHisClassification,
+                                            primaryKey: 'code',
+                                            columns: [
+                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'name', width: 150, hidden: true },
+                                                        { headerText: '', key: 'display', width: 180},
+                                                    ],
+                                            multiple: false,
+                                            value: hisIdSelected
+                                        }"></table>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-flex-layout-right">
+            <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
+                <div id="E2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_35')}</div>
+            </div>
+
+            <div>
+                <div style="width: 260px" data-bind="ntsSearchBox: {targetKey: 'empCode', comId: 'multi-list',
+	items: items, selected: currentCodeList, selectedKey: 'empCode', fields: ['empName', 'empCode'], mode: 'igGrid'}" />
+
+                <table id="E3_1" data-bind="ntsGridList: {
+                    name: '#QMM020_36',
+                    height: 320,
+                    options: items,
+                    optionsValue: 'empCode',
+                    columns: [
+                                { headerText: '#{i18n.getText('QMM020_26')}', prop: 'empCode', width: 100 },
+                                { headerText: '#{i18n.getText('QMM020_27')}', prop: 'empName', width: 150 },
+                                { headerText: '#{i18n.getText('QMM020_20')}', prop: 'display1', width: 250 },
+                                { headerText: '#{i18n.getText('QMM020_22')}', prop: 'display2', width: 250 },
+                    ],
+                    multiple: false,
+                    value: currentCodeList
+                }"></table>
+
+            </div>
+        </div>
+    </div>
+</div>
