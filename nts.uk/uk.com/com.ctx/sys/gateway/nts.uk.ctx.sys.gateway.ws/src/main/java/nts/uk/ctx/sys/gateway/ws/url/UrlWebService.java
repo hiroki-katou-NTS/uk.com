@@ -109,7 +109,18 @@ public class UrlWebService {
 		urlExecInfoExport.getTaskIncre().forEach(x -> {
 			result.put(x.getTaskIncreKey(), x.getTaskIncreValue());
 		});
-		return new UrlResult(urlExecInfoExport.getProgramId().toLowerCase(), urlExecInfoExport.getScreenId().toLowerCase(), result);
+		return new UrlResult(
+				urlExecInfoExport.getProgramId().toLowerCase(), 
+				urlExecInfoExport.getScreenId().toLowerCase(), 
+				urlExecInfoExport.getEmbeddedId(),
+			    urlExecInfoExport.getCid(),
+			    urlExecInfoExport.getLoginId(),
+			    urlExecInfoExport.getContractCd(),
+			    urlExecInfoExport.getExpiredDate(),
+			    urlExecInfoExport.getIssueDate(),
+			    urlExecInfoExport.getSid(),
+			    urlExecInfoExport.getScd(),
+				result);
 	}
 	
 	private Contract executionContractSet(String contractCD){

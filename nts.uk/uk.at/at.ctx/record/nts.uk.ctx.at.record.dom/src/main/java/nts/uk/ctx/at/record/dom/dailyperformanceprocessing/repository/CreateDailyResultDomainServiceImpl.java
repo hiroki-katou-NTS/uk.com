@@ -316,6 +316,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				status = stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).findFirst()
 						.orElse(ProcessState.SUCCESS);
 				if (status == ProcessState.SUCCESS) {
+					dataSetter.updateData("dailyCreateCount", emloyeeIds.size());
 					if (executionAttr.value == 0) {
 						updateLogInfoWithNewTransaction.updateLogInfo(empCalAndSumExecLogID, 0,
 								ExecutionStatus.DONE.value);

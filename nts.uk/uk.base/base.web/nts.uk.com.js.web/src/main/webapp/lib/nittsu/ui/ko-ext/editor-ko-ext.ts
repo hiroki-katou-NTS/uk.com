@@ -315,6 +315,7 @@ module nts.uk.ui.koExtentions {
                     var result = validator.validate(newText, { isCheckExpression: true });
                     //$input.ntsError('clear');
                     if (result.isValid) {
+                        $input.ntsError('clear')
                         if (value() === result.parsedValue) {
                             $input.val(result.parsedValue);
                         } else {
