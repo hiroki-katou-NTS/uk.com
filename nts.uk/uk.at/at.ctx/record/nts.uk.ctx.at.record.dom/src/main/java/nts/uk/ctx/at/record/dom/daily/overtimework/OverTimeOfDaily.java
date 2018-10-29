@@ -315,10 +315,10 @@ public class OverTimeOfDaily {
 				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
 						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
 				);
-				//振替時間
-				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
-						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
-				);
+//				//振替時間
+//				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+//						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+//				);
 			}
 		}
 		return returnErrorList;
@@ -338,10 +338,10 @@ public class OverTimeOfDaily {
 				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
 						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
 				);
-				//振替時間
-				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
-						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
-				);
+//				//振替時間
+//				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+//						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+//				);
 			}
 		}
 		return returnErrorList;

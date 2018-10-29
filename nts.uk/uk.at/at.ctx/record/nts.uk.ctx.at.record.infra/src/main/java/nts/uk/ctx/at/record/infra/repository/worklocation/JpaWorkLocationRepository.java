@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.worklocation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -21,6 +23,8 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	private static final String SELECT= "SELECT c FROM KwlmtWorkLocation c";
 	private static final String SELECT_SINGLE = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
 	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
+	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KwlmtWorkLocation c"
+			+ " WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCDs";
 	
 	
 	@Override
@@ -51,6 +55,15 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 				entity.vertiDistance,
 				entity.latitude, 
 				entity.longitude);
+	}
+
+	@Override
+	public Map<String, String> getNameByCode(String companyId, List<String> listWorkLocationCd) {
+		return this.queryProxy()
+				.query(SELECT_CODE_AND_NAME, Object[].class)
+				.setParameter("companyID", companyId)
+				.setParameter("workLocationCDs", listWorkLocationCd)
+				.getList().stream().collect(Collectors.toMap(s-> String.valueOf(s[0]), s-> String.valueOf(s[1])));
 	}
 	
 	/*private KwlmtWorkLocation toEntity (WorkLocation domain){

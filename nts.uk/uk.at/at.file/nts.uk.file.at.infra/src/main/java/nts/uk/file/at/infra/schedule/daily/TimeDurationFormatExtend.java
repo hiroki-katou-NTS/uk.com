@@ -55,7 +55,8 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public String getInDayTimeWithFormat(){
-		return (int) this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+		String g = (int) this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+		return g;
 	}
 	
 	public String getFullText() {
@@ -74,7 +75,8 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public int minute() {
-		return isNegative()? (60 + value % 60) % 60 : value % 60;
+		int m = isNegative()? (value % 60) % 60 : value % 60;
+		return Math.abs(m);
 	}
 	
 	public String getTimeText() {

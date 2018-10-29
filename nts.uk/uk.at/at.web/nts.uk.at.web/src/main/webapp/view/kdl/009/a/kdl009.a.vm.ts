@@ -154,7 +154,7 @@ module nts.uk.at.view.kdl009.a {
                                     issueDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
                                 }
                             } else {
-                                issueDate = nts.uk.resource.getText("KDL009_11");
+                                issueDate = "";
                             }
                             
                             if(item.recHisData.occurrenceDays == 0.5) {
