@@ -993,8 +993,14 @@ public class MonthlyAggregateProcessService {
 				getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth));
 
 		//RequestList No.203 期間内の休出代休残数を取得する
+		//集計開始日
+		GeneralDate startPeriod = periodCurrentMonth.start();
+		//集計終了日
+		GeneralDate endPeriod = periodCurrentMonth.end().addYears(1);
+		DatePeriod newPeriod = new DatePeriod(startPeriod, endPeriod);
+		
 		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, employee.getId(),
-				periodCurrentMonth, false, periodCurrentMonth.end(), false, Collections.emptyList(),
+				newPeriod, false, periodCurrentMonth.end(), false, Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList());
 		BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
 				.getBreakDayOffMngInPeriod(param);
