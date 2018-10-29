@@ -163,6 +163,10 @@ public class CompanyStatutoryWriteDto
     * 連絡者電話番号
     */
     private String contactPhoneNumber;
+
+    private String depCode;
+
+    private String depName;
     
     
     public static CompanyStatutoryWriteDto fromDomain(CompanyStatutoryWrite domain)
@@ -194,7 +198,8 @@ public class CompanyStatutoryWriteDto
                 domain.getSummaryTableInformation().getNameBankTransferInstitution().isPresent() ? domain.getSummaryTableInformation().getNameBankTransferInstitution().get().v() : null,
                 domain.getSummaryTableInformation().getContactName().isPresent() ? domain.getSummaryTableInformation().getContactName().get().v() : null,
                 domain.getSummaryTableInformation().getContactClass().isPresent() ? domain.getSummaryTableInformation().getContactClass().get().v() : null,
-                domain.getSummaryTableInformation().getContactPhoneNumber().isPresent() ? domain.getSummaryTableInformation().getContactPhoneNumber().get().v() : null);
+                domain.getSummaryTableInformation().getContactPhoneNumber().isPresent() ? domain.getSummaryTableInformation().getContactPhoneNumber().get().v() : null,
+                "Code","Name");
     }
     
 }

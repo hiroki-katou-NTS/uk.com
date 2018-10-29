@@ -112,9 +112,9 @@
                         <div class="flex valign-center">
                             <div id="A4_14" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: '', required: false }">#{i18n.getText('QMM035_20')}</div>
-                            <button id="A4_15" tabindex="14" >#{i18n.getText('QMM035_21')}</button>
-                            <span id ="A4_16" style="margin-left: 15px;">code</span>
-                            <span id ="A4_17" style="margin-left: 15px;">name</span>
+                            <button id="A4_15" tabindex="14" data-bind="click: $parent.findDep " >#{i18n.getText('QMM035_21')}</button>
+                            <span id ="A4_16" style="margin-left: 15px;" data-bind = "text: depCode" ></span>
+                            <span id ="A4_17" style="margin-left: 15px;" data-bind = "text: depName"></span>
 
                         </div>
                         <div class="flex valign-center" style="margin-top: 15px;">

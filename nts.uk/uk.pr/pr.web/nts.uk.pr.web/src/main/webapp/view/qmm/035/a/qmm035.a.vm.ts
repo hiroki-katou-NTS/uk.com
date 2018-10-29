@@ -2,18 +2,17 @@ module nts.uk.pr.view.qmm035.a {
     export module viewmodel {
         import text = nts.uk.resource.getText;
         import confirm = nts.uk.ui.dialog.confirm;
+        import modal = nts.uk.ui.windows.sub.modal;
+        import setShared = nts.uk.ui.windows.setShared;
         import block = nts.uk.ui.block;
         export class ScreenModel {
             items: KnockoutObservableArray<CompanyStatutoryWriteOverView>;
             columns2: KnockoutObservableArray<NtsGridListColumn>;
-            currentCode: KnockoutObservable<any> = ko.observable('');
+            currentCode: KnockoutObservable<any> = ko.observable(null);
             count: number = 100;
-            switchOptions: KnockoutObservableArray<any>;
 
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
-
-            simpleValue: KnockoutObservable<string>;
 
             detail: KnockoutObservable<CompanyStatutoryWrite> = ko.observable(null);
 
@@ -26,7 +25,6 @@ module nts.uk.pr.view.qmm035.a {
             isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnCreate: KnockoutObservable<boolean> = ko.observable(false);
 
-            values: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
@@ -70,10 +68,9 @@ module nts.uk.pr.view.qmm035.a {
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
                 self.isEnableCode(true);
-                self.values = ko.observable('');
 
                 self.currentCode.subscribe(function(codeId) {
-                    nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.errors.clearAll();                            
                     if (codeId) {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm035.a.service.findByCode(codeId).done(function(response) {
@@ -188,6 +185,19 @@ module nts.uk.pr.view.qmm035.a {
             }
 
             /**
+             *  find dep
+             */
+            private findDep(): void {
+                let self = this;
+                let depId = self.detail().linkingDepartment;
+                setShared("QMM035_A_PARAMS", { depId: self.detail().linkingDepartment });
+                modal("").onClosed(() => {
+                    // TODO
+                });
+            }
+
+
+            /**
              * delete
              */
             private deleteCompany(): void {
@@ -216,17 +226,19 @@ module nts.uk.pr.view.qmm035.a {
                                     }
                                 }
                             }
-                            setTimeout(function () {
-                                $("tr[data-id="+ self.currentCode()+"] ").focus();
-                                _.defer(function() {
-                                    $("#A4_5").focus();
-                                });
-                            }, 500);
-                            setTimeout(function () {
-                                _.defer(function() {
-                                    $("#A4_5").focus();
-                                });
-                            }, 800);
+                            if(self.items().length > 0) {
+                                setTimeout(function () {
+                                    $("tr[data-id="+ self.currentCode()+"] ").focus();
+                                    _.defer(function() {
+                                        $("#A4_5").focus();
+                                    });
+                                }, 500);
+                                setTimeout(function () {
+                                    _.defer(function() {
+                                        $("#A4_5").focus();
+                                    });
+                                }, 800);
+                            }
                         });
                         block.clear();
                     });
@@ -299,6 +311,8 @@ module nts.uk.pr.view.qmm035.a {
             contactName: string;
             contactClass: string;
             contactPhoneNumber: string;
+            depCode: string;
+            depName: string;
         }
 
         export class CompanyStatutoryWrite {
@@ -332,6 +346,8 @@ module nts.uk.pr.view.qmm035.a {
             contactName: KnockoutObservable<string> = ko.observable(null);
             contactClass: KnockoutObservable<string> = ko.observable(null);
             contactPhoneNumber: KnockoutObservable<string> = ko.observable(null);
+            depCode: KnockoutObservable<string> = ko.observable(null);
+            depName: KnockoutObservable<string> = ko.observable(null);
             constructor(params?: ICompanyStatutoryWrite) {
                 this.cID(params ? params.cID : null);
                 this.code(params ? params.code : null);
@@ -363,6 +379,8 @@ module nts.uk.pr.view.qmm035.a {
                 this.contactName(params ? params.contactName : null);
                 this.contactClass(params ? params.contactClass : null);
                 this.contactPhoneNumber(params ? params.contactPhoneNumber : null);
+                this.depCode(params ? params.depCode : null);
+                this.depName(params ? params.depName : null);
             }
         }
 
