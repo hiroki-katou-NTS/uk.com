@@ -1,6 +1,4 @@
 module nts.uk.pr.view.qmm020.share.model {
-    import getText = nts.uk.resource.getText;
-
     export class ItemModel {
         code: number;
         name: string;

@@ -26,17 +26,25 @@ public class StateLinkSettingCompanyWebService extends WebService {
 
     @POST
     @Path("getStateLinkSettingCompanyById/{hisId}")
-    public StateLinkSettingCompanyDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId){
+    public StateLinkSettingCompanyDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId) {
         Optional<StateLinkSettingCompanyDto> stateLinkSettingCompanyDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(hisId);
-        if(stateLinkSettingCompanyDto.isPresent()){
+        if (stateLinkSettingCompanyDto.isPresent()) {
             return stateLinkSettingCompanyDto.get();
         }
         return null;
     }
-    
+
+    @POST
+    @Path("indiTiedStatAcquiProcess")
+    public StateLinkSettingCompanyDto indiTiedStatAcquiProcess() {
+
+        return null;
+    }
+
     @POST
     @Path("register")
-    public void register(StateCorrelationHisCompanySettingCommand command){
+    public void register(StateCorrelationHisCompanySettingCommand command) {
         stateCorrelationHisCompanySettingCommandHandler.handle(command);
     }
+
 }
