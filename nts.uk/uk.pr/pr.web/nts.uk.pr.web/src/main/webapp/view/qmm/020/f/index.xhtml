@@ -3,10 +3,10 @@
 
         <div id="A">
             <span>#{i18n.getText('QMM020_5')}</span>
-            <button id="A1_1" tabindex="1"
+            <button id="A1_1" tabindex="1" class="proceed"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
-            <button id="A1_2" tabindex="2" class="proceed"
+            <button id="A1_2" tabindex="2"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
             <button id="A1_3" tabindex="3"
@@ -21,13 +21,13 @@
         <div class="fixed-flex-layout-left" style="margin-left: 25px">
             <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="C1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
+                    <button id="F1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
 
-                    <button id="C1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
+                    <button id="F1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
                 </div>
 
                 <div style="margin-top: 10px">
-                    <table  id="C1_5"  data-bind="ntsGridList: {
+                    <table  id="F1_5"  data-bind="ntsGridList: {
                                             height: 250,
                                             dataSource: listStateCorrelationHis,
                                             primaryKey: 'code',
@@ -44,7 +44,7 @@
         </div>
         <div class="fixed-flex-layout-right">
             <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
-                <div id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_24')}</div>
+                <div id="F2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_24')}</div>
             </div>
 
             <div>

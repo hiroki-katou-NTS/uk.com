@@ -9,7 +9,7 @@ import java.util.List;
 public interface StateLinkSettingMasterRepository
 {
 
-    List<StateLinkSettingMaster> getAllStateLinkSettingMaster();
+    List<StateLinkSettingMaster> getStateLinkSettingMasterByHisId(String hisId);
 
     Optional<StateLinkSettingMaster> getStateLinkSettingMasterById(String hisId, String masterCode);
 

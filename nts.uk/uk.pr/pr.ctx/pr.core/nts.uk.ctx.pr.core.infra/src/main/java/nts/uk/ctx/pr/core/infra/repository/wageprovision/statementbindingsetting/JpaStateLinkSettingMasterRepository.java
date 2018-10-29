@@ -18,10 +18,12 @@ public class JpaStateLinkSettingMasterRepository extends JpaRepository implement
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateLinkSetMas f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateLinkSetMasPk.hisId =:hisId AND  f.stateLinkSetMasPk.masterCode =:masterCode ";
+    private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateLinkSetMasPk.hisId =:hisId ";
 
     @Override
-    public List<StateLinkSettingMaster> getAllStateLinkSettingMaster(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStateLinkSetMas.class)
+    public List<StateLinkSettingMaster> getStateLinkSettingMasterByHisId(String hisId){
+        return this.queryProxy().query(SELECT_BY_HISID, QpbmtStateLinkSetMas.class)
+                .setParameter("hisId", hisId)
                 .getList(item -> item.toDomain());
     }
 
