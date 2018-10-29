@@ -231,7 +231,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				return new ManageProcessAndCalcStateResult(ProcessState.INTERRUPTION,Collections.emptyList());
 			}
 			returnList.addAll(returnValue);
-//			//人数カウントアップ
+			//人数カウントアップ
 //			if(counter.isPresent()) {
 //				counter.get().accept(ProcessState.SUCCESS);
 //			}

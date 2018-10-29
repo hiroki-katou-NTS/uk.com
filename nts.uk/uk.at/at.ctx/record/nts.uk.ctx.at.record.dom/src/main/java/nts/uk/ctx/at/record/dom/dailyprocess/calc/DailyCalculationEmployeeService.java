@@ -24,6 +24,7 @@ public interface DailyCalculationEmployeeService {
 	 * @param employeeId 社員ID
 	 * @param datePeriod 期間
 	 * @param counter 
+	 * @param counter 
 	 * @param reCalcAtr 
 	 * @param empCalAndSumExecLogID 
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
@@ -31,7 +32,7 @@ public interface DailyCalculationEmployeeService {
 	 * @param companyCommonSetting 
 	 * @return 
 	 */
-	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, ExecutionType reCalcAtr, String empCalAndSumExecLogID, TaskDataSetter dataSetter ,StateHolder stateHolder);
+	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, Consumer<ProcessState> counter, ExecutionType reCalcAtr, String empCalAndSumExecLogID);
 	
 	/**
 	 * 社員の日別実績を計算(承認一覧から呼び出す用)

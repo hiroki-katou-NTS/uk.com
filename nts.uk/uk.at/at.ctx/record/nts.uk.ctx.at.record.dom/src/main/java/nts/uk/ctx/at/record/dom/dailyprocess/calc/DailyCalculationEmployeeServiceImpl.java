@@ -183,13 +183,13 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod,ExecutionType reCalcAtr, String empCalAndSumExecLogID,TaskDataSetter dataSetter ,StateHolder stateHolder) {
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod, Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		
 		this.parallel.forEach(employeeIds, employeeId -> {
 			
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.hasBeenRequestedToCancel()) {
-				stateHolder.add(ProcessState.INTERRUPTION);
+				counter.accept(ProcessState.INTERRUPTION);
 				return;
 			}
 			
@@ -201,7 +201,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			
 			ManageProcessAndCalcStateResult afterCalcRecord;
 			if (createList.isEmpty()) {
-				stateHolder.add(ProcessState.SUCCESS);
+				counter.accept(ProcessState.SUCCESS);
 				
 				//１：日別計算(ENUM)
 				//0:計算完了
@@ -209,7 +209,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			} else {
 				//計算処理を呼ぶ
 				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),closureList,reCalcAtr);
-				stateHolder.add(afterCalcRecord.getPs() == ProcessState.SUCCESS?ProcessState.SUCCESS:ProcessState.INTERRUPTION);
 				//１：日別計算(ENUM)
 				//0:計算完了
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
@@ -223,13 +222,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
 					upDateCalcState(stateInfo);
 				}
+				counter.accept(afterCalcRecord.getPs() == ProcessState.SUCCESS?ProcessState.SUCCESS:ProcessState.INTERRUPTION);
 			}
 		});
-		//全員正常終了の場合
-		if(!stateHolder.isInterrupt()) {
-			val count = stateHolder.count();
-			dataSetter.updateData("dailyCalculateCount", count);
-		}
 	}
 	
 	
