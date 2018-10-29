@@ -2,9 +2,8 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
 
 import java.util.List;
 

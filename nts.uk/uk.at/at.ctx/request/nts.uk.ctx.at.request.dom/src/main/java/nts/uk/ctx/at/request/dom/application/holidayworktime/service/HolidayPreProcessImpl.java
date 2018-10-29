@@ -146,7 +146,9 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 							.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());
 					if (appHolidayWork.isPresent()) {
 						WorkTypeOvertime workTypeHolidayWork = new WorkTypeOvertime();
-						workTypeHolidayWork.setWorkTypeCode(appHolidayWork.get().getWorkTypeCode().toString());
+						if(appHolidayWork.get().getWorkTypeCode() != null){
+							workTypeHolidayWork.setWorkTypeCode(appHolidayWork.get().getWorkTypeCode().v());
+						}
 						if (workTypeHolidayWork.getWorkTypeCode() != null) {
 							
 							Optional<WorkType> workType = workTypeRepository.findByPK(companyID,

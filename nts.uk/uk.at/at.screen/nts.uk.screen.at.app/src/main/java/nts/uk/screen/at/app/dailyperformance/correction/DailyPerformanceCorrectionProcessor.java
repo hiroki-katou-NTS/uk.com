@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
@@ -45,6 +44,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -78,7 +78,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataD
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
@@ -99,6 +98,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
@@ -130,6 +130,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
@@ -201,6 +202,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private CheckIndentityMonth checkIndentityMonth;
+	
+	@Inject
+	private ErrorMonthProcessor errorMonthProcessor;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -489,8 +493,11 @@ public class DailyPerformanceCorrectionProcessor {
 				// Get list error setting
 				long timeT = System.currentTimeMillis();
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
 				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
@@ -768,7 +775,7 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setCellSate(data.getId(), nameColKey, DPText.STATE_DISABLE);
 						}
 						cellDatas.add(new DPCellDataDto(noColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LABEL));
-						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, DPText.TYPE_LINK));
+						cellDatas.add(new DPCellDataDto(nameColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LINK));
 						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
 						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
 					}
@@ -1204,7 +1211,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			// Get list error setting
 			List<DPErrorSettingDto> lstErrorSetting = this.repo
-					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
 			int rowId = 0;
@@ -1233,6 +1240,7 @@ public class DailyPerformanceCorrectionProcessor {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 									value.getProcessingDate(), value.getErrorCode(),
 									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage()));
+							rowId++;
 						}
 					}
 				}
@@ -1243,9 +1251,17 @@ public class DailyPerformanceCorrectionProcessor {
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
 							x -> x.getAttendanceItemName())); // 9s
+			
+			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
+			for(DPItemValue value : dpItems) {
+				lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
+						value.getDate(), "", value.getMessage()));
+				rowId++;
+			}
+			
 			// add employee code & name
 			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
-				String name = lstAttendanceItem.get(errorRefer.getItemId());
+				String name = errorRefer == null ? null : lstAttendanceItem.get(errorRefer.getItemId());
 				errorRefer.setItemName(name == null ? "" : name);
 				for (DailyPerformanceEmployeeDto employee : lstEmployee) {
 					if (errorRefer.getEmployeeId().equals(employee.getId())) {

@@ -79,7 +79,7 @@ public class MonModifyCommandFacade {
 					dataParent.getClosureDate()));
 		});
 		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery); // lay data truoc khi update de so sanh voi data sau khi update
-		monthModifyCommandFacade.handleUpdate(listQuery);
+		monthModifyCommandFacade.handleUpdate(listQuery,oldDtos);
 
 		// insert edit state
 		dataParent.getMPItemDetails().forEach(item -> {
@@ -116,13 +116,13 @@ public class MonModifyCommandFacade {
 		this.insertApproval(listRegister);
 		
 		// add correction log
-//		ExecutorService executorService = Executors.newFixedThreadPool(1);
-//		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//				.build(() -> {
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
 					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery); // lay lai data sau khi update de so sanh voi data truoc khi update
 					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
-//				});
-//		executorService.submit(task);
+				});
+		executorService.submit(task);
 		return Collections.emptyMap();
 	}
 	

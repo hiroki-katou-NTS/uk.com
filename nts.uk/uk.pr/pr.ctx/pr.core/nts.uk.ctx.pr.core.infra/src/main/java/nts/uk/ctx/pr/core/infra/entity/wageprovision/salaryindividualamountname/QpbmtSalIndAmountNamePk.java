@@ -34,5 +34,12 @@ public class QpbmtSalIndAmountNamePk implements Serializable
     @Basic(optional = false)
     @Column(name = "INDIVIDUAL_PRICE_CODE")
     public String individualPriceCode;
+
+    /**
+     * 個人金額名称
+     */
+    @Basic(optional = false)
+    @Column(name = "CATE_INDICATOR")
+    public int cateIndicator;
     
 }

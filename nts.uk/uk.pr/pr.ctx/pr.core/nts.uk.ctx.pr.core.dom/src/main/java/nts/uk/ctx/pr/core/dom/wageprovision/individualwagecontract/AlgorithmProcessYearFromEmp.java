@@ -29,7 +29,7 @@ public class AlgorithmProcessYearFromEmp {
         if (empTiedProYear.isPresent()){
             return currProcessDateRepository.getCurrProcessDateById(cid, empTiedProYear.get().getProcessCateNo()).get(0).getGiveCurrTreatYear();
         }else {
-            return null;
+            return new YearMonth(0);
         }
     }
 }

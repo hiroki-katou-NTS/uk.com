@@ -7,12 +7,6 @@ import nts.arc.time.GeneralDateTime;
 @Value
 public class SalIndAmountNameCommand
 {
-    
-    /**
-    * 会社ID
-    */
-    private String cId;
-    
     /**
     * 個人金額コード
     */
@@ -27,6 +21,5 @@ public class SalIndAmountNameCommand
     * 個人金額名称
     */
     private String individualPriceName;
-    
 
 }

@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
 
-import java.util.Optional;
+import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
 
@@ -27,10 +32,15 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
     }
 
     @Override
+    @SneakyThrows
     public Optional<ApprovalProcess> getApprovalProcessById(String cid){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, KrcmtApprovalProcess.class)
-        .setParameter("cid", cid)
-        .getSingle(c->c.toDomain());
+    	PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_BOSS_CHECK_SET h WHERE h.CID = ?");
+		statement.setString(1, cid);
+		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+			return new ApprovalProcess(cid, rec.getString("JOB_TITLE_NOT_BOSS_CHECK"), 
+	        		rec.getInt("USE_DAILY_BOSS_CHECK"), rec.getInt("USE_MONTHLY_BOSS_CHECK"), 
+	        		rec.getInt("SUPERVISOR_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("SUPERVISOR_CONFIRM_ERROR"), YourselfConfirmError.class));
+		});
     }
 
     @Override

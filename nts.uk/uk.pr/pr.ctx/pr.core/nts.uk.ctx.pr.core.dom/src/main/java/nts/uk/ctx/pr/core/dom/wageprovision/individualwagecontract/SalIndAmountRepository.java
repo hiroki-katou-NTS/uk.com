@@ -19,4 +19,8 @@ public interface SalIndAmountRepository
 
     void remove(String historyId);
 
+    void updateAll(List<SalIndAmount> domains);
+
+
+
 }

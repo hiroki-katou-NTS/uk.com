@@ -74,7 +74,7 @@
 					<!--A1_3 就業確定ボタン--> 
 					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
 					<!--A1_4 抽出条件の設定ボタン--> 
-					<button data-bind="{visible: showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
+					<!-- <button data-bind="{visible: showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button> -->
 					<!--A1_5 表示項目の選択ボタン--> 
 					<button data-bind="{click: displayItem, visible:showButton().enable_A1_5'">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
@@ -200,8 +200,10 @@
 					
 					<!-- <span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span> -->
 					<!--A7_1 コメント--> 
-					<div style="margin-top: 705px; width : 50%" data-bind="text: comment"></div>
+					<div style="clear: both"></div>
+					<div style=" padding-top : 465px;width : 50%" data-bind="text: comment"></div>
 				</div>
+				
 				<div id="tooltip"><span id="textLock"></span></div>
 			</div>
 		</ui:define>

@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmount;
@@ -12,13 +13,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-@Value
+@Data
 public class SalIndAmountHisPackDto {
 
     /**
      * 個人金額コード
      */
     private String perValCode;
+
+
+    private String perValName;
 
     /**
      * 社員ID
@@ -44,6 +48,6 @@ public class SalIndAmountHisPackDto {
 
 
     public static SalIndAmountHisPackDto fromSalIndAmountHisDomain(SalIndAmountHis domain) {
-        return new SalIndAmountHisPackDto(domain.getPerValCode(), domain.getEmpId(), domain.getCateIndicator().value, domain.getPeriod().stream().map(item -> GenericHistYMPeriodDto.fromDomain(item)).collect(Collectors.toList()), domain.getSalBonusCate().value, new ArrayList<SalIndAmountDto>());
+        return new SalIndAmountHisPackDto(domain.getPerValCode(), null, domain.getEmpId(), domain.getCateIndicator().value, domain.getPeriod().stream().map(item -> GenericHistYMPeriodDto.fromDomain(item)).collect(Collectors.toList()), domain.getSalBonusCate().value, new ArrayList<SalIndAmountDto>());
     }
 }

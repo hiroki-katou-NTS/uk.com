@@ -17,6 +17,7 @@ public class JpaPerProcessClsSetRepository extends JpaRepository implements PerP
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPerProcesClsSet f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.perProcesClsSetPk.companyId =:companyId AND  f.perProcesClsSetPk.processCateNo =:processCateNo ";
+    private static final String SELECT_BY_KEY_UID_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.userId =:uid AND f.perProcesClsSetPk.companyId=:cid";
 
     @Override
     public List<PerProcessClsSet> getAllPerProcessClsSet(){
@@ -29,6 +30,15 @@ public class JpaPerProcessClsSetRepository extends JpaRepository implements PerP
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPerProcesClsSet.class)
                 .setParameter("companyId", companyId)
                 .setParameter("processCateNo", processCateNo)
+                .getSingle(c->c.toDomain());
+    }
+
+
+    @Override
+    public Optional<PerProcessClsSet> getPerProcessClsSetByUIDAndCID(String uid,String cid){
+        return this.queryProxy().query(SELECT_BY_KEY_UID_CID_STRING, QpbmtPerProcesClsSet.class)
+                .setParameter("uid", uid)
+                .setParameter("cid",cid)
                 .getSingle(c->c.toDomain());
     }
 

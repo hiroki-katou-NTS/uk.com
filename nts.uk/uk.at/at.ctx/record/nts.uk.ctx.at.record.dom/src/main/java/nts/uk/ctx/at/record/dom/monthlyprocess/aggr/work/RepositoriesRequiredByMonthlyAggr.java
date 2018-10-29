@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
@@ -87,6 +88,9 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
  */
 public interface RepositoriesRequiredByMonthlyAggr {
 
+	/** 並列化処理 */
+	ManagedParallelWithContext getParallel();
+	
 	/** 社員の取得 */
 	EmpEmployeeAdapter getEmpEmployee();
 

@@ -149,11 +149,14 @@ module nts.uk.ui.koExtentions {
                     }
 //                    container.data("changed", true);
                     if (typeof result.parsedValue === "string") {
+                        $input.data("change", true);
                         if (_.has(data, "type") && ko.toJS(data.type) === "date") {
-                            value(new Date(result.parsedValue));
+                            let momentDate = moment(result.parsedValue);
+                            value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
                         } else {
                             value(result.parsedValue);
                         }
+                        $input.data("change", false);
                         let dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                         if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                             $input.data("change", true);

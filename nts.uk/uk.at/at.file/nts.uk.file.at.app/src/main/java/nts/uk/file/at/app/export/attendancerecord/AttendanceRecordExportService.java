@@ -196,8 +196,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// unknown employee put at the end of list
 		if (!unknownEmployeeList.isEmpty()) {
 			employeeListAfterSort.addAll(unknownEmployeeList);
-			distinctEmployeeListAfterSort = employeeListAfterSort.stream().distinct().collect(Collectors.toList());
 		}
+		distinctEmployeeListAfterSort = employeeListAfterSort.stream().distinct().collect(Collectors.toList());
+
 		List<Integer> attendanceItemList = new ArrayList<>();
 		// get upper-daily-singleItem list
 		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(companyId,

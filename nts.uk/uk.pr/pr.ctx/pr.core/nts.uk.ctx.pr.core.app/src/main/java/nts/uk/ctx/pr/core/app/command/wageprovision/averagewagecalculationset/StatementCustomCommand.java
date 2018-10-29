@@ -4,10 +4,6 @@ import lombok.Value;
 
 @Value
 public class StatementCustomCommand {
-    /**
-     * 給与項目ID
-     */
-    private String salaryItemId;
 
     /**
      * カテゴリ区分

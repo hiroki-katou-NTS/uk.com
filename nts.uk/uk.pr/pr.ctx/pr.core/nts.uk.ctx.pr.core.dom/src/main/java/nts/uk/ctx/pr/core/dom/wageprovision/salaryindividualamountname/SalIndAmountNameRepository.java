@@ -11,7 +11,7 @@ public interface SalIndAmountNameRepository
 
     List<SalIndAmountName> getAllSalIndAmountName();
 
-    Optional<SalIndAmountName> getSalIndAmountNameById(String cid, String individualPriceCode);
+    Optional<SalIndAmountName> getSalIndAmountNameById(String cid, String individualPriceCode, int cateIndicator);
 
     List<SalIndAmountName> getAllSalIndAmountNameByCateIndi(String cid, int cateIndicator);
 
@@ -19,6 +19,8 @@ public interface SalIndAmountNameRepository
 
     void update(SalIndAmountName domain);
 
-    void remove(String cid, String individualPriceCode);
+    void remove(String cid, String individualPriceCode,int cateIndicator);
+
+
 
 }

@@ -33,11 +33,11 @@ public class UpdateAverageWageCalculationSetCommand extends CommandHandler<DataD
         String cid = AppContexts.user().companyId();
         DataDisplayAverageCommand command = commandHandlerContext.getCommand();
 
-        List<String> lstPaymentItemSalaryItemId = command.getLstStatemetPaymentItem().stream().map(item -> item.getSalaryItemId()).collect(Collectors.toList());
+        List<String> lstPaymentItemSalaryItemId = command.getLstStatemetPaymentItem().stream().map(item -> item.getItemNameCd()).collect(Collectors.toList());
         paymentItemSetRepository.updateAll(lstPaymentItemSalaryItemId);
         int selectWorkDays = command.getAverageWageCalculationSet().getObtainAttendanceDays();
         if (selectWorkDays == 0) {
-            List<String> lstStatemetAttendanceItemSalaryItemId = command.getLstStatemetAttendanceItem().stream().map(item -> item.getSalaryItemId()).collect(Collectors.toList());
+            List<String> lstStatemetAttendanceItemSalaryItemId = command.getLstStatemetAttendanceItem().stream().map(item -> item.getItemNameCd()).collect(Collectors.toList());
             timeItemSetRepository.updateAll(lstStatemetAttendanceItemSalaryItemId);
         }
         AverageWageCalculationSetCommand average = command.getAverageWageCalculationSet();

@@ -1,6 +1,11 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.individualwagecontract;
 
 import nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract.*;
+import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.AddSalIndAmountNameCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.RemoveSalIndAmountNameCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.SalIndAmountNameCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.salaryindividualamountname.UpdateSalIndAmountNameCommandHandler;
+import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisDisplayDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.SalIndAmountHisPackDto;
@@ -22,6 +27,15 @@ public class IndividualWageContract {
     private SalIndAmountNameFinder salIndAmountNameFinder;
 
     @Inject
+    private AddSalIndAmountNameCommandHandler addSalIndAmountName;
+
+    @Inject
+    private UpdateSalIndAmountNameCommandHandler updateSalIndAmountName;
+
+    @Inject
+    private RemoveSalIndAmountNameCommandHandler removeSalIndAmountName;
+
+    @Inject
     private SalIndAmountHisFinder salIndAmountHisFinder;
 
     @Inject
@@ -38,6 +52,24 @@ public class IndividualWageContract {
     @Path("getPersonalMoneyName/{cateIndicator}")
     public List<SalIndAmountNameDto> getPersonalMoneyName(@PathParam("cateIndicator") int cateIndicator) {
         return salIndAmountNameFinder.getAllSalIndAmountNameByCateIndi(cateIndicator);
+    }
+
+    @POST
+    @Path("addSalIndAmountName")
+    public void addSalIndAmountName(SalIndAmountNameCommand command) {
+        this.addSalIndAmountName.handle(command);
+    }
+
+    @POST
+    @Path("updateSalIndAmountName")
+    public void updateSalIndAmountName(SalIndAmountNameCommand command) {
+        this.updateSalIndAmountName.handle(command);
+    }
+
+    @POST
+    @Path("removeSalIndAmountName")
+    public void removeSalIndAmountName(SalIndAmountNameCommand command) {
+        this.removeSalIndAmountName.handle(command);
     }
 
     @POST
@@ -66,4 +98,9 @@ public class IndividualWageContract {
         addIndividualwagecontractCommandHandler.handle(command);
     }
 
+    @POST
+    @Path("salIndAmountHisDisplay")
+    public List<SalIndAmountHisPackDto> salIndAmountHisDisplay(SalIndAmountHisDisplayDto dto) {
+        return salIndAmountHisFinder.salIndAmountHisDisplay(dto);
+    }
 }
