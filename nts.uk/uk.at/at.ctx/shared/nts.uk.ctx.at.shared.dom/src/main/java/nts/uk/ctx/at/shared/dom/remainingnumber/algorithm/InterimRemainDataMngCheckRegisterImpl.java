@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -24,6 +25,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -78,12 +84,31 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
 			CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
 			Map<GeneralDate, DailyInterimRemainMngData> mapDataOutputTmp = interimCreateData.createInterimRemainDataMng(dataCreate, comHolidaySetting);	
+			//振休申請は取り消しになる時を対応します。
+			if(x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && mapDataOutputTmp.containsKey(x.getAppDate())){
+				DailyInterimRemainMngData data = mapDataOutputTmp.get(x.getAppDate());
+				if(data.getRecAbsData().isEmpty()) {
+					String mngId = IdentifierUtil.randomUniqueId();
+					InterimRemain furikyu = new InterimRemain(mngId, 
+							inputParam.getSid(),
+							x.getAppDate(),
+							CreateAtr.APPBEFORE,
+							RemainType.PAUSE,
+							RemainAtr.SINGLE);
+					InterimAbsMng furikyuSinsei = new InterimAbsMng(mngId, new RequiredDay(0.0), new UnOffsetDay(0.0));
+					data.getRecAbsData().add(furikyu);
+					data.setInterimAbsData(Optional.of(furikyuSinsei));
+					mapDataOutputTmp.remove(x.getAppDate());
+					mapDataOutputTmp.put(x.getAppDate(), data);
+				}
+			}
 			mapDataOutputTmp.forEach((z,y) -> {
 				if(!mapDataOutput.containsKey(z)) {
 					mapDataOutput.put(z, y);	
 				}				
 			});
-		});			
+			
+		});
 		InterimEachData eachData = this.interimInfor(mapDataOutput);
 		List<InterimRemain> interimMngAbsRec = eachData.getInterimMngAbsRec();
 		List<InterimAbsMng> useAbsMng = eachData.getUseAbsMng();
@@ -150,16 +175,10 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						interimSpecial,
 						specialHolidayData);
 				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
-				for (SpecialLeaveError speError : speOutCheck.getLstError()) {
-					if(speError == SpecialLeaveError.AFTERGRANT
-							|| speError == SpecialLeaveError.BEFOREGRANT) {
-						outputData.setChkSpecial(true);
-						break;
-					}
-				}
-				if(outputData.isChkSpecial()) {
+				if(!speOutCheck.getLstError().isEmpty()) {
+					outputData.setChkSpecial(true);
 					break;
-				}
+				}				
 			}
 		}
 		//年休チェック区分をチェックする

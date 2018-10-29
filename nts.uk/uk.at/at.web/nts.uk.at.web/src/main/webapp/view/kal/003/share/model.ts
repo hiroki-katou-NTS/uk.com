@@ -374,7 +374,7 @@ module nts.uk.at.view.kal003.share.model {
                                       
                               
                             }
-                                  self.count=self.count+1
+                                  
                                 }
                         
                      if(current[0].group2().lstErAlAtdItemCon() && current[0].group2().lstErAlAtdItemCon().length >0){
@@ -394,8 +394,7 @@ module nts.uk.at.view.kal003.share.model {
                                 current[0].group2().lstErAlAtdItemCon()[i].displayRightCompare=ko.observable("");
                                 current[0].group2().lstErAlAtdItemCon()[i].displayRightOperator=ko.observable("");
                                 current[0].group2().lstErAlAtdItemCon()[i].displayTarget=ko.observable("");
-                            }
-                           self.count=self.count+1
+                            }                      
                           
                          }
                               
@@ -424,13 +423,13 @@ module nts.uk.at.view.kal003.share.model {
 //                    }   
                 }
                 self.currentConditions(current);
-//                console.log('giatri v:'+ v);  
-//                 console.log('giatri count:'+ self.count);
                  self.count=self.count+1;
                 if(self.count>1){
                        self.init = false; 
                     }                  
-                    
+                      if(v=8){
+                       self.init =true; 
+                    }                
                
             }); 
             if(!nts.uk.util.isNullOrUndefined(param)){
@@ -1594,7 +1593,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.countableAddAtdItems=ko.observableArray(_.values(param.countableAddAtdItems));
                 self.countableSubAtdItems=ko.observableArray(_.values(param.countableSubAtdItems));
                 self.conditionType=ko.observable(param.conditionType);
-                self.singleAtdItem=ko.observable(param.singleAtdItem);
+                self.singleAtdItem=ko.observable(!nts.uk.util.isNullOrUndefined(param.singleAtdItem)? parseInt(param.singleAtdItem):0);                                                                              
                 self.compareStartValue=ko.observable(param.compareStartValue);
                 self.compareEndValue=ko.observable(param.compareEndValue);
                 self.compareOperator=ko.observable(param.compareOperator);
@@ -1703,38 +1702,6 @@ module nts.uk.at.view.kal003.share.model {
                 self.setDisplayTarget(modeX);
                 self.setDisplayOperator();
                 self.setDisplayCompare(modeX);
-//                self.displayLeft = ko.computed(() => {
-//                let compareOp = self.compareOperator();
-//                let case1 = self.displayLeftCompare();
-//                let case2 = self.displayTarget();
-//                if(compareOp === 6 || compareOp === 7){
-//                    return case1;
-//                } else {
-//                    return case2;
-//                }  
-//            });
-//                self.displayRight = ko.computed(() => {
-//                let compareOp = self.compareOperator();
-//                let case1 = self.displayRightCompare();
-//                let case2 = self.displayTarget();
-//                if(compareOp === 6 || compareOp === 7){
-//                    return case1;
-//                } else if(compareOp === 8 || compareOp === 9){
-//                    return case2;
-//                } else {
-//                    return "";
-//                }
-//            });
-//                self.displayCenter = ko.computed(() => {
-//                let compareOp = self.compareOperator();
-//                let case1 = self.displayLeftCompare();
-//                let case2 = self.displayTarget();
-//                if(compareOp === 6 || compareOp === 7){
-//                    return case2;
-//                } else {
-//                    return case1;
-//                }
-//            });
             } else {
                 self.displayLeftCompare("");
                 self.displayLeftOperator("");

@@ -150,7 +150,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	public ManageProcessAndCalcStateResult calculateForManageState(
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<AsyncCommandHandlerContext> asyncContext,
-			Optional<Consumer<ProcessState>> counter,
 			List<ClosureStatusManagement> closureList,
 			ExecutionType reCalcAtr){
 		if(reCalcAtr.isRerun()) {
@@ -172,7 +171,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			});
 
 		}
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,Optional.empty(),Optional.empty(),closureList);
 	}
 
 
@@ -236,9 +235,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			}
 			returnList.addAll(returnValue);
 			//人数カウントアップ
-			if(counter.isPresent()) {
-				counter.get().accept(ProcessState.SUCCESS);
-			}
+//			if(counter.isPresent()) {
+//				counter.get().accept(ProcessState.SUCCESS);
+//			}
 		}
 
 		if (mustCleanShareContainer) {

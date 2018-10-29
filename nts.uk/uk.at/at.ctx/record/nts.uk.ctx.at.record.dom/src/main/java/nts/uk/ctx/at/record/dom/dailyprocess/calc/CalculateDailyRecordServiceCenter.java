@@ -30,7 +30,7 @@ public interface CalculateDailyRecordServiceCenter{//
 	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,ExecutionType reCalcAtr);
 	
 	//計算(就業計算と集計用)
-	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, Optional<Consumer<ProcessState>> counter, List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr);
+	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr);
 	
 	//エラーチェック
 	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
