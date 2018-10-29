@@ -307,53 +307,51 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		}
 	}
 	
-	private List<BasicSchedule> filterInvalidSchedules(
-			Integer modeDisplay,
-			List<BasicSchedule> basicScheduleList,
-			ErrorList errList,
-			MasterCache masterCache) {
-		
-		List<BasicSchedule> validSchedules = basicScheduleList.stream().filter(bSchedule -> {
+	private List<BasicSchedule> filterInvalidSchedules(Integer modeDisplay, List<BasicSchedule> basicScheduleList,
+			ErrorList errList, MasterCache masterCache) {
+		List<BasicSchedule> validSchedules = new ArrayList<>();
+		basicScheduleList.forEach(bSchedule -> {
 			// アルゴリズム「登録時エラーチェック処理」を実行する
 			// Input.スケジュール表示形式区分を判定する
-			// modeDisplay == 2 : 
-			if(modeDisplay.intValue() != 2) {
+			// modeDisplay == 2 :
+			if (modeDisplay.intValue() != 2) {
 				String workTypeCode = bSchedule.getWorkTypeCode();
 				String workTimeCode = bSchedule.getWorkTimeCode();
 				// get work type
 				WorkType workType = masterCache.getWorkType(workTypeCode);
 				// get work time
 				WorkTimeSetting workTimeSetting = masterCache.getWorkTimeSetting(workTimeCode);
-				
+
 				// 勤務種類のマスタチェック (Kiểm tra phan loại ngày làm việc)
 				if (!MasterAvailabilityPolicy.checkWorkType(workType, errList)) {
-					return false;
+					return;
 				}
-	
+
 				if (!StringUtil.isNullOrEmpty(workTimeCode, true)) {
 					// 就業時間帯のマスタチェック (Kiểm tra giờ làm việc)
 					if (!MasterAvailabilityPolicy.checkWorkTime(workTimeSetting, errList)) {
-						return false;
+						return;
 					}
 				}
 
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
-				if (!MasterAvailabilityPolicy.checkParing(basicScheduleService, workTypeCode, workTimeCode, masterCache, errList)) {
-					return false;
+				if (!MasterAvailabilityPolicy.checkParing(basicScheduleService, workTypeCode, workTimeCode, masterCache,
+						errList)) {
+					return;
 				}
 			}
 
-
 			// 時刻のチェック
 			// TODO
-			
+
 			if (!CollectionUtil.isEmpty(bSchedule.getWorkScheduleTimeZones())
 					&& !checkTimeZone(errList, bSchedule.getWorkScheduleTimeZones())) {
-				return false;
+				return;
 			}
 
-			return true;
-		}).collect(Collectors.toList());
+			validSchedules.add(bSchedule);
+		});
+
 		return validSchedules;
 	}
 	/**
@@ -908,4 +906,5 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			}
 		}
 	}
+	
 }
