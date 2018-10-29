@@ -69,8 +69,8 @@
                 </div>
             </div>
 
-            <div id="fixed-flex-layout-right">
-                <div id="A3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+            <div id="fixed-flex-layout-right" tabindex="-1">
+                <div id="A3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}" tabindex="-1"
                      style="width: 665px;">
                     <div class="tab-content-1" tabindex="-1" data-bind="with: $vm.detail">
                         <div class="flex valign-center">
@@ -165,7 +165,7 @@
                                       data-bind="ntsMultilineEditor: { constraint: 'Memo', value: notes, name: '#[QMM035_30]'}"/>
                         </div>
                     </div>
-                    <div class="tab-content-2" data-bind="with: $vm.detail">
+                    <div class="tab-content-2" data-bind="with: $vm.detail" tabindex="-1">
                         <div class="flex valign-center">
                             <div id="A5_1" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'AccountManaName', required: false }">#{i18n.getText('QMM035_31')}</div>
