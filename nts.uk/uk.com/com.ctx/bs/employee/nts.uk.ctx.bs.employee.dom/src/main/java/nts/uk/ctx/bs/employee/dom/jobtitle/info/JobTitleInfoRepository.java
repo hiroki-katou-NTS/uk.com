@@ -123,6 +123,8 @@ public interface JobTitleInfoRepository {
 	 */
 	List<JobTitleInfo> findByIds(String companyId, List<String> jobIds, GeneralDate baseDate);
 	
+	List<JobTitleInfo> findByIds(List<String> jobIds, GeneralDate baseDate);
+	
 	/**
 	 * Find by ids.
 	 *

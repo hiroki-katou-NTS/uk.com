@@ -40,12 +40,12 @@
         <!--B2_4	処理年-->
         <!--B4_1	支払日設定一覧-->
         <div id="contents-area">
-            <table style="height: 600px" id='content_dialog'>
+            <table  id='content_dialog'>
                 <tr>
                     <td style="border: 0px; vertical-align: top">
                         <div id="clf-component">
                             <!--B2_1	処理年パネル-->
-                            <div id="B2_1" style="height: 295px" data-bind="ntsPanel:{}">
+                            <div id="B2_1"  data-bind="ntsPanel:{}">
                                 <!--B2_2	処理年一覧-->
                                 <table id="B2_2" data-bind="ntsGridList: {
                                         height: 350,
@@ -84,7 +84,7 @@
                             <button id="B3_7" class="small" style="margin-left: 20px;"
                                     data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
                         </div>
-                        <table style="height: 510px;" id="expand-table" class="margin-right-12">
+                        <table id="expand-table" class="margin-right-12">
                             <tbody>
                             <tr id="row-nonboder">
                                 <th colspan="5"></th>

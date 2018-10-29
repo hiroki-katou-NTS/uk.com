@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
@@ -18,7 +19,8 @@ public class OccAccIsPrRateFinder {
     private OccAccIsPrRateRepository finder;
 
     public List<OccAccIsPrRateDto> getAllOccAccIsPrRate(String hisId){
-        OccAccIsPrRate temp = finder.getOccAccIsPrRateByHisId(hisId);
+    	String cId = AppContexts.user().companyId();
+        OccAccIsPrRate temp = finder.getOccAccIsPrRateByHisId(cId, hisId);
         return OccAccIsPrRateDto.fromDomain(temp);
     }
 

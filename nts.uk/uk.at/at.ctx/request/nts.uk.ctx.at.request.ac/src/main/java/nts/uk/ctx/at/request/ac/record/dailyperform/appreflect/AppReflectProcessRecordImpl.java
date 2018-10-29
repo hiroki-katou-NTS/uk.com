@@ -53,7 +53,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				AppCommonPara para = new AppCommonPara(appInfor.getCompanyID(), 
 						appInfor.getEmployeeID(),
 						loopDate, 
-						settingData.isPresent() ? EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
+						settingData.isPresent() ?
+								EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
 								: ReflectRecordAtr.NOT_RFFLECT_CANNOT_REF,
 						appInfor.getReflectionInformation().getForcedReflectionReal() == DisabledSegment_New.TODO ? true : false,
 						EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),

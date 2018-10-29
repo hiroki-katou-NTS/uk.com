@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 
 @Data
 @AllArgsConstructor
@@ -235,6 +236,8 @@ public class AppHolidayWorkDto {
 	
 	private Integer appOvertimeDetailStatus;
 	
+	private List<DeductionTimeDto> timeZones;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -250,9 +253,9 @@ public class AppHolidayWorkDto {
 					? Collections.emptyList() 
 					: appHolidayWork.getHolidayWorkInputs().stream().map(x -> HolidayWorkInputDto.fromDomain(x)).collect(Collectors.toList()), 
 				0, 
-				new WorkTypeOvertime(appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), ""),
+				appHolidayWork.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appHolidayWork.getWorkTypeCode().v(), ""),
 				Collections.emptyList(),
-				new SiftType(appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(),""),
+				appHolidayWork.getWorkTimeCode() == null ? null : new SiftType(appHolidayWork.getWorkTimeCode().v(),""),
 				Collections.emptyList(),
 				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
 				appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(),  
@@ -285,7 +288,8 @@ public class AppHolidayWorkDto {
 				null,false, false, false,
 				null,
 				null, 
-				null);
+				null,
+				Collections.emptyList());
 	}
 	
 }

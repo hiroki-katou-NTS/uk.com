@@ -106,5 +106,5 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 				closureID,
 				caseSpecExeContentID, EnumAdaptor.valueOf(executionClassification,CalAndAggClassification.class));
 	}
-	
+
 }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,12 +24,17 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
@@ -389,38 +396,79 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 
 		// Build query
 		cq.select(root);
-
-		// add where
-		List<Predicate> listPredicate = new ArrayList<>();
-		listPredicate.add(criteriaBuilder
-				.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
-		listPredicate.add(
-				root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId).in(jobIds));
-		listPredicate.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.startDate), baseDate));
-		listPredicate.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
-
-		cq.where(listPredicate.toArray(new Predicate[] {}));
 		
-		// Sort by disporder
-		Expression<Object> queryCase = criteriaBuilder.selectCase()
-				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
-						Integer.MAX_VALUE)
-				.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
-		cq.orderBy(criteriaBuilder.asc(queryCase),
-				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
+		List<BsymtJobInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> listPredicate = new ArrayList<>();
+			listPredicate.add(criteriaBuilder
+					.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+			listPredicate.add(
+					root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId).in(subList));
+			listPredicate.add(criteriaBuilder.lessThanOrEqualTo(
+					root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.startDate), baseDate));
+			listPredicate.add(criteriaBuilder.greaterThanOrEqualTo(
+					root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
 
-		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
+			cq.where(listPredicate.toArray(new Predicate[] {}));
+			
+			// Sort by disporder
+			Expression<Object> queryCase = criteriaBuilder.selectCase()
+					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+							Integer.MAX_VALUE)
+					.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+			cq.orderBy(criteriaBuilder.asc(queryCase),
+					criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		resultList.sort((o1, o2) -> {
+			BsymtJobSeqMaster seqMst1 = o1.getBsymtJobSeqMaster();
+			BsymtJobSeqMaster seqMst2 = o2.getBsymtJobSeqMaster();
+			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
+			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
+			if (order1 != null && order2 != null) return order1.compareTo(order2);
+			if (order1 != null && order2 == null) return 1;
+			if (order1 == null && order2 != null) return -1;
+			return o1.getJobCd().compareTo(o2.getJobCd());
+		});
 		
 		// Check exist
-		if (CollectionUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(resultList)) {
 			return Collections.emptyList();
 		}
 
 		// Return
-		return result.stream().map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
+		return resultList.stream().map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<JobTitleInfo> findByIds(List<String> jobIds, GeneralDate baseDate) {
+		List<JobTitleInfo> data = new ArrayList<>();
+		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT j.CID, j.HIST_ID, j.JOB_ID, j.JOB_CD, j.JOB_NAME, j.SEQUENCE_CD, j.IS_MANAGER from BSYMT_JOB_INFO j"
+						+ " INNER JOIN BSYMT_JOB_HIST h ON h.HIST_ID = j.HIST_ID"
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND j.JOB_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(baseDate.localDate()));
+				statement.setDate(2, Date.valueOf(baseDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new JobTitleInfo(new CompanyId(rec.getString("CID")), rec.getString("HIST_ID"), rec.getInt("IS_MANAGER") == 1,
+							rec.getString("JOB_ID"), new JobTitleCode(rec.getString("JOB_CD")), 
+							new JobTitleName(rec.getString("JOB_NAME")), new SequenceCode(rec.getString("SEQUENCE_CD")));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 	
 	/* (non-Javadoc)
@@ -442,13 +490,6 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		// Build query
 		cq.multiselect(root, joinHistRoot);
 
-		// add where
-		List<Predicate> listPredicate = new ArrayList<>();
-		listPredicate.add(criteriaBuilder
-				.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
-		listPredicate
-				.add(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId).in(jobIds));
-
 		List<Predicate> listPredicateBaseDate = new ArrayList<>();
 		baseDates.forEach(baseDate -> {
 			listPredicateBaseDate
@@ -460,25 +501,48 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 									baseDate)));
 		});
 
-		listPredicate.add(criteriaBuilder.or(listPredicateBaseDate.toArray(new Predicate[] {})));
+		List<Object[]> resultList = new ArrayList<>();
 
-		cq.where(listPredicate.toArray(new Predicate[] {}));
+		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> listPredicate = new ArrayList<>();
+			listPredicate.add(criteriaBuilder
+					.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+			listPredicate
+					.add(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.jobId).in(subList));
 
-		// Sort by disporder
-		Expression<Object> queryCase = criteriaBuilder.selectCase()
-				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
-						Integer.MAX_VALUE)
-				.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
-		cq.orderBy(criteriaBuilder.asc(queryCase),
-				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 
-		@SuppressWarnings("unchecked")
-		List<Object[]> result = (List<Object[]>) em.createQuery(cq).getResultList();
+			listPredicate.add(criteriaBuilder.or(listPredicateBaseDate.toArray(new Predicate[] {})));
+
+			cq.where(listPredicate.toArray(new Predicate[] {}));
+
+			// Sort by disporder
+			Expression<Object> queryCase = criteriaBuilder.selectCase()
+					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+							Integer.MAX_VALUE)
+					.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+			cq.orderBy(criteriaBuilder.asc(queryCase),
+					criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
+			
+			resultList.addAll( (List<Object[]>) em.createQuery(cq).getResultList() );
+		});
+		resultList.sort((o1, o2) -> {
+			BsymtJobSeqMaster seqMst1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster();
+			BsymtJobSeqMaster seqMst2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster();
+			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
+			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
+			if (order1 != null && order2 != null) return order1.compareTo(order2);
+			if (order1 != null && order2 == null) return 1;
+			if (order1 == null && order2 != null) return -1;
+			String jobCd1 = ((BsymtJobInfo) o1[0]).getJobCd();
+			String jobCd2 = ((BsymtJobInfo) o2[0]).getJobCd();
+			return jobCd1.compareTo(jobCd2);
+		});
 
 		Map<GeneralDate, List<JobTitleInfo>> mapItem = new HashMap<>();
-				
+
 		baseDates.forEach(baseDate -> {
-			mapItem.putAll(result.stream().collect(Collectors.groupingBy(item -> {
+			mapItem.putAll(resultList.stream().collect(Collectors.groupingBy(item -> {
 				BsymtJobHist jobHist = (BsymtJobHist)item[1];
 				return (new DatePeriod(jobHist.getStartDate(), jobHist.getEndDate())).contains(baseDate) ? baseDate : null;
 			},Collectors.mapping(x ->   new JobTitleInfo(new JpaJobTitleInfoGetMemento((BsymtJobInfo)x[0])), Collectors.toList()))));

@@ -15,8 +15,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -24,28 +22,19 @@ import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettin
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,7 +42,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyRecordServiceCenter{
 	
 	//リポジトリ：労働条件
@@ -132,7 +121,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 									  Collections.emptyList()).getLst();
 		//勤務情報のステータスを変更
 		result.forEach(tc ->{
-			dailyCalculationEmployeeService.upDateCalcState(tc);
+			tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
+			//dailyCalculationEmployeeService.upDateCalcState(tc);
 		});
 		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
 	}
@@ -143,8 +133,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<ManagePerCompanySet> companySet){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
-								.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+		return commonPerCompany(
+				calcOption,
+				integrationOfDaily,
+				true,
+				Optional.empty(),
+				Optional.empty(),
+				companySet,
+				Collections.emptyList())
+				.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 	}
 	
 	
@@ -231,7 +228,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
-				asyncContext.get().finishedAsCancelled();
+				//asyncContext.get().finishedAsCancelled();
 				return new ManageProcessAndCalcStateResult(ProcessState.INTERRUPTION,Collections.emptyList());
 			}
 			returnList.addAll(returnValue);
@@ -291,7 +288,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
-				asyncContext.get().finishedAsCancelled();
+				//asyncContext.get().finishedAsCancelled();
 				return Collections.emptyList();
 			}
 			
@@ -308,7 +305,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 																		record.getAffiliationInfor().getEmploymentCode().toString(),
 																		record.getAffiliationInfor().getEmployeeId(),
 																		record.getAffiliationInfor().getYmd(),
-																		nowWorkingItem.get().getValue().getLaborSystem());
+																		nowWorkingItem.get().getValue().getLaborSystem(),
+																		companyCommonSetting.getUsageSetting());
 				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
 					dailyUnit = new DailyUnit(new TimeOfDay(0));
 				//実績計算

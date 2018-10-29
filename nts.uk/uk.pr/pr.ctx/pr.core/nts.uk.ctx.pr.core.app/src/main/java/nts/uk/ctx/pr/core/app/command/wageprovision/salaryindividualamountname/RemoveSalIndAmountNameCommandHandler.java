@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountNameRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.transaction.Transactional;
 
@@ -20,7 +21,7 @@ public class RemoveSalIndAmountNameCommandHandler extends CommandHandler<SalIndA
     
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountNameCommand> context) {
-        String cid = context.getCommand().getCId();
+        String cid = AppContexts.user().companyId();
         String individualPriceCode = context.getCommand().getIndividualPriceCode();
         int cateIndicator=context.getCommand().getCateIndicator();
         repository.remove(cid, individualPriceCode,cateIndicator);

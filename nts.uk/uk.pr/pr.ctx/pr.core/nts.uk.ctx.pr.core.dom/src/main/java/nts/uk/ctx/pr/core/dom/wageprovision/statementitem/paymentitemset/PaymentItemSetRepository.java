@@ -12,12 +12,14 @@ public interface PaymentItemSetRepository {
 
 	List<PaymentItemSet> getAllPaymentItemSt();
 
-	Optional<PaymentItemSet> getPaymentItemStById(String cid, String salaryItemId);
+	Optional<PaymentItemSet> getPaymentItemStById(String cid, int categoryAtr, String itemNameCode);
 
 	void add(PaymentItemSet domain);
 
 	void update(PaymentItemSet domain);
 
-	void remove(String cid, String salaryItemId);
+	void updateAll(List<String> lstCode);
+
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }

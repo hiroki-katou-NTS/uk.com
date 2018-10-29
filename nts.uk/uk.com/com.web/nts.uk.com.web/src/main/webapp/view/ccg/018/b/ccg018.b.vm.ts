@@ -158,7 +158,8 @@ module ccg018.b.viewmodel {
                 isDialog: false,
                 selectType: 4,
                 isShowSelectAllButton: false,
-                employeeInputList: self.items
+                employeeInputList: self.items,
+                isRemoveFilterWhenReload: false
             };
             $('#sample-component').ntsListComponent(listComponentOption);
         }
@@ -166,9 +167,7 @@ module ccg018.b.viewmodel {
         findTopPagePersonSet(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.findTopPagePersonSet(self.listSid)
-                .done(function(data) {
-                    self.items([]);
+            service.findTopPagePersonSet(self.listSid).done(function(data) {
                     let arr = [];
                     _.each(self.selectedEmployee(), function(x) {
                         let topPagePersonSet: any = _.find(data, ['sid', x.employeeId]);
@@ -228,6 +227,7 @@ module ccg018.b.viewmodel {
                 loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
                 loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
             };
+            let keySearch = $('#sample-component .ntsSearchBox').val();
             ccg018.b.service.update(obj).done(function() {
                 self.isSelectedFirst(false);
                 $.when(self.findTopPagePersonSet()).done(function() {
@@ -262,9 +262,14 @@ module ccg018.b.viewmodel {
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let obj = { sId: self.selectedItem().employeeId };
+                    let keySearch = $('#sample-component .ntsSearchBox').val();
                     ccg018.b.service.remove(obj).done(function() {
                         self.isSelectedFirst(false);
                         $.when(self.findTopPagePersonSet()).done(function() {
+                            if(keySearch != ""){
+                                $('#sample-component .ntsSearchBox').val(keySearch);
+                                $('#sample-component .search-btn').trigger('click');
+                            }
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');

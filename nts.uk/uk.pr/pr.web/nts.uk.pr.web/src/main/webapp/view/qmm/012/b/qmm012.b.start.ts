@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm012.b {
         
         screenModel.loadListData().done(function() {
             if(screenModel.statementItemDataList().length > 0) {
-                screenModel.salaryItemId(screenModel.statementItemDataList()[0].salaryItemId);
+                screenModel.currentKey(screenModel.statementItemDataList()[0].key);
             }
 
             __viewContext.bind(screenModel);

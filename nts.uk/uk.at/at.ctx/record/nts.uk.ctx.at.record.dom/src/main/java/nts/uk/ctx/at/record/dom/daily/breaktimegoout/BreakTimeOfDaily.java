@@ -132,10 +132,13 @@ public class BreakTimeOfDaily {
 		
 		//実績の休憩時間を取得
 		val recordTotalTime = this.getToRecordTotalTime().getWithinStatutoryTotalTime();
-		
+		//出退勤リスト取得
 		val timeSpans = timeLeavingOfDailyPerformance.getTimeLeavingWorks().stream().map(tc -> tc.getTimespan()).collect(Collectors.toList());
+		//就業時間帯の時間帯取得
 		val workSpans = fixWoSetting.stream().map(tc -> tc.getTimezone().getTimeSpan()).collect(Collectors.toList());
+		//出退勤、就業時間帯の時間帯、休憩時間帯から就業時間帯の休憩時間を算出する
 		val totalBreakTime = fixRestTimezoneSet.calcTotalTimeDuplicatedAttLeave(timeSpans, workSpans);
+		
 		return totalBreakTime.minusMinutes(recordTotalTime.getCalcTime().valueAsMinutes());
 	}
 	

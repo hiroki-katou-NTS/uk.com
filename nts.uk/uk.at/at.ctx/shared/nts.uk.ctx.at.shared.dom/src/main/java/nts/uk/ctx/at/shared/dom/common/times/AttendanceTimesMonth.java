@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * 勤怠月間回数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @IntegerRange(min = 0, max = 99)
 public class AttendanceTimesMonth extends IntegerPrimitiveValue<AttendanceTimesMonth> {
@@ -30,5 +30,13 @@ public class AttendanceTimesMonth extends IntegerPrimitiveValue<AttendanceTimesM
 	public AttendanceTimesMonth addTimes(Integer times){
 		
 		return new AttendanceTimesMonth(this.v() + times);
+	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 99) rawValue = 99;
+		if (rawValue < 0) rawValue = 0;
+		return super.reviseRawValue(rawValue);
 	}
 }

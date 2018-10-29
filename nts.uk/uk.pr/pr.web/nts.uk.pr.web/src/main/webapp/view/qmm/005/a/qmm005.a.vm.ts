@@ -82,6 +82,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             $('#A2_2 #processYears').eq(param-1).focus();
             setShared("QMM005_output_B", param);
             modal('/view/qmm/005/b/index.xhtml', {title: '',}).onClosed(function (): any {
+                let numberOfYearA = self.itemBinding()[param - 1].years().length;
+                let numberOfYearB = getShared("QMM005B").paramB;
+                if(numberOfYearA == numberOfYearB) return;
                 self.itemBinding.removeAll();
                 self.startPage().done(function () {
                     setTimeout(function () {

@@ -13,6 +13,6 @@ public class AnyItemTimes extends DecimalPrimitiveValue<AnyItemTimes>{
 	private static final long serialVersionUID = 1L;
 	
 	public AnyItemTimes(BigDecimal rawValue) {
-		super(rawValue);
+		super(rawValue.compareTo(BigDecimal.valueOf(99.99))>0?BigDecimal.valueOf(99.99):rawValue);
 	}
 }

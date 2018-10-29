@@ -4,10 +4,6 @@ import lombok.Value;
 
 @Value
 public class StatementItemNameCommand2 {
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
 
 	/**
 	 * 名称
