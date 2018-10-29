@@ -14,18 +14,18 @@
         <com:scriptfile path="qmm020.a.service.js" />
         <com:stylefile path="qmm020.a.style.css" />
 
-        <com:scriptfile path="../b/qmm020.b.vm.js" />
-        <com:scriptfile path="../b/qmm020.b.start.js" />
-        <com:scriptfile path="../b/qmm020.b.service.js" />
-        <com:stylefile path="../b/qmm020.b.style.css" />
+        <com:scriptfile path="../e/qmm020.e.vm.js" />
+        <com:scriptfile path="../e/qmm020.e.service.js" />
 
-        <com:scriptfile path="../c/qmm020.c.vm.js" />
-        <com:scriptfile path="../c/qmm020.c.service.js" />
-        <com:stylefile path="../c/qmm020.c.style.css" />
+     <!--   <com:scriptfile path="../f/qmm020.f.vm.js" />
+        <com:scriptfile path="../f/qmm020.f.service.js" />-->
 
-        <com:scriptfile path="../d/qmm020.d.vm.js" />
-        <com:scriptfile path="../d/qmm020.d.service.js" />
-        <com:stylefile path="../d/qmm020.d.style.css" />
+        <com:scriptfile path="../g/qmm020.g.vm.js" />
+        <com:scriptfile path="../g/qmm020.g.service.js" />
+
+        <com:scriptfile path="../h/qmm020.h.vm.js" />
+        <com:scriptfile path="../h/qmm020.h.service.js" />
+
     </ui:define>
     <ui:define name="sidebar">
         <ul class="navigator">
@@ -41,14 +41,14 @@
         <button>?</button>
     </ui:define>
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel" data-bind = "with: viewmodelB">
-            <ui:include src="../b/index.xhtml" />
+        <div id="tabpanel-1" role="tabpanel" data-bind = "with: viewmodelE">
+            <ui:include src="../e/index.xhtml" />
         </div>
-        <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelC">
-            <ui:include src="../c/index.xhtml" />
+        <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelF">
+            <ui:include src="../f/index.xhtml" />
         </div>
-        <div id="tabpanel-3" role="tabpanel" data-bind = "with: viewmodelD">
-            <ui:include src="../d/index.xhtml" />
+        <div id="tabpanel-3" role="tabpanel" data-bind = "with: viewmodelG">
+            <ui:include src="../g/index.xhtml" />
         </div>
     </ui:define>
 </ui:composition>

@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm020.a {
         var viewmodelB = new nts.uk.pr.view.qmm020.b.viewmodel.ScreenModel();
         __viewContext.viewModel = {
             viewmodelA: viewmodelA,
-            viewmodelB: viewmodelB,
+            viewmodelB: viewmodelB
         };
         __viewContext.bind(__viewContext.viewModel);
     });
