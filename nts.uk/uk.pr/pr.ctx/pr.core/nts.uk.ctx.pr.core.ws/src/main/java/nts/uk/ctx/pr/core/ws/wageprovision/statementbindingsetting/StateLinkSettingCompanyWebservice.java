@@ -2,8 +2,7 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddStateLinkSettingCompanyCommandHandler;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateLinkSettingCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -11,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.Optional;
 
@@ -22,14 +22,12 @@ public class StateLinkSettingCompanyWebService extends WebService {
     private StateLinkSettingCompanyFinder stateLinkSettingCompanyFinder;
 
     @Inject
-    private AddStateLinkSettingCompanyCommandHandler addStateLinkSettingCompanyCommandHandler;
-
+    private StateCorrelationHisCompanySettingCommandHandler stateCorrelationHisCompanySettingCommandHandler;
 
     @POST
-    @Path("getStateLinkSettingCompanyById")
-    public StateLinkSettingCompanyDto getStateLinkSettingCompanyById(){
-        String cid = AppContexts.user().companyId();
-        Optional<StateLinkSettingCompanyDto> stateLinkSettingCompanyDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(cid);
+    @Path("getStateLinkSettingCompanyById/{hisId}")
+    public StateLinkSettingCompanyDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId){
+        Optional<StateLinkSettingCompanyDto> stateLinkSettingCompanyDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(hisId);
         if(stateLinkSettingCompanyDto.isPresent()){
             return stateLinkSettingCompanyDto.get();
         }
@@ -38,7 +36,7 @@ public class StateLinkSettingCompanyWebService extends WebService {
 
     @POST
     @Path("register")
-    public void register(StateLinkSettingCompanyCommand command){
-        addStateLinkSettingCompanyCommandHandler.handle(command);
+    public void register(StateCorrelationHisCompanySettingCommand command){
+        stateCorrelationHisCompanySettingCommandHandler.handle(command);
     }
 }

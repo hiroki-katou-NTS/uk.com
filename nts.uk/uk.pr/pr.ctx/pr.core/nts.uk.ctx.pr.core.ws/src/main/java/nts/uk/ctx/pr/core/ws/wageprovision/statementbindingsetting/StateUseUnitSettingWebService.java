@@ -1,6 +1,9 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddStateCorrelationHisCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateUseUnitSettingCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.UpdateStateUseUnitSettingCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateUseUnitSettingDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateUseUnitSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,6 +21,9 @@ public class StateUseUnitSettingWebService extends WebService {
     @Inject
     private StateUseUnitSettingFinder stateUseUnitSettingFinder;
 
+    @Inject
+    private UpdateStateUseUnitSettingCommandHandler updateStateUseUnitSettingCommandHandler;
+
     @POST
     @Path("getStateUseUnitSettingById")
     public StateUseUnitSettingDto getStateUseUnitSettingById(){
@@ -27,5 +33,11 @@ public class StateUseUnitSettingWebService extends WebService {
             return stateUseUnitSettingDto.get();
         }
         return null;
+    }
+
+    @POST
+    @Path("update")
+    public void update(StateUseUnitSettingCommand command){
+        updateStateUseUnitSettingCommandHandler.handle(command);
     }
 }
