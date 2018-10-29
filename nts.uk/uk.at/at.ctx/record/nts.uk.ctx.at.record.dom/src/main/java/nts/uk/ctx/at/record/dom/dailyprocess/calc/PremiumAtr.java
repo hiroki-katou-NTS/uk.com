@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 /**
  * 割増区分
  * @author keisuke_hoshina
- *
  */
 @AllArgsConstructor
 public enum PremiumAtr {

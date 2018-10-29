@@ -24,7 +24,6 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
@@ -99,8 +98,8 @@ public class OverTimeOfDaily {
 	
 	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, List<OverTimeFrameTime> frameTimeList
 							   ,Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime) {
-		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
-		this.overTimeWorkFrameTime = frameTimeList;
+		this.overTimeWorkFrameTimeSheet = new ArrayList<>(frameTimeSheetList);
+		this.overTimeWorkFrameTime = new ArrayList<>(frameTimeList);
 		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
 	}
 	
@@ -111,8 +110,8 @@ public class OverTimeOfDaily {
 						    FlexTime flexTime,
 						    AttendanceTime overTimeWork
 						    ) {
-		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
-		this.overTimeWorkFrameTime = frameTimeList;
+		this.overTimeWorkFrameTimeSheet = new ArrayList<>(frameTimeSheetList);
+		this.overTimeWorkFrameTime = new ArrayList<>(frameTimeList);
 		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
 		this.irregularWithinPrescribedOverTimeWork = irregularTime;
 		this.flexTime = flexTime;
@@ -134,16 +133,6 @@ public class OverTimeOfDaily {
 		else{
 			return (startTime.v() >= attendanceTime.v());
 		}
-	}
-	
-
-	
-	/**
-	 * 残業枠時間へ残業時間の集計結果を追加する
-	 * @param hasAddListClass 残業時間帯の集計を行った後の残業枠時間クラス
-	 */
-	public void addToList(ControlOverFrameTime hasAddListClass) {
-		this.overTimeWorkFrameTime.addAll(hasAddListClass.getOverTimeWorkFrameTime());
 	}
 	
 	/**
@@ -326,10 +315,10 @@ public class OverTimeOfDaily {
 				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
 						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
 				);
-				//振替時間
-				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
-						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
-				);
+//				//振替時間
+//				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+//						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+//				);
 			}
 		}
 		return returnErrorList;
@@ -349,10 +338,10 @@ public class OverTimeOfDaily {
 				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
 						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
 				);
-				//振替時間
-				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
-						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
-				);
+//				//振替時間
+//				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+//						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+//				);
 			}
 		}
 		return returnErrorList;

@@ -159,17 +159,14 @@ module nts.uk.pr.view.qmm012.share.model {
  * 内訳項目設定
  */
     export interface IBreakdownItemSet {
-        salaryItemId: string;
         breakdownItemCode: string;
         breakdownItemName: string;
     }
     export class BreakdownItemSet {
-        salaryItemId: KnockoutObservable<string> = ko.observable('');
         breakdownItemCode: KnockoutObservable<string> = ko.observable('');
         breakdownItemName: KnockoutObservable<string> = ko.observable('');
         constructor(param: IBreakdownItemSet) {
             let self = this;
-            self.salaryItemId(param ? param.salaryItemId : '');
             self.breakdownItemCode(param ? param.breakdownItemCode : '');
             self.breakdownItemName(param ? param.breakdownItemName : '');
         }
@@ -179,7 +176,6 @@ module nts.uk.pr.view.qmm012.share.model {
         cId: string;
         categoryAtr: number;
         itemNameCd: string;
-        salaryItemId: string;
         defaultAtr: number;
         valueAtr: number;
         deprecatedAtr: number;
@@ -191,7 +187,6 @@ module nts.uk.pr.view.qmm012.share.model {
         cId: KnockoutObservable<string> = ko.observable('');
         categoryAtr: KnockoutObservable<number> = ko.observable(0);
         itemNameCd: KnockoutObservable<string> = ko.observable('');
-        salaryItemId: KnockoutObservable<string> = ko.observable('');
         defaultAtr: KnockoutObservable<number> = ko.observable(0);
         valueAtr: KnockoutObservable<number> = ko.observable(0);
         deprecatedAtr: KnockoutObservable<number> = ko.observable(0);
@@ -202,7 +197,6 @@ module nts.uk.pr.view.qmm012.share.model {
             self.cId(param ? param.cId : '');
             self.categoryAtr(param ? param.categoryAtr : 0);
             self.itemNameCd(param ? param.itemNameCd : '');
-            self.salaryItemId(param ? param.salaryItemId : '');
             self.defaultAtr(param ? param.defaultAtr : 0);
             self.valueAtr(param ? param.valueAtr : 0);
             self.deprecatedAtr(param ? param.deprecatedAtr : 0);
@@ -213,7 +207,8 @@ module nts.uk.pr.view.qmm012.share.model {
 
     export interface IStatementItemName {
         cId: string;
-        salaryItemId: string;
+        categoryAtr: number;
+        itemNameCd: string;
         name: string;
         shortName: string;
         otherLanguageName: string;
@@ -222,7 +217,8 @@ module nts.uk.pr.view.qmm012.share.model {
 
     export class StatementItemName {
         cId: KnockoutObservable<string> = ko.observable('');
-        salaryItemId: KnockoutObservable<string> = ko.observable('');
+        categoryAtr: KnockoutObservable<number> = ko.observable(0);
+        itemNameCd: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         shortName: KnockoutObservable<string> = ko.observable('');
         otherLanguageName: KnockoutObservable<string> = ko.observable('');
@@ -230,7 +226,8 @@ module nts.uk.pr.view.qmm012.share.model {
         constructor(param: IStatementItemName) {
             let self = this;
             self.cId(param ? param.cId : '');
-            self.salaryItemId(param ? param.salaryItemId : '');
+            self.categoryAtr(param ? param.categoryAtr : 0);
+            self.itemNameCd(param ? param.itemNameCd : '');
             self.name(param ? param.name : '');
             self.shortName(param ? param.shortName : '');
             self.otherLanguageName(param ? param.otherLanguageName : '');
@@ -249,7 +246,8 @@ module nts.uk.pr.view.qmm012.share.model {
     }
 
     export interface IValidityPeriodAndCycleSet {
-        salaryItemId: string;
+        categoryAtr: number;
+        itemNameCd: string;
         cycleSettingAtr: number;
         january: boolean;
         february: boolean;
@@ -269,7 +267,8 @@ module nts.uk.pr.view.qmm012.share.model {
     }
 
     export class ValidityPeriodAndCycleSet {
-        salaryItemId: KnockoutObservable<string> = ko.observable(null);
+        categoryAtr: KnockoutObservable<number> = ko.observable(null);
+        itemNameCd: KnockoutObservable<string> = ko.observable(null);
         cycleSettingAtr: KnockoutObservable<number> = ko.observable(null);
         january: KnockoutObservable<boolean> = ko.observable(false);
         february: KnockoutObservable<boolean> = ko.observable(false);

@@ -52,6 +52,8 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisp
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
@@ -86,12 +88,12 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
 import nts.uk.file.at.app.export.monthlyschedule.DetailedMonthlyPerformanceReportData;
-import nts.uk.file.at.app.export.monthlyschedule.MonthlyAttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleCondition;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleGenerator;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
 import nts.uk.file.at.infra.schedule.RowPageTracker;
+import nts.uk.file.at.infra.schedule.daily.TimeDurationFormatExtend;
 import nts.uk.file.at.infra.schedule.daily.WorkScheOutputConstants;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -108,6 +110,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The company repository. */
 	@Inject
 	private CompanyRepository companyRepository;
+
+	@Inject
+	private AttendanceItemValueService  attendanceItemValueService;
 	
 	/** The workplace adapter. */
 	@Inject
@@ -140,10 +145,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The output item repo. */
 	@Inject
 	private OutputItemMonthlyWorkScheduleRepository outputItemRepo;
-	
-	/** The monthly record adapter. */
-	@Inject
-	private MonthlyAttendanceResultImportAdapter monthlyRecordAdapter;
 	
 	/** The company monthly item service. */
 	@Inject
@@ -642,16 +643,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (outputItem.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
 			listAttendanceId.add(outputItem.getRemarkInputNo().value + 1283);
 		}
-		
-		Map<String, List<MonthlyRecordValuesExport>> mapMonthlyRecordValueExport = monthlyRecordAdapter.algorithm(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
-		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = new ArrayList<>();
-		mapMonthlyRecordValueExport.entrySet().forEach(values -> {
-			lstMonthlyRecordValueExport.addAll(values.getValue().stream().map(x -> {
-				x.employeeId = values.getKey();
-				return x;
-			}).collect(Collectors.toList()));
-		});
-		
+
+		List<MonthlyAttendanceItemValueResult> itemValues = attendanceItemValueService.getMonthlyValueOf(
+				query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
+		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = itemValues.stream()
+				.map(item -> new MonthlyRecordValuesExport(item.getYearMonth(), item.getClosureId(),
+						new ClosureDate(item.getClouseDate(), item.isLastDayOfMonth()), item.getAttendanceItems(),
+						item.getEmployeeId()))
+				.collect(Collectors.toList());
+
 		queryData.setLstAttendanceResultImport(lstMonthlyRecordValueExport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
@@ -1347,7 +1347,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 				Range workplaceRange = cells.createRange(currentRow, 0, 1, 33);
 				workplaceRange.copy(workplaceRangeTemp);
-				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 				
 				// A3_1
 				Cell workplaceTagCell = cells.get(currentRow, 0);
@@ -1362,7 +1362,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 				Range employeeRange = cells.createRange(currentRow, 0, 1, 33);
 				employeeRange.copy(employeeRangeTemp);
-				rowPageTracker.useOneRowAndCheckResetRemainingRow();
+				rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 				
 				// A4_1
 				Cell employeeTagCell = cells.get(currentRow, 0);
@@ -1463,10 +1463,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
 				            	String value = actualValue.getValue();
 				            	if (valueTypeEnum.isTime()) {
-									if (value != null)
-										cell.setValue(getTimeAttr(value));
-									else
-										cell.setValue(getTimeAttr("0"));
+									if (value != null) {
+										if (valueTypeEnum == ValueType.TIME) {
+											cell.setValue(getTimeAttr(value, false));
+										} else {
+											cell.setValue(getTimeAttr(value, true));
+										}
+									}
+									else{
+										cell.setValue(getTimeAttr("0", true));
+									}	
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
 				            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
@@ -1570,9 +1576,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            		}
 			            		else {
 			            			if (value != null)
-										cell.setValue(getTimeAttr(value));
+										cell.setValue(getTimeAttr(value,false));
 									else
-										cell.setValue(getTimeAttr("0"));
+										cell.setValue(getTimeAttr("0",false));
 			            		}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
@@ -1642,9 +1648,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 	            		else {
 	            			if (value != null)
-								cell.setValue(getTimeAttr(value));
+								cell.setValue(getTimeAttr(value,false));
 							else
-								cell.setValue(getTimeAttr("0"));
+								cell.setValue(getTimeAttr("0",false));
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -1768,9 +1774,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            		}
 				            		else {
 				            			if (value != null)
-											cell.setValue(getTimeAttr(value));
+											cell.setValue(getTimeAttr(value,false));
 										else
-											cell.setValue(getTimeAttr("0"));
+											cell.setValue(getTimeAttr("0",false));
 				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
@@ -1848,7 +1854,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
-			rowPageTracker.useOneRowAndCheckResetRemainingRow();
+			rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 			//dateRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// B3_1
@@ -1866,11 +1872,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
-			if (iteratorWorkplaceData.hasNext()) {
-				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
-				rowPageTracker.resetRemainingRow();
-				sheet.getHorizontalPageBreaks().add(currentRow);
-			}
 		}
 		
 		if (condition.getTotalOutputSetting().isGrossTotal()) {
@@ -1925,7 +1926,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		List<MonthlyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
-			rowPageTracker.useOneRowAndCheckResetRemainingRow();
+			rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 			// B4_1
 			Cell workplaceTagCell = cells.get(currentRow, 0);
 			workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
@@ -2020,9 +2021,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	String value = actualValue.getValue();
 			            	if (valueTypeEnum.isTime()) {
 								if (value != null)
-									cell.setValue(getTimeAttr(value));
+									cell.setValue(getTimeAttr(value,false));
 								else
-									cell.setValue(getTimeAttr("0"));
+									cell.setValue(getTimeAttr("0",false));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
@@ -2229,9 +2230,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 	            		else {
 	            			if (value != null)
-								cell.setValue(getTimeAttr(value));
+								cell.setValue(getTimeAttr(value,false));
 							else
-								cell.setValue(getTimeAttr("0"));
+								cell.setValue(getTimeAttr("0",false));
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2292,9 +2293,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 	            		else {
 	            			if (value != null)
-								cell.setValue(getTimeAttr(value));
+								cell.setValue(getTimeAttr(value,false));
 							else
-								cell.setValue(getTimeAttr("0"));
+								cell.setValue(getTimeAttr("0",false));
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2341,10 +2342,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param rawValue the raw value
 	 * @return the time attr
 	 */
-	public String getTimeAttr(String rawValue) {
+	public String getTimeAttr(String rawValue, boolean isConvertAttr) {
 		int value = Integer.parseInt(rawValue);
-		int minute = value % 60;
-		return String.valueOf(value / 60) + ":" + (minute < 10 ? "0" + minute : String.valueOf(minute));
+		TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
+		if (isConvertAttr && value != 0) {
+			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
+			return timeFormat.getFullText();
+		}
+		else {
+			return timeFormat.getTimeText();
+		}
 	}
 
 	/**

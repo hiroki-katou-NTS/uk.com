@@ -5,14 +5,19 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -40,9 +45,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
-
-	private static final String GET_LIST_BY_CID_SCD = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 	
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
@@ -123,6 +125,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	
 	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
 			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
+	
+	
+	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
 	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -275,13 +280,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public List<EmployeeSimpleInfo> findByIds(List<String> lstId) {
 		List<EmployeeSimpleInfo> emps = new ArrayList<EmployeeSimpleInfo>();
 
-		CollectionUtil.split(lstId, 1000, ids -> {
+		CollectionUtil.split(lstId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ids -> {
 			List<EmployeeSimpleInfo> _emps = queryProxy().query(SELECT_INFO_BY_IDS, Object[].class)
 					.setParameter("lstId", ids)
 					.getList(m -> new EmployeeSimpleInfo(m[0].toString(), m[1].toString(), m[2].toString()));
 			emps.addAll(_emps);
 		});
 
+		emps.sort(Comparator.comparing(EmployeeSimpleInfo::getEmployeeId));
 		return emps;
 	}
 
@@ -336,7 +342,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		// Split query.
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsymtEmployeeDataMngInfo.class)
 					.setParameter("companyId", companyId).setParameter("employeeIds", subList).getList());
 		});
@@ -360,7 +366,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		// Split query.
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeCodes, 1000, (subList) -> {
+		CollectionUtil.split(employeeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsymtEmployeeDataMngInfo.class)
 					.setParameter("companyId", companyId).setParameter("listEmployeeCode", subList).getList());
 		});
@@ -378,7 +384,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 		// Split query.
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
-		CollectionUtil.split(listSid, 1000, (subList) -> {
+		CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
 					.setParameter("listSid", subList).getList());
 		});
@@ -502,10 +508,17 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate) {
-		return queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Long.class)
-				.setParameter("baseDate", baseDate)
-				.setParameter("lstCompID", lstCompID == null ? "" : lstCompID)
-				.getSingle().map(m -> m.intValue()).orElse(0);
+		if (lstCompID == null) return 0;
+		LongAdder counter = new LongAdder();
+		CollectionUtil.split(lstCompID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Long.class)
+			.setParameter("baseDate", baseDate)
+			.setParameter("lstCompID", subList)
+			.getSingle().ifPresent(value -> {
+				counter.add(value);
+			});
+		});
+		return counter.intValue();
 	}
 
 	/**
@@ -515,9 +528,26 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	 */
 	@Override
 	public List<EmployeeDataMngInfo> findBySidNotDel(List<String> sId) {
-		return this.queryProxy().query(SELECT_EMP_NOT_DEL, BsymtEmployeeDataMngInfo.class)
-								.setParameter("sId", sId).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
+		List<EmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(sId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_EMP_NOT_DEL, BsymtEmployeeDataMngInfo.class)
+								.setParameter("sId", subList)
+								.getList().stream()
+								.map(x -> toDomain(x)).collect(Collectors.toList()));
+		});
+		return resultList;
 	}
 
+	/**
+	 * getAllEmpNotDeleteByCid
+	 * @param companyId
+	 * 
+	 * @author lanlt
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId) {
+		return this.queryProxy().query(SELECT_EMPL_NOT_DELETE_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", companyId)
+				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
+	}
 	// laitv code end
 }

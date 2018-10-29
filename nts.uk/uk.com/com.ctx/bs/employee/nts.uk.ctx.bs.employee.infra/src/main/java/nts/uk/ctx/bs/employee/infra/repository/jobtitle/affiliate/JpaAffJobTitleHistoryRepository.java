@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
 import nts.uk.shr.com.context.AppContexts;
@@ -213,9 +215,15 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		if(hids.isEmpty() || sids.isEmpty())
 			return Collections.emptyList();
 		
-		List<BsymtAffJobTitleHist> optHist = this.queryProxy()
-				.query(GET_BY_LIST_HID_SID, BsymtAffJobTitleHist.class)
-				.setParameter("hisIds", hids).setParameter("sids", sids).getList();
+		List<BsymtAffJobTitleHist> optHist = new ArrayList<>();
+		CollectionUtil.split(hids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstH -> {
+			CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, listS -> {
+				optHist.addAll(this.queryProxy().query(GET_BY_LIST_HID_SID, BsymtAffJobTitleHist.class)
+						.setParameter("hisIds", lstH)
+						.setParameter("sids", listS)
+						.getList());
+			});
+		});
 		List<AffJobTitleHistory> listAffJobTitleHistory = new ArrayList<>();
 		for(String sid :sids ) {
 			List<BsymtAffJobTitleHist> listBsymtAffJobTitleHist = new ArrayList<>();
@@ -248,8 +256,8 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		// Split employee id list.
 		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(employeeIds, 1000, subList -> {
-			CollectionUtil.split(jobTitleIds, 1000, jobSubList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			CollectionUtil.split(jobTitleIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, jobSubList -> {
 				resultList.addAll(this.queryProxy()
 						.query(GET_BY_LISTSIDS_JOBIDS_DATE, BsymtAffJobTitleHist.class)
 						.setParameter("lstSid", subList).setParameter("lstJobTitleId", jobSubList)
@@ -276,7 +284,7 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		
 		// Split employee id list.
 		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
 					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
 		});
@@ -293,6 +301,12 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
 			
 			entities.addAll(subEntities);
+		});
+		
+		entities.sort((o1, o2) -> {
+			int tmp = o1.hisId.compareTo(o2.hisId);
+			if (tmp != 0) return tmp;
+			return o1.strDate.compareTo(o2.strDate);
 		});
 		
 		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = entities.stream()
@@ -320,29 +334,30 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	@SneakyThrows
 	public Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate) {
 
-		PreparedStatement statement = this.connection().prepareStatement(
+		try (PreparedStatement statement = this.connection().prepareStatement(
 				"select * from BSYMT_AFF_JOB_HIST h"
 				+ " inner join BSYMT_AFF_JOB_HIST_ITEM i"
 				+ " on h.HIST_ID = i.HIST_ID"
 				+ " where h.SID = ?"
 				+ " and h.START_DATE <= ?"
-				+ " and h.END_DATE >= ?");
-		
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(baseDate.localDate()));
-		statement.setDate(3, Date.valueOf(baseDate.localDate()));
-		
-		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			return new SingleHistoryItem(
-					rec.getString("SID"),
-					rec.getString("HIST_ID"),
-					new DatePeriod(
-							rec.getGeneralDate("START_DATE"),
-							rec.getGeneralDate("END_DATE")),
-					rec.getString("JOB_TITLE_ID"),
-					rec.getString("NOTE")
-					);
-		});
+				+ " and h.END_DATE >= ?")) {
+			
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(baseDate.localDate()));
+			statement.setDate(3, Date.valueOf(baseDate.localDate()));
+			
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				return new SingleHistoryItem(
+						rec.getString("SID"),
+						rec.getString("HIST_ID"),
+						new DatePeriod(
+								rec.getGeneralDate("START_DATE"),
+								rec.getGeneralDate("END_DATE")),
+						rec.getString("JOB_TITLE_ID"),
+						rec.getString("NOTE")
+						);
+			});
+		}
 	}
 
 	// request list 515
@@ -356,6 +371,44 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 			return Optional.of(toAffJobTitleHist(listEntity));
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<AffJobTitleHistory> getListByListHidSid(List<String> sid, GeneralDate targetDate) {
+		List<AffJobTitleHistory> data = new ArrayList<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT h.HIST_ID, h.SID, h.CID, h.END_DATE, h.START_DATE from BSYMT_AFF_JOB_HIST h"
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(targetDate.localDate()));
+				statement.setDate(2, Date.valueOf(targetDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				List<Map<String, Object>> map = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					Map<String, Object> m = new HashMap<>();
+					m.put("HIST_ID", rec.getString("HIST_ID"));
+					m.put("SID", rec.getString("SID"));
+					m.put("CID", rec.getString("CID"));
+					m.put("START_DATE", rec.getGeneralDate("START_DATE"));
+					m.put("END_DATE", rec.getGeneralDate("END_DATE"));
+					return m;
+				});
+				
+				map.stream().collect(Collectors.groupingBy(c -> c.get("SID"), Collectors.collectingAndThen(Collectors.toList(), list -> {
+					AffJobTitleHistory his = new AffJobTitleHistory(list.get(0).get("CID").toString(), list.get(0).get("SID").toString(), list.stream().map(c -> {
+						return new DateHistoryItem(c.get("HIST_ID").toString(), new DatePeriod((GeneralDate) c.get("START_DATE"), (GeneralDate) c.get("END_DATE")));
+					}).collect(Collectors.toList()));
+					data.add(his);
+					return his;
+				})));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 
 

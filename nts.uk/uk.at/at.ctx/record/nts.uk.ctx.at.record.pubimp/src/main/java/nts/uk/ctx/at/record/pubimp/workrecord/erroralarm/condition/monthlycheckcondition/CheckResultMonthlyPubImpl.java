@@ -175,12 +175,12 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 	//Hoidd No.257
 	@Override
-	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConditionPubExport attendanceItemCondition, List<Integer> attendanceIds) {
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
 		Map<String, Integer> result = perTimeMonActualResult.checkPerTimeMonActualResult(
 				yearMonth, 
 				employeeID, 
-				convertToExport(attendanceItemCondition),
-				attendanceIds);
+				convertToExport(attendanceItemCondition)
+				);
 		return result;
 	}
 

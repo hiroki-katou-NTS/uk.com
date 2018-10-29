@@ -42,10 +42,5 @@
     <servlet>
     	<servlet-name>nts.uk.shr.infra.web.WebApiSetting</servlet-name>
     </servlet>
-    
-    <listener>
-    	<listener-class>
-    		nts.arc.layer.infra.servlet.context.listener.BundledServletContextListeners
-    	</listener-class>
-    </listener>
+
 </web-app>

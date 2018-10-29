@@ -38,4 +38,16 @@
 	padding: 5px;
 	width: auto !important;
 	max-width: 800px !important;
+} 
+#add-sub-list_horizontalScrollContainer {
+	overflow: hidden !important; 
+}
+
+#add-sub-list_displayContainer {
+	min-height: 210.6px !important;
+	
+} 
+
+#add-sub-list_scrollContainer {
+	min-height: 212.6px !important;
 }

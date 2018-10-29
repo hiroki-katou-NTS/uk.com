@@ -131,10 +131,10 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 }, rowsRendered: function(evt, ui) {
                     $treegrid.data("autoExpanding", true);
-                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
-                    _.forEach(holder.nodes, function(node: any){
-                        $treegrid.igTreeGrid("expandRow", node); 
-                    });
+//                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
+//                    _.forEach(holder.nodes, function(node: any){
+//                        $treegrid.igTreeGrid("expandRow", node); 
+//                    });
                     
                     $treegrid.data("autoExpanding", false);   
                 }

@@ -98,7 +98,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		
 		// 36協定時間の取得
 		agreementTimeList = agreementTimeAdapter.getAgreementTime(companyId, Arrays.asList(employeeId),
-				closureSystem.getClosureMonth().getProcessingYm(), closureSystem.getClosureId());
+				closurePeriodOpt.get().getYearMonth(), closureSystem.getClosureId());
 		
 		if (agreementTimeList.isEmpty()) {
 			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
@@ -144,7 +144,9 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				appOvertimeDetail.getLimitAlarmTime(), appOvertimeDetail.getLimitErrorTime(),
 				appOvertimeDetail.getExceptionLimitErrorTime(), appOvertimeDetail.getExceptionLimitErrorTime());
 		if (AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.equals(checkAgreement)
-				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)) {
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.equals(checkAgreement)) {
 			errorFlg = true;
 			// 「時間外時間の詳細」．年月は取得した超過月詳細に存在するかチェックする
 			if (!appOvertimeDetail.existOverMonth(appOvertimeDetail.getYearMonth())) {
@@ -187,7 +189,9 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				appOvertimeDetail.getLimitAlarmTime(), appOvertimeDetail.getLimitErrorTime(),
 				appOvertimeDetail.getExceptionLimitErrorTime(), appOvertimeDetail.getExceptionLimitErrorTime());
 		if (AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.equals(checkAgreement)
-				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)) {
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.equals(checkAgreement)
+				|| AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.equals(checkAgreement)) {
 			errorFlg = true;
 			// 「時間外時間の詳細」．年月は「時間外時間の詳細」．36年間超過月に存在するかチェックする
 			if (!appOvertimeDetail.existOverMonth(appOvertimeDetail.getYearMonth())) {

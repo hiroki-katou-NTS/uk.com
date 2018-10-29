@@ -34,7 +34,7 @@ module kcp009.viewmodel {
             self.empDisplayCode = ko.observable(null);
             self.empBusinessName = ko.observable(null);
             self.organizationDesignation = ko.observable(null);
-            self.organizationName = ko.observable(null);
+            self.organizationName = ko.observable('');
 
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
@@ -62,19 +62,31 @@ module kcp009.viewmodel {
             }
             if (data.employeeInputList().length > 0) {
                 self.empList(data.employeeInputList());
+                //input.初期選択社員IDに値がない場合
+                if (_.isNil(data.selectedItem) || _.isNil(data.selectedItem())) {
+                    if (_.isNil(data.selectedItem)) {
+                        self.selectedItem = ko.observable(null);
+                    }
+                    else {
+                        self.selectedItem = data.selectedItem;
+                    }
+                    // Set SelectedItem: First Item
+                    let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
+                    if (codeEmp) {//社員リストにログイン社員が含まれる
+                        self.selectedItem(__viewContext.user.employeeId);
+                    } else {//社員リストにログイン社員が含まれない
+                        self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+                    }
+                }
+                else {//input.初期選択社員IDに値がある場合
+                    self.selectedItem = data.selectedItem;
+                }
             } else {
                 // message 184
                 nts.uk.ui.dialog.info({ messageId: "Msg_184" });
             }
-            self.selectedItem = data.selectedItem;
             
-            // Set SelectedItem: First Item
-            let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
-            if (codeEmp) {
-                self.selectedItem(__viewContext.user.employeeId);
-            } else {
-                self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
-            }
+            
 
             // Initial Binding from Selected Item
             self.bindEmployee(self.selectedItem());
@@ -298,7 +310,7 @@ module kcp009.viewmodel {
                     self.selectedItem(employee.employeeId);
                     self.empDisplayCode(employee.employeeCode);
                     self.empBusinessName(employee.businessName);
-                    self.organizationName(employee.orgName);
+                    self.organizationName(employee.wkpDisplayName);
                 }
 
             }).fail(function(res) {
@@ -339,7 +351,7 @@ module kcp009.viewmodel {
         isDisplayOrganizationName: boolean;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         targetBtnText: string;
-        selectedItem: KnockoutObservable<string>;
+        selectedItem ?: KnockoutObservable<string>;
         tabIndex: number;
     }
 
@@ -384,7 +396,7 @@ module kcp009.viewmodel {
                 employeeId: string;
                 employeeCode: string;
                 businessName: string;
-                orgName: string
+                wkpDisplayName: string;
             }
         }
     }

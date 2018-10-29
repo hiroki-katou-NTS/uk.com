@@ -36,7 +36,7 @@ public class JpaOccAccInsurBusRepository extends JpaRepository implements OccAcc
         List<NameOfEachBusiness> nameOfEachBusinessList = new ArrayList<NameOfEachBusiness>();
         entities.forEach(entity -> {
             nameOfEachBusinessList.add( new NameOfEachBusiness(entity.occAccInsurBusPk.occAccInsurBusNo,
-                    entity.toUse,
+                    entity.useAtr,
                     Optional.ofNullable(new OccAccInsurBusinessName(entity.name))));
         });
         return nameOfEachBusinessList;

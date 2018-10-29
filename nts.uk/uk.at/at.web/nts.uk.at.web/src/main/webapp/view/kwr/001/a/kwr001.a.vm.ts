@@ -287,7 +287,7 @@ module nts.uk.at.view.kwr001.a {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
                         
-                        self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
+                        self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
                         self.isEmployeeCharge(dataService.employeeCharge);
                         switch(dataService.strReturn) {
                             // return screen A, show data from characteristic
@@ -424,7 +424,7 @@ module nts.uk.at.view.kwr001.a {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                         let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                         self.getDataStartPageService(isExist).done(function(dataService: any) {                       
-                            self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
+                            self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
                             if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
                                 self.selectedCodeA7_3('');
                             } else {

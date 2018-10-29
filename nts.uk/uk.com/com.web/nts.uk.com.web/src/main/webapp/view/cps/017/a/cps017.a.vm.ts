@@ -42,7 +42,6 @@
         enableRemove: KnockoutObservable<boolean> = ko.observable(false);
         enableOpenDialogB: KnockoutObservable<boolean> = ko.observable(false);
         enableCreateNew: KnockoutObservable<boolean> = ko.observable(false);
-        showRefecToAll: KnockoutObservable<boolean> = ko.observable(true);
 
         // status of history-function-button
         enableAddUpdateHist: KnockoutObservable<boolean> = ko.observable(false);
@@ -101,12 +100,6 @@
                         // change form-label
                         self.changeLabelConstrain(selectedObject.characterType);
                     }
-                    // シスッ�管琀��かつ　選択してあ�選択雮の「選択雮区刀�＝社員のと�
-                    if (self.isGroupManager === true) {
-                        self.showRefecToAll(true);
-                    } else {
-                        self.showRefecToAll(false);
-                    }
 
                     // history
                     service.getAllPerInfoHistorySelection(id).done((_selectionItemList: IHistorySelection) => {
@@ -126,6 +119,7 @@
                             self.historySelection().histId.valueHasMutated();
                         }
                     });
+                    self.enableReflUnrComp(true);
 
                 } else {
                     self.createNewData();
@@ -380,7 +374,6 @@
 
             self.enableAddUpdateHist(value);
             self.enableDelHist(value);
-            self.enableReflUnrComp(value);
         }
 
         //検証チェヂ� 
@@ -548,7 +541,8 @@
         ReflUnrComp() {
             let self = this;
             let command = { 'selectionItemId' : self.perInfoSelectionItem().selectionItemId() };
-
+            if(command.selectionItemId == "")
+                return;
             confirm({ messageId: "Msg_532", messageParams: ["1"] }).ifYes(() => {
                 invisible();
                 service.reflUnrComp(command).done(function() {
@@ -571,9 +565,11 @@
             setShared('selectedHisId', self.historySelection().histId());
             block.invisible();
             modal('/view/cps/017/b/index.xhtml', { title: '' }).onClosed(function(): any {
-
+                if(getShared('closeButton') == true){
+                    block.clear();
+                    return;
+                }
                 hist.histId.valueHasMutated();
-
                 block.clear();
             });
         }

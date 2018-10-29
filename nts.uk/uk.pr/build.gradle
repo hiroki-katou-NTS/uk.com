@@ -428,6 +428,7 @@ project (':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.ac') {
 		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.pub')
+		compile (group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 
@@ -704,6 +705,11 @@ project (':pr.web:nts.uk.pr.web') {
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: version)
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pubimp', version: version)
+		
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.ac', version: version)		
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.app', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.infra', version: version)
 		 
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: version)
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: version)

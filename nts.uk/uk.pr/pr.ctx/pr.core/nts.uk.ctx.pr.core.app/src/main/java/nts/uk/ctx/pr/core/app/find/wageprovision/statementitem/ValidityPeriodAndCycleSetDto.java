@@ -7,11 +7,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetV
 public class ValidityPeriodAndCycleSetDto {
 
 	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * サイクル設定区分
 	 */
 	private int cycleSettingAtr;
@@ -92,7 +87,7 @@ public class ValidityPeriodAndCycleSetDto {
 	private Integer yearPeriodEnd;
 
 	public static ValidityPeriodAndCycleSetDto fromDomain(SetValidityPeriodCycle domain) {
-		return new ValidityPeriodAndCycleSetDto(domain.getSalaryItemId(),
+		return new ValidityPeriodAndCycleSetDto(
 				domain.getCycleSetting().getCycleSettingAtr().value,
 				domain.getCycleSetting().getMonthlyList().map(i -> i.getJanuary().value > 0).orElse(false),
 				domain.getCycleSetting().getMonthlyList().map(i -> i.getFebruary().value > 0).orElse(false),
