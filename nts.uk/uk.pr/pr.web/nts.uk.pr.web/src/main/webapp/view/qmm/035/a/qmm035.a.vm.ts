@@ -70,7 +70,10 @@ module nts.uk.pr.view.qmm035.a {
                 self.isEnableCode(true);
 
                 self.currentCode.subscribe(function(codeId) {
-                    nts.uk.ui.errors.clearAll();
+                    setTimeout(function () {
+                        nts.uk.ui.errors.clearAll();
+                    }, 100);
+
                     if (codeId) {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm035.a.service.findByCode(codeId).done(function(response) {
