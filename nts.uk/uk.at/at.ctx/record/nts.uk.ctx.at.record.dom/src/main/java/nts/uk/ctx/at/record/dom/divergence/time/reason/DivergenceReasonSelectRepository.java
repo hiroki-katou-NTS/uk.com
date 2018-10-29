@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.record.dom.divergence.time.reason;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * The Interface DivergenceReasonSelectRepository.
@@ -16,7 +19,7 @@ public interface DivergenceReasonSelectRepository {
 	 * @return the list
 	 */
 	List<DivergenceReasonSelect> findAllReason(int divTimeNo, String companyId);
-
+	
 	/**
 	 * Find reason info.
 	 *
@@ -50,4 +53,6 @@ public interface DivergenceReasonSelectRepository {
 	 * @param divergenceReasonSelect the divergence reason select
 	 */
 	void update(int divTimeNo,DivergenceReasonSelect divergenceReasonSelect);
+	
+	Map<Pair<String, String>, String> getNameByCodeNo(String companyId, List<String> lstReasonCode);
 }

@@ -305,6 +305,7 @@ module nts.uk.at.view.kdw008.a {
                 let self = this,
                     dfd = $.Deferred();
                 service.getDailyDetail(code, self.selectedSheetNo()).done(data => {
+                    $("#swap-list2-grid2").igGridSelection("clearSelection") ;
                     self.authorityFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
@@ -338,6 +339,7 @@ module nts.uk.at.view.kdw008.a {
                 let self = this,
                     dfd = $.Deferred();
                 service.getMonthlyDetail(code).done(data => {
+                    $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                     self.authorityFormatMonthlyValue.removeAll();
                     self.monthlyDataSource.removeAll();
                     self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
@@ -382,6 +384,7 @@ module nts.uk.at.view.kdw008.a {
 
             getMonthCorrectionDetail(sheetNo: string) {
                 let self = this;
+                $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                 self.selectedSheetName(null);
                 self.monthCorrectionValue.removeAll();
                 self.monthCorrectionDataSource.removeAll();
