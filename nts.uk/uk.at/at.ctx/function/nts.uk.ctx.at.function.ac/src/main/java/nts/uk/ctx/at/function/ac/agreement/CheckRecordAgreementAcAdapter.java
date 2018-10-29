@@ -226,7 +226,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 							for (AgreementTimeByPeriod agreementTimeByPeriod : agreementTimeByPeriods) {
 								int checkEnd = agreementTimeByPeriod.getEndMonth().compareTo(yearMonthPeriod.start());
 								int checkStart = agreementTimeByPeriod.getStartMonth().compareTo(yearMonthPeriod.end());
-								if(checkStart < 0 && checkEnd > 0 ){
+								if(checkStart <= 0 && checkEnd >= 0 ){
 									lstAgreementTimeByPeriod.add(agreementTimeByPeriod);
 								}
 							}
@@ -245,47 +245,43 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 							exceptionLimitErrorTime,exceptionLimitAlarmTime, agreementTimeByPeriod.getStatus());
 					
 					AgreementTimeStatusOfMonthly checkLimitTime = agreementTimeByPeriod.getStatus();
-					
-					if(agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm){
-						switch (checkLimitTime) {
-						case EXCESS_LIMIT_ALARM:
+					switch (checkLimitTime) {
+					case EXCESS_LIMIT_ERROR:
+						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
+							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+						}
+						break;
+					case EXCESS_LIMIT_ALARM:
+						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
 							upperLimit = agreementTimeByPeriod.getLimitAlarmTime().toString();
 							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
-									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-							break;
-						case EXCESS_EXCEPTION_LIMIT_ALARM:
-							upperLimit = exceptionLimitAlarmTime;
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
-									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-							break;
-						default:
-							break;
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
 						}
-					}else {
-						switch (checkLimitTime) {
-						case EXCESS_LIMIT_ERROR:
-							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
+						break;
+					case EXCESS_EXCEPTION_LIMIT_ALARM:
+						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
+							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+						}
+						break;
+					case EXCESS_EXCEPTION_LIMIT_ERROR:
+						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
+							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
 
 							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
-									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-							break;
-						case EXCESS_EXCEPTION_LIMIT_ERROR:
-							upperLimit = exceptionLimitErrorTime;
-
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true)
-									.upperLimit(upperLimit).agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-							break;
-						default:
-							break;
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
 						}
+
+						break;
+					default:
+						break;
 					}
 				}
 			}
@@ -298,7 +294,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 		
 		Integer tagetYear = tagetYM.year();
 		//対象年月.月＞起算月
-		if (tagetYM.month() > startingMonth) {
+		if (tagetYM.month() < startingMonth) {
 			tagetYear = tagetYM.year() - 1;	
 		}
 		return tagetYear;
