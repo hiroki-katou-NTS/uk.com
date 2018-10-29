@@ -98,6 +98,12 @@ module nts.uk.at.view.kaf009.b {
             workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
             workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
             targetDate:  any = moment(new Date()).format("YYYY/MM/DD");
+            
+            realTimeDate: KnockoutObservable<string> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
+            realTimeWorkType: KnockoutObservable<string> = ko.observable("");
+            realTimeWorkTime: KnockoutObservable<string> = ko.observable("");
+            realTimeHour1: KnockoutObservable<string> = ko.observable("");
+            realTimeHour2: KnockoutObservable<string> = ko.observable("");
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 let self = this;
@@ -226,6 +232,9 @@ module nts.uk.at.view.kaf009.b {
                         $("#inpStartTime1").focus();
                     }).fail(function() {
                         dfd.resolve();
+                    });
+                    service.getDetailRealData(appId).done((realData) => {
+                        self.setRealData(realData);        
                     });
                     dfd.resolve();
                 }).fail(function(res){
@@ -625,6 +634,40 @@ module nts.uk.at.view.kaf009.b {
                         $("#combo-box").focus();
                     }
                 })
+            }
+            
+            setRealData(data: any){
+                let self = this;
+                self.realTimeDate(data.date);
+                self.realTimeWorkType(data.workType.workTypeCode+"   "+data.workType.name);
+                self.realTimeWorkTime(data.workTime.workTimeCD+"   "+data.workTime.workTimeName);
+                let startTime1 = data.startTime1;
+                let endTime1 = data.endTime1;
+                let startTime2 = data.startTime2;
+                let endTime2 = data.endTime2;
+                self.realTimeHour1(self.createRealTime(startTime1, endTime1));
+                self.realTimeHour2(self.createRealTime(startTime2, endTime2));     
+            }
+            
+            checkBlank(value: any){
+                if(nts.uk.util.isNullOrUndefined(value)||nts.uk.util.isNullOrEmpty(value)){
+                    return false;    
+                } else {
+                    return true;    
+                }   
+            }
+            
+            createRealTime(startTime: any, endTime: any){
+                let self = this;
+                if(self.checkBlank(startTime)&&self.checkBlank(endTime)){
+                    return nts.uk.time.format.byId("ClockDay_Short_HM", startTime)+" - "+nts.uk.time.format.byId("ClockDay_Short_HM", endTime);                   
+                } else if(self.checkBlank(startTime)&&!self.checkBlank(endTime)){
+                    return nts.uk.time.format.byId("ClockDay_Short_HM", startTime)+" -     ";            
+                } else if(!self.checkBlank(startTime)&&self.checkBlank(endTime)){
+                    return +"     - "+nts.uk.time.format.byId("ClockDay_Short_HM", endTime);    
+                } else {
+                    return "";    
+                }          
             }
         }
     }

@@ -328,13 +328,15 @@ module nts.uk.at.view.kal003.share.model {
         rowId: KnockoutObservable<number>;//common
         conditions: KnockoutObservableArray<ExtractCondition>;     
         currentConditions: KnockoutObservableArray<ExtractCondition>;  
-        init: boolean;
+        init: boolean;  
+        count: number;
         constructor(param: any) {
             let self = this;
             self.typeCheckItem=ko.observable(undefined);    
             self.currentConditions = ko.observableArray([]);    
             self.conditions = ko.observableArray([]);
-            self.init = true;
+            self.init = true;  
+            self.count=0;         
             self.typeCheckItem.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
                 let current = (_.filter(self.conditions(), (con: ExtractCondition) => {
@@ -347,9 +349,10 @@ module nts.uk.at.view.kal003.share.model {
                             current[0].clearInput();
                             current[0].group1().lstErAlAtdItemCon()[0].countableAddAtdItems([]); 
                             current[0].group1().lstErAlAtdItemCon()[0].countableSubAtdItems([]);
-                            current[0].selectText("");
+                            current[0].selectText=ko.observable("");
                             current[0].operator = 0
                             current[0].extractType(0);
+                               self.count=self.count+1
                         }else{ // = 8
                             if(current[0].group1().lstErAlAtdItemCon() && current[0].group1().lstErAlAtdItemCon().length >0){
                                     for(let i = 0;i<current[0].group1().lstErAlAtdItemCon().length;i++){
@@ -368,7 +371,10 @@ module nts.uk.at.view.kal003.share.model {
                                 current[0].group1().lstErAlAtdItemCon()[i].displayRightCompare=ko.observable("");
                                 current[0].group1().lstErAlAtdItemCon()[i].displayRightOperator=ko.observable("");
                                 current[0].group1().lstErAlAtdItemCon()[i].displayTarget=ko.observable("");
+                                      
+                              
                             }
+                                  
                                 }
                         
                      if(current[0].group2().lstErAlAtdItemCon() && current[0].group2().lstErAlAtdItemCon().length >0){
@@ -388,8 +394,10 @@ module nts.uk.at.view.kal003.share.model {
                                 current[0].group2().lstErAlAtdItemCon()[i].displayRightCompare=ko.observable("");
                                 current[0].group2().lstErAlAtdItemCon()[i].displayRightOperator=ko.observable("");
                                 current[0].group2().lstErAlAtdItemCon()[i].displayTarget=ko.observable("");
-                            }
-                         }       
+                            }                      
+                          
+                         }
+                              
                             
                         }
                     }else if(v==0){
@@ -397,13 +405,15 @@ module nts.uk.at.view.kal003.share.model {
                         current[0].inputs()[1].value(null);
                         current[0].inputs()[1].enable(false);
                         current[0].operator = 0
-                        current[0].extractType(0);
+                        current[0].extractType(0);  
+                         self.count=self.count+1                   
                     }else if(v==3){
                         current[0].inputs()[0].value(null);
                         current[0].inputs()[2].value(null);
                         current[0].inputs()[2].enable(false);
                         current[0].operator = 0;
                         current[0].extractType(0);
+                         self.count=self.count+1
                     }else{
                         
                     }
@@ -413,7 +423,14 @@ module nts.uk.at.view.kal003.share.model {
 //                    }   
                 }
                 self.currentConditions(current);
-                self.init = false;
+                 self.count=self.count+1;
+                if(self.count>1){
+                       self.init = false; 
+                    }                  
+                      if(v=8){
+                       self.init =true; 
+                    }                
+               
             }); 
             if(!nts.uk.util.isNullOrUndefined(param)){
                 self.errorAlarmCheckID = ko.observable(param.errorAlarmCheckID || '');
@@ -1580,9 +1597,9 @@ module nts.uk.at.view.kal003.share.model {
                 self.compareStartValue=ko.observable(param.compareStartValue);
                 self.compareEndValue=ko.observable(param.compareEndValue);
                 self.compareOperator=ko.observable(param.compareOperator);
-                self.displayLeftCompare=ko.observable("");
-                self.displayLeftOperator=ko.observable("");
-                self.displayTarget=ko.observable("");
+                self.displayLeftCompare=ko.observable(param.displayLeftCompare);
+                self.displayLeftOperator=ko.observable(param.displayLeftOperator);
+                self.displayTarget=ko.observable(param.displayTarget);
                 self.displayRightCompare=ko.observable("");
                 self.displayRightOperator=ko.observable("");
                 self.inputCheckCondition = ko.observable(0);
@@ -1612,6 +1629,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.displayLeft=ko.observable("");
                 self.displayRight=ko.observable("");
                 self.displayCenter=ko.observable("");
+           
                
             }
             self.displayLeft = ko.computed(() => {
@@ -1950,8 +1968,10 @@ module nts.uk.at.view.kal003.share.model {
                         self.compareEndValue(output.compareEndValue);
                         self.compareOperator(output.compareOperator);
                     }
-                    self.setTextDisplay(modeX);
-                });
+                    self.setTextDisplay(modeX); 
+                   
+                    
+            });
             }else{ //daily
                 nts.uk.ui.windows.setShared("KAL003C1Params", {mode: modeX, data: param}, true);
                 nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c1/index.xhtml").onClosed(() => {

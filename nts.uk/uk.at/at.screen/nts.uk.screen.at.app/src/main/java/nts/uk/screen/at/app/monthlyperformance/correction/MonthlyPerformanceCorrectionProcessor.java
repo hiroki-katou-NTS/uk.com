@@ -260,7 +260,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else {
 				List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
 						createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
-								presentClosingPeriodExport.get().getClosureStartDate()));
+								presentClosingPeriodExport.get().getClosureEndDate()));
 
 				List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
 					return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),

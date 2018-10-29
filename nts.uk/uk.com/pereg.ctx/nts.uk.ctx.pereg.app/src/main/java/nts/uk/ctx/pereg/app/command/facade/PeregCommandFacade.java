@@ -196,7 +196,7 @@ public class PeregCommandFacade {
 				user = userAuth.get(0);
 			}
 			
-			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
+			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getEmpName(),
 						PersonInfoProcessAttr.UPDATE, null);
 			// ADD COMMAND
 			recordId = this.add(inputContainer, target, user);
@@ -226,7 +226,7 @@ public class PeregCommandFacade {
 			}
 	
 			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(user.getUserID(), command.getEmployeeId(),
-					user.getUserName(), PersonInfoProcessAttr.UPDATE, null);
+					user.getEmpName(), PersonInfoProcessAttr.UPDATE, null);
 			
 			DataCorrectionContext.setParameter(target.getHashID(), target);
 	
