@@ -206,6 +206,7 @@ module nts.uk.ui.koExtentions {
                         }
                     });
                 } else {
+                    $tree.igTree("clearSelection");
                     let $selectingNode = $tree.igTree("nodesByValue", singleValue);
                     if ($selectingNode.length > 0) {
                         $tree.igTree("select", $selectingNode);
