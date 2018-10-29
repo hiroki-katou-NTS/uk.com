@@ -72,7 +72,7 @@ module nts.uk.pr.view.qmm035.a {
                 self.currentCode.subscribe(function(codeId) {
                     setTimeout(function () {
                         nts.uk.ui.errors.clearAll();
-                    }, 100);
+                    }, 10);
 
                     if (codeId) {
                         self.setTabIndex();
