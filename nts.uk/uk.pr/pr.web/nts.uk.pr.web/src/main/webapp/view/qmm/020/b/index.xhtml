@@ -1,12 +1,12 @@
-<div>
+<div >
         <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
 
                 <div id="A">
                         <span>#{i18n.getText('QMM020_5')}</span>
-                        <button id="A1_1" tabindex="1"
-                                data-bind="click: todo, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+                        <button id="A1_1" tabindex="1" class="proceed"
+                                data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
-                        <button id="A1_2" tabindex="2" class="proceed"
+                        <button id="A1_2" tabindex="2"
                                 data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
                         <button id="A1_3" tabindex="3"

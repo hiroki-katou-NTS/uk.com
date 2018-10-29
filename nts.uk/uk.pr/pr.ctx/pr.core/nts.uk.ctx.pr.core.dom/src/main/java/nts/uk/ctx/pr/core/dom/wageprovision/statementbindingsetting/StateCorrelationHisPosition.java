@@ -34,5 +34,10 @@ public class StateCorrelationHisPosition extends AggregateRoot implements Contin
     public List items() {
         return history;
     }
+
+    @Override
+    public void exCorrectToRemove(YearMonthHistoryItem latest) {
+        latest.changeSpan(latest.span().newSpanWithMaxEnd());
+    }
     
 }

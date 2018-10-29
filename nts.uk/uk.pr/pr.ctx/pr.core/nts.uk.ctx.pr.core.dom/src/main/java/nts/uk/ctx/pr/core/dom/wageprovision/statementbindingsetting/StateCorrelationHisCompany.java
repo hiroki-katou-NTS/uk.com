@@ -33,5 +33,10 @@ public class StateCorrelationHisCompany extends AggregateRoot implements Continu
     public List<YearMonthHistoryItem> items() {
         return this.history;
     }
+
+    @Override
+    public void exCorrectToRemove(YearMonthHistoryItem latest) {
+        latest.changeSpan(latest.span().newSpanWithMaxEnd());
+    }
     
 }

@@ -31,5 +31,6 @@ public class StateCorrelationHisIndividual extends AggregateRoot implements Undu
     public List items() {
         return history;
     }
+
     
 }

@@ -33,4 +33,9 @@ public class StateCorrelationHisDeparment extends AggregateRoot implements Conti
     public List<YearMonthHistoryItem> items() {
         return this.history;
     }
+
+    @Override
+    public void exCorrectToRemove(YearMonthHistoryItem latest) {
+        latest.changeSpan(latest.span().newSpanWithMaxEnd());
+    }
 }
