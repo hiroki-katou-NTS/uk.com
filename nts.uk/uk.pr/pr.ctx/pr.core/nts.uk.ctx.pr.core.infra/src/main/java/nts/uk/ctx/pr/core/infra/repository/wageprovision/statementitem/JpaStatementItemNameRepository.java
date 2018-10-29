@@ -17,9 +17,10 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItemName f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId =:salaryItemId ";
-	private static final String SELECT_BY_LIST_SALARYID = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId IN :salaryItemIds ";
+			+ " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.categoryAtr =:categoryAtr "
+			+ " AND f.statementItemNamePk.itemNameCd =:itemNameCd";
+	private static final String SELECT_BY_LIST_CODE = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.statementItemNamePk.cid =:cid AND f.statementItemNamePk.categoryAtr =:categoryAtr AND f.statementItemNamePk.itemNameCd IN :codes ";
 
 	@Override
 	public List<StatementItemName> getAllStatementItemName() {
@@ -28,15 +29,15 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 	}
 
 	@Override
-	public Optional<StatementItemName> getStatementItemNameById(String cid, String salaryItemId) {
+	public Optional<StatementItemName> getStatementItemNameById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementItemName.class).setParameter("cid", cid)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd).getSingle(c -> c.toDomain());
 	}
 
 	@Override
-	public List<StatementItemName> getStatementItemNameByListSalaryItemId(String cid, List<String> salaryItemIds) {
-		return this.queryProxy().query(SELECT_BY_LIST_SALARYID, QpbmtStatementItemName.class).setParameter("cid", cid)
-				.setParameter("salaryItemIds", salaryItemIds).getList(item -> item.toDomain());
+	public List<StatementItemName> getStatementItemNameByListCode(String cid, int categoryAtr, List<String> codes) {
+		return this.queryProxy().query(SELECT_BY_LIST_CODE, QpbmtStatementItemName.class).setParameter("cid", cid)
+				.setParameter("codes", codes).setParameter("categoryAtr", categoryAtr).getList(item -> item.toDomain());
 	}
 
 	@Override
@@ -56,9 +57,9 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 	}
 
 	@Override
-	public void remove(String cid, String salaryItemId) {
-		if (this.getStatementItemNameById(cid, salaryItemId).isPresent()) {
-			this.commandProxy().remove(QpbmtStatementItemName.class, new QpbmtStatementItemNamePk(cid, salaryItemId));
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getStatementItemNameById(cid, categoryAtr, itemNameCd).isPresent()) {
+			this.commandProxy().remove(QpbmtStatementItemName.class, new QpbmtStatementItemNamePk(cid, categoryAtr, itemNameCd));
 		}
 	}
 

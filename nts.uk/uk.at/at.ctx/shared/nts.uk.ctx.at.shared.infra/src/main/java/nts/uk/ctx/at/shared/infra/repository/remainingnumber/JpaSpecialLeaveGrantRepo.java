@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -91,31 +92,33 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 			sql.setString(1, specialId);
 			Optional<SpecialLeaveGrantRemainingData> entities = new NtsResultSet(sql.executeQuery())
-					.getSingle(x -> {
-						return SpecialLeaveGrantRemainingData.createFromJavaType(x.getString("SPECIAL_LEAVE_ID"),
-								x.getString("CID"),
-								x.getString("SID"),
-								x.getInt("SPECIAL_LEAVE_CD"),
-								x.getGeneralDate("GRANT_DATE"),
-								x.getGeneralDate("DEADLINE_DATE"),
-								x.getInt("EXPIRED_STATE"),
-								x.getInt("REGISTRATION_TYPE"),
-								x.getBigDecimal("NUMBER_DAYS_GRANT") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
-								x.getInt("TIME_GRANT"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
-								x.getInt("TIME_USE"),
-								x.getBigDecimal("USED_SAVING_DAYS") == null ? 0.0 : x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
-								x.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
-								x.getInt("TIME_OVER"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
-								x.getInt("TIME_REMAIN"));
-					});
+					.getSingle(x -> toDomain(x));
 			if(!entities.isPresent()) {
 				return Optional.empty();
 			}
 			return entities;	
 		}
 			
+	}
+	
+	private SpecialLeaveGrantRemainingData toDomain(NtsResultRecord  record) {
+		return SpecialLeaveGrantRemainingData.createFromJavaType(record.getString("SPECIAL_LEAVE_ID"),
+				record.getString("CID"),
+				record.getString("SID"),
+				record.getInt("SPECIAL_LEAVE_CD"),
+				record.getGeneralDate("GRANT_DATE"),
+				record.getGeneralDate("DEADLINE_DATE"),
+				record.getInt("EXPIRED_STATE"),
+				record.getInt("REGISTRATION_TYPE"),
+				record.getBigDecimal("NUMBER_DAYS_GRANT") == null ? 0.0 : record.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
+				record.getInt("TIME_GRANT"),
+				record.getBigDecimal("NUMBER_DAYS_USE") == null ? 0.0 : record.getBigDecimal("NUMBER_DAYS_USE").doubleValue(),
+				record.getInt("TIME_USE"),
+				record.getBigDecimal("USED_SAVING_DAYS") == null ? 0.0 : record.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
+				record.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : record.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
+				record.getInt("TIME_OVER"),
+				record.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : record.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
+				record.getInt("TIME_REMAIN"));
 	}
 
 	private void updateDetail(KrcmtSpecialLeaveReam entity, SpecialLeaveGrantRemainingData data) {
@@ -258,25 +261,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			sql.setDate(4, Date.valueOf(ymd.toLocalDate()));
 			sql.setInt(5, expirationStatus.value);
 			List<SpecialLeaveGrantRemainingData> entities = new NtsResultSet(sql.executeQuery())
-					.getList(x -> {
-						return SpecialLeaveGrantRemainingData.createFromJavaType(x.getString("SPECIAL_LEAVE_ID"),
-								x.getString("CID"),
-								x.getString("SID"),
-								x.getInt("SPECIAL_LEAVE_CD"),
-								x.getGeneralDate("GRANT_DATE"),
-								x.getGeneralDate("DEADLINE_DATE"),
-								x.getInt("EXPIRED_STATE"),
-								x.getInt("REGISTRATION_TYPE"),
-								x.getBigDecimal("NUMBER_DAYS_GRANT") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_GRANT").doubleValue(),
-								x.getInt("TIME_GRANT"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
-								x.getInt("TIME_USE"),
-								x.getBigDecimal("USED_SAVING_DAYS") == null ? 0.0 : x.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
-								x.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : x.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
-								x.getInt("TIME_OVER"),
-								x.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : x.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
-								x.getInt("TIME_REMAIN"));
-					});
+					.getList(x -> toDomain(x));
 			if(entities.isEmpty()) {
 				return Collections.emptyList();
 			}
@@ -290,6 +275,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				x.timeGrant, x.numberDayUse, x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver,
 				x.numberDayRemain, x.timeRemain);
 	}
+	
 
 	@Override
 	public boolean isHasData(String sid, String specialId, GeneralDate grantDate, int specialLeaCode) {

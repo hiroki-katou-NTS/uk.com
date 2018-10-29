@@ -16,7 +16,7 @@ public interface StatementItemRepository {
 	
 	List<StatementItem> getByCategoryAndCode(String cid, int categoryAtr, String itemNameCd);
 
-	Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd, String salaryItemId);
+	Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd);
 
 	List<StatementItemCustom> getItemCustomByCategoryAndDeprecated(String cid, int categoryAtr, boolean isIncludeDeprecated);
 
@@ -26,6 +26,6 @@ public interface StatementItemRepository {
 
 	void update(StatementItem domain);
 
-	void remove(String cid, int categoryAtr, String itemNameCd, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }

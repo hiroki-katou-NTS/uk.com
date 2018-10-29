@@ -70,31 +70,31 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 			List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(command.getId());
 			if (!listEmpData.isEmpty()) {
 				
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				EmployeeDataMngInfo empInfo = listEmpData.get(0);
-				String  scdBefore = empInfo.getEmployeeCode().toString();
-				
-				empInfo.setEmployeeCode(new EmployeeCode(command.getCode().toString()));
-				empInfo.setDeletedStatus(EmployeeDeletionAttr.NOTDELETED);
-				empInfo.setDeleteDateTemporary(null);
-				empInfo.setRemoveReason(null);
-
-				empDataMngRepo.updateRemoveReason(empInfo);
-
-				// get Person
-				Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
-				String nameBefore = person.getPersonNameGroup().getBusinessName().v();
-				person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
-				personRepo.update(person);
-				
-				setDataLogPersonCorrection(command);
-				List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command, scdBefore, nameBefore);
-				if (!ctgs.isEmpty()) {
-					ctgs.forEach(cat -> {
-						DataCorrectionContext.setParameter(cat.getHashID(), cat);
-					});
-				}
-				DataCorrectionContext.transactionFinishing();
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+					EmployeeDataMngInfo empInfo = listEmpData.get(0);
+					String  scdBefore = empInfo.getEmployeeCode().toString();
+					
+					empInfo.setEmployeeCode(new EmployeeCode(command.getCode().toString()));
+					empInfo.setDeletedStatus(EmployeeDeletionAttr.NOTDELETED);
+					empInfo.setDeleteDateTemporary(null);
+					empInfo.setRemoveReason(null);
+	
+					empDataMngRepo.updateRemoveReason(empInfo);
+	
+					// get Person
+					Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
+					String nameBefore = person.getPersonNameGroup().getBusinessName().v();
+					person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
+					personRepo.update(person);
+					
+					setDataLogPersonCorrection(command);
+					List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command, scdBefore, nameBefore);
+					if (!ctgs.isEmpty()) {
+						ctgs.forEach(cat -> {
+							DataCorrectionContext.setParameter(cat.getHashID(), cat);
+						});
+					}
+				});
 			}
 		}
 	}

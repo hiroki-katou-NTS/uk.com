@@ -345,7 +345,7 @@ public class ActualWorkingTimeOfDaily {
 			for(DeductionTime breakTImeSheet : recordClass.getFixRestTimeSetting().get().getLstTimezone()) {
 				//就業時間帯に設定されている勤務時間帯のstream
 				withinBreakTime += recordClass.getFixWoSetting().stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
-													  .map(tt -> tt.getTimezone().timeSpan().lengthAsMinutes())
+													  .map(tt -> tt.getTimezone().getDuplicatedWith(breakTImeSheet.timeSpan()).get().lengthAsMinutes())
 													  .collect(Collectors.summingInt(ts -> ts));
 					
 				

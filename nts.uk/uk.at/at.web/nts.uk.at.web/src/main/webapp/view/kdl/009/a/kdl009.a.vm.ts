@@ -61,7 +61,7 @@ module nts.uk.at.view.kdl009.a {
                             
                         self.bindEmpList(data.employeeBasicInfo);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
@@ -73,11 +73,11 @@ module nts.uk.at.view.kdl009.a {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                         
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                     }

@@ -29,11 +29,6 @@ public class StatementItem extends AggregateRoot {
 	private ItemNameCode itemNameCd;
 
 	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 既定区分
 	 */
 	private DefaultAtr defaultAtr;
@@ -58,13 +53,12 @@ public class StatementItem extends AggregateRoot {
 	 */
 	private Optional<IntegrationItemCode> intergrateCd;
 
-	public StatementItem(String cid, int categoryAtr, String itemNameCd, String salaryItemId, int defaultAtr,
+	public StatementItem(String cid, int categoryAtr, String itemNameCd, int defaultAtr,
 			int valueAtr, int deprecatedAtr, Integer socialInsuaEditableAtr, String intergrateCd) {
 		super();
 		this.cid = cid;
 		this.categoryAtr = EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class);
 		this.itemNameCd = new ItemNameCode(itemNameCd);
-		this.salaryItemId = salaryItemId;
 		this.defaultAtr = EnumAdaptor.valueOf(defaultAtr, DefaultAtr.class);
 		this.valueAtr = EnumAdaptor.valueOf(valueAtr, ValueAtr.class);
 		this.deprecatedAtr = EnumAdaptor.valueOf(deprecatedAtr, Abolition.class);

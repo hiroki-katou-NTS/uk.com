@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataMngCheckRegister{
 	@Inject
@@ -59,17 +61,29 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		//代休不足区分、振休不足区分、年休不足区分、積休不足区分、特休不足区分、公休不足区分、超休不足区分をfalseにする(初期化)
 		EarchInterimRemainCheck outputData = new EarchInterimRemainCheck(false, false, false, false, false, false, false);
 		//暫定管理データをメモリ上で作成する
-		InterimRemainCreateDataInputPara dataCreate = new InterimRemainCreateDataInputPara(inputParam.getCid(),
-				inputParam.getSid(),
-				inputParam.getRegisterDate(),
-				inputParam.getRecordData(),
-				inputParam.getScheData(),
-				inputParam.getAppData(),
-				false);
-		Optional<ComSubstVacation> comSetting = subRepos.findById(inputParam.getCid());
-		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
-		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
-		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = interimCreateData.createInterimRemainDataMng(dataCreate, comHolidaySetting);
+		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = new HashMap<>();
+		inputParam.getAppData().stream().forEach(x -> {
+			DatePeriod dateData = inputParam.getRegisterDate();
+			if(x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+				dateData = new DatePeriod(x.getAppDate(), x.getAppDate());
+			}
+			InterimRemainCreateDataInputPara dataCreate = new InterimRemainCreateDataInputPara(inputParam.getCid(),
+					inputParam.getSid(),
+					dateData,
+					inputParam.getRecordData(),
+					inputParam.getScheData(),
+					inputParam.getAppData(),
+					false);
+			Optional<ComSubstVacation> comSetting = subRepos.findById(inputParam.getCid());
+			CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
+			CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
+			Map<GeneralDate, DailyInterimRemainMngData> mapDataOutputTmp = interimCreateData.createInterimRemainDataMng(dataCreate, comHolidaySetting);	
+			mapDataOutputTmp.forEach((z,y) -> {
+				if(!mapDataOutput.containsKey(z)) {
+					mapDataOutput.put(z, y);	
+				}				
+			});
+		});			
 		InterimEachData eachData = this.interimInfor(mapDataOutput);
 		List<InterimRemain> interimMngAbsRec = eachData.getInterimMngAbsRec();
 		List<InterimAbsMng> useAbsMng = eachData.getUseAbsMng();
@@ -120,9 +134,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 		}
 		//特休チェック区分をチェックする
-		if(inputParam.isChkSpecial()) {
+		if(inputParam.isChkSpecial() && !specialHolidayData.isEmpty()) {
 			//暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
-			specialHolidayData.stream().forEach(a -> {
+			for (InterimSpecialHolidayMng a : specialHolidayData) {
 				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
 						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
 				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(inputParam.getCid(),
@@ -136,15 +150,11 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						interimSpecial,
 						specialHolidayData);
 				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
-				for (SpecialLeaveError speError : speOutCheck.getLstError()) {
-					if(speError == SpecialLeaveError.AFTERGRANT
-							|| speError == SpecialLeaveError.BEFOREGRANT) {
-						outputData.setChkSpecial(true);
-						break;
-					}
-				}
-				
-			});
+				if(!speOutCheck.getLstError().isEmpty()) {
+					outputData.setChkSpecial(true);
+					break;
+				}				
+			}
 		}
 		//年休チェック区分をチェックする
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();

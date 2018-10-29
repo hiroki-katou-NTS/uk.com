@@ -719,6 +719,8 @@ public class ProgramIdConsts {
 	public static final String KSC001H = "KSC001H";
 	public static final String KSC001I = "KSC001I";
 	public static final String KSC001K = "KSC001K";
+	public static final String KAF001A = "KAF001A";
+	public static final String KAF001B = "KAF001B";
 	public static final String KAF002A = "KAF002A";
 	public static final String KAF002B = "KAF002B";
 	public static final String KAF002C = "KAF002C";

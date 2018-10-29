@@ -40,84 +40,84 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "JANUARY")
+	@Column(name = "month_1")
 	public Integer january;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "FEBRUARY")
+	@Column(name = "month_2")
 	public Integer february;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "MARCH")
+	@Column(name = "month_3")
 	public Integer march;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "APRIL")
+	@Column(name = "month_4")
 	public Integer april;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "MAY")
+	@Column(name = "month_5")
 	public Integer may;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "JUNE")
+	@Column(name = "month_6")
 	public Integer june;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "JULY")
+	@Column(name = "month_7")
 	public Integer july;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "AUGUST")
+	@Column(name = "month_8")
 	public Integer august;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "SEPTEMBER")
+	@Column(name = "month_9")
 	public Integer september;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "OCTOBER")
+	@Column(name = "month_10")
 	public Integer october;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "NOVEMBER")
+	@Column(name = "month_11")
 	public Integer november;
 
 	/**
 	 * 対象月リスト
 	 */
 	@Basic(optional = true)
-	@Column(name = "DECEMBER")
+	@Column(name = "month_12")
 	public Integer december;
 
 	/**
@@ -147,13 +147,13 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 	}
 
 	public SetValidityPeriodCycle toDomain() {
-		return new SetValidityPeriodCycle(this.setPeriodCyclePk.salaryItemId, this.cycleSettingAtr, this.january,
+		return new SetValidityPeriodCycle(this.setPeriodCyclePk.cid, this.setPeriodCyclePk.categoryAtr, this.setPeriodCyclePk.itemNameCd, this.cycleSettingAtr, this.january,
 				this.february, this.march, this.april, this.may, this.june, this.july, this.august, this.september,
 				this.october, this.november, this.december, this.periodAtr, this.startYear, this.endYear);
 	}
 
 	public static QpbmtSetPeriodCycle toEntity(SetValidityPeriodCycle domain) {
-		return new QpbmtSetPeriodCycle(new QpbmtSetPeriodCyclePk(domain.getSalaryItemId()),
+		return new QpbmtSetPeriodCycle(new QpbmtSetPeriodCyclePk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v()),
 				domain.getCycleSetting().getCycleSettingAtr().value,
 				domain.getCycleSetting().getMonthlyList().map(i -> i.getJanuary().value).orElse(null),
 				domain.getCycleSetting().getMonthlyList().map(i -> i.getFebruary().value).orElse(null),

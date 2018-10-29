@@ -103,16 +103,25 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 */
 	public boolean isDeductLateLeaveEarly(Optional<WorkTimezoneCommonSet> commonSetting) {
 
-		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour() && commonSetting.isPresent()) {
-			if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+		//就業時間帯ごとに設定を見る
+		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour()) {
+			//就業時間帯「遅刻・早退」の詳細タブの「控除する」にチェック有かどうか
+			if(commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 				return true;
 			}
 			return false;
 		}
-		if (!this.notDeductLateLeaveEarly.isDeduct()) {
-			return false;
-		} 
-		return true;
+		//計算設定の設定のみ見る
+		else {
+			//遅刻・早退をマイナスしない□(チェック無し = 控除する)の場合、ここはfalseが来る
+			if (!this.notDeductLateLeaveEarly.isDeduct()) {
+				return true;
+			}
+			//遅刻・早退をマイナスしない☑(チェック有り = 控除しない)の場合、ここはtrueが来る
+			else {
+				return false;
+			}
+		}
 	}
 		
 }
