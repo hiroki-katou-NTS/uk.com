@@ -72,21 +72,20 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, lstDate);
 		
 		if(lstRecordData.isEmpty()
-				&& lstScheData.isEmpty()) {
-			if(!lstAppData.isEmpty()) {
-				List<GeneralDate> lstDelete = new ArrayList<>();
-				lstDate.stream().forEach(x -> {
-					List<AppRemainCreateInfor> lstAppDateNotDelete = lstAppData.stream().filter(a -> a.getAppDate().equals(x)
-								|| (a.getStartDate().isPresent() && a.getEndDate().isPresent() 
-									&& a.getStartDate().get().beforeOrEquals(x) && a.getEndDate().get().afterOrEquals(x)))
-							.collect(Collectors.toList());
-					if(lstAppDateNotDelete.isEmpty()) {
-						lstDelete.add(x);
-					}
-				});
-				if(!lstDelete.isEmpty()) {
-					lstDate = lstDelete;
+				&& lstScheData.isEmpty()
+				&& (lstAppData.isEmpty() || lstAppData.size() < lstDate.size())) {
+			List<GeneralDate> lstDelete = new ArrayList<>();
+			lstDate.stream().forEach(x -> {
+				List<AppRemainCreateInfor> lstAppDateNotDelete = lstAppData.stream().filter(a -> a.getAppDate().equals(x)
+							|| (a.getStartDate().isPresent() && a.getEndDate().isPresent() 
+								&& a.getStartDate().get().beforeOrEquals(x) && a.getEndDate().get().afterOrEquals(x)))
+						.collect(Collectors.toList());
+				if(lstAppDateNotDelete.isEmpty()) {
+					lstDelete.add(x);
 				}
+			});
+			if(!lstDelete.isEmpty()) {
+				lstDate = lstDelete;
 			}
 			//スケジュールのデータがないし実績データがないし、申請を削除の場合暫定データがあったら削除します。
 			List<InterimRemain> getDataBySidDates = inRemainData.getDataBySidDates(sid, lstDate);
