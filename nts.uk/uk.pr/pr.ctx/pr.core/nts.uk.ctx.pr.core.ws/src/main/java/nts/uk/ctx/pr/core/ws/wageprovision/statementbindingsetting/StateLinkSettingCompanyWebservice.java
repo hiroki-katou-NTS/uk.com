@@ -30,4 +30,10 @@ public class StateLinkSettingCompanyWebservice extends WebService {
         }
         return null;
     }
+    @POST
+    @Path("indiTiedStatAcquiProcess")
+    public StateLinkSettingCompanyDto indiTiedStatAcquiProcess(){
+
+        return null;
+    }
 }

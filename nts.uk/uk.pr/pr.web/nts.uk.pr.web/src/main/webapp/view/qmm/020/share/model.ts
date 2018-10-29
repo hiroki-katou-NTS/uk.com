@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm018.share.model {
+module nts.uk.pr.view.qmm020.share.model {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;

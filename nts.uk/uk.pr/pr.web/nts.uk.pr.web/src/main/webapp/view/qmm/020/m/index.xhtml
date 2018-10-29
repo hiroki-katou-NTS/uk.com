@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 350, height: 440 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm020.m.vm.js" />
+        <com:scriptfile path="qmm020.m.start.js" />
+        <com:scriptfile path="qmm020.m.service.js" />
+        <com:stylefile path="qmm020.m.style.css" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="title" style="margin-bottom: 10px">
+                <!-- M1_1 -->
+                <span id="M1_1" class="label">#{i18n.getText('QMM020_79')}</span>
+            </div>
+            <!-- F1_2 名称 -->
+        <div id="side-menu" class="cf"></div>
+        <div id="content" class="cf">          
+            <div class="cf" style="margin: 15px 0px 0px 30px;">
+                    <div tabindex="1" style="height: 30px;width: 200px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list',
+									items: items,  selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+                    <table tabindex="2" id="multi-list" data-bind="ntsGridList: {
+										height: 205,
+										options: items,
+										optionsValue: 'code',
+										columns: columns,
+										value: currentCodeList
+									}"></table>
+                    <br />
+               
+            </div>
+        </div>
+        </div>
+        <div id="functions-area-bottom" style="z-index: auto">
+            <!-- M2_1 登録 -->
+            <button id="M2_1" tabindex="3" class="proceed large"
+                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+            <!-- M2_2 削除 -->
+            <button id="M2_2" tabindex="4"
+                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
