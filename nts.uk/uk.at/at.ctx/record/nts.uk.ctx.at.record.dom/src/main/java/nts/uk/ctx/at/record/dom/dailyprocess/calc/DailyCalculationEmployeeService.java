@@ -5,7 +5,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationServiceImpl.StateHolder;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -29,7 +31,7 @@ public interface DailyCalculationEmployeeService {
 	 * @param companyCommonSetting 
 	 * @return 
 	 */
-	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, Consumer<ProcessState> counter, ExecutionType reCalcAtr, String empCalAndSumExecLogID);
+	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, ExecutionType reCalcAtr, String empCalAndSumExecLogID, TaskDataSetter dataSetter ,StateHolder stateHolder);
 	
 	/**
 	 * 社員の日別実績を計算(承認一覧から呼び出す用)
