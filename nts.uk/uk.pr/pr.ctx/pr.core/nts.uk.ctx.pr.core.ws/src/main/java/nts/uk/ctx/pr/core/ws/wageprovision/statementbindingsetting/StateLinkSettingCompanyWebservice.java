@@ -30,4 +30,10 @@ public class StateLinkSettingCompanyWebservice extends WebService {
         }
         return null;
     }
+    @POST
+    @Path("getStateCorrelationHisClassification")
+    public StateLinkSettingCompanyDto  getStateCorrelationHisClassification(){
+        String cid = AppContexts.user().companyId();
+        return null;
+    }
 }

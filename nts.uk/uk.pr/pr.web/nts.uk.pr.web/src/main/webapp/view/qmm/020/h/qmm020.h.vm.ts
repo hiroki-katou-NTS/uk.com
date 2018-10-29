@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm020.c.viewmodel {
+module nts.uk.pr.view.qmm020.h.viewmodel {
 
     import getText = nts.uk.resource.getText;
 
