@@ -246,7 +246,7 @@ public class MonthlyAggregateProcessService {
 				continue;
 			//HoiDD #1000436
 			for (EmployeeSearchDto employee : employees) {
-				if(extra.getTypeCheckItem() == 3 ){
+				if(extra.getTypeCheckItem() == TypeMonCheckItemImport.CHECK_REMAIN_NUMBER.value ){
 					CheckRemainNumberMonFunImport checkRemainNumberMonFunImport = extra.getCheckRemainNumberMon();
 					CompareSingleValueImport compareSingleValueImport = checkRemainNumberMonFunImport.getCompareSingleValueEx();
 					CompareRangeImport compareRangeImport = checkRemainNumberMonFunImport.getCompareRangeEx();

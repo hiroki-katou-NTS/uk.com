@@ -141,7 +141,7 @@ public class AgreementProcessService {
 			
 			// アルゴリズム「超過回数チェック」を実行する
 			for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
-				if(Period.Yearly.value == periodAlarm.getCategory()){
+				if(Period.Yearly.value == periodAlarm.getPeriod36Agreement()){
 					List<DatePeriod> periodsYear = new ArrayList<>();
 					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
 					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds, periods,
