@@ -7,7 +7,6 @@ import nts.uk.ctx.pr.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.pr.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.*;
 import nts.uk.ctx.pr.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.pr.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFeePk;
 import nts.uk.ctx.pr.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
