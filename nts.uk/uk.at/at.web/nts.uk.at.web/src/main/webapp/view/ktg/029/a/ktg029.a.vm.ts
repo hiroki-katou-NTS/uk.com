@@ -325,7 +325,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 screenMode: 0, 
                 lstEmployee: employeeIds,
                 errorRefStartAtr: self.checked(),
-                transitionDesScreen: '/view/cmm/008/a/index.xhtml'
+                transitionDesScreen: '/view/ccg/008/a/index.xhtml'
             };
             let extractionParam = {
                 displayFormat: 0,
