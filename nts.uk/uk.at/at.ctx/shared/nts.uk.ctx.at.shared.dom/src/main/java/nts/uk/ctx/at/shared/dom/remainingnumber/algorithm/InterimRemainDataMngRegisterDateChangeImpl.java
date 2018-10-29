@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -67,9 +70,24 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cid, sid, lstDate);
 		//「残数作成元の申請を取得する」
 		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, lstDate);
+		
 		if(lstRecordData.isEmpty()
-				&& lstAppData.isEmpty()
 				&& lstScheData.isEmpty()) {
+			if(!lstAppData.isEmpty()) {
+				List<GeneralDate> lstDelete = new ArrayList<>();
+				lstDate.stream().forEach(x -> {
+					List<AppRemainCreateInfor> lstAppDateNotDelete = lstAppData.stream().filter(a -> a.getAppDate().equals(x)
+								|| (a.getStartDate().isPresent() && a.getEndDate().isPresent() 
+									&& a.getStartDate().get().beforeOrEquals(x) && a.getEndDate().get().afterOrEquals(x)))
+							.collect(Collectors.toList());
+					if(lstAppDateNotDelete.isEmpty()) {
+						lstDelete.add(x);
+					}
+				});
+				if(!lstDelete.isEmpty()) {
+					lstDate = lstDelete;
+				}
+			}
 			//スケジュールのデータがないし実績データがないし、申請を削除の場合暫定データがあったら削除します。
 			List<InterimRemain> getDataBySidDates = inRemainData.getDataBySidDates(sid, lstDate);
 			getDataBySidDates.stream().forEach(x -> {
@@ -102,7 +120,9 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					break;
 				}
 			});
-			return;
+			if(lstAppData.isEmpty()) {
+				return;	
+			}
 		}
 		//雇用履歴と休暇管理設定を取得する
 		Optional<ComSubstVacation> comSetting = subRepos.findById(cid);
