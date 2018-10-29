@@ -61,6 +61,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.WidgetDisplayItemTypeImport;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -181,7 +182,7 @@ public class OptionalWidgetKtgFinder {
 		List<DailyExcessTotalTimeImport> dailyExcessTotalTimeImport = optionalWidgetAdapter.getExcessTotalTime(employeeId,datePeriod);
 		GeneralDate systemDate = GeneralDate.today();
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
-			if(item.getNotUseAtr()==1) {
+			if(item.getNotUseAtr() == NotUseAtr.USE.value) {
 				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
 					//sử lý 01
 					dto.setOverTime(overtimeInstructRepo.getAllOverTimeInstructBySId(employeeId, startDate, endDate).size());
