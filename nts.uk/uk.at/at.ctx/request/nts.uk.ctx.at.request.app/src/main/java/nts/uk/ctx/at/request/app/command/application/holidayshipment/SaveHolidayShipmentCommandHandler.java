@@ -148,8 +148,6 @@ public class SaveHolidayShipmentCommandHandler
 	private InterimRemainDataMngCheckRegister checkRegister;
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlg;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {

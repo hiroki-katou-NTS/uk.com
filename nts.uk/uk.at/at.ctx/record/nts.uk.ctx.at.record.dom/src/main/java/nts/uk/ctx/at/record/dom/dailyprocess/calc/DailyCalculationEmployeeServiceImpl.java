@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationServiceImpl.StateHolder;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
@@ -181,12 +183,13 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,DatePeriod datePeriod,ExecutionType reCalcAtr, String empCalAndSumExecLogID,TaskDataSetter dataSetter ,StateHolder stateHolder) {
 		
 		this.parallel.forEach(employeeIds, employeeId -> {
 			
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.hasBeenRequestedToCancel()) {
+				stateHolder.add(ProcessState.INTERRUPTION);
 				return;
 			}
 			
@@ -198,15 +201,15 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			
 			ManageProcessAndCalcStateResult afterCalcRecord;
 			if (createList.isEmpty()) {
-				counter.accept(ProcessState.SUCCESS);
+				stateHolder.add(ProcessState.SUCCESS);
 				
 				//１：日別計算(ENUM)
 				//0:計算完了
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
 			} else {
 				//計算処理を呼ぶ
-				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList,reCalcAtr);
-				
+				afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),closureList,reCalcAtr);
+				stateHolder.add(afterCalcRecord.getPs() == ProcessState.SUCCESS?ProcessState.SUCCESS:ProcessState.INTERRUPTION);
 				//１：日別計算(ENUM)
 				//0:計算完了
 				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
@@ -222,6 +225,11 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				}
 			}
 		});
+		//全員正常終了の場合
+		if(!stateHolder.isInterrupt()) {
+			val count = stateHolder.count();
+			dataSetter.updateData("dailyCalculateCount", count);
+		}
 	}
 	
 	

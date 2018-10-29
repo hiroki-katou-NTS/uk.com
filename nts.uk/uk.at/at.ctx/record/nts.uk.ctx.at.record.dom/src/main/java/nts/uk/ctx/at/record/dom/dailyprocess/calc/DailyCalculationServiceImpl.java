@@ -88,17 +88,18 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 //			return;
 //		}
 		
-		Consumer<ProcessState> counter = (cStatus) -> {
-			stateHolder.add(cStatus);
-			// 状態確認
-			if (cStatus == ProcessState.SUCCESS){
-				dataSetter.updateData("dailyCalculateCount", stateHolder.count());
-			}
-			if (cStatus == ProcessState.INTERRUPTION){
-				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
-			}
-		};
-		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
+//		Consumer<ProcessState> counter = (cStatus) -> {
+//			stateHolder.add(cStatus);
+//			// 状態確認
+//			if (cStatus == ProcessState.SUCCESS){
+//				dataSetter.updateData("dailyCalculateCount", stateHolder.count());
+//			}
+//			if (cStatus == ProcessState.INTERRUPTION){
+//				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
+//			}
+//		};
+		
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod, reCalcAtr,empCalAndSumExecLogID,dataSetter,stateHolder);
 		/** end 並列処理、PARALLELSTREAM */
 //		
 		// 中断処理　（中断依頼が出されているかチェックする）
