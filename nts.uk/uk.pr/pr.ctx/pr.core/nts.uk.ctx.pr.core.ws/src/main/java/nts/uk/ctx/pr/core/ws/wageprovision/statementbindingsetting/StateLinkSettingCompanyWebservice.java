@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddStateLinkSettingCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateLinkSettingCompanyCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -14,10 +16,13 @@ import java.util.Optional;
 
 @Path("core/wageprovision/statementbindingsetting")
 @Produces("application/json")
-public class StateLinkSettingCompanyWebservice extends WebService {
+public class StateLinkSettingCompanyWebService extends WebService {
 
     @Inject
     private StateLinkSettingCompanyFinder stateLinkSettingCompanyFinder;
+
+    @Inject
+    private AddStateLinkSettingCompanyCommandHandler addStateLinkSettingCompanyCommandHandler;
 
 
     @POST
@@ -29,5 +34,11 @@ public class StateLinkSettingCompanyWebservice extends WebService {
             return stateLinkSettingCompanyDto.get();
         }
         return null;
+    }
+
+    @POST
+    @Path("register")
+    public void register(StateLinkSettingCompanyCommand command){
+        addStateLinkSettingCompanyCommandHandler.handle(command);
     }
 }

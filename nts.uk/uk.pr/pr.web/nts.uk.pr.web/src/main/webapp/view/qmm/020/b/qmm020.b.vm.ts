@@ -1,4 +1,7 @@
 module nts.uk.pr.view.qmm020.b.viewmodel {
+
+    import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
 
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
@@ -13,10 +16,26 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             }
         }
 
-        todo(){
-            service.getStateLinkSettingCompanyById().done((data: any)=>{
-                console.dir(data);
+        register(){
+            block.invisible();
+            let self = this;
+            let data: any = {
+                historyID: '1',
+                salaryCode: '01',
+                bonusCode: '02'
+            }
+            service.register(data).done((data)=>{
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+
+                });
+            }).fail((err) =>{
+                if(err){
+                    dialog.alertError(err);
+                }
+            }).always(()=>{
+                block.clear();
             });
+
         }
 
     }
