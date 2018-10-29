@@ -43,13 +43,13 @@
 
     <ui:define name="content">
         <div id="functions-area" >
-            <button id="A1_1" tabindex="1" style="margin-left: 50px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
+            <button id="A1_1" tabindex="1" style="margin-left: 90px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
             <button class="proceed"  id="A1_2" data-bind="click: update ,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('QMM035_3')}</button>
             <button id="A1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM035_4')}</button>
             <button  id="A1_4" tabindex="4" data-bind="enable: $vm.isEnableBtnPdf() " >#{i18n.getText('QMM035_5')}</button>
             <button id="A1_5" class="danger" tabindex="5" data-bind="click: deleteCompany ,enable: $vm.isEnableBtnDelete()" >#{i18n.getText('QMM035_6')}</button>
         </div>
-        <div id="contents-area" class="fixed-flex-layout" style="margin-left: 15px;">
+        <div id="contents-area" class="fixed-flex-layout" style="margin-left: 55px;">
             <div id="content-left" class="fixed-flex-layout-left">
                 <div data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
                      id="A2_1" style="margin-left: 10px;">
@@ -89,7 +89,7 @@
                             <div id="A4_6" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'KanaName' }">#{i18n.getText('QMM035_16')}</div>
                             <input id="A4_7" tabindex="10"
-                                   data-bind="ntsTextEditor: {constraint: 'KanaName',value: kanaName, required: false, name: '#[QMM035_16]'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'KanaName',value: kanaName, required: true, name: '#[QMM035_16]'}"/>
                         </div>
                         <div class="flex valign-center">
                             <div id="A4_8" class="column-1"
@@ -118,7 +118,7 @@
 
                         </div>
                         <div class="flex valign-center" style="margin-top: 15px;">
-                            <span id="A4_18" class="column-1" >#{i18n.getText('QMM035_12')}</span>
+                            <span id="A4_18" class="column-1" >#{i18n.getText('QMM035_22')}</span>
                         </div>
                         <hr id="A4_19" style="margin-bottom: 15px; width: auto"></hr>
                         <div class="flex valign-center">

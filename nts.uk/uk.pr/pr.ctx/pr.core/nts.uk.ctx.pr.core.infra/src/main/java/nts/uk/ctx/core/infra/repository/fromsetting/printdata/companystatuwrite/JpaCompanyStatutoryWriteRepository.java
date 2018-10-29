@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.core.dom.printdata.Code;
 import nts.uk.ctx.core.dom.printdata.CompanyStatutoryWrite;
 import nts.uk.ctx.core.dom.printdata.CompanyStatutoryWriteRepository;
 import nts.uk.ctx.core.infra.entity.fromsetting.printdata.companystatuwrite.QpbmtComStatutoryWrite;
@@ -30,7 +31,7 @@ public class JpaCompanyStatutoryWriteRepository extends JpaRepository implements
     public Optional<CompanyStatutoryWrite> getCompanyStatutoryWriteById(String cid, String code){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtComStatutoryWrite.class)
         .setParameter("cid", cid)
-        .setParameter("code", code)
+        .setParameter("code", new Code(code).v())
         .getSingle(c->c.toDomain());
     }
 
