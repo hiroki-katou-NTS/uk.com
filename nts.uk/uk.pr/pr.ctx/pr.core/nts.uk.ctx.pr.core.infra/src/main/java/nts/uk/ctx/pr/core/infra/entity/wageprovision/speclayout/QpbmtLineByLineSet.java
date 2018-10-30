@@ -8,34 +8,35 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * 明細書レイアウト履歴
+ * 行別設定
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SPEC_LAYOUT_HIST")
-public class QpbmtSpecLayoutHist extends UkJpaEntity implements Serializable {
+@Table(name = "QPBMT_LINE_BY_LINE_SET")
+public class QpbmtLineByLineSet extends UkJpaEntity implements Serializable {
+
     /**
      * ID
      */
     @EmbeddedId
-    public QpbmtSpecLayoutHistPk specLayoutHistPk;
+    public QpbmtLineByLineSetPk lineByLineSetPk;
     /**
      * 開始日
      */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
-    public int startYearMonth;
+    @Column(name = "PRINT_SET")
+    public int printSet;
 
     /**
      * 終了日
      */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
-    public int endYearMonth;
+    @Column(name = "ITEM_POSITION")
+    public int itemPosition;
 
     @Override
     protected Object getKey() {
-        return specLayoutHistPk;
+        return lineByLineSetPk;
     }
 }
