@@ -23861,7 +23861,7 @@ var nts;
                     /**
                      * Bind vertWheel.
                      */
-                    function bindVertWheel($container, showY) {
+                    function bindVertWheel($container, showY, abnorm) {
                         var $_container = $($container);
                         $container.addXEventListener(ssk.MOUSE_WHEEL, function (event) {
                             var delta = event.deltaY;
@@ -23869,6 +23869,12 @@ var nts;
                             var value = $_container.scrollTop();
                             //                $container.stop().animate({ scrollTop: value }, 10);
                             var os = ti.isIE() ? 25 : 50;
+                            //                if (!abnorm && ((direction < 0 && value === 0)
+                            //                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
+                            //                    try {
+                            //                        window.dispatchEvent(event);
+                            //                    } catch (e) {}
+                            //                }
                             $_container.scrollTop(value + direction * os);
                             if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
                                 var cbx = dkn.controlType[_mEditor.columnKey];
@@ -25898,10 +25904,24 @@ var nts;
                                     t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                                     if (!t || !t.c || _.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
                                         return;
-                                    formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                                    t.c.textContent = formatted;
-                                    disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
-                                    $.data(t.c, v.DATA, disFormat);
+                                    var control = dkn.controlType[coord.columnKey];
+                                    if (control === dkn.LINK_LABEL) {
+                                        var link = t.c.querySelector("a");
+                                        link.innerHTML = cellValue;
+                                    }
+                                    else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                                        var sel = _.find(control.options, function (o) { return o.code === cellValue; });
+                                        if (sel) {
+                                            $.data(t.c, lo.CBX_SELECTED_TD, cellValue);
+                                            t.c.textContent = sel.name;
+                                        }
+                                    }
+                                    else {
+                                        formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
+                                        t.c.textContent = formatted;
+                                        disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
+                                        $.data(t.c, v.DATA, disFormat);
+                                    }
                                     if (t.colour)
                                         t.c.classList.add(t.colour);
                                 }

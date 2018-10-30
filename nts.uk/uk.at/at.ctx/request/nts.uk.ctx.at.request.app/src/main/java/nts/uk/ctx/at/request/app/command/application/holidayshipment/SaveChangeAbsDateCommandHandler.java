@@ -133,7 +133,8 @@ public class SaveChangeAbsDateCommandHandler
 		// ドメイン「振休申請」を1件登録する
 		createNewAbsApp(commonApp, command);
 		//暫定データの登録
-		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(command.getAbsCmd().getAppDate()));
+		this.registerDateChange.registerDateChange(companyID, sID,
+				Arrays.asList(oldApp.getAppDate(), command.getAbsCmd().getAppDate()));
 		// アルゴリズム「新規画面登録後の処理」を実行する
 		return newAfterReg.processAfterRegister(commonApp);
 
