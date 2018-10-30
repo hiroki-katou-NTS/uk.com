@@ -10,19 +10,32 @@
 .fixed-flex-layout > .fixed-flex-layout-left {
     margin-right: -10px;
 }
-#A8 .nts-fixed-table {
+.fixed-table-container{
     display: inline-block;
 }
-#A8_2 .ui-widget-header {
+.fixed-table-container tr {
+    height:34px;
+}
+.custom-fixed-table .ui-widget-header {
     color: #000;
     background-color: #CFF1A5;
 }
-#A8_2 div {
+.custom-fixed-table div {
     display: inline-block;
 }
-#A8_2 td:first-child {
+.custom-fixed-table td:first-child {
     text-align: center;
 }
-#A8_2 tr {
-    height: 34px;
+#B3_1::after{
+    font-size: 3em;
+    color: #97D155;
+}
+#C5 tr{
+    height: 17px;
+}
+#C5 .nts-fixed-header-container{
+    border-left: none;
+}
+#C5 .nts-fixed-header-wrapper {
+    width: 602px;
 }

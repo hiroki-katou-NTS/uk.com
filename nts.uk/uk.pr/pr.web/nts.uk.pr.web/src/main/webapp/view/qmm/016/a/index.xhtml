@@ -12,6 +12,11 @@
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableCode
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableName
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.Memo
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.FrameLowerLimit
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.FrameUpperLimit
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.StepIncrement
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.RangeLowerLimit
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.RangeUpperLimit
         </com:ValidatorScript>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm016.a.service.js"/>
@@ -71,7 +76,7 @@
                         <button style="float: right" id="A2_5" tabindex="1"
                                 data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
                     </div>
-                    <div style ="margin-top: 15px;" >
+                    <div style="margin-top: 15px;">
                         <!--A2_6 賃金テーブル一覧	-->
                         <table id="A2_6" data-bind="ntsTreeGridView:{
                                width: 335,
@@ -91,12 +96,14 @@
             </div>
             <div id="fixed-flex-layout-right" tabindex="9">
                 <!--A3_1 タブ-->
-                <div id="A3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+                <div id="A3_1" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
                      style="width: 800px; margin-bottom: 20px;">
                     <!--A3_2 タブ（基本情報）-->
-                    <div class="tab-content-1" data-bind = "with: selectedWageTable">
+                    <div class="tab-content-1" data-bind="with: selectedWageTable">
                         <!--A4_1 注意メッセージ-->
-                        <div data-bind="if: $vm.screenMode() == 1" ><span id ="A4_1" class="label warning tab-row">#{i18n.getText('QMM016_7')}</span></div>
+                        <div data-bind="if: $vm.screenMode() == 1"><span id="A4_1"
+                                                                         class="label warning tab-row">#{i18n.getText('QMM016_7')}</span>
+                        </div>
                         <div class="flex valign-center tab-row">
                             <!--A5_1 賃金テーブルコード/名称-->
                             <div id="A5_1" class="column-1"
@@ -105,15 +112,15 @@
                             <input id="A5_2" tabindex="10"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableCode', value: wageTableCode, name: '#[QMM016_14]', required: true , enable: $vm.screenMode() == 0}"/>
                             <!--A5_3 名称-->
-                            <input style ="margin-left: 15px;" id="A4_3" tabindex="11" width="230px"
+                            <input style="margin-left: 15px;" id="A4_3" tabindex="11" width="230px"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableName',value: wageTableName, name: '#[QMM016_15]', required: true}"/>
                         </div>
-                        <div class="flex valign-center tab-row" data-bind ="with: $vm.selectedHistory">
+                        <div class="flex valign-center tab-row" data-bind="with: $vm.selectedHistory">
                             <!--A6_1 開始年月-->
                             <div id="A6_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_16')}</div>
                             <!--A6_2 開始年月（西暦）-->
-                            <div id ="A6_2"
+                            <div id="A6_2"
                                  data-bind="ntsDatePicker: {
                                     name: '#[QMM016_16]',
                                     value: startMonth,
@@ -121,124 +128,333 @@
                                     valueFormat: 'YYYYMM',
                                     required: true,
                                     enable: !$vm.isUpdateMode()}"
-                                 tabindex="1" />
+                                 tabindex="1"/>
                             <!--A6_3 開始年月（和暦）-->
-                            <div style ="margin-left: 10px;" id ="A6_3"
-                                 data-bind="text: displayJapanStartYearMonth" />
+                            <div style="margin-left: 10px;" id="A6_3"
+                                 data-bind="text: displayJapanStartYearMonth"/>
                         </div>
-                        <div class="tab-row" >
+                        <div class="tab-row">
                             <!--A7_1 次元設定-->
                             <div id="A7_1" class="column-1" style="vertical-align: top"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_17')}</div>
-                            <div style = "width: 200px; display: inline-block; vertical-align: top">
+                            <div style="width: 200px; display: inline-block; vertical-align: top">
                                 <!--A7_2 汎用テーブル-->
-                                <div id ="A7_2">#{i18n.getText('QMM016_18')}</div>
+                                <div id="A7_2">#{i18n.getText('QMM016_18')}</div>
                                 <!--A7_3 罫線-->
                                 <hr></hr>
                                 <!--A7_4 利用次元区分-->
                                 <div class="flex valign-center tab-row">
                                     <div class="cf" data-bind="ntsSwitchButton: {
-                                name: '#[QMM016_19]',
-                                options: elementSettingItem1,
-                                optionsValue: 'value',
-                                optionsText: 'name',
-                                value: elementSetting,
-                                required: true,
-                                enable: !$vm.isUpdateMode() }"></div>
+                                        name: '#[QMM016_19]',
+                                        options: elementSettingItem1,
+                                        optionsValue: 'value',
+                                        optionsText: 'name',
+                                        value: elementSetting,
+                                        required: true,
+                                        enable: !$vm.isUpdateMode() }">
+                                    </div>
                                 </div>
                                 <div class="flex valign-center tab-row">
-                                    <div id ="A7_10">#{i18n.getText('QMM016_20')}</div>
+                                    <div id="A7_10">#{i18n.getText('QMM016_20')}</div>
                                 </div>
                                 <!--A7_11 罫線-->
                                 <hr></hr>
                                 <!--A7_4 利用次元区分-->
                                 <div class="flex valign-center tab-row">
                                     <div class="cf" data-bind="ntsSwitchButton: {
-                                name: '#[QMM016_19]',
-                                options: elementSettingItem2,
-                                optionsValue: 'value',
-                                optionsText: 'name',
-                                value: elementSetting,
-                                required: true,
-                                enable: !$vm.isUpdateMode() }"></div>
+                                        name: '#[QMM016_19]',
+                                        options: elementSettingItem2,
+                                        optionsValue: 'value',
+                                        optionsText: 'name',
+                                        value: elementSetting,
+                                        required: true,
+                                        enable: !$vm.isUpdateMode() }">
+                                    </div>
                                 </div>
                             </div>
                             <!--A7_12 凡例パネル-->
-                            <div style = "display: inline-block; height: 185px; width: 330px;" class="panel panel-gray-bg">
-                                <div style ="margin-left: 10px;" data-bind = "text: elementSettingDisplayText"></div>
-                                <img style ="margin-top: 5px;" src = '/' data-bind="attr:{src: imagePath}" />
+                            <div style="display: inline-block; height: 185px; width: 330px;"
+                                 class="panel panel-gray-bg">
+                                <div style="margin-left: 10px;" data-bind="text: elementSettingDisplayText"></div>
+                                <img style="margin-top: 5px;" src='/' data-bind="attr:{src: imagePath}"/>
                             </div>
                         </div>
-                        <div class="tab-row" id ="A8">
+                        <div class="tab-row">
                             <!--A8_1 要素指定-->
                             <div id="A8_1" class="column-2" style="vertical-align: top"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_17')}</div>
                             <!--A8_2 要素テーブル-->
-                            <table id="A8_2">
-                                <colgroup>
-                                    <col width="30px" />
-                                    <col width="200px" />
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th class="ui-widget-header"></th>
-                                    <!--A8_3 要素-->
-                                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <!--A8_4 要素番号1-->
-                                    <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
-                                    <td>
-                                        <!--A8_5 参照ボタン1-->
-                                        <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
-                                            <button data-bind = "click: function(){$vm.selectElement(1)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
-                                        </div>
+                            <div class="fixed-table-container">
+                                <table id="A8_2" class="custom-fixed-table">
+                                    <colgroup>
+                                        <col width="30px"/>
+                                        <col width="200px"/>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th class="ui-widget-header"></th>
+                                        <!--A8_3 要素-->
+                                        <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <!--A8_4 要素番号1-->
+                                        <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                                        <td>
+                                            <!--A8_5 参照ボタン1-->
+                                            <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
+                                                <button data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                            </div>
+                                            <!--A8_6 選択要素1-->
+                                            <div data-bind="with: elementInformation().oneDimensionElement">
+                                                <div data-bind="text: fixedElement"></div>
+                                                <div data-bind="text: optionalAdditionalElement"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <!--A8_7 要素番号2-->
+                                        <td data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4"
+                                            class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
+                                        <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
+                                            <!--A8_8 参照ボタン2-->
+                                            <div>
+                                                <button data-bind="click: function(){$vm.selectElement(2)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                            </div>
+                                            <!--A8_9 選択要素2-->
+                                            <div data-bind="with: elementInformation().twoDimensionElement">
+                                                <div data-bind="text: fixedElement"></div>
+                                                <div data-bind="text: optionalAdditionalElement"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <!--A8_10  要素番号3-->
 
-                                        <!--A8_6 選択要素1-->
-                                        <div>test</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <!--A8_7 要素番号2-->
-                                    <td data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4" class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
-                                    <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
-                                        <!--A8_8 参照ボタン2-->
-                                        <div >
-                                            <button data-bind = "click: function(){$vm.selectElement(2)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
-                                        </div>
-                                        <!--A8_9 選択要素2-->
-                                        <div>test</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <!--A8_10  要素番号3-->
-
-                                    <td data-bind="if: elementSetting() == 2 || elementSetting() == 4"  class="ui-widget-header">#{i18n.getText('QMM016_44')}</td>
-                                    <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
-                                        <!--A8_11 参照ボタン3-->
-                                        <button data-bind = "click: function(){$vm.selectElement(3)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
-                                        <!--A8_12 選択要素3-->
-                                        <div>test</div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4"
+                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</td>
+                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
+                                            <!--A8_11 参照ボタン3-->
+                                            <button data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                            <!--A8_12 選択要素3-->
+                                            <div data-bind="with: elementInformation().threeDimensionElement">
+                                                <div data-bind="text: fixedElement"></div>
+                                                <div data-bind="text: optionalAdditionalElement"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="tab-row">
                             <!--A9_1 メモ-->
-                            <div id="A9_1" style = "vertical-align: top" class="column-1"
+                            <div id="A9_1" style="vertical-align: top" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM016_24')}</div>
                             <!--A9_2 メモ欄-->
-                            <textarea id="A9_2" style = "height: 80px; width: 400px;"
+                            <textarea id="A9_2" style="height: 80px; width: 400px;"
                                       data-bind="ntsMultilineEditor: { constraint: 'Memo', value: remarkInformation, name: '#[QMM016_25]'}"/>
                         </div>
 
                     </div>
                     <div class="tab-content-2">
-                        <h1>Tab 2 content</h1>
+                        <div class="flex valign-center tab-row">
+                            <div style="width: 110px;"
+                                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+                            <div style="width: 200px;" data-bind="with: selectedWageTable">
+                                <div style="display: inline-block" data-bind="text: wageTableCode"></div>
+                                <div style="display: inline-block; margin-left: 10px;"
+                                     data-bind="text: wageTableName"></div>
+                            </div>
+                            <div style="width: 110px;"
+                                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
+                            <div data-bind="with: selectedHistory">
+                                <div style="display: inline-block" data-bind="text: startMonth"></div>
+                                <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
+                                <div style="display: inline-block; margin-left: 5px;" data-bind="text: endMonth"></div>
+                            </div>
+                        </div>
+                        <hr></hr>
+                        <div class="tab-row">
+                            <div style="width: 70px; vertical-align: top"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
+                            <div class="fixed-table-container">
+                                <table id="C2_2" class="custom-fixed-table">
+                                    <colgroup>
+                                        <col width="30px"/>
+                                        <col width="220px"/>
+                                        <col width="170px"/>
+                                        <col width="90px"/>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th class="ui-widget-header"></th>
+                                        <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+                                        <th class="ui-widget-header">
+                                            <div style = "display: inline-block">#{i18n.getText('QMM016_27')}</div>
+                                            <button style="display: inline-block"
+                                                    data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?</button>
+                                        </th>
+                                        <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr data-bind = "with: selectedWageTable().elementInformation().oneDimensionElement">
+                                        <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                                        <td>
+                                            <div data-bind="text: fixedElement"></div>
+                                            <div data-bind="text: optionalAdditionalElement"></div>
+                                        </td>
+                                        <td style = "text-align: center;" data-bind="if: masterNumericClassification() == 1">
+                                            <div data-bind = "with: $vm.elementRangeSetting().firstElementRange">
+                                                <input style = "width: 20px;"
+                                                       data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
+                                                <div style = "margin-left: 10px; margin-right: 10px;" >#{i18n.getText('QMM016_31')}</div>
+                                                <input style = "width: 20px;"
+                                                       data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
+                                            </div>
+                                        </td>
+                                        <td style = "text-align: center;" data-bind="if: masterNumericClassification() == 0">
+                                            <div data-bind ="with: $vm.elementRangeSetting().firstElementRange">
+                                                <input style = "width: 20px;"
+                                                       data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-bind = "with: selectedWageTable().elementInformation().twoDimensionElement">
+                                        <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                                        <td>
+                                            <div data-bind="text: fixedElement"></div>
+                                            <div data-bind="text: optionalAdditionalElement"></div>
+                                        </td>
+                                        <td style = "text-align: center;" data-bind="if: masterNumericClassification() == 1">
+                                            <div data-bind = "with: $vm.elementRangeSetting().secondElementRange">
+                                                <input style = "width: 20px;"
+                                                       data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
+                                                <div style = "margin-left: 10px; margin-right: 10px;" >#{i18n.getText('QMM016_31')}</div>
+                                                <input style = "width: 20px;"
+                                                       data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
+                                            </div>
+                                        </td>
+                                        <td style = "text-align: center;" data-bind="if: masterNumericClassification() == 0">
+                                            <div data-bind ="with: $vm.elementRangeSetting().secondElementRange">
+                                                <input style = "width: 20px;"
+                                                       data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-row" style = "margin-left: 75px; width: 500px; text-align: center;">
+                            <button data-bind = "click: $vm.createTwoDimensionWageTable"  id ="B3_1" style = "width: 400px;" class = "caret-bottom">#{i18n.getText('QMM016_35')}</button>
+                        </div>
+                        <div class="tab-row" style = "margin-top: 40px;">
+                            <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
+                            <button style = "margin-left: 30px;" id ="B4_2">#{i18n.getText('QMM016_37')}</button>
+                        </div>
+                        <hr></hr>
+                        <div id = "C5" class="tab-row" style = "top: 11px; position: relative">
+                            <img src = "../resource/QMM016_6.png"></img>
+                            <table id="C5_1" class="custom-fixed-table">
+                                <colgroup>
+                                    <col width="100px"/>
+                                    <col width="100px"/>
+                                    <col width="100px"/>
+                                    <col width="100px"/>
+                                    <col width="100px"/>
+                                    <col width="100px"/>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th style = "border: none"></th>
+                                    <th colspan="5" class="ui-widget-header">
+                                        <div data-bind = "with: selectedWageTable().elementInformation().twoDimensionElement">
+                                            <div data-bind="text: fixedElement"></div>
+                                            <div data-bind="text: optionalAdditionalElement"></div>
+                                        </div>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="ui-widget-header">
+                                        <div style ="border-left: 1px solid #CCC; height: 22px; position: relative; left: -1px;" data-bind = "with: selectedWageTable().elementInformation().oneDimensionElement">
+                                            <div data-bind="text: fixedElement"></div>
+                                            <div data-bind="text: optionalAdditionalElement"></div>
+                                        </div>
+                                    </th>
+                                    <th class="ui-widget-header">次郎</th>
+                                    <th class="ui-widget-header">次郎</th>
+                                    <th class="ui-widget-header">次郎</th>
+                                    <th class="ui-widget-header">次郎</th>
+                                    <th class="ui-widget-header">次郎</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                    <tr>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                        <td>test</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <img style = "position: relative;display: inline-block; bottom: -30px;" src = "../resource/QMM016_7.png"></img>
+                        </div>
+                        <div class="tab-row">
 
+                        </div>
                     </div>
                 </div>
             </div>

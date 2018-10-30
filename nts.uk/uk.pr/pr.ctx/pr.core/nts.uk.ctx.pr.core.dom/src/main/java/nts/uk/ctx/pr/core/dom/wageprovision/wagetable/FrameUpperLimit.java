@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * 範囲下限
+ * 当該枠上限
  */
 
 @IntegerMaxValue(99)

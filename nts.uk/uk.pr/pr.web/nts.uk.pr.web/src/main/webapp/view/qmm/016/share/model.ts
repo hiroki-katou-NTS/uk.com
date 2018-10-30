@@ -152,8 +152,12 @@ module nts.uk.pr.view.qmm016.share.model {
                     break;
                 }
             }
-            if (imgName) self.imagePath("../resource/" + imgName);
-            else self.imagePath("");
+            if (imgName){
+                self.imagePath("../resource/" + imgName);
+            }
+            else{
+                self.imagePath("");
+            }
             self.elementSettingDisplayText(elementSettingDisplayText);
         }
     }
@@ -189,13 +193,13 @@ module nts.uk.pr.view.qmm016.share.model {
         fixedElement: KnockoutObservable<string> = ko.observable(null);
         optionalAdditionalElement: KnockoutObservable<string> = ko.observable(null);
         // for display data
-        fixedElementName: KnockoutObservable<string> = ko.observable(null);
+        elementName: KnockoutObservable<string> = ko.observable(null);
         constructor (params: IElementAttribute) {
             this.masterNumericClassification(params ? params.masterNumericClassification : null);
             this.fixedElement(params ? params.fixedElement : null);
             this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
             let fixedElementValue = this.fixedElement();
-            this.fixedElementName(ELEMENT_TYPE[fixedElementValue]);
+            this.elementName(ELEMENT_TYPE[fixedElementValue]);
         }
     }
 
@@ -277,8 +281,8 @@ module nts.uk.pr.view.qmm016.share.model {
     export interface IElementItem {
         masterCode: string,
         frameNumber: number,
-        lowerFrameLimit: number,
-        upperFrameLimit: number
+        frameLowerLimit: number,
+        frameUpperLimit: number
     }
     // Merge domain
     // 要素項目
@@ -287,13 +291,13 @@ module nts.uk.pr.view.qmm016.share.model {
     export class ElementItem {
         masterCode: KnockoutObservable<string> = ko.observable(null);
         frameNumber: KnockoutObservable<number> = ko.observable(null);
-        lowerFrameLimit: KnockoutObservable<number> = ko.observable(null);
-        upperFrameLimit: KnockoutObservable<number> = ko.observable(null);
+        frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
+        frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
         constructor (params: IElementItem) {
             this.masterCode(params ? params.masterCode : null);
             this.frameNumber(params ? params.frameNumber : null);
-            this.lowerFrameLimit(params ? params.lowerFrameLimit : null);
-            this.upperFrameLimit(params ? params.upperFrameLimit : null);
+            this.frameLowerLimit(params ? params.frameLowerLimit : null);
+            this.frameUpperLimit(params ? params.frameUpperLimit : null);
         }
     }
 
@@ -427,29 +431,6 @@ module nts.uk.pr.view.qmm016.share.model {
             self.englishName(param ? param.englishName : '');
         }
     }
-    
-    export interface IWageTableTreeNode {
-        wageTableCode: string,
-        wageTableName: string,
-        nodeText: string,
-        childs: Array<WageTableTreeNode>,
-        identifier: string;
-    }
-
-    export class WageTableTreeNode {
-        wageTableCode: string;
-        wageTableName: string;
-        nodeText: string;
-        childs: Array<WageTableTreeNode>;
-        identifier: string;
-        constructor(params: IWageTableTreeNode) {
-            this.wageTableCode = params ? params.wageTableCode : "";
-            this.wageTableName = params ? params.wageTableName : "";
-            this.nodeText = params ? params.nodeText : "";
-            this.childs = params ? params.childs : [];
-            this.identifier = params ? params.identifier : "";
-        }
-    }
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeriod {
@@ -465,12 +446,25 @@ module nts.uk.pr.view.qmm016.share.model {
         startMonth: KnockoutObservable<string> = ko.observable(null);
         endMonth: KnockoutObservable<string> = ko.observable(null);
         historyID: KnockoutObservable<string> = ko.observable(null);
-        displayJapanStartYearMonth: KnockoutObservable<string> = ko.observable(null);
+        // display item
+        displayStartMonth: any;
+        displayEndMonth: any;
+        displayJapanStartYearMonth: any;
+
         constructor(params: IGenericHistoryYearMonthPeriod) {
             this.startMonth(params ? params.startMonth : "");
             this.endMonth(params ? params.endMonth : "");
             this.historyID(params ? params.historyID : "");
-            this.displayJapanStartYearMonth(params ? nts.uk.time.yearmonthInJapanEmpire(params.startMonth).toString().split(' ').join('') : "")
+            this.displayStartMonth = ko.computed(function() {
+                return this.startMonth() ? nts.uk.time.parseYearMonth(this.startMonth()).format() : "";
+            }, this);
+            this.displayEndMonth = ko.computed(function() {
+                return this.endMonth() ? nts.uk.time.parseYearMonth(this.endMonth()).format() : "";
+            }, this);
+            this.displayJapanStartYearMonth = ko.computed(function() {
+                return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
+            }, this);
+
         }
     }
 }

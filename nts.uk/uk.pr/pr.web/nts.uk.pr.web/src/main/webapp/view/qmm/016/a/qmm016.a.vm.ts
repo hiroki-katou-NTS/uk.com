@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qmm016.share.model;
     import getText = nts.uk.resource.getText;
+    import WageTableContent = nts.uk.pr.view.qmm016.share.model.WageTableContent;
     export class ScreenModel {
 
         // screen state
@@ -20,15 +21,15 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         selectedTab: any;
 
         // screen item
-        // left panel
         selectedWageTableIdentifier: KnockoutObservable<string> = ko.observable(null);
         selectedWageTable: KnockoutObservable<model.WageTable> = ko.observable(new model.WageTable(null));
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
         wageTableTreeList: any = ko.observable();
+        elementRangeSetting: KnockoutObservable<model.ElementRangeSetting> = ko.observable(new model.ElementRangeSetting(null));
+        wageTableContent: KnockoutObservable<model.WageTableContent> = ko.observable(new model.WageTableContent(null));
         constructor() {
             let self = this;
             self.initTabPanel();
-            self.getWageTableList();
             self.selectedWageTableIdentifier.subscribe(function (newValue){
                 if (newValue) self.showWageTableInfoByValue(newValue);
             });
@@ -36,6 +37,12 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
             })
             $('#A8_2').ntsFixedTable({width: 300});
+            $('#B2_2').ntsFixedTable({width: 600});
+            $('#B5_1').ntsFixedTable({width: 600});
+            $('#C2_2').ntsFixedTable({width: 600});
+            $('#C5_1').ntsFixedTable({width: 600, height: 100});
+            $('#C5_3').ntsFixedTable({width: 500});
+            self.getWageTableList();
         }
 
         getWageTableList () {
@@ -44,7 +51,23 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 {
                     wageTableCode: '001',
                     wageTableName: 'Wage Table 1',
-                    elementInformation: null,
+                    elementInformation: {
+                        oneDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: "BBB",
+                            optionalAdditionalElement: ''
+                        },
+                        twoDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: "BBB",
+                            optionalAdditionalElement: ''
+                        },
+                        threeDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: "BBB",
+                            optionalAdditionalElement: ''
+                        }
+                    },
                     elementSetting: 0,
                     remarkInformation: 'Nothing to write here 1',
                     history: [
@@ -57,13 +80,13 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     wageTableCode: '002',
                     wageTableName: 'Wage Table 2',
                     elementInformation: {
-                        firstDimensionElement: {
+                        oneDimensionElement: {
                             masterNumericClassification: 0,
                             fixedElement: 6,
-                            optionalAdditionalElement: 'BBB'
+                            optionalAdditionalElement: 'CCC'
                         },
-                        secondDimensionElement: null,
-                        firstDimensionElement: null
+                        twoDimensionElement: null,
+                        threeDimensionElement: null
                     },
                     elementSetting: 1,
                     remarkInformation: 'Nothing to write here 2',
@@ -77,13 +100,13 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     wageTableCode: '003',
                     wageTableName: 'Wage Table 3',
                     elementInformation: {
-                        firstDimensionElement: {
+                        oneDimensionElement: {
                             masterNumericClassification: 1,
                             fixedElement: 2,
-                            optionalAdditionalElement: 'CCC'
+                            optionalAdditionalElement: 'DDD'
                         },
-                        secondDimensionElement: null,
-                        firstDimensionElement: null
+                        twoDimensionElement: null,
+                        threeDimensionElement: null
                     },
                     elementSetting: 2,
                     remarkInformation: 'Nothing to write here 3',
@@ -92,9 +115,48 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         {startMonth: '202005', endMonth: '202010', historyID: nts.uk.util.randomId()},
                         {startMonth: '202001', endMonth: '202004', historyID: nts.uk.util.randomId()}
                     ]
+                },
+                {
+                    wageTableCode: '004',
+                    wageTableName: 'Wage Table 4',
+                    elementInformation: {
+                        oneDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: 2,
+                            optionalAdditionalElement: 'EEE'
+                        },
+                        twoDimensionElement: null,
+                        threeDimensionElement: null
+                    },
+                    elementSetting: 3,
+                    remarkInformation: 'Nothing to write here 4',
+                    history: [
+                        {startMonth: '202011', endMonth: '999912', historyID: nts.uk.util.randomId()},
+                        {startMonth: '202005', endMonth: '202010', historyID: nts.uk.util.randomId()},
+                        {startMonth: '202001', endMonth: '202004', historyID: nts.uk.util.randomId()}
+                    ]
+                },
+                {
+                    wageTableCode: '005',
+                    wageTableName: 'Wage Table 5',
+                    elementInformation: {
+                        oneDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: 2,
+                            optionalAdditionalElement: 'FFF'
+                        },
+                        twoDimensionElement: null,
+                        threeDimensionElement: null
+                    },
+                    elementSetting: 4,
+                    remarkInformation: 'Nothing to write here 5',
+                    history: [
+                        {startMonth: '202011', endMonth: '999912', historyID: nts.uk.util.randomId()},
+                        {startMonth: '202005', endMonth: '202010', historyID: nts.uk.util.randomId()},
+                        {startMonth: '202001', endMonth: '202004', historyID: nts.uk.util.randomId()}
+                    ]
                 }
             ]
-            if (wageTableData.length == 0) self.changeToNewMode();
             self.convertToTreeList(wageTableData)
         }
 
@@ -114,6 +176,13 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 return item;
             })
             self.wageTableTreeList(wageTableTreeData);
+            if (wageTableData.length == 0) self.changeToNewMode();
+            else {
+                // selected first wage table and history
+                let identifier = wageTableData[0].history.length > 0 ? wageTableData[0].history[0].identifier : wageTableData[0].identifier;
+                self.selectedWageTableIdentifier(identifier);
+                self.selectedWageTableIdentifier.valueHasMutated();
+            }
         }
 
         initTabPanel () {
@@ -143,6 +212,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 selectedHistory = _.find(selectedWageTable.history, {historyID: selectedHistoryID});
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
+            } else {
+                self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
             }
             self.changeToUpdateMode();
         }
@@ -248,13 +319,46 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             setShared("QMM016_G_PARAMS", {});
             modal("/view/qmm/016/g/index.xhtml").onClosed(() => {
-                let params = getShared("QMM016_G_RES_PARAMS");
+                let params: any = getShared("QMM016_G_RES_PARAMS"), selectedElement: model.IElementAttribute = params.selectedElement;
                 if (params) {
-                    console.log(params);
+                    if (dimension == 1) self.selectedWageTable().elementInformation().oneDimensionElement(new model.ElementAttribute(selectedElement));
+                    if (dimension == 2) self.selectedWageTable().elementInformation().twoDimensionElement(new model.ElementAttribute(selectedElement));
+                    if (dimension == 3) self.selectedWageTable().elementInformation().threeDimensionElement(new model.ElementAttribute(selectedElement));
                 }
             });
         }
+        createOneDimensionWageTable () {
+            // B2_8、B2_10、B2_11のエラーチェックを行う
+            let self = this;
+            let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
+            if (Number(firstElementRange.rangeLowerLimit) > Number(firstElementRange.rangeUpperLimit)) dialog.alertError({messageId: 'MsgQ_3'});
+            let fakePayment = [
+                {
+                    wageTablePaymentAmount: 5,
+                    elementAttribute: {
+                        firstElementItem: {
+                            masterCode: 1, frameNumber: 1, frameLowerLimit: 1, frameUpperLimit: 5
+                        },
+                        secondElementItem: {
+                            masterCode: 1, frameNumber: 1, frameLowerLimit: 1, frameUpperLimit: 5
+                        },
+                        thirdElementItem: {
+                            masterCode: 1, frameNumber: 1, frameLowerLimit: 1, frameUpperLimit: 5
+                        },
+                    }
+                }
+            ];
+            let fakeData = {
+                historyID: nts.uk.util.randomId(),
+                payment: fakePayment,
+                qualificationGroupSetting: []
+            };
+            self.wageTableContent(new WageTableContent(fakeData));
 
+        }
+        createTwoDimensionWageTable () {
+
+        }
     }
 }
 

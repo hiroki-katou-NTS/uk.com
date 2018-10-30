@@ -25,7 +25,7 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
                 let selectedWageTable = params.selectedWageTable;
                 self.selectedHistory = params.selectedHistory;
                 self.startMonth(self.selectedHistory.startMonth);
-                self.displayEndMonth(getText('QMM016_76', [nts.uk.time.parseYearMonth(self.selectedHistory.endMonth)]));
+                self.displayEndMonth(getText('QMM016_31') + "  " + nts.uk.time.parseYearMonth(self.selectedHistory.endMonth).format());
                 self.screen = params.screen;
                 let history = params.history;
                 if (history && history.length > 0) {

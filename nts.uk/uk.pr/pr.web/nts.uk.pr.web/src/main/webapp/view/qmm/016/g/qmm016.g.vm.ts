@@ -9,8 +9,6 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
         selectedStatementItemName: KnockoutObservable<string> = ko.observable(null);
         fixedElement: Array<any>;
         constructor() {
-
-
         }
         startPage () : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
@@ -20,9 +18,9 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
             service.getAllStatementItemData(5, false).done(function(data) {
                 let fixedElementObj = nts.uk.pr.view.qmm016.share.model.ELEMENT_TYPE;
                 let fixedElement: Array<any> = Object.keys(fixedElementObj).map(key => new model.StringItemModel(key, key + " " + fixedElementObj[key]));
-                let newElement: Array<any> = data.map(item => new model.StringItemModel(item.itemNameCd, item.itemNameCd + " " + item.name));
-                fixedElement.push.apply(fixedElement, newElement);
-                self.statementItemNameList(fixedElement);
+                let optionalElement: Array<any> = data.map(item => new model.StringItemModel(item.itemNameCd, item.itemNameCd + " " + item.name));
+                self.fixedElement = fixedElement;
+                self.statementItemNameList(fixedElement.concat(optionalElement));
                 block.clear();
                 dfd.resolve();
             }).fail(function(err) {
@@ -34,16 +32,20 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
         }
         decideSelect() {
             let self = this;
-            let elementAttribute: model.IElementAttribute = {
+            let elementAttribute = {
                 masterNumericClassification: null,
                 fixedElement: null,
                 optionalAdditionalElement: null
             };
-            if (self.fixedElement.indexOf(self.selectedStatementItemName())>=0) {
+            if (_.find(self.fixedElement, {name: self.selectedStatementItemName()})) {
                 elementAttribute.fixedElement = self.selectedStatementItemName();
                 elementAttribute.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.MASTER_FIELD;
+            } else {
+                // first 4 digit
+                elementAttribute.optionalAdditionalElement = self.selectedStatementItemName().substring(0, 4);
+                elementAttribute.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM;
             }
-            setShared('QMM016_G_RES_PARAMS', { selectedElement: self.selectedStatementItemName()});
+            setShared('QMM016_G_RES_PARAMS', { selectedElement: elementAttribute});
             nts.uk.ui.windows.close();
         }
         cancelSelect() {
