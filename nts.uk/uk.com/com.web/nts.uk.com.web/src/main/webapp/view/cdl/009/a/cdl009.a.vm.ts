@@ -61,7 +61,7 @@ module nts.uk.com.view.cdl009.a {
                 // Set SelectedCode to listComponentOpt (Depend on isMultiSelect)
                 if (self.isMultiSelect()) {
                     self.listComponentOpt.selectedCode = self.selectedEmps;
-                    self.listComponentOpt.isShowSelectAllButton = true;
+                    self.listComponentOpt.isShowSelectAllButton = false;
                 } else {
                     self.listComponentOpt.selectedCode = self.selectedEmpCode;
                 }

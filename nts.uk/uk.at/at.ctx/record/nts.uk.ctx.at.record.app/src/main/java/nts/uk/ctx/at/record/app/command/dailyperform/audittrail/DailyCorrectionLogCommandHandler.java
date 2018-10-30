@@ -40,24 +40,18 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 	
     @Override
 	protected void handle(CommandHandlerContext<DailyCorrectionLogCommand> context) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.DAILY);
-        
-		Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(ITEM_ID_ALL)
-				.stream().filter(x -> x.getAttendanceItemName() != null).collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-						x -> x.getAttendanceItemName()));
-		
-		val correctionLogParameter = new DailyCorrectionLogParameter(
-				mapToDailyCorrection(convertToItemValueFtomItems(context.getCommand().getDailyNew()),
-						convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap));
-		DataCorrectionContext.setParameter(correctionLogParameter);
-		AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
-
-	}
-
-	@Override
-	protected void postHandle(CommandHandlerContext<DailyCorrectionLogCommand> context) {
-		super.postHandle(context);
-		DataCorrectionContext.transactionFinishing();
+		DataCorrectionContext.transactional(CorrectionProcessorId.DAILY, () -> {
+	        
+			Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(ITEM_ID_ALL)
+					.stream().filter(x -> x.getAttendanceItemName() != null).collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName()));
+			
+			val correctionLogParameter = new DailyCorrectionLogParameter(
+					mapToDailyCorrection(convertToItemValueFtomItems(context.getCommand().getDailyNew()),
+							convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap), context.getCommand().getLstAttendanceItem());
+			DataCorrectionContext.setParameter(correctionLogParameter);
+			AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
+		});
 	}
 	
 //	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValue(List<IntegrationOfDaily> domains){
@@ -72,6 +66,7 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 	
 	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValueFtomItems(List<DailyItemValue> dailys){
 		Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> result = new HashMap<>();
+		dailys.get(0).getItems().sort((x,y) -> x.getItemId()-y.getItemId());
 		for (DailyItemValue daily : dailys) {
 			 Map<Integer, ItemValue> map = daily.getItems().stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
 			 result.put(Pair.of(daily.getEmployeeId(), daily.getDate()), map);
@@ -87,7 +82,10 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 		return result;
 	}
 	
-	private List<DailyCorrectionTarget> mapToDailyCorrection(Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemNewMap, Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap, Map<Pair<String, GeneralDate>, List<Integer>> itemEditMap, Map<Integer, String> itemNameMap){
+	private List<DailyCorrectionTarget> mapToDailyCorrection(
+			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemNewMap,
+			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap,
+			Map<Pair<String, GeneralDate>, List<Integer>> itemEditMap, Map<Integer, String> itemNameMap) {
 		List<DailyCorrectionTarget> targets = new ArrayList<>();
 		itemNewMap.forEach((key, value) -> {
 			val itemOldValueMap = itemOldMap.get(key);
@@ -98,13 +96,15 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 				if (valueItemNew.getValue() != null && itemOld.getValue() != null
 						&& !valueItemNew.getValue().equals(itemOld.getValue())
 						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
-						|| (valueItemNew.getValue() != null && itemOld.getValue() == null) && itemNameMap.containsKey(valueItemKey)) {
+						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)
+								&& itemNameMap.containsKey(valueItemKey)) {
 					DailyCorrectedItem item = new DailyCorrectedItem(itemNameMap.get(valueItemKey),
 							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
 							convertType(valueItemNew.getValueType()), itemEdits.contains(valueItemNew.getItemId())
 									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
 					daiTarget.getCorrectedItems().add(item);
 				}
+
 			});
 			targets.add(daiTarget);
 		});
@@ -112,16 +112,17 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 	}
 
 	private Integer convertType(ValueType valueType){
-		switch (valueType.value) {
-		
-		case 1:
-		case 2:
+		switch (valueType) {
+		case TIME:
+		case TIME_WITH_DAY:
 			return DataValueAttribute.TIME.value;
-			
-		case 13:
+		case COUNT:
+		case COUNT_WITH_DECIMAL:
+			return DataValueAttribute.COUNT.value;
+		case AMOUNT:
 			return DataValueAttribute.MONEY.value;
 			
-		case 15:
+		case CLOCK:
 			return DataValueAttribute.CLOCK.value;	
 			
 		default:

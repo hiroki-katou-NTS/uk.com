@@ -354,7 +354,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		return taskSetting.getExecItemCd().v();
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	public void saveTaskSetting(SaveExecutionTaskSettingCommand command, ExecutionTaskSetting taskSetting,
 			String companyId, List<RepeatMonthDaysSelect> days, String scheduleId, String endScheduleId)
 			throws Exception {
@@ -402,7 +402,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		}
 	}
 
-	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	public String scheduleOnCurrentCompany(UkJobScheduleOptions options) throws Exception {
 		return this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 	}

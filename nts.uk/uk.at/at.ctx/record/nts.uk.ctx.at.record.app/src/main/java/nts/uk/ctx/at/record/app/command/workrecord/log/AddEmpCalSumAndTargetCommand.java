@@ -62,6 +62,8 @@ public class AddEmpCalSumAndTargetCommand {
     private String periodStartDate;
     /** 対象期間終了日 */
     private String periodEndDate;
+    /* 当月 */
+    private String processingMonth;
     
     /**＜画面 J から受け取るパラメータ＞  | Params from J screen */
     /** ケース別実行実施内容ID */

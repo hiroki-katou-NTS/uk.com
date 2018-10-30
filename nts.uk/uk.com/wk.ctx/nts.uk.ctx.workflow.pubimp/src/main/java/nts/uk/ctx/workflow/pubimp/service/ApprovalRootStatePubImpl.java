@@ -602,6 +602,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		if(CollectionUtil.isEmpty(approvalRootStates)){
 			return false;
 		}
+		System.out.println(approvalRootStates.stream().map(x -> x.getRootStateID()).collect(Collectors.toList()));
 		boolean result = false;
 		for(ApprovalRootState approval : approvalRootStates){
 			ApproverPersonExport ApproverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);

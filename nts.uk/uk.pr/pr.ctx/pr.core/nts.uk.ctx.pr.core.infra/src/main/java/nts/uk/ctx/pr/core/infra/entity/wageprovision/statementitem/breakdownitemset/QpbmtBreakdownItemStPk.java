@@ -21,11 +21,25 @@ public class QpbmtBreakdownItemStPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 給与項目ID
+	 * 会社ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "SALARY_ITEM_ID")
-	public String salaryItemId;
+	@Column(name = "CID")
+	public String cid;
+
+	/**
+	 * カテゴリ区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "CATEGORY_ATR")
+	public int categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "ITEM_NAME_CD")
+	public String itemNameCd;
 
 	/**
 	 * 内訳項目コード

@@ -93,9 +93,12 @@ module nts.uk.at.view.kdw002.c {
                                 $("#grid").igGrid({
                                     primaryKey: "itemDailyID",
                                     height: 400,
-                                    dataSource: self.datasources(),
-//                                    autoGenerateColumns: false,
-//                                    alternateRowStyles: false,
+                                    dataSource: ko.mapping.toJSON(self.datasources()),
+                                    autoGenerateColumns: false,
+                                    //alternateRowStyles: false,
+                                    autoAdjustHeight: false,
+                                    autoFormat: false,
+                                    alternateRowStyles: false,
                                     dataSourceType: "json",
                                     autoCommit: true,
                                     tabIndex: -1,
@@ -314,7 +317,7 @@ module nts.uk.at.view.kdw002.c {
 
                     }//end else to*/
                     self.dailyServiceTypeControl(
-                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
+                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['displayNumber']))
                     );
                     console.log("convert object: " + (performance.now() - startTime));
                     dfd.resolve(self.dailyServiceTypeControl());
@@ -382,7 +385,7 @@ module nts.uk.at.view.kdw002.c {
 
                     }//end else to*/
                     self.dailyServiceTypeControl(
-                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
+                        new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['displayNumber']))
                     );
                     
                     dfd.resolve(self.dailyServiceTypeControl());

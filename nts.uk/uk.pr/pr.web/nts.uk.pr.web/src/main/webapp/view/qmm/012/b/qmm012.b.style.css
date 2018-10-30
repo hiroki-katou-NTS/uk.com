@@ -1,22 +1,6 @@
-#functions-area {
+#contents-area .table{
 	width: 1200px;
-}
-
-#contents-area {
-	width: 1200px;
-	overflow-y: inherit !important;
-}
-
-.fixed-flex-layout-left {
 	padding: 10px;
-	float: left;
-	width: 460px;
-}
-
-.fixed-flex-layout-right {
-	width: 700px;
-	padding: 10px;
-	float: left;
 }
 
 .space1, .space2, .space3 {
@@ -66,16 +50,17 @@
 #C3_1, #C3_4, #C3_10,
 #C4_1, #C4_7, #C4_9, #C5_1,
 #D1_1, #E1_1, #E1_5, #E1_9,
+#E1_18, #E1_25,
 .space1 {
 	width: 180px;
 }
 
-#C3_1 label, #C2_24 {
+#C3_1 label, #C2_24, #E1_32 {
 	white-space: pre;
     line-height: 25px;
 }
 
-#C2_24 {
+#C2_24, #E1_32 {
 	width: 400px;
     display: inline-block;
 }

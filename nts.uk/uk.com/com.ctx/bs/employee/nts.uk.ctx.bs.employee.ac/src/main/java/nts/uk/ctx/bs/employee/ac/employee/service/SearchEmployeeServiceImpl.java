@@ -318,6 +318,7 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	 * @return the wpl belong employee
 	 */
 	// No.30
+	//アルゴリズム「社員所属職場履歴を取得」を実行する
 	private WorkplaceInfo getWplBelongEmployee(String sid, GeneralDate baseDate) {
 		// get AffWorkplaceHistory
 		Optional<AffWorkplaceHistory> affWrkPlc = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(sid, baseDate);

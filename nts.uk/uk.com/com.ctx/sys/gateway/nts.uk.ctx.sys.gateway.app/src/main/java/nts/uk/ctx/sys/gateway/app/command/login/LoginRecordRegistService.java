@@ -52,7 +52,7 @@ public class LoginRecordRegistService {
 	 *
 	 * @param param the param
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void callLoginRecord(ParamLoginRecord param) {
 		// set input
 		String programId = AppContexts.programId().substring(0, 6);

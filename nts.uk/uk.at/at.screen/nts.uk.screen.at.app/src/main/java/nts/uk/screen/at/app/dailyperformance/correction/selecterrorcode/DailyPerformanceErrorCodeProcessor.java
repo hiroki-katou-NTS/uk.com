@@ -119,7 +119,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		}
 
 		// get employmentCode
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange.getEndDate());
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		List<String> listEmployeeId = lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList());
 		List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId, errorCodes);
@@ -180,8 +180,11 @@ public class DailyPerformanceErrorCodeProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
 		}
@@ -200,7 +203,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}

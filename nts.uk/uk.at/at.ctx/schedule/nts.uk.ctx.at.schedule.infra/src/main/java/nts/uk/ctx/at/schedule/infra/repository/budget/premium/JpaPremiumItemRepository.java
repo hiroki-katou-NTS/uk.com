@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
@@ -56,10 +57,14 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers) {
-		return this.queryProxy().query(FIND_BY_LIST_DISPLAY_NUMBER, KmnmtPremiumItem.class)
-				.setParameter("CID", companyID)
-				.setParameter("displayNumbers", displayNumbers)
-				.getList(x -> convertToDomain(x));
+		List<PremiumItem> resultList = new ArrayList<>();
+		CollectionUtil.split(displayNumbers, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_DISPLAY_NUMBER, KmnmtPremiumItem.class)
+								  .setParameter("CID", companyID)
+								  .setParameter("displayNumbers", subList)
+								  .getList(x -> convertToDomain(x)));
+		});
+		return resultList;
 	}
 	
 	@Override
@@ -67,11 +72,15 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 		if (CollectionUtil.isEmpty(premiumNo)) {
 			return this.findAllIsUse(companyID);
 		}
-		return this.queryProxy().query(FIND_BY_LIST_PREMIUM_NO_IS_USE, KmnmtPremiumItem.class)
-				.setParameter("CID", companyID)
-				.setParameter("displayNumbers", premiumNo)
-				.setParameter("useAtr", UseAttribute.Use.value)
-				.getList(x -> convertToDomain(x));
+		List<PremiumItem> resultList = new ArrayList<>();
+		CollectionUtil.split(premiumNo, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_PREMIUM_NO_IS_USE, KmnmtPremiumItem.class)
+								  .setParameter("CID", companyID)
+								  .setParameter("displayNumbers", subList)
+								  .setParameter("useAtr", UseAttribute.Use.value)
+								  .getList(x -> convertToDomain(x)));
+		});
+		return resultList;
 	}
 	
 	@Override
@@ -81,7 +90,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 //				.setParameter("useAtr", UseAttribute.Use.value)
 //				.getList(x -> convertToDomain(x));
 		
-		try {val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?");
+		try (val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?")) {
 			statement.setString(1, companyID);
 			statement.setInt(2, UseAttribute.Use.value);
 			return new NtsResultSet(statement.executeQuery()).getList(rec -> {

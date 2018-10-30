@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.ac.workflow.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,11 +18,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSituationMonth;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
@@ -67,6 +73,12 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 		AppEmpStatusExport export = intermediateDataPub.getApprovalEmpStatus(
 				approverID, new DatePeriod(startDate, endDate), rootType);
 		return convertFromExport(export);
+	} 
+	
+	@Override
+	public ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(DatePeriod date, String approverID, Integer rootType) {
+		//ApprovalRootOfEmployeeExport 
+		return convertFromExport(intermediateDataPub.getApprovalEmpStatus(approverID, date, rootType));
 	} 
 	
 	private ApprovalRootOfEmployeeImport convertFromExport(AppEmpStatusExport export) {
@@ -117,7 +129,13 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	@Override
 	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDate(
 			List<GeneralDate> approvalRecordDates, List<String> employeeID, Integer rootType) {
-		return intermediateDataPub.getAppRootStatusByEmpsDates(employeeID, approvalRecordDates, rootType).stream()
+		if(approvalRecordDates.isEmpty() || employeeID.isEmpty()){
+			return new ArrayList<>();
+		}
+		GeneralDate minDate = approvalRecordDates.stream().min((c1, c2) -> c1.compareTo(c2)).orElse(null);
+		GeneralDate maxDate = approvalRecordDates.stream().max((c1, c2) -> c1.compareTo(c2)).orElse(null);
+		return intermediateDataPub.getAppRootStatusByEmpsPeriodV2(employeeID, new DatePeriod(minDate, maxDate), rootType)
+				.stream().filter(c -> approvalRecordDates.contains(c.getDate()))
 				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getDate(),
 						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
 				.collect(Collectors.toList());
@@ -188,7 +206,7 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	
 	// RequestList 533
 	@Override
-	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpsMonth(
+	public List<AppRootSttMonthEmpImport> getAppRootStatusByEmpsMonth(
 			List<EmpPerformMonthParamImport> empPerformMonthParamLst) {
 		List<EmpPerformMonthParam> listParam = empPerformMonthParamLst.stream()
 				.map(i -> new EmpPerformMonthParam(i.getYearMonth(), i.getClosureID(), i.getClosureDate(),
@@ -196,17 +214,32 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.collect(Collectors.toList());
 		val exportResult = intermediateDataPub.getAppRootStatusByEmpsMonth(listParam);
 		return exportResult.stream()
-				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getDate(),
-						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
+				.map((pub) -> new AppRootSttMonthEmpImport(pub.getEmployeeID(),
+						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class),
+						pub.getYearMonth(), pub.getClosureID(), pub.getClosureDate()))
 				.collect(Collectors.toList());
 	}
 
 	// RequestList 534
 	@Override
-	public ApprovalRootOfEmployeeImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth,
+	public AppRootOfEmpMonthImport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth,
 			Integer closureID, ClosureDate closureDate, GeneralDate baseDate) {
 		val exportResult = intermediateDataPub.getApprovalEmpStatusMonth(approverID, yearMonth, closureID, closureDate, baseDate);
-		return convertFromExportNew(exportResult);
+		return new AppRootOfEmpMonthImport(
+				exportResult.getEmployeeID(), 
+				exportResult.getRouteSituationLst().stream()
+					.map(situation -> new AppRootSituationMonth(
+							EnumAdaptor.valueOf(situation.getApproverEmpState(), ApproverEmployeeState.class),
+							yearMonth, 
+							closureID, 
+							closureDate, 
+							situation.getEmployeeID(),
+							new ApprovalStatus(
+									EnumAdaptor.valueOf(situation.getApprovalStatus().map(x -> x.getApprovalAction()).orElse(null),
+											ApprovalActionByEmpl.class),
+									EnumAdaptor.valueOf(situation.getApprovalStatus().map(x -> x.getReleaseAtr()).orElse(null),
+											ReleasedProprietyDivision.class))))
+					.collect(Collectors.toList()));
 	}
 
 	@Override
@@ -225,5 +258,20 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 						i.getBaseDate(), i.getEmployeeID()))
 				.collect(Collectors.toList());
 		return intermediateDataPub.cancelMonth(approverID, listParam);
+	}
+
+	@Override
+	public List<ApproverApproveImport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst,
+			Integer rootType) {
+		return intermediateDataPub.getApproverByDateLst(employeeIDLst, dateLst, rootType)
+				.stream().map(x -> new ApproverApproveImport(
+						x.getDate(), 
+						x.getEmployeeID(), 
+						x.getAuthorList().stream().map(y -> new ApproverEmpImport(
+								y.getEmployeeID(), 
+								y.getEmployeeCD(), 
+								y.getEmployeeName()))
+						.collect(Collectors.toList())))
+				.collect(Collectors.toList());
 	}
 }

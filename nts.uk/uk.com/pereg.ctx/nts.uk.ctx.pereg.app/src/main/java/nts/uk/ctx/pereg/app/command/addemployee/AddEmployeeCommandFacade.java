@@ -96,10 +96,19 @@ public class AddEmployeeCommandFacade {
 			Optional<ItemsByCategory> ctgWorkingCod1_Opt = composedData.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
 			if (ctgWorkingCod1_Opt.isPresent()) {
 				composedData.remove(ctgWorkingCod2_Opt.get());
-				composedData.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst().get().getItems().addAll(ctgWorkingCod2_Opt.get().getItems());
+				List<ItemValue> lstItemCS00020 = ctgWorkingCod1_Opt.get().getItems();
+				List<ItemValue> lstItemCS00070 =  ctgWorkingCod2_Opt.get().getItems();
+				List<ItemValue> lstItemToAdd = new ArrayList<>();
+				lstItemCS00070.forEach(i70 -> {
+					if(!lstItemCS00020.stream().anyMatch(i20 -> i20.definitionId().equals(i70.definitionId()))) {
+						lstItemToAdd.add(i70);
+					}
+				});
+				if(!lstItemToAdd.isEmpty()) {
+					composedData.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst().get().getItems().addAll(lstItemToAdd);
+				}
 			}
 		}
-		
 		return composedData;
 		
 	}
@@ -295,7 +304,7 @@ public class AddEmployeeCommandFacade {
 				break;
 			}
 			List<ComboBoxObject> comboboxs =  this.comboboxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
-					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode(),null);
+					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode(),null, false);
 			
 			if(!comboboxs.isEmpty()) {
 				Optional<ComboBoxObject> opt = comboboxs.stream().filter(i -> i.getOptionValue().equals(value)).findFirst();

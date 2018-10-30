@@ -120,6 +120,19 @@ public class AggregateMonthlyRecordValue {
 	}
 	
 	/**
+	 * 最大の週Noを確認する
+	 * @return 最大の週No
+	 */
+	public int getMaxWeekNo(){
+		int maxNo = 0;
+		for (val attendanceTimeWeek : this.attendanceTimeWeeks){
+			int weekNo = attendanceTimeWeek.getWeekNo();
+			if (maxNo < weekNo) maxNo = weekNo;
+		}
+		return maxNo;
+	}
+	
+	/**
 	 * 月別実績の任意項目を取得
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月

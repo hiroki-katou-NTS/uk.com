@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.infra.repository.stamp.stampcard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
 import nts.uk.ctx.at.record.dom.stamp.card.StampCardtemRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
@@ -28,9 +31,13 @@ public class JpaStampCardItemRepository extends JpaRepository implements StampCa
 
 	@Override
 	public List<StampCardItem> findByListEmployeeID(List<String> lstEmployeeId) {
-		return this.queryProxy().query(SELECT_BY_LIST_PERSON, KwkdtStampCard.class)
-				.setParameter("lstEmployeeId", lstEmployeeId)
-				.getList(c -> toDomain(c));
+		List<StampCardItem> resultList = new ArrayList<>();
+		CollectionUtil.split(lstEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_PERSON, KwkdtStampCard.class)
+				.setParameter("lstEmployeeId", subList)
+				.getList(c -> toDomain(c)));
+		});
+		return resultList;
 	}
 	
 	@Override

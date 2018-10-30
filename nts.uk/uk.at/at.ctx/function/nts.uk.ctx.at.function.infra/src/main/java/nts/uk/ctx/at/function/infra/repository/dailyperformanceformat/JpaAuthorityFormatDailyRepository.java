@@ -6,7 +6,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
@@ -111,12 +113,15 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	@Override
 	public void deleteExistData(String companyId, String  dailyPerformanceFormatCode,
 			BigDecimal sheetNo,List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
-			.setParameter("attendanceItemIds", attendanceItemIds)
-			.setParameter("companyId", companyId)
-			.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
-			.setParameter("sheetNo", sheetNo)
-			.executeUpdate();
+		
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+				.setParameter("attendanceItemIds", subList)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+				.setParameter("sheetNo", sheetNo)
+				.executeUpdate();
+		});
 	}
 
 	private static AuthorityFomatDaily toDomain(KfnmtAuthorityDailyItem kfnmtAuthorityDailyItem) {

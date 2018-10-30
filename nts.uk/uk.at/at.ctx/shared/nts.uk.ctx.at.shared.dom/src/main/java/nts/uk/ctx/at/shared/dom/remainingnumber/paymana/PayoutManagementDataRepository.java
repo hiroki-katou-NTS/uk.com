@@ -77,4 +77,14 @@ public interface PayoutManagementDataRepository {
 	List<PayoutManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
 
 	void deleteById(List<String> payoutId);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd (振出日<INPUT．集計開始日 OR 振出日がない)
+	 * @param unUse 未使用日数 > 0
+	 * @param state 振休消化区分
+	 * @return
+	 */
+	List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state);
 }

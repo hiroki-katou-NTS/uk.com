@@ -18,8 +18,6 @@ public class NumberValue extends DataState {
 	}
 
 	public static NumberValue createFromJavaType(BigDecimal value) {
-
 		return new NumberValue(value);
-
 	}
 }

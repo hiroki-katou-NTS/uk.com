@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
@@ -98,13 +97,6 @@ public class HolidayWorkTimeOfDaily {
 										  holidayMidnightWork,
 										  holidayTimeSpentTime);
 	}
-	/**
-	 * 休出枠時間へ休出時間の集計結果を追加する
-	 * @param hasAddListClass 休出時間帯の集計を行った後の休出枠時間クラス
-	 */
-	public void addToList(ControlHolidayWorkTime hasAddListClass) {
-		this.holidayWorkFrameTime.addAll(hasAddListClass.getHolidayWorkFrame());
-	}
 	
 	/**
 	 * 休出時間に含まれている加給時間帯を計算する
@@ -139,10 +131,7 @@ public class HolidayWorkTimeOfDaily {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
 			if(frameTime.getMidNightTimeSheet().isPresent()) {
-				int dedTime = frameTime.getDedTimeSheetByAtr(DeductionAtr.Appropriate, ConditionAtr.BREAK).stream()
-																							.map(tc -> tc.getCalcrange().lengthAsMinutes())
-																							.collect(Collectors.summingInt(tc -> tc));
-				eachTime.addTime(frameTime.getStatutoryAtr().get(), frameTime.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate).minusMinutes(dedTime));
+				eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate):new AttendanceTime(0));
 			}
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
@@ -203,10 +192,10 @@ public class HolidayWorkTimeOfDaily {
 				attendanceItemDictionary.findId("休出時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
 						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
 				);
-				//振替時間
-				attendanceItemDictionary.findId("振替時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
-						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
-				);
+//				//振替時間
+//				attendanceItemDictionary.findId("振替時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
+//						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+//				);
 			}
 		}
 		return returnErrorList;
@@ -227,10 +216,10 @@ public class HolidayWorkTimeOfDaily {
 				attendanceItemDictionary.findId("休出時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
 						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
 				);
-				//振替時間
-				attendanceItemDictionary.findId("振替時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
-						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
-				);
+//				//振替時間
+//				attendanceItemDictionary.findId("振替時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
+//						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+//				);
 			}
 		}
 		return returnErrorList;

@@ -215,17 +215,20 @@ module nts.uk.at.view.kmk005.i {
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        self.kcpcompoment.employeeInputList(data.map(x => {
+                        self.kcpcompoment.employeeInputList(_.map(data.listEmployee, item  => {
                             return {
-                                employeeId: x.employeeId,
-                                code: x.employeeCode,
-                                name: x.employeeName,
-                                workplaceId: x.workplaceId,
-                                workplaceCode: x.workplaceCode,
-                                workplaceName: x.workplaceName
+                                employeeId: item.employeeId,
+                                code: item.employeeCode,
+                                name: item.employeeName,
+                                workplaceId: item.workplaceId,
+                                workplaceCode: item.workplaceCode,
+                                workplaceName: item.workplaceName
                             };
                         }));
-                        model.ecd(data[0].employeeCode);
+                        if (self.kcpcompoment.employeeInputList() && self.kcpcompoment.employeeInputList().length > 0){
+                            model.ecd(self.kcpcompoment.employeeInputList()[0].code);
+                        }
+                        //model.ecd(data[0].employeeCode);
                         model.bid.valueHasMutated();
                     }
                 }

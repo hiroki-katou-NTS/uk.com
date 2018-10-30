@@ -64,7 +64,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	private AggrPeriodInforRepository inforRepo;
 	
 	/** 任意期間集計Mgrクラス */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public <C> void manager(String companyId, String executeId, AsyncCommandHandlerContext<C> async) {
 
@@ -153,7 +153,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	}
 	
 	/** 社員の任意期間別実績を集計する */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public ProcessState aggregate(
 			AsyncCommandHandlerContext async, String companyId, String employeeId, DatePeriod period,

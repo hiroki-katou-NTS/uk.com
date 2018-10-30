@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.datadialog;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +20,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -114,8 +112,7 @@ public class DataDialogWithTypeProcessor {
 				if(param.getItemId() == 1) return codeName.get().createError(ErrorTypeWorkType.MASTER.code);
 				
 				
-				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, param.getEmployeeId(),
-						new DateRange(null, param.getDate()));
+				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, param.getEmployeeId(), param.getDate());
 				CodeNameType codeNameType = this.getDutyType(companyId, param.getValueOld(),
 						aff == null ? "" : aff.getEmploymentCode());
 				Optional<CodeName> codeNameG = codeNameType.getCodeNames().stream().filter(x -> x.getCode().equals(param.getSelectCode()))
@@ -182,8 +179,7 @@ public class DataDialogWithTypeProcessor {
 		case 1:
 			// KDL002
 			if (param.getItemId() != null && param.getItemId() == 28 && !param.getSelectCode().equals("")) {
-				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, param.getEmployeeId(),
-						new DateRange(null, param.getDate()));
+				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, param.getEmployeeId(), param.getDate());
 				return this.getDutyType(companyId, param.getSelectCode(), aff == null ? "" : aff.getEmploymentCode())
 						.getCodeNames();
 			} else {
