@@ -1,7 +1,9 @@
 .sidebar-content {
     margin-left: 10px;
 }
-
-body {
-	width: 1280px;
+.fixed-flex-layout {
+    display: flex;
+}
+#sidebar{
+    min-width: 1200px !important;
 }

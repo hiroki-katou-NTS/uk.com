@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.repository.webmenu.webmenulinking;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking.SptmtRoleSetWebMenu;
@@ -94,11 +97,15 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
     }
 
     public List<RoleSetLinkWebMenu> findByListRoleSetCd(String companyId, List<String> roleSetCds) {
-        return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CDS
+    	List<RoleSetLinkWebMenu> results = new ArrayList<>();
+    	CollectionUtil.split(roleSetCds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+    		results.addAll(this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CDS
                 , SptmtRoleSetWebMenu.class)
                 .setParameter("companyId", companyId)
-                .setParameter("roleSetCds", roleSetCds)
-                .getList(c -> toDomain(c));
+                .setParameter("roleSetCds", subList)
+                .getList(c -> toDomain(c)));
+    	});
+        return results;
     }
     
     @Override

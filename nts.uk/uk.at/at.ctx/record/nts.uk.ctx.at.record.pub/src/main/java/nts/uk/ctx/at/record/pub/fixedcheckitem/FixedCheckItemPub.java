@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface FixedCheckItemPub {
 	//1.勤務種類未登録
@@ -16,4 +17,6 @@ public interface FixedCheckItemPub {
 	public List<ValueExtractAlarmWRPubExport> checkAdminUnverified(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
 	//5.データのチェック
 	public List<ValueExtractAlarmWRPubExport> checkingData(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
+	//4.管理者未確認チェック update
+	public List<ValueExtractAlarmWRPubExport> checkAdminUnverified(String workplaceID,String employeeID,DatePeriod datePeriod);
 }

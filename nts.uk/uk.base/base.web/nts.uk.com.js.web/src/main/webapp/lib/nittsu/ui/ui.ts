@@ -94,7 +94,7 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-
+        
         export function invisible() {
             let rect = calcRect();
 
@@ -192,12 +192,16 @@ module nts.uk.ui {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();
                     });
+                    
+                    $label.on('remove', function() {
+                        $view.remove();
+                    });
                 }
             });
         });
         
         function isOverflow($label) {
-            if ($label[0].nodeName === "INPUT" 
+            if ( $label[0].nodeName === "INPUT"
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
                 || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));
@@ -215,7 +219,7 @@ module nts.uk.ui {
                 return width < scrollWidth;
             }
             
-            return $label.outerWidth() < $label[0].scrollWidth;
+            return $label[0].offsetWidth < $label[0].scrollWidth;
         }
     }
     

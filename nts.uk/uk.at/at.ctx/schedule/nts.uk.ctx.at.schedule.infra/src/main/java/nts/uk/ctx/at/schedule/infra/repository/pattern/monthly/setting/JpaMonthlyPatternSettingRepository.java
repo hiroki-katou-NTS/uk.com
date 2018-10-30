@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
@@ -147,22 +148,21 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere
-				.add(criteriaBuilder.and(root.get(KscmtMonthPatternSet_.sid).in(employeeIds)));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		TypedQuery<KscmtMonthPatternSet> query = em.createQuery(cq);
+		
+		List<KscmtMonthPatternSet> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// Predicate where clause
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// equal employee id
+			lstpredicateWhere
+					.add(criteriaBuilder.and(root.get(KscmtMonthPatternSet_.sid).in(splitData)));
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// exclude select
-		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+		return resultList.stream().map(entity -> this.toDomain(entity))
 				.collect(Collectors.toList());
 
 	}

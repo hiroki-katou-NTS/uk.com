@@ -268,22 +268,30 @@ public class KTG027QueryProcessor {
 		// List sid from List<AffCompanyHistByEmployee>
 		List<String> lstSidFromAffComHist = lstAffComHistByEmp.stream().map(m -> m.getSId())
 				.collect(Collectors.toList());
+		
+		// (Lấy danh sách sid từ domain 「休職休業履歴」) 		
+		List<String> lstSidAbsHist_NoCheckDate = tempAbsHistRepository.getByListSid(lstSidFromAffComHist);
+		
+		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidAbsHist_NoCheckDate.contains(i))
+				.collect(Collectors.toList());
 
 		// lây list TempAbsenceHistory từ list sid và dateperiod
-		List<TempAbsenceHistory> lstTempAbsenceHistory = tempAbsHistRepository.getByListSid(lstSidFromAffComHist,
+		List<TempAbsenceHistory> lstTempAbsenceHistory = tempAbsHistRepository.getByListSid(lstSidAbsHist_NoCheckDate,
 				dateperiod);
 
 		// List sid from List<TempAbsenceHistory>
 		List<String> lstSidFromTempAbsHis = lstTempAbsenceHistory.stream().map(m -> m.getEmployeeId())
 				.collect(Collectors.toList());
 
-		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
-		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidFromTempAbsHis.contains(i))
-				.collect(Collectors.toList());
+		if(!lstSidFromTempAbsHis.isEmpty()) {
+			result.addAll(lstSidFromTempAbsHis);
+		}
+		
 		if (result.isEmpty()) {
 			return Collections.emptyList();
 		}
-
+		
 		return result;
 	}
 	public List<AffCompanyHistByEmployee> getAffCompanyHistByEmployee(List<AffCompanyHist> lstAffComHist) {

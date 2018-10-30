@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.item.PpemtEmpInfoItemData;
@@ -228,9 +230,12 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			return new ArrayList<>();
 		}
 		
-		List<PpemtEmpInfoItemData> entites = this.queryProxy()
+		List<PpemtEmpInfoItemData> entites = new ArrayList<>();
+		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entites.addAll(this.queryProxy()
 				.query(SELECT_ITEM_DATA_OF_RECORD_ID_LIST, PpemtEmpInfoItemData.class).setParameter("itemId", itemDefId)
-				.setParameter("recordIds", recordIds).getList();
+				.setParameter("recordIds", subList).getList());
+		});
 		
 		return entites.stream()
 				.map(ent -> EmpInfoItemData.createFromJavaType(ent.ppemtEmpInfoItemDataPk.perInfoDefId,
@@ -241,14 +246,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
-		List<Object[]> item = this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
-				.setParameter("itemCd", itemCd)
-				.setParameter("perInfoCtgId", perInfoCtgId)
-				.getList();
-		if(item != null && item.size() > 0) {
-			
-			return true;
-		}
-		return  false;
+		List<Object[]> item = new ArrayList<>();
+		CollectionUtil.split(perInfoCtgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			item.addAll(this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
+			.setParameter("itemCd", itemCd)
+			.setParameter("perInfoCtgId", subList)
+			.getList());
+		});
+		return item.size() > 0;
 	}
 }

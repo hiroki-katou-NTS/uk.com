@@ -1,17 +1,22 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -26,7 +31,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.TargetPersonRequestImport;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -47,8 +51,12 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private AppReflectManager appRefMng;
 	@Inject
 	private GetClosureStartForEmployee getClosureStartForEmp;
+	@Inject
+	private InformationSettingOfAppForReflect appSetting;
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
 
-	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext) {
 		val dataSetter = asyncContext.getDataSetter();
@@ -66,49 +74,65 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				.stream()
 				.sorted(Comparator.comparing(TargetPersonImport::getEmployeeId))
 				.collect(Collectors.toList());
-		ExecutionTypeExImport aprResult = ExecutionTypeExImport.NORMAL_EXECUTION;
-		if(optRefAppResult.isPresent()) {
-			aprResult = optRefAppResult.get().getExecutionType();
-		}
-		int count = 0;
-		for (TargetPersonImport targetPersonImport : lstPerson) {
-			count += 1;
+		ExecutionTypeExImport aprResult = optRefAppResult.isPresent() ? optRefAppResult.get().getExecutionType() 
+				: ExecutionTypeExImport.NORMAL_EXECUTION;
+//		if(optRefAppResult.isPresent()) {
+//			aprResult = optRefAppResult.get().getExecutionType();
+//		}
+		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
+		AtomicInteger count = new AtomicInteger(0);
+		List<ProcessStateReflect> status = Collections.synchronizedList(new ArrayList<>());
+		this.managedParallelWithContext.forEach(lstPerson, x -> {
+			if(status.stream().anyMatch(c -> c == ProcessStateReflect.INTERRUPTION)) {
+				return;
+			}
+			count.incrementAndGet();
+			//データ更新
+			//状態確認
+			Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
+			if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
+				asyncContext.finishedAsCancelled();	
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.STOPPING.nameId);
+				status.add(ProcessStateReflect.INTERRUPTION);
+			}
+			//処理した社員の実行状況を「完了」にする
+			execuLog.updateLogInfo(x.getEmployeeId(), workId, 2, 0);
+			execuLog.updateLogInfo(workId, 2, 0);
+			if(dataSetter != null) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
+			}	
+			
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.PROCESSING.nameId);
 			dataSetter.updateData("reflectApprovalCount", count);
 			//社員に対応する締め開始日を取得する
-			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(targetPersonImport.getEmployeeId());
-			if(!closure.isPresent()) {
-				continue;
-			}
-			GeneralDate startDateshime = closure.get();
-			if(!startDateshime.afterOrEquals(workDate.start())
-					|| !startDateshime.beforeOrEquals(workDate.end())) {
-				continue;
-			}
-			//社員の申請を反映 (Phản ánh nhân viên)
-			if(!this.reflectAppOfEmployee(workId, targetPersonImport.getEmployeeId(), workDate, 
-					optRequesSetting.get(), aprResult, dataSetter)) {
-				return ProcessStateReflect.INTERRUPTION;
+			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(x.getEmployeeId());
+			if(closure.isPresent()) {
+				GeneralDate startDateshime = closure.get();
+				if(startDateshime.afterOrEquals(workDate.start())
+						&& startDateshime.beforeOrEquals(workDate.end())) {
+					//社員の申請を反映 (Phản ánh nhân viên)
+					if(!this.reflectAppOfEmployee(workId, x.getEmployeeId(), workDate, 
+							optRequesSetting.get(), aprResult, reflectSetting)) {
+						dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.STOPPING.nameId);
+						status.add(ProcessStateReflect.INTERRUPTION);
+					}
+				}
+				
 			}
 			
+		});
+		if(status.stream().anyMatch(c -> c == ProcessStateReflect.INTERRUPTION)) {
+			return ProcessStateReflect.INTERRUPTION;
 		}
+		dataSetter.updateData("reflectApprovalCount", lstPerson.size());
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;
 	}
 	@Override
 	public boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
-			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult,TaskDataSetter dataSetter) {
-		//データ更新
-		//状態確認
-		Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
-		//処理した社員の実行状況を「完了」にする
-		execuLog.updateLogInfo(sid, workId, 2, 0);
-		execuLog.updateLogInfo(workId, 2, 0);
-		if(dataSetter != null) {
-			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
-		}		
-		if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
-			return false;
-		}
+			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting) {
+		
+		
 		//ドメインモデル「締め状態管理」を取得する
 		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
 		//「申請期間」を作成する
@@ -133,9 +157,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(lstApp.isEmpty()) {
 			return true;
 		}
-		boolean countError = false;
-		for (Application_New appData : lstApp) {
-			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData);
+		
+		for (Application_New appData : lstApp) {			
+			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData, reflectSetting);
 			
 			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
@@ -184,13 +208,27 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			lstScheStatus.add(ReflectedState_New.REFLECTED.value);
 		}
 		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
-		//申請日でソートする
-		lstApp = lstApp.stream().sorted(Comparator.comparing(Application_New :: getAppDate))
-				.collect(Collectors.toList());
-		return lstApp;
+		//申請日でソートする		
+		return this.sortData(lstApp);
 	}
+	private List<Application_New> sortData(List<Application_New> lstApp){
+		//申請日、入力日、事前事後区分　ASC
+		return lstApp.stream().sorted((a,b) ->{
+			Integer rs = a.getAppDate().compareTo(b.getAppDate());
+			if (rs == 0) {
+				Integer sortInputDate = a.getInputDate().toDate().compareTo(b.getInputDate().toDate());
+				if(sortInputDate == 0) {
+					return a.getPrePostAtr().compareTo(b.getPrePostAtr());
+				}
+				return sortInputDate;
+			}
+			return rs;			
+		}).collect(Collectors.toList());
+	}
+	
 	@Override
 	public ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
+		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
 		//ドメインモデル「申請承認設定」を取得する
 		Optional<RequestSetting> optRequesSetting = requestSettingRepo.findByCompany(AppContexts.user().companyId());
 		if(!optRequesSetting.isPresent()) {
@@ -208,7 +246,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			aprResult = optRefAppResult.get().getExecutionType();
 		}
 		if(!this.reflectAppOfEmployee(workId, sid, datePeriod, 
-				optRequesSetting.get(), aprResult, null)) {
+				optRequesSetting.get(), aprResult, reflectSetting)) {
 			return ProcessStateReflect.INTERRUPTION;
 		}
 		

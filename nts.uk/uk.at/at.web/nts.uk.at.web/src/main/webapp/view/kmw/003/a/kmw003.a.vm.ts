@@ -155,13 +155,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //実績期間を変更する
                 self.updateActualTime();
             });
+            
+            self.selectedDirection.subscribe((value) => {
+                if (value == 0) {
+                    $("#dpGrid").mGrid("directEnter", "below");
+                } else {
+                    $("#dpGrid").mGrid("directEnter", "right");
+                }
+            });
+            
             self.yearMonth.subscribe(value => {
                 //期間を変更する
                 if (nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen())
                     self.updateDate(value);
             });
             $(document).mouseup(function(e) {
-                var container = $(".ui-tooltip");
+                let container = $(".ui-tooltip");
                 if (!container.is(e.target) &&
                     container.has(e.target).length === 0) {
                     $("#tooltip").hide();
@@ -255,15 +264,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             var self = this;
             _.each(data.lstControlDisplayItem.columnSettings, function(item) {
 
-                if (self.displayFormat() == 0) {
-                    if (item.columnKey == "date") {
-                        item['summaryCalculator'] = "合計";
-                    }
-                } else {
-                    if (item.columnKey == "employeeCode") {
-                        item['summaryCalculator'] = "合計";
-                    }
-                }
                 if (item.typeFormat != null && item.typeFormat != undefined) {
                     if (item.typeFormat == 2) {
                         //so lan
@@ -280,6 +280,20 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     else if (item.typeFormat == 4) {
                         //so tien 
                         item['summaryCalculator'] = "Number";
+                    }else{
+                        if (self.displayFormat() == 0) {
+                            if (item.columnKey == "date") {
+                                item['summaryCalculator'] = "合計";
+                            } else {
+                                item['summaryCalculator'] = "";
+                            }
+                        } else {
+                            if (item.columnKey == "employeeCode") {
+                                item['summaryCalculator'] = "合計";
+                            } else {
+                                item['summaryCalculator'] = "";
+                            }
+                        }
                     }
                 } else {
                     item['summaryCalculator'] = "Number";
@@ -308,7 +322,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.closureId(value);
                     self.updateDate(self.yearMonth());
                 });
-                self.initCcg001();
+                self.initCcg001();  
                 self.loadCcg001();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -400,7 +414,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() { 
                         nts.uk.request.jumpToTopPage();
                     });  
-                } else {
+                 } else if(error.messageId=="Msg_916"){
+                    nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: error.parameterIds }).then(function() { 
+                        //nts.uk.request.jumpToTopPage();
+                        nts.uk.ui.block.clear();
+                    }); 
+                }else {
                     if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                         //Open KDM003C to select format code
                         self.displayItem().done((x) => {
@@ -413,7 +432,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         });
                     } else if (!_.isEmpty(error.errors)) {
                         nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
-                            nts.uk.request.jumpToTopPage();
+                            if(error.errors[0].messageId !="Msg_1403"){
+                                nts.uk.request.jumpToTopPage();
+                            }
+                            dfd.reject();
                         });
                     } else {
                         nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
@@ -647,16 +669,32 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     formatCode: self.dataAll().param.formatCodes
                     //                sheetNo : $("#dpGrid").mGrid("selectedSheet")
                 },
-                jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid'),
-                valueTemp = 0;
-            _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
-                if (key.indexOf('A') != -1) {
-                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
-                        command.lstHeader[key.substring(1, key.length)] = value;
-                    }
+                jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
+                let valueTemp = 0;
+            _.forEach($.parseJSON(jsonColumnWith), (valueP, keyP) =>{
+                if (keyP != "reparer") {
+                    _.forEach(valueP, (value, key) => {
+                        if (key.indexOf('A') != -1) {
+                            if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                                command.lstHeader[key.substring(1, key.length)] = value;
+                            }
+                        }
+                        if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                            valueTemp = value;
+                        } else if (key.indexOf('Name') != -1) {
+                            command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                            valueTemp = 0;
+                        }
+                    });
                 }
+            })
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            service.saveColumnWidth(command).done(() =>{
+                nts.uk.ui.block.clear(); 
+            }).fail(() => {
+                nts.uk.ui.block.clear(); 
             });
-            service.saveColumnWidth(command);
         }
 
         getPrimitiveValue(value: any, atr: any): string {
@@ -718,8 +756,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             //            self.monthlyParam().initMenuMode = self.initMode();
-//            self.monthlyParam().closureId = self.closureId();
-            self.monthlyParam().yearMonth = date;
+            self.monthlyParam().closureId = self.closureId(); 
+            self.monthlyParam().yearMonth = date; 
             self.monthlyParam().lstEmployees = self.lstEmployee();
 
             if ($("#dpGrid").data('mGrid')) {
@@ -813,7 +851,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 showClassification: true, // 分類条件
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
-                isMutipleCheck: false,// 選択モード
+                isMutipleCheck: true,// 選択モード
 
                 /** Return data */
                 returnDataFromCcg001: function(dataList: any) {
@@ -872,7 +910,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 userId: self.employIdLogin,
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
-                showErrorsOnPage: true,
+                errorsOnPage: true,
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
@@ -947,7 +985,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         getGridFeatures(): Array<any> {
             let self = this;
-            let features = [
+            let features;
+            if(self.sheetsGrid().length > 0){
+             features = [
                 {
                     name: 'Resizing',
                     columnSettings: [{
@@ -983,7 +1023,43 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     initialDisplay: self.sheetsGrid()[0].name,
                     sheets: self.sheetsGrid()
                 }
-            ];
+            ];} else {
+                let messId = self.dataAll().mess; 
+                nts.uk.ui.dialog.info({ messageId: messId });
+                $("#cbClosureInfo").hide();
+                features = [
+                {
+                    name: 'Resizing',
+                    columnSettings: [{
+                        columnKey: 'id', allowResizing: false, minimumWidth: 0
+                    }]
+                },
+                { name: 'MultiColumnHeaders' },
+                {
+                    name: 'Paging',
+                    pageSize: 100,
+                    currentPageIndex: 0
+                },
+//                {
+//                    name: 'ColumnFixing', fixingDirection: 'left',
+//                    showFixButtons: false,
+//                    columnSettings: self.fixHeaders()
+//                },
+                {
+                    name: 'Summaries',
+                    showSummariesButton: false,
+                    showDropDownButton: false,
+                    columnSettings: self.columnSettings(),
+                    resultTemplate: '{1}'
+                }, {
+                    name: 'CellStyles',
+                    states: self.cellStates()
+                }, {
+                    name: 'HeaderStyles',
+                    columns: self.headerColors()
+                }
+            ];    
+            }
             return features;
         }
         getNtsFeatures(): Array<any> {
@@ -1221,6 +1297,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             setTimeout(function() {
                 self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
                 self.receiveData(self.dataAll());
+                self.createSumColumn(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
                 nts.uk.ui.block.clear();
@@ -1233,6 +1310,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             setTimeout(function() {
                 self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
                 self.receiveData(self.dataAll());
+                self.createSumColumn(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
                 nts.uk.ui.block.clear();
@@ -1402,14 +1480,16 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         signAll() {
             let self = this;
-            $("#dpGrid").mGrid("checkAll", "identify");
+            $("#dpGrid").mGrid("checkAll", "identify", true);
+            $("#dpGrid").mGrid("checkAll", "approval", true);
         }
         /**
          * UnCheck all CheckBox
          */
         releaseAll() {
             let self = this;
-            $("#dpGrid").mGrid("uncheckAll", "identify");
+            $("#dpGrid").mGrid("uncheckAll", "identify", true);
+            $("#dpGrid").mGrid("uncheckAll", "approval", true);
         }
         /**
          * ロック解除ボタン　クリック
@@ -1469,8 +1549,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
-                container.css("top", "0px");
-                container.css("left", "0px");
+                container.css("top", "-1px");
+                container.css("left", "258px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container

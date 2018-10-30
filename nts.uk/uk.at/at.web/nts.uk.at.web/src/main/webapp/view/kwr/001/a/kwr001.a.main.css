@@ -88,7 +88,7 @@ label {
 }
 
 hr {
-	margin: 30px;
+	margin: 30px 7px 30px 0px;
 }
 
 .td-center{
@@ -104,7 +104,7 @@ hr {
 }
 
 .td-right .right .panel.panel-frame {
-	padding: 15px;
+	padding: 10px;
 }
 
 .A13_1 label {
@@ -126,4 +126,14 @@ hr {
 
 #nts-component-list {
 	outline: none;
+}
+#checkedA10_7{
+	width:200px;
+}
+#checkedA10_7>label{
+	width:160px;
+}
+
+.A10-left label{
+	width:105px;
 }

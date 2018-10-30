@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -98,19 +100,27 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 */
 	@Override
 	public List<StampItem> findByListCardNo(List<String> lstCardNumber) {
-		List<StampItem> list = this.queryProxy().query(SELECT_BY_LIST_CARD_NO, KwkdtStamp.class)
-				.setParameter("lstCardNumber", lstCardNumber).getList(c -> toDomainStampOnly(c));
-		return list;
+		List<StampItem> resultList = new ArrayList<>();
+		CollectionUtil.split(lstCardNumber, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_CARD_NO, KwkdtStamp.class)
+				.setParameter("lstCardNumber", subList)
+				.getList(c -> toDomainStampOnly(c)));
+		});
+		return resultList;
 	}
 
 	@Override
 	public List<StampItem> findByEmployeeID(String companyId, List<String> stampCards, String startDate,
 			String endDate) {
-		List<StampItem> list = this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID, Object[].class)
-				.setParameter("companyId", companyId)
+		List<StampItem> list = new ArrayList<>();
+		CollectionUtil.split(stampCards, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			list.addAll(this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID, Object[].class)
+				.setParameter("companyId", subList)
 				.setParameter("startDate", GeneralDate.fromString(startDate, "yyyyMMdd"))
 				.setParameter("endDate", GeneralDate.fromString(endDate, "yyyyMMdd"))
-				.setParameter("lstCardNumber", stampCards).getList(c -> toDomain(c));
+				.setParameter("lstCardNumber", subList)
+				.getList(c -> toDomain(c)));
+		});
 		return list;
 	}
 
@@ -172,7 +182,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			return Collections.emptyList();
 		}
 		
-		CollectionUtil.split(lstCardNumber, 1000, subLstCardNumber -> {
+		CollectionUtil.split(lstCardNumber, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subLstCardNumber -> {
 			lstData.addAll(this.queryProxy().query(SELECT_BY_LIST_CARD_NO_DATE, KwkdtStamp.class)
 					.setParameter("lstCardNumber", subLstCardNumber)
 					 .setParameter("startDate", startDate)
@@ -192,11 +202,25 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			return Collections.emptyList();
 		}
 		
-		List<StampItem> list = this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID_FIX, Object[].class)
+		List<Object[]> list = new ArrayList<>();
+		CollectionUtil.split(stampCards, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			list.addAll(this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID_FIX, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
-				.setParameter("lstCardNumber", stampCards).getList(c -> toDomain(c));
-		return list;
+				.setParameter("lstCardNumber", subList)
+				.getList());
+		});
+		list.sort((o1, o2) -> {
+			KwkdtStamp stamp1 = (KwkdtStamp) o1[2]; // StampItem is at index 2, based on [toDomain] 
+			KwkdtStamp stamp2 = (KwkdtStamp) o2[2];
+			
+			int tmp = stamp1.kwkdtStampPK.cardNumber.compareTo(stamp2.kwkdtStampPK.cardNumber);
+			if (tmp != 0) return tmp;
+			tmp = stamp1.kwkdtStampPK.stampDate.compareTo(stamp2.kwkdtStampPK.stampDate);
+			if (tmp != 0) return tmp;
+			return stamp1.kwkdtStampPK.attendanceTime - stamp2.kwkdtStampPK.attendanceTime;
+		});
+		return list.stream().map(c -> toDomain(c)).collect(Collectors.toList());
 	}
 }

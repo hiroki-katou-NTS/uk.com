@@ -273,13 +273,18 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", subList).getList();
+			
 			resultList.addAll(lstBsymtAffCompanyHist);
 		});
-
 		// check empty ResultList
 		if (CollectionUtil.isEmpty(resultList)) {
 			return new ArrayList<>();
 		}
+		
+		resultList.sort((o1, o2) -> {
+			return o1.startDate.compareTo(o2.startDate);
+		});
+		
 		// Convert Result List to Map
 		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.parallelStream()
 				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
@@ -369,7 +374,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	@Override
 	public List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod dateperiod) {
 		List<String> listSid = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
 					.setParameter("employeeIds", subList)
 					.setParameter("startDate", dateperiod.start())

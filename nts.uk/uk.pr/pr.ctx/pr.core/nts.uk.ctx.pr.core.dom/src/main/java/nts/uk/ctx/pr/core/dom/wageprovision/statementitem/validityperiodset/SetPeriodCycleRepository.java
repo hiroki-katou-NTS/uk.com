@@ -12,10 +12,10 @@ public interface SetPeriodCycleRepository {
 
 	List<SetValidityPeriodCycle> getAllSetPeriodCycle();
 
-	Optional<SetValidityPeriodCycle> getSetPeriodCycleById(String salaryItemId);
+	Optional<SetValidityPeriodCycle> getSetPeriodCycleById(String cid, int categoryAtr, String itemNameCd);
 
 	void register(SetValidityPeriodCycle domain);
 
-	void remove(String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCd);
 
 }

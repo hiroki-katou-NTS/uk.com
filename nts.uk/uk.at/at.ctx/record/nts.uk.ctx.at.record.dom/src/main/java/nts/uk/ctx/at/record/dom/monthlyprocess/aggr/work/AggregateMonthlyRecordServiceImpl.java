@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
@@ -12,8 +14,10 @@ import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerReposit
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
@@ -37,9 +41,15 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 月次処理用の暫定残数管理データを作成する */
 	@Inject
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 残数作成元情報を作成する */
+	@Inject
+	private RemainNumberCreateInformation remNumCreateInfo;
 	/** 指定期間の暫定残数管理データを作成する */
 	@Inject
 	private InterimRemainOffPeriodCreateData periodCreateData;
+	/** 暫定年休管理データを作成する */
+	@Inject
+	private CreateInterimAnnualMngData createInterimAnnual;
 	/** 期間中の年休積休残数を取得 */
 	@Inject
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
@@ -65,6 +75,10 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	@Inject
 	private EditStateOfMonthlyPerRepository editStateRepo;
 	
+	/** 並列処理用 */
+	@Resource
+	private ManagedExecutorService executorService;
+	
 	/** 集計処理　（アルゴリズム） */
 	@Override
 	public AggregateMonthlyRecordValue aggregate(
@@ -77,7 +91,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
 				this.repositories,
 				this.interimRemOffMonth,
+				this.remNumCreateInfo,
 				this.periodCreateData,
+				this.createInterimAnnual,
 				this.getAnnAndRsvRemNumWithinPeriod,
 				this.absenceRecruitMng,
 				this.breakDayoffMng,
@@ -85,7 +101,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				this.specialHolidayRepo,
 				this.specialLeaveMng,
 				this.createPerErrorFromLeaveErrors,
-				this.editStateRepo);
+				this.editStateRepo,
+				this.executorService);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
 				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);

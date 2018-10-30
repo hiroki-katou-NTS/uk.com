@@ -49,6 +49,7 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 			lstEntity.add(toEntity(branch));
 		}
 		this.commandProxy().insertAll(lstEntity);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * convert entity WwfmtBranch to domain ApprovalBranch
@@ -74,5 +75,6 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 	@Override
 	public void deleteBranch(String companyId, String branchId) {
 		this.commandProxy().remove(WwfmtBranch.class, new WwfmtBranchPK(companyId,branchId));
+		this.getEntityManager().flush();
 	}
 }

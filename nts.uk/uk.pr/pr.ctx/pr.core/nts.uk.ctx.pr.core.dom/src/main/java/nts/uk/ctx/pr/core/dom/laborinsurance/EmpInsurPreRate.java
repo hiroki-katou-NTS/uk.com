@@ -8,8 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 
 @Getter
-public class EmpInsurPreRate extends AggregateRoot
-{
+public class EmpInsurPreRate extends AggregateRoot {
     
     /**
     * 履歴ID

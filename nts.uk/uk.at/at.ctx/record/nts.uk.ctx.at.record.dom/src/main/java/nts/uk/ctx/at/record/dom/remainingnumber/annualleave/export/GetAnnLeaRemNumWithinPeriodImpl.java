@@ -67,6 +67,9 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 月次処理用の暫定残数管理データを作成する */
 	@Inject
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 暫定年休管理データを作成する */
+	@Inject
+	private CreateInterimAnnualMngData createInterimAnnual;
 	/** 暫定残数管理データ */
 	@Inject
 	private InterimRemainRepository interimRemainRepo;
@@ -111,6 +114,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getClosureStartForEmployee,
 				this.calcNextAnnualLeaveGrantDate,
 				this.interimRemOffMonth,
+				this.createInterimAnnual,
 				this.interimRemainRepo,
 				this.tmpAnnualLeaveMng,
 				this.attendanceTimeOfMonthlyRepo,
@@ -147,6 +151,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getClosureStartForEmployee,
 				this.calcNextAnnualLeaveGrantDate,
 				this.interimRemOffMonth,
+				this.createInterimAnnual,
 				this.interimRemainRepo,
 				this.tmpAnnualLeaveMng,
 				this.attendanceTimeOfMonthlyRepo,

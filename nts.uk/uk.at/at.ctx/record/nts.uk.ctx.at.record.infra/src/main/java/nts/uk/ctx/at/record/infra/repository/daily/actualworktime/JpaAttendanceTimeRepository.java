@@ -1,3 +1,4 @@
+
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
 import java.sql.Connection;
@@ -189,9 +190,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 
 					/* 早退時間 */
-					try {
-						val statement = this.connection().prepareStatement(
-								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?");
+					try (val statement = this.connection().prepareStatement(
+								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?")) {
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();
@@ -322,12 +322,52 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
+	public void updateFlush(AttendanceTimeOfDailyPerformance attendanceTime) {
+		this.update(attendanceTime);
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
+		
+		Connection con = this.connection();
+		String sqlQuery = "Delete From KRCDT_DAY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	@Override
+	public List<AttendanceTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
+		List<Object[]> result = new ArrayList<>();
+//		});
+		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g ,h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
+		query.append("LEFT JOIN a.krcdtDayLateTime e ");
+		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
+		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
+		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
+		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
+		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
+		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+							.getList().stream()
+							.filter(c -> {
+								KrcdtDayTime af = (KrcdtDayTime) c[0];
+								return p.get(af.krcdtDayTimePK.employeeID).contains(af.krcdtDayTimePK.generalDate);
+							}).collect(Collectors.toList()));
+		});
+		return toDomainFromJoin(result);
+	}
+	
+	@Override
 	public List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<Object[]> result = new ArrayList<>();
-//		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
-//		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID IN :employeeId ");
-//		query.append("AND a.krcdtDayAttendanceTimePK.generalDate <= :end AND a.krcdtDayAttendanceTimePK.generalDate >= :start");
-//		TypedQueryWrapper<KrcdtDayAttendanceTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class);
 		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
 		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
@@ -363,63 +403,15 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	}
 
 	@Override
-	public void updateFlush(AttendanceTimeOfDailyPerformance attendanceTime) {
-		this.update(attendanceTime);
-		this.getEntityManager().flush();
-	}
-
-	@Override
-	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
-		
-		Connection con = this.connection();
-		String sqlQuery = "Delete From KRCDT_DAY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		
-	}
-
-	@Override
-	public List<AttendanceTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<Object[]> result = new ArrayList<>();
-//		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
-//		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID IN :employeeId ");
-//		query.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-//		TypedQueryWrapper<KrcdtDayAttendanceTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class);
-//		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-//			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-//							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-//							.getList().stream()
-//							.filter(c -> p.get(c.krcdtDayAttendanceTimePK.employeeID).contains(c.krcdtDayAttendanceTimePK.generalDate))
-//							.map(x -> x.toDomain()).collect(Collectors.toList()));
-//		});
-		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g ,h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
-		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
-		query.append("LEFT JOIN a.krcdtDayLateTime e ");
-		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
-		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
-		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
-		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
-		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
-		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-							.getList().stream()
-							.filter(c -> {
-								KrcdtDayTime af = (KrcdtDayTime) c[0];
-								return p.get(af.krcdtDayTimePK.employeeID).contains(af.krcdtDayTimePK.generalDate);
-							}).collect(Collectors.toList()));
-		});
-		return toDomainFromJoin(result);
-	}
-
-	@Override
 	public List<Integer> findAtt(String employeeId, List<GeneralDate> ymd) {
-		return this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
-				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList();
+		List<Integer> resultList = new ArrayList<>();
+		CollectionUtil.split(ymd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", subList)
+				.getList());
+		});
+		return resultList;
 	}
 	
 	@Override

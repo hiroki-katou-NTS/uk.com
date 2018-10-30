@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.gateway.ws.url;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -69,7 +69,7 @@ public class UrlWebService {
 	@Path("execution/{urlID}")
 	@Produces("application/json")
 	public UrlResult executionURL(@PathParam("urlID") String urlID) {
-		List<String> result = new ArrayList<>();
+		Map<String, String> result = new HashMap<>();
 		GeneralDateTime systemDateTime = GeneralDateTime.now();
 		
 		// URLパラメータの存在チェック
@@ -107,9 +107,20 @@ public class UrlWebService {
 		
 		// ドメインモデル「埋込URL実行情報」の「プログラムID」及び「遷移先の画面ID」に該当する画面へ遷移する
 		urlExecInfoExport.getTaskIncre().forEach(x -> {
-			result.add(x.getTaskIncreValue());
+			result.put(x.getTaskIncreKey(), x.getTaskIncreValue());
 		});
-		return new UrlResult(urlExecInfoExport.getProgramId().toLowerCase(), urlExecInfoExport.getScreenId().toLowerCase(), result);
+		return new UrlResult(
+				urlExecInfoExport.getProgramId().toLowerCase(), 
+				urlExecInfoExport.getScreenId().toLowerCase(), 
+				urlExecInfoExport.getEmbeddedId(),
+			    urlExecInfoExport.getCid(),
+			    urlExecInfoExport.getLoginId(),
+			    urlExecInfoExport.getContractCd(),
+			    urlExecInfoExport.getExpiredDate(),
+			    urlExecInfoExport.getIssueDate(),
+			    urlExecInfoExport.getSid(),
+			    urlExecInfoExport.getScd(),
+				result);
 	}
 	
 	private Contract executionContractSet(String contractCD){

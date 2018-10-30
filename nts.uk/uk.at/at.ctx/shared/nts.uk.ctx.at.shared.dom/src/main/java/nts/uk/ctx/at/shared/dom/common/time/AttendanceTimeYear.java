@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * 勤怠年間時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @TimeRange(min = "0:00", max = "9999:59")
 public class AttendanceTimeYear extends TimeDurationPrimitiveValue<AttendanceTimeYear> {
@@ -18,5 +18,13 @@ public class AttendanceTimeYear extends TimeDurationPrimitiveValue<AttendanceTim
 	 */
 	public AttendanceTimeYear(int minutes){
 		super(minutes);
+	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(0);
+		if (rawValue > 9999 * 60 + 59) rawValue = 9999 * 60 + 59;
+		if (rawValue < 0) rawValue = 0;
+		return super.reviseRawValue(rawValue);
 	}
 }

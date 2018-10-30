@@ -164,7 +164,7 @@ public class PeregProcessor {
 				MappingFactory.mapListItemClass(peregDto, classItemList);
 				
 				Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(peregDto);
-				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119", "IS00781");
 				for (String itemCode : standardDateItemCodes) {
 					if (itemValueMap.containsKey(itemCode)) {
 						comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
@@ -200,7 +200,7 @@ public class PeregProcessor {
 		
 		// get Combo-Box List
 		layoutControlComboBox.getComboBoxListForSelectionItems(query.getEmployeeId(), perInfoCtg, classItemList,
-				comboBoxStandardDate,null);
+				comboBoxStandardDate);
 
 		return classItemList;
 	}

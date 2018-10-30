@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.anyitem;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,14 +10,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonAnyItemValueMerge;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -755,6 +762,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 
 			});
 		});
+		results.sort(Comparator.comparing(AnyItemOfMonthly::getEmployeeId));
 		return results;
 	}
 
@@ -783,16 +791,77 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 
-		List<AnyItemOfMonthly> results = new ArrayList<>();
+		// List<AnyItemOfMonthly> results = new ArrayList<>();
+		List<KrcdtMonAnyItemValueMerge> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			List<KrcdtMonAnyItemValueMerge> anyItemLst = this.queryProxy()
-					.query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnyItemValueMerge.class)
-					.setParameter("employeeIds", splitData).setParameter("yearMonths", yearMonthValues).getList();
-			anyItemLst.stream().forEach(c -> {
-				results.addAll(c.toDomainAnyItemOfMonthly());
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy()
+						.query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonAnyItemValueMerge.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
 			});
+			
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			KrcdtMonMergePk pk1 = o1.getKrcdtMonAnyItemValuePk();
+			KrcdtMonMergePk pk2 = o2.getKrcdtMonAnyItemValuePk();
+			
+			int tmp = pk1.getEmployeeId().compareTo(pk2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			tmp = pk1.getYearMonth() - pk2.getYearMonth();
+			if (tmp != 0) return tmp;
+			tmp = pk2.getIsLastDay() - pk1.getIsLastDay(); // DESC
+			if (tmp != 0) return tmp;
+			return pk1.getClosureDay() - pk2.getClosureDay();
+		});
+		
+		List<AnyItemOfMonthly> items = new ArrayList<>();
+		results.stream().forEach(c -> {
+			items.addAll(c.toDomainAnyItemOfMonthly());
+		});
+		return items;
+	}
+	
+	@Override
+	public List<AnyItemOfMonthly> findBySidsAndMonthsV2(List<String> employeeIds, List<YearMonth> yearMonths) {
+
+		List<AnyItemOfMonthly> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
+			try (PreparedStatement stmt = this.connection().prepareStatement(
+						"SELECT * FROM KRCDT_MON_ANYITEMVALUE_MERGE op" 
+						+" WHERE op.YM IN (" + yearMonths.stream().map(s -> "?").collect(Collectors.joining(",")) + ")" 
+						+" AND op.SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
+
+				for(int i = 0 ; i < yearMonths.size() ; i++) {
+					stmt.setInt(i + 1, yearMonths.get(i).v());
+				}
+				for(int i = 0 ; i < empIds.size() ; i++) {
+					stmt.setString(i + yearMonths.size() + 1, empIds.get(i));
+				}
+				
+				new NtsResultSet(stmt.executeQuery()).getList(rec ->{
+					String sid = rec.getString("SID");
+					YearMonth ym = new YearMonth(rec.getInt("YM"));
+					ClosureId cloId = EnumAdaptor.valueOf(rec.getInt("CLOSURE_ID"), ClosureId.class);
+					ClosureDate cloDate = new ClosureDate(rec.getInt("CLOSURE_DAY"), rec.getInt("IS_LAST_DAY") == 1);
+					for (int i = 1; i <= 200; i++){
+						Double count = rec.getDouble("COUNT_VALUE_" + i);
+						Integer money = rec.getInt("MONEY_VALUE_" + i);
+						Integer time = rec.getInt("TIME_VALUE_" + i);
+						result.add(AnyItemOfMonthly.of(sid, ym, cloId, cloDate, i, 
+							Optional.ofNullable(time == null ? null : new AnyTimeMonth(time)),
+							Optional.ofNullable(count == null ? null : new AnyTimesMonth(count)),
+							Optional.ofNullable(money == null ? null : new AnyAmountMonth(money))));
+					}
+					return null;
+				});
+				
+			}catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return result;
 	}
 
 	/** 登録および更新 */

@@ -5,10 +5,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 
 @Value
 public class StatementItemCustomDto {
-    /**
-     * 給与項目ID
-     */
-    private String salaryItemId;
+
+    private String key;
 
     /**
      * カテゴリ区分
@@ -31,7 +29,7 @@ public class StatementItemCustomDto {
     private Integer deprecatedAtr;
 
     public StatementItemCustomDto(StatementItemCustom domain) {
-        this.salaryItemId = domain.getSalaryItemId();
+        this.key = String.valueOf(domain.getCategoryAtr()) + domain.getItemNameCd();
         this.categoryAtr = domain.getCategoryAtr();
         this.itemNameCd = domain.getItemNameCd();
         this.name = domain.getName();

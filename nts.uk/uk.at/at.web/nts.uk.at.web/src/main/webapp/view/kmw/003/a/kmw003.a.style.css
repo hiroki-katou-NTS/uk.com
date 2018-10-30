@@ -341,3 +341,14 @@
 	color: #ff0000 !important;
 }
 
+.control-group{
+	margin-bottom: 5px!important;
+}
+
+#id-vertical-middle{
+	height: 32px;
+}
+
+#id-vertical-middle>*{
+	vertical-align: middle;
+}

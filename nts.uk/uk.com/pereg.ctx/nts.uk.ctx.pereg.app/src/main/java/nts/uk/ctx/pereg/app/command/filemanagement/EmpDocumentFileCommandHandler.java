@@ -42,29 +42,29 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 	protected void handle(CommandHandlerContext<AddEmpDocumentFileCommand> context) {
 		AddEmpDocumentFileCommand commad = context.getCommand();
 		// begin process write log
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-		Optional<PersonFileManagement> empFileMana = empFileManagementRepo.getEmpMana(commad.getFileid());
-		if (empFileMana.isPresent()) {
-			// update
-			PersonFileManagement domain = empFileMana.get();
-			domain.setFileID(commad.getFileid());
-		} else {
-			// insert
-			List<EmployeeFileManagementDto> listFIle = this.employeeFileManagementFinder.getListDocumentFile(commad.getPid());
-			PersonFileManagement domain = PersonFileManagement.createFromJavaType(commad.getPid(), commad.getFileid(),2, null);
-
-			if (listFIle.isEmpty()) {
-				domain.setUploadOrder(1);
+		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+			Optional<PersonFileManagement> empFileMana = empFileManagementRepo.getEmpMana(commad.getFileid());
+			if (empFileMana.isPresent()) {
+				// update
+				PersonFileManagement domain = empFileMana.get();
+				domain.setFileID(commad.getFileid());
 			} else {
-				domain.setUploadOrder((listFIle.get(listFIle.size() - 1).getUploadOrder()) + 1);
+				// insert
+				List<EmployeeFileManagementDto> listFIle = this.employeeFileManagementFinder.getListDocumentFile(commad.getPid());
+				PersonFileManagement domain = PersonFileManagement.createFromJavaType(commad.getPid(), commad.getFileid(),2, null);
+	
+				if (listFIle.isEmpty()) {
+					domain.setUploadOrder(1);
+				} else {
+					domain.setUploadOrder((listFIle.get(listFIle.size() - 1).getUploadOrder()) + 1);
+				}
+				empFileManagementRepo.insert(domain);
 			}
-			empFileManagementRepo.insert(domain);
-		}
-		setParamPersonLog(commad);
-		setDataLogCategory(commad).forEach(cat -> {
-			DataCorrectionContext.setParameter(cat.getHashID(), cat);
+			setParamPersonLog(commad);
+			setDataLogCategory(commad).forEach(cat -> {
+				DataCorrectionContext.setParameter(cat.getHashID(), cat);
+			});
 		});
-		DataCorrectionContext.transactionFinishing();
 	}
 	
 	private void setParamPersonLog(AddEmpDocumentFileCommand command){
