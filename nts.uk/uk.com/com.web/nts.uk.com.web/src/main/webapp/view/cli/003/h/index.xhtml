@@ -24,12 +24,12 @@
 		</ui:define>
 
 		<ui:define name="content">
-				<div id="contentH">
+			<div id="content-area">
 				<div>
-					<span id="H1_1">#{i18n.getText('CLI003_41')}&#160;&#160;</span>
-					<span id="H1_2"></span>
+					<span id="H1_1">#{i18n.getText('CLI003_41')}&#160;&#160;</span> <span
+						id="H1_2"></span>
 				</div>
-				<br/>
+				<br />
 				<div class="table" id="condition-set-div">
 					<table id="H2_1">
 						<thead>
@@ -44,7 +44,7 @@
 								<td><div
 										data-bind="ntsCheckBox: { checked: isUseCondFlg, enable: true}"></div></td>
 								<td>
-								<div id="combo-box"
+									<div id="combo-box"
 										data-bind="ntsComboBox: {
 									options: $parent.itemListCbb,
 									optionsValue: 'code',
@@ -55,11 +55,13 @@
 									required: true,
 									enable: isUseCondFlg,
 									selectFirstIfNull: true,
-									columns: $parent.comboColumns}"></div></td>
+									columns: $parent.comboColumns}"></div>
+								</td>
 
 								<td class="control-group valign-center">
-									<div class="cell"><input class="validate_form"
-										data-bind="ntsTextEditor: {
+									<div class="cell">
+										<input class="validate_form"
+											data-bind="ntsTextEditor: {
 										name: '#[CLI003_49]',
 										value: condition,
 										constraint: 'LogDetailCondition',
@@ -71,14 +73,14 @@
 						</tbody>
 					</table>
 				</div>
-				
-				</div>
-				<hr/>
-				<center>
-				<button id = "H3_1" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
-				<button id = "H3_2" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
-				</center>
-			</ui:define>
+				<hr />
+			</div>
+			<div id="functions-area-bottom">
+				<button id="H3_1" data-bind="click : submit"
+					class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
+				<button id="H3_2" data-bind="click : closePopup" class="large">#{i18n.getText('CLI003_51')}</button>
+			</div>
+		</ui:define>
 	</ui:composition>
    	</body>
 </html>
