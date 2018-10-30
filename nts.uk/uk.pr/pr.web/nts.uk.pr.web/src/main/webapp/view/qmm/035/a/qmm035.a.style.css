@@ -99,6 +99,9 @@
 #A5_5,#A5_37,#A5_12,#A5_33,#A5_35,#A5_37 {
     width: 370px !important;
 }
+#A5_33,#A5_35,#A5_37 {
+    margin-left: 4px;
+}
 #A5_6 {
     margin-top: 5px;
 }
