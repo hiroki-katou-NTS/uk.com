@@ -4,7 +4,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.StringPrimitiveValue;
 
 /**
-* SpecName
+* 明細書名称
 */
 @StringMaxLength(20)
 public class SpecName extends StringPrimitiveValue<SpecName>
