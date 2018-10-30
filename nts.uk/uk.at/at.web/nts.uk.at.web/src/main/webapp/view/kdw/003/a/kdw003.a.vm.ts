@@ -238,6 +238,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         periodCdl027: KnockoutObservable<any> = ko.observable({});
         showDialogError: boolean = false;
+        
+        transitionDesScreen: boolean = false;
         constructor(dataShare: any) {
             var self = this;
 
@@ -297,6 +299,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (dataShare != undefined) {
                 self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam, dataShare.dataSPR);
                 self.showDateRange(self.shareObject().changePeriodAtr);
+                self.transitionDesScreen = _.isEmpty(self.shareObject().transitionDesScreen) ? false : true;
             }
 
             //            self.flexShortage.subscribe((val:any) => {
