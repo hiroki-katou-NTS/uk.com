@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
@@ -36,8 +37,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         }
 
         test(){
-            let self = this;
-            console.dir(self.currentSelect());
+            modal("com","/view/qmm/020/j/index.xhtml");
         }
         register(){
             block.invisible();

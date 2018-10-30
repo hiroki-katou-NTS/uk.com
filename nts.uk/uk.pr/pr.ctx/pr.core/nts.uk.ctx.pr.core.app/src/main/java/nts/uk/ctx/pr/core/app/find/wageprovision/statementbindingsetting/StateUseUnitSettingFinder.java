@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSettingRepository;
-import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
