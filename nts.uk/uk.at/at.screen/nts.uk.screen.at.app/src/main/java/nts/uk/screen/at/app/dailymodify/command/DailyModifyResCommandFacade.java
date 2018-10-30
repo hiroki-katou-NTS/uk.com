@@ -358,7 +358,7 @@ public class DailyModifyResCommandFacade {
 						resultError.putAll(errorDivergence);
 						hasError = true;
 					}
-					if (dataParent.getMode() == 0 && monthParam.getHasFlex()) {
+					if (dataParent.getMode() == 0 && monthParam.getHasFlex() != null && monthParam.getHasFlex()) {
 						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
 								monthParam);
 						dataResultAfterIU.setFlexShortage(flexShortageRCDto);
