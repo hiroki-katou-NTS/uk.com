@@ -289,7 +289,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		if(result.isEmpty()){
 			return false;
 		}
-		return result.stream().anyMatch(c -> c == WorkCheckResult.ERROR);
+		return result.stream().allMatch(c -> c == WorkCheckResult.ERROR);
 	}
 	
 	/**
