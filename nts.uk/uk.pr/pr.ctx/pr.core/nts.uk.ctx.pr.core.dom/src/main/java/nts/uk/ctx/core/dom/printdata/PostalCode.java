@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @StringMaxLength(8)
 @StringCharType(CharType.ANY_HALF_WIDTH)
-public class PostalCode extends StringPrimitiveValue<nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.PostalCode> {
+public class PostalCode extends StringPrimitiveValue<PostalCode> {
     private static final long serialVersionUID = 1L;
 
     public PostalCode(String rawValue) {

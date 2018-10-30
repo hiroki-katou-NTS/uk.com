@@ -55,8 +55,8 @@ module nts.uk.pr.view.qmm035.a {
                 });
 
                 this.columns2 = ko.observableArray([
-                    { headerText: text('QMM035_8'), key: 'code', width: 120, formatter: _.escape},
-                    { headerText: text('QMM035_9'), key: 'name', width: 200, formatter: _.escape }
+                    { headerText: text('QMM035_8'), key: 'code', width: 50, formatter: _.escape},
+                    { headerText: text('QMM035_9'), key: 'name', width: 255, formatter: _.escape }
                 ]);
 
                 self.tabs = ko.observableArray([
@@ -70,10 +70,7 @@ module nts.uk.pr.view.qmm035.a {
                 self.isEnableCode(true);
 
                 self.currentCode.subscribe(function(codeId) {
-                    setTimeout(function () {
-                        nts.uk.ui.errors.clearAll();
-                    }, 10);
-
+                    nts.uk.ui.errors.clearAll();
                     if (codeId) {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm035.a.service.findByCode(codeId).done(function(response) {
@@ -91,11 +88,11 @@ module nts.uk.pr.view.qmm035.a {
                                 $("#A4_5").focus();
                             });
                         }, 500);
-                        setTimeout(function () {
+                        /*setTimeout(function () {
                             _.defer(function() {
                                 $("#A4_5").focus();
                             });
-                        }, 800);
+                        }, 800);*/
                     }
 
                 });
@@ -155,8 +152,14 @@ module nts.uk.pr.view.qmm035.a {
                                 }
                             }
                             self.isEnableCode(false);
+                            $("tr[data-id="+ self.currentCode()+"] ").focus();
                             $("#A4_5").focus();
-
+                            /*setTimeout(function () {
+                                $("tr[data-id="+ self.currentCode()+"] ").focus();
+                                _.defer(function() {
+                                    $("#A4_5").focus();
+                                });
+                            }, 500);*/
                         });
                         block.clear();
                     });
