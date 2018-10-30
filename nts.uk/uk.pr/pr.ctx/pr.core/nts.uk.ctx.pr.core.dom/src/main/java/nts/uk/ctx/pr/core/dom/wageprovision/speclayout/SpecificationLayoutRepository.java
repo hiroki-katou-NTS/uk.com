@@ -8,6 +8,7 @@ import java.util.List;
 */
 public interface SpecificationLayoutRepository
 {
+    List<SpecificationLayout> getSpecCode(String cid, String salaryCd, int startYearMonth);
 
     List<SpecificationLayout> getAllSpecificationLayout();
 

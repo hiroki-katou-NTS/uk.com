@@ -16,11 +16,22 @@ public class JpaSpecificationLayoutRepository extends JpaRepository implements S
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecLayout f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specLayoutPk.cid =:cid AND  f.specLayoutPk.specCd =:specCd ";
+    private static final String SELECT_SPEC_NAME = "SELECT e.specCode, e.specName FROM QpbmtSpecLayoutHist f INNER JOIN QpbmtSpecLayout e on e.specLayoutPk.specCd = f.specLayoutHistPk.specCd" +
+            " Where f.startYearMonth > :startYearMonth AND f.specLayoutHistPk.specCd = :specCd AND f.specLayoutHistPk.cid = :cid";
 
     @Override
     public List<SpecificationLayout> getAllSpecificationLayout(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSpecLayout.class)
                 .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public List<SpecificationLayout> getSpecCode(String cid, String salaryCd, int startYearMonth) {
+        return  this.queryProxy().query(SELECT_SPEC_NAME, QpbmtSpecLayout.class)
+                .setParameter("startYearMonth", startYearMonth)
+                .setParameter("specCd", salaryCd)
+                .setParameter("cid", cid)
+                .getList().stream().map(item -> {return item.toDomain();});
     }
 
     @Override

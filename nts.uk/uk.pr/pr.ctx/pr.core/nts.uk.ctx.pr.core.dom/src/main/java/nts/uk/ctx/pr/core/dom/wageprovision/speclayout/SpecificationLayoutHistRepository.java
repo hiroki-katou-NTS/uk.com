@@ -6,12 +6,13 @@ import java.util.List;
 /**
 * 明細書レイアウト履歴
 */
-public interface SpecificationLayoutHistRepository
-{
+public interface SpecificationLayoutHistRepository {
 
     List<SpecificationLayoutHist> getAllSpecificationLayoutHist();
 
     Optional<SpecificationLayoutHist> getSpecificationLayoutHistById(String cid, int specCd, String histId);
+
+    List<String> getSpecCode(String cid, String salaryCd, int startYearMonth);
 
     void add(SpecificationLayoutHist domain);
 

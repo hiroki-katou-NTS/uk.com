@@ -22,8 +22,8 @@ public class StateLinkMasterWebService extends WebService {
 
     @POST
     @Path("getStateLinkMaster")
-    public List<StateLinkSettingMasterDto> getStateLinkMaster(@PathParam("hisId") String hisId) {
-        return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId);
+    public List<StateLinkSettingMasterDto> getStateLinkMaster(@PathParam("hisId") String hisId, @PathParam("start") int start) {
+        return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId, start);
     }
 
     @POST

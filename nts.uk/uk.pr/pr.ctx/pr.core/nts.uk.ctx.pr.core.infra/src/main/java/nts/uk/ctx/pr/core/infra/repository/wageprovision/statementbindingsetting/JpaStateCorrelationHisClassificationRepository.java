@@ -21,7 +21,7 @@ public class JpaStateCorrelationHisClassificationRepository extends JpaRepositor
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisClass f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND  f.stateCorHisClassPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid ORDER BY F.startYearMonth";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid ORDER BY f.startYearMonth";
 
     @Override
     public Optional<StateCorrelationHisClassification> getStateCorrelationHisClassificationById(String cid, String hisId){

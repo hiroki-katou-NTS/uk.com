@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.speclayout;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayoutHist;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -38,4 +39,5 @@ public class QpbmtSpecLayoutHist extends UkJpaEntity implements Serializable {
     protected Object getKey() {
         return specLayoutHistPk;
     }
+
 }
