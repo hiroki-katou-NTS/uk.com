@@ -284,9 +284,11 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	}
 	
 	private boolean evaluate(WorkCheckResult workTypeCheck, WorkCheckResult workTimeCheck, WorkCheckResult atdCheck){
-		return Stream.of(workTypeCheck, workTimeCheck, atdCheck)
-						.filter(c -> c != WorkCheckResult.NOT_CHECK)
-						.allMatch(c -> c == WorkCheckResult.ERROR);
+		List<WorkCheckResult> result = Stream.of(workTypeCheck, workTimeCheck, atdCheck).filter(c -> c != WorkCheckResult.NOT_CHECK).collect(Collectors.toList());
+		if(result.isEmpty()){
+			return false;
+		}
+		return result.stream().anyMatch(c -> c == WorkCheckResult.ERROR);
 	}
 	
 	/**
