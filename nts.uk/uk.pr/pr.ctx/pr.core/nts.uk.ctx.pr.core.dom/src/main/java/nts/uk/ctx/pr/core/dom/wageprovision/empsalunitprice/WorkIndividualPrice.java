@@ -10,13 +10,13 @@ import java.math.BigDecimal;
 @Data
 public class WorkIndividualPrice {
 
-    String historyID;
-
     String employeeID;
 
-    String businessName;
+    String historyID;
 
     String employeeCode;
+
+    String businessName;
 
     int startYaerMonth;
 

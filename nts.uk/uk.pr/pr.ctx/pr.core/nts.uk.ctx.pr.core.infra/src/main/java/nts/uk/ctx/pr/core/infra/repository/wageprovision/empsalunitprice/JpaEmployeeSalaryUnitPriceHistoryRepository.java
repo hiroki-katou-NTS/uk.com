@@ -1,7 +1,10 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.empsalunitprice;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -22,14 +25,16 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
 
     @Override
     public List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode, List<String> employeeId) {
+        if(employeeId==null || !(employeeId.size()>0))
+            return Collections.emptyList();
         List<QpbmtEmpSalPriHis> qpbmtEmpSalPriHis = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtEmpSalPriHis.class)
                 .setParameter("personalUnitPriceCode", personalUnitPriceCode)
                 .setParameter("employeeId", employeeId).getList();
         if(qpbmtEmpSalPriHis.size()>0){
 
-            return Optional.of(QpbmtEmpSalPriHis.toDomain(qpbmtEmpSalPriHis));
+            return qpbmtEmpSalPriHis.stream().map(v-> new WorkIndividualPrice(v.empSalPriHisPk.employeeId,v.empSalPriHisPk.historyId,"","",v.startYearMonth,v.endYearMonth,v.indvidualUnitPrice)).collect(Collectors.toList());
         }
-        return Optional.empty();
+        return Collections.emptyList();
     }
 
     @Override
