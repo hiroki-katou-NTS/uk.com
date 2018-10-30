@@ -278,7 +278,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			lstDataSpeDataBase = this.adjustGrantData(lstDataBase, lstDataSpeDataMemory);
 			//ドメインモデル「期限情報」．期限指定方法をチェックする
 			if(specialHoliday.getGrantPeriodic().getTimeSpecifyMethod() == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE
-					&& !lstDataSpeDataMemory.isEmpty()) {				
+					&& !lstDataSpeDataMemory.isEmpty()
+					&& !lstDataSpeDataBase.isEmpty()) {				
 				List<SpecialLeaveGrantRemainingData> lstTmp = new ArrayList<>(lstDataSpeDataBase);
 				for (SpecialLeaveGrantRemainingData x : lstTmp) {
 					//付与済の「特別休暇付与残数データ」．期限日= (先頭の付与予定の「特別休暇付与残数データ」．付与日).AddDays(-1)
