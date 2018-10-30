@@ -29,8 +29,10 @@ public class InitialDisplayRegisterProcessingFinder {
 	private SetDaySupportRepository finderSetDaySupport;
 	@Inject
 	private CurrProcessDateRepository finderCurrProcessDate;
+
 	@Inject
 	private EmpTiedProYearRepository finderEmpTiedProYear;
+
 	@Inject
 	private SysEmploymentAdapter syEmploymentAdapter;
 
@@ -41,7 +43,7 @@ public class InitialDisplayRegisterProcessingFinder {
 		List<SetDaySupportDto> setDaySupportDto = new ArrayList<SetDaySupportDto>();
 		List<ProcessInformationDto> informationDto = new ArrayList<ProcessInformationDto>();
 		List<CurrProcessDateDto> currProcessDateDto = new ArrayList<CurrProcessDateDto>();
-		List<EmpCdNameImport> employeeList = syEmploymentAdapter.findAll(cid);
+		List<EmpCdNameImport> employeeList = null;
 
 		List<EmpTiedProYearDto> empTiedProYearDto = new ArrayList<EmpTiedProYearDto>();
 
@@ -75,6 +77,5 @@ public class InitialDisplayRegisterProcessingFinder {
 		}
 
 		return null;
-
 	}
 }

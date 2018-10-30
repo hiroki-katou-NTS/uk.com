@@ -44,4 +44,8 @@ public class UnUseOfRec {
 	private DigestionAtr digestionAtr;
 	/**	消滅日 */
 	private Optional<GeneralDate> disappearanceDate;
+	/**
+	 * 使用開始日
+	 */
+	private Optional<GeneralDate> startDate;
 }

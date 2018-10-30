@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.PerUnitPriceCode
+				nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.PerUnitPriceName
+				nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.PerUnitPriceShortName
+				nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
+			<com:stylefile path="qmm013.a.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm013.a.start.js" />
+			<com:scriptfile path="qmm013.a.service.js" />
+			<com:scriptfile path="qmm013.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- 新規 -->
+				<button id="A1_1" tabindex="1" class="newBtn" data-bind="click : create, enable: !checkCreate()">
+					#{i18n.getText('QMM013_1')}
+				</button>
+				<!-- 登録 -->
+				<button id="A1_2" tabindex="2" class="registerBtn proceed" data-bind="click: register, enable: true">
+					#{i18n.getText('QMM013_2')}
+				</button>
+				<!-- 削除 -->
+				<button id="A1_5" tabindex="5" class="deleteBtn danger" data-bind="click: deleteItem, enable: !checkCreate()">
+					#{i18n.getText('QMM013_5')}
+				</button>
+			</div>
+			<div id="contents-area">
+				<div class="fixed-flex-layout-left">
+					<!-- マスタリスト選択パネル -->
+					<div id="A2_1" data-bind="ntsPanel:{width: '357px', height: '445px', direction: 'right', showIcon: true, visible: true}">
+						<div class="valign-center control-group">
+							<!-- 廃止も表示する -->
+							<div id="A2_2" tabindex="6" data-bind="ntsCheckBox: { checked: isdisplayAbolition }">#{i18n.getText('QMM013_6')}</div>
+						</div>
+						<!-- A2_3 -->
+						<div style="width: 357px" tabindex="7" data-bind="ntsSearchBox: {searchMode: 'highlight',
+																			targetKey: 'code',
+																			comId: 'unitPriceNameList',
+																			items: unitPriceNameList,
+																			selected: currentCode,
+																			selectedKey: 'code',
+																			searchText: '検索',
+																			fields: ['code', 'name'],
+																			mode: 'igGrid'}" />
+						<!-- A2_4 -->
+						<table tabindex="8" id="unitPriceNameList"
+							    data-bind="ntsGridList: { name: '#[QMM013_7]',
+							    columnResize: true,
+								options: unitPriceNameList,
+								primaryKey: 'code',
+								columns: gridColumns,
+								multiple: false,
+								rows: 15,
+								value: currentCode
+							}"></table>
+					</div>
+				</div>
+				<div class="fixed-flex-layout-right" data-bind="with: unitPriceDataSelected">
+					<div data-bind="with: salaryPerUnitPriceName">
+						<div class="valign-center control-group">
+							<!-- コード/名称 -->
+							<div id="A3_1" data-bind="ntsFormLabel: {required: true, constraint: ['PerUnitPriceCode', 'PerUnitPriceName'] }">#{i18n.getText('QMM013_11')}</div>
+							<!-- 項目名コード -->
+							<input id="A3_2" class="check-validate" tabindex="9"
+									data-bind="ntsTextEditor :{
+										name: '#[QMM013_12]',
+										value: code,
+										constraint: 'PerUnitPriceCode',
+										option: {width: '35px'},
+										required: true,
+										enable: $parents[1].checkCreate(),
+										readonly: false}" />
+							<!-- 単価名称 -->
+							<input id="A3_3" class="check-validate" tabindex="10"
+									data-bind="ntsTextEditor :{
+										name: '#[QMM013_13]',
+										value: name,
+										constraint: 'PerUnitPriceName',
+										option: {width: '200px'},
+										required: true,
+										enable: true,
+										readonly: false}" />
+							<!-- この項目名を廃止する -->
+							<div id="A3_4" tabindex="11" data-bind="ntsCheckBox: { checked: abolitionCustom, style: 'warnpanel',
+																				   enable: !$parents[1].checkCreate()}">
+								#{i18n.getText('QMM013_14')}
+							</div>
+							<!-- 廃止説明 -->
+							<button id="A3_5" data-bind="ntsHelpButton: {image: '../resource/QMM013_1.png', position: 'bottom right', enable: true }">?</button>
+						</div>
+						<div class="valign-center control-group">
+							<!-- 略名 -->
+							<div id="A3_6" data-bind="ntsFormLabel: {required: true, constraint: 'PerUnitPriceShortName'}">#{i18n.getText('QMM013_15')}</div>
+							<!-- 単価略名 -->
+							<input id="A3_7" class="check-validate" tabindex="12"
+									data-bind="ntsTextEditor :{
+										name: '#[QMM013_16]',
+										value: shortName,
+										constraint: 'PerUnitPriceShortName',
+										option: {width: '200px'},
+										required: true,
+										enable: true,
+										readonly: false}" />
+						</div>
+					</div>
+					<hr style="margin-bottom: 10px;"/>
+					<div data-bind="with: salaryPerUnitPriceSetting">
+						<div class="valign-center control-group">
+							<!-- 固定的賃金 -->
+							<div id="A3_13" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM013_19')}</div>
+							<!-- 固定的賃金区分 -->
+							<div id="A3_14" tabindex="14" data-bind="ntsRadioBoxGroup: {
+																name: '#[QMM013_20]',
+																options: settingAtrList,
+																optionsValue: 'id',
+																optionsText: 'name',
+																value: settingAtr,
+																enable: true}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div class="space1"></div>
+							<!-- 一律対象区分 -->
+							<div id="A3_15" tabindex="15" class="cf" data-bind="ntsSwitchButton: {
+																		options: coveredList,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: targetClassification,
+																		enable: settingAtr() == 1 }"></div>
+							<!-- 月給者 -->
+							<div id="A3_16" class="space3">#{i18n.getText('QMM013_26')}</div>
+							<!-- 月給者対象区分 -->
+							<div id="A3_17" tabindex="16" class="cf" data-bind="ntsSwitchButton: {
+																		name: '#[QMM013_27]',
+																		options: coveredList,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: monthlySalary,
+																		enable: settingAtr() == 0 }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div class="space1"></div>
+							<div class="space2"></div>
+							<!-- 日給月給者 -->
+							<div id="A3_18" class="space3">#{i18n.getText('QMM013_28')}</div>
+							<!-- 日給月給者対象区分 -->
+							<div id="A3_19" tabindex="17" class="cf" data-bind="ntsSwitchButton: {
+																		name: '#[QMM013_29]',
+																		options: coveredList,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: monthlySalaryPerday,
+																		enable: settingAtr() == 0 }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div class="space1"></div>
+							<div class="space2"></div>
+							<!-- 日給者 -->
+							<div id="A3_20" class="space3">#{i18n.getText('QMM013_30')}</div>
+							<!-- 日給者対象区分 -->
+							<div id="A3_21" tabindex="18" class="cf" data-bind="ntsSwitchButton: {
+																		name: '#[QMM013_31]',
+																		options: coveredList,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: dayPayee,
+																		enable: settingAtr() == 0 }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div class="space1"></div>
+							<div class="space2"></div>
+							<!-- 時給者 -->
+							<div id="A3_22" class="space3">#{i18n.getText('QMM013_32')}</div>
+							<!-- 時給者対象区分 -->
+							<div id="A3_23" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
+																		name: '#[QMM013_33]',
+																		options: coveredList,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: hourlyPay,
+																		enable: settingAtr() == 0 }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<!-- 単価種類 -->
+							<div id="A3_24" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM013_34')}</div>
+							<!-- 単価種類 -->
+							<div id="A1_25" tabindex="20" class="cf" data-bind="ntsSwitchButton: {
+																		name: '#[QMM013_34]',
+																		options: unitPriceTypeList,
+																		optionsValue: 'code',
+																		optionsText: 'name',
+																		value: unitPriceType,
+																		enable: true }"></div>
+						</div>
+					</div>
+					<hr style="margin-bottom: 10px;"/>
+					<div class="valign-center control-group" style="margin-bottom: 0px" data-bind="with: salaryPerUnitPriceName">
+						<!-- メモ -->
+						<div id="A3_27" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('QMM013_38')}</div>
+						<!-- メモ -->
+						<textarea id="A3_28" class="check-validate" tabindex="21"
+								data-bind="ntsMultilineEditor :{
+									name: '#[QMM013_38]',
+									value: note,
+									constraint: 'Memo',
+									option: {width: '470px'},
+									enable: true,
+									readonly: false}" />
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

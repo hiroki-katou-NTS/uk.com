@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface FixedCheckItemAdapter {
 	
 		public Optional<ValueExtractAlarm>  checkWorkTypeNotRegister(String workplaceID,String employeeID,GeneralDate date,String workTypeCD);
@@ -16,4 +17,5 @@ public interface FixedCheckItemAdapter {
 		public List<ValueExtractAlarm> checkAdminUnverified(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
 		
 		public List<ValueExtractAlarm> checkingData(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
+		public List<ValueExtractAlarm> checkAdminUnverified(String workplaceID,String employeeID,DatePeriod datePeriod);
 }

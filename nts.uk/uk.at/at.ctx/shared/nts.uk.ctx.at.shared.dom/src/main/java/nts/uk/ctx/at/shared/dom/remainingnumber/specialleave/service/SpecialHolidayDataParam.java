@@ -18,6 +18,8 @@ public class SpecialHolidayDataParam {
 	private String sid;
 	/**	・集計開始日・集計終了日 */
 	private DatePeriod dateData;
+	/**特別休暇コード	 */
+	private int speCode;
 	/**	モード */
 	private boolean mode;
 	/**	上書きフラグ */

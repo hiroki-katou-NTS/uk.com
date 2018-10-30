@@ -31,9 +31,5 @@
 # except all js, map in base.web
 !**/base.web/**/*.js*
 **/base.web/**/*bundles.js*
-**/lib/**/**/*.ts*
-**/gitkeep*
-**/quartz.properties
-**/persistence.xml
-**/CreateperApprovalMonthlyPubImpl.java
+
 nts.uk/uk.repo/*

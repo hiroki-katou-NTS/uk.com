@@ -16,9 +16,12 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBreakdownItemSt f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.breakdownItemStPk.salaryItemId =:salaryItemId AND  f.breakdownItemStPk.breakdownItemCode =:breakdownItemCode ";
-	private static final String SELECT_BY_SALARYID = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.breakdownItemStPk.salaryItemId =:salaryItemId";
+			+ " WHERE  f.breakdownItemStPk.cid =:cid AND " + " f.breakdownItemStPk.categoryAtr =:categoryAtr AND "
+			+ " f.breakdownItemStPk.itemNameCd =:itemNameCd AND "
+			+ " f.breakdownItemStPk.breakdownItemCode =:breakdownItemCode ";
+	private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.breakdownItemStPk.cid =:cid AND " + " f.breakdownItemStPk.categoryAtr =:categoryAtr AND "
+			+ " f.breakdownItemStPk.itemNameCd =:itemNameCd";
 
 	@Override
 	public List<BreakdownItemSet> getAllBreakdownItemSt() {
@@ -27,15 +30,17 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 	}
 
 	@Override
-	public List<BreakdownItemSet> getBreakdownItemStBySalaryId(String salaryItemId) {
-		return this.queryProxy().query(SELECT_BY_SALARYID, QpbmtBreakdownItemSt.class)
-				.setParameter("salaryItemId", salaryItemId).getList(i -> i.toDomain());
+	public List<BreakdownItemSet> getBreakdownItemStByStatementItemId(String cid, int categoryAtr, String itemNameCd) {
+		return this.queryProxy().query(SELECT_BY_ID, QpbmtBreakdownItemSt.class)
+				.setParameter("cid", cid).setParameter("categoryAtr", categoryAtr)
+				.setParameter("itemNameCd", itemNameCd).getList(i -> i.toDomain());
 	}
 
 	@Override
-	public Optional<BreakdownItemSet> getBreakdownItemStById(String salaryItemId, String breakdownItemCode) {
+	public Optional<BreakdownItemSet> getBreakdownItemStById(String cid, int categoryAtr, String itemNameCd, String breakdownItemCode) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtBreakdownItemSt.class)
-				.setParameter("salaryItemId", salaryItemId).setParameter("breakdownItemCode", breakdownItemCode)
+				.setParameter("cid", cid).setParameter("categoryAtr", categoryAtr)
+				.setParameter("itemNameCd", itemNameCd).setParameter("breakdownItemCode", breakdownItemCode)
 				.getSingle(c -> c.toDomain());
 	}
 
@@ -50,17 +55,17 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 	}
 
 	@Override
-	public void remove(String salaryItemId, String breakdownItemCode) {
-		if (this.getBreakdownItemStById(salaryItemId, breakdownItemCode).isPresent()) {
+	public void remove(String cid, int categoryAtr, String itemNameCd, String breakdownItemCode) {
+		if (this.getBreakdownItemStById(cid, categoryAtr, itemNameCd, breakdownItemCode).isPresent()) {
 			this.commandProxy().remove(QpbmtBreakdownItemSt.class,
-					new QpbmtBreakdownItemStPk(salaryItemId, breakdownItemCode));
+					new QpbmtBreakdownItemStPk(cid, categoryAtr, itemNameCd, breakdownItemCode));
 		}
 	}
 
 	@Override
-	public void removeAll(String salaryItemId) {
-		List<BreakdownItemSet> entities = this.getBreakdownItemStBySalaryId(salaryItemId);
-		entities.forEach(entity -> this.remove(entity.getSalaryItemId(), entity.getBreakdownItemCode().v()));
+	public void removeAll(String cid, int categoryAtr, String itemNameCd) {
+		List<BreakdownItemSet> entities = this.getBreakdownItemStByStatementItemId(cid, categoryAtr, itemNameCd);
+		entities.forEach(entity -> this.remove(entity.getCid(), entity.getCategoryAtr().value, entity.getItemNameCd().v(), entity.getBreakdownItemCode().v()));
 
 	}
 

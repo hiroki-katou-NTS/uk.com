@@ -99,7 +99,7 @@
 								mode: 'time',
 								enable: true,
 								readonly: false,
-								required: false }" />
+								required: true }" />
 						</div>
 
 						<div class="valign-center control-group">
@@ -107,7 +107,7 @@
 								data-bind="ntsFormLabel: { required: true }">
 								<span data-bind="text: $parent.yearAlarmTimeLabel"></span>
 							</div>
-							<input id="txt-year-error-time"
+							<input id="txt-year-alarm-time"
 								data-bind="ntsTimeEditor: {
 								name: '#[KMK008_43]',
 								constraint: $parent.constraintAlarmTime,
@@ -116,7 +116,7 @@
 								mode: 'time',
 								enable: true,
 								readonly: false,
-								required: false }" />
+								required: true }" />
 						</div>
 					</div>
 				</div>

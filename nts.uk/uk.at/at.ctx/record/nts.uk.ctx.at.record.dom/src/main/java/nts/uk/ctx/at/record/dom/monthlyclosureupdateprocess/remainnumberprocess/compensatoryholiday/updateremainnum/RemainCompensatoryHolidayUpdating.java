@@ -130,8 +130,8 @@ public class RemainCompensatoryHolidayUpdating {
 						optCompensatoryData.get().getCID(), optCompensatoryData.get().getDayOffDate(),
 						new ManagementDataDaysAtr(unOffsetOfDayoff.getRequiredDay()),
 						new ManagementDataHours(unOffsetOfDayoff.getRequiredTime()),
-						new ManagementDataRemainUnit(unOffsetOfDayoff.getRequiredDay()),
-						new ManagementDataHours(unOffsetOfDayoff.getRequiredTime()));
+						new ManagementDataRemainUnit(unOffsetOfDayoff.getUnOffsetDay()),
+						new ManagementDataHours(unOffsetOfDayoff.getUnOffsetTimes()));
 				compensatoryDataRepo.update(compDayOffData);
 			} else {
 				// insert
@@ -139,8 +139,8 @@ public class RemainCompensatoryHolidayUpdating {
 						unOffsetOfDayoff.getDayOffId(), data.getSid(), companyId, data.getYmdData(),
 						new ManagementDataDaysAtr(unOffsetOfDayoff.getRequiredDay()),
 						new ManagementDataHours(unOffsetOfDayoff.getRequiredTime()),
-						new ManagementDataRemainUnit(unOffsetOfDayoff.getRequiredDay()),
-						new ManagementDataHours(unOffsetOfDayoff.getRequiredTime()));
+						new ManagementDataRemainUnit(unOffsetOfDayoff.getUnOffsetDay()),
+						new ManagementDataHours(unOffsetOfDayoff.getUnOffsetTimes()));
 				compensatoryDataRepo.create(compDayOffData);
 			}
 		}

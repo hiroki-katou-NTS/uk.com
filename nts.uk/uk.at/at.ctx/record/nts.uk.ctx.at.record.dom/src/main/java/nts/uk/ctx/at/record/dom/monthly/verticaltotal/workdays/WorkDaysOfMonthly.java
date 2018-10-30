@@ -198,7 +198,7 @@ public class WorkDaysOfMonthly {
 		this.leave.aggregate(workTypeDaysCountTable);
 		
 		// 振出日数の集計
-		this.recruitmentDays.aggregate(workTypeDaysCountTable);
+		this.recruitmentDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 特別休暇日数の集計
 		this.specialVacationDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);

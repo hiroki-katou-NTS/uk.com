@@ -18,9 +18,9 @@ public class StatementItemNameFinder {
 	 * @param 給与項目ID
 	 * @return
 	 */
-	public StatementItemNameDto findStatementItemName(String salaryItemId) {
+	public StatementItemNameDto findStatementItemName(int categoryAtr, String itemNameCd) {
 		String cid = AppContexts.user().companyId();
-		val statementItemName = statementItemNameRepository.getStatementItemNameById(cid, salaryItemId);
+		val statementItemName = statementItemNameRepository.getStatementItemNameById(cid, categoryAtr, itemNameCd);
 		return statementItemName.map(i -> StatementItemNameDto.fromDomain(i)).orElse(null);
 	}
 }
