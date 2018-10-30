@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 
 @Stateless
 @Transactional
-public class StateCorrelationHisCompanySettingCommandHandler extends CommandHandler<StateCorrelationHisCompanySettingCommand> {
+public class AddStateCorrelationHisCompanySettingCommandHandler extends CommandHandler<StateCorrelationHisCompanySettingCommand> {
 
     @Inject
     private StateLinkSettingCompanyRepository repository;
