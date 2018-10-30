@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.speclayout;
 
+/**
+ * 通勤区分
+ */
 public enum WorkingAtr {
     TRANSPORT_FACILITIES(0),
     TRANSPORT_EQUIPMENT(1);

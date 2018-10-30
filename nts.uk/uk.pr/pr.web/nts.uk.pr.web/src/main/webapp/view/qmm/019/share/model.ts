@@ -104,6 +104,23 @@ module nts.uk.pr.view.qmm019.share.model {
         ];
     }
 
+    /**
+     * 通勤区分
+     */
+    export enum WorkingAtr{
+        // 交通機関
+        TRANSPORT_FACILITIES = 0,
+        // 交通用具
+        TRANSPORT_EQUIPMENT = 1
+    }
+
+    export function getWorkingAtr(): Array<ItemModel> {
+        return [
+            new model.ItemModel(WorkingAtr.TRANSPORT_FACILITIES, getText('交通機関')),
+            new model.ItemModel(WorkingAtr.TRANSPORT_EQUIPMENT, getText('交通用具'))
+        ];
+    }
+
     export class BoxModel {
         id: number;
         name: string;
