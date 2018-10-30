@@ -193,4 +193,78 @@ public class OutsideOTSettingFinder {
 
 	}
 	
+	public List<Integer> getDataKMK013() {
+		List<Integer> datas = new ArrayList<>();
+		datas.add(31);
+		datas.add(331);
+		datas.add(313);
+		datas.add(316);
+		datas.add(5);
+		datas.add(6);
+		datas.add(12);
+		datas.add(458);
+		datas.add(460);
+		datas.add(476);
+		datas.add(477);
+		datas.add(478);
+		datas.add(479);
+		datas.add(480);
+		datas.add(481);
+		datas.add(482);
+		datas.add(483);
+		datas.add(484);
+		datas.add(485);
+		datas.add(486);
+		datas.add(487);
+		datas.add(488);
+		datas.add(489);
+		datas.add(490);
+		datas.add(491);
+		datas.add(492);
+		datas.add(493);
+		datas.add(494);
+		datas.add(495);
+		datas.add(496);
+		datas.add(497);
+		datas.add(498);
+		datas.add(499);
+		datas.add(500);
+		datas.add(501);
+		datas.add(502);
+		datas.add(503);
+		datas.add(504);
+		datas.add(505);
+		datas.add(378);
+		datas.add(379);
+		datas.add(380);
+		datas.add(381);
+		datas.add(382);
+		datas.add(383);
+		datas.add(384);
+		datas.add(385);
+		datas.add(386);
+		datas.add(387);
+		datas.add(35);
+		datas.add(36);
+		datas.add(37);
+		datas.add(38);
+		datas.add(39);
+		datas.add(40);
+		datas.add(41);
+		datas.add(42);
+		datas.add(43);
+		datas.add(44);
+		datas.add(110);
+		datas.add(111);
+		datas.add(112);
+		datas.add(113);
+		datas.add(114);
+		datas.add(115);
+		datas.add(116);
+		datas.add(117);
+		datas.add(118);
+		datas.add(119);
+
+		return datas;
+	}
 }

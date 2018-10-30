@@ -1,12 +1,18 @@
 package nts.uk.shr.com.time.calendar.period;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.util.range.ComparableRange;
 import nts.gul.util.value.DiscreteValue;
 
+@EqualsAndHashCode
+@ToString
 public abstract class GeneralPeriod<S extends GeneralPeriod<S, T>, T extends Comparable<T> & DiscreteValue<T>>
 		implements ComparableRange<S, T> {
 
@@ -37,7 +43,7 @@ public abstract class GeneralPeriod<S extends GeneralPeriod<S, T>, T extends Com
 	public T endNext(boolean isIncrement) {
 		return this.end.nextValue(isIncrement);
 	}
-
+	
 	public boolean isEndMax() {
 		return this.end.compareTo(this.max()) == 0;
 	}
@@ -52,6 +58,24 @@ public abstract class GeneralPeriod<S extends GeneralPeriod<S, T>, T extends Com
 	
 	public boolean contains(T target) {
 		return this.start.compareTo(target) <= 0 && this.end.compareTo(target) >= 0;
+	}
+	
+	public void forEach(Consumer<T> process) {
+		this.forEach(c -> {
+			process.accept(c);
+			return true;
+		});
+	}
+	
+	public void forEach(Function<T, Boolean> breakableProcess) {
+		for (T current = this.start;
+				current.compareTo(this.start) <= 0;
+				current = current.nextValue(true)) {
+			Boolean flag = breakableProcess.apply(current);
+			if (flag != null && flag == false) {
+				break;
+			}
+		}
 	}
 
 	protected abstract T max();

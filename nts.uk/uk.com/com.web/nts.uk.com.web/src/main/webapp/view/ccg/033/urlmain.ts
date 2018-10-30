@@ -14,50 +14,50 @@ __viewContext.ready(function() {
             }
             case "kaf002": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });    
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });    
                 break;
             }
             case "kaf004": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });   
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });   
                 break;   
             }
             case "kaf005": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] }); 
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) }); 
                 break;     
             }
             case "kaf006": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });  
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });  
                 break;  
             }
             case "kaf007": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });   
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });   
                 break;   
             }
             case "kaf009": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });     
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });     
                 break;
             }
             case "kaf010": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });  
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });  
                 break;    
             }   
             case "kaf011": {
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
-                    'listAppMeta': [Object.values(success.urlTaskValueList)[0]], 
-                    'currentApp': Object.values(success.urlTaskValueList)[0] });  
+                    'listAppMeta': [_.first(_.map(success.urlTaskValueList))], 
+                    'currentApp': _.first(_.map(success.urlTaskValueList)) });  
                 break;    
             }   
             case "cmm045": {
@@ -69,7 +69,7 @@ __viewContext.ready(function() {
                     //画面モード
                     screenMode: success.urlTaskValueList["screenMode"]=="normal" ? 0 : 1,
                     //社員一覧
-                    lstEmployee: [],
+                    lstEmployee: [success.sID],
                     //エラー参照を起動する
                     errorRefStartAtr: success.urlTaskValueList["errorRef"],
                     //期間を変更する
@@ -87,14 +87,14 @@ __viewContext.ready(function() {
                     //表示形式
                     displayFormat: 0, // DPCorrectionDisplayFormat.INDIVIDUAl(個人別)
                     //期間
-                    startDate: null,
-                    endDate: null,
+                    startDate: moment.utc(success.issueDate).format("YYYY/MM/DD"),
+                    endDate: moment.utc(success.issueDate).format("YYYY/MM/DD"),
                     //抽出した社員一覧
-                    lstExtractedEmployee: [],
+                    lstExtractedEmployee: [success.sID],
                     //Optional
                     //日付別で起動
-                    dateTarget: null,
-                    individualTarget: null,
+                    dateTarget: moment.utc(success.issueDate).format("YYYY/MM/DD"),
+                    individualTarget: success.sID,
                 }
                 nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});    
                 break;

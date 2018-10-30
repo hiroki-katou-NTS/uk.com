@@ -18,4 +18,11 @@ public interface WorkTypeIsClosedService {
 	 * @return
 	 */
 	public boolean checkStampAutoSet(String workTypeCode, AttendanceOfficeAtr workTypeAtr);
+	/**
+	 * 1日休日の判定
+	 * @param sid
+	 * @param ymd
+	 * @return
+	 */
+	public boolean checkHoliday(String workTypeCode);
 }
