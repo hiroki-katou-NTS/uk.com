@@ -413,7 +413,7 @@ module nts.uk.pr.view.qmm012.b {
                         command.paymentItemSet.errorUpRangeVal = null;
                         command.deductionItemSet.errorUpRangeVal = null;
                         command.timeItemSet.errorUpRangeValNum = null;
-                        command.timeItemSet.errorUpRangeTime = null;
+                        command.timeItemSet.errorUpRangeValTime = null;
                     }
                     if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
                         command.paymentItemSet.errorLoRangeVal = null;

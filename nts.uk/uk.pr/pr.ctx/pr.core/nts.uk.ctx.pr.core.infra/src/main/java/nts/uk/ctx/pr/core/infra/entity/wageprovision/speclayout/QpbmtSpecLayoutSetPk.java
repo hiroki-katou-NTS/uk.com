@@ -20,24 +20,19 @@ import lombok.NoArgsConstructor;
 public class QpbmtSpecLayoutSetPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    /**
-     * 会社ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
 
-    /**
-     * 明細書コード
-     */
-    @Basic(optional = false)
-    @Column(name = "SPEC_CD")
-    public String specCd;
     /**
     * 履歴ID
     */
     @Basic(optional = false)
     @Column(name = "HIST_ID")
     public String histId;
+
+    /**
+     * カテゴリ区分
+     */
+    @Basic(optional = false)
+    @Column(name="CTG_ATR")
+    public int categoryAtr;
     
 }

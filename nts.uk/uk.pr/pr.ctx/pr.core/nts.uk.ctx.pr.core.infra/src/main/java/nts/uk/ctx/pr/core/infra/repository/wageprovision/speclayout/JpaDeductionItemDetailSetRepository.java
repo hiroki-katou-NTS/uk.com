@@ -32,17 +32,17 @@ public class JpaDeductionItemDetailSetRepository extends JpaRepository implement
     }
 
     @Override
-    public void add(DeductionItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode){
-        this.commandProxy().insert(QpbmtDdtItemDetailSet.toEntity(domain,ymPeriod,cid,specCode));
+    public void add(DeductionItemDetailSet domain){
+        this.commandProxy().insert(QpbmtDdtItemDetailSet.toEntity(domain));
     }
 
     @Override
-    public void update(DeductionItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode){
-        this.commandProxy().update(QpbmtDdtItemDetailSet.toEntity(domain,ymPeriod,cid,specCode));
+    public void update(DeductionItemDetailSet domain){
+        this.commandProxy().update(QpbmtDdtItemDetailSet.toEntity(domain));
     }
 
     @Override
-    public void remove(String histId, String cid, String specCode){
-        this.commandProxy().remove(QpbmtDdtItemDetailSet.class, new QpbmtDdtItemDetailSetPk(cid,specCode,histId));
+    public void remove(String histId){
+        this.commandProxy().remove(QpbmtDdtItemDetailSet.class, new QpbmtDdtItemDetailSetPk(histId));
     }
 }

@@ -32,17 +32,17 @@ public class JpaPaymentItemDetailSetRepository extends JpaRepository implements 
     }
 
     @Override
-    public void add(PaymentItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode){
-        this.commandProxy().insert(QpbmtPayItemDetailSet.toEntity(domain, ymPeriod, cid, specCode));
+    public void add(PaymentItemDetailSet domain){
+        this.commandProxy().insert(QpbmtPayItemDetailSet.toEntity(domain));
     }
 
     @Override
-    public void update(PaymentItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode){
-        this.commandProxy().update(QpbmtPayItemDetailSet.toEntity(domain, ymPeriod, cid, specCode));
+    public void update(PaymentItemDetailSet domain){
+        this.commandProxy().update(QpbmtPayItemDetailSet.toEntity(domain));
     }
 
     @Override
-    public void remove(String histId, String cid, String specCode){
-        this.commandProxy().remove(QpbmtPayItemDetailSet.class, new QpbmtPayItemDetailSetPk(histId, cid, specCode));
+    public void remove(String histId){
+        this.commandProxy().remove(QpbmtPayItemDetailSet.class, new QpbmtPayItemDetailSetPk(histId));
     }
 }

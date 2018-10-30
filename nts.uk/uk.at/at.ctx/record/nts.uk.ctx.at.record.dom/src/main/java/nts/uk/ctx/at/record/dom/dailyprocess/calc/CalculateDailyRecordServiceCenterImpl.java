@@ -15,8 +15,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -135,8 +133,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<ManagePerCompanySet> companySet){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
-								.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+		return commonPerCompany(
+				calcOption,
+				integrationOfDaily,
+				true,
+				Optional.empty(),
+				Optional.empty(),
+				companySet,
+				Collections.emptyList())
+				.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 	}
 	
 	
@@ -145,7 +150,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	public ManageProcessAndCalcStateResult calculateForManageState(
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<AsyncCommandHandlerContext> asyncContext,
-			Optional<Consumer<ProcessState>> counter,
 			List<ClosureStatusManagement> closureList,
 			ExecutionType reCalcAtr){
 		if(reCalcAtr.isRerun()) {
@@ -167,7 +171,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			});
 
 		}
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,Optional.empty(),Optional.empty(),closureList);
 	}
 
 
@@ -201,13 +205,16 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		Map<String,List<IntegrationOfDaily>> recordPerEmpId = getPerEmpIdRecord(integrationOfDaily);
 		String comanyId = AppContexts.user().companyId();
 		//会社共通の設定を
-		MasterShareContainer shareContainer = MasterShareBus.open();
-		
 		ManagePerCompanySet companyCommonSetting = companySet.orElseGet(() -> {
 			return commonCompanySettingForCalc.getCompanySetting();
 		});
 		
-		companyCommonSetting.setShareContainer(shareContainer);
+		boolean mustCleanShareContainer = false;
+		if (companyCommonSetting.getShareContainer() == null) {
+			mustCleanShareContainer = true;
+			MasterShareContainer<String> shareContainer = MasterShareBus.open();
+			companyCommonSetting.setShareContainer(shareContainer);
+		}
 		
 		companyCommonSetting.setPersonnelCostSettings(personnelCostSettingAdapter.findAll(comanyId, getDateSpan(integrationOfDaily)));
 		
@@ -228,13 +235,16 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			}
 			returnList.addAll(returnValue);
 			//人数カウントアップ
-			if(counter.isPresent()) {
-				counter.get().accept(ProcessState.SUCCESS);
-			}
+//			if(counter.isPresent()) {
+//				counter.get().accept(ProcessState.SUCCESS);
+//			}
 		}
 
-		shareContainer.clearAll();
-		shareContainer= null;
+		if (mustCleanShareContainer) {
+			companyCommonSetting.getShareContainer().clearAll();
+			companyCommonSetting.setShareContainer(null);
+		}
+		
 		return new ManageProcessAndCalcStateResult(ProcessState.SUCCESS,returnList);
 		
 	}
