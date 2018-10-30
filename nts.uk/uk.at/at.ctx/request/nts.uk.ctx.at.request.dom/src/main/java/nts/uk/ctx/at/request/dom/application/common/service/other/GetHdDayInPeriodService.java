@@ -46,14 +46,14 @@ public class GetHdDayInPeriodService {
 			}
 			//#100574 - #100575 2018.10.02
 			//1日半日出勤・1日休日系の判定
-			AttendanceHolidayAttr checkOneDay = judgeHdSysOneDaySv.judgeHdOnDayWorkPer(ach.getWorkType().getWorkTypeCode());
+//			AttendanceHolidayAttr checkOneDay = judgeHdSysOneDaySv.judgeHdOnDayWorkPer(ach.getWorkType().getWorkTypeCode());
 			//#102184 - 2018.10.25
 			//1日休日の判定
-//			boolean checkOneDay = specHdWkpTypeSv.jubgeHdOneDay(companyID, ach.getWorkType().getWorkTypeCode());
+			boolean checkOneDay = specHdWkpTypeSv.jubgeHdOneDay(companyID, ach.getWorkType().getWorkTypeCode());
 			//outputがTrue：1日休日系 (True)
 			//休日日数+=1-(holidayNumber + =1)
-//			hdDays = checkOneDay ? hdDays + 1 : hdDays;
-            hdDays = checkOneDay.equals(AttendanceHolidayAttr.HOLIDAY) ? hdDays + 1 : hdDays;
+			hdDays = checkOneDay ? hdDays + 1 : hdDays;
+//            hdDays = checkOneDay.equals(AttendanceHolidayAttr.HOLIDAY) ? hdDays + 1 : hdDays;
 			date = period.start().addDays(i);
 		}
 		return hdDays;

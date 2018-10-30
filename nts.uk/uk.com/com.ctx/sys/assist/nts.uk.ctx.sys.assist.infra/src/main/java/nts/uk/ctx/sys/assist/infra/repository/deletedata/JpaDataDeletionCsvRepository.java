@@ -650,7 +650,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * @param tblName
 	 */
 	private void buildFromDelPart(StringBuffer buffer, String tblName) {
-		buffer.append(" DELETE FROM " + tblName );
+		buffer.append(" DELETE "  + tblName + " FROM " + tblName );
 	}
 	
 	/**
@@ -704,77 +704,78 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String fieldChild10 = tableDelData.getFieldChild10();
 		String fieldParent10 = tableDelData.getFieldParent10();
 		
-		buffer.append(" WHERE ");
-		buffer.append(" EXISTS ( ");
-		buffer.append(" SELECT ");
-		
-		String prefix = "";
-		if (fieldParent1 != null && !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent1);
-		}
-		
-		if (fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent2);
-		}
-		
-		if (fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent3);
-		}
-		
-		if (fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent4);
-		}
-		
-		if (fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent5);
-		}
-		
-		if (fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent6);
-		}
-		
-		if (fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent7);
-		}
-		
-		if (fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent8);
-		}
-		
-		if (fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent9);
-		}
-		
-		if (fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
-			buffer.append(prefix);
-			prefix = ",";
-			buffer.append(parentTblName + "." + fieldParent10);
-		}
-		
-			
-		buffer.append(" FROM " + parentTblName);
+//		buffer.append(" WHERE ");
+//		buffer.append(" EXISTS ( ");
+//		buffer.append(" SELECT ");
+//		
+//		String prefix = "";
+//		if (fieldParent1 != null && !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent1);
+//		}
+//		
+//		if (fieldParent2 != null && !"null".equals(fieldParent2) && !fieldParent2.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent2);
+//		}
+//		
+//		if (fieldParent3 != null && !"null".equals(fieldParent3) && !fieldParent3.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent3);
+//		}
+//		
+//		if (fieldParent4 != null && !"null".equals(fieldParent4) && !fieldParent4.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent4);
+//		}
+//		
+//		if (fieldParent5 != null && !"null".equals(fieldParent5) && !fieldParent5.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent5);
+//		}
+//		
+//		if (fieldParent6 != null && !"null".equals(fieldParent6) && !fieldParent6.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent6);
+//		}
+//		
+//		if (fieldParent7 != null && !"null".equals(fieldParent7) && !fieldParent7.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent7);
+//		}
+//		
+//		if (fieldParent8 != null && !"null".equals(fieldParent8) && !fieldParent8.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent8);
+//		}
+//		
+//		if (fieldParent9 != null && !"null".equals(fieldParent9) && !fieldParent9.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent9);
+//		}
+//		
+//		if (fieldParent10 != null && !"null".equals(fieldParent10) && !fieldParent10.isEmpty()) {
+//			buffer.append(prefix);
+//			prefix = ",";
+//			buffer.append(parentTblName + "." + fieldParent10);
+//		}
+//		
+//			
+//		buffer.append(" FROM " + parentTblName);
 		
 		
 		//build inner joint
-		buffer.append(" INNER JOIN " + tblName + " ON ");
+		String prefix = "";
+		buffer.append(" INNER JOIN " + parentTblName + " ON ");
 		prefix = "";
 		if (fieldChild1 != null && !"null".equals(fieldChild1) && !fieldChild1.isEmpty() && fieldParent1 != null
 				&& !"null".equals(fieldParent1) && !fieldParent1.isEmpty()) {
@@ -850,6 +851,6 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		buildWherePart(buffer, tableDelData, employeeDeletions, parrams);
 		
 		
-		buffer.append(" )");
+//		buffer.append(" )");
 	}
 }

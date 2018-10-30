@@ -98,7 +98,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let self = this;
             self.yearMonth.subscribe((data) => {
                 if(data){
-                    self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString().split(' ').join('')]));
+                    self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString()]));
                 }else{
                     self.monthlyCalendar(null);
                 }
