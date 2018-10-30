@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
@@ -65,9 +64,10 @@ public class AnyItemOfMonthlyFinder extends MonthlyFinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth) {
-		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.MONTHLY_PERFORMANCE);
-		return (List<T>) repo.findBySidsAndMonths(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
+		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
+				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
+		
+		return (List<T>) repo.findBySidsAndMonthsV2(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
 				.stream().collect(Collectors.groupingBy(c -> StringUtils.join(c.getEmployeeId(), c.getYearMonth()), 
 						Collectors.collectingAndThen(Collectors.toList(), 
 								list -> AnyItemOfMonthlyDto.fromWith(list, optionalMaster))))

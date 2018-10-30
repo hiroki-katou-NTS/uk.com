@@ -201,14 +201,16 @@ module nts.uk.ui.koExtentions {
                         let $node = $tree.igTree("nodesByValue", val);
                         $node.find("a:first").addClass("ui-state-active");
                         let $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
-                        if($tree.igTree("checkState", $node) === "off"){
+                        if($node.length > 0 && $tree.igTree("checkState", $node) === "off"){
                             $tree.igTree("toggleCheckstate", $node);
                         }
                     });
                 } else {
                     let $selectingNode = $tree.igTree("nodesByValue", singleValue);
-                    $tree.igTree("select", $selectingNode);
-                    $tree.igTree("expandToNode", $selectingNode);
+                    if ($selectingNode.length > 0) {
+                        $tree.igTree("select", $selectingNode);
+                        $tree.igTree("expandToNode", $selectingNode);
+                    }
                 }
             }
         }

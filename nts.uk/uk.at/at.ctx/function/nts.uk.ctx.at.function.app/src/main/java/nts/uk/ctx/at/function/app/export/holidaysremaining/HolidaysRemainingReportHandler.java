@@ -57,6 +57,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -97,6 +99,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private NursingLeaveRemainingAdapter nursingLeaveAdapter;
 	@Inject
 	private VariousVacationControlService variousVacationControlService;
+	@Inject
+	private CompanyAdapter companyRepo;
+	
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -147,7 +152,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
 				.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, criteriaDate, true, false, true,
 						true, false, false));
-
 		// 出力するデータ件数をチェックする
 		if (listEmployeeInformationImport.isEmpty()) {
 			throw new BusinessException("Msg_885");
@@ -177,16 +181,18 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				}
 			}
 			val holidayRemainingInfor = this.getHolidayRemainingInfor(variousVacationControl, closureInforOpt,
-					emp.getEmployeeId(), baseDate, startDate, endDate);
+					emp.getEmployeeId(), baseDate, startDate, endDate,currentMonth);
 
 			employees.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
 					empMap.get(emp.getEmployeeId()).getEmployeeName(), empMap.get(emp.getEmployeeId()).getWorkplaceId(),
 					wpCode, wpName, empmentName, positionName, currentMonth, holidayRemainingInfor));
 		}
+		
+		Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
 
 		HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(hdRemainCond.getStartMonth(),
 				hdRemainCond.getEndMonth(), variousVacationControl, hdRemainCond.getPageBreak(),
-				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth, employeeIds, employees);
+				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth, employeeIds, employees, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
 
 		this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 
@@ -194,7 +200,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 	private HolidayRemainingInfor getHolidayRemainingInfor(VariousVacationControl variousVacationControl,
 			Optional<ClosureInfo> closureInforOpt, String employeeId, GeneralDate baseDate, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate, Optional<YearMonth> currMonth) {
 
 		// RequestList369
 		Optional<GeneralDate> grantDate = Optional.empty();
@@ -222,6 +228,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		List<StatusOfHolidayImported> listStatusOfHoliday = null;
 		// RequestList273
 		Map<Integer, SpecialVacationImported> mapSpecialVacation = new HashMap<>();
+        Map<Integer, SpecialVacationImported> mapSPVaCrurrentMonth = new HashMap<>();
+
 		// RequestList263
 		Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday = new HashMap<>();
 		// RequestList206
@@ -298,6 +306,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		for (val specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
 			int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
 
+			
 			// Call RequestList273
 			SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
 					employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
@@ -310,6 +319,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				mapListSpecialHoliday.put(sphdCode, specialHolidayList);
 			} else {
 				mapListSpecialHoliday.put(sphdCode, new ArrayList<SpecialHolidayImported>());
+			}
+
+            // Call RequestList273
+			if (currMonth.isPresent() && currMonth.get().lessThanOrEqualTo(endDate.yearMonth())){
+	            SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
+	                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
+	            mapSPVaCrurrentMonth.put(sphdCode, spVaImported);
 			}
 		}
 
@@ -326,7 +342,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
 				listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
 				listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday,
-				mapSpecialVacation, mapListSpecialHoliday, childNursingLeave, nursingLeave);
+				mapSpecialVacation, mapSPVaCrurrentMonth, mapListSpecialHoliday, childNursingLeave, nursingLeave);
 	}
 
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {

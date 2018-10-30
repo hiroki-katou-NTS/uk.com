@@ -26,10 +26,10 @@ public class UpdateStatementItemNameCommandHandler extends CommandHandler<List<S
 		List<StatementItemAndStatementItemNameDto> command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		List<StatementItemName> statementItemName = command.stream()
-				.map(item -> new StatementItemName(companyId, item.getSalaryItemId(), item.getName(),
+				.map(item -> new StatementItemName(companyId, item.getCategoryAtr(), item.getItemNameCd(), item.getName(),
 						item.getShortName(), item.getOtherLanguageName(), item.getEnglishName()))
 				.collect(Collectors.toList());
 		statementItemNameRepository.updateListStatementItemName(statementItemName);
 	}
 
-};
+}

@@ -199,8 +199,6 @@ public class LeaveEarlyTimeSheet {
 			,WithinWorkTimeFrame duplicateTimeSheet
 			,DeductionTimeSheet deductionTimeSheet,List<TimeSheetOfDeductionItem> breakTimeList
 			,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet, OtherEmTimezoneLateEarlySet otherEmTimezoneLateEarlySet){
-		//控除区分を基に丸め設定を取得しておく
-		//TimeRoundingSetting timeRoundingSetting = lateLeaveEarlySettingOfWorkTime.getTimeRoundingSetting(deductionAtr);
 		
 		//退勤時刻
 		TimeWithDayAttr leave = null;
@@ -244,7 +242,7 @@ public class LeaveEarlyTimeSheet {
 					dpCopyRec.add(tc);
 				});
 				
-				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(dpCopyDed,dpCopyRec);
+				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(dpCopyDed,dpCopyRec,deductionTimeSheet.getBreakTimeOfDailyList(),deductionTimeSheet.getDailyGoOutSheet(),deductionTimeSheet.getShortTimeSheets());
 				//大塚モードか判断_現状は常に大塚モード
 				if(true) {
 					

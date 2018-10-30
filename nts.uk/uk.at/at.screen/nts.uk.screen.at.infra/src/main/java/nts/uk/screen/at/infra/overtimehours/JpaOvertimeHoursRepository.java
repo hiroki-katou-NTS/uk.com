@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -25,7 +26,7 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 	@Override
 	public List<String> getAffWkpHistItemByListWkpIdAndDatePeriod(DatePeriod dateperiod, List<String> workplaceId) {
 		List<String> listHistItem = new ArrayList<>();
-		CollectionUtil.split(workplaceId, 1000, subList -> {
+		CollectionUtil.split(workplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_DATEPERIOD, String.class)
 					.setParameter("workplaceIds", subList)
 					.setParameter("startDate", dateperiod.start())
@@ -44,7 +45,7 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 	@Override
 	public List<String> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
 		List<String> listHistItem = new ArrayList<>();
-		CollectionUtil.split(employmentCodes, 1000, subList -> {
+		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, String.class).setParameter("employmentCodes", subList).setParameter("startDate", dateperiod.start())
 					.setParameter("endDate", dateperiod.end()).getList());
 		});
@@ -56,7 +57,6 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 	}
 	
 	/** The Constant MAX_ELEMENTS. */
-	private static final Integer MAX_ELEMENTS = 1000;
 	private static final String SELECT_NO_PARAM = String.join(" ", "SELECT c FROM BsymtAffCompanyHist c");
 	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
 			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
@@ -72,7 +72,7 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 		// ResultList
 		List<BsymtAffCompanyHist> resultList = new ArrayList<>();
 		// Split employeeId List if size of employeeId List is greater than 1000
-		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 					.query(SELECT_BY_EMPID_AND_DATE_PERIOD, BsymtAffCompanyHist.class)
 					.setParameter("employeeIds", subList)

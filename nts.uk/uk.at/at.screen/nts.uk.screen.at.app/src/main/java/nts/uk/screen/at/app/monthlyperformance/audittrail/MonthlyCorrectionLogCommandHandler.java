@@ -37,56 +37,50 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 
 	@Override
 	protected void handle(CommandHandlerContext<MonthlyCorrectionLogCommand> context) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.MONTHLY);
-		
-		List<MonthlyRecordWorkDto> oldDtos = context.getCommand().getMonthlyOld();
-		List<MonthlyRecordWorkDto> newDtos = context.getCommand().getMonthlyNew();
-
-		Map<Integer, String> itemNameMap = attendanceItemNameAdapter.getMonthlyAttendanceItemName(ITEM_ID_ALL).stream()
-				.collect(Collectors.toMap(MonthlyAttendanceItemNameDto::getAttendanceItemId,
-						x -> x.getAttendanceItemName()));
-		Map<String, List<Integer>> editMap = context.getCommand().getQuery().stream()
-				.collect(Collectors.toMap(x -> x.getEmployeeId(),
-						x -> x.getItems().stream().map(y -> y.getItemId()).collect(Collectors.toList())));
-		List<MonthlyCorrectionTarget> targets = new ArrayList<>();
-		for (int i = 0; i < newDtos.size(); i++) {
-			MonthlyRecordWorkDto oldDto = oldDtos.get(i);
-			MonthlyRecordWorkDto newDto = newDtos.get(i);
-			List<Integer> editItems = editMap.get(oldDto.getEmployeeId());
-			Map<Integer, ItemValue> itemOldMap = AttendanceItemUtil
-					.toItemValues(oldDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
-					.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			Map<Integer, ItemValue> itemNewMap = AttendanceItemUtil
-					.toItemValues(newDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
-					.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			MonthlyCorrectionTarget monthTarget = new MonthlyCorrectionTarget(oldDto.getEmployeeId(), context.getCommand().getEndPeriod());
-			itemNewMap.forEach((key, value) -> {
-				ItemValue itemNew = value;
-				ItemValue itemOld = itemOldMap.get(key);
-				if (itemNew.getValue() != null && itemOld.getValue() != null
-						&& !itemNew.getValue().equals(itemOld.getValue())
-						|| (itemNew.getValue() == null && itemOld.getValue() != null)
-						|| (itemNew.getValue() != null && itemOld.getValue() == null)) {
-					MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key, itemOld.getValue(),
-							itemNew.getValue(), convertType(itemNew.getValueType()),
-							editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
-					monthTarget.getCorrectedItems().add(item);
-				}
-			});
-			targets.add(monthTarget);
-		}
-		MonthlyCorrectionLogParameter correctionLogParameter = new MonthlyCorrectionLogParameter(targets);
-		DataCorrectionContext.setParameter(correctionLogParameter);
-		AttendanceItemIdContainer.getIds(AttendanceItemType.MONTHLY_ITEM);
-
+		DataCorrectionContext.transactional(CorrectionProcessorId.MONTHLY, () -> {
+			
+			List<MonthlyRecordWorkDto> oldDtos = context.getCommand().getMonthlyOld();
+			List<MonthlyRecordWorkDto> newDtos = context.getCommand().getMonthlyNew();
+	
+			Map<Integer, String> itemNameMap = attendanceItemNameAdapter.getMonthlyAttendanceItemName(ITEM_ID_ALL).stream()
+					.collect(Collectors.toMap(MonthlyAttendanceItemNameDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName()));
+			Map<String, List<Integer>> editMap = context.getCommand().getQuery().stream()
+					.collect(Collectors.toMap(x -> x.getEmployeeId(),
+							x -> x.getItems().stream().map(y -> y.getItemId()).collect(Collectors.toList())));
+			List<MonthlyCorrectionTarget> targets = new ArrayList<>();
+			for (int i = 0; i < newDtos.size(); i++) {
+				MonthlyRecordWorkDto oldDto = oldDtos.get(i);
+				MonthlyRecordWorkDto newDto = newDtos.get(i);
+				List<Integer> editItems = editMap.get(oldDto.getEmployeeId());
+				Map<Integer, ItemValue> itemOldMap = AttendanceItemUtil
+						.toItemValues(oldDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
+						.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+				Map<Integer, ItemValue> itemNewMap = AttendanceItemUtil
+						.toItemValues(newDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
+						.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+				MonthlyCorrectionTarget monthTarget = new MonthlyCorrectionTarget(oldDto.getEmployeeId(), context.getCommand().getEndPeriod());
+				itemNewMap.forEach((key, value) -> {
+					ItemValue itemNew = value;
+					ItemValue itemOld = itemOldMap.get(key);
+					if (itemNew.getValue() != null && itemOld.getValue() != null
+							&& !itemNew.getValue().equals(itemOld.getValue())
+							|| (itemNew.getValue() == null && itemOld.getValue() != null)
+							|| (itemNew.getValue() != null && itemOld.getValue() == null)) {
+						MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key, itemOld.getValue(),
+								itemNew.getValue(), convertType(itemNew.getValueType()),
+								editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
+						monthTarget.getCorrectedItems().add(item);
+					}
+				});
+				targets.add(monthTarget);
+			}
+			MonthlyCorrectionLogParameter correctionLogParameter = new MonthlyCorrectionLogParameter(targets);
+			DataCorrectionContext.setParameter(correctionLogParameter);
+			AttendanceItemIdContainer.getIds(AttendanceItemType.MONTHLY_ITEM);
+		});
 	}
-
-	@Override
-	protected void postHandle(CommandHandlerContext<MonthlyCorrectionLogCommand> context) {
-		super.postHandle(context);
-		DataCorrectionContext.transactionFinishing();
-	}
-
+	
 	private Integer convertType(ValueType valueType) {
 		switch (valueType.value) {
 

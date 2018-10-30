@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
@@ -104,7 +105,7 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 		// Split query.
 		List<SrcdtLoginRecord> resultList = new ArrayList<>();
 
-		CollectionUtil.split(operationIds, 1000, operationId -> {
+		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, operationId -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 

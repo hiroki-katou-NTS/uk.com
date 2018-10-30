@@ -38,9 +38,9 @@ public class BreakdownItemWebService extends WebService {
 	private RemoveBreakdownItemSetCommandHandler removeBreakdownItemSetCommandHandler;
 
 	@POST
-	@Path("getAllBreakdownItemSetById/{salaryItemId}")
-	public List<BreakdownItemSetDto> getAllBreakdownItemSetById(@PathParam("salaryItemId") String salaryItemId) {
-		return this.breakdownItemFinder.getBreakdownItemStBySalaryId(salaryItemId);
+	@Path("getAllBreakdownItemSetById/{categoryAtr}/{itemNameCd}")
+	public List<BreakdownItemSetDto> getAllBreakdownItemSetById(@PathParam("categoryAtr") int categoryAtr, @PathParam("itemNameCd") String itemNameCd) {
+		return this.breakdownItemFinder.getBreakdownItemStById(categoryAtr, itemNameCd);
 	}
 
 	@POST

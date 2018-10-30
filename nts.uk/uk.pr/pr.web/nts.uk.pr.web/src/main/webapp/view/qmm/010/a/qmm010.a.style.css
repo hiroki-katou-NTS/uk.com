@@ -1,0 +1,17 @@
+
+.column-1 {
+    min-width: 190px;
+
+}
+.column-md-3 {
+    width: 340px !important;
+}
+.column-md-5 {
+    width: 560px !important;
+}
+.row {
+    margin-top: 10px;
+}
+.fixed-flex-layout > .fixed-flex-layout-left {
+    margin-right: -10px;
+}

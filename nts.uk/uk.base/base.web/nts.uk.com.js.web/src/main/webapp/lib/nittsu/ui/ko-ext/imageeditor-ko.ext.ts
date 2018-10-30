@@ -176,7 +176,12 @@ module nts.uk.ui.koExtentions {
                 event.preventDefault();
                 let files = evt.originalEvent["dataTransfer"].files;
                 if (!nts.uk.util.isNullOrEmpty(files)) {
-                    self.validateFile(files);
+                    let firstImageFile = self.helper.getFirstFile(files);
+                    if (self.validateFile(firstImageFile)) {
+                        self.assignImageToView(firstImageFile);
+                    } else {
+                        self.changeStatus(ImageStatus.FAIL);
+                    }
                 }
             });
 
@@ -336,43 +341,42 @@ module nts.uk.ui.koExtentions {
                     return;
                 }
                 
-                if (!self.validateFilesSize(this.files[0])) {
-                    // if file's size > maxSize, remove that file                    
+                let firstImageFile = self.helper.getFirstFile(this.files);
+                
+                if (!self.validateFile(firstImageFile)) {
+                    // remove file
                     $(this).val('');    
                     self.changeStatus(ImageStatus.FAIL);
                     return;
                 }
                     
-                self.validateFile(this.files);
+                self.assignImageToView(firstImageFile);
                 
             });
         }
         
-        validateFilesSize(file: File) {
+        validateFile(firstImageFile: File): boolean {
             let self = this;
+
+            if (nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), 
+                                                messageParams: [self.helper.toStringExtension()] });
+                return false;
+            }
+
             let MAX_SIZE = self.helper.maxSize;
-            
+
             // if MAX_SIZE == undefined => do not check size
             if (!MAX_SIZE) {
-                return true;   
+                return true;
             }
-            
-            if (file.size > MAX_SIZE * 1048576) {
+
+            if (firstImageFile.size > MAX_SIZE * 1048576) {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
                 return false;
             }
-            
-            return true;  
-        } 
-                
-        validateFile(files: File[]){
-            let self = this;
-            let firstImageFile = self.helper.getFirstFile(files);
-            if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                self.assignImageToView(firstImageFile);
-            } else {
-                nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });    
-            }    
+
+            return true;
         }
 
         assignImageToView(file) {

@@ -36,6 +36,8 @@ public interface AppRootConfirmRepository {
 	public void createNewStatus(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
 	public Optional<AppRootConfirm> findByEmpDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
+	
+	public List<AppRootConfirm> findByEmpDate(String companyID, List<String> employeeID, DatePeriod date, RecordRootType rootType);
 
 	public void deleteByRequestList424(String companyID, String employeeID, GeneralDate date, Integer rootType);
 	
@@ -45,5 +47,7 @@ public interface AppRootConfirmRepository {
 	public Optional<AppRootConfirm> findByEmpPeriodMonth(String companyID, String employeeID, DatePeriod period);
 	
 	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth);
+	
+	public void clearStatusFromDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
 }

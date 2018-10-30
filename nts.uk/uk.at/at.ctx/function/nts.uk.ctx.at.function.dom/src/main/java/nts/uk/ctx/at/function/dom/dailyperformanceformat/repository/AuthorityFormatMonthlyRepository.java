@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.dailyperformanceformat.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ public interface AuthorityFormatMonthlyRepository {
 	List<AuthorityFomatMonthly> getMonthlyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 	
 	List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId, List<String> listDailyPerformanceFormatCode);
+	
+	List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId, Collection<String> listDailyPerformanceFormatCode);
 	
 	void update(AuthorityFomatMonthly authorityFomatMonthly);
 	

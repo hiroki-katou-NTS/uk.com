@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 620, height: 420 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm007.c.vm.js" />
+        <com:scriptfile path="qmm007.c.start.js" />
+        <com:scriptfile path="qmm007.c.service.js" />
+        <com:stylefile path="qmm007.c.style.css" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="title" style="margin-bottom: 10px">
+                <!-- C1_1 -->
+                <span id="C1_1" class="label">#{i18n.getText('QMM007_38')}</span>
+            </div>
+            <!-- F1_2 名称 -->
+            <div id="C1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px;">
+                <span class="label">#{i18n.getText('QMM007_5')}</span>
+                <!-- C1_3 保険名称 -->
+                <span id="C1_3" class="label"  style="margin-left: 50px" data-bind = "text: code"></span>
+                <!-- C1_4 保険名称 -->
+                <span id="C1_4" class="label"  style="margin-left: 15px" data-bind = "text: name"></span>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 100px 10px;">
+                            <span class="label">#{i18n.getText('QMM007_39')}</span>
+                        </div>
+
+                    </td>
+                    <td id="C1_6" tabindex="1">
+                        <div>
+                            <div style="" class="cell"  tabIndex = "-1"
+                                 data-bind="ntsRadioButton: {
+										checked: methodEditing,
+										option: itemList()[0],
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										group: 'periodOption'}">
+                            </div>
+                            <br/>
+                            <div style="margin: 10px 10px 10px 20px;">
+                                <span class="label warning"
+                                      data-bind="text :textResourceRadioFirt "></span>
+                            </div>
+                            <div class="cell" style=""  tabIndex = "-1"
+                                 data-bind="ntsRadioButton: {
+										checked: methodEditing,
+										option: itemList()[1],
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										group: 'periodOption'}">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class = "C1_8"  style="margin: 10px 0px 0px 165px;">
+                <!-- C1_8 期間 -->
+                <div id = "C1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_32')}</div>
+                <!-- C1_9 最新の履歴から引き継ぐ -->
+                <div id = "C1_9" tabindex = "2" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM007_11')}',
+												value: startYearMonth,
+												required: hasRequired(),
+												enable: hasRequired(),
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'}">
+                </div>
+                <!-- C1_10 初めから作成する。 -->
+                <span id="C1_10" class="label" data-bind="text :endYearMonth "></span>
+            </div>
+
+        </div>
+        <div id= "functions-area-bottom" style="z-index: auto">
+            <!-- C2_1 登録 -->
+            <button id="C2_1" tabindex="3" class="proceed large"
+                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_48')}</button>
+            <!-- C2_2 削除 -->
+            <button id="C2_2" tabindex="4"
+                    data-bind="click: cancel">#{i18n.getText('QMM007_37')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -275,18 +275,23 @@ module cmm044.a.viewmodel {
                 requestId: requestId
             };
             service.findAgent(param).done(function(agent: model.AgentDto) {
+                self.dateValue({ startDate: agent.startDate, endDate: agent.endDate });
                 self.currentItem(new model.AgentAppDto(employeeId, requestId, agent.startDate, agent.endDate,
                     agent.agentSid1, agent.agentAppType1,
                     agent.agentSid2, agent.agentAppType2,
                     agent.agentSid3, agent.agentAppType3,
                     agent.agentSid4, agent.agentAppType4));
-
+                
+                self.agentSid1(agent.agentSid1);
+                self.agentSid2(agent.agentSid2);
+                self.agentSid3(agent.agentSid3);
+                self.agentSid4(agent.agentSid4);
+                
                 self.agentAppType1(agent.agentAppType1);
                 self.agentAppType2(agent.agentAppType2);
                 self.agentAppType3(agent.agentAppType3);
                 self.agentAppType4(agent.agentAppType4);
 
-                self.dateValue({ startDate: agent.startDate, endDate: agent.endDate });
                 $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 dfd.resolve();
             }).fail(function(error) {
@@ -567,7 +572,12 @@ module cmm044.a.viewmodel {
                     businessName: item.employeeName,
                 }));
             });
-
+            let containResult = _.find(self.employeeInputList(), function(item) { return item.id == self.selectedItem(); });
+            if(nts.uk.util.isNullOrUndefined(containResult)){
+                if(!nts.uk.util.isNullOrEmpty(self.employeeInputList())){
+                    self.selectedItem(self.employeeInputList()[0].id);   
+                }     
+            }
             self.initKCP009();
         }
     }

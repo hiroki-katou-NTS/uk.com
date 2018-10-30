@@ -9,13 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays;
@@ -33,8 +34,13 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 		if(companyIds.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query("SELECT v FROM KrcctOtkVacationCk v WHERE v.cid IN :cid", KrcctOtkVacationCk.class)
-				.setParameter("cid", companyIds).getList(c -> c.toDomain());
+		List<ContinuousHolCheckSet> resultList = new ArrayList<>();
+		CollectionUtil.split(companyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query("SELECT v FROM KrcctOtkVacationCk v WHERE v.cid IN :cid", KrcctOtkVacationCk.class)
+				.setParameter("cid", subList)
+				.getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -45,19 +51,20 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 	
 	@Override
 	public Optional<ContinuousHolCheckSet> findSpecial(String companyId) {
-		try {/** TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
+		/* TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
 //			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
 //			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
 //			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
 //			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCCT_OTK_WT_NONTARGET c ");
 //			queryString.append(" WHERE a.CID = c.CID FOR XML PATH('')), 1, 1, '') [NONTARGET] ");
-			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
-			queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
-			queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
-			queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
-			queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
-			queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
-			PreparedStatement statement = this.connection().prepareStatement(queryString.toString());
+		StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
+		queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
+		queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
+		queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
+		queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
+		queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
+			
+		try (PreparedStatement statement = this.connection().prepareStatement(queryString.toString())) {
 
 			statement.setString(1, companyId);
 			statement.setInt(2, 1);
@@ -78,12 +85,14 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 					 getType(result, "TARGET"), 
 					 getType(result, "NONTARGET"), 
 					 true, new DisplayMessage(result.get(0).get("MESSAGE_DISPLAY").toString()), 
-					 new ContinuousVacationDays(Integer.parseInt(result.get(0).get("CONTINUOUS_DAYS").toString())))); 
+					 new ContinuousVacationDays((int) result.get(0).get("CONTINUOUS_DAYS")))); 
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+
 
 	private List<WorkTypeCode> getType(final List<Map<String, Object>> result, String column) {
 		return result.stream().filter(c -> c.get(column) != null).map(c -> c.get(column).toString().trim())

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.attendance.util.item;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,6 +14,8 @@ import nts.arc.time.GeneralDate;
 @Getter
 @EqualsAndHashCode(of = {"itemId", "valueType", "value"})
 public class ItemValue {
+	
+	private static final String DATE_FORMAT = "yyyyMMdd";
 
 	private String value;
 
@@ -40,7 +45,7 @@ public class ItemValue {
 
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
-		if(value == null || this.value.isEmpty()){
+		if(!isHaveValue()){
 			return null;
 		}
 		if (this.valueType.isInteger()) {
@@ -50,7 +55,7 @@ public class ItemValue {
 			return (T) new Boolean(this.value);
 		}
 		if (this.valueType.isDate()) {
-			return (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+			return (T) GeneralDate.fromString(this.value, DATE_FORMAT);
 		}
 		if (this.valueType.isDouble()) {
 			return (T) new Double(this.value);
@@ -61,20 +66,75 @@ public class ItemValue {
 		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> T valueOrDefault() {
+		if (this.valueType.isInteger()) {
+			return (T) getIntOrDefault();
+		}
+		if (this.valueType.isBoolean()) {
+			return (T) getBooleanOrDefault();
+		}
+		if (this.valueType.isDate()) {
+			return (T) getDateOrDefault();
+		}
+		if (this.valueType.isDouble()) {
+			return (T) getDoubleOrDefault();
+		}
+		if (this.valueType.isString()) {
+			return (T) getStringOrDefault();
+		}
+		throw new RuntimeException("invalid type: " + this.valueType);
+	}
+	
+	private Integer getIntOrDefault() {
+		return isHaveValue() ? new Integer(this.value) : 0;
+	}
+	
+	private String getStringOrDefault() {
+		return isHaveValue() ? this.value : "";
+	}
+	
+	private Boolean getBooleanOrDefault() {
+		return isHaveValue() ? new Boolean(this.value) : false;
+	}
+	
+	private GeneralDate getDateOrDefault() {
+		return isHaveValue() ? GeneralDate.fromString(this.value, DATE_FORMAT) : null;
+	}
+	
+	private Double getDoubleOrDefault() {
+		return isHaveValue() ? new Double(this.value) : 0;
+	}
+
+	private boolean isHaveValue() {
+		return value != null && !this.value.isEmpty();
+	}
+	
 	public Object valueAsObjet() {
 		return value;
 	}
 	
 	public <T> T valueOrDefault(T defaultVal) {
-		if(value == null || this.value.isEmpty()){
+		if(isHaveValue()){
 			return defaultVal;
 		}
 		return value();
 	}
 	
 	public ItemValue value(Object value){
-		this.value = value == null ? null : value.toString();
+		this.value = value == null ? null : toValue(value);
 		return this;
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private String toValue(Object value) {
+		if(value instanceof GeneralDate) {
+			return ((GeneralDate) value).localDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+		}
+		return value.toString();
 	}
 	
 	public ItemValue withPath(String path){

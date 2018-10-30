@@ -29,16 +29,6 @@ public interface SpecialLeaveManagementService {
 	 */
 	ManagaData getMngData(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
 
-	/**
-	 * 使用数を管理データから引く
-	 * @param specialLeaverData ・特別休暇付与残数データ一覧
-	 * @param interimSpeHolidayData ・特別休暇暫定データ一覧
-	 * @return
-	 */
-	InPeriodOfSpecialLeave subtractUseDaysFromMngData(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
-			List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
-			List<InterimRemain> lstInterimMng, OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
-
 	
 	/**
 	 * 特別休暇暫定データを取得する
@@ -49,23 +39,73 @@ public interface SpecialLeaveManagementService {
 	 * @return
 	 */
 	SpecialHolidayInterimMngData specialHolidayData(SpecialHolidayDataParam param);
+	
+	/**
+	 * 特休の使用数を求める
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param complileDate 集計開始日 , 集計終了日
+	 * @param remainDatas 特別休暇付与残数データ一覧
+	 * @param interimDatas 特別休暇暫定データ一覧
+	 * @return
+	 */
+	RemainDaysOfSpecialHoliday getUseDays(String cid, String sid, DatePeriod complileDate,
+			SpecialLeaveGrantRemainingDataTotal speRemainData, List<InterimSpecialHolidayMng> interimSpeDatas, List<InterimRemain> lstInterimMng);
 	/**
 	 * 管理データと暫定データの相殺
-	 * @param cid
-	 * @param sid
-	 * @param dateData ・INPUT．集計開始日・INPUT．集計終了日
-	 * @param baseDate 基準日
-	 * @param lstGrantData 取得した特別休暇付与残数データ一覧
-	 * @param lstInterimData 取得した特別休暇暫定データ一覧
-	 * @param accumulationMaxDays 蓄積上限日数
+	 * @param cid・会社ID
+	 * @param sid・社員ID
+	 * @param dateData ・集計開始日 ・集計終了日
+	 * @param baseDate ・基準日
+	 * @param specialCode ・特別休暇コード
+	 * @param lstGrantData ・特別休暇付与残数データ一覧
+	 * @param interimDataMng ・特別休暇暫定データ一覧
+	 * @param accumulationMaxDays ・蓄積上限日数
 	 * @return
 	 */
-	InPeriodOfSpecialLeave getOffsetDay(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
-			List<SpecialLeaveGrantRemainingData> lstGrantData, SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays);
+	InPeriodOfSpecialLeave getOffsetDay1004(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
+			SpecialLeaveGrantRemainingDataTotal lstGrantData, SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays,RemainDaysOfSpecialHoliday useInfor);
 	/**
-	 * 残数情報をまとめる
-	 * @param inPeriodData
+	 * 使用数を管理データから引く
+	 * @param lstGrantData 特別休暇付与残数データ一覧
+	 * @param interimDataMng 特別休暇暫定データ一覧
 	 * @return
 	 */
-	InPeriodOfSpecialLeave sumRemainData(InPeriodOfSpecialLeave inPeriodData);
+	SubtractUseDaysFromMngDataOut subtractUseDaysFromMngData1004(List<SpecialLeaveGrantRemainingData> lstGrantData, SpecialHolidayInterimMngData interimDataMng,
+			RemainDaysOfSpecialHoliday useInfor);
+	/**
+	 * 繰越上限日数まで調整する
+	 * @param lstGrantData 特別休暇付与残数データ一覧
+	 * @param accumulationMaxDays  蓄積上限日数
+	 * @param grantDetailBefore 付与前の残数 
+	 * @return
+	 */
+	DataMngOfDeleteExpired adjustCarryForward1005(List<SpecialLeaveGrantRemainingData> lstGrantData, double accumulationMaxDays);
+	/**
+	 * 付与前の残数情報をまとめる
+	 * @param lstSpeLeaveGrantDetails
+	 * @param grantDetailBefore
+	 * @return
+	 */
+	SpecialHolidayRemainInfor grantDetailBefore(List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails, SpecialHolidayRemainInfor grantDetailBefore);
+	/**
+	 * (付与前)管理データと暫定データの相殺
+	 * @param cid ・会社ID
+	 * @param sid ・社員ID
+	 * @param shukeiDate ・集計開始日 ・ 集計終了日
+	 * @param lstGrantData・特別休暇付与残数データ一覧
+	 * @param interimDataMng ・特別休暇暫定データ一覧
+	 * @param baseDate: 基準日
+	 * @return
+	 */
+	RemainDaysOfSpecialHoliday remainDaysBefore(String cid, String sid, DatePeriod shukeiDate, SpecialLeaveGrantRemainingDataTotal lstGrantData,
+			SpecialHolidayInterimMngData interimDataMng,RemainDaysOfSpecialHoliday useInfor, GeneralDate baseDate);
+	/**
+	 * 付与後の残数情報をまとめる
+	 * @param lstSpeLeaveGrantDetails
+	 * @param grantDetailBefore
+	 * @return
+	 */
+	SpecialHolidayRemainInfor grantDetailAfter(List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails, SpecialHolidayRemainInfor grantDetailAfter);
+	
 }

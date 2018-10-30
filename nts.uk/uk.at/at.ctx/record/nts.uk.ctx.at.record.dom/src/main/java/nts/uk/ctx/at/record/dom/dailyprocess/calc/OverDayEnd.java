@@ -174,36 +174,6 @@ public class OverDayEnd {
 		return timeSpan.getStart().lessThan(baseTime) && timeSpan.getEnd().lessThan(baseTime); 
 	}
 	/*-----------------------------------翌日系-------------------------------------*/
-	/*-------------------------------前日・翌日両対応---------------------------------*/
-
-	/*-------------------------------前日・翌日両対応---------------------------------*/
-	
-
-//	
-//	/**
-//	 * 該当日の計算するしない設定を取得する
-//	 * @param beforeDay 前の日の勤務種類
-//	 * @param afterDay　　後の日の勤務種類
-//	 * @param overDaySet　0時跨ぎ計算設定
-//	 * @return
-//	 */
-//	private UseAtr getIsUse(DailyWork beforeDay,DailyWork afterDay, OverDayEndCalcSet overDaySet) {
-//		
-////		if(afterDay.) {
-////			/*休日*/
-////			switch() {
-////			case:/*法定内休日*/
-////			case:/*法定外休日*/
-////			case:/*祝日*/
-////			}
-////		}
-////		else {
-////			/*平日*/
-////		}
-//		
-//		/*↓一時的措置*/
-//		return UseAtr.NOT_USE;
-//	}
 	
 	
 		/**

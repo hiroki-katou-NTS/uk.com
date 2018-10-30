@@ -16,11 +16,6 @@ public class StatementItemCommand {
 	private String itemNameCd;
 
 	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
-
-	/**
 	 * 既定区分
 	 */
 	private int defaultAtr;

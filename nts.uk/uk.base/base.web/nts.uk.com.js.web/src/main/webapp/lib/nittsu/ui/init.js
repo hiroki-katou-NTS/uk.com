@@ -1,26 +1,19 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
     (function (uk) {
         var ui;
         (function (ui) {
-            /** Event to notify document ready to initialize UI. */
             ui.documentReady = $.Callbacks();
-            /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
-            // Kiban ViewModel
+            ui.viewModelApplied = $.Callbacks();
             var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
                     var _this = this;
                     this.systemName = ko.observable("");
                     this.programName = ko.observable("");
                     this.title = ko.computed(function () {
-                        var pgName = _this.programName();
-                        if (pgName === "" || pgName === undefined || pgName === null) {
-                            return _this.systemName();
-                        }
-                        return _this.programName() + " - " + _this.systemName();
+                        return _this.systemName();
                     });
                     this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
                 }
@@ -48,23 +41,20 @@ var nts;
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
-                    // off event reset for class reset-not-apply
+                    ui.viewModelApplied.fire(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
-                    $.cookie('startfrommenu', null, { expires: 0 });
-                    //avoid page content overlap header and function area
+                    nts.uk.cookie.remove("startfrommenu", { path: "/" });
                     var content_height = 20;
                     if ($("#header").length != 0) {
-                        content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
+                        content_height += $("#header").outerHeight();
                     }
                     if ($("#functions-area").length != 0) {
-                        content_height += $("#functions-area").outerHeight(); //top function area height
+                        content_height += $("#functions-area").outerHeight();
                     }
                     if ($("#functions-area-bottom").length != 0) {
-                        content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
+                        content_height += $("#functions-area-bottom").outerHeight();
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-                    //            if($("#functions-area-bottom").length!=0){
-                    //            } 
                 };
                 var startP = function () {
                     _.defer(function () {
@@ -76,7 +66,6 @@ var nts;
                         }
                     });
                     var onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
-                    // Menu
                     if (!onSamplePage) {
                         if ($(document).find("#header").length > 0) {
                             ui.menu.request();
@@ -131,7 +120,6 @@ var nts;
                             formatOption.filldirection = "right";
                             formatOption.fillcharacter = " ";
                         }
-                        // if not have primitive, create new
                         if (!__viewContext.primitiveValueConstraints) {
                             __viewContext.primitiveValueConstraints = {
                                 EmployeeCode: {
@@ -143,7 +131,6 @@ var nts;
                             };
                         }
                         else {
-                            // extend primitive constraint
                             _.extend(__viewContext.primitiveValueConstraints, {
                                 EmployeeCode: {
                                     valueType: "String",
