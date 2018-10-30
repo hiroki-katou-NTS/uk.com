@@ -18,10 +18,12 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
@@ -91,6 +93,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
+	
+	@Transient
+	public KrcstErAlBusinessType businessType;
 
 	@Column(name = "FILTER_BY_JOB_TITLE")
 	public int filterByJobTitle;
@@ -98,6 +103,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
+	
+	@Transient
+	public KrcstErAlJobTitle jobTitle;
 
 	@Column(name = "FILTER_BY_EMPLOYMENT")
 	public int filterByEmployment;
@@ -105,6 +113,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
+	
+	@Transient
+	public KrcstErAlEmployment employment;
 
 	@Column(name = "FILTER_BY_CLASSIFICATION")
 	public int filterByClassification;
@@ -112,6 +123,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlClass> lstClassification;
+	
+	@Transient
+	public KrcstErAlClass classification;
 
 	@Column(name = "WORKTYPE_USE_ATR")
 	public int workTypeUseAtr;
@@ -131,10 +145,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtActual> lstWtActual;
+	
+	@Transient
+	public KrcstErAlWtActual wtActual;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtPlan> lstWtPlan;
+	
+	@Transient
+	public KrcstErAlWtPlan wtPlan;
 
 	@Column(name = "WORKING_HOURS_USE_ATR")
 	public int workingHoursUseAtr;
@@ -154,10 +174,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhActual> lstWhActual;
+	
+	@Transient
+	public KrcstErAlWhActual whActual;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhPlan> lstWhPlan;
+	
+	@Transient
+	public KrcstErAlWhPlan whPlan;
 
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
 	public int operatorBetweenGroups;
