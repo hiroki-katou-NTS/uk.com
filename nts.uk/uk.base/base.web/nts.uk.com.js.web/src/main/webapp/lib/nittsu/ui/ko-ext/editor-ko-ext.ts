@@ -468,21 +468,167 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             super.init($input, data);
-            $input.focus(() => {
-                if (!$input.attr('readonly')) {
-                    // Remove separator (comma)
-                    let value = ko.toJS(data.value),
-                        numb = Number(value);
 
-                    if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
-                        $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
-                    } else {
-                        $input.val(data.value());
-                    }
+            $input.on('focus', () => {
+                if (!$input.attr('readonly')) {
+                    $input.val(data.value());
                     // If focusing is caused by Tab key, select text
                     // this code is needed because removing separator deselects.
                     if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {
                         $input.select();
+                    }
+                }
+            });
+
+            $input.on('keydown', (evt: KeyboardEvent) => {
+                let rd = ko.toJS(data),
+                    target = evt.target as HTMLInputElement,
+                    val = target.value,
+                    ss = target.selectionStart,
+                    se = target.selectionEnd,
+                    constraint = rd.constraint;
+
+                // filter specs key
+                if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
+
+                    if (!evt.key.match(/[\-\.0-9]/g)) {
+                        evt.preventDefault();
+                    } else {
+                        // calc new value after keypress
+                        if (ss == se) {
+                            if (se == 0) {
+                                val = evt.key + val;
+                            } else if (se == val.length) {
+                                val += evt.key;
+                            } else {
+                                val = val.substring(0, ss) + evt.key + val.substring(se, val.length);
+                            }
+                        } else {
+                            val = val.replace(val.substring(ss, se), evt.key);
+                        }
+
+                        // accept negative key only first press
+                        if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
+                            evt.preventDefault();
+                            return;
+                        }
+
+                        // accept only one pointer
+                        if (evt.key == '.' && target.value.indexOf('.') > -1) {
+                            evt.preventDefault();
+                            return;
+                        }
+
+                        // case has constraint check value by type
+                        if (constraint) {
+                            let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                            if (primitive) {
+                                let nval = parseFloat(val),
+                                    min = primitive.min,
+                                    max = primitive.max,
+                                    dlen = primitive.mantissaMaxLength;
+
+                                // accept negative key if min < 0
+                                if (evt.key == '-' && min >= 0) {
+                                    evt.preventDefault();
+                                    return;
+                                }
+
+                                // clear decimal in constraint (sync) if option not has decimallength
+                                if (rd.option && rd.option.decimallength < 1) {
+                                    primitive.valueType = 'Integer';
+                                }
+
+                                switch (primitive.valueType) {
+                                    case "String":
+                                        let maxL = primitive.maxLength;
+
+                                        if (val.length > maxL || ['.', '-'].indexOf(evt.key) > -1) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                    case "Integer":
+                                        if (evt.key == '.') {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+
+                                        if (nval > max || nval < min) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                    case "HalfInt":
+                                        let milen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+
+                                        if (milen > 1 || (se == val.length - 1 && milen == 1 && ['0', '5'].indexOf(evt.key) == -1)) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+
+                                        if (nval > max || nval < min) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                    case "Decimal":
+                                        let mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+
+                                        if (mdlen > primitive.mantissaMaxLength) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+
+                                        if (nval > max || nval < min) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                        break;
+                                }
+                            }
+                        } else { // or else, check only decimal length
+                            let dlen = rd.option.decimallength,
+                                mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+
+                            if (dlen < mdlen) {
+                                evt.preventDefault();
+                                return;
+                            }
+                        }
+                    }
+                } else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) { // key backspace || delete
+                    let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+
+                    // if value after delete out of range, preventDefault
+                    if (primitive) {
+                        let min = primitive.min,
+                            max = primitive.max;
+
+                        if (ss == se) {
+                            if (evt.keyCode == 8) {
+                                let _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
+
+                                if (_num < min || _num > max) {
+                                    evt.preventDefault();
+                                    return;
+                                }
+                            } else {
+                                let _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
+
+                                if (_num < min || _num > max) {
+                                    evt.preventDefault();
+                                    return;
+                                }
+                            }
+                        } else {
+                            let _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
+
+                            if (_num < min || _num > max) {
+                                evt.preventDefault();
+                                return;
+                            }
+                        }
                     }
                 }
             });
