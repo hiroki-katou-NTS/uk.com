@@ -3,9 +3,11 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.speclayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayoutHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayoutHistRepository;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 
+@Stateless
 public class JpaSpecificationLayoutHistRepository implements SpecificationLayoutHistRepository {
     @Override
     public List<SpecificationLayoutHist> getAllSpecificationLayoutHist() {
