@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -16,18 +17,18 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 @AllArgsConstructor
 public class CalcResultOfAnyItem {
 	private OptionalItemNo optionalItemNo;
-	Optional<Integer> count;
-	Optional<Integer> time;
-	Optional<Integer> money;
+	Optional<BigDecimal> count;
+	Optional<BigDecimal> time;
+	Optional<BigDecimal> money;
 	
 	
 	/**
-	 * 指定された属性の項目のみ渡された値で更新する
+	 * 指定された属性の項目のみ渡された値で更新するx
 	 * @param value
 	 * @param optionalItemAtr
 	 * @return
 	 */
-	public CalcResultOfAnyItem reCreateCalcResultOfAnyItem(Integer value, OptionalItemAtr optionalItemAtr) {
+	public CalcResultOfAnyItem reCreateCalcResultOfAnyItem(BigDecimal value, OptionalItemAtr optionalItemAtr) {
 		switch (optionalItemAtr) {
 		case NUMBER:
 			return new CalcResultOfAnyItem(this.optionalItemNo,Optional.of(value),this.time,this.money);

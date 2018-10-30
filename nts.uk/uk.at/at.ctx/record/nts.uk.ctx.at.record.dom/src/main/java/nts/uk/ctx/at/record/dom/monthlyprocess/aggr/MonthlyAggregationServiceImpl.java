@@ -183,6 +183,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 処理を完了する
 		this.empCalAndSumExeLogRepository.updateLogInfo(
 				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
+		dataSetter.updateData("monthlyAggregateCount", stateHolder.count());
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		return success;
 	}

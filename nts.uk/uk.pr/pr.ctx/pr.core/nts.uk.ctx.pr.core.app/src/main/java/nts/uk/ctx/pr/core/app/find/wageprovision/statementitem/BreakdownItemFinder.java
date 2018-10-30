@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -19,8 +20,10 @@ public class BreakdownItemFinder {
 	@Inject
 	private BreakdownItemSetRepository finder;
 
-	public List<BreakdownItemSetDto> getBreakdownItemStBySalaryId(String salaryItemId) {
-		return finder.getBreakdownItemStBySalaryId(salaryItemId).stream()
+	public List<BreakdownItemSetDto> getBreakdownItemStById(int categoryAtr, String itemNameCd) {
+		String cid = AppContexts.user().companyId();
+
+		return finder.getBreakdownItemStByStatementItemId(cid, categoryAtr, itemNameCd).stream()
 				.map(i -> BreakdownItemSetDto.fromDomain(i)).collect(Collectors.toList());
 	}
 

@@ -94,7 +94,7 @@ module nts.uk.at.view.kdl005.a {
                         
                         $('#component-items-list').ntsListComponent(self.listComponentOption);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
@@ -110,11 +110,11 @@ module nts.uk.at.view.kdl005.a {
                               
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     }
                 });
             }

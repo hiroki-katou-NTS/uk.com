@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1280,
+                height: 670
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="../share/qmm019.d-g.style.css"/>
+        <com:stylefile path="qmm019.g.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.g.service.js"/>
+        <com:scriptfile path="qmm019.g.vm.js"/>
+        <com:scriptfile path="qmm019.g.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="table table-orgin">
+                <div class="cell valign-top">
+                    <!--G1_1-->
+                    <div data-bind="ntsPanel:{width: '300px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                        <div class="table table-search">
+                            <div class="cell valign-center">
+                                <!--G1_2-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_105')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--G1_3-->
+                                <div class="label">#{i18n.getText('QMM019_173')}</div>
+                            </div>
+                        </div>
+                        <div class="table table-search">
+                            <div class="cell valign-top">
+                                <!--G1_4-->
+                                <div data-bind="ntsFormLabel: {}">G1_4</div>
+                            </div>
+                            <div class="cell valign-top">
+                                <!--G1_5-->
+                                <div style="width: 200px" data-bind="ntsSearchBox: {
+									searchMode: 'highlight',
+									targetKey: 'code',
+									comId: 'G1_6',
+									items: itemNames,
+									selected: selectedSearchIitemName,
+									selectedKey: 'code',
+									fields: ['code', 'name'],
+									mode: 'igGrid'}"/>
+                            </div>
+                        </div>
+                        <!--G1_6-->
+                        <table id="G1_6" data-bind="ntsGridList: {
+                            rows: 15,
+                            name: '#[QMM019_174]',
+                            dataSource: itemNames,
+                            primaryKey: 'code',
+                            columns: [
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 60, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 223, formatter: _.escape}
+                            ],
+                            multiple: false,
+                            value: codeSelected}"/>
+                        <!--G1_11-->
+                        <button id="G1_11" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                    </div>
+                </div>
+                <div class="cell valign-top">
+                    <div class="table table-col-3">
+                        <div class="cell valign-center">
+                            <!--G2_1-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_105')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--G2_2-->
+                            <div class="label" data-bind="text: itemNameSelected().code"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--G2_3-->
+                            <div class="label" data-bind="text: itemNameSelected().name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell valign-top">
+                    <!--G2_4-->
+                    <div data-bind="ntsAccordion: { }">
+                        <h3>#{i18n.getText('QMM019_113')}</h3>
+                        <div class="acc-content">
+                            <!--G4_1-->
+                            <div class="ui-iggrid">
+                                <table>
+                                    <colgroup>
+                                        <col width="100px"/>
+                                        <col width="150px"/>
+                                    </colgroup>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--G4_2-->
+                                            <div class="label">#{i18n.getText('QMM019_148')}</div>
+                                        </td>
+                                        <td>
+                                            <!--G4_6-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--G4_3-->
+                                            <div class="label">#{i18n.getText('QMM019_105')}</div>
+                                        </td>
+                                        <td>
+                                            <!--G4_7-->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

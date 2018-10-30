@@ -201,7 +201,7 @@ module nts.uk.ui {
         });
         
         function isOverflow($label) {
-            if ( ($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")  
+            if ( $label[0].nodeName === "INPUT"
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
                 || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));
@@ -219,7 +219,7 @@ module nts.uk.ui {
                 return width < scrollWidth;
             }
             
-            return $label.outerWidth() < $label[0].scrollWidth;
+            return $label[0].offsetWidth < $label[0].scrollWidth;
         }
     }
     

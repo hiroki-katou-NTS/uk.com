@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecCode
+            nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecName
+        </com:ValidatorScript>
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 820,
+                height: 600
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.h.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.h.service.js"/>
+        <com:scriptfile path="qmm019.h.vm.js"/>
+        <com:scriptfile path="qmm019.h.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="table table1">
+                <div class="cell valign-center">
+                    <!--H1_1-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_176')}</div>
+                </div>
+            </div>
+            <div class="table table2">
+                <div class="cell valign-center">
+                    <!--H1_2-->
+                    <div id="H1_2" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                        name: '#[QMM019_177]',
+                        options: itemList,
+                        optionsValue: 'id',
+                        optionsText: 'name',
+                        value: selectedId,
+                        enable: true}"/>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_5-->
+                    <div id="H1_5" tabindex="2" data-bind="ntsComboBox: {
+                        name: '#[QMM019_180]',
+                        options: existingSpecs,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: existingSpecCode,
+                        optionsText: 'name',
+                        enable: isEnable,
+                        columns: [
+                            { prop: 'code', length: 4 },
+                            { prop: 'name', length: 10 },
+                        ]}"/>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_7-->
+                    <div class="label" data-bind="text: specInfo"/>
+                </div>
+            </div>
+            <div class="table table2">
+                <div class="cell valign-center">
+                    <!--H1_8-->
+                    <div class="label">#{i18n.getText('QMM019_181')}</div>
+                </div>
+            </div>
+            <div class="table table3">
+                <div class="cell valign-center">
+                    <!--H1_9-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_7')}</div>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_10-->
+                    <input id="H1_10" tabindex="3" data-bind="ntsTextEditor: {
+                        name: '#[QMM019_15]',
+                        value: specCode,
+                        constraint: 'SpecCode',
+                        required: true }"/>
+                    <!--H1_11-->
+                    <input tabindex="4" data-bind="ntsTextEditor: {
+                        name: '#[QMM019_16]',
+                        value: specName,
+                        constraint: 'SpecName',
+                        required: true }"/>
+                </div>
+            </div>
+            <div class="table table3">
+                <div class="cell valign-center">
+                    <!--H1_12-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_7')}</div>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_13-->
+                    <div tabindex="5" data-bind="ntsDatePicker: {
+                        name: '#[QMM019_43]',
+                        value: startDate,
+                        dateFormat: 'yearmonth'}"/>
+                    <!--H1_14-->
+                    <span class="label" data-bind="text: startDateJp"/>
+                </div>
+            </div>
+            <div class="table table3">
+                <div class="cell valign-center">
+                    <!--H1_15-->
+                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_48')}</div>
+                </div>
+                <div class="cell valign-center">
+                    <!--H1_16-->
+                    <div class="label">#{i18n.getText('QMM019_182')}</div>
+                    <!--H1_17-->
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="6" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="7" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

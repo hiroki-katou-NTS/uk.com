@@ -55,7 +55,9 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 						}
 						// 年月日 ← 取得した「所属会社履歴（社員別）.所属期間.開始日」
 						if (checkAffComHist) {
-							ymd = affComHist.getLstAffComHistItem().get(0).getDatePeriod().start();
+							if(!affComHist.getLstAffComHistItem().isEmpty()) {
+								ymd = affComHist.getLstAffComHistItem().get(0).getDatePeriod().start();
+							}
 						}
 					}
 					/** アルゴリズム「指定社員の中間データを作成する」を実行する */

@@ -1,5 +1,6 @@
 package nts.uk.screen.at.infra.monthyperformance.correction;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,11 +12,11 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPerPK;
-import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
@@ -152,24 +153,28 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 
 	@Override
 	public List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT b");
-		builderString.append(" FROM KrcmtMonAttendanceItem b");
-		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
-		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
-
-		List<MonthlyAttendanceItemDto> resultList = new ArrayList<>();
+		List<MonthlyAttendanceItemDto> data = new ArrayList<>();
 		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
-				.setParameter("attendanceItemIds", subList)
-				.setParameter("companyId", companyId)
-				.getList().stream()
-					.map(c -> new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(),
-							c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(), c.getDispNo(),
-							c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName(), c.getPrimitiveValue()))
-					.collect(Collectors.toList()));
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT * from KRCMT_MON_ATTENDANCE_ITEM h"
+						+ " WHERE h.CID = ? AND h.M_ATD_ITEM_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setString(1, companyId);
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setInt(i + 2, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new MonthlyAttendanceItemDto(companyId,
+							rec.getInt("M_ATD_ITEM_ID"), rec.getString("M_ATD_ITEM_NAME"), rec.getInt("DISP_NO"),
+							rec.getInt("IS_ALLOW_CHANGE"), rec.getInt("M_ATD_ITEM_ATR"), rec.getInt("LINE_BREAK_POS_NAME"), 
+							rec.getInt("PRIMITIVE_VALUE"));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		});
-		return resultList;
+		
+		return data;
 	}
 
 	@Override

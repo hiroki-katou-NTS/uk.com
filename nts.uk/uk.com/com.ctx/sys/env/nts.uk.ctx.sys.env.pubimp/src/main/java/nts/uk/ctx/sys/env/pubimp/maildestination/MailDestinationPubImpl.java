@@ -51,22 +51,23 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		});
 
 		// ドメインモデル「メール送信先機能」を取得する
-		MailDestinationFunction mailDes = mailDesRepo.findByCidSettingItemAndUse(cID, functionID, NotUseAtr.USE);
+		List<MailDestinationFunction> mailDes = mailDesRepo.findByCidSettingItemAndUse(cID, functionID, NotUseAtr.USE);
 
-		if (mailDes == null) {
+		if (CollectionUtil.isEmpty(mailDes)) {
 			return emailAddress;
 		}
-		// ドメインモデル「ユーザー情報の使用方法」を取得する
-		Optional<UserInfoUseMethod> useInfoMethodOpt = useInfoMethodRepo.findByCompanyIdAndSettingItem(cID,
-				mailDes.getSettingItem());
+		mailDes.forEach(x -> {
+			// ドメインモデル「ユーザー情報の使用方法」を取得する
+			Optional<UserInfoUseMethod> useInfoMethodOpt = useInfoMethodRepo.findByCompanyIdAndSettingItem(cID,
+					x.getSettingItem());
 
-		boolean isInvalid = checkUseInfoMethod(useInfoMethodOpt);
+			boolean isInvalid = checkUseInfoMethod(useInfoMethodOpt);
 
-		if (!isInvalid) {
-			return emailAddress;
-		}
+			if (isInvalid) {
+				setEmail(useInfoMethodOpt.get(), emailAddress, sIDs, cID);
+			}
 
-		setEmail(useInfoMethodOpt.get(), emailAddress, sIDs, cID);
+		});
 
 		return emailAddress;
 
@@ -111,7 +112,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 			boolean isUseContactsNotEmpty = !CollectionUtil.isEmpty(useContacts);
 
 			if (isUseContactsNotEmpty) {
-				addEmailFromPerContact(emailAddress, sIDs, personContacts);
+				addEmailFromPerContact(emailAddress, sIDs, personContacts,userInfoItem);
 
 			}
 		}
@@ -119,13 +120,13 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		boolean isUse = useInfoMethod.getSettingUseMail().get().equals(SettingUseSendMail.USE);
 
 		if (isUse) {
-			addEmailFromPerContact(emailAddress, sIDs, personContacts);
+			addEmailFromPerContact(emailAddress, sIDs, personContacts, userInfoItem);
 		}
 
 	}
 
 	private void addEmailFromPerContact(List<MailDestination> emailAddress, List<String> sIDs,
-			List<PersonContactObjectOfEmployeeImport> personContacts) {
+			List<PersonContactObjectOfEmployeeImport> personContacts, UserInfoItem userInfoItem) {
 		sIDs.forEach(sID -> {
 
 			Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
@@ -135,7 +136,12 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 						.filter(perContact -> perContact.getEmployeeId().equals(sID)).findFirst();
 
 				perContactOpt.ifPresent(item -> {
+					if(userInfoItem.equals(UserInfoItem.PERSONAL_PC_MAIL)){
 					mailDestination.addOutGoingMails(item.getMailAdress());
+					}
+					if (userInfoItem.equals(UserInfoItem.PERSONAL_MOBILE_MAIL)) {
+						mailDestination.addOutGoingMails(item.getMobileMailAdress());
+					}
 				});
 
 			});
@@ -143,12 +149,12 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		});
 
 	}
-
+	
 	private void setCompanyMail(UserInfoUseMethod useInfoMethod, List<MailDestination> emailAddress, List<String> sIDs,
 			List<EmployeeContactObjectImport> empContacts, String cID, UserInfoItem userInfoItem) {
 		boolean isPersonSelectAble = useInfoMethod.getSettingUseMail().get()
 				.equals(SettingUseSendMail.PERSONAL_SELECTABLE);
-
+		
 		if (isPersonSelectAble) {
 			// ドメインモデル「連絡先使用設定」を取得する
 			List<UseContactSetting> useContacts = useContactRepo.findByListEmployeeId(sIDs, cID).stream()
@@ -158,7 +164,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 			boolean isUseContactsNotEmpty = !CollectionUtil.isEmpty(useContacts);
 
 			if (isUseContactsNotEmpty) {
-				addEmailFromEmpContact(emailAddress, sIDs, empContacts);
+				addEmailFromEmpContact(emailAddress, sIDs, empContacts, userInfoItem);
 
 			}
 		}
@@ -166,13 +172,13 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		boolean isUse = useInfoMethod.getSettingUseMail().get().equals(SettingUseSendMail.USE);
 
 		if (isUse) {
-			addEmailFromEmpContact(emailAddress, sIDs, empContacts);
+			addEmailFromEmpContact(emailAddress, sIDs, empContacts, userInfoItem);
 		}
 
 	}
 
 	private void addEmailFromEmpContact(List<MailDestination> emailAddress, List<String> sIDs,
-			List<EmployeeContactObjectImport> empContacts) {
+			List<EmployeeContactObjectImport> empContacts, UserInfoItem userInfoItem) {
 		sIDs.forEach(sID -> {
 
 			Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
@@ -183,7 +189,13 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 						.filter(empContact -> empContact.getSid().equals(sID)).findFirst();
 
 				empContactOpt.ifPresent(item -> {
-					mailDestination.addOutGoingMails(item.getMailAddress());
+					if (userInfoItem.equals(UserInfoItem.COMPANY_PC_MAIL)) {
+						mailDestination.addOutGoingMails(item.getMailAddress());
+					}
+					
+					if (userInfoItem.equals(UserInfoItem.COMPANY_MOBILE_MAIL)) {
+						mailDestination.addOutGoingMails(item.getPhoneMailAddress());
+					}
 				});
 
 			});
