@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
@@ -42,7 +44,11 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	private static final String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c"
 			+ " WHERE c.dayOff >= :startDate" + " AND c.dayOff <= :endDate" + " AND c.sID = :sid";
-
+	private String GET_BY_YMD_UNOFFSET = "SELECT a FROM KrcmtComDayoffMaData a"
+			+ " WHERE  a.cID = :cid"
+			+ " AND a.sID = :employeeId"
+			+ " AND (a.dayOff < :dayOff OR a.dayOff is null)"
+			+ " AND (a.remainDays > 0 OR a.remainTimes > 0)";
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_SID_DATE, KrcmtComDayoffMaData.class)
@@ -177,8 +183,13 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	@Override
 	public void updateReDayByComDayId(List<String> comDayIds) {
-		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = this.queryProxy()
-				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class).setParameter("comDayOffIDs", comDayIds).getList();
+		List<KrcmtComDayoffMaData> KrcmtComDayoffMaData = new ArrayList<>();
+		CollectionUtil.split(comDayIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			KrcmtComDayoffMaData.addAll(this.queryProxy()
+				.query(GET_BY_LISTID, KrcmtComDayoffMaData.class)
+				.setParameter("comDayOffIDs", subList)
+				.getList());
+		});
 		for (KrcmtComDayoffMaData busItem : KrcmtComDayoffMaData) {
 			busItem.remainDays = new Double(0);
 		}
@@ -242,6 +253,17 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	@Override
 	public void deleteById(List<String> comDayOffID) {
 		this.commandProxy().removeAll(KrcmtComDayoffMaData.class, comDayOffID);
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getBySidYmd(String cid, String sid, GeneralDate ymd) {
+		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_YMD_UNOFFSET, KrcmtComDayoffMaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("cid", cid)
+				.setParameter("dayOff", ymd)
+				.getList();
+
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
 }

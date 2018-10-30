@@ -16,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
@@ -146,20 +147,25 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 
 		// Build query
 		cq.select(root);
+		
+		List<SevstUseContactSet> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// Add where conditions
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(criteriaBuilder
+					.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.cid), companyId));
+			lstpredicateWhere.add(criteriaBuilder.and(
+					root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.sid).in(subList)));
 
-		// Add where conditions
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.cid), companyId));
-		lstpredicateWhere.add(criteriaBuilder.and(
-				root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.sid).in(employeeIds)));
-
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		List<SevstUseContactSet> listSevstUseContactSet = em.createQuery(cq).getResultList();
-
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		
 		// Check exist
-		if (!CollectionUtil.isEmpty(listSevstUseContactSet)) {
-			listSevstUseContactSet.stream().forEach(
+		if (!CollectionUtil.isEmpty(resultList)) {
+			resultList.stream().forEach(
 					entity -> lstReturn.add(new UseContactSetting(new JpaUseContactSettingGetMemento(entity))));
 		}
 

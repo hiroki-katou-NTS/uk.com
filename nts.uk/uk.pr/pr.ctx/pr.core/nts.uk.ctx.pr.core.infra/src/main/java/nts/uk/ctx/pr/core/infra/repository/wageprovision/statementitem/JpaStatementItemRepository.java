@@ -25,11 +25,13 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 			+ " f.statementItemPk.itemNameCd =:itemNameCd ";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
-			+ " f.statementItemPk.itemNameCd =:itemNameCd AND" + " f.statementItemPk.salaryItemId =:salaryItemId";
+			+ " f.statementItemPk.itemNameCd =:itemNameCd";
 	private static final String SELECT_CUSTOM =
-			"SELECT f.statementItemPk.salaryItemId, f.statementItemPk.categoryAtr, f.statementItemPk.itemNameCd, n.name, f.deprecatedAtr "
+			"SELECT f.statementItemPk.categoryAtr, f.statementItemPk.itemNameCd, n.name, f.deprecatedAtr "
 					+ " FROM QpbmtStatementItem f INNER JOIN QpbmtStatementItemName n "
-					+ " ON f.statementItemPk.salaryItemId = n.statementItemNamePk.salaryItemId "
+					+ " ON f.statementItemPk.cid = n.statementItemNamePk.cid "
+					+ " AND f.statementItemPk.categoryAtr = n.statementItemNamePk.categoryAtr "
+					+ " AND f.statementItemPk.itemNameCd = n.statementItemNamePk.itemNameCd "
 					+ " WHERE  f.statementItemPk.cid =:cid ";
 	private static final String SELECT_CUSTOM_BY_CATE_AND_DEP = SELECT_CUSTOM
 					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
@@ -65,11 +67,10 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	}
 
 	@Override
-	public Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd,
-			String salaryItemId) {
+	public Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementItem.class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
-				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -79,16 +80,18 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 		return this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr)
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
-						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "", item[4] != null ? String.valueOf(item[4]) : ""));
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : ""));
 	}
 
 	@Override
 	public List<StatementItemCustom> getItemCustomByDeprecated(String cid, boolean isIncludeDeprecated) {
 		String query = isIncludeDeprecated ? SELECT_CUSTOM : SELECT_CUSTOM_BY_DEP;
 
-		return this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
+		List<StatementItemCustom> result = this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
-						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "", item[4] != null ? String.valueOf(item[4]) : ""));
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : ""));
+
+		return result;
 	}
 
 	@Override
@@ -102,10 +105,10 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	}
 
 	@Override
-	public void remove(String cid, int categoryAtr, String itemNameCd, String salaryItemId) {
-		if (this.getStatementItemById(cid, categoryAtr, itemNameCd, salaryItemId).isPresent()) {
+	public void remove(String cid, int categoryAtr, String itemNameCd) {
+		if (this.getStatementItemById(cid, categoryAtr, itemNameCd).isPresent()) {
 			this.commandProxy().remove(QpbmtStatementItem.class,
-					new QpbmtStatementItemPk(cid, categoryAtr, itemNameCd, salaryItemId));
+					new QpbmtStatementItemPk(cid, categoryAtr, itemNameCd));
 		}
 	}
 

@@ -59,7 +59,7 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 
 	@Override
 	public void deleteTopPagePart(String companyID, String topPagePartID) {
-		Optional<TopPagePart> checkTopPagePart = topPagePartRepository.find(topPagePartID);
+		Optional<TopPagePart> checkTopPagePart = topPagePartRepository.findByKey(companyID, topPagePartID);
 		if (checkTopPagePart.isPresent()) {
 			topPagePartRepository.remove(companyID, topPagePartID);
 			myPageSettingRepository.removeTopPagePartUseSettingById(companyID, topPagePartID);

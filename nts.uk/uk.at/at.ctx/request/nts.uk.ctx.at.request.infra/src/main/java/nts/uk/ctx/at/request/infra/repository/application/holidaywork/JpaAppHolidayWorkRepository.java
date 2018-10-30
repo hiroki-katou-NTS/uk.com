@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidaywork;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.GoBackAtr;
@@ -152,10 +155,13 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		if(lstAppID.isEmpty()){
 			return lstMap;
 		}
-		List<AppHolidayWork> lstHd =  this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHolidayWork.class)
-			.setParameter("companyID", companyID)
-			.setParameter("lstAppID", lstAppID)
-			.getList(c -> toDomainPlus(c));
+		List<AppHolidayWork> lstHd = new ArrayList<>();
+		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstHd.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHolidayWork.class)
+							 .setParameter("companyID", companyID)
+							 .setParameter("lstAppID", subList)
+							 .getList(c -> toDomainPlus(c)));
+		});
 		for (AppHolidayWork hd : lstHd) {
 			lstMap.put(hd.getAppID(), hd);
 		}

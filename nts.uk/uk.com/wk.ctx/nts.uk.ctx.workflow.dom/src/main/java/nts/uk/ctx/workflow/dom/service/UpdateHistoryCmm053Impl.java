@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -78,15 +80,17 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 
 	@Override
 	public void updateApproverFirstPhase(String companyId, String employeeIdApprover, PersonApprovalRoot psAppRoot) {
-		Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
-				psAppRoot.getBranchId());
-		if (approvalPhase.isPresent()) {
-			ApprovalPhase updateApprovalPhase = approvalPhase.get();
-			List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
-			Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
-			if (firstApprover.isPresent()) {
-				firstApprover.get().setEmployeeId(employeeIdApprover);
-				this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
+		if(Strings.isNotBlank(employeeIdApprover)){
+			Optional<ApprovalPhase> approvalPhase = this.repoAppPhase.getApprovalFirstPhase(companyId,
+					psAppRoot.getBranchId());
+			if (approvalPhase.isPresent()) {
+				ApprovalPhase updateApprovalPhase = approvalPhase.get();
+				List<Approver> approverOlds       = updateApprovalPhase.getApprovers();
+				Optional<Approver> firstApprover  = approverOlds.stream().filter(x -> x.getOrderNumber() == 0).findFirst();
+				if (firstApprover.isPresent()) {
+					firstApprover.get().setEmployeeId(employeeIdApprover);
+					this.repoApprover.updateEmployeeIdApprover(firstApprover.get());
+				}
 			}
 		}
 	}

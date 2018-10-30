@@ -74,7 +74,7 @@
 					<!--A1_3 就業確定ボタン--> 
 					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
 					<!--A1_4 抽出条件の設定ボタン--> 
-					<button data-bind="{visible: showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button>
+					<!-- <button data-bind="{visible: showButton().available_A1_4, click: extractCondition}">#{i18n.getText('KMW003_5')}</button> -->
 					<!--A1_5 表示項目の選択ボタン--> 
 					<button data-bind="{click: displayItem, visible:showButton().enable_A1_5'">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
@@ -128,13 +128,12 @@
 								]}">
 						</div>
 					</div>
-					<div class="control-group">
+					<div class="control-group" id = "id-vertical-middle">
 						<!--A4_1 締め日--> 
 						<div class="label" style="width: 70px">#{i18n.getText('KMW003_10')}</div>
 						<!--A4_2 対象締め日--> 
-						<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
+						<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 100px"></div>
 						<!--A4_7 -->
-						
 						<div id="cbClosureInfo"
 							data-bind="ntsComboBox: {
 										visibleItemsCount: 5,
@@ -149,15 +148,14 @@
 										]}">
 						</div>  
 								
-						
 						<!--A4_6 複数実績メッセージ--> 
 						<div id="multi-archieve-message" data-bind="{visible:showButton().enable_multiActualTime}" class="label">#{i18n.getText('KMW003_13')}</div>
 					</div>
 					<div id="content-grid-not">
-						<!--A5_1 一括承認ボタン--> 
-<!-- 						<button id="btn-signAll" data-bind="click: signAll, visible: false">#{i18n.getText('KMW003_14')}</button> -->
-<!-- 						A5_6 一括解除ボタン	  -->
-<!-- 						<button id="btn-unSignAll" data-bind="click: releaseAll, visible: false">#{i18n.getText('KMW003_88')}</button> -->
+						<!--A5_1 一括承認ボタン-->
+						<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KMW003_14')}</button>
+						<!--A5_6 一括解除ボタン	  -->
+						<button id="btn-unSignAll" data-bind="click: releaseAll">#{i18n.getText('KMW003_88')}</button>
 						<!--A5_3 凡例ボタン--> 
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KMW003_33')}</button>
 						<!--A5_4 列幅保存ボタン--> 							
@@ -202,8 +200,10 @@
 					
 					<!-- <span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span> -->
 					<!--A7_1 コメント--> 
-					<div style="margin-top: 705px; width : 50%" data-bind="text: comment"></div>
+					<div style="clear: both"></div>
+					<div style=" padding-top : 480px;width : 50%" data-bind="text: comment"></div>
 				</div>
+				
 				<div id="tooltip"><span id="textLock"></span></div>
 			</div>
 		</ui:define>

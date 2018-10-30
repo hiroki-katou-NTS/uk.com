@@ -10,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * @author thanhnx
@@ -35,10 +36,11 @@ public class ConfirmationMonth extends AggregateRoot {
 	 */
 	private ClosureId closureId;
 
+	// fix bug 101936
 	/**
 	 * 締め日
 	 */
-	private Day closureDay;
+	private ClosureDate closureDate;
 
 	/**
 	 * 年月

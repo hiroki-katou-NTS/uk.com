@@ -149,9 +149,12 @@ module nts.uk.at.view.kmk013.b {
             conditionDisplay26: KnockoutObservable<boolean>;
             
             isLoadAfterGetData: KnockoutObservable<boolean>;
+            initFlagDone: KnockoutObservable<boolean>;
             
             constructor() {
                 var self = this;
+                
+                self.initFlagDone = ko.observable(false);
                 
                 self.isLoadAfterGetData = ko.observable(true);
                 
@@ -368,7 +371,7 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB8_20(false);
                         self.enableB8_21(false);
                         self.enableB8_23(false);
-                        if (self.selectedValueB8_5() == true) {
+                        if (self.selectedValueB8_5() == true && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                             });
                         }
@@ -623,7 +626,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB515.subscribe((newValue) => {
                     if (newValue == 0) {
-                        if (self.selectedValueB54() == 1) {
+                        if (self.selectedValueB54() == 1 && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                                 self.selectedValueB54(0);
                                 self.enableB515(false);
@@ -717,7 +720,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB612.subscribe((newValue) => {
                     if (newValue == 0) {
-                        if (self.selectedValueB64() == 1) {
+                        if (self.selectedValueB64() == 1 && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                                 self.selectedValueB64(0);
                                 self.enableB612(false);
@@ -841,7 +844,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB715.subscribe((newValue) => {
                     if (newValue == 0) {
-                        if (self.selectedValueB74() == 1) {
+                        if (self.selectedValueB74() == 1 && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                                 self.selectedValueB74(0);
                                 self.enableB715(false);
@@ -912,6 +915,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 
                 self.changeTabPanel();
+                
             }
             
             changeTabPanel(): void {
@@ -1197,6 +1201,7 @@ module nts.uk.at.view.kmk013.b {
                     
                     self.notifyVarKnockoutchange();
                     self.isLoadAfterGetData(false);
+                    self.initFlagDone(true);
                     dfd.resolve();
                 });
                 return dfd.promise();

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.CellEdit;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
@@ -47,5 +48,7 @@ public class DPPramLoadRow {
 	private IdentityProcessUseSetDto identityProcess;
 	
 	private boolean showLock;
+	
+	private List<CellEdit> cellEdits;
 	
 }

@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.eclipse.persistence.jpa.rs.util.metadatasources.CollectionWrapperMetadataSource;
-
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -23,7 +21,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -67,28 +64,28 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	@SneakyThrows
 	public Optional<DateHistoryItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		
-		PreparedStatement statement = this.connection().prepareStatement(
+		try (PreparedStatement statement = this.connection().prepareStatement(
 				"select * from BSYMT_AFF_CLASS_HISTORY"
 				+ " where SID = ?"
 				+ " and START_DATE <= ?"
-				+ " and END_DATE >= ?");
-		
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(standardDate.localDate()));
-		statement.setDate(3, Date.valueOf(standardDate.localDate()));
-		
-		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			BsymtAffClassHistory history = new BsymtAffClassHistory();
-			history.historyId = rec.getString("HIST_ID");
-			history.cid = rec.getString("CID");
-			history.sid = rec.getString("SID");
-			history.startDate = rec.getGeneralDate("START_DATE");
-			history.endDate = rec.getGeneralDate("END_DATE");
-			return new DateHistoryItem(
-					history.historyId,
-					new DatePeriod(history.startDate, history.endDate));
-		});
-		
+				+ " and END_DATE >= ?")) {
+			
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(standardDate.localDate()));
+			statement.setDate(3, Date.valueOf(standardDate.localDate()));
+			
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				BsymtAffClassHistory history = new BsymtAffClassHistory();
+				history.historyId = rec.getString("HIST_ID");
+				history.cid = rec.getString("CID");
+				history.sid = rec.getString("SID");
+				history.startDate = rec.getGeneralDate("START_DATE");
+				history.endDate = rec.getGeneralDate("END_DATE");
+				return new DateHistoryItem(
+						history.historyId,
+						new DatePeriod(history.startDate, history.endDate));
+			});
+		}
 	}
 
 
@@ -131,6 +128,11 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			entities.addAll(this.queryProxy()
 					.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", subEmployeeIds)
 					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList());
+		});
+		entities.sort((o1, o2) -> {
+			int tmp = o1.sid.compareTo(o2.sid);
+			if (tmp != 0) return tmp;
+			return o1.startDate.compareTo(o2.startDate);
 		});
 		
 		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entities.stream()

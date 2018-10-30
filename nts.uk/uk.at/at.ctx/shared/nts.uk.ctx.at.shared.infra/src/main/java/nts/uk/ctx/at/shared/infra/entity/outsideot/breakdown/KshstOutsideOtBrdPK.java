@@ -6,10 +6,8 @@ package nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,14 +25,10 @@ public class KshstOutsideOtBrdPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
-	@Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The brd item no. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "BRD_ITEM_NO")
     private int brdItemNo;
 
@@ -42,6 +36,7 @@ public class KshstOutsideOtBrdPK implements Serializable {
      * Instantiates a new kshst over time brd PK.
      */
     public KshstOutsideOtBrdPK() {
+    	super();
     }
 
     /**
@@ -71,8 +66,6 @@ public class KshstOutsideOtBrdPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
-		// not set
 		if (!(object instanceof KshstOutsideOtBrdPK)) {
 			return false;
 		}
@@ -87,12 +80,4 @@ public class KshstOutsideOtBrdPK implements Serializable {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.KshstOverTimeBrdPK[ cid=" + cid + ", brdItemNo=" + brdItemNo + " ]";
-	}
-    
 }

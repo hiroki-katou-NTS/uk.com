@@ -83,28 +83,31 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			throws Exception {
 
 		Cells cells = worksheet.getCells();
-
-		cells.get(0, 0).setValue(TextResource.localize("KDM002_11"));
+		//KDM002_35
+		cells.get(0, 0).setValue(TextResource.localize("KDM002_35"));
 		setBackgroundHeader(cells.get(0, 0));
 		setBorderStyle(cells.get(0, 0));
-		cells.get(0, 1).setValue(TextResource.localize("KDM002_12"));
+		cells.get(0, 1).setValue(TextResource.localize("KDM002_11"));
 		setBackgroundHeader(cells.get(0, 1));
 		setBorderStyle(cells.get(0, 1));
-		cells.get(0, 2).setValue(TextResource.localize("KDM002_13"));
+		cells.get(0, 2).setValue(TextResource.localize("KDM002_12"));
 		setBackgroundHeader(cells.get(0, 2));
 		setBorderStyle(cells.get(0, 2));
-		cells.get(0, 3).setValue(TextResource.localize("KDM002_14"));
+		cells.get(0, 3).setValue(TextResource.localize("KDM002_13"));
 		setBackgroundHeader(cells.get(0, 3));
 		setBorderStyle(cells.get(0, 3));
-		cells.get(0, 4).setValue(TextResource.localize("KDM002_15"));
+		cells.get(0, 4).setValue(TextResource.localize("KDM002_14"));
 		setBackgroundHeader(cells.get(0, 4));
 		setBorderStyle(cells.get(0, 4));
-		cells.get(0, 5).setValue(TextResource.localize("KDM002_16"));
+		cells.get(0, 5).setValue(TextResource.localize("KDM002_15"));
 		setBackgroundHeader(cells.get(0, 5));
 		setBorderStyle(cells.get(0, 5));
-		cells.get(0, 6).setValue(TextResource.localize("KDM002_9"));
+		cells.get(0, 6).setValue(TextResource.localize("KDM002_16"));
 		setBackgroundHeader(cells.get(0, 6));
 		setBorderStyle(cells.get(0, 6));
+		cells.get(0, 7).setValue(TextResource.localize("KDM002_9"));
+		setBackgroundHeader(cells.get(0, 7));
+		setBorderStyle(cells.get(0, 7));
 		
 		// auto header
 		int index = 0;
@@ -135,21 +138,23 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 	private int fillDataToExcel(Worksheet worksheet, int firstRow, ExcelInforCommand excelInforCommand,
 			List<String> htbPlanneds) {
 		Cells cells = worksheet.getCells();
-		cells.get(firstRow, 0).setValue(excelInforCommand.getName());
+		cells.get(firstRow, 0).setValue(excelInforCommand.getEmployeeCode());
 		setBorderStyle(cells.get(firstRow, 0));
-		cells.get(firstRow, 1).setValue(excelInforCommand.getDateStart());
+		cells.get(firstRow, 1).setValue(excelInforCommand.getName());
 		setBorderStyle(cells.get(firstRow, 1));
-		cells.get(firstRow, 2).setValue(excelInforCommand.getDateEnd());
+		cells.get(firstRow, 2).setValue(excelInforCommand.getDateStart());
 		setBorderStyle(cells.get(firstRow, 2));
-		cells.get(firstRow, 3).setValue(excelInforCommand.getDateOffYear());
+		cells.get(firstRow, 3).setValue(excelInforCommand.getDateEnd());
 		setBorderStyle(cells.get(firstRow, 3));
-		cells.get(firstRow, 4).setValue(excelInforCommand.getDateTargetRemaining());
+		cells.get(firstRow, 4).setValue(excelInforCommand.getDateOffYear());
 		setBorderStyle(cells.get(firstRow, 4));
-		cells.get(firstRow, 5)
-				.setValue(excelInforCommand.getDateAnnualRetirement() + TextResource.localize("KDM002_33"));
+		cells.get(firstRow, 5).setValue(excelInforCommand.getDateTargetRemaining());
 		setBorderStyle(cells.get(firstRow, 5));
-		cells.get(firstRow, 6).setValue(excelInforCommand.getDateAnnualRest() + TextResource.localize("KDM002_33"));
+		cells.get(firstRow, 6)
+				.setValue(excelInforCommand.getDateAnnualRetirement() + TextResource.localize("KDM002_33"));
 		setBorderStyle(cells.get(firstRow, 6));
+		cells.get(firstRow, 7).setValue(excelInforCommand.getDateAnnualRest() + TextResource.localize("KDM002_33"));
+		setBorderStyle(cells.get(firstRow, 7));
 		int i = 0;
 		for (String wtCode : htbPlanneds) {
 			Optional<NumberOfWorkTypeUsedImport> opNumber = excelInforCommand.getNumberOfWorkTypeUsedImport().stream()

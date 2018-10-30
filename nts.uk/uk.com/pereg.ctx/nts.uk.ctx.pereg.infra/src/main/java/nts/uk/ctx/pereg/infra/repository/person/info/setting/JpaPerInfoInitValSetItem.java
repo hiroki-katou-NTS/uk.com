@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.IntValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
@@ -70,6 +72,17 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " INNER JOIN PpemtPerInfoItemOrder po "
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
 			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid  ORDER BY po.disporder";
+	
+	private static final String SEL_ALL_INIT_ITEM_FOR_COMBOBOX = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType ,pm.selectionItemRefType,pm.itemParentCd,pm.dateItemType,pm.selectionItemRefCode"
+			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
+			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm"
+			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoItemOrder po "
+			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
+			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid and c.abolitionAtr = 0 ORDER BY po.disporder";
 	// SONNLB
 
 	private static final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -289,7 +302,15 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 				.setParameter("settingId", settingId)
 				.setParameter("cid", cid)
 				.getList(c -> toInitDomain(c));
-
+	}
+	
+	@Override
+	public List<PerInfoInitValueSetItemDetail> getAllInitItemForComboBox(String settingId, String perInfoCtgId,
+			String cid) {
+		return this.queryProxy().query(SEL_ALL_INIT_ITEM_FOR_COMBOBOX, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("settingId", settingId)
+				.setParameter("cid", cid)
+				.getList(c -> toInitDomain(c));
 	}
 
 	private static PerInfoInitValueSetItemDetail toInitDomain(Object[] entity) {
@@ -428,25 +449,24 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	@Override
 	public List<String> isExistItem(List<String> perInfoCtgId) {
-		List<PersonInfoItemDefinition> item = this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
-				.setParameter("perInfoCtgId", perInfoCtgId).getList(c -> toDomainString(c));
-
-		if (item.size() > 0) {
-			List<String> itemIdList = item.stream().map(c -> c.getPerInfoCategoryId()).distinct()
-					.collect(Collectors.toList());
-			return itemIdList;
-		}
-		return new ArrayList<>();
+		List<PersonInfoItemDefinition> item = new ArrayList<>();
+		CollectionUtil.split(perInfoCtgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			item.addAll(this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
+				.setParameter("perInfoCtgId", subList).getList(c -> toDomainString(c)));
+		});
+		if (CollectionUtil.isEmpty(item)) return new ArrayList<>();
+		return item.stream().map(c -> c.getPerInfoCategoryId()).distinct()
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
-
-		List<String> itemLst = this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class).setParameter("itemCd", itemCd)
-				.setParameter("perInfoCtgId", perInfoCtgId).getList();
-		if (itemLst.size() > 0) {
-			return true;
-		}
-		return false;
+		List<String> itemLst = new ArrayList<>(); 
+		CollectionUtil.split(perInfoCtgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			itemLst.addAll(this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class).setParameter("itemCd", itemCd)
+				.setParameter("perInfoCtgId", subList).getList());
+		});
+		return itemLst.size() > 0;
 	}
+
 }

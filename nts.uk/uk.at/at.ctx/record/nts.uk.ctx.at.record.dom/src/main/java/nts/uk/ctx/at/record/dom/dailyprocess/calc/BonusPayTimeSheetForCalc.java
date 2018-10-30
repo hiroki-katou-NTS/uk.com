@@ -77,13 +77,6 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 											Optional.empty(),
 											this.raiseSalaryTimeItemNo);
 	}
-	
-	public AttendanceTime testSAIKI(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
-		//自分が持つ集計対象の時間帯の合計
-		val includeForcsValue = super.forcs(conditionAtr, dedAtr);
-		//自分自身が集計対象外の場合、自分自身が持つ集計対象の時間帯の合計時間のみを返す
-		return includeForcsValue;
-	}
 
 	public Optional<BonusPayTimeSheetForCalc> createDuplicateRange(TimeSpanForCalc timeSpan) {
 		//重複範囲取得
