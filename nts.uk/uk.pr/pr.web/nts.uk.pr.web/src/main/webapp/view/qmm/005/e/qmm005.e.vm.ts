@@ -232,7 +232,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             // E1_5
             self.processingYearAD = ko.observable(format(getText("QMM005_109"), tranferModel.E1_5_0));
             // E1_6
-            self.treatmentYearJapaneseCalendar = ko.observable(' (' + nts.uk.time.yearmonthInJapanEmpire(tranferModel.E1_5_0 + '01').toString().split(' ').slice(0, 3).join('') + ')');
+            self.treatmentYearJapaneseCalendar = ko.observable(' (' + nts.uk.time.yearInJapanEmpire(tranferModel.E1_5_0).toString() + ')');
             // E2_2
             self.reflectionStartYear = ko.observable(tranferModel.E2_2);
             //E2_5

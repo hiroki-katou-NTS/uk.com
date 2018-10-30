@@ -1825,7 +1825,7 @@ module nts.uk.ui.mgrid {
         /**
          * Bind vertWheel.
          */
-        export function bindVertWheel($container: HTMLElement, showY?: boolean) {
+        export function bindVertWheel($container: HTMLElement, showY?: boolean, abnorm?: boolean) {
             let $_container = $($container);
             $container.addXEventListener(ssk.MOUSE_WHEEL, function(event: any) {
                 let delta = event.deltaY;
@@ -1833,6 +1833,13 @@ module nts.uk.ui.mgrid {
                 let value = $_container.scrollTop();
 //                $container.stop().animate({ scrollTop: value }, 10);
                 let os = ti.isIE() ? 25 : 50;
+//                if (!abnorm && ((direction < 0 && value === 0)
+//                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
+//                    try {
+//                        window.dispatchEvent(event);
+//                    } catch (e) {}
+//                }
+                
                 $_container.scrollTop(value + direction * os);
                 
                 if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
@@ -3832,10 +3839,23 @@ module nts.uk.ui.mgrid {
                     if (maf && maf.desc) {
                         t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                         if (!t || !t.c || _.find(_fixedColumns, fc => fc.key === coord.columnKey)) return;
-                        formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                        t.c.textContent = formatted;
-                        disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
-                        $.data(t.c, v.DATA, disFormat);
+                        let control = dkn.controlType[coord.columnKey];
+                        if (control === dkn.LINK_LABEL) {
+                            let link = t.c.querySelector("a");
+                            link.innerHTML = cellValue;
+                        } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                            let sel = _.find(control.options, o => o.code === cellValue);
+                            if (sel) { 
+                                $.data(t.c, lo.CBX_SELECTED_TD, cellValue);
+                                t.c.textContent = sel.name; 
+                            }
+                        } else {
+                            formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
+                            t.c.textContent = formatted;
+                            disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
+                            $.data(t.c, v.DATA, disFormat);
+                        }
+                        
                         if (t.colour) t.c.classList.add(t.colour);
                     }
                     
