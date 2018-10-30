@@ -31,7 +31,9 @@ public class StateCorrelationHisCompanySettingCommandHandler extends CommandHand
 
         StateCorrelationHisCompanyCommand stateCorrelationHisCompanyCommand = commandHandlerContext.getCommand().getStateCorrelationHisCompanyCommand();
 
-        repository.add(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(), new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
+        repository.add(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
+                stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
+                stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
 
         stateCorrelationHisCompanyService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()));
 
