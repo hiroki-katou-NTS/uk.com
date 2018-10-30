@@ -316,6 +316,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				status = stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).findFirst()
 						.orElse(ProcessState.SUCCESS);
 				if (status == ProcessState.SUCCESS) {
+					dataSetter.updateData("dailyCreateCount", emloyeeIds.size());
 					if (executionAttr.value == 0) {
 						updateLogInfoWithNewTransaction.updateLogInfo(empCalAndSumExecLogID, 0,
 								ExecutionStatus.DONE.value);
@@ -457,8 +458,13 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 
+		/**
+		 * 勤務種別変更時に再作成　=　false reCreateWorkType
+		 * 異動時に再作成　=　false reCreateWorkPlace
+		 * 休職・休業者再作成　=　false reCreateRestTime
+		 */
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext,
-				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false,
+				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false, false, false, 
 				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
 		
 		// 暫定データの登録

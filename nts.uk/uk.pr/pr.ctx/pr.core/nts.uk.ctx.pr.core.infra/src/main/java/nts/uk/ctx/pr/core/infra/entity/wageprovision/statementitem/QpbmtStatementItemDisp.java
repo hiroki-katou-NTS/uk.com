@@ -49,12 +49,12 @@ public class QpbmtStatementItemDisp extends UkJpaEntity implements Serializable 
 	}
 
 	public StatementItemDisplaySet toDomain() {
-		return new StatementItemDisplaySet(this.statementItemDispPk.cid, this.statementItemDispPk.salaryItemId,
+		return new StatementItemDisplaySet(this.statementItemDispPk.cid, this.statementItemDispPk.categoryAtr, this.statementItemDispPk.itemNameCd,
 				this.zeroDisplayAtr, this.itemNameDisplay);
 	}
 
 	public static QpbmtStatementItemDisp toEntity(StatementItemDisplaySet domain) {
-		return new QpbmtStatementItemDisp(new QpbmtStatementItemDispPk(domain.getCid(), domain.getSalaryItemId()),
+		return new QpbmtStatementItemDisp(new QpbmtStatementItemDispPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v()),
 				domain.getZeroDisplayAtr().value, domain.getItemNameDisplay().map(i -> i.value).orElse(null));
 	}
 

@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -78,7 +79,8 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 			if (checkUrl == NotUseAtr.USE) {
-				urlInfo = registerEmbededURL.registerEmbeddedForApp(
+				urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
+						+ registerEmbededURL.registerEmbeddedForApp(
 						application.getAppID(), 
 						application.getAppType().value, 
 						application.getPrePostAtr().value, 
@@ -86,7 +88,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 						applicantID);
 			}
 		}
-		String mailContent1 = mailBody + "\n" + urlInfo;
+		String mailContent1 = mailBody + urlInfo;
 		//※同一メール送信者に複数のメールが送られないよう
 		//　一旦メール送信した先へのメールは送信しない。
 		//list sID da gui
@@ -133,7 +135,8 @@ public class CheckTranmissionImpl implements CheckTransmission {
 						int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 						NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 						if (checkUrl == NotUseAtr.USE) {
-							urlInfo = registerEmbededURL.registerEmbeddedForApp(
+							urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
+									+ registerEmbededURL.registerEmbeddedForApp(
 									application.getAppID(), 
 									application.getAppType().value, 
 									application.getPrePostAtr().value, 
@@ -141,7 +144,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 									employeeToSendId);
 						}
 					}
-					String mailContent = mailBody + "\n" + urlInfo;
+					String mailContent = mailBody + urlInfo;
 					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContent));
 					successList.add(employeeToSendId);
 				} catch (Exception ex) {

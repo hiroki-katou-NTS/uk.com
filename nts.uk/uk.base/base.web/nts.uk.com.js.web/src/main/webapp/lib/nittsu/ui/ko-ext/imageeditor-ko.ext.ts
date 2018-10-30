@@ -176,7 +176,12 @@ module nts.uk.ui.koExtentions {
                 event.preventDefault();
                 let files = evt.originalEvent["dataTransfer"].files;
                 if (!nts.uk.util.isNullOrEmpty(files)) {
-                    self.validateFile(files);
+                    let firstImageFile = self.helper.getFirstFile(files);
+                    if (self.validateFile(firstImageFile)) {
+                        self.assignImageToView(firstImageFile);
+                    } else {
+                        self.changeStatus(ImageStatus.FAIL);
+                    }
                 }
             });
 

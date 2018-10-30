@@ -7,7 +7,8 @@ module nts.uk.at.view.kaf009.b.service {
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
         getGoBackDirectDetail: "/at/request/application/gobackdirectly/getGoBackDirectDetail/{0}",
         checkBeforeChange: "/at/request/application/gobackdirectly/checkBeforeUpdateGoBackData",
-        updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
+        updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly",
+        getDetailRealData: "/at/request/application/getDetailRealData"
     }
     /**
      * get all Work Location  
@@ -40,5 +41,9 @@ module nts.uk.at.view.kaf009.b.service {
      */
     export function updateGoBackDirect(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
         return ajax("at", paths.updateGoBackDirectly, currentGoBack);
+    }
+    
+    export function getDetailRealData(appID: string): JQueryPromise<Array<any>> {
+        return ajax("at", paths.getDetailRealData, appID);
     }
 }

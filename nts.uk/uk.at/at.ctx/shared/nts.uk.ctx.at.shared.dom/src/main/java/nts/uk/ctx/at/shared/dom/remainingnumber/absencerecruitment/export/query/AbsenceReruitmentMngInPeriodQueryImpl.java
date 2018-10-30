@@ -666,7 +666,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		List<InterimAbsMng> lstAbsUsen = new ArrayList<>(lstAbsMng);
 		List<InterimRemain> lstTmpRec = new ArrayList<>(lstInterimMngOfRec);
 		List<InterimRecMng> lstRecMngUsen = new ArrayList<>(lstRecMng);
-		if(paramInput.isOverwriteFlg() && !paramInput.getInterimMng().isEmpty()) {
+		if(paramInput.isOverwriteFlg() 
+				&& !paramInput.getInterimMng().isEmpty()
+				&& !paramInput.isMode()) {
 			for (InterimRemain interimRemain : paramInput.getInterimMng()) {
 				List<InterimRemain> lstInterimAbsUsen = lstTmpAbs.stream()
 						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());

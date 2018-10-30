@@ -1092,23 +1092,38 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 let holidayCode;
                 _.map(self.extraResultMonthly().conditions(), (d) => {
                     if (d.haveComboboxFrame()) {
-                        holidayCode = d.listItemID()[0];
+                        if (!nts.uk.util.isNullOrUndefined(d.listItemID()) && d.listItemID() > 0) {
+                            holidayCode = d.listItemID()[0];
+                        }
                     }
                 });
-
                 if (!nts.uk.util.isNullOrUndefined(holidayCode)) {
                     let newdata = [];
                     let haveInList = false;
-                    _.map(data, (d) => {
-                        newdata.push(d);
-                        if (holidayCode > d.specialHolidayCode) {
-                            newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL002_120')});
-                        }
+                    let index = 0;
+                    if (!nts.uk.util.isNullOrUndefined(data) && data.length > 0) {
+                        let length = data.length;
+                        _.map(data, (d) => {
+                            if (index == 0 && holidayCode < d.specialHolidayCode) {
+                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
+                                newdata.push(d);
+                            } else if ((holidayCode > d.specialHolidayCode && index == length - 1)
+                                || (holidayCode > d.specialHolidayCode && index < length - 1 && holidayCode < data[index + 1].specialHolidayCode)) {
+                                newdata.push(d);
+                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
+                            } else {
+                                newdata.push(d);
+                            }
 
-                        if (d.specialHolidayCode === holidayCode) {
-                            haveInList = true;
-                        }
-                    });
+                            if (d.specialHolidayCode === holidayCode) {
+                                haveInList = true;
+                            }
+                            index++;
+                        });
+                    } else {
+                        newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
+                    }
+
                     if (!haveInList) {
                         self.listSpecialholidayframe = newdata;
                     } else {
