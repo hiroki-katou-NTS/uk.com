@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/sidebar.xhtml">
+    <ui:define name="sidebar-head">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm020.a.vm.js" />
+        <com:scriptfile path="qmm020.a.start.js" />
+        <com:scriptfile path="qmm020.a.service.js" />
+        <com:stylefile path="qmm020.a.style.css" />
+
+        <com:scriptfile path="../e/qmm020.e.vm.js" />
+        <com:scriptfile path="../e/qmm020.e.service.js" />
+
+     <!--   <com:scriptfile path="../f/qmm020.f.vm.js" />
+        <com:scriptfile path="../f/qmm020.f.service.js" />-->
+
+        <com:scriptfile path="../g/qmm020.g.vm.js" />
+        <com:scriptfile path="../g/qmm020.g.service.js" />
+
+        <com:scriptfile path="../h/qmm020.h.vm.js" />
+        <com:scriptfile path="../h/qmm020.h.service.js" />
+
+    </ui:define>
+    <ui:define name="sidebar">
+        <ul class="navigator">
+
+            <li><a tabindex="-1" href="#tabpanel-1" class="tab-b-sidebar" role="tab-navigator">#{i18n.getText('QMM020_5')}</a></li>
+
+            <li><a tabindex="-1" href="#tabpanel-2" class="tab-c-sidebar" role="tab-navigator">#{i18n.getText('QMM020_7')}</a></li>
+
+            <li><a tabindex="-1" href="#tabpanel-3" class="tab-d-sidebar" role="tab-navigator">#{i18n.getText('QMM020_9')}</a></li>
+        </ul>
+        <div class="divider"></div>
+        <span>#{i18n.getText('QMM020_12')}</span>
+        <button>?</button>
+    </ui:define>
+    <ui:define name="sidebar-content">
+        <div id="tabpanel-1" role="tabpanel" data-bind = "with: viewmodelE">
+            <ui:include src="../e/index.xhtml" />
+        </div>
+        <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelF">
+            <ui:include src="../f/index.xhtml" />
+        </div>
+        <div id="tabpanel-3" role="tabpanel" data-bind = "with: viewmodelG">
+            <ui:include src="../g/index.xhtml" />
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
