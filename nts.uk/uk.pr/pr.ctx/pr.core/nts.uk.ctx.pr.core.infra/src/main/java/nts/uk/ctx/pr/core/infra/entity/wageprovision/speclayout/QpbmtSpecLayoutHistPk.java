@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 /**
  * 明細書レイアウト履歴: 主キー情報
@@ -15,7 +16,7 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtSpecLayoutHistPk {
+public class QpbmtSpecLayoutHistPk implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
      * 会社ID
