@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHis;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -26,7 +27,6 @@ public class StateCorrelationHisClassificationService {
         itemtoBeAdded.get().add(yearMonthItem);
         stateCorrelationHisClassificationRepository.add(cId, yearMonthItem);
         this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
-
     }
 
     public void updateHistoryClassification(String cId,String hisId, YearMonth start, YearMonth end){

@@ -29,7 +29,7 @@ public class StateLinkMasterWebService extends WebService {
     @POST
     @Path("getSpecName")
     public List<StateLinkSettingMasterDto> getSpecName(@PathParam("hisId") String hisId) {
-        //return stateLinkSettingMasterRepository.getStateLinkSettingMasterByHisId(hisId);
+        //return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId);
         return null;
     }
 
