@@ -189,10 +189,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	@SneakyThrows
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
-		try(Connection conn = this.connection()){
-			String sQue = "SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
-							"WHERE appRoot.CID = ? AND appRoot.EMPLOYEE_ID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE = ?";
-			PreparedStatement statement = conn.prepareStatement(sQue);
+		Connection conn = this.connection();
+		String sQue = "SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+						"WHERE appRoot.CID = ? AND appRoot.EMPLOYEE_ID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE = ?";
+		try(PreparedStatement statement = conn.prepareStatement(sQue)){
 			statement.setString(1, companyID);
 			statement.setString(2, employeeID);
 			statement.setInt(3, rootType);
@@ -208,17 +208,18 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 				String DELETE_APP_ROOT_CONFIRM_FOR_424_V2 = 
 						"DELETE  FROM WWFDT_APP_ROOT_CONFIRM WHERE ROOT_ID = ?";
 				try{
-					PreparedStatement dStatement1 = conn.prepareStatement(DELETE_FRAME_APPROVER_FOR_424_V2);
-					PreparedStatement dStatement2 = conn.prepareStatement(DELETE_PHASE_APPROVER_FOR_424_V2);
-					PreparedStatement dStatement3 = conn.prepareStatement(DELETE_APP_ROOT_CONFIRM_FOR_424_V2);
-					
-					dStatement1.setString(1, rootId);
-					dStatement2.setString(1, rootId);
-					dStatement3.setString(1, rootId);
-					
-					dStatement1.executeUpdate();
-					dStatement2.executeUpdate();
-					dStatement3.executeUpdate();
+					try(PreparedStatement dStatement1 = conn.prepareStatement(DELETE_FRAME_APPROVER_FOR_424_V2)){
+						dStatement1.setString(1, rootId);
+						dStatement1.executeUpdate();
+					}
+					try(PreparedStatement dStatement2 = conn.prepareStatement(DELETE_PHASE_APPROVER_FOR_424_V2)){
+						dStatement2.setString(1, rootId);
+						dStatement2.executeUpdate();
+					}
+					try(PreparedStatement dStatement3 = conn.prepareStatement(DELETE_APP_ROOT_CONFIRM_FOR_424_V2)){
+						dStatement3.setString(1, rootId);
+						dStatement3.executeUpdate();
+					}
 				}catch (SQLException e) {
 					throw new RuntimeException(e);
 				}
