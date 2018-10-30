@@ -66,7 +66,7 @@ import nts.uk.shr.com.i18n.TextResource;
 /**
  * The Class ScheCreExeBasicScheduleHandler.
  */
-@Transactional(value = TxType.SUPPORTS)
+@Transactional(value = TxType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeBasicScheduleHandler {
 

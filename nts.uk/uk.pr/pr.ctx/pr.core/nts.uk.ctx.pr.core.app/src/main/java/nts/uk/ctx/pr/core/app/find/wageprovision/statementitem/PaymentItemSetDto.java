@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Value;
@@ -90,6 +91,46 @@ public class PaymentItemSetDto {
 	private String taxExemptionName;
 
 	/**
+	 * 値設定区分
+	 */
+	private int errorUpperLimitSetAtr;
+
+	/**
+	 * 範囲値
+	 */
+	private BigDecimal errorUpRangeVal;
+
+	/**
+	 * 値設定区分
+	 */
+	private int errorLowerLimitSetAtr;
+
+	/**
+	 * 範囲値
+	 */
+	private BigDecimal errorLoRangeVal;
+
+	/**
+	 * 値設定区分
+	 */
+	private int alarmUpperLimitSetAtr;
+
+	/**
+	 * 範囲値
+	 */
+	private BigDecimal alarmUpRangeVal;
+
+	/**
+	 * 値設定区分
+	 */
+	private int alarmLowerLimitSetAtr;
+
+	/**
+	 * 範囲値
+	 */
+	private BigDecimal alarmLoRangeVal;
+
+	/**
 	 * 備考
 	 */
 	private String note;
@@ -109,6 +150,14 @@ public class PaymentItemSetDto {
 				domain.getLimitAmountSetting().getLimitAmountAtr().map(i -> i.value).orElse(null),
 				domain.getLimitAmountSetting().getTaxLimitAmountCode().map(i -> i.v()).orElse(null),
 				taxDomain.map(i -> i.getTaxExemptionName().v()).orElse(null),
+				domain.getErrorRangeSetting().getUpperLimitSetting().getValueSettingAtr().value,
+				domain.getErrorRangeSetting().getUpperLimitSetting().getRangeValue().map(i -> i.v()).orElse(null),
+				domain.getErrorRangeSetting().getLowerLimitSetting().getValueSettingAtr().value,
+				domain.getErrorRangeSetting().getLowerLimitSetting().getRangeValue().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getUpperLimitSetting().getValueSettingAtr().value,
+				domain.getAlarmRangeSetting().getUpperLimitSetting().getRangeValue().map(i -> i.v()).orElse(null),
+				domain.getAlarmRangeSetting().getLowerLimitSetting().getValueSettingAtr().value,
+				domain.getAlarmRangeSetting().getLowerLimitSetting().getRangeValue().map(i -> i.v()).orElse(null),
 				domain.getNote().map(i -> i.v()).orElse(null));
 	}
 }

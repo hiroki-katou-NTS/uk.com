@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -129,7 +130,7 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 					attendanceTimeOfMonthly.getDatePeriod().end(),
 					employeeId));
 			//No.533
-			List<AppRootStateStatusSprExport> appRootStateStatusSprExports = intermediateDataPub
+			List<AppRootSttMonthExport> appRootStateStatusSprExports = intermediateDataPub
 					.getAppRootStatusByEmpsMonth(empPerformMonthParams);
 			String classification=TextResource.localize("KAL010_100");
 			String alarmItem=TextResource.localize("KAL010_128");

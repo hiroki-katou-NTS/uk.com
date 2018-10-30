@@ -336,57 +336,67 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private void updateDomains(String execItemCd, int execType, String companyId, String execId,
 			ExecutionTaskSetting execSetting, ProcessExecutionLog procExecLog, LastExecDateTime lastExecDateTime,
 			ProcessExecutionLogManage processExecutionLogManage) {
-
-		// ドメインモデル「更新処理自動実行管理」を更新する
-		if (!this.isAbnormalTermEachTask(procExecLog) && (processExecutionLogManage.getOverallStatus() == null
-				|| !processExecutionLogManage.getOverallStatus().isPresent())) {
-			processExecutionLogManage.setOverallStatus(EndStatus.SUCCESS);
-		} else if (this.isAbnormalTermEachTask(procExecLog)) {
-			processExecutionLogManage.setOverallStatus(EndStatus.ABNORMAL_END);
+		//ドメインモデル「更新処理自動実行ログ履歴」を取得する
+		Optional<ProcessExecutionLogHistory> processExecutionLogHistory =  procExecLogHistRepo.getByExecId(companyId, execItemCd, execId);
+		if(!processExecutionLogHistory.isPresent()) {
+			// ドメインモデル「更新処理自動実行管理」を更新する
+			if (!this.isAbnormalTermEachTask(procExecLog) && (processExecutionLogManage.getOverallStatus() == null
+					|| !processExecutionLogManage.getOverallStatus().isPresent())) {
+				processExecutionLogManage.setOverallStatus(EndStatus.SUCCESS);
+			} else if (this.isAbnormalTermEachTask(procExecLog)) {
+				processExecutionLogManage.setOverallStatus(EndStatus.ABNORMAL_END);
+			}
+			processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
+			this.processExecLogManaRepo.update(processExecutionLogManage);
+	
+			List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
+					execId);
+			if (CollectionUtil.isEmpty(taskLogList)) {
+				this.execTaskLogRepo.insertAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+			} else {
+				this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+			}
+	
+			/*
+			 * ドメインモデル「更新処理自動実行ログ」を更新する
+			 * 
+			 * 【実行タイプ ＝ 1（即時実行）の場合】 前回実行日時 ＝ システム日時 前回実行日時（即時実行を含めない） ＝ システム日時
+			 * 
+			 * 【実行タイプ ＝ 0（開始時刻）の場合】 前回実行日時 ＝ システム日時
+			 * 
+			 * if (execType == 1) { procExecLog.setLastExecDateTime(GeneralDateTime.now());
+			 * procExecLog.setLastExecDateTimeEx(GeneralDateTime.now()); } else if (execType
+			 * == 0) { procExecLog.setLastExecDateTime(GeneralDateTime.now()); }
+			 * this.procExecLogRepo.update(procExecLog);
+			 * 
+			 * 
+			 * ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
+			 * 
+			 * 会社ID ＝ 更新処理自動実行ログ.会社ID 実行ID ＝ 取得した実行ID コード ＝ 更新処理自動実行ログ.コード 前回実行日時 ＝
+			 * 更新処理自動実行ログ.前回実行日時 各処理の終了状態(List) ＝ 更新処理自動実行ログ.各処理の終了状態(List) 全体の終了状態 ＝
+			 * 更新処理自動実行ログ.全体の終了状態 全体のエラー詳細 ＝ 更新処理自動実行ログ.全体のエラー詳細 各処理の期間 ＝ 更新処理自動実行ログ.各処理の期間
+			 */
+	
+			this.procExecLogHistRepo.insert(new ProcessExecutionLogHistory(new ExecutionCode(execItemCd), companyId,
+					processExecutionLogManage.getOverallError(),
+					(processExecutionLogManage.getOverallStatus() != null
+							&& processExecutionLogManage.getOverallStatus().isPresent())
+									? processExecutionLogManage.getOverallStatus().get()
+									: null,
+					processExecutionLogManage.getLastExecDateTime(),
+					(procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent())
+							? procExecLog.getEachProcPeriod().get()
+							: null,
+					procExecLog.getTaskLogList(), execId));
+		}else {
+//			Optional<EmpCalAndSumExeLog> empCalAndSumExeLog =
+//								this.empCalSumRepo.getByEmpCalAndSumExecLogID(execId);
+			
+			//ドメインモデル「就業計算と集計実行ログ」を更新する
+			this.empCalSumRepo.updateStatus(execId, ExeStateOfCalAndSum.STOPPING.value);
+		
+			
 		}
-		processExecutionLogManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
-		this.processExecLogManaRepo.update(processExecutionLogManage);
-
-		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
-				execId);
-		if (CollectionUtil.isEmpty(taskLogList)) {
-			this.execTaskLogRepo.insertAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
-		} else {
-			this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
-		}
-
-		/*
-		 * ドメインモデル「更新処理自動実行ログ」を更新する
-		 * 
-		 * 【実行タイプ ＝ 1（即時実行）の場合】 前回実行日時 ＝ システム日時 前回実行日時（即時実行を含めない） ＝ システム日時
-		 * 
-		 * 【実行タイプ ＝ 0（開始時刻）の場合】 前回実行日時 ＝ システム日時
-		 * 
-		 * if (execType == 1) { procExecLog.setLastExecDateTime(GeneralDateTime.now());
-		 * procExecLog.setLastExecDateTimeEx(GeneralDateTime.now()); } else if (execType
-		 * == 0) { procExecLog.setLastExecDateTime(GeneralDateTime.now()); }
-		 * this.procExecLogRepo.update(procExecLog);
-		 * 
-		 * 
-		 * ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
-		 * 
-		 * 会社ID ＝ 更新処理自動実行ログ.会社ID 実行ID ＝ 取得した実行ID コード ＝ 更新処理自動実行ログ.コード 前回実行日時 ＝
-		 * 更新処理自動実行ログ.前回実行日時 各処理の終了状態(List) ＝ 更新処理自動実行ログ.各処理の終了状態(List) 全体の終了状態 ＝
-		 * 更新処理自動実行ログ.全体の終了状態 全体のエラー詳細 ＝ 更新処理自動実行ログ.全体のエラー詳細 各処理の期間 ＝ 更新処理自動実行ログ.各処理の期間
-		 */
-
-		this.procExecLogHistRepo.insert(new ProcessExecutionLogHistory(new ExecutionCode(execItemCd), companyId,
-				processExecutionLogManage.getOverallError(),
-				(processExecutionLogManage.getOverallStatus() != null
-						&& processExecutionLogManage.getOverallStatus().isPresent())
-								? processExecutionLogManage.getOverallStatus().get()
-								: null,
-				processExecutionLogManage.getLastExecDateTime(),
-				(procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent())
-						? procExecLog.getEachProcPeriod().get()
-						: null,
-				procExecLog.getTaskLogList(), execId));
-
 		// パラメータ.実行タイプのチェック
 		if (execType == 1) {
 			return;
@@ -1604,7 +1614,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						if(calculateDate.beforeOrEquals(maxDate)) {
 							isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empLeader,
 									new DatePeriod(calculateDate, maxDate), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-									dailyCreateLog);
+									dailyCreateLog,procExec);
 							if (isHasInterrupt) {
 								break;
 							}
@@ -3119,7 +3129,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId, period,
 								empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 								Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
-										.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
+										.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false, false, false,
 								null);
 			} catch (Exception e) {
 				throw new CreateDailyException();
@@ -3180,7 +3190,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			GeneralDate maxDate = listWorkInfo.stream().map(u -> u.getYmd()).max(GeneralDate::compareTo).get();
 			isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empId,
 					new DatePeriod(calculateDate, maxDate), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-					dailyCreateLog);
+					dailyCreateLog,processExecution);
 			if (isHasInterrupt) {
 				break;
 			}
@@ -3241,14 +3251,21 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	}
 
 	private boolean RedoDailyPerformanceProcessing(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
-			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId, ExecutionLog dailyCreateLog)
+			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId, ExecutionLog dailyCreateLog,ProcessExecution procExec)
 			throws CreateDailyException, DailyCalculateException {
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState1;
 		try {
+			//実行設定.日別実績の作成・計算.対象者区分.勤務種別者を再作成
+			boolean reCreateWorkType = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson();
+			//実行設定.日別実績の作成・計算.対象者区分.異動者を再作成する
+			boolean reCreateWorkPlace = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer();
+			//実行設定.日別実績の作成・計算.対象者区分.休職者・休業者を再作成
+			
+			boolean reCreateRestTime = false; //TODO : chua lam
 			// ⑤社員の日別実績を作成する
 			processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId,
-					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), true, null);
+					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), reCreateWorkType, reCreateWorkPlace, reCreateRestTime, null);
 		} catch (Exception e) {
 			throw new CreateDailyException();
 		}

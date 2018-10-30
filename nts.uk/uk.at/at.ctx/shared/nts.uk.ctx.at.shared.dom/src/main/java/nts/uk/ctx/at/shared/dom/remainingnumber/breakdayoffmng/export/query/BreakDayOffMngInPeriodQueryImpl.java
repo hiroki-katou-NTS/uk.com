@@ -421,7 +421,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				Optional.of(dayOffDataMng));
 		return dataOutput;
 	}
-
+/*
 	@Override
 	public List<BreakDayOffDetail> lstInterimBreakDetail(BreakDayOffRemainMngParam inputParam) {
 		List<InterimRemain> lstInterimBreak = new ArrayList<>();
@@ -504,7 +504,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		}
 		return lstOutputBreak;
 	}
-
+*/
 	@Override
 	public BreakDayOffDetail getNotTypeDayOff(InterimBreakMng breakMng, InterimRemain remainData, GeneralDate aggStartDate,
 			GeneralDate baseDate, SubstitutionHolidayOutput subsHolidaySetting, String cid, String sid) {
@@ -536,8 +536,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				Optional.empty(),
 				Optional.empty());
 		//代休使用期限をチェックする //ExpirationTime: 0: 当月, 2: 年度末クリア
-		if(subsHolidaySetting.getExpirationOfsubstiHoliday() == 0
-				|| subsHolidaySetting.getExpirationOfsubstiHoliday() == 2) {
+		if(subsHolidaySetting != null && (subsHolidaySetting.getExpirationOfsubstiHoliday() == 0
+				|| subsHolidaySetting.getExpirationOfsubstiHoliday() == 2)) {
 			//社員に対応する処理締めを取得する
 			//社員に対応する処理締めを取得する
 			Closure period = closureService.getClosureDataByEmployee(sid, baseDate);
@@ -755,7 +755,9 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		List<InterimDayOffMng> lstDayoffUsen = new ArrayList<>(lstDayoffMng);
 		List<InterimRemain> lstTmpBreak = new ArrayList<>(lstInterimBreak);
 		List<InterimBreakMng> lstBreakMngUsen = new ArrayList<>(lstBreakMng);
-		if(inputParam.isReplaceChk() && !inputParam.getInterimMng().isEmpty()) {
+		if(inputParam.isReplaceChk() 
+				&& !inputParam.getInterimMng().isEmpty()
+				&& !inputParam.isMode()) {
 			for (InterimRemain interimRemain : inputParam.getInterimMng()) {
 				List<InterimRemain> lstInterimDayoffUsen = lstTmpDayoff.stream()
 						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());

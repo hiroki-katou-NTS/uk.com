@@ -2,8 +2,8 @@ module nts.uk.at.view.kmf004.j.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);;
         columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
-            { headerText: nts.uk.resource.getText('KMF004_148'), key: 'code', width: 100, hidden: true },
-            { headerText: nts.uk.resource.getText('KMF004_148'), key: 'name', width: 320 }
+            { headerText: nts.uk.resource.getText('KMF004_101'), key: 'code', width: 100, hidden: true },
+            { headerText: nts.uk.resource.getText('KMF004_101'), key: 'name', width: 320 }
         ]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(null);

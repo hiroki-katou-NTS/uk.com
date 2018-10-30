@@ -31,7 +31,7 @@
 				<div class="container">
 					<div class="cf">
 						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS012_7')}</div>
+							<div style = "margin-right: 15px;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS012_7')}</div>
 							<div id="combo-box" tabindex="4"
 								data-bind="ntsComboBox: {
 								options: listRoleType,
@@ -44,7 +44,7 @@
 								]}"></div>
 						</div>
 						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_9')}</div>
+							<div style = "margin-right: 20px;" data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_9')}</div>
 							<div id="combo-box" tabindex="5"
 								data-bind="ntsComboBox: {
 									options: listCompany,
@@ -74,10 +74,12 @@
 								value: currentCode}"></table>
 						</div>
 						<div class="right-content">
-							<button id="btn-selectuser" tabindex="7" class="x-large"
-								data-bind="click : openCAS012_B, enable: isCreate">#{i18n.getText('CAS012_16')}</button>
-							<label class="username"
-								data-bind="text: selectRoleIndividual().userName"></label>
+							<div class="valign-center control-group">
+								<button id="btn-selectuser" tabindex="7" class="x-large"
+									data-bind="click : openCAS012_B, enable: isCreate">#{i18n.getText('CAS012_16')}</button>
+								<label class="ntsControl limited-label"
+									data-bind="text: selectRoleIndividual().userName"></label>
+							</div>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { required: true}">#{i18n.getText('CAS012_18')}</div>
 								<div id="daterangepicker" tabindex="8"

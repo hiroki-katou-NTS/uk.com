@@ -42,13 +42,14 @@ public class QpbmtBreakdownItemSt extends UkJpaEntity implements Serializable {
 	}
 
 	public BreakdownItemSet toDomain() {
-		return new BreakdownItemSet(this.breakdownItemStPk.salaryItemId, this.breakdownItemStPk.breakdownItemCode,
+		return new BreakdownItemSet(this.breakdownItemStPk.cid, this.breakdownItemStPk.categoryAtr,
+				this.breakdownItemStPk.itemNameCd, this.breakdownItemStPk.breakdownItemCode,
 				this.breakdownItemName);
 	}
 
 	public static QpbmtBreakdownItemSt toEntity(BreakdownItemSet domain) {
 		return new QpbmtBreakdownItemSt(
-				new QpbmtBreakdownItemStPk(domain.getSalaryItemId(), domain.getBreakdownItemCode().v()),
+				new QpbmtBreakdownItemStPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v(), domain.getBreakdownItemCode().v()),
 				domain.getBreakdownItemName().v());
 	}
 

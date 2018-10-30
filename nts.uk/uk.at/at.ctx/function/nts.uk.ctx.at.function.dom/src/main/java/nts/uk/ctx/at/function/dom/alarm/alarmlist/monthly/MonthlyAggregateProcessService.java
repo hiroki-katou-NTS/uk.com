@@ -113,6 +113,7 @@ public class MonthlyAggregateProcessService {
 	@Inject 
 	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 	
+	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees, ApprovalProcessImport approvalProcessImport, IdentityConfirmProcessImport identityConfirmProcessImport){
 		
 		List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
@@ -245,7 +246,7 @@ public class MonthlyAggregateProcessService {
 				continue;
 			//HoiDD #1000436
 			for (EmployeeSearchDto employee : employees) {
-				if(extra.getTypeCheckItem() == 3 ){
+				if(extra.getTypeCheckItem() == TypeMonCheckItemImport.CHECK_REMAIN_NUMBER.value ){
 					CheckRemainNumberMonFunImport checkRemainNumberMonFunImport = extra.getCheckRemainNumberMon();
 					CompareSingleValueImport compareSingleValueImport = checkRemainNumberMonFunImport.getCompareSingleValueEx();
 					CompareRangeImport compareRangeImport = checkRemainNumberMonFunImport.getCompareRangeEx();
@@ -568,52 +569,67 @@ public class MonthlyAggregateProcessService {
 								
 								//group 1 
 								for(ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemCon ) {
-									int compare = erAlAtdItemCon.getCompareOperator();
-									String startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue());
-									String endValue= "";
-									String nameErrorAlarm = "";
-									//get name attdanceName 
-									List<AttendanceItemName> listAttdNameAdd =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
-									nameErrorAlarm = getNameErrorAlarm(listAttdNameAdd,0,nameErrorAlarm);//0 add atd item
-									List<AttendanceItemName> listAttdNameSub =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
-									nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
-									//if type = time
-									if(erAlAtdItemCon.getConditionAtr() == 1) {
-										startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
-									}
-									CompareOperatorText compareOperatorText = convertCompareType(compare);
-									//0 : AND, 1 : OR
-									String compareAndOr = "";
-									if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
-										compareAndOr = "AND";
-									}else {
-										compareAndOr = "OR";
-									}
-									if(!alarmDescription1.equals("")) {
-										alarmDescription1 += compareAndOr +" ";
-									}
-									if(compare<=5) {
-										alarmDescription1 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
-//												startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
-									}else {
-										endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
-										if(erAlAtdItemCon.getConditionAtr() == 1) {
-											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
-										}
-										if(compare>5 && compare<=7) {
-											alarmDescription1 += startValue +" "+
-													compareOperatorText.getCompareLeft()+ " "+
-													nameErrorAlarm+ " "+
-													compareOperatorText.getCompareright()+ " "+
-													endValue+ " ";	
-										}else {
-											alarmDescription1 += nameErrorAlarm + " "+
-													compareOperatorText.getCompareLeft()+ " "+
-													startValue + ","+endValue+ " "+
-													compareOperatorText.getCompareright()+ " "+
-													nameErrorAlarm+ " " ;
-										}
-									}
+									 
+											int compare = erAlAtdItemCon.getCompareOperator();
+										    String startValue ="";
+											String endValue= "";
+											String nameErrorAlarm = "";	
+											List<AttendanceItemName> listAttdNameAddCompare = new ArrayList<>();
+											//get name attdanceName 										
+											if(erAlAtdItemCon.getConditionType()==0){
+												 startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue());											
+												//if type = time
+												if(erAlAtdItemCon.getConditionAtr() == 1) {
+													startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
+												}	
+											}else{
+												Integer singleAtdItem[] = {Integer.valueOf(erAlAtdItemCon.getSingleAtdItem()) };												
+												List<Integer> singleAtdItemList= Arrays.asList(singleAtdItem);
+												listAttdNameAddCompare =  attdItemNameDomainService.getNameOfAttendanceItem(singleAtdItemList 
+														, TypeOfItem.Monthly.value);
+												startValue = getNameErrorAlarm(listAttdNameAddCompare,0,nameErrorAlarm);										 
+											}
+										
+											List<AttendanceItemName> listAttdNameAdd =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
+											nameErrorAlarm = getNameErrorAlarm(listAttdNameAdd,0,nameErrorAlarm);//0 add atd item
+											List<AttendanceItemName> listAttdNameSub =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
+											nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
+							
+											CompareOperatorText compareOperatorText = convertCompareType(compare);
+											//0 : AND, 1 : OR
+											String compareAndOr = "";
+											if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
+												compareAndOr = "AND";
+											}else {
+												compareAndOr = "OR";
+											}
+											if(!alarmDescription1.equals("")) {
+												alarmDescription1 += compareAndOr +" ";
+											}
+											if(compare<=5) {
+													alarmDescription1 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";											
+																																		
+											}else {
+												endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
+												if(erAlAtdItemCon.getConditionAtr() == 1) {
+													endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
+												}
+												if(compare>5 && compare<=7) {
+													alarmDescription1 += startValue +" "+
+															compareOperatorText.getCompareLeft()+ " "+
+															nameErrorAlarm+ " "+
+															compareOperatorText.getCompareright()+ " "+
+															endValue+ " ";	
+												}else {
+													alarmDescription1 += nameErrorAlarm + " "+
+															compareOperatorText.getCompareLeft()+ " "+
+															startValue + ","+endValue+ " "+
+															compareOperatorText.getCompareright()+ " "+
+															nameErrorAlarm+ " " ;
+												}
+											}
+
+											
 								}
 //								if(listErAlAtdItemCon.size()>1)
 //									alarmDescription1 = "("+alarmDescription1+")";
@@ -623,18 +639,31 @@ public class MonthlyAggregateProcessService {
 									//group 2 
 									for(ErAlAtdItemConAdapterDto erAlAtdItemCon2 : listErAlAtdItemCon2 ) {
 										int compare = erAlAtdItemCon2.getCompareOperator();
-										String startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue());
+										String startValue ="";
 										String endValue= "";
 										String nameErrorAlarm = "";
+										List<AttendanceItemName> listAttdNameAddCompare = new ArrayList<>();
 										//get name attdanceName 
+										if(erAlAtdItemCon2.getConditionType()==0){
+											//if type = time
+											 startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue());
+											if(erAlAtdItemCon2.getConditionAtr() == 1) {
+											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
+											}
+										}else{
+											Integer singleAtdItem[] = {Integer.valueOf(erAlAtdItemCon2.getSingleAtdItem()) };												
+											List<Integer> singleAtdItemList= Arrays.asList(singleAtdItem);
+											listAttdNameAddCompare =  attdItemNameDomainService.getNameOfAttendanceItem(singleAtdItemList 
+													, TypeOfItem.Monthly.value);
+											startValue = getNameErrorAlarm(listAttdNameAddCompare,0,nameErrorAlarm);
+											
+										}
+										
 										List<AttendanceItemName> listAttdNameAdd =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
 										nameErrorAlarm = getNameErrorAlarm(listAttdNameAdd,0,nameErrorAlarm);//0 add atd item
 										List<AttendanceItemName> listAttdNameSub =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
 										nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
-										//if type = time
-										if(erAlAtdItemCon2.getConditionAtr() == 1) {
-											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
-										}
+										
 										CompareOperatorText compareOperatorText = convertCompareType(compare);
 										//0 : AND, 1 : OR
 										String compareAndOr = "";
@@ -648,7 +677,6 @@ public class MonthlyAggregateProcessService {
 										}
 										if(compare<=5) {
 											alarmDescription2 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
-//													startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
 										}else {
 											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
 											if(erAlAtdItemCon2.getConditionAtr() == 1) {
@@ -669,9 +697,9 @@ public class MonthlyAggregateProcessService {
 											}
 										}
 									}//end for
-//									
-//									if(listErAlAtdItemCon2.size()>1)
-//										alarmDescription2 = "("+alarmDescription2+")";
+									
+									
+									
 								}
 								String alarmDescriptionValue= "";
 								if(extra.getCheckConMonthly().getOperatorBetweenGroups() ==0) {//AND
@@ -958,15 +986,21 @@ public class MonthlyAggregateProcessService {
 		}
 		//締めのアルゴリズム「当月の期間を算出する」を実行する
 		DatePeriod periodCurrentMonth = closureService.getClosurePeriod(closure.getClosureId().value,
-				today.yearMonth());
+				closure.getClosureMonth().getProcessingYm());
 		
 		//代休期限アラーム基準日を決定する
 		DatePeriod periodCheckDealMonth = closureService.getClosurePeriod(closure.getClosureId().value,
 				getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth));
 
 		//RequestList No.203 期間内の休出代休残数を取得する
+		//集計開始日
+		GeneralDate startPeriod = periodCurrentMonth.start();
+		//集計終了日
+		GeneralDate endPeriod = periodCurrentMonth.end().addYears(1);
+		DatePeriod newPeriod = new DatePeriod(startPeriod, endPeriod);
+		
 		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, employee.getId(),
-				periodCurrentMonth, false, periodCurrentMonth.end(), false, Collections.emptyList(),
+				newPeriod, false, periodCurrentMonth.end(), false, Collections.emptyList(),
 				Collections.emptyList(), Collections.emptyList());
 		BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
 				.getBreakDayOffMngInPeriod(param);

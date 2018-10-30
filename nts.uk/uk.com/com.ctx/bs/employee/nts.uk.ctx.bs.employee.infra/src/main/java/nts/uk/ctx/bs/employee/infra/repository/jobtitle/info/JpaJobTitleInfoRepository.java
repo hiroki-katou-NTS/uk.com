@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.info;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,11 +26,15 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
+import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
@@ -436,6 +442,33 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		// Return
 		return resultList.stream().map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<JobTitleInfo> findByIds(List<String> jobIds, GeneralDate baseDate) {
+		List<JobTitleInfo> data = new ArrayList<>();
+		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT j.CID, j.HIST_ID, j.JOB_ID, j.JOB_CD, j.JOB_NAME, j.SEQUENCE_CD, j.IS_MANAGER from BSYMT_JOB_INFO j"
+						+ " INNER JOIN BSYMT_JOB_HIST h ON h.HIST_ID = j.HIST_ID"
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND j.JOB_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				statement.setDate(1, Date.valueOf(baseDate.localDate()));
+				statement.setDate(2, Date.valueOf(baseDate.localDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 3, subList.get(i));
+				}
+				data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					return new JobTitleInfo(new CompanyId(rec.getString("CID")), rec.getString("HIST_ID"), rec.getInt("IS_MANAGER") == 1,
+							rec.getString("JOB_ID"), new JobTitleCode(rec.getString("JOB_CD")), 
+							new JobTitleName(rec.getString("JOB_NAME")), new SequenceCode(rec.getString("SEQUENCE_CD")));
+				}));
+			}catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+		return data;
 	}
 	
 	/* (non-Javadoc)
