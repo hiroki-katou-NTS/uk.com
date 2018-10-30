@@ -2,20 +2,43 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
         currentSelect: KnockoutObservable<any> = ko.observable();
         specCode: KnockoutObservable<string> = ko.observable('TaiTT');
         specName: KnockoutObservable<string> = ko.observable('TaiTT');
+        to : KnockoutObservable<string> = ko.observable(' ～ ');
         constructor(){
+            block.invisible()
             let self = this;
+            service.getStateCorrelationHisCompanyById().done((data) =>{
+                console.dir(data);
+                _.forEach(data,(o)=>{
+                    self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', self.convertYearMonthToDisplayYearMonth(o.startYearMonth) + self.to() + self.convertYearMonthToDisplayYearMonth(o.endYearMonth)));
+                });
+            }).fail((err)=>{
+                if(err)
+                    dialog.alertError(err);
+            }).always(()=>{
+                block.clear();
+            });
+            self.currentSelect.subscribe((data)=>{
+                service.getStateLinkSettingCompanyById(data).done(()=>{
 
-            for(let i = 1; i < 100; i++) {
-                self.listStateCorrelationHis.push(new ItemModel('00' + i, '基本給', i + 'TaiTT'));
-            }
+                }).fail((err) =>{
+                    if(err)
+                        dialog.alertError(err);
+                }).always(()=>{
+
+                });
+            });
         }
 
+        test(){
+            modal("com","/view/qmm/020/j/index.xhtml");
+        }
         register(){
             block.invisible();
             let self = this;
@@ -36,6 +59,10 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 block.clear();
             });
 
+        }
+
+        convertYearMonthToDisplayYearMonth(yearMonth) {
+            return nts.uk.time.formatYearMonth(yearMonth);
         }
 
     }

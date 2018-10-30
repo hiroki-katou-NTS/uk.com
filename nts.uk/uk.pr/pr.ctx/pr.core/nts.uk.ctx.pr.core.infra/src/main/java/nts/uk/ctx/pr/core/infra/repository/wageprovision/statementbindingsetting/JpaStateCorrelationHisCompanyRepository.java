@@ -21,12 +21,21 @@ public class JpaStateCorrelationHisCompanyRepository extends JpaRepository imple
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisCom f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND  f.stateCorHisComPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid";
 
     @Override
     public Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid, String hisId){
         List<QpbmtStateCorHisCom> listStateCorHisCom = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisCom.class)
                 .setParameter("cid", cid)
                 .setParameter("hisId", hisId)
+                .getList();
+        return this.toDomain(listStateCorHisCom);
+    }
+
+    @Override
+    public Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid) {
+        List<QpbmtStateCorHisCom> listStateCorHisCom = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisCom.class)
+                .setParameter("cid", cid)
                 .getList();
         return this.toDomain(listStateCorHisCom);
     }
