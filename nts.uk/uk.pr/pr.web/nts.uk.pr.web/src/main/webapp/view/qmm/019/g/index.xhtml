@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 1280,
+                width: 1250,
                 height: 670
             };
         </script>
@@ -24,10 +24,10 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div class="table table-orgin">
+            <div class="table table-origin">
                 <div class="cell valign-top">
                     <!--G1_1-->
-                    <div data-bind="ntsPanel:{width: '300px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                    <div data-bind="ntsPanel:{width: '280px', height: '490px', direction: 'right', showIcon: true, visible: true}">
                         <div class="table table-search">
                             <div class="cell valign-center">
                                 <!--G1_2-->
@@ -45,7 +45,7 @@
                             </div>
                             <div class="cell valign-top">
                                 <!--G1_5-->
-                                <div style="width: 200px" data-bind="ntsSearchBox: {
+                                <div style="width: 190px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
 									targetKey: 'code',
 									comId: 'G1_6',
@@ -63,13 +63,13 @@
                             dataSource: itemNames,
                             primaryKey: 'code',
                             columns: [
-                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 60, formatter: _.escape},
-                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 223, formatter: _.escape}
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 50, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 213, formatter: _.escape}
                             ],
                             multiple: false,
                             value: codeSelected}"/>
                         <!--G1_11-->
-                        <button id="G1_11" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                        <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
                     </div>
                 </div>
                 <div class="cell valign-top">
@@ -95,25 +95,25 @@
                         <div class="acc-content">
                             <!--G4_1-->
                             <div class="ui-iggrid">
-                                <table>
+                                <table class="acc-table">
                                     <colgroup>
-                                        <col width="100px"/>
-                                        <col width="150px"/>
+                                        <col width="90px"/>
+                                        <col width="188px"/>
                                     </colgroup>
                                     <tr>
-                                        <td class="ui-widget-header">
+                                        <th class="ui-widget-header">
                                             <!--G4_2-->
                                             <div class="label">#{i18n.getText('QMM019_148')}</div>
-                                        </td>
+                                        </th>
                                         <td>
                                             <!--G4_6-->
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="ui-widget-header">
+                                        <th class="ui-widget-header">
                                             <!--G4_3-->
                                             <div class="label">#{i18n.getText('QMM019_105')}</div>
-                                        </td>
+                                        </th>
                                         <td>
                                             <!--G4_7-->
                                         </td>
