@@ -27,7 +27,7 @@ public class StateLinkMasterWebService extends WebService {
     }
 
     @POST
-    @Path("getSpecName")
+    @Path("getStatementName")
     public List<StateLinkSettingMasterDto> getSpecName(@PathParam("hisId") String hisId) {
         //return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId);
         return null;
