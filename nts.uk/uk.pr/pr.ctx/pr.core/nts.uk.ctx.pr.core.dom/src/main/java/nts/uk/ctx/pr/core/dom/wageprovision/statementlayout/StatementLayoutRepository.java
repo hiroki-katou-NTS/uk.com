@@ -8,16 +8,16 @@ import java.util.List;
 */
 public interface StatementLayoutRepository
 {
-    List<SpecificationLayout> getSpecCode(String cid, String salaryCd, int startYearMonth);
+    List<StatementLayout> getStatementCode(String cid, String salaryCd, int startYearMonth);
 
     List<StatementLayout> getAllStatementLayout();
 
-    Optional<StatementLayout> getStatementLayoutById(String cid, String specCd);
+    Optional<StatementLayout> getStatementLayoutById(String cid, String statementCd);
 
     void add(StatementLayout domain);
 
     void update(StatementLayout domain);
 
-    void remove(String cid, String specCd);
+    void remove(String cid, String statementCd);
 
 }

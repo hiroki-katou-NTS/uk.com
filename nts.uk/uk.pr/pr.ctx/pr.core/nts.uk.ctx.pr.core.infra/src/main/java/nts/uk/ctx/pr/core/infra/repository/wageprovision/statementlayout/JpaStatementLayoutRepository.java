@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.wageprovision.speclayout;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatem
 import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaStatementLayoutRepository extends JpaRepository implements StatementLayoutRepository
@@ -16,6 +17,16 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayout f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid AND  f.statementLayoutPk.statementCd =:statementCd ";
+    private static final String SELECT_SPEC_NAME = "SELECT e.specCode, e.specName FROM QpbmtStatementLayoutHist f INNER JOIN QpbmtStatementLayout e on e.statementLayoutPk.statementCd = f.statementLayoutPk.statementCd" +
+            " Where f.startYearMonth > :startYearMonth AND f.statementLayoutHistPk.statementCd = :statementCd AND f.statementLayoutHistPk.cid = :cid";
+    @Override
+    public List<StatementLayout> getStatementCode(String cid, String salaryCd, int startYearMonth) {
+        return  this.queryProxy().query(SELECT_SPEC_NAME, QpbmtStatementLayout.class)
+                .setParameter("startYearMonth", startYearMonth)
+                .setParameter("statementCd", salaryCd)
+                .setParameter("cid", cid)
+                .getList().stream().map(i->i.toDomain()).collect(Collectors.toList());
+    }
 
     @Override
     public List<StatementLayout> getAllStatementLayout(){

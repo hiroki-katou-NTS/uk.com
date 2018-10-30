@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.wageprovision.speclayout;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
@@ -32,5 +32,10 @@ public class JpaStatementLayoutHistRepository implements StatementLayoutHistRepo
     @Override
     public void remove(String cid, int specCd, String histId) {
 
+    }
+
+    @Override
+    public List<String> getStatemetnCode(String cid, String salaryCd, int startYearMonth) {
+        return null;
     }
 }

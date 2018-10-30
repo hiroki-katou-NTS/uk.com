@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.wageprovision.speclayout.itemrangeset;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout.itemrangeset;
 
 
 import javax.ejb.Stateless;

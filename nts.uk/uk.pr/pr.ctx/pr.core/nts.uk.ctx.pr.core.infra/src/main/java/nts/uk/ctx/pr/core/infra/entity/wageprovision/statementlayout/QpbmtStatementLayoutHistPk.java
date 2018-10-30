@@ -30,7 +30,7 @@ public class QpbmtStatementLayoutHistPk implements Serializable {
      */
     @Basic(optional = false)
     @Column(name = "STATEMENT_CD")
-    public String specCd;
+    public String statementCd;
     /**
      * 履歴ID
      */

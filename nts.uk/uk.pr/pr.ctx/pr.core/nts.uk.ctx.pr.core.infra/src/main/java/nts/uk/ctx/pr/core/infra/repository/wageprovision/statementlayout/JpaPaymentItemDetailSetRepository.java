@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.wageprovision.speclayout;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentItemDetailSet;
