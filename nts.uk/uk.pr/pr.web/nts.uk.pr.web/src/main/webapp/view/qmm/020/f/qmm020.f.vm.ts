@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm020.f.viewmodel {
+module nts.uk.pr.view.qmm020.e.viewmodel {
 
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
     export class ScreenModel {
 
-        listStateCorrelationHis: KnockoutObservableArray<StateCorrelationHisClassification> =  ko.observableArray([]);
+        listStateCorrelationHisPosition: KnockoutObservableArray<StateCorrelationHisPosition> =  ko.observableArray([]);
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         hisIdSelected: KnockoutObservable<string> = ko.observable();
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -19,7 +19,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         constructor(){
             let self = this;
-            self.initScreen();
+            //self.initScreen();
             /*            let select = getText("QMM020_21");
                         select = "<button>" + select + "</button>";
                         self.selectButton(select);
@@ -37,12 +37,12 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         initScreen(){
             let self = this;
             block.invisible();
-            service.getStateCorrelationHisClassification().done((listStateCorrelationHis: Array<StateCorrelationHisClassification>) => {
-                if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
-                    self.listStateCorrelationHis(StateCorrelationHisClassification.convertToDisplay(listStateCorrelationHis));
-                    self.hisIdSelected(self.listStateCorrelationHis()[FIRST].hisId);
+            service.getStateCorrelationHisPosition().done((stateCorrelationHisPosition: Array<StateCorrelationHisPosition>) => {
+                if (stateCorrelationHisPosition && stateCorrelationHisPosition.length > 0) {
+                    self.listStateCorrelationHisPosition(StateCorrelationHisClassification.convertToDisplay(stateCorrelationHisPosition));
+                    self.hisIdSelected(self.listStateCorrelationHisPosition()[FIRST].hisId);
                 } else {
-                    self.mode(MODE.NEW);
+                    self.mode(model.MODE.NEW);
                 }
             }).always(() => {
                 block.clear();
@@ -56,9 +56,9 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             service.getStateLinkSettingMaster(hisId).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(stateLinkSettingMaster);
-                    self.mode(MODE.UPDATE);
+                    self.mode(model.MODE.UPDATE);
                 } else {
-                    self.mode(MODE.NEW);
+                    self.mode(model.MODE.NEW);
                 }
             }).always(() => {
                 block.clear();
@@ -79,7 +79,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
     }
 
-    export class StateCorrelationHisClassification {
+    export class StateCorrelationHisPosition {
         hisId: string;
         startYearMonth: string;
         endYearMonth: string;
@@ -89,16 +89,16 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
         static convertToDisplay(item){
             let to = getText('QMM020_9');
-            let listClassification = [];
+            let listPosition = [];
             _.each(item, (item) => {
-                let dto: StateCorrelationHisClassification = new StateCorrelationHisClassification();
+                let dto: StateCorrelationHisPosition = new StateCorrelationHisPosition();
                 dto.hisId = item.hisId;
                 dto.startYearMonth = item.startYearMonth;
                 dto.endYearMonth = item.endYearMonth;
                 dto.display = getText('QMM020_9', [item.startYearMonth], [item.endYearMonth]);
-                listClassification.push(dto);
+                listPosition.push(dto);
             });
-            return listClassification;
+            return listPosition;
         }
         static convertMonthYearToString(yearMonth: any) {
             let year: string, month: string;
@@ -121,11 +121,6 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             this.bonusCode = master.bonusCode;
             this.name = master.name;
         }
-    }
-
-    export enum MODE {
-        NEW = 0,
-        UPDATE = 1
     }
 
     export const FIRST = 0;

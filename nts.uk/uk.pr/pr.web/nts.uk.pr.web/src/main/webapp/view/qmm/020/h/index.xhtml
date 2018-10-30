@@ -1,0 +1,66 @@
+<div>
+    <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
+
+        <div id="A">
+            <span>#{i18n.getText('QMM020_5')}</span>
+            <button id="A1_1" tabindex="1" class="proceed"
+                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+
+            <button id="A1_2" tabindex="2"
+                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
+
+            <button id="A1_3" tabindex="3"
+                    data-bind="enable: false">#{i18n.getText('QMM020_3')}</button>
+
+            <button id="A1_4" tabindex="4"
+                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
+        </div>
+
+    </div>
+    <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+        <div class="fixed-flex-layout-left" style="margin-left: 25px">
+            <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
+                <div>
+                    <button id="H1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
+
+                    <button id="H1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
+                </div>
+
+                <div style="margin-top: 10px">
+                    <table  id="H1_5"  data-bind="ntsGridList: {
+                                            height: 250,
+                                            dataSource: listStateCorrelationHis,
+                                            primaryKey: 'code',
+                                            columns: [
+                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'name', width: 150, hidden: true },
+                                                        { headerText: '', key: 'display', width: 180},
+                                                    ],
+                                            multiple: false,
+                                            value: currentSelect
+                                        }"></table>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-flex-layout-right">
+            <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
+                <div id="H2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_24')}</div>
+            </div>
+
+            <div>
+                <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'empCode', comId: 'multi-list',
+	items: items, selected: currentCodeList, selectedKey: 'empCode', fields: ['empName', 'empCode'], mode: 'igGrid'}" />
+
+                <table id="multi-list" data-bind="ntsGridList: {
+                    height: 320,
+                    options: items,
+                    optionsValue: 'empCode',
+                    columns: columns,
+                    multiple: false,
+                    value: currentCodeList
+                }"></table>
+
+            </div>
+        </div>
+    </div>
+</div>
