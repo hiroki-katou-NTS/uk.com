@@ -307,9 +307,9 @@
 								<tr>
 									<td><span data-bind="text: reservedYearsRemainNo.before"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="click: $parent.openKDL029Dialog.bind($vm), visible: (reservedYearsRemainNo.before>0 || (reservedYearsRemainNo.after>0 &amp;&amp; reservedYearsRemainNo.showAfter))">
+										<!-- <button data-bind="click: $parent.openKDL029Dialog.bind($vm), visible: (reservedYearsRemainNo.before>0 || (reservedYearsRemainNo.after>0 &amp;&amp; reservedYearsRemainNo.showAfter))">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
-										</button>
+										</button> -->
 									</td>
 								</tr>
 							</table>	
@@ -330,7 +330,18 @@
 					<!-- A20 -->
 					<tr data-bind="visible: displayRemainAlternationNo">
 						<td>#{i18n.getText('KTG029_26')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: remainAlternationNoDay"></span>#{i18n.getText('KTG029_60')}</td>
+						<td>
+							<table class="detail">
+								<tr data-bind="with:dataRecord()">
+									<td><span data-bind="text: remainAlternationNoDay"></span>#{i18n.getText('KTG029_60')}</td>
+									<td class="go-button">
+										<!-- <button data-bind="click: $parent.openKDL005Dialog.bind($vm), visible: (remainAlternationNoDay>0)">
+											<i data-bind="ntsIcon: { no: 144 }"></i>
+										</button> -->
+									</td>
+								</tr>
+							</table>
+						</td>
 					</tr>
 					<!-- A21 -->
 					<tr data-bind="visible: displayRemainsLeft">
@@ -340,9 +351,9 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: remainsLeft"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="click: $parent.openKDL009Dialog.bind($vm), visible: (remainsLeft>0)">
+										<!-- <button data-bind="click: $parent.openKDL009Dialog.bind($vm), visible: (remainsLeft>0)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
-										</button>
+										</button> -->
 									</td>
 								</tr>
 							</table>
