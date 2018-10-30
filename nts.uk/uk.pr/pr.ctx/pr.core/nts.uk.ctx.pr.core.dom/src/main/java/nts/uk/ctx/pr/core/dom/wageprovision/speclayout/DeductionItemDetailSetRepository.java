@@ -15,10 +15,10 @@ public interface DeductionItemDetailSetRepository
 
     Optional<DeductionItemDetailSet> getDeductionItemDetailSetById(String histId);
 
-    void add(DeductionItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode);
+    void add(DeductionItemDetailSet domain);
 
-    void update(DeductionItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode);
+    void update(DeductionItemDetailSet domain);
 
-    void remove(String histId, String cid, String specCode);
+    void remove(String histId);
 
 }

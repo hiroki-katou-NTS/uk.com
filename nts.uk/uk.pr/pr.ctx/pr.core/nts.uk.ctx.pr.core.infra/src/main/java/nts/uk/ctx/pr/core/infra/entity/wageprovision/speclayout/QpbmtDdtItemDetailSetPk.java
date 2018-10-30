@@ -20,19 +20,7 @@ import lombok.NoArgsConstructor;
 public class QpbmtDdtItemDetailSetPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    /**
-     * 会社ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
 
-    /**
-     * 明細書コード
-     */
-    @Basic(optional = false)
-    @Column(name = "SPEC_CD")
-    public String specCd;
     /**
     * 履歴ID
     */

@@ -25,19 +25,7 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtPayItemDetailSetPk payItemDetailSetPk;
-    /**
-     * 開始日
-     */
-    @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
-    public int startYearMonth;
 
-    /**
-     * 終了日
-     */
-    @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
-    public int endYearMonth;
     /**
     * 給与項目ID
     */
@@ -119,11 +107,9 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     }
 
 
-    public  static QpbmtPayItemDetailSet toEntity(PaymentItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode){
+    public  static QpbmtPayItemDetailSet toEntity(PaymentItemDetailSet domain){
         QpbmtPayItemDetailSet entity = new QpbmtPayItemDetailSet();
-        entity.payItemDetailSetPk = new QpbmtPayItemDetailSetPk(cid,specCode,domain.getHistId());
-        entity.startYearMonth = ymPeriod.start().v();
-        entity.endYearMonth = ymPeriod.end().v();
+        entity.payItemDetailSetPk = new QpbmtPayItemDetailSetPk(domain.getHistId());
         entity.salaryItemId = domain.getSalaryItemId();
         entity.totalObj = domain.getTotalObj().value;
         entity.proportionalAtr = domain.getProportionalAtr().value;

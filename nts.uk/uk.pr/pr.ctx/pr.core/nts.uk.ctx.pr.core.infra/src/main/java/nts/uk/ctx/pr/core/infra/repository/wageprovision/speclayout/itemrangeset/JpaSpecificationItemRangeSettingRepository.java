@@ -18,7 +18,7 @@ public class JpaSpecificationItemRangeSettingRepository extends JpaRepository im
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecItemRangeSet f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specItemRangeSetPk.cid =:cid AND  f.specItemRangeSetPk.specCd =:specCd AND  f.specItemRangeSetPk.histId =:histId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specItemRangeSetPk.histId =:histId ";
 
     @Override
     public List<SpecificationItemRangeSetting> getAllSpecificationItemRangeSetting(){
@@ -27,26 +27,24 @@ public class JpaSpecificationItemRangeSettingRepository extends JpaRepository im
     }
 
     @Override
-    public Optional<SpecificationItemRangeSetting> getSpecificationItemRangeSettingById(String cid, String specCd, String histId){
+    public Optional<SpecificationItemRangeSetting> getSpecificationItemRangeSettingById(String histId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSpecItemRangeSet.class)
-        .setParameter("cid", cid)
-        .setParameter("specCd", specCd)
         .setParameter("histId", histId)
         .getSingle(c->c.toDomain());
     }
 
     @Override
-    public void add(SpecificationItemRangeSetting domain, YearMonthPeriod yearMonthPeriod, String cid, String specCd){
-        this.commandProxy().insert(QpbmtSpecItemRangeSet.toEntity(domain,yearMonthPeriod,cid,specCd));
+    public void add(SpecificationItemRangeSetting domain){
+        this.commandProxy().insert(QpbmtSpecItemRangeSet.toEntity(domain));
     }
 
     @Override
-    public void update(SpecificationItemRangeSetting domain, YearMonthPeriod yearMonthPeriod, String cid, String specCd){
-        this.commandProxy().update(QpbmtSpecItemRangeSet.toEntity(domain,yearMonthPeriod,cid,specCd));
+    public void update(SpecificationItemRangeSetting domain){
+        this.commandProxy().update(QpbmtSpecItemRangeSet.toEntity(domain));
     }
 
     @Override
-    public void remove(String cid, String specCd, String histId){
-        this.commandProxy().remove(QpbmtSpecItemRangeSet.class, new QpbmtSpecItemRangeSetPk(cid, specCd, histId));
+    public void remove( String histId){
+        this.commandProxy().remove(QpbmtSpecItemRangeSet.class, new QpbmtSpecItemRangeSetPk(histId));
     }
 }

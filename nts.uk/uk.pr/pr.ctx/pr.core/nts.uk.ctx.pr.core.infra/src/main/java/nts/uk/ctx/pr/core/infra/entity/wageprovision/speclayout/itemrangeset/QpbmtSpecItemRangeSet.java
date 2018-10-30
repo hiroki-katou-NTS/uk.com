@@ -28,20 +28,6 @@ public class QpbmtSpecItemRangeSet extends UkJpaEntity implements Serializable
     public QpbmtSpecItemRangeSetPk specItemRangeSetPk;
     
     /**
-    * 開始日
-    */
-    @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
-    public int startYearMonth;
-    
-    /**
-    * 終了日
-    */
-    @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
-    public int endYearMonth;
-    
-    /**
     * 給与項目ID
     */
     @Basic(optional = false)
@@ -177,11 +163,9 @@ public class QpbmtSpecItemRangeSet extends UkJpaEntity implements Serializable
         return new SpecificationItemRangeSetting(this.specItemRangeSetPk.histId, this.salaryItemId, this.rangeValAttribute, this.errorUpperLimitSetAtr, this.errorUpRangeValAmount, this.errorUpRangeValTime, this.errorUpRangeValNum, this.errorLowerLimitSetAtr, this.errorLoRangeValAmount, this.errorLoRangeValTime, this.errorLoRangeValNum, this.alarmUpperLimitSetAtr, this.alarmUpRangeValAmount, this.alarmUpRangeValTime, this.alarmUpRangeValNum, this.alarmLowerLimitSetAtr, this.alarmLoRangeValAmount, this.alarmLoRangeValTime, this.alarmLoRangeValNum);
     }
 
-    public static QpbmtSpecItemRangeSet toEntity(SpecificationItemRangeSetting domain, YearMonthPeriod yearMonthPeriod, String cid, String specCd){
+    public static QpbmtSpecItemRangeSet toEntity(SpecificationItemRangeSetting domain){
         QpbmtSpecItemRangeSet entity =  new QpbmtSpecItemRangeSet();
-        entity.specItemRangeSetPk = new QpbmtSpecItemRangeSetPk(cid, specCd,domain.getHistId());
-        entity.startYearMonth = yearMonthPeriod.start().v();
-        entity.endYearMonth = yearMonthPeriod.end().v();
+        entity.specItemRangeSetPk = new QpbmtSpecItemRangeSetPk(domain.getHistId());
         entity.salaryItemId = domain.getSalaryItemId();
         entity.rangeValAttribute = domain.getRangeValAttribute().value;
         entity.errorUpperLimitSetAtr = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value;

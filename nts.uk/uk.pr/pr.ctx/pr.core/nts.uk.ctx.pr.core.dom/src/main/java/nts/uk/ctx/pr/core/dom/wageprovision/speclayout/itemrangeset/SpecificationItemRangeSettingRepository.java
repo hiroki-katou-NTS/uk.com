@@ -13,12 +13,12 @@ public interface SpecificationItemRangeSettingRepository
 
     List<SpecificationItemRangeSetting> getAllSpecificationItemRangeSetting();
 
-    Optional<SpecificationItemRangeSetting> getSpecificationItemRangeSettingById(String cid, String specCd, String histId);
+    Optional<SpecificationItemRangeSetting> getSpecificationItemRangeSettingById(String histId);
 
-    void add(SpecificationItemRangeSetting domain, YearMonthPeriod yearMonthPeriod, String cid, String specCd);
+    void add(SpecificationItemRangeSetting domain);
 
-    void update(SpecificationItemRangeSetting domain, YearMonthPeriod yearMonthPeriod, String cid, String specCd);
+    void update(SpecificationItemRangeSetting domain);
 
-    void remove(String cid, String specCd, String histId);
+    void remove(String histId);
 
 }

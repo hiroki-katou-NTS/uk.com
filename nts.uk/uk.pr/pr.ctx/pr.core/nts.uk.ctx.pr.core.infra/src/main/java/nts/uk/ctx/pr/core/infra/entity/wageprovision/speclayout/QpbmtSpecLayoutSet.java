@@ -24,19 +24,7 @@ public class QpbmtSpecLayoutSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtSpecLayoutSetPk specLayoutSetPk;
-    /**
-     * 開始日
-     */
-    @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
-    public int startYearMonth;
 
-    /**
-     * 終了日
-     */
-    @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
-    public int endYearMonth;
     /**
     * 明細書レイアウトパターン
     */

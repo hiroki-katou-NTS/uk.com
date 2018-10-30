@@ -25,19 +25,7 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtDdtItemDetailSetPk ddtItemDetailSetPk;
-    /**
-     * 開始日
-     */
-    @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
-    public int startYearMonth;
 
-    /**
-     * 終了日
-     */
-    @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
-    public int endYearMonth;
     /**
     * 給与項目ID
     */
@@ -119,11 +107,9 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     }
 
 
-    public static QpbmtDdtItemDetailSet toEntity(DeductionItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode){
+    public static QpbmtDdtItemDetailSet toEntity(DeductionItemDetailSet domain){
         QpbmtDdtItemDetailSet entiy = new QpbmtDdtItemDetailSet();
-        entiy.ddtItemDetailSetPk = new QpbmtDdtItemDetailSetPk(cid,specCode,domain.getHistId());
-        entiy.startYearMonth = ymPeriod.start().v();
-        entiy.endYearMonth = ymPeriod.end().v();
+        entiy.ddtItemDetailSetPk = new QpbmtDdtItemDetailSetPk(domain.getHistId());
         entiy.salaryItemId = domain.getSalaryItemId();
         entiy.totalObj = domain.getTotalObj().value;
         entiy.proportionalAtr = domain.getProportionalAtr().value;

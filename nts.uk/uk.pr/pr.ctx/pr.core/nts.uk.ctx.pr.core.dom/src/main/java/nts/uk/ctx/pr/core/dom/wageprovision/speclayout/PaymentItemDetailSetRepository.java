@@ -15,10 +15,10 @@ public interface PaymentItemDetailSetRepository
 
     Optional<PaymentItemDetailSet> getPaymentItemDetailSetById(String histId);
 
-    void add(PaymentItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode);
+    void add(PaymentItemDetailSet domain);
 
-    void update(PaymentItemDetailSet domain, YearMonthPeriod ymPeriod, String cid, String specCode);
+    void update(PaymentItemDetailSet domain);
 
-    void remove(String histId, String cid, String specCode);
+    void remove(String histId);
 
 }
