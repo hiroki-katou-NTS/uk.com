@@ -169,7 +169,7 @@ public class DailyCalculationCommandFacade {
 				return returnData;
 			}
 		}
-		return new DailyPerformanceCalculationDto(null, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage), Collections.emptyList());
+		return new DailyPerformanceCalculationDto(null, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage, false), Collections.emptyList());
 	}
 
 	/**
@@ -286,7 +286,7 @@ public class DailyCalculationCommandFacade {
 		List<DPItemValue> errorMonth = validatorDataDaily.errorMonth(monthlyResults, null).get(TypeError.ERROR_MONTH.value);
 		resultError.put(TypeError.ERROR_MONTH.value, errorMonth == null ? Collections.emptyList() : errorMonth);
 		
-		return new DataResultAfterIU(resultError, flexError);
+		return new DataResultAfterIU(resultError, flexError, false);
 	}
 
 	private Map<String, List<GeneralDate>> dtoToMapParam(List<DailyRecordDto> dtos) {

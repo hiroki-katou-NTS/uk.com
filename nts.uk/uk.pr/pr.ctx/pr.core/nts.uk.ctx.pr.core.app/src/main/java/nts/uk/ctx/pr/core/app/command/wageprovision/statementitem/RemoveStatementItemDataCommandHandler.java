@@ -14,7 +14,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemNameRepos
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetPeriodCycleRepository;
@@ -36,8 +35,6 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 	@Inject
 	private StatementItemDisplaySetRepository statementItemDisplaySetRepository;
 	@Inject
-	private ItemRangeSetRepository itemRangeSetRepository;
-	@Inject
 	private SetPeriodCycleRepository setPeriodCycleRepository;
 	@Inject
 	private BreakdownItemSetRepository breakdownItemSetRepository;
@@ -46,26 +43,26 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 	protected void handle(CommandHandlerContext<StatementItemDataCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-
 		val statementItem = command.getStatementItem();
-		String salaryItemId = command.getSalaryItemId();
-		statementItemRepository.remove(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(),
-				salaryItemId);
-		statementItemNameRepository.remove(cid, salaryItemId);
+		int categoryAtr = statementItem.getCategoryAtr();
+		String itemNameCd = statementItem.getItemNameCd();
+		statementItemRepository.remove(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd());
+		statementItemNameRepository.remove(cid, categoryAtr, itemNameCd);
 
 		switch (EnumAdaptor.valueOf(command.getStatementItem().getCategoryAtr(), CategoryAtr.class)) {
 		case PAYMENT_ITEM:
-			paymentItemSetRepository.remove(cid, salaryItemId);
-			setPeriodCycleRepository.remove(salaryItemId);
-			breakdownItemSetRepository.removeAll(salaryItemId);
+			paymentItemSetRepository.remove(cid, categoryAtr, itemNameCd);
+			setPeriodCycleRepository.remove(cid, categoryAtr, itemNameCd);
+			breakdownItemSetRepository.removeAll(cid, categoryAtr, itemNameCd);
 			break;
 		case DEDUCTION_ITEM:
-			deductionItemSetRepository.remove(cid, salaryItemId);
-			setPeriodCycleRepository.remove(salaryItemId);
-			breakdownItemSetRepository.removeAll(salaryItemId);
+			deductionItemSetRepository.remove(cid, categoryAtr, itemNameCd);
+			setPeriodCycleRepository.remove(cid, categoryAtr, itemNameCd);
+			breakdownItemSetRepository.removeAll(cid, categoryAtr, itemNameCd);
+
 			break;
 		case ATTEND_ITEM:
-			timeItemSetRepository.remove(cid, salaryItemId);
+			timeItemSetRepository.remove(cid, categoryAtr, itemNameCd);
 			break;
 		case REPORT_ITEM:
 			break;
@@ -74,7 +71,6 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 
 		}
 
-		itemRangeSetRepository.remove(cid, salaryItemId);
-		statementItemDisplaySetRepository.remove(cid, salaryItemId);
+		statementItemDisplaySetRepository.remove(cid, categoryAtr, itemNameCd);
 	}
 }

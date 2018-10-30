@@ -48,9 +48,9 @@ public class AnnualBreakManageImpl implements AnnualBreakManageAdapter {
 
 	@Override
 	public List<YearlyHolidaysTimeRemainingImport> getYearHolidayTimeAnnualRemaining(String employeeId,
-			GeneralDate confirmDay) {
+			GeneralDate confirmDay, GeneralDate holidayGrantStart, GeneralDate holidayGrantEnd) {
 		List<YearlyHolidaysTimeRemainingExport> yearlyHolidaysTimeRemainingExport = annualBreakManagePub
-				.getYearHolidayTimeAnnualRemaining(employeeId, confirmDay);
+				.getYearHolidayTimeAnnualRemaining(employeeId, confirmDay, holidayGrantStart, holidayGrantEnd);
 
 		if (CollectionUtil.isEmpty(yearlyHolidaysTimeRemainingExport)) {
 			return Collections.emptyList();

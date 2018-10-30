@@ -1,7 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.DbConsts;
@@ -19,17 +26,35 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.Ppem
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author locph
+ * The Class PerInfoSelectionItemCopyHandler.
  */
 public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 
+	/** The Constant QUERY_HISTORY_ITEM_BY_CONTRACTCD. */
 	private static final String QUERY_HISTORY_ITEM_BY_CONTRACTCD = "SELECT l FROM PpemtSelectionItem l WHERE l.contractCd = :contractCd";
+	
+	/** The Constant QUERY_HISTORY_SELECTION. */
 	private static final String QUERY_HISTORY_SELECTION = "SELECT p FROM PpemtHistorySelection p WHERE p.companyId = :companyId AND p.selectionItemId IN :selectionItemIds";
+	
+	/** The Constant QUERY_SELECTION. */
 	private static final String QUERY_SELECTION = "SELECT s FROM PpemtSelection s WHERE s.histId = :histId";
+	
+	/** The Constant QUERY_SELECTION_ORDER. */
 	private static final String QUERY_SELECTION_ORDER = "SELECT o FROM PpemtSelItemOrder o WHERE o.histId = :histId";
+	
+	/** The Constant DELETE_SELECTION. */
 	private static final String DELETE_SELECTION = "DELETE FROM PpemtSelection s WHERE s.histId IN :histIds";
+	
+	/** The Constant DELETE_SELECTION_ORDER. */
 	private static final String DELETE_SELECTION_ORDER = "DELETE FROM PpemtSelItemOrder o WHERE o.histId IN :histIds";
 
+	/**
+	 * Instantiates a new per info selection item copy handler.
+	 *
+	 * @param repo the repo
+	 * @param copyMethod the copy method
+	 * @param companyId the company id
+	 */
 	public PerInfoSelectionItemCopyHandler(JpaRepository repo, int copyMethod, String companyId) {
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
@@ -37,8 +62,11 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		this.commandProxy = repo.commandProxy();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler#doCopy()
+	 */
 	@Override
-	public void doCopy() {
+	public Map<String, String> doCopy() {
 		String sourceCid = AppContexts.user().zeroCompanyIdInContract();
 		String targetCid = companyId;
 
@@ -54,8 +82,17 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		default:
 			break;
 		}
+		
+		return Collections.emptyMap();
 	}
 
+	/**
+	 * Copy master data.
+	 *
+	 * @param sourceCid the source cid
+	 * @param targetCid the target cid
+	 * @param isReplace the is replace
+	 */
 	private void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
 		// アルゴリズム「指定会社のく選択項目定義を全て削除する」を実行する
 		// Lấy domain [PerInfoSelectionItem], Điều kiện :contractCode ＝ login
@@ -112,15 +149,23 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 			// set [SelectionHistory]
 			newPpemtHistorySelections.add(new PpemtHistorySelection(new PpemtHistorySelectionPK(newHistId),
 					item.selectionItemId, targetCid, item.startDate, item.endDate));
+			
+			Map<String, String> mapSelectionId = new HashMap<>();
+			
 			// set [Seletion]
-			newPpemtSelections.addAll(ppemtSelectionsZero.stream()
-					.map(selectionItem -> new PpemtSelection(new PpemtSelectionPK(IdentifierUtil.randomUniqueId()),
-							newHistId, selectionItem.selectionCd, selectionItem.selectionName, selectionItem.externalCd,
-							selectionItem.memo))
-					.collect(Collectors.toList()));
+			newPpemtSelections.addAll(ppemtSelectionsZero.stream().map(selectionItem -> {
+				String selectionId = IdentifierUtil.randomUniqueId();
+				mapSelectionId.put(selectionItem.selectionId.selectionId, selectionId);
+				return new PpemtSelection(new PpemtSelectionPK(selectionId), newHistId,
+						selectionItem.selectionCd, selectionItem.selectionName,
+						selectionItem.externalCd, selectionItem.memo);
+			}).collect(Collectors.toList()));
+			
 			// set [OrderSelectionAndDefaultValues]
 			newPpemtSelItemOrders.addAll(ppemtSelItemOrdersZero.stream()
-					.map(selOrderItem -> new PpemtSelItemOrder(new PpemtSelItemOrderPK(IdentifierUtil.randomUniqueId()),
+					.map(selOrderItem -> new PpemtSelItemOrder(
+							new PpemtSelItemOrderPK(
+									mapSelectionId.get(selOrderItem.selectionIdPK.selectionId)),
 							newHistId, selOrderItem.dispOrder, selOrderItem.initSelection))
 					.collect(Collectors.toList()));
 		});

@@ -18,7 +18,6 @@ public interface SpecialLeaveManagementService {
 	 * RequestList273 期間内の特別休暇残を集計する
 	 * @return
 	 */
-	//InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param);
 	InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param);
 	/**
 	 * 管理データを取得する
@@ -30,16 +29,6 @@ public interface SpecialLeaveManagementService {
 	 */
 	ManagaData getMngData(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
 
-	/**
-	 * 使用数を管理データから引く
-	 * @param specialLeaverData ・特別休暇付与残数データ一覧
-	 * @param interimSpeHolidayData ・特別休暇暫定データ一覧
-	 * @return
-	 */
-	InPeriodOfSpecialLeave subtractUseDaysFromMngData(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
-			List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
-			List<InterimRemain> lstInterimMng, OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
-
 	
 	/**
 	 * 特別休暇暫定データを取得する
@@ -50,25 +39,7 @@ public interface SpecialLeaveManagementService {
 	 * @return
 	 */
 	SpecialHolidayInterimMngData specialHolidayData(SpecialHolidayDataParam param);
-	/**
-	 * 管理データと暫定データの相殺
-	 * @param cid
-	 * @param sid
-	 * @param dateData ・INPUT．集計開始日・INPUT．集計終了日
-	 * @param baseDate 基準日
-	 * @param lstGrantData 取得した特別休暇付与残数データ一覧
-	 * @param lstInterimData 取得した特別休暇暫定データ一覧
-	 * @param accumulationMaxDays 蓄積上限日数
-	 * @return
-	 */
-	InPeriodOfSpecialLeave getOffsetDay(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
-			List<SpecialLeaveGrantRemainingData> lstGrantData, SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays);
-	/**
-	 * 残数情報をまとめる
-	 * @param inPeriodData
-	 * @return
-	 */
-	InPeriodOfSpecialLeave sumRemainData(InPeriodOfSpecialLeave inPeriodData);
+	
 	/**
 	 * 特休の使用数を求める
 	 * @param cid 会社ID
@@ -124,10 +95,11 @@ public interface SpecialLeaveManagementService {
 	 * @param shukeiDate ・集計開始日 ・ 集計終了日
 	 * @param lstGrantData・特別休暇付与残数データ一覧
 	 * @param interimDataMng ・特別休暇暫定データ一覧
+	 * @param baseDate: 基準日
 	 * @return
 	 */
 	RemainDaysOfSpecialHoliday remainDaysBefore(String cid, String sid, DatePeriod shukeiDate, SpecialLeaveGrantRemainingDataTotal lstGrantData,
-			SpecialHolidayInterimMngData interimDataMng,RemainDaysOfSpecialHoliday useInfor);
+			SpecialHolidayInterimMngData interimDataMng,RemainDaysOfSpecialHoliday useInfor, GeneralDate baseDate);
 	/**
 	 * 付与後の残数情報をまとめる
 	 * @param lstSpeLeaveGrantDetails
