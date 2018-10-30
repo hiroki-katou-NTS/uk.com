@@ -31,6 +31,9 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 			+ " WHERE c.krcdtMonRemainPk.employeeId = :sid"
 			+ " AND c.krcdtMonRemainPk.yearMonth = :ym"
 			+ " AND c.closureStatus = :status";
+	private static final String SQL_BY_YM_CODE = "SELECT c FROM KrcdtMonRemain c"
+			+ " WHERE c.krcdtMonRemainPk.employeeId = :sid"
+			+ " AND c.krcdtMonRemainPk.yearMonth = :ym";
 	
 	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtMonRemain a "
 			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
@@ -113,15 +116,25 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<SpecialHolidayRemainData> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			val entitys = this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList();
-			for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		List<SpecialHolidayRemainData> items = new ArrayList<>();
+		results.stream().forEach(c -> {
+			items.addAll(c.toDomainSpecialHolidayRemainList());
+		});
+		return items;
 	}
 
 	/** 登録および更新 */
@@ -255,6 +268,20 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 				.setParameter("sid", sid)
 				.setParameter("ym", ym.v())
 				.setParameter("status", status.value)
+				.getList();
+		List<SpecialHolidayRemainData> results = new ArrayList<>();
+		for (val entity : entitys){
+			val data = entity.toDomainSpecialHolidayRemain(speCode);
+			if (data.isPresent()) results.add(data.get());
+		}
+		return results;
+	}
+
+	@Override
+	public List<SpecialHolidayRemainData> getByYmCode(String sid, YearMonth ym, int speCode) {
+		val entitys = this.queryProxy().query(SQL_BY_YM_CODE, KrcdtMonRemain.class)
+				.setParameter("sid", sid)
+				.setParameter("ym", ym.v())
 				.getList();
 		List<SpecialHolidayRemainData> results = new ArrayList<>();
 		for (val entity : entitys){

@@ -31,7 +31,8 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 				ReflectParameter reflectPara = new ReflectParameter(workchangePara.getEmployeeId(),
 						loopDate,
 						workchangePara.getWorkTimeCode(),
-						workchangePara.getWorkTypeCode());
+						workchangePara.getWorkTypeCode(),
+						true);
 				
 				dailyInfor = workTimeUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
 				//日別実績の勤務情報  変更

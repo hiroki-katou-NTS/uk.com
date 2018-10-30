@@ -342,7 +342,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
-            self.monthlyCalendar("(" + nts.uk.time.yearmonthInJapanEmpire(emplInsurHis.startYearMonth).toString().split(' ').join('') + ")");
+            self.monthlyCalendar("(" + nts.uk.time.yearmonthInJapanEmpire(emplInsurHis.startYearMonth).toString() + ")");
         }
 
         validate() {
@@ -365,6 +365,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         openFscreen() {
             block.invisible();
             let self = this;
+            self.index(self.getIndex(self.selectedEmpInsHisId()));
             let laststartYearMonth: number = 0;
             if (self.listOccAccIsHis() && self.listOccAccIsHis().length != self.index() + 1) {
                 laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0;

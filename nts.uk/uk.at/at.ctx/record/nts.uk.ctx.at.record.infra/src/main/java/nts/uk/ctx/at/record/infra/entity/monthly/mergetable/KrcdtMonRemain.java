@@ -1733,6 +1733,11 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 	public RemainMerge toDomain(){
 		RemainMerge domains = new RemainMerge();
+		domains.setMonthMergeKey(new MonthMergeKey(this.krcdtMonRemainPk.getEmployeeId(), 
+								new YearMonth(this.getKrcdtMonRemainPk().getYearMonth()), 
+								EnumAdaptor.valueOf(this.getKrcdtMonRemainPk().getClosureId(), ClosureId.class), 
+								new ClosureDate(this.getKrcdtMonRemainPk().getClosureDay(), 
+										this.getKrcdtMonRemainPk().getIsLastDay() == 1 ? true : false)));
 		domains.setAnnLeaRemNumEachMonth(this.toDomainAnnLeaRemNumEachMonth());
 		domains.setRsvLeaRemNumEachMonth(this.toDomainRsvLeaRemNumEachMonth());
 		domains.setSpecialHolidayRemainDataMerge(this.toDomainSpecialHolidayRemainData());

@@ -71,6 +71,8 @@ public class DPText {
 	
 	public static final String REFLECT_APPLICATION = "mgrid-reflect";
 	
+	public static final String STATE_CALC= "mgrid-calc";
+	
 	public static final String STATE_ERROR ="mgrid-error";
 	
 	public static final String COLOR_SAT ="mgrid-saturday";

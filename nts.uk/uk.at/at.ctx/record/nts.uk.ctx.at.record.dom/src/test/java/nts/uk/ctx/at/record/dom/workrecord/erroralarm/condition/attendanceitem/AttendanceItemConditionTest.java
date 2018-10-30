@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -21,25 +22,25 @@ public class AttendanceItemConditionTest {
 	@Test
 	public void test() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.AND, false);
-		assertTrue(condition.check(c -> c) != WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test1() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.OR, false);
-		assertTrue(condition.check(c -> c) == WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
 	}
 
 	@Test
 	public void test2() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.AND, true);
-		assertTrue(condition.check(c -> c) != WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test3() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.OR, true);
-		assertTrue(condition.check(c -> c) == WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
 	}
 
 	private AttendanceItemCondition createAttendanceItemCondition(LogicalOperator logic, boolean isUseGroup2){

@@ -75,11 +75,9 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 
 	@Override
 	public List<AffAtWorkplaceImport> findBySIdAndBaseDate(List<String> employeeIds, GeneralDate baseDate) {
-		List<AffAtWorkplaceExport> affAtWorkplaceExports = this.wkpPub.findBySIdAndBaseDate(employeeIds, baseDate);
-		List<AffAtWorkplaceImport> workplaceImports = affAtWorkplaceExports.stream().map(item -> {
+		return this.wkpPub.findBySIdAndBaseDateV2(employeeIds, baseDate).stream().map(item -> {
 			return new AffAtWorkplaceImport(item.getEmployeeId(), item.getWorkplaceId(), item.getHistoryID(), item.getNormalWorkplaceID());
 		}).collect(Collectors.toList());
-		return workplaceImports;
 	}
 
 	@Override

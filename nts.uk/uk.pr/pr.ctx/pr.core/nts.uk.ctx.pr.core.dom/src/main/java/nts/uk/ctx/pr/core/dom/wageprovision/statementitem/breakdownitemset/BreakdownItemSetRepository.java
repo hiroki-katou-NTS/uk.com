@@ -12,16 +12,16 @@ public interface BreakdownItemSetRepository {
 
 	List<BreakdownItemSet> getAllBreakdownItemSt();
 	
-	List<BreakdownItemSet> getBreakdownItemStBySalaryId(String salaryItemId);
+	List<BreakdownItemSet> getBreakdownItemStByStatementItemId(String cid, int categoryAtr, String itemNameCd);
 
-	Optional<BreakdownItemSet> getBreakdownItemStById(String salaryItemId, String breakdownItemCode);
+	Optional<BreakdownItemSet> getBreakdownItemStById(String cid, int categoryAtr, String itemNameCd, String breakdownItemCode);
 
 	void add(BreakdownItemSet domain);
 
 	void update(BreakdownItemSet domain);
 
-	void remove(String salaryItemId, String breakdownItemCode);
+	void remove(String cid, int categoryAtr, String itemNameCd, String breakdownItemCode);
 	
-	void removeAll(String salaryItemId);
+	void removeAll(String cid, int categoryAtr, String itemNameCd);
 
 }

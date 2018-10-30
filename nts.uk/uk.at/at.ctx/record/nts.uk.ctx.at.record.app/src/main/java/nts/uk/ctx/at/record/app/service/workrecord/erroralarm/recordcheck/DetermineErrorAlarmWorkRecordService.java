@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,14 +41,18 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 		Map<ErrorAlarmWorkRecord, Map<String, Boolean>> lstErrorAlarm = checkError(employeeID, date, companyID);
 		if (!lstErrorAlarm.isEmpty()) {
 			lstErrorAlarm.entrySet().forEach(erAl -> {
-				if (!erAl.getValue().isEmpty() && isError(erAl.getValue().get(employeeID) && erAl.getKey().getErrorDisplayItem() != null)) {
+				if (!erAl.getValue().isEmpty() && isError(erAl.getValue().get(employeeID))) {
 					createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, date,
 							new ErrorAlarmWorkRecordCode(erAl.getKey().getCode().v()),
-							Arrays.asList(erAl.getKey().getErrorDisplayItem()));
+							getTargetItem(erAl.getKey().getErrorDisplayItem()));
 
 				}
 			});
 		}
+	}
+
+	private List<Integer> getTargetItem(Integer item) {
+		return item == null ? new ArrayList<>() : Arrays.asList(item);
 	}
 
 	@Override
@@ -57,14 +62,14 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 				.filter(ae -> !ae.getValue().isEmpty() && isError(ae.getValue().get(employeeID))).map(ae -> {
 					return new EmployeeDailyPerError(companyID, employeeID, date,
 							new ErrorAlarmWorkRecordCode(ae.getKey().getCode().v()),
-							Arrays.asList(ae.getKey().getErrorDisplayItem()));
+							getTargetItem(ae.getKey().getErrorDisplayItem()));
 				}).collect(Collectors.toList());
 	}
 	
 	@Override
 	public void createEmployeeDailyPerError(List<EmployeeDailyPerError> errors) {
 		for(EmployeeDailyPerError error : errors) {
-			if(error!= null && error.getAttendanceItemList().get(0) != null) {
+			if(error!= null) {
 				//String prefix = error.getErrorAlarmWorkRecordCode().v().substring(0, 1);
 				//if(prefix.equals("D") || prefix.equals("S")) {
 					createEmployeeDailyPerError.createEmployeeDailyPerError(error);
@@ -81,7 +86,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 	@Override
 	public List<EmployeeDailyPerError> checkErrorFor(String companyId, String employeeID, GeneralDate date, ErrorAlarmWorkRecord erAl,
 			IntegrationOfDaily record) {
-		if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
+		if (erAl.getErrorAlarmCondition() == null) {
 			return new ArrayList<>();
 		}
 		
@@ -95,7 +100,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 										.filter(ae -> isError(ae.getValue())).map(ae -> {
 											return new EmployeeDailyPerError(companyId, employeeID, date,
 													erAl.getCode(),
-													Arrays.asList(erAl.getErrorDisplayItem()));
+													getTargetItem(erAl.getErrorDisplayItem()));
 										}).collect(Collectors.toList());
 		
 		return result;
@@ -110,7 +115,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 		List<ErrorAlarmWorkRecord> lstErrorAlarm = conditionAlarmError.getErAlConditons(comapanyId);
 		if (!lstErrorAlarm.isEmpty()) {
 			return lstErrorAlarm.stream().collect(Collectors.toMap(erAl -> erAl, erAl -> {
-				if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
+				if (erAl.getErrorAlarmCondition() == null) {
 					return new HashMap<>();
 				}
 				return workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition());

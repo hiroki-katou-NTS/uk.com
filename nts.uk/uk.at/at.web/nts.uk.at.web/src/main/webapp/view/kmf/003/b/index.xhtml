@@ -163,8 +163,10 @@
 	 										],
 	 										enable: grantReferenceDateEnable }"></div></td>
 								<td class="allow-pay"><div  data-bind=" ntsCheckBox: { checked: grantSimultaneity }"></div></td>
-								<td class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
-							</tr>
+									<td
+										data-bind="style:{ width:$parent.isShowCheckBox()==true?'263px':'304px' }"
+										class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
+								</tr>
 						</tbody>
 					</table>
 				</div>

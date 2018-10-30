@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 @AllArgsConstructor
 @Setter
 @Getter
@@ -39,7 +40,7 @@ public class OvertimeReflectPara {
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
+	private ClassifyScheAchieveAtr scheAndRecordSameChangeFlg;
 	/**
 	 * 予定出退勤反映フラグ
 	 * true: する

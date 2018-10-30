@@ -28,7 +28,7 @@ public class AfterWorkTimeTypeReflectImpl implements AfterWorkTimeTypeReflect{
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), para.getDateData(), 
 				para.getGobackData().getWorkTimeCode(), 
-				para.getGobackData().getWorkTypeCode()); 
+				para.getGobackData().getWorkTypeCode(), false); 
 		workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfor);
 		
 		return new AppReflectRecordWork(true, dailyInfor);
@@ -41,10 +41,10 @@ public class AfterWorkTimeTypeReflectImpl implements AfterWorkTimeTypeReflect{
 			return false;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.NOTAUTO) {
+		if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO) {
 			return false;
-		} else if (para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAY
-				|| (para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.FLUIDWORK
+		} else if (para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO
+				|| (para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK
 						&& isFluidWork.checkWorkTimeIsFluidWork(para.getGobackData().getWorkTimeCode()))){
 			return tyScheReflect.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());
 		} 

@@ -267,6 +267,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			// 【条件】 ・取得したドメインモデル「雇用に紐づく就業締め．雇用コード」に一致する基準日時点の所属雇用 ・在職している社員
 			List<RegulationInfoEmployeeQueryR> lstEmployee = regulationInfoEmployeeQueryAdapter
 					.search(createQueryEmployee(lstEmployment, datePeriod.start(), datePeriod.end()));
+			System.out.println(lstEmployee.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()));
+			System.out.println(approvalRootOfEmployeeImport.getApprovalRootSituations().stream().map(x -> x.getTargetID()).distinct().collect(Collectors.toList()));
 			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
 					approvalRootOfEmployeeImport);
 			if (buildApprovalEmployeeData.isEmpty()) {
@@ -296,7 +298,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		lstCondition.add(new SortingConditionOrderImport(1,RegularSortingTypeImport.WORKPLACE));
 		lstCondition.add(new SortingConditionOrderImport(2,RegularSortingTypeImport.CLASSIFICATION));
 		lstCondition.add(new SortingConditionOrderImport(3,RegularSortingTypeImport.POSITION));
-		lstCondition.add(new SortingConditionOrderImport(4,RegularSortingTypeImport.EMPLOYMENT));
+		//fix bug 101289
+		//lstCondition.add(new SortingConditionOrderImport(4,RegularSortingTypeImport.EMPLOYMENT));
 		return lstCondition;
 	}
 	

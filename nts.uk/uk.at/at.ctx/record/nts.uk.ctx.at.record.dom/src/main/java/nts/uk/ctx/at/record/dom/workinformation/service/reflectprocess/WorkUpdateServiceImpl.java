@@ -65,22 +65,26 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			if(dailyInfo.getScheduleInfo().getWorkTimeCode() == null 
-					|| !dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
+					|| !para.isWorkChange() 
+					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTimeCode() != null && !dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
 				lstItem.add(1);	
 			}
 			if(dailyInfo.getScheduleInfo().getWorkTypeCode() == null
-					|| !dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
+					|| !para.isWorkChange() 
+					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTypeCode() != null && !dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
 				lstItem.add(2);	
 			}			
 			dailyInfo.setScheduleInfo(workInfor);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			if(dailyInfo.getRecordInfo().getWorkTimeCode() == null 
-					|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
+					|| !para.isWorkChange() 
+					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTimeCode() != null && !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
 				lstItem.add(28);	
 			}
 			if(dailyInfo.getRecordInfo().getWorkTypeCode() == null 
-					|| !dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
+					|| !para.isWorkChange() 
+					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTypeCode() != null && !dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
 				lstItem.add(29);
 			}
 			dailyInfo.setRecordInfo(workInfor);
@@ -525,7 +529,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						stamp.getStampSourceInfo());
 				
 			} else {
-				stampTmp = new WorkStamp(null,
+				stampTmp = new WorkStamp(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
 						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
 						null,
 						StampSourceInfo.GO_STRAIGHT_APPLICATION);
@@ -546,10 +550,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
 			} else {
-				stampTmp = new WorkStamp(null,
+				stampTmp = new WorkStamp(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
 						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
 						null,
-						StampSourceInfo.GO_STRAIGHT_APPLICATION);
+						data.getEndTime() != null ? StampSourceInfo.GO_STRAIGHT_APPLICATION : null);
 			}
 			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
 					stampTmp,

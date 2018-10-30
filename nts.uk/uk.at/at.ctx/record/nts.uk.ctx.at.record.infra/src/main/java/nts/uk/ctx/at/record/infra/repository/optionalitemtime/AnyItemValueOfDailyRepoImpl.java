@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.optionalitemtime;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +15,15 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemNo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValueMerge;
@@ -54,13 +62,17 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
 		query.append(" WHERE op.krcdtDayTimePk.employeeID = :empId");
 		query.append(" AND op.krcdtDayTimePk.generalDate IN :date");
-		List<KrcdtDayAnyItemValueMerge> result = queryProxy()
+		
+		List<KrcdtDayAnyItemValueMerge> resultList = new ArrayList<>();
+		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstDate -> {
+			resultList.addAll(queryProxy()
 				.query(query.toString(), KrcdtDayAnyItemValueMerge.class)
 				.setParameter("empId", employeeId)
-				.setParameter("date", baseDate)
-				.getList();
-		if(!result.isEmpty()) {
-			return result.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList());
+				.setParameter("date", lstDate)
+				.getList());
+		});
+		if(!resultList.isEmpty()) {
+			return resultList.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
@@ -80,22 +92,40 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	}
 
 	@Override
+	@SneakyThrows
 	public List<AnyItemValueOfDaily> finds(List<String> employeeIds, DatePeriod baseDate) {
 		List<AnyItemValueOfDaily> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
-		query.append(" WHERE op.krcdtDayTimePk.employeeID IN :empId");
-		query.append(" AND op.krcdtDayTimePk.generalDate >= :start");
-		query.append(" AND op.krcdtDayTimePk.generalDate <= :end");
-		TypedQueryWrapper<KrcdtDayAnyItemValueMerge> tQuery = this.queryProxy()
-				.query(query.toString(), KrcdtDayAnyItemValueMerge.class);
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			List<KrcdtDayAnyItemValueMerge> r = tQuery
-					.setParameter("empId", empIds)
-					.setParameter("start", baseDate.start())
-					.setParameter("end", baseDate.end())
-					.getList();
-			if (!r.isEmpty()) {
-				result.addAll(r.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
+			try (PreparedStatement stmt = this.connection().prepareStatement(
+						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
+						+" WHERE YMD >= ?"
+						+" AND YMD <= ?"
+						+" AND SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
+				) {
+
+				stmt.setDate(1, Date.valueOf(baseDate.start().toLocalDate()));
+				stmt.setDate(2, Date.valueOf(baseDate.end().toLocalDate()));
+				for(int i = 0 ; i < empIds.size() ; i++) {
+					stmt.setString(i+3,empIds.get(i));
+				}
+				
+				result.addAll(new NtsResultSet(stmt.executeQuery()).getList(rec ->{
+					List<AnyItemValue> value = new ArrayList<>();
+					for (int i = 1; i <= 200; i++){
+						Double count = rec.getDouble("COUNT_VALUE_"+i);
+						Integer money = rec.getInt("MONEY_VALUE_"+i);
+						Integer Time = rec.getInt("TIME_VALUE_"+i);
+						value.add(new AnyItemValue(new AnyItemNo(i), 
+													Optional.ofNullable(count == null ? null : new AnyItemTimes(BigDecimal.valueOf(count))),
+													Optional.ofNullable(money == null ? null : new AnyItemAmount(money)),
+													Optional.ofNullable(Time == null ? null : new AnyItemTime(Time))
+													));
+					}
+					return new AnyItemValueOfDaily(rec.getString("SID"), rec.getGeneralDate("YMD"), value);
+				}));
+				
+			}catch(Exception e) {
+				throw new RuntimeException(e);
 			}
 		});
 		return result;
@@ -113,7 +143,8 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 			result.addAll(tQuery
 					.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
+					.getList().stream().filter(c -> p.get(c.getKrcdtDayTimePk().employeeID).contains(c.getKrcdtDayTimePk().generalDate))
+					.map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
 		});
 		return result;
 	}
@@ -173,12 +204,13 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	
 	@SneakyThrows
 	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
-		val statement = this.connection().prepareStatement(
+		try (val statement = this.connection().prepareStatement(
 				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
-				+ " WHERE SID = ? AND YMD = ?");
-		statement.setString(1, employeeId);
-		statement.setDate(2, Date.valueOf(baseDate.localDate()));
-		statement.executeUpdate();
+				+ " WHERE SID = ? AND YMD = ?")) {
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(baseDate.localDate()));
+			statement.executeUpdate();
+		}
 	}
 	
 	@Override

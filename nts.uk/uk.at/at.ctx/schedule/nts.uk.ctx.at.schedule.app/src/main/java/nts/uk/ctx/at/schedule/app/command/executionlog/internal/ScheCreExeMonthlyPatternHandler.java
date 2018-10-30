@@ -37,7 +37,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
  * @author chinhbv
  *
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheCreExeMonthlyPatternHandler {
 	@Inject
@@ -62,7 +62,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createScheduleWithMonthlyPattern(
 			ScheduleCreatorExecutionCommand command,
 			GeneralDate dateInPeriod,

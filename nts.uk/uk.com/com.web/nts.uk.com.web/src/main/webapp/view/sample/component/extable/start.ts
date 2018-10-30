@@ -251,7 +251,7 @@ __viewContext.ready(function () {
             key: "_31", width: "100px", handlerType: "input", dataType: "time/time"
         }];
     
-    let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact", width: "35px" }, 
+    let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact per-icon", width: "35px" }, 
         css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }, 
         headerControl: "link", headerHandler: function() { alert("Link!"); } }];
     let leftmostHeader = {
@@ -366,7 +366,7 @@ __viewContext.ready(function () {
     
     let leftHorzColumns = [
         { headerText: "項目名", key: "itemName", width: "200px", 
-            icon: { for: "header", class: "ui-icon ui-icon-calculator", width: "35px", popup: function() { return $("#popup-items2"); }}},
+            icon: { for: "header", class: "ui-icon ui-icon-calculator per-icon", width: "35px", popup: function() { return $("#popup-items2"); }}},
         { headerText: "合計", key: "sum", width: "100px" }
     ];
     let leftHorzSumHeader = {
@@ -643,17 +643,18 @@ __viewContext.ready(function () {
             $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", "1", "通常８ｈ0"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
+            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null));
 //            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
 //            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
-            $("#extable").exTable("stickData", 
-            { workTypeCode: "001",
-                workTypeName: "出勤A0",
-                workTimeCode: "1",
-                workTimeName: "通常８ｈ0",
-                symbol: "◯",
-                startTime: "8:30",
-                endTime: "17:30",
-                state: 1, register: 0 });
+//            $("#extable").exTable("stickData", 
+//            { workTypeCode: "001",
+//                workTypeName: "出勤A0",
+//                workTimeCode: "1",
+//                workTimeName: "通常８ｈ0",
+//                symbol: "◯",
+//                startTime: "8:30",
+//                endTime: "17:30",
+//                state: 1, register: 0 });
         });
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");
