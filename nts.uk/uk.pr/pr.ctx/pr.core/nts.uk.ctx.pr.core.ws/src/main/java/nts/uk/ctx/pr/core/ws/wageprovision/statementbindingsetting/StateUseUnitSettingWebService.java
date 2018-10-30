@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddStateCorrelationHisCompanyCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateUseUnitSettingCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.UpdateStateUseUnitSettingCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateUseUnitSettingDto;
