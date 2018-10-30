@@ -14,10 +14,12 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.infra.data.EntityManagerLoader;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
@@ -71,7 +73,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
- */
+ *///
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
@@ -287,44 +289,51 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
-		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
-			
-			// check is client submit cancel
-			if (asyncTask.hasBeenRequestedToCancel()) {
-				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-				return;
-			}
-
-			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
-					masterCache.getEmpGeneralInfo());
-
-			if (stateAndValueDatePeriod.state) {
-				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-			
-				// process each by 2 months to make transaction small for performance
-				final int unitMonthsOfTransaction = 2;
-				dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
-					this.transaction.execute(
-							command,
-							scheduleExecutionLog,
-							context,
-							companyId,
-							exeId,
-							subPeriod,
-							masterCache,
-							listBasicSchedule,
-							asyncTask,
-							companySetting,
-							scheduleCreator);
-				});
-			} else {
-				scheduleCreator.updateToCreated();
-				this.scheduleCreatorRepository.update(scheduleCreator);
-			}
+		
+		CollectionUtil.split(
+				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
+						100, subCreators -> {
+			this.parallel.forEach(subCreators, scheduleCreator -> {
+				
+				// check is client submit cancel
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+					this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
+					return;
+				}
+	
+				// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+				StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+						command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
+						masterCache.getEmpGeneralInfo());
+	
+				if (stateAndValueDatePeriod.state) {
+					DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+				
+					// process each by 2 months to make transaction small for performance
+					final int unitMonthsOfTransaction = 2;
+					dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
+						this.transaction.execute(
+								command,
+								scheduleExecutionLog,
+								context,
+								companyId,
+								exeId,
+								subPeriod,
+								masterCache,
+								listBasicSchedule,
+								asyncTask,
+								companySetting,
+								scheduleCreator);
+					});
+				} else {
+					scheduleCreator.updateToCreated();
+					this.scheduleCreatorRepository.update(scheduleCreator);
+				}
+			});
 		});
+		
+		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
 		
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
