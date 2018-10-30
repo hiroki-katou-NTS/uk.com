@@ -1,11 +1,10 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.speclayout;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.DeductionItemDetailSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.DeductionItemDetailSetRepository;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.speclayout.QpbmtDdtItemDetailSet;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.speclayout.QpbmtDdtItemDetailSetPk;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionItemDetailSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionItemDetailSetRepository;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtDdtItemDetailSet;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtDdtItemDetailSetPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
