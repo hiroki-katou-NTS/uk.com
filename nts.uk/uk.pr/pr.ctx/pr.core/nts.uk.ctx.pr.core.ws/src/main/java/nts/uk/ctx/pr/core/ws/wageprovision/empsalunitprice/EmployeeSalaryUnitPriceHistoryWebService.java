@@ -2,7 +2,8 @@ package nts.uk.ctx.pr.core.ws.wageprovision.empsalunitprice;
 
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryDto;
+import nts.uk.ctx.pr.core.app.command.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryCommand;
+import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryFinder;
 
 import javax.inject.Inject;
@@ -20,8 +21,8 @@ public class EmployeeSalaryUnitPriceHistoryWebService  extends WebService{
 
     @POST
     @Path("/getEmployeeSalaryUnitPriceHistory")
-    public EmployeeSalaryUnitPriceHistoryDto getEmployeeSalaryUnitPriceHistory() {
-        return null;
+    public EmployeeSalaryUnitPriceDto getEmployeeSalaryUnitPriceHistory(EmployeeSalaryUnitPriceHistoryCommand command) {
+        return employeeSalaryUnitPriceHistoryFinder.getEmployeeSalaryUnitPriceDto(command.getPersonalUnitPriceCode(),command.getEmployeeIds());
     }
 
 }

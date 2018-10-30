@@ -9,7 +9,7 @@ import java.util.List;
 public interface EmployeeSalaryUnitPriceHistoryRepository
 {
 
-    Optional<EmployeeSalaryUnitPriceHistory> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode,List<String> employeeId);
+    List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode,List<String> employeeId);
 
     void add(EmployeeSalaryUnitPriceHistory domain);
 
