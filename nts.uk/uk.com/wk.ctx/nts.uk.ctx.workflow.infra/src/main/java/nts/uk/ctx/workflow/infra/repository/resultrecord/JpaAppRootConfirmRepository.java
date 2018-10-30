@@ -189,46 +189,42 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	@SneakyThrows
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
-		String DELETE_PHASE_APPROVER_FOR_424_V2 = 
-				"DELETE apc FROM WWFDT_APP_ROOT_CONFIRM appRoot  " +
-				" LEFT JOIN WWFDT_APP_PHASE_CONFIRM apc ON apc.ROOT_ID = appRoot.ROOT_ID " +
-				" WHERE appRoot.CID = 'companyID' AND appRoot.EMPLOYEE_ID = 'employeeID' " +
-				" AND appRoot.ROOT_TYPE = rootType AND appRoot.RECORD_DATE = 'recordDate'";
-		
-		String DELETE_FRAME_APPROVER_FOR_424_V2 = 
-				"DELETE afc FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
-				" LEFT JOIN WWFDT_APP_FRAME_CONFIRM afc ON afc.ROOT_ID = appRoot.ROOT_ID " +
-				" WHERE appRoot.CID = 'companyID' AND appRoot.EMPLOYEE_ID = 'employeeID' " +
-				" AND appRoot.ROOT_TYPE = rootType AND appRoot.RECORD_DATE = 'recordDate'";
-
-		//delete phase
-		String query1 = DELETE_PHASE_APPROVER_FOR_424_V2.replaceAll("employeeID", employeeID);
-		query1 = query1.replaceAll("companyID", companyID);
-		query1 = query1.replaceAll("rootType", String.valueOf(rootType));
-		query1 = query1.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
-		
-		//delete frame
-		String query2 = DELETE_FRAME_APPROVER_FOR_424_V2.replaceAll("employeeID", employeeID);
-		query2 = query2.replaceAll("companyID", companyID);
-		query2 = query2.replaceAll("rootType", String.valueOf(rootType));
-		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
-		
-		//delete root
-		String query3 = DELETE_APP_ROOT_CONFIRM.replaceAll("employeeID", employeeID);
-		query3 = query3.replaceAll("companyID", companyID);
-		query3 = query3.replaceAll("rootType", String.valueOf(rootType));
-		query3 = query3.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
-		
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		
-		try (PreparedStatement pstatement1 = con.prepareStatement(query1)) {
-			pstatement1.execute();
-		}
-		try (PreparedStatement pstatement2 = con.prepareStatement(query2)) {
-			pstatement2.execute();
-		}
-		try (PreparedStatement pstatement3 = con.prepareStatement(query3)) {
-			pstatement3.execute();
+		Connection conn = this.connection();
+		String sQue = "SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+						"WHERE appRoot.CID = ? AND appRoot.EMPLOYEE_ID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE = ?";
+		try(PreparedStatement statement = conn.prepareStatement(sQue)){
+			statement.setString(1, companyID);
+			statement.setString(2, employeeID);
+			statement.setInt(3, rootType);
+			statement.setDate(4, Date.valueOf(date.localDate()));
+			new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				String rootId = rec.getString("ROOT_ID");
+				String DELETE_PHASE_APPROVER_FOR_424_V2 = 
+						"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID = ?";
+				
+				String DELETE_FRAME_APPROVER_FOR_424_V2 = 
+						"DELETE  FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID = ?";
+				
+				String DELETE_APP_ROOT_CONFIRM_FOR_424_V2 = 
+						"DELETE  FROM WWFDT_APP_ROOT_CONFIRM WHERE ROOT_ID = ?";
+				try{
+					try(PreparedStatement dStatement1 = conn.prepareStatement(DELETE_FRAME_APPROVER_FOR_424_V2)){
+						dStatement1.setString(1, rootId);
+						dStatement1.executeUpdate();
+					}
+					try(PreparedStatement dStatement2 = conn.prepareStatement(DELETE_PHASE_APPROVER_FOR_424_V2)){
+						dStatement2.setString(1, rootId);
+						dStatement2.executeUpdate();
+					}
+					try(PreparedStatement dStatement3 = conn.prepareStatement(DELETE_APP_ROOT_CONFIRM_FOR_424_V2)){
+						dStatement3.setString(1, rootId);
+						dStatement3.executeUpdate();
+					}
+				}catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+				return rootId;
+			});
 		}
 		
 	}
