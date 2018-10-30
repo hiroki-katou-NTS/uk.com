@@ -22,7 +22,12 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	
@@ -38,15 +43,22 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	private JudgmentWorkTypeService judgmentService;
 	@Inject
 	private WorkInformationRepository workRepository;
+	@Inject
+	private WorkTypeIsClosedService workTypeRepo;
 	@Override
 	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre) {
 		try {
 			for(int i = 0; absencePara.getStartDate().daysTo(absencePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = absencePara.getStartDate().addDays(i);
 				WorkInfoOfDailyPerformance dailyInfor = workRepository.find(absencePara.getEmployeeId(), loopDate).get();
+				//1日休日の判断
+				if(dailyInfor.getRecordInfo().getWorkTypeCode() != null
+						&& workTypeRepo.checkHoliday(dailyInfor.getRecordInfo().getWorkTypeCode().v())) {
+					continue;
+				}
 				boolean isRecordWorkType = true;
 				//予定勤種の反映
-				if(!commonService.checkReflectScheWorkTimeType(absencePara, true)) {
+				if(!commonService.checkReflectScheWorkTimeType(absencePara, true, dailyInfor)) {
 					isRecordWorkType = false;
 				}
 				dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), absencePara.getBaseDate(), absencePara.getWorkTypeCode(), true, dailyInfor);
@@ -63,14 +75,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			return false;
 		}
 	}
-	@Override
-	public boolean updateRecordWorktype(CommonReflectParameter absencePara, boolean isSche) {
-		if(!commonService.checkReflectScheWorkTimeType(absencePara, isSche)) {
-			return false;
-		}
-		//workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), absencePara.getBaseDate(), absencePara.getWorkTypeCode(), isSche);
-		return true;
-	}
+
 	@Override
 	public WorkInfoOfDailyPerformance reflectScheStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, boolean isReflect, WorkInfoOfDailyPerformance dailyInfor) {
 		//INPUT．予定勤務種類変更フラグをチェックする
@@ -142,6 +147,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		}
 		return false;
 	}
+	
 
 	
 }
