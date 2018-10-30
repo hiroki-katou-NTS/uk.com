@@ -35,7 +35,9 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public DayAttr dayAttr(){
-		
+		if(getInDayTimeWithFormat().equals("0:00")){
+			return DayAttr.THE_PRESENT_DAY;
+		}
 		switch (this.daysOffset()) {
 		case 0:
 			return DayAttr.THE_PRESENT_DAY;
@@ -53,7 +55,8 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public String getInDayTimeWithFormat(){
-		return (int) this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+		String g = (int) this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+		return g;
 	}
 	
 	public String getFullText() {
@@ -72,10 +75,11 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public int minute() {
-		return isNegative()? (60 + value % 60) % 60 : value % 60;
+		int m = isNegative()? (value % 60) % 60 : value % 60;
+		return Math.abs(m);
 	}
 	
 	public String getTimeText() {
-		return (isNegative()? "-" + (int) this.rawHour() : (int) this.rawHour()) + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+		return (isNegative()? "-" + (int) Math.abs(this.rawHour()) : (int) Math.abs(this.rawHour()) ) + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
 	}
 }

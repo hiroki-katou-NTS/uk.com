@@ -267,7 +267,7 @@ module nts.uk.pr.view.qmm012.b {
 
                         if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && (itemRangeSet.errorLowerLimitSetAtr() == 1)
                             && (itemRangeSet.errorUpRangeValTime() != null) && (itemRangeSet.errorLoRangeValTime() != null)
-                            && (parseInt(itemRangeSet.errorUpRangeValTime().toString(), 10) <= parseInt(itemRangeSet.errorLoRangeValTime().toString(), 10))) {
+                            && (Number(itemRangeSet.errorUpRangeValTime()) <= Number(itemRangeSet.errorLoRangeValTime()))) {
                             $('#E1_23').ntsError('set', {messageId: "MsgQ_1"});
                         }
 
@@ -281,7 +281,7 @@ module nts.uk.pr.view.qmm012.b {
 
                         if ((itemRangeSet.alarmUpperLimitSetAtr() == 1) && (itemRangeSet.alarmLowerLimitSetAtr() == 1)
                             && (itemRangeSet.alarmUpRangeValTime() != null) && (itemRangeSet.alarmLoRangeValTime() != null)
-                            && (parseInt(itemRangeSet.alarmUpRangeValTime().toString(), 10) <= parseInt(itemRangeSet.alarmLoRangeValTime().toString(), 10))) {
+                            && (Number(itemRangeSet.alarmUpRangeValTime()) <= Number(itemRangeSet.alarmLoRangeValTime()))) {
                             $('#E1_30').ntsError('set', {messageId: "MsgQ_2"});
                         }
                     } else {
@@ -295,7 +295,7 @@ module nts.uk.pr.view.qmm012.b {
 
                         if ((itemRangeSet.errorUpperLimitSetAtr() == 1) && (itemRangeSet.errorLowerLimitSetAtr() == 1)
                             && (itemRangeSet.errorUpRangeValNum() != null) && (itemRangeSet.errorLoRangeValNum() != null)
-                            && (parseInt(itemRangeSet.errorUpRangeValNum().toString(), 10) <= parseInt(itemRangeSet.errorLoRangeValNum().toString(), 10))) {
+                            && (Number(itemRangeSet.errorUpRangeValNum()) <= Number(itemRangeSet.errorLoRangeValNum()))) {
                             $('#E1_23').ntsError('set', {messageId: "MsgQ_1"});
                         }
 
@@ -309,7 +309,7 @@ module nts.uk.pr.view.qmm012.b {
 
                         if ((itemRangeSet.alarmUpperLimitSetAtr() == 1) && (itemRangeSet.alarmLowerLimitSetAtr() == 1)
                             && (itemRangeSet.alarmUpRangeValNum() != null) && (itemRangeSet.alarmLoRangeValNum() != null)
-                            && (parseInt(itemRangeSet.alarmUpRangeValNum().toString(), 10) <= parseInt(itemRangeSet.alarmLoRangeValNum().toString(), 10))) {
+                            && (Number(itemRangeSet.alarmUpRangeValNum()) <= Number(itemRangeSet.alarmLoRangeValNum()))) {
                             $('#E1_30').ntsError('set', {messageId: "MsgQ_2"});
                         }
                     }
@@ -413,7 +413,7 @@ module nts.uk.pr.view.qmm012.b {
                         command.paymentItemSet.errorUpRangeVal = null;
                         command.deductionItemSet.errorUpRangeVal = null;
                         command.timeItemSet.errorUpRangeValNum = null;
-                        command.timeItemSet.errorUpRangeTime = null;
+                        command.timeItemSet.errorUpRangeValTime = null;
                     }
                     if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
                         command.paymentItemSet.errorLoRangeVal = null;
@@ -432,6 +432,21 @@ module nts.uk.pr.view.qmm012.b {
                         command.deductionItemSet.alarmLoRangeVal = null;
                         command.timeItemSet.alarmLoRangeValNum = null;
                         command.timeItemSet.alarmLoRangeValTime = null;
+                    }
+
+                    // clear rangeSet of attend_item value if other mode
+                    if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
+                        if((command.timeItemSet.timeCountAtr == 0) || (command.timeItemSet.timeCountAtr == '0')) {
+                            command.timeItemSet.errorUpRangeValNum = null;
+                            command.timeItemSet.errorLoRangeValNum = null;
+                            command.timeItemSet.alarmUpRangeValNum = null;
+                            command.timeItemSet.alarmLoRangeValNum = null;
+                        } else {
+                            command.timeItemSet.errorUpRangeValTime = null;
+                            command.timeItemSet.errorLoRangeValTime = null;
+                            command.timeItemSet.alarmUpRangeValTime = null;
+                            command.timeItemSet.alarmLoRangeValTime = null;
+                        }
                     }
 
                     // Optional fields: set null value if isEmpty

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremai
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 // 特別休暇使用数
 public class SpecialLeaveUsedNumber {
 

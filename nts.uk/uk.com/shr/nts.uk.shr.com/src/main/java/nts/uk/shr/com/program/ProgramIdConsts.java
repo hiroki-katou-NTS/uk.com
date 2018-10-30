@@ -719,6 +719,8 @@ public class ProgramIdConsts {
 	public static final String KSC001H = "KSC001H";
 	public static final String KSC001I = "KSC001I";
 	public static final String KSC001K = "KSC001K";
+	public static final String KAF001A = "KAF001A";
+	public static final String KAF001B = "KAF001B";
 	public static final String KAF002A = "KAF002A";
 	public static final String KAF002B = "KAF002B";
 	public static final String KAF002C = "KAF002C";
@@ -1008,5 +1010,11 @@ public class ProgramIdConsts {
 
 	/* QMM023 */
 	public static final String QMM023A = "QMM023A";
+
+	/* QMM039 */
+	public static final String QMM039A = "QMM039A";
+	public static final String QMM039B = "QMM039B";
+	public static final String QMM039C = "QMM039C";
+	public static final String QMM039D = "QMM039D";
 
 }
