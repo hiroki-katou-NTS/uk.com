@@ -395,15 +395,13 @@ module kcp.share.list {
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
 
-                    let selectedValues = self.isMultipleSelect ? [] : '';
-
                     // select all items in multi mode
                     if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                        selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                        let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                        self.selectedCodes(selectedValues);
+                        gridList.ntsGridList("setSelectedValue", []);
+                        gridList.ntsGridList("setSelectedValue", selectedValues);
                     }
-                    self.selectedCodes(selectedValues);
-                    gridList.ntsGridList("setSelectedValue", []);
-                    gridList.ntsGridList("setSelectedValue", selectedValues);
                 });
             }
         }

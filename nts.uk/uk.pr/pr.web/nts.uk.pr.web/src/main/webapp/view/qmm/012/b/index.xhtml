@@ -751,13 +751,11 @@
                                             <div id="E1_19" tabindex="34"
                                                  data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
                                             <!-- エラー範囲上限入力 -->
-                                            <input id="E1_20" class="check-validate" tabindex="35" data-bind="ntsTimeEditor: {
+                                            <input id="E1_20" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
 															name: '#[QMM012_57]',
 															value: errorUpRangeValNum,
-															inputFormat: 'time',
-															mode: 'time',
 															constraint: 'TimesValue',
-															option: timeEditorOption,
+															option: numberEditorOption,
 															enable: errorUpperLimitSettingAtrCus}"/>
                                             <!-- を超える場合にエラーとする -->
                                             <label id="E1_21">#{i18n.getText('QMM012_58')}</label>
@@ -768,13 +766,11 @@
                                             <div id="E1_22" tabindex="36"
                                                  data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
                                             <!-- エラー範囲下限入力 -->
-                                            <input id="E1_23" class="check-validate" tabindex="37" data-bind="ntsTimeEditor: {
+                                            <input id="E1_23" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
 															name: '#[QMM012_59]',
 															value: errorLoRangeValNum,
-															inputFormat: 'time',
-															mode: 'time',
 															constraint: 'TimesValue',
-															option: timeEditorOption,
+															option: numberEditorOption,
 															enable: errorLowerLimitSettingAtrCus}"/>
                                             <!-- 未満の場合にエラーとする -->
                                             <label id="E1_24">#{i18n.getText('QMM012_60')}</label>
@@ -787,13 +783,11 @@
                                             <div id="E1_26" tabindex="38"
                                                  data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
                                             <!-- アラーム範囲上限入力 -->
-                                            <input id="E1_27" class="check-validate" tabindex="39" data-bind="ntsTimeEditor: {
+                                            <input id="E1_27" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
 															name: '#[QMM012_62]',
 															value: alarmUpRangeValNum,
-															inputFormat: 'time',
-															mode: 'time',
 															constraint: 'TimesValue',
-															option: timeEditorOption,
+															option: numberEditorOption,
 															enable: alarmUpperLimitSettingAtrCus}"/>
                                             <!-- を超える場合にアラームとする -->
                                             <label id="E1_28">#{i18n.getText('QMM012_63')}</label>
@@ -804,13 +798,11 @@
                                             <div id="E1_29" tabindex="40"
                                                  data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
                                             <!-- アラーム範囲下限入力 -->
-                                            <input id="E1_30" class="check-validate" tabindex="41" data-bind="ntsTimeEditor: {
+                                            <input id="E1_30" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
 															name: '#[QMM012_64]',
 															value: alarmLoRangeValNum,
-															inputFormat: 'time',
-															mode: 'time',
 															constraint: 'TimesValue',
-															option: timeEditorOption,
+															option: numberEditorOption,
 															enable: alarmLowerLimitSettingAtrCus}"/>
                                             <!-- 未満の場合にアラームとする -->
                                             <label id="E1_31">#{i18n.getText('QMM012_65')}</label>

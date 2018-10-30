@@ -202,118 +202,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                        // DailyCreate
-                        self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
-                        self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
-
-                        // daily calculation
-                        self.dailyCalculateCount(self.getAsyncData(info.taskDatas, "dailyCalculateCount").valueAsNumber);
-
-                        // monthly aggregation 
-                        self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);
-
-                        self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
-                        self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
-                        self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
-
-                        //承認反映
-                        self.reflectApprovalCount(self.getAsyncData(info.taskDatas, "reflectApprovalCount").valueAsNumber);
-                        self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
-
-
-                        if (!info.pending && !info.running) {
-                            
-                            let stopped = 0;
-                                if(info.status === "CANCELLED"){
-                                    self.endTime(self.endTimeTemp());
-                                    stopped = 1;
-                                } else {
-                                   // Get EndTime from server, fallback to client
-                                    self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString); 
-                                }
-                            
-                            self.isComplete(true);
-                            self.executionContents(self.contents);
-                            self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
-
-                            // End count time
-                            self.elapseTime.end();
-                            
-                            //                            if (nts.uk.text.isNullOrEmpty(endTime))
-                            //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
-                            //                            self.endTime(endTime);
-                            //9: {key: "monthlyAggregateStatus", valueAsString: "処理中
-                            // DailyCreate
-                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString === "処理中") {
-                                self.dailyCreateStatus("実行中止");
-                            } else {
-                                self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
-                            }
-                            self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
-
-                            // daily calculation
-                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString === "処理中") {
-                                self.dailyCalculateStatus("実行中止");
-                            } else {
-                                self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
-                            }
-                            self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
-
-                            // monthly aggregation
-                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString === "処理中") {
-                                self.monthlyAggregateStatus("実行中止");
-                            } else {
-                                self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
-                            }
-                            self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
-
-                            //承認反映
-                            if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString === "処理中") {
-                                self.reflectApprovalStatus("実行中止");
-                            } else {
-                                self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
-                            }
-                            self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString);
-
-                            //daily create
-                            self.dailyCreateStartTime(self.getAsyncData(info.taskDatas, "dailyCreateStartTime").valueAsString);                            
-                            self.dailyCreateEndTime(self.getAsyncData(info.taskDatas, "dailyCreateEndTime").valueAsString);
-                            
-                            // daily calculate
-                            self.dailyCalculateStartTime(self.getAsyncData(info.taskDatas, "dailyCalculateStartTime").valueAsString);
-                            self.dailyCalculateEndTime(self.getAsyncData(info.taskDatas, "dailyCalculateEndTime").valueAsString);
-                            
-                            // approval
-                            self.reflectApprovalStartTime(self.getAsyncData(info.taskDatas, "reflectApprovalStartTime").valueAsString);
-                            self.reflectApprovalEndTime(self.getAsyncData(info.taskDatas, "reflectApprovalEndTime").valueAsString);
-                            
-                            // monthly
-                            self.monthlyAggregateStartTime(self.getAsyncData(info.taskDatas, "monthlyAggregateStartTime").valueAsString);
-                            self.monthlyAggregateEndTime(self.getAsyncData(info.taskDatas, "monthlyAggregateEndTime").valueAsString);
-                            
-                            // Get Log data
-                            //self.getLogData();
-                            self.enableCancelTask(false);
-                            
-                            if (self.endTime() != null && self.endTime() != undefined && self.endTime() != "") {
-                                
-                                var paramsUpdate = {
-                                    empCalAndSumExecLogID: empCalAndSumExecLogID,
-                                    executionStartDate: self.startTime(),
-                                    executionEndDate: self.endTime(),
-                                    dailyCreateStartTime : self.dailyCreateStartTime(),
-                                    dailyCreateEndTime : self.dailyCreateEndTime(),
-                                    dailyCalculateStartTime : self.dailyCalculateStartTime(),
-                                    dailyCalculateEndTime : self.dailyCalculateEndTime(),
-                                    reflectApprovalStartTime : self.reflectApprovalStartTime(),
-                                    reflectApprovalEndTime : self.reflectApprovalEndTime(),
-                                    monthlyAggregateStartTime : self.monthlyAggregateStartTime(),
-                                    monthlyAggregateEndTime : self.monthlyAggregateEndTime(),
-                                    stopped : stopped
-                                };
-                                service.updateExcutionTime(paramsUpdate);
-                            }
-                        }
+                        self.processData(self, info, empCalAndSumExecLogID, false);
                     });
                 })
                 .while(info => info.pending || info.running)
@@ -326,6 +215,129 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             //                    executionEndDate: self.endTime()
             //                };
             //                service.updateExcutionTime(paramsUpdate);
+        }
+        
+        private processData(self: any, info: any, empCalAndSumExecLogID: string, flag: boolean): void {
+            // DailyCreate
+            self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
+            self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
+
+            // daily calculation
+            self.dailyCalculateCount(self.getAsyncData(info.taskDatas, "dailyCalculateCount").valueAsNumber);
+
+            // monthly aggregation 
+            self.monthlyAggregateCount(self.getAsyncData(info.taskDatas, "monthlyAggregateCount").valueAsNumber);
+
+            self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+            self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+            self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+
+            //承認反映
+            self.reflectApprovalCount(self.getAsyncData(info.taskDatas, "reflectApprovalCount").valueAsNumber);
+            self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+
+
+            if (!info.pending && !info.running) {
+                if(!flag){
+                    nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
+                        if(!nts.uk.util.isNullOrEmpty(info.taskDatas)){
+                            self.processData(self, info, empCalAndSumExecLogID, true);    
+                        }
+                        
+                    });
+                }
+                
+                let stopped = 0;
+                    if(info.status === "CANCELLED"){
+                        self.endTime(self.endTimeTemp());
+                        stopped = 1;
+                    } else {
+                       // Get EndTime from server, fallback to client
+                        self.endTime(self.getAsyncData(info.taskDatas, "endTime").valueAsString); 
+                    }
+                
+                self.isComplete(true);
+                self.executionContents(self.contents);
+                self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
+
+                // End count time
+                self.elapseTime.end();
+                
+                //                            if (nts.uk.text.isNullOrEmpty(endTime))
+                //                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
+                //                            self.endTime(endTime);
+                //9: {key: "monthlyAggregateStatus", valueAsString: "処理中
+                // DailyCreate
+                if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString === "処理中") {
+                    self.dailyCreateStatus("実行中止");
+                } else {
+                    self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
+                }
+                self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
+
+                // daily calculation
+                if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString === "処理中") {
+                    self.dailyCalculateStatus("実行中止");
+                } else {
+                    self.dailyCalculateStatus(self.getAsyncData(info.taskDatas, "dailyCalculateStatus").valueAsString);
+                }
+                self.dailyCalculateHasError(self.getAsyncData(info.taskDatas, "dailyCalculateHasError").valueAsString);
+
+                // monthly aggregation
+                if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString === "処理中") {
+                    self.monthlyAggregateStatus("実行中止");
+                } else {
+                    self.monthlyAggregateStatus(self.getAsyncData(info.taskDatas, "monthlyAggregateStatus").valueAsString);
+                }
+                self.monthlyAggregateHasError(self.getAsyncData(info.taskDatas, "monthlyAggregateHasError").valueAsString);
+
+                //承認反映
+                if (info.status === "CANCELLED" && self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString === "処理中") {
+                    self.reflectApprovalStatus("実行中止");
+                } else {
+                    self.reflectApprovalStatus(self.getAsyncData(info.taskDatas, "reflectApprovalStatus").valueAsString);
+                }
+                self.reflectApprovalHasError(self.getAsyncData(info.taskDatas, "reflectApprovalHasError").valueAsString);
+
+                //daily create
+                self.dailyCreateStartTime(self.getAsyncData(info.taskDatas, "dailyCreateStartTime").valueAsString);                            
+                self.dailyCreateEndTime(self.getAsyncData(info.taskDatas, "dailyCreateEndTime").valueAsString);
+                
+                // daily calculate
+                self.dailyCalculateStartTime(self.getAsyncData(info.taskDatas, "dailyCalculateStartTime").valueAsString);
+                self.dailyCalculateEndTime(self.getAsyncData(info.taskDatas, "dailyCalculateEndTime").valueAsString);
+                
+                // approval
+                self.reflectApprovalStartTime(self.getAsyncData(info.taskDatas, "reflectApprovalStartTime").valueAsString);
+                self.reflectApprovalEndTime(self.getAsyncData(info.taskDatas, "reflectApprovalEndTime").valueAsString);
+                
+                // monthly
+                self.monthlyAggregateStartTime(self.getAsyncData(info.taskDatas, "monthlyAggregateStartTime").valueAsString);
+                self.monthlyAggregateEndTime(self.getAsyncData(info.taskDatas, "monthlyAggregateEndTime").valueAsString);
+                
+                // Get Log data
+                //self.getLogData();
+                self.enableCancelTask(false);
+                
+                if (self.endTime() != null && self.endTime() != undefined && self.endTime() != "") {
+                    
+                    var paramsUpdate = {
+                        empCalAndSumExecLogID: empCalAndSumExecLogID,
+                        executionStartDate: self.startTime(),
+                        executionEndDate: self.endTime(),
+                        dailyCreateStartTime : self.dailyCreateStartTime(),
+                        dailyCreateEndTime : self.dailyCreateEndTime(),
+                        dailyCalculateStartTime : self.dailyCalculateStartTime(),
+                        dailyCalculateEndTime : self.dailyCalculateEndTime(),
+                        reflectApprovalStartTime : self.reflectApprovalStartTime(),
+                        reflectApprovalEndTime : self.reflectApprovalEndTime(),
+                        monthlyAggregateStartTime : self.monthlyAggregateStartTime(),
+                        monthlyAggregateEndTime : self.monthlyAggregateEndTime(),
+                        stopped : stopped
+                    };
+                    service.updateExcutionTime(paramsUpdate);
+                }
+            }   
         }
 
         private getAsyncData(data: Array<any>, key: string): any {
