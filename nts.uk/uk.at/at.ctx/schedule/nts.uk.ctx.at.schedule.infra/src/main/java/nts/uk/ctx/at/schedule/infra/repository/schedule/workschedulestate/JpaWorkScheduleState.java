@@ -21,7 +21,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate.KscdtScheS
 public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleStateRepository {
 
 	private static final String SELECT_ALL = "SELECT a FROM KscdtScheState a";
-	private static final String SELCET_BY_DATE_EMPID = SELECT_ALL + " WHERE a.kscdtScheStatePK.employeeId =: sId " + "AND a.kscdtScheStatePK.date =: date";
+	private static final String SELCET_BY_DATE_EMPID = SELECT_ALL + " WHERE a.kscdtScheStatePK.employeeId = :sId " + "AND a.kscdtScheStatePK.date = :date";
 
 	private WorkScheduleState toDomain(KscdtScheState entity) {
 		WorkScheduleState domain = WorkScheduleState.createFromJavaType(entity.scheduleEditState,
