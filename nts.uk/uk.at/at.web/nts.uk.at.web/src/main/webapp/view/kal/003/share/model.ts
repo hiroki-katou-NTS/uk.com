@@ -1593,7 +1593,7 @@ module nts.uk.at.view.kal003.share.model {
                 self.countableAddAtdItems=ko.observableArray(_.values(param.countableAddAtdItems));
                 self.countableSubAtdItems=ko.observableArray(_.values(param.countableSubAtdItems));
                 self.conditionType=ko.observable(param.conditionType);
-                self.singleAtdItem=ko.observable(param.singleAtdItem);
+                self.singleAtdItem=ko.observable(!nts.uk.util.isNullOrUndefined(param.singleAtdItem)? parseInt(param.singleAtdItem):0);                                                                              
                 self.compareStartValue=ko.observable(param.compareStartValue);
                 self.compareEndValue=ko.observable(param.compareEndValue);
                 self.compareOperator=ko.observable(param.compareOperator);

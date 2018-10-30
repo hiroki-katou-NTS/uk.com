@@ -134,7 +134,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 		for (YearMonth month = startMonth; month.lessThanOrEqualTo(endMonth); month = month.addMonths(1)) {
 			
 			//ドメインモデル「特別休暇月別残数データ」を取得
-			List<SpecialHolidayRemainData> lstRemainData = speRemainDataRepo.getByYmStatus(sid, month, ClosureStatus.PROCESSED, speCode);
+			List<SpecialHolidayRemainData> lstRemainData = speRemainDataRepo.getByYmCode(sid, month, speCode);
 			for (SpecialHolidayRemainData remainData : lstRemainData) {
 				SpecialHolidayRemainDataOutput dataOut = new SpecialHolidayRemainDataOutput();
 				List<SpecialHolidayRemainDataOutput> lstTmp = new ArrayList<>();
