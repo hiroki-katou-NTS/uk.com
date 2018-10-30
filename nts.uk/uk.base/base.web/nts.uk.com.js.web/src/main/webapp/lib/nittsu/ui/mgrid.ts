@@ -1833,12 +1833,13 @@ module nts.uk.ui.mgrid {
                 let value = $_container.scrollTop();
 //                $container.stop().animate({ scrollTop: value }, 10);
                 let os = ti.isIE() ? 25 : 50;
-//                if (!abnorm && ((direction < 0 && value === 0)
-//                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
-//                    try {
-//                        window.dispatchEvent(event);
-//                    } catch (e) {}
-//                }
+                if (!abnorm && ((direction < 0 && value === 0)
+                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) {
+                    let $contents = document.getElementById("contents-area");
+                    if ($contents) {
+                        $contents.scrollTop += direction * os;
+                    }
+                }
                 
                 $_container.scrollTop(value + direction * os);
                 
