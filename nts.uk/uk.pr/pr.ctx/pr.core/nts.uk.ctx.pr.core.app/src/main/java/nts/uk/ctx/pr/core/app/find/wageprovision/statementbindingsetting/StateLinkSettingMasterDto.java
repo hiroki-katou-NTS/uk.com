@@ -33,8 +33,7 @@ public class StateLinkSettingMasterDto
     private String bonusCode;
     
     
-    public static StateLinkSettingMasterDto fromDomain(StateLinkSettingMaster domain)
-    {
+    public static StateLinkSettingMasterDto fromDomain(StateLinkSettingMaster domain) {
         return new StateLinkSettingMasterDto(domain.getHistoryID(), domain.getMasterCode().v(), domain.getSalaryCode().get().v(), domain.getBonusCode().get().v());
     }
     

@@ -7,10 +7,10 @@
                                 data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
                         <button id="A1_2" tabindex="2"
-                                data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
+                                data-bind="click: test, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
                         <button id="A1_3" tabindex="3"
-                                data-bind="enable: false">#{i18n.getText('QMM020_3')}</button>
+                                data-bind="click: openScreenL, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_3')}</button>
 
                         <button id="A1_4" tabindex="4"
                                 data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
@@ -34,7 +34,7 @@
                                             columns: [
                                                         { headerText: '', key: 'code', width: 100, hidden: true },
                                                         { headerText: '', key: 'name', width: 150, hidden: true },
-                                                        { headerText: '', key: 'display', width: 180},
+                                                        { headerText: '', key: 'display', width: 180,formatter: _.escape},
                                                     ],
                                             multiple: false,
                                             value: currentSelect
@@ -51,15 +51,15 @@
 
                         <div class="control-group" style="margin-top: 40px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button style="margin-left: 15px;">Small</button>
-                                <span style="margin-left: 20px;" data-bind="text: specCode"></span>
+                                <button style="margin-left: 15px;">#{i18n.getText('QMM020_21')}</button>
+                                <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
                                 <span style="margin-left: 10px;" data-bind="text: specName"></span>
                         </div>
 
                         <div class="control-group" style="margin-top: 15px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button style="margin-left: 15px;">Small</button>
-                                <span style="margin-left: 20px;" data-bind="text: specCode"></span>
+                                <button style="margin-left: 15px;">#{i18n.getText('QMM020_21')}</button>
+                                <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
                                 <span style="margin-left: 10px;" data-bind="text: specName"></span>
                         </div>
 

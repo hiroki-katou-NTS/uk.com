@@ -2,27 +2,65 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
         currentSelect: KnockoutObservable<any> = ko.observable();
-        specCode: KnockoutObservable<string> = ko.observable('TaiTT');
+        salaryCode: KnockoutObservable<string> = ko.observable();
+        bonusCode: KnockoutObservable<string> = ko.observable();
         specName: KnockoutObservable<string> = ko.observable('TaiTT');
+        to : KnockoutObservable<string> = ko.observable(' ～ ');
         constructor(){
+            block.invisible()
             let self = this;
+            service.getStateCorrelationHisCompanyById().done((data) =>{
+                if(data){
+                    _.forEach(data,(o)=>{
+                        self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', self.convertYearMonthToDisplayYearMonth(o.startYearMonth) + self.to() + self.convertYearMonthToDisplayYearMonth(o.endYearMonth)));
+                    });
+                }
+            }).fail((err)=>{
+                if(err)
+                    dialog.alertError(err);
+            }).always(()=>{
+                block.clear();
+            });
+            self.currentSelect.subscribe((hisID)=>{
+                service.getStateLinkSettingCompanyById(hisID).done((data)=>{
+                    if(data){
+                        self.salaryCode(data.salaryCode);
+                        self.bonusCode(data.bonusCode);
+                    }
+                }).fail((err) =>{
+                    if(err)
+                        dialog.alertError(err);
+                }).always(()=>{
 
-            for(let i = 1; i < 100; i++) {
-                self.listStateCorrelationHis.push(new ItemModel('00' + i, '基本給', i + 'TaiTT'));
-            }
+                });
+            });
         }
 
+        test(){
+            modal("com","/view/qmm/020/j/index.xhtml");
+        }
         register(){
             block.invisible();
             let self = this;
+            let historyID = nts.uk.util.randomId();
             let data: any = {
-                historyID: '1',
-                salaryCode: '01',
-                bonusCode: '02'
+                stateCorrelationHisCompanyCommand: {
+                    cid: '',
+                    historyID: historyID,
+                    startYearMonth: 201809,
+                    endYearMonth: 999912
+                },
+                stateLinkSettingCompanyCommand : {
+                    historyID: historyID,
+                    salaryCode: self.salaryCode(),
+                    bonusCode: self.bonusCode()
+                }
+
             }
             service.register(data).done((data)=>{
                 dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -36,6 +74,14 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 block.clear();
             });
 
+        }
+
+        openScreenL(){
+            modal("/view/qmm/020/l/index.xhtml");
+        }
+
+        convertYearMonthToDisplayYearMonth(yearMonth) {
+            return nts.uk.time.formatYearMonth(yearMonth);
         }
 
     }

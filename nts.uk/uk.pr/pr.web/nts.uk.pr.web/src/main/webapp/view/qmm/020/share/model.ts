@@ -1,6 +1,4 @@
 module nts.uk.pr.view.qmm020.share.model {
-    import getText = nts.uk.resource.getText;
-
     export class ItemModel {
         code: number;
         name: string;
@@ -13,7 +11,8 @@ module nts.uk.pr.view.qmm020.share.model {
 
     export enum MODE {
         NEW = 0,
-        UPDATE = 1
+        UPDATE = 1,
+        NO_REGIS = 2
     }
 
     export enum TRANSFER_MOTHOD {

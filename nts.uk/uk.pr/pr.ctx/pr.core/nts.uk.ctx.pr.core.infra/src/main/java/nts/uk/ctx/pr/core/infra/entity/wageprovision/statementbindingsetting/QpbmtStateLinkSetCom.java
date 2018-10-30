@@ -55,7 +55,9 @@ public class QpbmtStateLinkSetCom extends UkJpaEntity implements Serializable
         return new StateLinkSettingCompany(this.stateLinkSetComPk.hisId, new StatementCode(this.salary), new StatementCode(this.bonus));
     }
     public static QpbmtStateLinkSetCom toEntity(StateLinkSettingCompany domain) {
-        return new QpbmtStateLinkSetCom(new QpbmtStateLinkSetComPk(domain.getHistoryID()),domain.getSalaryCode().get().v(), domain.getBonusCode().get().v());
+        return new QpbmtStateLinkSetCom(new QpbmtStateLinkSetComPk(domain.getHistoryID()),
+                domain.getSalaryCode().isPresent() ? domain.getSalaryCode().get().v() : null,
+                domain.getBonusCode().isPresent() ? domain.getBonusCode().get().v() : null);
     }
 
 }

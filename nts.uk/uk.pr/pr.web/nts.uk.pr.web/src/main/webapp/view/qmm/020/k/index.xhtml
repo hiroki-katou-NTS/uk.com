@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 500, height: 300};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm020.k.vm.js"/>
+        <com:scriptfile path="qmm020.k.start.js"/>
+        <com:scriptfile path="qmm020.k.service.js"/>
+        <com:stylefile path="qmm020.k.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="title" style="margin-bottom: 10px">
+                <!-- K1_1 -->
+                <span id="K1_1" class="label">#{i18n.getText('QMM020_66')}</span>
+            </div>
+            <!-- K1_2 名称 -->
+            <div style="display: inline-flex;margin-top: 10px;">
+                <div id="K1_2" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                    <span class="label">#{i18n.getText('QMM020_67')}</span>
+                </div>
+                <div id="K1_3" style="margin-top: 10px;">
+                    <div style="" class="cell" tabIndex="-1"
+                         data-bind="ntsRadioButton: {
+										checked: methodEditing,
+										option: itemList()[0],
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										group: 'periodOption'}">
+                    </div>
+                    <br/>
+                    <div class="cell" style="margin-top: 10px" tabIndex="-1"
+                         data-bind="ntsRadioButton: {
+										checked: methodEditing,
+										option: itemList()[1],
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										group: 'periodOption'}">
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="K1_6" data-bind="ntsFormLabel: {}" style="margin: 10px 10px 0px 165px;">
+                <span class="label">#{i18n.getText('QMM020_54')}</span>
+                <div id="K1_7" style="margin-left: 27px;" tabindex="2" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM020_62')}',
+												value: startYearMonth,
+												required: true,
+												enable: true,
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'}">
+                </div>
+                <span class="label">#{i18n.getText('QMM020_56')}</span>
+                <span class="label" data-bind="text : endYearMonth"></span>
+            </div>
+        </div>
+        <div id="functions-area-bottom" style="z-index: auto">
+            <!-- K2_1 登録 -->
+            <button id="K2_1" tabindex="3" class="proceed large"
+                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+            <!-- K2_2 削除 -->
+            <button id="K2_2" tabindex="4"
+                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
