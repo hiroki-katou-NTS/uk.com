@@ -39,8 +39,8 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 			return null;
 		return new SpecialVacationImported(specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 0.0,
 				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : 0.0,
-				specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 0.0, 0.0, 0.0, 0.0);
+						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
+				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 0.0, 0.0, 0.0, 0.0);
 	}
 
 	@Override

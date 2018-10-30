@@ -31,17 +31,12 @@ public class GetUserByEmpFinder {
 		} else {
 			List<User> listUser = userRepo.getListUserByListAsID(listPID);
 			List<UserAuthDto> result = new ArrayList<>();
-
-			for (EmpInfoImport em : empInforLst) {
-				if (!em.getPersonId().isEmpty() && em.getPersonId() != null) {
-					User user = listUser.stream().filter(c -> c.getAssociatedPersonID().get().equals(em.getPersonId()))
-							.findFirst().get();
-
+			for(User user: listUser) {
+					EmpInfoImport emp = empInforLst.stream().filter( c ->   c.getPersonId().equals(user.getAssociatedPersonID().get())).findFirst().get();
 					UserAuthDto u = new UserAuthDto(user.getUserID(),
-							user.getUserName().isPresent() ? user.getUserName().get().v() : "" ,
-							user.getLoginID().v(), em.getEmployeeId(), em.getEmployeeCode(), em.getPerName());
+							user.getUserName().isPresent() ? user.getUserName().get().v() : null ,
+							user.getLoginID().v(), emp.getEmployeeId(), emp.getEmployeeCode(), emp.getPerName());
 					result.add(u);
-				}
 			}
 			return result;
 		}

@@ -5,10 +5,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.averagewagecalculationset.StatementC
 
 @Value
 public class StatementDto {
-    /**
-     * 給与項目ID
-     */
-    private String salaryItemId;
 
     /**
      * カテゴリ区分
@@ -26,7 +22,6 @@ public class StatementDto {
     private String name;
 
     public StatementDto(StatementCustom domain) {
-        this.salaryItemId = domain.getSalaryItemId();
         this.categoryAtr = domain.getCategoryAtr();
         this.itemNameCd = domain.getItemNameCd();
         this.name = domain.getName();

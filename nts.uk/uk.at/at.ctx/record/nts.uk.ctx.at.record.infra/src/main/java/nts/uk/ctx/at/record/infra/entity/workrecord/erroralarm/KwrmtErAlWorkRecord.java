@@ -240,8 +240,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		}
 		int compareAtr = 0;
 		int conditionType = 0;
-		int startValue = 0;
-		int endValue = 0;
+		double startValue = 0;
+		double endValue = 0;
 		KrcstErAlCompareSingle erAlCompareSingle = null;
 		KrcstErAlCompareRange erAlCompareRange = null;
 		KrcstErAlInputCheck erAlInputCheck = null;
@@ -261,6 +261,9 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
 				startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
 				endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
+			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
+				startValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			}
 			erAlCompareRange = new KrcstErAlCompareRange(
 					new KrcstErAlCompareRangePK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO())), compareAtr,
@@ -272,7 +275,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					new KrcstErAlCompareSinglePK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO())), compareAtr,
 					conditionType);
 			if (erAlAtdItemCon.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
-				int fixedValue = 0;
+				double fixedValue = 0;
 				if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE) {
 					fixedValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) {
@@ -281,6 +284,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					fixedValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
 					fixedValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
+				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
+					fixedValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				}
 				erAlSingleFixed = new KrcstErAlSingleFixed(
 						new KrcstErAlSingleFixedPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()), fixedValue);

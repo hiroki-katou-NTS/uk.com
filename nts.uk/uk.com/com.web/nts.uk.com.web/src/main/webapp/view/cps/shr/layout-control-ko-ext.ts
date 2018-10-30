@@ -1609,6 +1609,7 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
+                                        constraint.charType = 'AnyHalfWidth';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                         break;
                                     case ITEM_STRING_TYPE.EMPLOYEE_CODE:
@@ -1931,8 +1932,8 @@ module nts.custombinding {
                         read: () => {
                             let editable = ko.toJS(def.editable);
 
-                            if (!editable) {
-                                $('#' + def.nameid).ntsError('clear');
+                            if (!editable && $('#' + def.nameid).ntsError('hasError')) {
+                                $('#' + def.nameid).trigger('change');
                             }
                         },
                         disposeWhen: () => !def.value
@@ -2364,8 +2365,8 @@ module nts.custombinding {
                                         read: () => {
                                             let editable = ko.toJS(_r.editable);
 
-                                            if (!editable) {
-                                                $('#' + _r.nameid).ntsError('clear');
+                                            if (!editable && $('#' + _r.nameid).ntsError('hasError')) {
+                                                $('#' + _r.nameid).trigger('change');
                                             }
                                         },
                                         disposeWhen: () => !_r.value

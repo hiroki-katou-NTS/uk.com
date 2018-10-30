@@ -85,10 +85,12 @@ module nts.uk.at.view.kal001.d.service {
                 name: string;                
                 startDate: string;                
                 endDate : string; 
+                period36Agreement : numer; 
                 constructor(p: model.PeriodByCategory){
                     
                     this.category = p.category;
                     this.name = p.categoryName;     
+                    this.period36Agreement = p.period36Agreement;     
                                         
                     if(p.category==2|| p.category==5){
                         this.startDate =nts.uk.time.parseMoment(p.startDate).momentObject.toISOString() ;

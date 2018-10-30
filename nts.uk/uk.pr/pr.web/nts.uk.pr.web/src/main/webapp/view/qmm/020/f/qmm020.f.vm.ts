@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm020.e.viewmodel {
+module nts.uk.pr.view.qmm020.f.viewmodel {
 
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;

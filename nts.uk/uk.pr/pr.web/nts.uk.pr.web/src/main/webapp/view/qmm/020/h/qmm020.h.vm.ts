@@ -10,6 +10,15 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
 
+        //--- KCP009 ----->
+        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        systemReference: KnockoutObservable<number>;
+        isDisplayOrganizationName: KnockoutObservable<boolean>;
+        targetBtnText: string;
+
+        listComponentOption: ComponentOption;
+        selectedItem: KnockoutObservable<string>;
+        tabindex: number;
 
         constructor(){
             let self = this;

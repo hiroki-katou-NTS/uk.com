@@ -166,8 +166,7 @@ module nts.uk.at.view.kaf011.shr {
                     let comItems;
                     if (this.simulAppliReq() == 1) {
                         comItems = [
-                            { code: 0, text: text('KAF011_19') },
-                            { code: 2, text: text('KAF011_21') },
+                            { code: 0, text: text('KAF011_19') }
                         ]
 
                     } else {

@@ -42,8 +42,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         }
 
         test(){
-            let self = this;
-            console.dir(self.currentSelect());
+            modal("com","/view/qmm/020/j/index.xhtml");
         }
         register(){
             block.invisible();

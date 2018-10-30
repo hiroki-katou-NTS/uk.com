@@ -16,8 +16,8 @@ module nts.uk.ui.mgrid {
         _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, 
         _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = () => _mafollicle[_currentPage][_currentSheet], 
         _cstifle = () => _mafollicle[SheetDef][_currentSheet].columns, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth,
-        _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers,
-        _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240,
+        _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers,
+        _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _remainHeight = 190,
         _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
     
     export class MGrid {
@@ -54,6 +54,7 @@ module nts.uk.ui.mgrid {
          */
         makeDefault() {
             let self = this;
+            self.$container.tabIndex = -1;
             self.fixedHeader = _.assignIn(self.fixedHeader, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
             self.fixedBody = _.assignIn(self.fixedBody, _.cloneDeep(defaultOptions));
             self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
@@ -64,6 +65,9 @@ module nts.uk.ui.mgrid {
             }
             if (!_.isNil(self.subWidth)) {
                 _remainWidth = parseFloat(self.subWidth);
+            }
+            if (!_.isNil(self.subHeight)) {
+                _remainHeight = parseFloat(self.subHeight);
             }
             _$grid.mGrid({});
         }
@@ -105,7 +109,7 @@ module nts.uk.ui.mgrid {
                 }
                 
                 let sheetFt = tn.find(self.features, tn.SHEET);
-                let savingFt = tn.find(self.features, tn.WIDTH_SAVE);
+                let headerStyles, savingFt = tn.find(self.features, tn.WIDTH_SAVE);
                 let sheetDef = {};
                 if (sheetFt) {
                     _sheeting = true;
@@ -162,7 +166,7 @@ module nts.uk.ui.mgrid {
                     self.header.height = self.headerHeight;
                     self.body.columns = colParts[1];
                     _hasFixed = true;
-                    let headerStyles = tn.find(self.features, tn.HEADER_STYLE);
+                    headerStyles = tn.find(self.features, tn.HEADER_STYLE);
                     if (headerStyles) {
                         let styleParts = _.partition(headerStyles.columns, c => {
                             return _.some(fixedColumns, f => f.columnKey === c.key);
@@ -175,15 +179,25 @@ module nts.uk.ui.mgrid {
                     self.header.columns = self.columns;
                     self.body.columns = self.columns;
                     kt.turfSurf(self.columns);
+                    colParts = [ self.columns ];
+                    headerStyles = tn.find(self.features, tn.HEADER_STYLE);
+                    if (headerStyles) {
+                        self.header.features.push({ name: tn.HEADER_STYLE, columns: headerStyles.columns });
+                    }
                 }
                 
                 let summaries = tn.find(self.features, tn.SUMMARIES);
                 if (summaries) {
                     _summaries = {};
-                    self.fixedSummaries.columns = colParts[0];
-                    self.fixedSummaries.height = SUM_HEIGHT + "px";
-                    self.summaries.columns = colParts[1];
-                    self.summaries.height = SUM_HEIGHT + "px";
+                    if (colParts.length > 1) {
+                        self.fixedSummaries.columns = colParts[0];
+                        self.fixedSummaries.height = SUM_HEIGHT + "px";
+                        self.summaries.columns = colParts[1];
+                        self.summaries.height = SUM_HEIGHT + "px";
+                    } else {
+                        self.summaries.columns = colParts[0];
+                        self.summaries.height = SUM_HEIGHT + "px";
+                    }
                     
                     _.forEach(summaries.columnSettings, s => {
                         let sum = { calculator: s.summaryCalculator, formatter: s.formatter };
@@ -228,7 +242,7 @@ module nts.uk.ui.mgrid {
             let $frag = document.createDocumentFragment();
             let freeWrapperWidth;
             self.headers.forEach((headPart, i) => {
-                if (!_.isNil(self.headers[i])) {
+                if (!_.isNil(self.headers[i]) && headPart.columns.length > 0) {
                     headPart.overflow = "hidden";
                     if (headPart.containerClass === FREE) {
                         freeWrapperWidth = parseFloat(self.width) - _maxFixedWidth;
@@ -249,7 +263,7 @@ module nts.uk.ui.mgrid {
                         $fixedHeaderTbl = $tbl;
                         _fixedControlMap = tablePart.controlMap;
                     } else {
-                        $fixedHeaderTbl.style.height = self.headerHeight;
+                        if ($fixedHeaderTbl) $fixedHeaderTbl.style.height = self.headerHeight;
                         $tbl.style.height = self.headerHeight;
                         top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
                         _mafollicle[_currentPage][_currentSheet] = {};
@@ -272,7 +286,7 @@ module nts.uk.ui.mgrid {
             let bodyHeight = parseFloat(self.height) - parseFloat(self.headerHeight);
             self.bodies.forEach((bodyPart, i) => {
                 let $bodyWrapper: HTMLElement, alignLeft = 0;
-                if (!_.isNil(bodyPart)) {
+                if (!_.isNil(bodyPart) && bodyPart.columns.length > 0) {
                     bodyPart.rowHeight = BODY_ROW_HEIGHT + "px";
                     
                     if (bodyPart.containerClass === FIXED) {
@@ -292,7 +306,7 @@ module nts.uk.ui.mgrid {
                     if (bodyPart.containerClass === FREE && !_.isNil($bodyWrapper)) {
                         bodyPart.overflow = "scroll";
                         tc.syncDoubDirVerticalScrolls(bodyWrappers);
-                        if (!self.fixedSummaries || !self.fixedSummaries.columns) {
+                        if (!self.summaries || !self.summaries.columns) {
                             tc.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
                         }
                         tc.bindVertWheel($bodyWrapper, true);
@@ -322,12 +336,13 @@ module nts.uk.ui.mgrid {
             } 
             v.construe(self.$container, bodyWrappers, artifactOptions);
             _bodyWrappers = bodyWrappers;
-            let dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrapper[0];
+            let dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
             _vessel().$bBody = dWrapper.querySelector("tbody");
             
             top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
             ti.calcTotal();
             [ self.fixedSummaries, self.summaries ].filter(s => s && s.columns).forEach((sumPart, i) => {
+                if (!sumPart.columns || sumPart.columns.length === 0) return;
                 let alignLeft = i === 0 ? 0 : left;
                 if (sumPart.containerClass === FREE + "-summaries") {
                     sumPart.width = self.headers[i].width;
@@ -346,13 +361,14 @@ module nts.uk.ui.mgrid {
                 $tbody.appendChild($tr);
                 
                 if (sumPart.containerClass === FREE + "-summaries") {
-                    _.forEach(bodyColGroup[1], c => {
+                    _.forEach(bodyColGroup[bodyColGroup.length > 1 ? 1 : 0], c => {
                         let col = c.cloneNode(true);
                         $colGroup.appendChild(col);
                         cols.push(col);
                     });
                     
-                    ptr = painters[1];
+                    if (painters.length > 1) ptr = painters[1];
+                    else ptr = painters[0];
                     tc.syncDoubDirHorizontalScrolls([ headerWrappers[i], bodyWrappers[i], $sumDiv ]);
                     _mafollicle[SheetDef][_currentSheet].sumColArr = cols;
                 } else {
@@ -867,6 +883,7 @@ module nts.uk.ui.mgrid {
                 if (!self.visibleColumnsMap[key]) {
                     tdStyle += "; display: none;";
                     if (self.$container.classList.contains(FIXED)) _fixedHiddenColumns.push(key);
+                    else _hiddenColumns.push(key);
                 }
                 let hStyle;
                 if (self.styles && (hStyle = self.styles[key])) {
@@ -929,9 +946,13 @@ module nts.uk.ui.mgrid {
                 let tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
                 if (!_.isNil(cell.rowspan) && cell.rowspan > 1) $td.setAttribute("rowspan", cell.rowspan);
                 if (!_.isNil(cell.colspan) && cell.colspan > 1) $td.setAttribute("colspan", cell.colspan);
-                else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) tdStyle += "; display: none;";
-                let column = self.columnsMap[cell.key]; 
+                else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) {
+                    tdStyle += "; display: none;";
+                    if (self.options.containerClass === FIXED) _fixedHiddenColumns.push(cell.key);
+                    else _hiddenColumns.push(cell.key);
+                }
                 
+                let column = self.columnsMap[cell.key];
                 let hStyle;
                 if (self.styles && ((hStyle = self.styles[cell.key])
                     || (cell.group && (hStyle = self.styles[cell.group[0].key])))) {
@@ -1005,9 +1026,17 @@ module nts.uk.ui.mgrid {
             cell(rData: any, rowIdx: number, key: string, fixed: boolean) {
                 let self = this;
                 let cData = rData[key]; 
-                let data = cData, columnsMap, visibleColumnsMap;
-                columnsMap = self.painters[fixed ? 0 : 1].columnsMap;
-                visibleColumnsMap = self.painters[fixed ? 0 : 1].visibleColumnsMap;
+                let data = cData, columnsMap, visibleColumnsMap, paint;
+                if (fixed) {
+                    paint = self.painters[0];
+                } else if (self.painters.length > 1) {
+                    paint = self.painters[1];
+                } else {
+                    paint = self.painters[0];
+                }
+                
+                columnsMap = paint.columnsMap;
+                visibleColumnsMap = paint.visibleColumnsMap;
                 
                 let column: any = columnsMap[key];
                 if (_.isNil(column)) return;
@@ -1125,34 +1154,46 @@ module nts.uk.ui.mgrid {
              */
             row(data: any, config: any, rowIdx: number) {
                 let self = this;
-                let fixedColumns, fixedCount;
-                if (rowIdx === 0) {
+                let fixedColumns, fixedCount = 0;
+                if (rowIdx === 0 && self.painters.length > 1) {
                     fixedColumns = self.painters[0].columns;
                     fixedCount = fixedColumns.length;
                 }
-                let fixedVColumnsMap = self.painters[0].visibleColumnsMap;
-                let dVColumnsMap = self.painters[1].visibleColumnsMap; 
+                
+                let fixedVColumnsMap, dVColumnsMap, hiddenFixed, hiddenDV;
+                if (self.painters.length > 1) {
+                    fixedVColumnsMap = self.painters[0].visibleColumnsMap;
+                    hiddenFixed = self.painters[0].hiddenColumnsMap;
+                    dVColumnsMap = self.painters[1].visibleColumnsMap; 
+                    hiddenDV = self.painters[1].hiddenColumnsMap;
+                } else {
+                    dVColumnsMap = self.painters[0].visibleColumnsMap;
+                    hiddenDV = self.painters[0].hiddenColumnsMap;
+                }
+                
                 let fixedColIdxes = {}, colIdxes = {},
                     fixedElements = [], elements = [],
                     fixedTr, tr: any = self.protoRow.cloneNode(true); //document.createElement("tr");
-                if (fixedVColumnsMap) {
+                if (fixedVColumnsMap && _.keys(fixedVColumnsMap).length > 0) {
 //                    fixedTr = document.createElement("tr");
                     fixedTr = self.protoRow.cloneNode(true);
                 }
                 
                 if (config) {
-                    fixedTr.style.height = parseFloat(config.css.height) + "px";
+                    if (fixedTr) {
+                        fixedTr.style.height = parseFloat(config.css.height) + "px";
+                    }
                     tr.style.height = parseFloat(config.css.height) + "px";
                 }
                 
                 _.forEach(self.columns, function(key: any, index: number) {
                     let cell;
-                    if (dVColumnsMap[key]) {
+                    if (dVColumnsMap[key] || hiddenDV[key]) {
                         cell = self.cell(data, rowIdx, key);
                         tr.appendChild(cell);
                         elements.push(cell);
                         if (rowIdx === 0) colIdxes[key] = index - fixedCount;
-                    } else {
+                    } else if (fixedVColumnsMap[key] || hiddenFixed[key]) {
                         cell = self.cell(data, rowIdx, key, true);
                         fixedTr.appendChild(cell);
                         fixedElements.push(cell);
@@ -1160,16 +1201,18 @@ module nts.uk.ui.mgrid {
                     }
                 });
                 
-                fixedTr.addXEventListener(ssk.MOUSE_OVER, evt => {
-                    self.hoover(evt);
-                });
+                if (fixedTr) {
+                    fixedTr.addXEventListener(ssk.MOUSE_OVER, evt => {
+                        self.hoover(evt);
+                    });
+                    
+                    fixedTr.addXEventListener(ssk.MOUSE_OUT, evt => {
+                        self.hoover(evt, true);
+                    });
+                }
                 
                 tr.addXEventListener(ssk.MOUSE_OVER, evt => {
                     self.hoover(evt);
-                });
-                
-                fixedTr.addXEventListener(ssk.MOUSE_OUT, evt => {
-                    self.hoover(evt, true);
                 });
                 
                 tr.addXEventListener(ssk.MOUSE_OUT, evt => {
@@ -1545,8 +1588,10 @@ module nts.uk.ui.mgrid {
             sidePainter: v.SidePainter;
             
             constructor(containers: Array<any>, options: any) {
-                this.$fixedContainer = containers[0];
-                this.$container = containers[1];
+                if (containers && containers.length > 1) {
+                    this.$fixedContainer = containers[0];
+                    this.$container = containers[1];
+                } else this.$container = containers[0];
                 this.options = options;
                 this.primaryKey = options.primaryKey;
                 this.rowsOfBlock = options.noBlocRangee || 30;
@@ -1780,7 +1825,7 @@ module nts.uk.ui.mgrid {
         /**
          * Bind vertWheel.
          */
-        export function bindVertWheel($container: HTMLElement, showY?: boolean) {
+        export function bindVertWheel($container: HTMLElement, showY?: boolean, abnorm?: boolean) {
             let $_container = $($container);
             $container.addXEventListener(ssk.MOUSE_WHEEL, function(event: any) {
                 let delta = event.deltaY;
@@ -1788,10 +1833,28 @@ module nts.uk.ui.mgrid {
                 let value = $_container.scrollTop();
 //                $container.stop().animate({ scrollTop: value }, 10);
                 let os = ti.isIE() ? 25 : 50;
+//                if (!abnorm && ((direction < 0 && value === 0)
+//                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
+//                    try {
+//                        window.dispatchEvent(event);
+//                    } catch (e) {}
+//                }
+                
                 $_container.scrollTop(value + direction * os);
+                
+                if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
+                    let cbx = dkn.controlType[_mEditor.columnKey];
+                    let $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
+                    if (cbx.dropdown && cbx.dropdown.style.top !== "-99999px") {
+                        dkn.closeDD(cbx.dropdown);
+                        $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
+                    }
+                }  
+                
                 event.preventDefault();
                 event.stopImmediatePropagation();
             });
+            
             if (!showY && $container.style.overflowY !== "hidden") {
                 $container.style.overflowY = "hidden";
             }
@@ -1937,8 +2000,10 @@ module nts.uk.ui.mgrid {
                 this.widths = widths;
                 this.height = height;
                 this.$ownerDoc = this.headerWrappers[0].ownerDocument;
-                _widths._fixed = parseFloat(widths[0]);
-                _widths._unfixed = parseFloat(widths[1]); 
+                if (widths.length > 1) {
+                    _widths._fixed = parseFloat(widths[0]);
+                    _widths._unfixed = parseFloat(widths[1]); 
+                } else _widths._unfixed = parseFloat(widths[0]);
             }
             
             /**
@@ -1967,60 +2032,90 @@ module nts.uk.ui.mgrid {
              */
             handle() {
                 let self = this;
-                self.$fixedAgency = document.createElement("div"); 
-                self.$fixedAgency.className = AGENCY;
-                self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
-                let $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
-                $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
-                let left = 0, hiddenCount = 0;
-                
-                _.forEach(self.headerColGroup[0], ($targetCol, i) => {
-                    if ($targetCol.style.display === "none") {
-                        hiddenCount++;
-                        return;
-                    }
-                    let $line = document.createElement("div");
-                    $line.className = FIXED_LINE;
-                    $.data($line, RESIZE_COL, $targetCol); 
-                    $.data($line, RESIZE_NO, i - hiddenCount);
-                    self.$fixedAgency.appendChild($line);
+                if (self.headerColGroup.length > 1) {
+                    self.$fixedAgency = document.createElement("div"); 
+                    self.$fixedAgency.className = AGENCY;
+                    self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
+                    let $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
+                    $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
+                    let left = 0, hiddenCount = 0;
                     
-                    left += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
-                    $line.style.left = left + "px";
-                    $line.style.height = self.height;
-                    self.fixedLines.push($line);
-                });
-                
-                self.fixedHiddenCount = hiddenCount;
-                left = 0;
-                self.$agency = document.createElement("div");
-                self.$agency.className = AGENCY;
-                self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
-                let $headerTable = self.headerWrappers[1].querySelector("table");
-                $headerTable.insertAdjacentElement("beforebegin", self.$agency);
-                hiddenCount = 0;
-                _.forEach(self.headerColGroup[1], ($targetCol, i) => {
-                    if (i === self.headerColGroup[1].length - 1) return;
-                    if ($targetCol.style.display === "none") {
-                        hiddenCount++;
-                        return;
-                    }
-                    let $line = document.createElement("div");
-                    $line.className = LINE;
-                    $.data($line, RESIZE_COL, $targetCol);
-                    $.data($line, RESIZE_NO, i - hiddenCount);
-                    self.$agency.appendChild($line);
-                    left += parseFloat($targetCol.style.width);
-                    $line.style.left = left + "px";
-                    $line.style.height = self.height;
-                    self.lines.push($line);
-                });
-                
-                self.hiddenCount = hiddenCount;
-                self.$fixedAgency.removeXEventListener(ssk.MOUSE_DOWN);
-                self.$fixedAgency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));  
-                self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
-                self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                    _.forEach(self.headerColGroup[0], ($targetCol, i) => {
+                        if ($targetCol.style.display === "none") {
+                            hiddenCount++;
+                            return;
+                        }
+                        let $line = document.createElement("div");
+                        $line.className = FIXED_LINE;
+                        $.data($line, RESIZE_COL, $targetCol); 
+                        $.data($line, RESIZE_NO, i - hiddenCount);
+                        self.$fixedAgency.appendChild($line);
+                        
+                        left += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
+                        $line.style.left = left + "px";
+                        $line.style.height = self.height;
+                        self.fixedLines.push($line);
+                    });
+                    
+                    self.fixedHiddenCount = hiddenCount;
+                    left = 0;
+                    self.$agency = document.createElement("div");
+                    self.$agency.className = AGENCY;
+                    self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
+                    let $headerTable = self.headerWrappers[1].querySelector("table");
+                    $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                    hiddenCount = 0;
+                    _.forEach(self.headerColGroup[1], ($targetCol, i) => {
+                        if (i === self.headerColGroup[1].length - 1) return;
+                        if ($targetCol.style.display === "none") {
+                            hiddenCount++;
+                            return;
+                        }
+                        let $line = document.createElement("div");
+                        $line.className = LINE;
+                        $.data($line, RESIZE_COL, $targetCol);
+                        $.data($line, RESIZE_NO, i - hiddenCount);
+                        self.$agency.appendChild($line);
+                        left += parseFloat($targetCol.style.width);
+                        $line.style.left = left + "px";
+                        $line.style.height = self.height;
+                        self.lines.push($line);
+                    });
+                    
+                    self.hiddenCount = hiddenCount;
+                    self.$fixedAgency.removeXEventListener(ssk.MOUSE_DOWN);
+                    self.$fixedAgency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));  
+                    self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
+                    self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                } else {
+                    let left = 0, hiddenCount = 0;
+                    self.$agency = document.createElement("div");
+                    self.$agency.className = AGENCY;
+                    self.$agency.style.cssText = "; position: relative; width: " + self.widths[0];
+                    let $headerTable = self.headerWrappers[0].querySelector("table");
+                    $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                    _.forEach(self.headerColGroup[0], ($targetCol, i) => {
+                        if (i === self.headerColGroup[0].length - 1) return;
+                        if ($targetCol.style.display === "none") {
+                            hiddenCount++;
+                            return;
+                        }
+                        
+                        let $line = document.createElement("div");
+                        $line.className = LINE;
+                        $.data($line, RESIZE_COL, $targetCol);
+                        $.data($line, RESIZE_NO, i - hiddenCount);
+                        self.$agency.appendChild($line);
+                        left += parseFloat($targetCol.style.width);
+                        $line.style.left = left + "px";
+                        $line.style.height = self.height;
+                        self.lines.push($line);
+                    });
+                    
+                    self.hiddenCount = hiddenCount;  
+                    self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
+                    self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                }
             }
             
             /**
@@ -2040,8 +2135,10 @@ module nts.uk.ui.mgrid {
                 if ($targetGrip.classList.contains(FIXED_LINE)) {
                     headerGroup = self.headerColGroup[0];
                     isFixed = true;
-                } else {
+                } else if (self.headerColGroup.length > 1) {
                     headerGroup = self.headerColGroup[1];
+                } else {
+                    headerGroup = self.headerColGroup[0];
                 }
                 
                 let breakArea, wrapperLeft, wrapperRight, maxWrapperRight, leftAlign;
@@ -2137,12 +2234,13 @@ module nts.uk.ui.mgrid {
                     bodyGroup = self.bodyColGroup[0];
                     if (self.sumWrappers.length > 0) sumGroup = self.sumColGroup[0];
                 } else { 
-                    bodyGroup = self.bodyColGroup[1];
-                    self.bodyWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
-                    self.headerWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                    let i = self.bodyColGroup.length > 1 ? 1 : 0;
+                    bodyGroup = self.bodyColGroup[i];
+                    self.bodyWrappers[i].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
+                    self.headerWrappers[i].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
                     if (self.sumWrappers.length > 0) {
-                        sumGroup = self.sumColGroup[1];
-                        self.sumWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                        sumGroup = self.sumColGroup[i];
+                        self.sumWrappers[i].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
                     }
                 }
                 
@@ -2175,9 +2273,10 @@ module nts.uk.ui.mgrid {
                     _widths._unfixed = rightAreaWidth;
                 }
                 
+                let i = self.bodyWrappers.length > 1 ? 1 : 0;
                 if (!self.actionDetails.isFixed && distance < 0) {
-                    let width = parseFloat(self.bodyWrappers[1].style.width),
-                        maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth);
+                    let width = parseFloat(self.bodyWrappers[i].style.width),
+                        maxWidth = parseFloat(self.bodyWrappers[i].style.maxWidth);
                     
                     if (maxWidth < width) {
                         let pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS),
@@ -2243,9 +2342,16 @@ module nts.uk.ui.mgrid {
                     
                     replenLargeur(leftCol, self.actionDetails.changedWidths.left, "reparer");
                 } else {
+                    _.forEach(_hiddenColumns, c => {
+                        let idx = _vessel().desc.colIdxes[c];
+                        if (parseFloat(idx) <= self.actionDetails.gripIndex) {
+                            tidx++;
+                        }
+                    });
+                    
                     _.forEach(_.keys(_vessel().desc.colIdxes), k => {
                         let i = parseFloat(_vessel().desc.colIdxes[k]);
-                        if (i === self.actionDetails.gripIndex) {
+                        if (i === tidx) {
                             leftCol = k;
                             return false;
                         }
@@ -2406,9 +2512,12 @@ module nts.uk.ui.mgrid {
              * Sync lines.
              */
             syncLines() {
-                let self = this;
-                self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                let left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
+                let i, self = this; 
+                if (self.actionDetails.isFixed) i = 0;
+                else if (self.headerWrappers.length > 1) i = 1;
+                else i = 0;
+                self.$agency.style.width = self.headerWrappers[i].style.width;
+                let left = 0, group = self.headerColGroup[i];
                 _.forEach(group, function($td: HTMLElement, index: number) {
                     if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1)) return;
                     left += parseFloat($td.style.width);
@@ -2503,7 +2612,7 @@ module nts.uk.ui.mgrid {
          */
         export function screenLargeur(noRowsMin: any, noRowsMax: any) {
             if (!_headerWrappers || _headerWrappers.length === 0) return;
-            let width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
+            let width, height = window.innerHeight - _remainHeight - parseFloat(_headerHeight), btmw;
             let pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
             let sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
             if (_headerWrappers.length > 1) {
@@ -2574,7 +2683,7 @@ module nts.uk.ui.mgrid {
                 sheetDiv.style.width = btmw + "px";
                 sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
             }
-            _bodyWrappers[1].style.height = height + "px";
+            _bodyWrappers[0].style.height = height + "px";
         }
         
         /**
@@ -3030,6 +3139,16 @@ module nts.uk.ui.mgrid {
                     $cell.innerHTML = val;
                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                     $.data($cell, v.DATA, val);
+                } else {
+                    let cbx = dkn.controlType[key];
+                    if (_.isObject(cbx) && cbx.type === dkn.COMBOBOX) {
+                        let sel = _.find(cbx.options, o => o.code === val);
+                        if (sel) { 
+                            su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                            $.data($cell, lo.CBX_SELECTED_TD, val);
+                            $cell.textContent = sel ? sel.name : ""; 
+                        }
+                    }
                 }
                 
                 return idx;
@@ -3196,7 +3315,7 @@ module nts.uk.ui.mgrid {
                 _$grid = null; _pk = null; _pkType = null; _summaries = null; _objId = null; _getObjId = null; dkn.allCheck = {};
                 _hasSum = null; _pageSize = null; _currentPage = null; _currentSheet = null; _start = null; _end = null; 
                 _headerHeight = null; _zeroHidden = null; _paging = false; _sheeting = false; _copie = false; _mafollicle = {}; 
-                _specialColumn = {}; _specialLinkColumn = {}; _fixedHiddenColumns = []; _fixedColumns = null; _selected = {}; _dirties = {}; 
+                _specialColumn = {}; _specialLinkColumn = {}; _fixedHiddenColumns = []; _hiddenColumns = []; _fixedColumns = null; _selected = {}; _dirties = {}; 
                 _rid = {}, _headerWrappers = null; _bodyWrappers = null; _sumWrappers = null; _fixedControlMap = {}; _cellStates = null; _features = null; 
                 _leftAlign = null; _header = null; _flexFitWidth = null; this.element.html(""); this.element.removeData(); _histoire = [];
                 this.element[0].parentNode.replaceChild(this.element[0].cloneNode(), this.element[0]);
@@ -3524,6 +3643,9 @@ module nts.uk.ui.mgrid {
                     let sCol = _specialColumn[editor.columnKey];
                     if (sCol) {
                         let cbx = dkn.controlType[sCol];
+                        if (_.toLower(column[0].dataType) === "number") {
+                            inputVal = parseFloat(inputVal);
+                        }
                         wedgeCell($grid, { rowIdx: editor.rowIdx, columnKey: sCol }, inputVal);
                         let selectedOpt = _.find(cbx.options, o => o.code === inputVal); 
                         if (!_.isNil(selectedOpt)) {
@@ -3582,6 +3704,11 @@ module nts.uk.ui.mgrid {
             
             let origDs = _mafollicle[_currentPage].origDs;
             if (!origDs) return;
+            let column = _columnsMap[coord.columnKey];
+            
+            if (column && _.toLower(column[0].dataType) === "number") {
+                cellValue = parseFloat(cellValue);
+            }
            
             if (reset) {
                 origDs[coord.rowIdx][coord.columnKey] = cellValue;
@@ -3712,10 +3839,23 @@ module nts.uk.ui.mgrid {
                     if (maf && maf.desc) {
                         t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                         if (!t || !t.c || _.find(_fixedColumns, fc => fc.key === coord.columnKey)) return;
-                        formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                        t.c.textContent = formatted;
-                        disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
-                        $.data(t.c, v.DATA, disFormat);
+                        let control = dkn.controlType[coord.columnKey];
+                        if (control === dkn.LINK_LABEL) {
+                            let link = t.c.querySelector("a");
+                            link.innerHTML = cellValue;
+                        } else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                            let sel = _.find(control.options, o => o.code === cellValue);
+                            if (sel) { 
+                                $.data(t.c, lo.CBX_SELECTED_TD, cellValue);
+                                t.c.textContent = sel.name; 
+                            }
+                        } else {
+                            formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
+                            t.c.textContent = formatted;
+                            disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
+                            $.data(t.c, v.DATA, disFormat);
+                        }
+                        
                         if (t.colour) t.c.classList.add(t.colour);
                     }
                     
@@ -3740,15 +3880,11 @@ module nts.uk.ui.mgrid {
                 });
             };
             
-            let column = _columnsMap[coord.columnKey];
             if (!column) {
                 osht(true);
                 return;
             }
             
-            if (_.toLower(column[0].dataType) === "number") {
-                cellValue = parseFloat(cellValue);
-            }
             res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
             osht();
             
@@ -5314,6 +5450,12 @@ module nts.uk.ui.mgrid {
                 let $target = evt.target;
                 isSelecting = true;
                 if (!selector.is($target, ".mcell")) return;
+                
+                window.addXEventListener(ssk.MOUSE_UP + ".block", function(evt: any) {
+                    isSelecting = false;
+                    $grid.onselectstart = null;
+                    window.removeXEventListener(ssk.MOUSE_UP + ".block");
+                });
                 
                 if (evt.shiftKey) {
                     selectRange($grid, $target);

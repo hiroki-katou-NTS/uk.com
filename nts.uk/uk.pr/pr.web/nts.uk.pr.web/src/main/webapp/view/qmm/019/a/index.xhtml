@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.a.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.a.service.js"/>
+        <com:scriptfile path="qmm019.a.vm.js"/>
+        <com:scriptfile path="qmm019.a.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <button data-bind = "click: openB">B</button>
+            <button data-bind = "click: openC">C</button>
+            <button data-bind = "click: openD">D</button>
+            <button data-bind = "click: openE">E</button>
+            <button data-bind = "click: openF">F</button>
+            <button data-bind = "click: openG">G</button>
+            <button data-bind = "click: openH">H</button>
+            <button data-bind = "click: openI">I</button>
+            <button data-bind = "click: openJ">J</button>
+            <button data-bind = "click: openK">K</button>
+            <button data-bind = "click: openL">L</button>
+            <button data-bind = "click: openM">M</button>
+            <button data-bind = "click: openN">N</button>
+            <button data-bind = "click: openO">O</button>
+            <button data-bind = "click: openP">P</button>
+        </div>
+        <div id="contents-area">
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

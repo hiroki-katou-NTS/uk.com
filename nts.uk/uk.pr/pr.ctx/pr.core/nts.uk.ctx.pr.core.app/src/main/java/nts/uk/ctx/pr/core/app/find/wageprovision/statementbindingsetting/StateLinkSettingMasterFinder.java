@@ -13,8 +13,7 @@ import javax.inject.Inject;
 * 明細書紐付け設定（マスタ）: Finder
 */
 @Stateless
-public class StateLinkSettingMasterFinder
-{
+public class StateLinkSettingMasterFinder {
 
     @Inject
     private StateLinkSettingMasterRepository finder;
@@ -24,5 +23,6 @@ public class StateLinkSettingMasterFinder
                 .map(i -> StateLinkSettingMasterDto.fromDomain(i))
                 .collect(Collectors.toList());
     }
+
 
 }

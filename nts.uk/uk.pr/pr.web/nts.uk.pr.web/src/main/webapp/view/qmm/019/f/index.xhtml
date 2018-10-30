@@ -1,0 +1,305 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeValue
+            nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimesValue
+        </com:ValidatorScript>
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1280,
+                height: 670
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="../share/qmm019.d-g.style.css"/>
+        <com:stylefile path="qmm019.f.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.f.service.js"/>
+        <com:scriptfile path="qmm019.f.vm.js"/>
+        <com:scriptfile path="qmm019.f.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="table table-orgin">
+                <div class="cell valign-top">
+                    <!--F1_1-->
+                    <div data-bind="ntsPanel:{width: '280px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                        <div class="table table-search">
+                            <div class="cell valign-center">
+                                <!--F1_2-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_105')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--F1_3-->
+                                <div class="label">#{i18n.getText('QMM019_168')}</div>
+                            </div>
+                        </div>
+                        <div class="table table-search">
+                            <div class="cell valign-top">
+                                <!--F1_4-->
+                                <div data-bind="ntsFormLabel: {}">F1_4</div>
+                            </div>
+                            <div class="cell valign-top">
+                                <!--F1_5-->
+                                <div style="width: 190px" data-bind="ntsSearchBox: {
+									searchMode: 'highlight',
+									targetKey: 'code',
+									comId: 'F1_6',
+									items: itemNames,
+									selected: selectedSearchIitemName,
+									selectedKey: 'code',
+									fields: ['code', 'name'],
+									mode: 'igGrid'}"/>
+                            </div>
+                        </div>
+                        <!--F1_6-->
+                        <table id="F1_6" data-bind="ntsGridList: {
+                            rows: 15,
+                            name: '#[QMM019_169]',
+                            dataSource: itemNames,
+                            primaryKey: 'code',
+                            columns: [
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 50, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 213, formatter: _.escape}
+                            ],
+                            multiple: false,
+                            value: codeSelected}"/>
+                        <!--F1_11-->
+                        <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                    </div>
+                </div>
+                <div class="cell valign-top">
+                    <div class="table table-col-3">
+                        <div class="cell valign-center">
+                            <!--F2_1-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F2_2-->
+                            <div class="label" data-bind="text: itemNameSelected().code"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F2_3-->
+                            <div class="label" data-bind="text: itemNameSelected().name"/>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="table table-error-alarm">
+                        <div class="cell valign-center">
+                            <!--F3_1-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F3_2-->
+                            <div data-bind="ntsCheckBox: { }"/>
+                            <!--F3_3-->
+                            <input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_121]',
+                                value: value,
+                                constraint: 'TimeValue',
+                                inputFormat: 'time',
+                                mode: 'time'}"/>
+                            <!--F3_20-->
+                            <!--<input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_121]',
+                                value: value,
+                                constraint: 'TimeValue'}"/>-->
+                            <!--F3_24-->
+                            <!--<input data-bind="ntsNumberEditor: {
+                                name: '#[QMM019_121]',
+                                value: value,
+                                constraint: 'TimesValue'}"/>-->
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F3_4-->
+                            <div class="label">#{i18n.getText('QMM019_122')}</div>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm">
+                        <div class="cell valign-center"/>
+                        <div class="cell valign-center">
+                            <!--F3_5-->
+                            <div data-bind="ntsCheckBox: { }"/>
+                            <!--F3_6-->
+                            <input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_123]',
+                                value: value,
+                                constraint: 'TimeValue',
+                                inputFormat: 'time',
+                                mode: 'time'}"/>
+                            <!--F3_21-->
+                            <!--<input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_123]',
+                                value: value,
+                                constraint: 'TimeValue'}"/>-->
+                            <!--F3_25-->
+                            <!--<input data-bind="ntsNumberEditor: {
+                                name: '#[QMM019_123]',
+                                value: value,
+                                constraint: 'TimesValue'}"/>-->
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F3_7-->
+                            <div class="label">#{i18n.getText('QMM019_124')}</div>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm">
+                        <div class="cell valign-center">
+                            <!--F3_8-->
+                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F3_9-->
+                            <div data-bind="ntsCheckBox: { }"/>
+                            <!--F3_10-->
+                            <input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_126]',
+                                value: value,
+                                constraint: 'TimeValue',
+                                inputFormat: 'time',
+                                mode: 'time'}"/>
+                            <!--F3_22-->
+                            <!--<input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_126]',
+                                value: value,
+                                constraint: 'TimeValue'}"/>-->
+                            <!--F3_26-->
+                            <!--<input data-bind="ntsNumberEditor: {
+                                name: '#[QMM019_126]',
+                                value: value,
+                                constraint: 'TimesValue'}"/>-->
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F3_11-->
+                            <div class="label">#{i18n.getText('QMM019_127')}</div>
+                        </div>
+                    </div>
+                    <div class="table table-error-alarm">
+                        <div class="cell valign-center"/>
+                        <div class="cell valign-center">
+                            <!--F3_12-->
+                            <div data-bind="ntsCheckBox: { }"/>
+                            <!--F3_13-->
+                            <input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_128]',
+                                value: value,
+                                constraint: 'TimeValue',
+                                inputFormat: 'time',
+                                mode: 'time'}"/>
+                            <!--F3_23-->
+                            <!--<input data-bind="ntsTimeEditor: {
+                                name: '#[QMM019_128]',
+                                value: value,
+                                constraint: 'TimeValue'}"/>-->
+                            <!--F3_27-->
+                            <!--<input data-bind="ntsNumberEditor: {
+                                name: '#[QMM019_128]',
+                                value: value,
+                                constraint: 'TimesValue'}"/>-->
+                        </div>
+                        <div class="cell valign-center">
+                            <!--F3_14-->
+                            <div class="label">#{i18n.getText('QMM019_129')}</div>
+                        </div>
+                    </div>
+                    <!--F3_15-->
+                    <div class="label label-annotate-first">#{i18n.getText('QMM019_130')}</div>
+                    <!--F3_16-->
+                    <div class="label label-annotate">#{i18n.getText('QMM019_131')}</div>
+                    <!--F3_17-->
+                    <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                    <!--F3_18-->
+                    <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                    <!--F3_19-->
+                    <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                </div>
+                <div class="cell valign-top">
+                    <!--F2_4-->
+                    <div data-bind="ntsAccordion: { }">
+                        <h3>#{i18n.getText('QMM019_113')}</h3>
+                        <div class="acc-content">
+                            <!--F4_1-->
+                            <div class="ui-iggrid">
+                                <table>
+                                    <colgroup>
+                                        <col width="100px"/>
+                                        <col width="150px"/>
+                                    </colgroup>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--F5_2-->
+                                            <div class="label">#{i18n.getText('QMM019_148')}</div>
+                                        </td>
+                                        <td>
+                                            <!--F5_11-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--F5_3-->
+                                            <div class="label">#{i18n.getText('QMM019_105')}</div>
+                                        </td>
+                                        <td>
+                                            <!--F5_12-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--F5_5-->
+                                            <div class="label">#{i18n.getText('QMM019_172')}</div>
+                                        </td>
+                                        <td>
+                                            <!--F5_15-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--F5_7-->
+                                            <div class="label">#{i18n.getText('QMM019_120')}</div>
+                                            <!--F5_8-->
+                                            <div class="label">#{i18n.getText('QMM019_157')}</div>
+                                        </td>
+                                        <td>
+                                            <!--F5_17-->
+                                            <!--F5_18-->
+                                            <!--F5_19-->
+                                            <!--F5_20-->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ui-widget-header">
+                                            <!--F5_9-->
+                                            <div class="label">#{i18n.getText('QMM019_125')}</div>
+                                            <!--F5_10-->
+                                            <div class="label">#{i18n.getText('QMM019_157')}</div>
+                                        </td>
+                                        <td>
+                                            <!--F5_21-->
+                                            <!--F5_22-->
+                                            <!--F5_23-->
+                                            <!--F5_24-->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

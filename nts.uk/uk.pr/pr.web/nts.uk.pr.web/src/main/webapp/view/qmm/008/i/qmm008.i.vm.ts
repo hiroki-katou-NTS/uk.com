@@ -215,7 +215,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
                         //Todo
-                        selectedHistoryPeriod.displayStartJM = "(" + nts.uk.time.yearmonthInJapanEmpire(selectedHistoryPeriod.displayStart).toString().split(' ').join('') + ")";
+                        selectedHistoryPeriod.displayStartJM = "(" + nts.uk.time.yearmonthInJapanEmpire(selectedHistoryPeriod.displayStart).toString() + ")";
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         //アルゴリズム「選択処理」を実行する
                         self.showContributionRateByHistoryId(self.selectedHistoryId);

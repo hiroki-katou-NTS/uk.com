@@ -12,15 +12,11 @@ public class StatementItemDataDto {
 	private DeductionItemSetDto deductionItemSet;
 	private TimeItemSetDto timeItemSet;
 	private StatementItemDisplaySetDto statementItemDisplaySet;
-	private ItemRangeSetDto itemRangeSet;
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
 	private List<BreakdownItemSetDto> breakdownItemSet;
 	private IntegratedItemDto integratedItem;
-	
-	/**
-	 * 給与項目ID
-	 */
-	private String salaryItemId;
+
+	private String key;
 	
 	/**
 	 * カテゴリ区分

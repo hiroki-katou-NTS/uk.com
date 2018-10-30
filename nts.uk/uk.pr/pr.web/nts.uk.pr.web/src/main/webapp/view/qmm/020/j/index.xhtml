@@ -20,25 +20,36 @@
                 <!-- J1_1 -->
                 <span id="J1_1" class="label">#{i18n.getText('QMM020_53')}</span>
             </div>
-            <!-- F1_2 名称 -->
+            <!-- J1_2 名称 -->
             <div id="J1_2" data-bind="ntsFormLabel: {required: true}" style="margin: 0px 10px 0px 10px;">
                 <span class="label">#{i18n.getText('QMM020_54')}</span>
-                <div id="J1_3" style="margin-left: 82px;" tabindex="2" data-bind="ntsDatePicker: {
-												name: '#{i18n.getText('QMM020_11')}',
+                <div id="J1_3" style="margin-left: 82px;" tabindex="1" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM020_55')}',
 												value: startYearMonth,
 												required: true,
 												enable: true,
 												valueFormat: 'YYYYMM',
 												dateFormat: 'yearmonth'}">
                 </div>
-                <span class="label">#{i18n.getText('QMM020_56')}</span>
-                <span class="label">#{i18n.getText('QMM020_57')}</span>
+                <div id="J1_13"  style="margin-left: 82px;" tabindex="2" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM020_63')}',
+												value: endYearMonth,
+												required: true,
+												enable: true,
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'},if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_THREE">
+                </div>
+                <div data-bind="if: modeScreen() != nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_THREE">
+                    <span class="label">#{i18n.getText('QMM020_56')}</span>
+                    <span class="label">#{i18n.getText('QMM020_57')}</span>
+                </div>
+
             </div>
             <div style="display: inline-flex;margin-top: 10px;">
                 <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
                     <span class="label">#{i18n.getText('QMM020_58')}</span>
                 </div>
-                <div id="J7_1" style="margin-top: 10px;">
+                <div id="J7_1" tabindex="3" style="margin-top: 10px;">
                     <div style="" class="cell" tabIndex="-1"
                          data-bind="ntsRadioButton: {
 										checked: methodEditing,
@@ -49,7 +60,8 @@
 										group: 'periodOption'}">
                     </div>
                     <br/>
-                    <div style="margin: 10px 10px 10px 20px;">
+
+                    <div data-blind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO " style="margin: 10px 10px 10px 20px;">
                         <span id="J1_10" class="label warning">#{i18n.getText('QMM020_61')}</span>
                     </div>
                     <div class="cell" style="" tabIndex="-1"
@@ -65,9 +77,9 @@
 
             </div>
 
-            <div id="J1_11" data-bind="ntsFormLabel: {required: true}" style="margin: 10px 10px 0px 10px;">
+            <div id="J1_11" data-bind="ntsFormLabel: {required: true},if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO " style="margin: 10px 10px 0px 10px;">
                 <span class="label">#{i18n.getText('QMM020_62')}</span>
-                <div id="J1_12" style="margin-left: 27px;" tabindex="2" data-bind="ntsDatePicker: {
+                <div id="J1_12" style="margin-left: 27px;" tabindex="4" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM020_62')}',
 												value: startYearMonth,
 												required: true,
@@ -79,10 +91,10 @@
         </div>
         <div id="functions-area-bottom" style="z-index: auto">
             <!-- C2_1 登録 -->
-            <button id="J2_1" tabindex="3" class="proceed large"
+            <button id="J2_1" tabindex="5" class="proceed large"
                     data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
             <!-- C2_2 削除 -->
-            <button id="J2_2" tabindex="4"
+            <button id="J2_2" tabindex="6"
                     data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
         </div>
     </ui:define>

@@ -39,6 +39,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
@@ -120,7 +121,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 
 	@Inject
 	private RoleRepository roleRepo;
-	
+
 	@Inject
 	private EmployeeAdapter employeeAdapter;
 
@@ -329,20 +330,23 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					return;
 				}
 			}
+			// roleSetLst
 			// ドメインモデル「ロールセット個人別付与」を取得する
-			Optional<RoleSetGrantedPerson> opRoleSetGrantedPerson = roleSetGrantedPersonRepository
-					.findByDetail(companyID, employeeID, roleIDs, date);
-			if (opRoleSetGrantedPerson.isPresent()) {
-				result.add(employeeID);
-				return;
-			}
-			// 社員の職位を取得する
-			JobTitleValueImport jobTitleValueImport = jobTitleAdapter.findJobTitleBySid(employeeID, date);
-			// 取得した職位をチェックする
-			if ((jobTitleValueImport != null) && jobTitleLst.contains(jobTitleValueImport.getPositionId())) {
-				result.add(employeeID);
-				return;
-			}
+			List<String> listRoleCD = roleSetLst.stream().map(c -> c.getRoleSetCd().v()).collect(Collectors.toList());
+				Optional<RoleSetGrantedPerson> opRoleSetGrantedPerson = roleSetGrantedPersonRepository.findByDetail(companyID, employeeID, listRoleCD, date);
+						//.findByDetail(companyID, employeeID, roleCD, date);
+				if (opRoleSetGrantedPerson.isPresent()) {
+					result.add(employeeID);
+					return;
+				}
+				// 社員の職位を取得する
+				JobTitleValueImport jobTitleValueImport = jobTitleAdapter.findJobTitleBySid(employeeID, date);
+				// 取得した職位をチェックする
+				if ((jobTitleValueImport != null) && jobTitleLst.contains(jobTitleValueImport.getPositionId())) {
+					result.add(employeeID);
+					return;
+				}
+			
 		});
 		return result;
 	}
@@ -367,18 +371,18 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		List<RoleIndividualGrant> listRoleIndi = roleIndividualGrantRepository.findRoleIndividual(companyID,
 				RoleType.EMPLOYMENT.value, listRoleID, referenceDate);
 		List<String> listUserID = listRoleIndi.stream().map(c -> c.getUserId()).collect(Collectors.toList());
-		//②ユーザID（List）　をLoopする
+		// ②ユーザID（List） をLoopする
 		for (String userID : listUserID) {
 			Optional<User> user = userRepository.getByUserID(userID);
 			if (user.get().getAssociatedPersonID().isPresent()) {
 				String personalID = user.get().getAssociatedPersonID().get();
-				//Lay thong tin Request 101
+				// Lay thong tin Request 101
 				Optional<EmployeeImport> empImport = employeeAdapter.getEmpInfo(companyID, personalID);
-				if(empImport.isPresent()){
-					//OUTPUT 社員ID（List）に③社員.社員IDを追加する
+				if (empImport.isPresent()) {
+					// OUTPUT 社員ID（List）に③社員.社員IDを追加する
 					listEmpID.add(empImport.get().getEmployeeId());
 				}
-				
+
 			}
 		}
 
