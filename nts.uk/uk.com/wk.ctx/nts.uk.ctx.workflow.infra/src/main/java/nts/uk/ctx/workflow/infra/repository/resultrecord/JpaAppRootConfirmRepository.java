@@ -510,19 +510,15 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query2 = query2.replaceAll("rootType", String.valueOf(rootType.value));
 		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		try {
-			PreparedStatement pstatement1 = con.prepareStatement(query1);
+		try (PreparedStatement pstatement1 = con.prepareStatement(query1)) {
 			pstatement1.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
+			throw new RuntimeException(e);
 		}
-		try {
-			PreparedStatement pstatement2 = con.prepareStatement(query2);
+		try (PreparedStatement pstatement2 = con.prepareStatement(query2)) {
 			pstatement2.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 }

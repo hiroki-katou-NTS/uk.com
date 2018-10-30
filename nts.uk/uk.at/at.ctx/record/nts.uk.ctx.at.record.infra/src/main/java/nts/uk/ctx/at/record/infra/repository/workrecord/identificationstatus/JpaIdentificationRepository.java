@@ -70,10 +70,12 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 			GeneralDate endDate) {
 		List<Identification> data = new ArrayList<>();
 		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT * from KRCDT_CONFIRMATION_DAY h"
-						+ " WHERE h.PROCESSING_YMD <= ? and h.PROCESSING_YMD >= ? AND h.CID = ?  AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.PROCESSING_YMD <= ?"
+						+ " and h.PROCESSING_YMD >= ?"
+						+ " AND h.CID = ?"
+						+ " AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setDate(1, Date.valueOf(startDate.localDate()));
 				statement.setDate(2, Date.valueOf(startDate.localDate()));
 				statement.setString(3, AppContexts.user().companyId());
