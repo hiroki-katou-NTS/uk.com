@@ -15,7 +15,7 @@ public class AddStateLinkSettingCompanyCommandHandler extends CommandHandler<Sta
 
     @Inject
     private StateLinkSettingCompanyRepository repository;
-    
+
     @Override
     protected void handle(CommandHandlerContext<StateLinkSettingCompanyCommand> stateLinkSettingCompanyCommand) {
         StateLinkSettingCompanyCommand command = stateLinkSettingCompanyCommand.getCommand();

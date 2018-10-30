@@ -3,7 +3,9 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingMasterDto;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMasterRepository;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingMasterFinder;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -16,12 +18,12 @@ import javax.ws.rs.Produces;
 public class StateLinkMasterWebService extends WebService {
 
     @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
+    private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
 
     @POST
     @Path("getStateLinkMaster")
     public List<StateLinkSettingMasterDto> getStateLinkMaster(@PathParam("hisId") String hisId) {
-        return stateLinkSettingMasterRepository.getStateLinkSettingMasterByHisId(hisId);
+        return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId);
     }
 
     @POST

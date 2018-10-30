@@ -22,10 +22,10 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
     @Override
     protected void handle(CommandHandlerContext<StateCorrelationHisClassificationCommand> context) {
         StateCorrelationHisClassificationCommand command = context.getCommand();
-        YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
-        YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
+        YearMonth start = new YearMonth(command.getStartYearMonth());
+        YearMonth end = new YearMonth(command.getEndYearMonth());
         if(command.getMode() == RegisterMode.NEW.value) {
-            stateCorrelationHisClassificationService.addHistoryClassification();
+           // stateCorrelationHisClassificationService.addHistoryClassification(start, end, );
         } else {
 
         }
