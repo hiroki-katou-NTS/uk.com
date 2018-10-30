@@ -50,10 +50,10 @@
                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
                 <div class="cf" data-bind="ntsSwitchButton: {
                                         name: 'Sample Switch',
-                                        options: masterUse,
+                                        options: individualUse,
                                         optionsValue: 'code',
                                         optionsText: 'name',
-                                        value: selectedMasterUse,
+                                        value: selectedIndividualUse,
                                         required: true,
                                         enable: true }"></div>
             </div>
@@ -62,10 +62,10 @@
         <div id= "functions-area-bottom" style="z-index: auto">
 
             <button id="L2_1"  class="proceed large"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+                    data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
 
             <button id="L2_2"
-                    >#{i18n.getText('QMM020_65')}</button>
+                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
         </div>
     </ui:define>
 </ui:composition>
