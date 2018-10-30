@@ -12,8 +12,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCod
 
 @Stateless
 @Transactional
-public class AddStateLinkSettingCompanyCommandHandler extends CommandHandler<StateLinkSettingCompanyCommand>
-{
+public class AddStateLinkSettingCompanyCommandHandler extends CommandHandler<StateLinkSettingCompanyCommand> {
     
     @Inject
     private StateLinkSettingCompanyRepository repository;
