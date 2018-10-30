@@ -100,6 +100,7 @@ module nts.uk.pr.view.qmm008.d {
                             _.defer(function() {
                                 $("#D4_3").focus();
                             });
+                            nts.uk.ui.errors.clearAll();
                         });
                         setTimeout(function () {
                             $("tr[data-id="+ self.currentCode()+"] ").focus();
