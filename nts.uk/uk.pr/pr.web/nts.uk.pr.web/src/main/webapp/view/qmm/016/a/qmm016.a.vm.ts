@@ -27,22 +27,35 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         wageTableTreeList: any = ko.observable();
         elementRangeSetting: KnockoutObservable<model.ElementRangeSetting> = ko.observable(new model.ElementRangeSetting(null));
         wageTableContent: KnockoutObservable<model.WageTableContent> = ko.observable(new model.WageTableContent(null));
+
+        fakeCombobox: KnockoutObservableArray<model.EnumModel> = ko.observableArray([new model.EnumModel(0, 'Item 1'), new model.EnumModel(1, 'Item 2')]);
+        fakeSelectedValue: KnockoutObservable<string> = ko.observable(null);
         constructor() {
             let self = this;
             self.initTabPanel();
             self.selectedWageTableIdentifier.subscribe(function (newValue){
-                if (newValue) self.showWageTableInfoByValue(newValue);
+                if (newValue){
+                    self.showWageTableInfoByValue(newValue);
+                    self.showSettingDataByValue(newValue)
+                }
             });
             self.screenMode.subscribe(function (newValue){
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
             })
+            self.getWageTableList();
+            self.initComponents();
+        }
+
+        initComponents () {
+            let self = this;
             $('#A8_2').ntsFixedTable({width: 300});
             $('#B2_2').ntsFixedTable({width: 600});
             $('#B5_1').ntsFixedTable({width: 600});
             $('#C2_2').ntsFixedTable({width: 600});
-            $('#C5_1').ntsFixedTable({width: 600, height: 100});
-            $('#C5_3').ntsFixedTable({width: 500});
-            self.getWageTableList();
+            $('#C5_1').ntsFixedTable({width: 600, height: 200});
+            $('#D2_2').ntsFixedTable({width: 600});
+            $('#D5_1_top').ntsFixedTable({width: 300, height: 34});
+            $('#D5_1').ntsFixedTable({width: 600, height: 200});
         }
 
         getWageTableList () {
@@ -82,10 +95,14 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     elementInformation: {
                         oneDimensionElement: {
                             masterNumericClassification: 0,
-                            fixedElement: 6,
-                            optionalAdditionalElement: 'CCC'
+                            fixedElement: "FIXED",
+                            optionalAdditionalElement: ''
                         },
-                        twoDimensionElement: null,
+                        twoDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: "OPT",
+                            optionalAdditionalElement: ''
+                        },
                         threeDimensionElement: null
                     },
                     elementSetting: 1,
@@ -102,11 +119,19 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     elementInformation: {
                         oneDimensionElement: {
                             masterNumericClassification: 1,
-                            fixedElement: 2,
+                            fixedElement: '',
                             optionalAdditionalElement: 'DDD'
                         },
-                        twoDimensionElement: null,
-                        threeDimensionElement: null
+                        twoDimensionElement: {
+                            masterNumericClassification: 0,
+                            fixedElement: 'DDD',
+                            optionalAdditionalElement: ''
+                        },
+                        threeDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: '',
+                            optionalAdditionalElement: 'DDD123'
+                        }
                     },
                     elementSetting: 2,
                     remarkInformation: 'Nothing to write here 3',
@@ -220,7 +245,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
         showSettingDataByValue (identifier: string) {
             let self = this;
-            // TODO
+            self.wageTableContent(new model.WageTableContent(null));
+            self.elementRangeSetting(new model.ElementRangeSetting(null));
         }
 
         createNewWageTable () {
@@ -248,6 +274,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             self.selectedWageTableIdentifier(null);
             self.selectedWageTable(new model.WageTable(null));
             self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
+            self.wageTableContent(new model.WageTableContent(null));
+            self.elementRangeSetting(new model.ElementRangeSetting(null));
             self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
         }
@@ -332,6 +360,21 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
             if (Number(firstElementRange.rangeLowerLimit) > Number(firstElementRange.rangeUpperLimit)) dialog.alertError({messageId: 'MsgQ_3'});
+            self.changeToFakeData();
+
+        }
+        createTwoDimensionWageTable () {
+            let self = this;
+            self.changeToFakeData();
+        }
+
+        createThreeDimensionWageTable () {
+            let self = this;
+            self.changeToFakeData();
+        }
+
+        changeToFakeData () {
+            let self = this;
             let fakePayment = [
                 {
                     wageTablePaymentAmount: 5,
@@ -354,10 +397,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 qualificationGroupSetting: []
             };
             self.wageTableContent(new WageTableContent(fakeData));
-
-        }
-        createTwoDimensionWageTable () {
-
         }
     }
 }

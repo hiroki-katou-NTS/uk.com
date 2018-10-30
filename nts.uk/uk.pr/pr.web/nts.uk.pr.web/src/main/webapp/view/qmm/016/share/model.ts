@@ -44,25 +44,25 @@ module nts.uk.pr.view.qmm016.share.model {
 
     export function getElementItemModel () {
         return [
-            new ItemModel(ELEMENT_SETTING.FIRST_DIMENSION, '一次元'),
-            new ItemModel(ELEMENT_SETTING.SECOND_DIMENSION, '二次元'),
-            new ItemModel(ELEMENT_SETTING.THIRD_DIMENSION, '三次元'),
-            new ItemModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
-            new ItemModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+            new EnumModel(ELEMENT_SETTING.FIRST_DIMENSION, '一次元'),
+            new EnumModel(ELEMENT_SETTING.SECOND_DIMENSION, '二次元'),
+            new EnumModel(ELEMENT_SETTING.THIRD_DIMENSION, '三次元'),
+            new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
+            new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
         ];
     }
 
     export function getFixedElementItemModel () {
         return [
-            new ItemModel(null, '一次元'),
-            new ItemModel(null, '二次元'),
-            new ItemModel(null, '三次元'),
-            new ItemModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
-            new ItemModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+            new EnumModel(null, '一次元'),
+            new EnumModel(null, '二次元'),
+            new EnumModel(null, '三次元'),
+            new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
+            new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
         ];
     }
 
-    export class ItemModel {
+    export class EnumModel {
         value: number;
         name: string;
 
@@ -72,7 +72,7 @@ module nts.uk.pr.view.qmm016.share.model {
         }
     }
 
-    export class StringItemModel {
+    export class ItemModel {
         value: string;
         name: string;
 
@@ -103,8 +103,8 @@ module nts.uk.pr.view.qmm016.share.model {
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
         history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
         // Item
-        elementSettingItem1: KnockoutObservableArray<ItemModel> = ko.observableArray(getElementItemModel().splice(0, 3));
-        elementSettingItem2: KnockoutObservableArray<ItemModel> = ko.observableArray(getElementItemModel().splice(3, 5));
+        elementSettingItem1: KnockoutObservableArray<EnumModel> = ko.observableArray(getElementItemModel().splice(0, 3));
+        elementSettingItem2: KnockoutObservableArray<EnumModel> = ko.observableArray(getElementItemModel().splice(3, 5));
         // display item
         imagePath: KnockoutObservable<string> = ko.observable(null);
         elementSettingDisplayText: KnockoutObservable<string> = ko.observable(null);

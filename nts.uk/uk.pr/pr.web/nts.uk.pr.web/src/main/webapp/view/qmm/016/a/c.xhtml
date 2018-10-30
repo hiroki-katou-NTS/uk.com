@@ -1,3 +1,179 @@
 <div>
-    <h1>CCCCC</h1>
+    <div class="flex valign-center tab-row">
+        <div style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+        <div style="width: 200px;" data-bind="with: selectedWageTable">
+            <div style="display: inline-block" data-bind="text: wageTableCode"></div>
+            <div style="display: inline-block; margin-left: 10px;"
+                 data-bind="text: wageTableName"></div>
+        </div>
+        <div style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
+        <div data-bind="with: selectedHistory">
+            <div style="display: inline-block" data-bind="text: startMonth"></div>
+            <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
+            <div style="display: inline-block; margin-left: 5px;" data-bind="text: endMonth"></div>
+        </div>
+    </div>
+    <hr></hr>
+    <div class="tab-row">
+        <div style="width: 70px; vertical-align: top"
+             data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
+        <div class="fixed-table-container">
+            <table id="C2_2" class = "custom-fixed-table">
+                <colgroup>
+                    <col width="30px"/>
+                    <col width="220px"/>
+                    <col width="170px"/>
+                    <col width="90px"/>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="ui-widget-header"></th>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+                    <th class="ui-widget-header">
+                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
+                        <button style="display: inline-block"
+                                data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?
+                        </button>
+                    </th>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
+                    <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                    <td>
+                        <div data-bind="text: fixedElement"></div>
+                        <div data-bind="text: optionalAdditionalElement"></div>
+                    </td>
+                    <td style="text-align: center;"
+                        data-bind="if: masterNumericClassification() == 1">
+                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+                            <input style="width: 20px;"
+                                   data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
+                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
+                            <input style="width: 20px;"
+                                   data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
+                        </div>
+                    </td>
+                    <td style="text-align: center;"
+                        data-bind="if: masterNumericClassification() == 0">
+                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+                            <input style="width: 20px;"
+                                   data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
+                    <td class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
+                    <td>
+                        <div data-bind="text: fixedElement"></div>
+                        <div data-bind="text: optionalAdditionalElement"></div>
+                    </td>
+                    <td style="text-align: center;"
+                        data-bind="if: masterNumericClassification() == 1">
+                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
+                            <input style="width: 20px;"
+                                   data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
+                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
+                            <input style="width: 20px;"
+                                   data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
+                        </div>
+                    </td>
+                    <td style="text-align: center;"
+                        data-bind="if: masterNumericClassification() == 0">
+                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
+                            <input style="width: 20px;"
+                                   data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
+        <button data-bind="click: $vm.createTwoDimensionWageTable" style="width: 400px;"
+                class="caret-bottom large-caret">#{i18n.getText('QMM016_35')}</button>
+    </div>
+    <div class="tab-row" style="margin-top: 40px;">
+        <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
+        <button style="margin-left: 30px;" id="B4_2">#{i18n.getText('QMM016_37')}</button>
+    </div>
+    <hr></hr>
+    <div id="C5" class="tab-row" style="margin-top: -15px;" data-bind="if: $vm.wageTableContent().payment().length >0">
+        <img style="position: relative; top: 26px;" src="../resource/QMM016_6.png"></img>
+        <img style="position: relative;top: 50px; left: 520px;" src="../resource/QMM016_7.png"></img>
+        <div>
+            <table id="C5_1">
+                <colgroup>
+                    <col width="100px"/>
+                    <col width="100px"/>
+                    <col width="100px"/>
+                    <col width="100px"/>
+                    <col width="100px"/>
+                    <col width="100px"/>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th style="border: none"></th>
+                    <th colspan="5" class="ui-widget-header">
+                        <div data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
+                            <div data-bind="text: fixedElement"></div>
+                            <div data-bind="text: optionalAdditionalElement"></div>
+                        </div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="ui-widget-header">
+                        <div data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
+                            <div data-bind="text: fixedElement"></div>
+                            <div data-bind="text: optionalAdditionalElement"></div>
+                        </div>
+                    </th>
+                    <th class="ui-widget-header">次郎</th>
+                    <th class="ui-widget-header">次郎</th>
+                    <th class="ui-widget-header">次郎</th>
+                    <th class="ui-widget-header">次郎</th>
+                    <th class="ui-widget-header">次郎</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

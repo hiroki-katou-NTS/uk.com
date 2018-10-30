@@ -36,8 +36,8 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
                 }
                 self.wageTableCode(selectedWageTable.wageTableCode);
                 self.wageTableName(selectedWageTable.wageTableName);
-                self.modifyItem.push(new model.ItemModel(model.MODIFY_METHOD.DELETE, getText('QMM008_206')));
-                self.modifyItem.push(new model.ItemModel(model.MODIFY_METHOD.UPDATE, getText('QMM008_207')));
+                self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.DELETE, getText('QMM008_206')));
+                self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.UPDATE, getText('QMM008_207')));
             }
             block.clear();
         }

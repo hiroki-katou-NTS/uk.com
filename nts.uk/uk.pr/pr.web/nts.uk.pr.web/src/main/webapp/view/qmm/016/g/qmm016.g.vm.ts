@@ -17,8 +17,8 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
             // 廃止区分＝廃止しない (false)
             service.getAllStatementItemData(5, false).done(function(data) {
                 let fixedElementObj = nts.uk.pr.view.qmm016.share.model.ELEMENT_TYPE;
-                let fixedElement: Array<any> = Object.keys(fixedElementObj).map(key => new model.StringItemModel(key, key + " " + fixedElementObj[key]));
-                let optionalElement: Array<any> = data.map(item => new model.StringItemModel(item.itemNameCd, item.itemNameCd + " " + item.name));
+                let fixedElement: Array<any> = Object.keys(fixedElementObj).map(key => new model.ItemModel(key, key + " " + fixedElementObj[key]));
+                let optionalElement: Array<any> = data.map(item => new model.ItemModel(item.itemNameCd, item.itemNameCd + " " + item.name));
                 self.fixedElement = fixedElement;
                 self.statementItemNameList(fixedElement.concat(optionalElement));
                 block.clear();

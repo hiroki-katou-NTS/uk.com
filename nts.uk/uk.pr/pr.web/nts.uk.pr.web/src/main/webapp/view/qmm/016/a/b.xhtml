@@ -46,8 +46,8 @@
             <tr>
                 <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
                 <td>
-                    <div data-bind="text: fixedElement"></div>
-                    <div data-bind="text: optionalAdditionalElement"></div>
+                    <div data-bind="text: fixedElement, visible: fixedElement().length > 0"></div>
+                    <div data-bind="text: optionalAdditionalElement, visible: optionalAdditionalElement().length > 0"></div>
                 </td>
                 <td style = "text-align: center;" data-bind="if: masterNumericClassification() == 1">
                     <div data-bind = "with: $vm.elementRangeSetting().firstElementRange">
@@ -70,14 +70,14 @@
     </div>
     </div>
     <div class="tab-row" style = "margin-left: 75px; width: 500px; text-align: center;">
-    <button data-bind = "click: $vm.createOneDimensionWageTable"  id ="B3_1" style = "width: 400px;" class = "caret-bottom">#{i18n.getText('QMM016_35')}</button>
+    <button data-bind = "click: $vm.createOneDimensionWageTable" style = "width: 400px;" class = "caret-bottom large-caret">#{i18n.getText('QMM016_35')}</button>
     </div>
     <div class="tab-row" style = "margin-top: 40px;">
     <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
     <button style = "margin-left: 30px;" id ="B4_2">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
-    <div class="tab-row" style = "margin-top: 40px;">
+    <div class="tab-row" style = "margin-top: 40px;" data-bind="if: $vm.wageTableContent().payment().length >0">
     <table id="B5_1" class="custom-fixed-table">
         <colgroup>
             <col width="120px"/>

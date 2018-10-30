@@ -26,16 +26,10 @@
 .custom-fixed-table td:first-child {
     text-align: center;
 }
-#B3_1::after{
+.large-caret::after{
     font-size: 3em;
-    color: #97D155;
+    color: #97D155 !important;
 }
-#C5 tr{
-    height: 17px;
-}
-#C5 .nts-fixed-header-container{
-    border-left: none;
-}
-#C5 .nts-fixed-header-wrapper {
-    width: 602px;
+.custom-fixed-table-body .nts-fixed-table{
+    display: inline-block;
 }
