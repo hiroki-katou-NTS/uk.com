@@ -62,6 +62,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            $("#fixed-table").ntsFixedTable({ height: 139});
             dfd.resolve();
             return dfd.promise();
         }

@@ -1,32 +1,32 @@
-.table-orgin {
+.table-origin {
     margin-top: 10px;
     margin-left: 10px;
     width: 1210px;
 }
 
-.table-orgin > .cell:nth-child(1) {
+.table-origin > .cell:nth-child(1) {
     width: 370px;
 }
 
-.table-orgin > .cell:nth-child(2) {
+.table-origin > .cell:nth-child(2) {
     width: 535px;
 }
 
-.table-orgin > .cell:nth-child(3) {
+.table-origin > .cell:nth-child(3) {
     width: 305px;
     padding-left: 5px;
 }
 
-.table-orgin hr {
+.table-origin hr {
     margin-bottom: 15px;
 }
 
-.table-orgin .label-annotate-first {
+.table-origin .label-annotate-first {
     margin-top: 10px;
     margin-left: 26px;
 }
 
-.table-orgin .label-annotate {
+.table-origin .label-annotate {
     margin-left: 40px;
 }
 
@@ -104,14 +104,26 @@
     width: 100%;
 }
 
-.table-orgin .acc-content {
+.table-origin .acc-content {
     padding: 10px;
 }
 
-.table-orgin .acc-content table {
-    width: 250px;
+.table-origin .acc-content .acc-table {
+    width: 278px;
 }
 
-.table-orgin .acc-content table tr td:first-child {
+.table-origin .acc-content .acc-table > tbody > tr:not(.last-row) > td:first-child {
     background-color: #CFF1A5;
+}
+
+.table-origin .acc-content .acc-table > tbody > tr > th {
+    white-space: normal;
+}
+
+.table-origin .acc-content .acc-table .nts-fixed-table {
+    margin: 10px;
+}
+
+.table-origin .acc-content .acc-table .nts-fixed-table .fixed-table tr{
+    height: 23px;
 }
