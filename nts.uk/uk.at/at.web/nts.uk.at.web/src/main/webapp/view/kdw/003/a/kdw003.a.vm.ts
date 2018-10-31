@@ -1175,6 +1175,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listErrorMonth = [];
                 let dataChange: any = $("#dpGrid").mGrid("updatedCells");
                 var dataSource = $("#dpGrid").mGrid("dataSource");
+                if(_.isEmpty(dataSource)) {
+                   nts.uk.ui.block.clear();
+                   return;
+                }
                 let dataChangeProcess: any = [];
                 let dataCheckSign: any = [];
                 let dataCheckApproval: any = [];
