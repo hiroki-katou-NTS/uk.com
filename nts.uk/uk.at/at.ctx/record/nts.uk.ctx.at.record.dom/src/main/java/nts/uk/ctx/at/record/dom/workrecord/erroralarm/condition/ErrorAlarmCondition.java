@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.management.RuntimeErrorException;
@@ -284,9 +285,11 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	}
 	
 	private boolean evaluate(WorkCheckResult workTypeCheck, WorkCheckResult workTimeCheck, WorkCheckResult atdCheck){
-		return Stream.of(workTypeCheck, workTimeCheck, atdCheck)
-						.filter(c -> c != WorkCheckResult.NOT_CHECK)
-						.allMatch(c -> c == WorkCheckResult.ERROR);
+		List<WorkCheckResult> result = Stream.of(workTypeCheck, workTimeCheck, atdCheck).filter(c -> c != WorkCheckResult.NOT_CHECK).collect(Collectors.toList());
+		if(result.isEmpty()){
+			return false;
+		}
+		return result.stream().allMatch(c -> c == WorkCheckResult.ERROR);
 	}
 	
 	/**
