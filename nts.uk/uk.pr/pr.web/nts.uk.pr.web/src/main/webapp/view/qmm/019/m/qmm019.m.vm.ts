@@ -34,6 +34,9 @@ module nts.uk.pr.view.qmm019.m.viewmodel {
             }
             // ドメインモデル「計算式」を取得する
             service.getFormulaByYearMonth(params.yearMonth).done((data: Array<IFormula>) => {
+                data = _.sortBy(data, [(item: IFormula) => {
+                    return item.formulaCode;
+                }]);
                 self.formulas(data);
                 self.focusFormula(params.formulaCode);
                 dfd.resolve();

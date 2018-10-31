@@ -34,6 +34,9 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
             }
             // ドメインモデル「明細書項目」を取得する
             service.getAllStatementItemData(0, false).done((data: Array<IStatementItem>) => {
+                data = _.sortBy(data, [(item: IStatementItem) => {
+                    return item.itemNameCd;
+                }]);
                 self.satementItems(data);
                 self.focusSatementItem(params.itemNameCd);
                 dfd.resolve();

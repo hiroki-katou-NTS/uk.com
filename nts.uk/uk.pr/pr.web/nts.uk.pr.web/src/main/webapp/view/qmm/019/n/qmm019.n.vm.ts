@@ -34,6 +34,9 @@ module nts.uk.pr.view.qmm019.n.viewmodel {
             }
             // ドメインモデル「賃金テーブル」を取得する
             service.getWageTableByYearMonth(params.yearMonth).done((data: Array<IWageTable>) => {
+                data = _.sortBy(data, [(item: IWageTable) => {
+                    return item.wageTableCode;
+                }]);
                 self.wageTables(data);
                 self.focusWageTable(params.wageTableCode);
                 dfd.resolve();

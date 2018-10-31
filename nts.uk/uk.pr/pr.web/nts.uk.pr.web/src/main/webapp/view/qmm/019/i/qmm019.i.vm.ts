@@ -35,6 +35,9 @@ module nts.uk.pr.view.qmm019.i.viewmodel {
             }
             // ドメインモデル「給与個人別金額名称」を取得する
             service.getSalIndAmountName(params.cateIndicator).done((data: Array<ISalIndAmountName>) => {
+                data = _.sortBy(data, [(item: ISalIndAmountName) => {
+                    return item.individualPriceCode;
+                }]);
                 self.salIndAmounts(data);
                 self.focusSalIndAmount(params.individualPriceCode);
                 dfd.resolve();
