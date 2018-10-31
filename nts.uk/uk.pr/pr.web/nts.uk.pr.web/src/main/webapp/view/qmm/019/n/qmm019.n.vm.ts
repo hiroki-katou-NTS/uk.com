@@ -1,46 +1,91 @@
 module nts.uk.pr.view.qmm019.n.viewmodel {
-    import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import shareModel = nts.uk.pr.view.qmm019.share.model;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import windows = nts.uk.ui.windows;
 
     export class ScreenModel {
 
         columns: KnockoutObservableArray<any>;
-        wageTables: KnockoutObservableArray<any>;
-        wageTableSelected: KnockoutObservable<any>;
+        wageTables: KnockoutObservableArray<IWageTable>;
+        wageTableSelected: KnockoutObservable<IWageTable>;
+        wageTableCodeSelected: KnockoutObservable<string>;
 
         constructor() {
             let self = this;
 
             self.wageTables = ko.observableArray([]);
             self.wageTableSelected = ko.observable(null);
+            self.wageTableCodeSelected = ko.observable(null);
 
             this.columns = ko.observableArray([
-                {headerText: getText("QMM019_108"), key: 'code', width: 60, formatter: _.escape},
-                {headerText: getText("QMM019_109"), key: 'name', width: 240, formatter: _.escape}
+                {headerText: getText("QMM019_108"), key: 'wageTableCode', width: 60, formatter: _.escape},
+                {headerText: getText("QMM019_109"), key: 'wageTableName', width: 240, formatter: _.escape}
             ]);
-
-            for (let i = 1; i < 100; i++) {
-                this.wageTables.push({code: i, name: "item name " + i});
-            }
         }
 
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            dfd.resolve();
+            // パラメータを受け取る
+            let params = windows.getShared("QMM019N_PARAMS");
+            if (isNullOrUndefined(params)) {
+                dfd.resolve();
+                return dfd.promise();
+            }
+            // ドメインモデル「賃金テーブル」を取得する
+            service.getWageTableByYearMonth(params.yearMonth).done((data: Array<IWageTable>) => {
+                self.wageTables(data);
+                self.focusWageTable(params.wageTableCode);
+                dfd.resolve();
+            })
             return dfd.promise();
         }
 
-        decide(){
-            nts.uk.ui.windows.close();
+        focusWageTable(wageTableCode: string) {
+            let self = this;
+            // パラメータ.賃金テーブルコードを確認する
+            if (!isNullOrUndefined(wageTableCode)) {
+                // 賃金テーブル一覧にパラメータ.賃金テーブルコードがあるか確認する
+                let formula = _.find(self.wageTables(), (item: IWageTable) => {
+                    return item.wageTableCode == wageTableCode;
+                })
+                if (!isNullOrUndefined(formula)) {
+                    // パラメータ.賃金テーブルコードの項目を選択状態にする
+                    self.wageTableCodeSelected(wageTableCode);
+                    self.wageTableSelected(formula);
+                    return;
+                }
+            }
+
+            // 一覧の先頭を選択状態に宇する
+            let firstItem: IWageTable = _.head(self.wageTables());
+            self.wageTableSelected(firstItem);
+            if (isNullOrUndefined(firstItem)) {
+                self.wageTableCodeSelected(null);
+            } else {
+                self.wageTableCodeSelected(firstItem.wageTableCode);
+            }
         }
 
-        cancel(){
-            nts.uk.ui.windows.close();
+        decide() {
+            let self = this;
+            windows.setShared("QMM019N_RESULTS", self.wageTableSelected());
+            windows.close();
         }
+
+        cancel() {
+            windows.close();
+        }
+    }
+
+    interface IWageTable {
+        /**
+         * 賃金テーブルコード
+         */
+        wageTableCode: string;
+        /**
+         * 賃金テーブル名
+         */
+        wageTableName: string;
     }
 }

@@ -31,7 +31,7 @@ public class QpbmtFormulaHistPk implements Serializable {
      */
     @Basic(optional = false)
     @Column(name = "FORMULA_CODE")
-    private String formulaCode;
+    public String formulaCode;
     /**
      * 履歴ID
      */

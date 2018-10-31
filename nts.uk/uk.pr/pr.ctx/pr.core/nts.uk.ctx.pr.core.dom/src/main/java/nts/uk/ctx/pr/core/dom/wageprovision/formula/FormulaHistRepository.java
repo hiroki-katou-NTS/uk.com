@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
+import nts.arc.time.YearMonth;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface FormulaHistRepository {
 
-    Optional<FormulaHist> getFormulaHistById(String cid, int formulaCode, String histId);
+    List<FormulaHist> getFormulaHistByYearMonth(String cid, YearMonth yearMonth);
 
-    List<FormulaHist> getAll(String cid);
 }
