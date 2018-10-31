@@ -16,7 +16,8 @@ public class JpaSalIndAmountNameRepository extends JpaRepository implements SalI
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountName f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.cateIndicator =:cateIndicator AND  f.salIndAmountNamePk.individualPriceCode =:individualPriceCode  ";
-    private static final String SELECT_ALL_BY_CATEINDICATOR = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.cateIndicator =:cateIndicator ";
+    private static final String SELECT_ALL_BY_CATEINDICATOR = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.cateIndicator =:cateIndicator" +
+            " ORDER BY f.salIndAmountNamePk.individualPriceCode";
 
     @Override
     public List<SalIndAmountName> getAllSalIndAmountName() {

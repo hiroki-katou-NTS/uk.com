@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm019.i {
 
     export module service {
         var paths = {
-
+            getSalIndAmountName: "core/wageprovision/statementlayout/getSalIndAmountName/{}"
         }
     }
 }
