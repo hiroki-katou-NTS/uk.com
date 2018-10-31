@@ -1686,9 +1686,9 @@ var nts;
                     return this.month;
                 };
                 JapanYearMonth.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire + " ")
-                        + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月");
+                    return (this.empire === undefined ? "" : this.empire)
+                        + (this.year === undefined || this.year === "" ? "" : this.year + "年")
+                        + (this.month === undefined || this.month === "" ? "" : this.month + "月");
                 };
                 return JapanYearMonth;
             }());
@@ -1706,6 +1706,9 @@ var nts;
                     return null;
                 }
                 var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
+                if (onlyYear && dateString.length < 5) {
+                    formattedYear = Number(dateString);
+                }
                 for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
                     var i = _a[_i];
                     var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
@@ -3809,8 +3812,7 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        //request.jump('/view/ccg/007/a/index.xhtml');
-                        request.jump('com', '/view/ccg/007/b/index.xhtml');
+                        request.jump('com', '/view/ccg/007/d/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
@@ -5623,7 +5625,7 @@ var nts;
                     });
                 });
                 function isOverflow($label) {
-                    if (($label[0].nodeName === "INPUT" || $label[0].nodeName === "DIV")
+                    if ($label[0].nodeName === "INPUT"
                         && (window.navigator.userAgent.indexOf("MSIE") > -1
                             || !!window.navigator.userAgent.match(/trident/i))) {
                         var $div = $("<div/>").appendTo($(document.body));
@@ -5633,20 +5635,13 @@ var nts;
                                 $div[0].style[p] = style[p];
                             }
                         }
-                        var text_4;
-                        if ($label[0].nodeName === "DIV") {
-                            text_4 = $label.html();
-                        }
-                        else {
-                            text_4 = $label.val();
-                        }
-                        $div.html(text_4);
+                        $div.html($label.val());
                         var width = $div.outerWidth();
                         var scrollWidth = $div[0].scrollWidth;
                         $div.remove();
                         return width < scrollWidth;
                     }
-                    return $label.outerWidth() < $label[0].scrollWidth;
+                    return $label[0].offsetWidth < $label[0].scrollWidth;
                 }
             })(smallExtensions || (smallExtensions = {}));
             var keyboardStream;
@@ -5840,7 +5835,7 @@ var nts;
                             //                    var widget= this.$dialog.dialog("widget");
                             //                    widget.draggable("option","containment",false);
                             if (autoResize) {
-                                $(window.top).on('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                                window.addEventListener('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
                             }
                         });
                         this.globalContext.location.href = path;
@@ -16114,6 +16109,7 @@ var nts;
                                 }
                                 //                    container.data("changed", true);
                                 if (typeof result.parsedValue === "string") {
+                                    $input.data("change", true);
                                     if (_.has(data, "type") && ko.toJS(data.type) === "date") {
                                         var momentDate = moment(result.parsedValue);
                                         value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
@@ -16121,6 +16117,7 @@ var nts;
                                     else {
                                         value(result.parsedValue);
                                     }
+                                    $input.data("change", false);
                                     var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                                     if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                         $input.data("change", true);
@@ -17157,12 +17154,13 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var isNotFunctionArea = _.isEmpty($('#functions-area')) && _.isEmpty($('#functions-area-bottom'));
+                        var isNotSideBar = _.isEmpty($('#sidebar'));
                         var isFrame = nts.uk.util.isInFrame();
-                        if (isNotFunctionArea && isFrame) {
+                        if (isNotFunctionArea && isNotSideBar && isFrame) {
                             if (!_.isEmpty(errors)) {
                                 var mesArr_1 = [], mesCodeArr_1 = _.map(errors, function (error) { return error.errorCode; });
                                 _.forEach(errors, function (error) {
-                                    mesArr_1.push(error.message);
+                                    mesArr_1.push(error.messageText);
                                     mesCodeArr_1.push(error.errorCode);
                                 });
                                 var totalMes = _.join(_.uniq(mesArr_1), '\n');
@@ -17564,6 +17562,7 @@ var nts;
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 //$input.ntsError('clear');
                                 if (result.isValid) {
+                                    $input.ntsError('clear');
                                     if (value() === result.parsedValue) {
                                         $input.val(result.parsedValue);
                                     }
@@ -22154,7 +22153,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _remainHeight = 190, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -22194,6 +22193,9 @@ var nts;
                         }
                         if (!_.isNil(self.subWidth)) {
                             _remainWidth = parseFloat(self.subWidth);
+                        }
+                        if (!_.isNil(self.subHeight)) {
+                            _remainHeight = parseFloat(self.subHeight);
                         }
                         _$grid.mGrid({});
                     };
@@ -23859,7 +23861,7 @@ var nts;
                     /**
                      * Bind vertWheel.
                      */
-                    function bindVertWheel($container, showY) {
+                    function bindVertWheel($container, showY, abnorm) {
                         var $_container = $($container);
                         $container.addXEventListener(ssk.MOUSE_WHEEL, function (event) {
                             var delta = event.deltaY;
@@ -23867,7 +23869,21 @@ var nts;
                             var value = $_container.scrollTop();
                             //                $container.stop().animate({ scrollTop: value }, 10);
                             var os = ti.isIE() ? 25 : 50;
+                            //                if (!abnorm && ((direction < 0 && value === 0)
+                            //                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
+                            //                    try {
+                            //                        window.dispatchEvent(event);
+                            //                    } catch (e) {}
+                            //                }
                             $_container.scrollTop(value + direction * os);
+                            if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
+                                var cbx = dkn.controlType[_mEditor.columnKey];
+                                var $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
+                                if (cbx.dropdown && cbx.dropdown.style.top !== "-99999px") {
+                                    dkn.closeDD(cbx.dropdown);
+                                    $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
+                                }
+                            }
                             event.preventDefault();
                             event.stopImmediatePropagation();
                         });
@@ -24606,7 +24622,7 @@ var nts;
                     function screenLargeur(noRowsMin, noRowsMax) {
                         if (!_headerWrappers || _headerWrappers.length === 0)
                             return;
-                        var width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
+                        var width, height = window.innerHeight - _remainHeight - parseFloat(_headerHeight), btmw;
                         var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
@@ -25139,6 +25155,17 @@ var nts;
                                 $cell.innerHTML = val;
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                 $.data($cell, v.DATA, val);
+                            }
+                            else {
+                                var cbx = dkn.controlType[key];
+                                if (_.isObject(cbx) && cbx.type === dkn.COMBOBOX) {
+                                    var sel = _.find(cbx.options, function (o) { return o.code === val; });
+                                    if (sel) {
+                                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                                        $.data($cell, lo.CBX_SELECTED_TD, val);
+                                        $cell.textContent = sel ? sel.name : "";
+                                    }
+                                }
                             }
                             return idx;
                         },
@@ -25681,6 +25708,9 @@ var nts;
                                 var sCol_1 = _specialColumn[editor.columnKey];
                                 if (sCol_1) {
                                     var cbx = dkn.controlType[sCol_1];
+                                    if (_.toLower(column_1[0].dataType) === "number") {
+                                        inputVal_1 = parseFloat(inputVal_1);
+                                    }
                                     wedgeCell($grid, { rowIdx: editor.rowIdx, columnKey: sCol_1 }, inputVal_1);
                                     var selectedOpt = _.find(cbx.options, function (o) { return o.code === inputVal_1; });
                                     if (!_.isNil(selectedOpt)) {
@@ -25743,6 +25773,10 @@ var nts;
                         var origDs = _mafollicle[_currentPage].origDs;
                         if (!origDs)
                             return;
+                        var column = _columnsMap[coord.columnKey];
+                        if (column && _.toLower(column[0].dataType) === "number") {
+                            cellValue = parseFloat(cellValue);
+                        }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
                         }
@@ -25870,10 +25904,24 @@ var nts;
                                     t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                                     if (!t || !t.c || _.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
                                         return;
-                                    formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                                    t.c.textContent = formatted;
-                                    disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
-                                    $.data(t.c, v.DATA, disFormat);
+                                    var control = dkn.controlType[coord.columnKey];
+                                    if (control === dkn.LINK_LABEL) {
+                                        var link = t.c.querySelector("a");
+                                        link.innerHTML = cellValue;
+                                    }
+                                    else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                                        var sel = _.find(control.options, function (o) { return o.code === cellValue; });
+                                        if (sel) {
+                                            $.data(t.c, lo.CBX_SELECTED_TD, cellValue);
+                                            t.c.textContent = sel.name;
+                                        }
+                                    }
+                                    else {
+                                        formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
+                                        t.c.textContent = formatted;
+                                        disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
+                                        $.data(t.c, v.DATA, disFormat);
+                                    }
                                     if (t.colour)
                                         t.c.classList.add(t.colour);
                                 }
@@ -25900,13 +25948,9 @@ var nts;
                                 }
                             });
                         };
-                        var column = _columnsMap[coord.columnKey];
                         if (!column) {
                             osht(true);
                             return;
-                        }
-                        if (_.toLower(column[0].dataType) === "number") {
-                            cellValue = parseFloat(cellValue);
                         }
                         res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
                         osht();
@@ -27436,6 +27480,11 @@ var nts;
                             isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
+                                isSelecting = false;
+                                $grid.onselectstart = null;
+                                window.removeXEventListener(ssk.MOUSE_UP + ".block");
+                            });
                             if (evt.shiftKey) {
                                 selectRange($grid, $target);
                                 $grid.onselectstart = function () {
@@ -39094,7 +39143,13 @@ var nts;
                             event.preventDefault();
                             var files = evt.originalEvent["dataTransfer"].files;
                             if (!nts.uk.util.isNullOrEmpty(files)) {
-                                self.validateFile(files);
+                                var firstImageFile = self.helper.getFirstFile(files);
+                                if (self.validateFile(firstImageFile)) {
+                                    self.assignImageToView(firstImageFile);
+                                }
+                                else {
+                                    self.changeStatus(ImageStatus.FAIL);
+                                }
                             }
                         });
                         this.$previewArea.on('dragenter', function (event) {

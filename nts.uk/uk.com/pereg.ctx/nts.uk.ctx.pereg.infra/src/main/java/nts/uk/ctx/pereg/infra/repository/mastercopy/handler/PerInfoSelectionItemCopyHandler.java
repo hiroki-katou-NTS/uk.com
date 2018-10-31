@@ -6,6 +6,7 @@ package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -148,15 +149,23 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 			// set [SelectionHistory]
 			newPpemtHistorySelections.add(new PpemtHistorySelection(new PpemtHistorySelectionPK(newHistId),
 					item.selectionItemId, targetCid, item.startDate, item.endDate));
+			
+			Map<String, String> mapSelectionId = new HashMap<>();
+			
 			// set [Seletion]
-			newPpemtSelections.addAll(ppemtSelectionsZero.stream()
-					.map(selectionItem -> new PpemtSelection(new PpemtSelectionPK(IdentifierUtil.randomUniqueId()),
-							newHistId, selectionItem.selectionCd, selectionItem.selectionName, selectionItem.externalCd,
-							selectionItem.memo))
-					.collect(Collectors.toList()));
+			newPpemtSelections.addAll(ppemtSelectionsZero.stream().map(selectionItem -> {
+				String selectionId = IdentifierUtil.randomUniqueId();
+				mapSelectionId.put(selectionItem.selectionId.selectionId, selectionId);
+				return new PpemtSelection(new PpemtSelectionPK(selectionId), newHistId,
+						selectionItem.selectionCd, selectionItem.selectionName,
+						selectionItem.externalCd, selectionItem.memo);
+			}).collect(Collectors.toList()));
+			
 			// set [OrderSelectionAndDefaultValues]
 			newPpemtSelItemOrders.addAll(ppemtSelItemOrdersZero.stream()
-					.map(selOrderItem -> new PpemtSelItemOrder(new PpemtSelItemOrderPK(IdentifierUtil.randomUniqueId()),
+					.map(selOrderItem -> new PpemtSelItemOrder(
+							new PpemtSelItemOrderPK(
+									mapSelectionId.get(selOrderItem.selectionIdPK.selectionId)),
 							newHistId, selOrderItem.dispOrder, selOrderItem.initSelection))
 					.collect(Collectors.toList()));
 		});

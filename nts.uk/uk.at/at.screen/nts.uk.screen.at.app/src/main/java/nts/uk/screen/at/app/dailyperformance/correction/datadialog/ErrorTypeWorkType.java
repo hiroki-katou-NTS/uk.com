@@ -1,7 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.datadialog;
 
 import lombok.AllArgsConstructor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.ReasonGoOut;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.ReasonGoOut;
 
 @AllArgsConstructor
 @SuppressWarnings("unused")

@@ -1141,7 +1141,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				leaveApp = appLeaveRepo.findByAppId(appID).orElse(null);
 				if (!Objects.isNull(leaveApp)) {
 					Optional<WorkType> workType = repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD().v());
-					content += I18NText.getText("CMM045_262") + " " + app.getAppDate().toString("MM/dd")
+					content += I18NText.getText("CMM045_263") + " " + app.getAppDate().toString("MM/dd")
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (leaveApp.getStime1() != null){
 						content += repoAppDetailInfo.convertTime(leaveApp.getStime1())
@@ -1154,7 +1154,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				recApp = recAppRepo.findByAppId(appID).orElse(null);
 				if (!Objects.isNull(recApp)) {
 					Optional<WorkType> workType = repoWorkType.findByPK(companyID, recApp.getWorkTypeCD().v());
-					content += I18NText.getText("CMM045_263") + " " + app.getAppDate().toString("MM/dd")
+					content += I18NText.getText("CMM045_262") + " " + app.getAppDate().toString("MM/dd")
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(recApp.getWorkTime1()) && !Objects.isNull(recApp.getWorkTime2())) {
 						content += repoAppDetailInfo.convertTime(recApp.getWorkTime1().getStartTime().v())

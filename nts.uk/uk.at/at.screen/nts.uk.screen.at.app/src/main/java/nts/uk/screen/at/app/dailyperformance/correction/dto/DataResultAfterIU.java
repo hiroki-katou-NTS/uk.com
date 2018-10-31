@@ -17,5 +17,5 @@ public class DataResultAfterIU {
 	
 	FlexShortageRCDto flexShortage;
 	
-	boolean showErrorDialog;
+	Boolean showErrorDialog;
 }
