@@ -13,7 +13,7 @@ module nts.uk.com.view.cdl002.a {
             isCheckShowWorkClosure: boolean;
             
             listComponentOption: any;
-            
+            isFirstLoad: boolean;
             constructor() {
                 let self = this;
                 var params = getShared('CDL002Params');
@@ -53,21 +53,30 @@ module nts.uk.com.view.cdl002.a {
                     selectedClosureId: ko.observable(null),
                     isShowNoSelectRow: self.isDisplayUnselect(),
                     maxRows: 10,
+                    isSelectAllAfterReload: false,
                     tabindex: 1
                 };
                 
-                if (params.selectedCodes.length > 0) {
-                    self.getClosureByEmployment(params.selectedCodes[0]).done((data: any) => {
-                        self.listComponentOption.selectedClosureId(data);
-                    });
-                }
-                
+//                if (params.selectedCodes.length > 0) {
+//                    self.getClosureByEmployment(params.selectedCodes[0]).done((data: any) => {
+//                        self.listComponentOption.selectedClosureId(data);
+//                    });
+//                }
+                self.isFirstLoad = true;
                 if (self.isMultiSelect()) {
                     self.listComponentOption.selectedCode = self.selectedMulEmployment;
                 }
                 else {
                     self.listComponentOption.selectedCode = self.selectedSelEmployment;
                 }
+                self.listComponentOption.selectedClosureId.subscribe(() => {
+                    if (!self.isFirstLoad) {
+                        setTimeout(() => {
+                            self.listComponentOption.selectedCode([]);
+                        },100);
+                    }
+                    self.isFirstLoad = false;
+                });
             }
 
             /**

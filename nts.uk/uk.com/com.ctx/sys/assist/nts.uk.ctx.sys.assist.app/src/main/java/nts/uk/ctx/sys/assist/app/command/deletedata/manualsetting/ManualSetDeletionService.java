@@ -468,7 +468,12 @@ public class ManualSetDeletionService extends ExportService<Object>{
 				Map<String, Object> rowCsv = new HashMap<>();
 				int i = 0;
 				for (String columnName : header) {
-					rowCsv.put(columnName, record.get(i));
+					if (record.size() > i) {
+						rowCsv.put(columnName, record.get(i));
+					}
+					else {
+						rowCsv.put(columnName, "");
+					}
 					i++;
 				}
 				dataSourceCsv.add(rowCsv);

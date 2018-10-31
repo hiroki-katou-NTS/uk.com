@@ -91,7 +91,7 @@
                     <div id="left-content">
                         <div>
                             <a id="back-navigate" class="goback" style="float: left;"
-                               data-bind="ntsLinkButton: {}, click: navigateView">#{i18n.getText('KDW003_87')}</a>
+                               data-bind="ntsLinkButton: {}, click: navigateView, visible: transitionDesScreen">#{i18n.getText('KDW003_87')}</a>
                         </div>
                         <div id="ccg001"></div>
                     </div>
@@ -235,9 +235,11 @@
                                         <div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
                                         <br />
                                         <div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
-                                        <br />
-                                        <div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
-                                        <br />
+										<br />
+                                        <div data-bind="if: false">
+	                                        <div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
+	                                        <br />
+										</div>
                                     </div>
                                 </div>
                             </div>
@@ -245,7 +247,8 @@
                                 <div id="dpGrid"></div>
                                 <div id="sample-component"></div>
                             </div>
-                            <div style="margin-top: 100px" data-bind="visible: isVisibleMIGrid">
+                            <!-- fix bug 102423 : margin-top: 10px -->
+                            <div style="margin-top: 10px" data-bind="visible: isVisibleMIGrid">
                                 <table id="miGrid"></table>
                             </div>
                             <div class="Row">
@@ -299,14 +302,16 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div>
-                                            <span>#{i18n.getText('KDW003_120')}</span>
-                                        </div>
-									<div style="margin-top: 20px">
-										<span data-bind="text: comment"></span>
+									<div>
+										<span>#{i18n.getText('KDW003_120')}</span>
 									</div>
+									<!-- fix bug 102423 -->
+									<!-- 	<div style="margin-top: 20px">
+										<span data-bind="text: comment"></span>
+									</div> -->
 								</div>
-                                    <div id="text-flex">
+									<!-- fix bug 102423 : style="margin-top: 37px;" -->
+                                    <div id="text-flex" style="top: -67px;">
                                         <div>
                                             <span style="color: red"
                                                   data-bind="text: flexShortage().messageRed"></span>
@@ -341,7 +346,11 @@
                                 </div>
                             </div>
 					</div>
-                    </div>
+					<!-- fix bug 102423 -->
+					<div style="margin-top: 5px">
+						<span data-bind="text: comment"></span>
+					</div>
+				</div>
                     <div id="tooltip">
                         <span id="textLock"></span>
                     </div>

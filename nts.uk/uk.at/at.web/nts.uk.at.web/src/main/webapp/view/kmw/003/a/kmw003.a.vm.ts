@@ -1040,11 +1040,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     pageSize: 100,
                     currentPageIndex: 0
                 },
-                {
-                    name: 'ColumnFixing', fixingDirection: 'left',
-                    showFixButtons: false,
-                    columnSettings: self.fixHeaders()
-                },
+//                {
+//                    name: 'ColumnFixing', fixingDirection: 'left',
+//                    showFixButtons: false,
+//                    columnSettings: self.fixHeaders()
+//                },
                 {
                     name: 'Summaries',
                     showSummariesButton: false,

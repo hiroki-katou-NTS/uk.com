@@ -144,6 +144,14 @@ public class VerticalTotalOfMonthly {
 				}
 			}
 			
+			// 必要なマスタがない時、その日をスキップする
+			boolean isSkip = false;
+			if (workType == null) isSkip = true;
+			if (isSkip){
+				procYmd = procYmd.addDays(1);
+				continue;
+			}
+			
 			// 勤怠時間を確認する
 			val attendanceTimeOfDaily = monthlyCalcDailys.getAttendanceTimeOfDailyMap().get(procYmd);
 			

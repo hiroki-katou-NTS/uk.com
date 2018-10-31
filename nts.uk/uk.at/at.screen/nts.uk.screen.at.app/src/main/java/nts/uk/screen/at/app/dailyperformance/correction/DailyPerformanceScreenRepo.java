@@ -236,4 +236,6 @@ public interface DailyPerformanceScreenRepo {
 	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);
 	
 	List<AttendenceTimeMonthDto> findAttendenceTimeMonth(List<String> sids, DateRange dateRange);
+	
+	boolean isErAl(String companyId, List<String> errorCode);
 }
