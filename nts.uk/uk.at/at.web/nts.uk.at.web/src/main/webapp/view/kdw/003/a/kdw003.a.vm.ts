@@ -2501,7 +2501,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             })
            
-            if(self.isVisibleMIGrid()){
+            if(self.isVisibleMIGrid() && jsonColumnWidthMiGrid != null){
                 let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
                 delete columnWidthMiGrid.monthYear;
                 command.lstHeaderMiGrid = columnWidthMiGrid;
