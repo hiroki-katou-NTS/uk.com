@@ -74,8 +74,11 @@ public class MasterAvailabilityPolicy {
 						workTimeSetting.getWorktimeCode().v(), masterCache.getWorkTypes());
 			}
 			return true;
-		} catch (BusinessException b) {
-			errList.addMessage(b);
+		} catch (Exception ex) {
+			if (ex.getCause() instanceof BusinessException) {
+				BusinessException b = (BusinessException) ex.getCause();
+				errList.addMessage(b);
+			}
 			return false;
 		}
 	}

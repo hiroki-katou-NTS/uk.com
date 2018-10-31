@@ -26,7 +26,7 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 		stQuery.setParameter("CID", comId).setParameter("SID", workInfo.getEmployeeId())
 				.setParameter("YMD", Date.valueOf(workInfo.getYmd().localDate()))
 				.setParameter("WorkTypeCode", workInfo.getRecordInfo().getWorkTypeCode().v())
-				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode()==null ? null : workInfo.getRecordInfo().getWorkTimeCode().v())
+				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getRecordInfo().getWorkTimeCode().v())
 				.setParameter("HoliWorkTimes", calcHolWorkTime(attendanceTime));
 
 		stQuery.execute();
@@ -49,7 +49,7 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 
 	private int getHolTimeOrDefaul(Finally<TimeDivergenceWithCalculation> holTime) {
 
-		if (!holTime.isPresent()) {
+		if (holTime.isPresent()) {
 			return holTime.get().getTime().valueAsMinutes();
 		}
 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -28,5 +29,9 @@ public class RemainDaysOfSpecialHoliday {
 	 * 付与後明細
 	 */
 	private Optional<SpecialHolidayRemainInfor> grantDetailAfter;
+	/**
+	 * 特別休暇期間外の使用
+	 */
+	private List<UseDaysOfPeriodSpeHoliday> useDaysOutPeriod;
 	
 }

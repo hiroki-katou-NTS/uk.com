@@ -44,6 +44,11 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 		return this.scheduleTimePub.getCompanySettingForCalclationScheduleTimeForMultiPeople();
 	}
 
+	@Override
+	public void clearCompanySettingShareContainer(Object companySet) {
+		this.scheduleTimePub.clearCompanySettingShareConainter(companySet);
+	}
+
 	private static ScheduleTimePubImport createScheduleTimePubImport(ScTimeParam param) {
 		ScheduleTimePubImport impTime = new ScheduleTimePubImport(param.getEmployeeId(), param.getTargetDate(),
 				param.getWorkTypeCode(), param.getWorkTimeCode(), param.getStartClock(), param.getEndClock(),
