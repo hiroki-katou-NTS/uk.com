@@ -40,4 +40,5 @@ public class StatementLayoutHist extends AggregateRoot implements PersistentHist
     public List<YearMonthHistoryItem> items() {
         return history;
     }
+
 }

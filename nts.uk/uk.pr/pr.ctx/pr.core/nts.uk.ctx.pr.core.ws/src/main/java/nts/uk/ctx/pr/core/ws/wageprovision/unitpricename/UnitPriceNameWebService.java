@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.core.ws.wageprovision.unitpricename;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.*;
-import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceName;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
