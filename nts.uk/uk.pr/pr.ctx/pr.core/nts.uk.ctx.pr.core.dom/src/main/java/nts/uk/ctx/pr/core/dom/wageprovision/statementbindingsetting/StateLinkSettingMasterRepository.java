@@ -6,8 +6,7 @@ import java.util.List;
 /**
 * 明細書紐付け設定（マスタ）
 */
-public interface StateLinkSettingMasterRepository
-{
+public interface StateLinkSettingMasterRepository {
 
     List<StateLinkSettingMaster> getStateLinkSettingMasterByHisId(String hisId);
 
