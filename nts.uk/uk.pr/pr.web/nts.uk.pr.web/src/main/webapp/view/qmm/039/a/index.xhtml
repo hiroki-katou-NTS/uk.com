@@ -86,7 +86,7 @@
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
                                     {headerText: '#{i18n.getText('QMM039_13')}', key:'code', width: 60},
-                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', width: 100}
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', width: 100, formatter: _.escape}
                                 ],
                                 value: singleSelectedCode,
                                 primaryText: 'name',
