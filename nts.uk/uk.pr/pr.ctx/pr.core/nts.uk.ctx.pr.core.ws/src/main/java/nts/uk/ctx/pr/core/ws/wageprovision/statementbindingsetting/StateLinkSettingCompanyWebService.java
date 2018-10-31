@@ -2,8 +2,9 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddStateCorrelationHisCompanySettingCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanySettingCommand;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanySettingCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.UpdateStateLinkSettingCompanyCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
 

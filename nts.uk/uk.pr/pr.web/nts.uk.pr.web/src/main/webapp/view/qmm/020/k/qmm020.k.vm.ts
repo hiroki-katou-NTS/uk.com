@@ -68,4 +68,12 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
         DELETE = 0,
         UPDATE = 1
     }
+    export enum MODE_SCREEN {
+        /* When another screen open*/
+        MODE_ONE = 1,
+        /* When screen D, F open */
+        MODE_TWO = 2,
+        /*When screen H open*/
+        MODE_THREE = 3
+    }
 }
