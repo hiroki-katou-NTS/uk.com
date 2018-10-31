@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 
 /**
 * 明細書紐付け設定（マスタ）: DTO
@@ -40,10 +40,10 @@ public class StateLinkSettingMasterDto {
     private String salaryName;
     
     
-    public static StateLinkSettingMasterDto fromDomain(StateLinkSettingMaster domain, List<SpecificationLayout> specificationLayout) {
-        Optional<SpecificationLayout> tempSalary = specificationLayout.stream().filter(item ->item.getSpecCode().v().equals(domain.getSalaryCode().get().v())).findFirst();
-        Optional<SpecificationLayout> tempBonus = specificationLayout.stream().filter(item ->item.getSpecCode().v() == domain.getBonusCode().get().v()).findFirst();
-        return new StateLinkSettingMasterDto(domain.getHistoryID(), domain.getMasterCode().v(), domain.getSalaryCode().get().v(), domain.getBonusCode().get().v(), tempBonus.get().getSpecName().v(), tempSalary.get().getSpecName().v());
+    public static StateLinkSettingMasterDto fromDomain(StateLinkSettingMaster domain, List<StatementLayout> specificationLayout) {
+        Optional<StatementLayout> tempSalary = specificationLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getSalaryCode().get().v())).findFirst();
+        Optional<StatementLayout> tempBonus = specificationLayout.stream().filter(item ->item.getStatementCode().v() == domain.getBonusCode().get().v()).findFirst();
+        return new StateLinkSettingMasterDto(domain.getHistoryID(), domain.getMasterCode().v(), domain.getSalaryCode().get().v(), domain.getBonusCode().get().v(), tempBonus.get().getStatementName().v(), tempSalary.get().getStatementName().v());
     }
 
 }

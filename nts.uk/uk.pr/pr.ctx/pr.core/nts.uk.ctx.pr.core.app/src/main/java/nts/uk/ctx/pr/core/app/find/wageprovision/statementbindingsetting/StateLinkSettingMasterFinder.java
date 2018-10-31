@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayout;
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayoutRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMasterRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -22,13 +22,13 @@ public class StateLinkSettingMasterFinder {
     private StateLinkSettingMasterRepository masterFinder;
 
     @Inject
-    private SpecificationLayoutRepository specificationLayoutFinder;
+    private StatementLayoutRepository statementLayoutFinder;
 
     public List<StateLinkSettingMasterDto> getStateLinkSettingMasterByHisId(String hisId, int startYearMonth){
         String cId = AppContexts.user().companyId();
-        List<SpecificationLayout> specificationLayout = specificationLayoutFinder.getSpecCode(cId, hisId, startYearMonth);
+        List<StatementLayout> statementLayout = statementLayoutFinder.getStatementCode(cId, startYearMonth);
         return masterFinder.getStateLinkSettingMasterByHisId(hisId).stream()
-                .map(i -> StateLinkSettingMasterDto.fromDomain(i, specificationLayout))
+                .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout))
                 .collect(Collectors.toList());
 
     }
