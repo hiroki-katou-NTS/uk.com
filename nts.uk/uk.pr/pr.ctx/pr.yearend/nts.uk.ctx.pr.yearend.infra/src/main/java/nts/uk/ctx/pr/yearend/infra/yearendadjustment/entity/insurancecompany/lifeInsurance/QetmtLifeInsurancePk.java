@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.yearend.infra.yearendadjustment.insurancecompany;
+package nts.uk.ctx.pr.yearend.infra.yearendadjustment.entity.insurancecompany.lifeInsurance;
 
 import java.io.Serializable;
 
@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 保険種類情報: 主キー情報
+* 生命保険情報: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QetmtInsuranceTypePk implements Serializable
+public class QetmtLifeInsurancePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -29,17 +29,10 @@ public class QetmtInsuranceTypePk implements Serializable
     public String cid;
     
     /**
-    * 生命保険コード
+    * コード
     */
     @Basic(optional = false)
     @Column(name = "LIFE_INSURANCE_CODE")
     public String lifeInsuranceCode;
-    
-    /**
-    * コード
-    */
-    @Basic(optional = false)
-    @Column(name = "INSURANCE_TYPE_CODE")
-    public String insuranceTypeCode;
     
 }

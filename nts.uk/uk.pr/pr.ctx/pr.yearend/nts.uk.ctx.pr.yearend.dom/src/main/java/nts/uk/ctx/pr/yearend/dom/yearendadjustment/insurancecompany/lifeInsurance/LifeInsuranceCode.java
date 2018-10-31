@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany;
+package nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.lifeInsurance;
 
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.yearend.infra.yearendadjustment.insurancecompany;
+package nts.uk.ctx.pr.yearend.infra.yearendadjustment.entity.insurancecompany.earthquakeInsurance;
 
 import java.io.Serializable;
 
@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 生命保険情報: 主キー情報
+* 地震保険情報: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QetmtLifeInsurancePk implements Serializable
+public class QetmtEarthQuakeInsuPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -32,7 +32,7 @@ public class QetmtLifeInsurancePk implements Serializable
     * コード
     */
     @Basic(optional = false)
-    @Column(name = "LIFE_INSURANCE_CODE")
-    public String lifeInsuranceCode;
+    @Column(name = "EARTHQUAKE_CODE")
+    public String earthquakeCode;
     
 }

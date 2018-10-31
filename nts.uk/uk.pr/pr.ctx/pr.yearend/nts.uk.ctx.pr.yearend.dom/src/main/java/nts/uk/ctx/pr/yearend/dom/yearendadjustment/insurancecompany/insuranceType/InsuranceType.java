@@ -1,13 +1,9 @@
-package nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany;
+package nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType;
 
-import java.util.Optional;
-import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.lifeInsurance.LifeInsuranceCode;
 
 /**
 * 保険種類情報

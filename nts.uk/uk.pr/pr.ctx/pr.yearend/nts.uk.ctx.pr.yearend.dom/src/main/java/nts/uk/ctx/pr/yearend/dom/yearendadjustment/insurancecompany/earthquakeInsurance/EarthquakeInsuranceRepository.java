@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany;
+package nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.earthquakeInsurance;
 
 import java.util.Optional;
 import java.util.List;

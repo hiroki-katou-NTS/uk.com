@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.yearend.infra.yearendadjustment.insurancecompany;
+package nts.uk.ctx.pr.yearend.infra.yearendadjustment.entity.insurancecompany.insuranceType;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.InsuranceType;
+import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType.InsuranceType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
