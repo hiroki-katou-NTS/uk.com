@@ -1,16 +1,15 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayout;
-import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayoutRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMasterRepository;
-import nts.uk.shr.com.context.AppContexts;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayout;
+import nts.uk.ctx.pr.core.dom.wageprovision.speclayout.SpecificationLayoutRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMasterRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**

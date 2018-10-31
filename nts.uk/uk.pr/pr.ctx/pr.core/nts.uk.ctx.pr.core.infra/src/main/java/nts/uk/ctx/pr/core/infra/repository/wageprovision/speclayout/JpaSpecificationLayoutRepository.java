@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaSpecificationLayoutRepository extends JpaRepository implements SpecificationLayoutRepository
-{
+public class JpaSpecificationLayoutRepository extends JpaRepository implements SpecificationLayoutRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecLayout f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specLayoutPk.cid =:cid AND  f.specLayoutPk.specCd =:specCd ";
@@ -31,7 +30,7 @@ public class JpaSpecificationLayoutRepository extends JpaRepository implements S
                 .setParameter("startYearMonth", startYearMonth)
                 .setParameter("specCd", salaryCd)
                 .setParameter("cid", cid)
-                .getList().stream().map(item -> {return item.toDomain();});
+                .getList(item -> item.toDomain());
     }
 
     @Override

@@ -12,8 +12,6 @@ public interface SpecificationLayoutHistRepository {
 
     Optional<SpecificationLayoutHist> getSpecificationLayoutHistById(String cid, int specCd, String histId);
 
-    List<String> getSpecCode(String cid, String salaryCd, int startYearMonth);
-
     void add(SpecificationLayoutHist domain);
 
     void update(SpecificationLayoutHist domain);
