@@ -142,7 +142,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					
 					int count = 0;
 					for(int i =0 ; i< agreementOneEmp.size(); i++) {
-						if(agreementOneEmp.get(i).valueAsMinutes() >= agreeCond.getOt36().valueAsMinutes())
+						if(agreementOneEmp.get(i).valueAsMinutes() > agreeCond.getOt36().valueAsMinutes())
 							count ++;						
 				    }
 					if(count >= agreeCond.getExcessNum().v()) {
@@ -226,7 +226,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 							for (AgreementTimeByPeriod agreementTimeByPeriod : agreementTimeByPeriods) {
 								int checkEnd = agreementTimeByPeriod.getEndMonth().compareTo(yearMonthPeriod.start());
 								int checkStart = agreementTimeByPeriod.getStartMonth().compareTo(yearMonthPeriod.end());
-								if(checkStart < 0 && checkEnd > 0 ){
+								if(checkStart <= 0 && checkEnd >= 0 ){
 									lstAgreementTimeByPeriod.add(agreementTimeByPeriod);
 								}
 							}
@@ -236,38 +236,49 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 				// Check for list Error
 				for (AgreementTimeByPeriod agreementTimeByPeriod : lstAgreementTimeByPeriod) {
 					String upperLimit = "";
+					String exceptionLimitAlarmTime = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
+					String exceptionLimitErrorTime = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
 					// Convert AgreementTimeByPeriod to AgreementTimeByPeriodImport
 					AgreementTimeByPeriodImport agreementTimeByPeriodImport = new AgreementTimeByPeriodImport(
 							agreementTimeByPeriod.getStartMonth(), agreementTimeByPeriod.getEndMonth(), agreementTimeByPeriod.getAgreementTime(),
-							agreementTimeByPeriod.getLimitAlarmTime().toString(), agreementTimeByPeriod.getLimitAlarmTime().toString(),
-							agreementTimeByPeriod.getExceptionLimitErrorTime().toString(),
-							agreementTimeByPeriod.getExceptionLimitAlarmTime().toString(), agreementTimeByPeriod.getStatus());
+							agreementTimeByPeriod.getLimitErrorTime().toString(), agreementTimeByPeriod.getLimitAlarmTime().toString(),
+							exceptionLimitErrorTime,exceptionLimitAlarmTime, agreementTimeByPeriod.getStatus());
 					
 					AgreementTimeStatusOfMonthly checkLimitTime = agreementTimeByPeriod.getStatus();
 					switch (checkLimitTime) {
 					case EXCESS_LIMIT_ERROR:
+						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
+							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+						}
+						break;
 					case EXCESS_LIMIT_ALARM:
 						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
 							upperLimit = agreementTimeByPeriod.getLimitAlarmTime().toString();
-						} else {
-							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
 						}
-
-						// All 36協定チェック結果 to list return
-						checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
-								.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
 						break;
 					case EXCESS_EXCEPTION_LIMIT_ALARM:
-					case EXCESS_EXCEPTION_LIMIT_ERROR:
 						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
-							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().toString();
-						} else {
-							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().toString();
+							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+						}
+						break;
+					case EXCESS_EXCEPTION_LIMIT_ERROR:
+						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
+							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
+
+							// All 36協定チェック結果 to list return
+							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
 						}
 
-						// All 36協定チェック結果 to list return
-						checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
-								.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
 						break;
 					default:
 						break;
@@ -283,7 +294,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 		
 		Integer tagetYear = tagetYM.year();
 		//対象年月.月＞起算月
-		if (tagetYM.month() > startingMonth) {
+		if (tagetYM.month() < startingMonth) {
 			tagetYear = tagetYM.year() - 1;	
 		}
 		return tagetYear;
@@ -299,12 +310,16 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 		switch (period) {
 		case One_Month:
 			enumReturn = PeriodAtrOfAgreement.ONE_MONTH;
+			break;
 		case Two_Month:
 			enumReturn = PeriodAtrOfAgreement.TWO_MONTHS;
+			break;
 		case Three_Month:
 			enumReturn = PeriodAtrOfAgreement.THREE_MONTHS;
+			break;
 		case Yearly:
 			enumReturn = PeriodAtrOfAgreement.ONE_YEAR;
+			break;
 		default:
 			break;
 		}
