@@ -1,0 +1,12 @@
+#B1_2, #B1_5, #B1_9, .space {
+    width: 120px;
+}
+
+#B1_9 {
+    vertical-align: top;
+}
+
+.ntsRadioBox {
+    display: block !important;
+    margin-top: 8px;
+}

@@ -121,6 +121,59 @@ module nts.uk.pr.view.qmm019.share.model {
         ];
     }
 
+    // 年月期間の汎用履歴項目
+    export interface IGenericHistoryYearMonthPeiod {
+        startMonth: string;
+        endMonth: string;
+        historyId: string;
+    }
+
+    // 年月期間の汎用履歴項目
+    export class GenericHistoryYearMonthPeiod {
+        startMonth: string;
+        endMonth: string;
+        historyId: string;
+
+        // for tree grid
+        nodeText: string;
+        history: Array<GenericHistoryYearMonthPeiod>;
+
+        constructor(params: IGenericHistoryYearMonthPeiod) {
+            this.startMonth = params.startMonth;
+            this.endMonth = params.endMonth;
+            this.historyId = params.historyId;
+            this.nodeText = params.startMonth + " ~ " + params.endMonth;
+            this.history = [];
+        }
+    }
+
+    export interface ISpecificationLayoutHist {
+        specCode: string;
+        name: string;
+        history: Array<IGenericHistoryYearMonthPeiod>;
+    }
+
+    export class SpecificationLayoutHist {
+        specCode: string;
+        name: string;
+        history: Array<GenericHistoryYearMonthPeiod>;
+
+        // for tree grid
+        nodeText: string;
+        historyId: string;
+
+        constructor(params: ISpecificationLayoutHist) {
+            this.specCode = params ? params.specCode : null;
+            this.name = params ? params.name : null;
+            this.history = params ? params.history.map(function (item) {
+                return new GenericHistoryYearMonthPeiod(item);
+            }) : [];
+
+            this.historyId = params ? params.specCode : null;
+            this.nodeText = params ? params.specCode + " " + params.name : null;
+        }
+    }
+
     export class BoxModel {
         id: number;
         name: string;

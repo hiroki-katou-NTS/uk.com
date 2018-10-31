@@ -1,0 +1,28 @@
+#C1_1, #C1_6 {
+    width: 120px;
+}
+
+#C1_7, #right-item {
+    display: inline-block;
+}
+
+#C1_7 {
+    margin-right: 20px;
+    float: left;
+}
+
+#C1_7 .ntsRadioBox {
+    display: block !important;
+}
+
+#C1_7 .ntsRadioBox:first-child {
+    margin-bottom: 15px;
+}
+
+#C1_10 {
+    background-color: #FED3C6;
+}
+
+#C1_12 {
+    margin-right: 10px;
+}

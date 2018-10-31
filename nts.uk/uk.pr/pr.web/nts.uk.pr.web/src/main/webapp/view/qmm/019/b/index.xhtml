@@ -23,11 +23,58 @@
 
     <ui:define name="content">
         <div id="contents-area">
-
+            <div class="valign-center control-group">
+                <!-- 新たに作成する履歴の作成情報を入力してください。 -->
+                <label id="B1_1">#{i18n.getText('QMM019_40')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- コード/名称 -->
+                <div id="B1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
+                <!-- 明細書コード -->
+                <label id="B1_3">#{i18n.getText('QMM019_15')} </label>
+                <!-- 明細書名 -->
+                <label id="B1_4">#{i18n.getText('QMM019_41')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- 期間 -->
+                <div id="B1_5" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_42')}</div>
+                <!-- 開始年月 -->
+                <div id="B1_6" tabindex="1" data-bind="ntsDatePicker: {
+                                                            name: '#[QMM019_43]',
+                                                            value: yearMonth,
+                                                            required: true,
+                                                            dateFormat: 'yearmonth'}"></div>
+                <!-- 開始年月和暦 -->
+                <label id="B1_7" data-bind="text: yearMonthJapan"></label>
+                <!-- 終了年月 -->
+                <label id="B1_8"> #{i18n.getText('QMM019_44')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- レイアウトの引き継ぎ -->
+                <div id="B1_9" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_45')}</div>
+                <!-- 明細履歴区分 -->
+                <div id="B_10" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                                                            name: '#[QMM019_45]',
+                                                            options: itemHistoryDivisionList,
+                                                            optionsValue: 'id',
+                                                            optionsText: 'name',
+                                                            value: itemHistoryDivision,
+                                                            enable: true}"></div>
+            </div>
+            <div class="valign-center control-group">
+                <div class="space"></div>
+                <!-- レイアウトパターンの選択 -->
+                <label id="B2_1">#{i18n.getText('QMM019_48')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <div class="space"></div>
+                <!-- レイアウト一覧 -->
+                <table id="grid"></table>
+            </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+            <button tabindex="3" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>
 </ui:composition>

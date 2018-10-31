@@ -23,11 +23,54 @@
 
     <ui:define name="content">
         <div id="contents-area">
-
+            <div class="valign-center control-group">
+                <!-- 対象データ -->
+                <div id="C1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_100')}</div>
+                <!-- 明細書コード -->
+                <label id="C1_2">#{i18n.getText('QMM019_15')} </label>
+                <!-- 明細書名 -->
+                <label id="C1_3">#{i18n.getText('QMM019_41')} </label>
+                <!-- 開始年月 -->
+                <label id="C1_4">#{i18n.getText('QMM019_43')} </label>
+                <!-- 終了年月 -->
+                <label id="C1_5">#{i18n.getText('QMM019_101')}</label>
+            </div>
+            <div class="valign-center control-group">
+                <!-- 編集方法の選択 -->
+                <div id="C1_6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_102')}</div>
+            </div>
+            <div style="padding-left: 30px" class="valign-center control-group">
+                <!-- 編集方法 -->
+                <div id="C1_7" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                                                            name: '#[QMM019_102]',
+                                                            options: itemHistoryEditList,
+                                                            optionsValue: 'id',
+                                                            optionsText: 'name',
+                                                            value: itemHistoryEdit,
+                                                            enable: true}"></div>
+                <div id="right-item">
+                    <div class="valign-center control-group">
+                        <!-- ※すべての履歴を削除すると、明細書のデータも削除します -->
+                        <label id="C1_10">#{i18n.getText('QMM019_103')}</label>
+                    </div>
+                    <div class="valign-center control-group">
+                        <!-- 開始年月 -->
+                        <label id="C1_11">#{i18n.getText('QMM019_43')}</label>
+                        <!-- 開始年月 -->
+                        <div id="C1_12" tabindex="2" data-bind="ntsDatePicker: {
+                                                            name: '#[QMM019_43]',
+                                                            value: yearMonth,
+                                                            required: true,
+                                                            dateFormat: 'yearmonth'}"></div>
+                        <!-- 終了年月 -->
+                        <label id="C1_13">  #{i18n.getText('QMM019_44')}</label>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+            <button tabindex="3" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>
 </ui:composition>

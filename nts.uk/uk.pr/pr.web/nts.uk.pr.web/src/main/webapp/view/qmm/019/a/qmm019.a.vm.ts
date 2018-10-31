@@ -5,13 +5,91 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
     import shareModel = nts.uk.pr.view.qmm019.share.model;
+    import SpecificationLayoutHist = nts.uk.pr.view.qmm019.share.model.SpecificationLayoutHist;
     import modal = nts.uk.ui.windows.sub.modal
 
     export class ScreenModel {
 
+        dataSource: KnockoutObservableArray<SpecificationLayoutHist>;
+        currentHistory: KnockoutObservable<string>;
+        headers: any;
+        columns: KnockoutObservableArray<any>;
+
         constructor() {
             let self = this;
 
+            self.dataSource = ko.observableArray([
+                new SpecificationLayoutHist({
+                    specCode: "1",
+                    name: "1",
+                    history: [
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "a"
+                        },
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "b"
+                        },
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "c"
+                        },
+                    ]
+                }),
+                new SpecificationLayoutHist({
+                    specCode: "2",
+                    name: "2",
+                    history: [
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "d"
+                        },
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "e"
+                        },
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "f"
+                        },
+                    ]
+                }),
+                new SpecificationLayoutHist({
+                    specCode: "3",
+                    name: "3",
+                    history: [
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "g"
+                        },
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "h"
+                        },
+                        {
+                            startMonth: "startMonth",
+                            endMonth: "endMonth",
+                            historyId: "j"
+                        },
+                    ]
+                })
+            ]);
+
+            self.currentHistory = ko.observable(null);
+            self.headers = ko.observableArray(["Item Value Header","Item Text Header"]);
+
+            this.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'nodeText', width: 100 }
+            ]);
         }
 
         startPage(): JQueryPromise<any> {
@@ -21,50 +99,20 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             return dfd.promise();
         }
 
-        openB(){
-            modal("/view/qmm/019/b/index.xhtml");
+        public create(): void {
+
         }
-        openC(){
-            modal("/view/qmm/019/c/index.xhtml");
+
+        public registered(): void {
+
         }
-        openD(){
-            modal("/view/qmm/019/d/index.xhtml");
+
+        public outputExcel(): void {
+
         }
-        openE(){
-            modal("/view/qmm/019/e/index.xhtml");
-        }
-        openF(){
-            modal("/view/qmm/019/f/index.xhtml");
-        }
-        openG(){
-            modal("/view/qmm/019/g/index.xhtml");
-        }
-        openH(){
-            modal("/view/qmm/019/h/index.xhtml");
-        }
-        openI(){
-            modal("/view/qmm/019/i/index.xhtml");
-        }
-        openJ(){
-            modal("/view/qmm/019/j/index.xhtml");
-        }
-        openK(){
-            modal("/view/qmm/019/k/index.xhtml");
-        }
-        openL(){
-            modal("/view/qmm/019/l/index.xhtml");
-        }
-        openM(){
-            modal("/view/qmm/019/m/index.xhtml");
-        }
-        openN(){
-            modal("/view/qmm/019/n/index.xhtml");
-        }
-        openO(){
-            modal("/view/qmm/019/o/index.xhtml");
-        }
-        openP(){
-            modal("/view/qmm/019/p/index.xhtml");
+
+        public modifyLog(): void {
+
         }
     }
 }

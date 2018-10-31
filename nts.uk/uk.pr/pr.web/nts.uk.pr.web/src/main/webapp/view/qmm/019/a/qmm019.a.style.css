@@ -1,0 +1,21 @@
+#contents-area .table{
+    width: 1200px;
+    padding: 15px;
+}
+
+#functions-area .ntsControl, #A2_6 {
+    float: right;
+}
+
+#A1_2 {
+    margin-right: 80px;
+}
+
+#A1_6 {
+    margin-left: 10px;
+    margin-right: 40px;
+}
+
+#A3_2, #A3_6, #A3_9, #A3_13 {
+    width: 180px;
+}
