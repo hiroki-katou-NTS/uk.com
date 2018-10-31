@@ -2,10 +2,10 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.*;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanySettingCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanySettingCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
