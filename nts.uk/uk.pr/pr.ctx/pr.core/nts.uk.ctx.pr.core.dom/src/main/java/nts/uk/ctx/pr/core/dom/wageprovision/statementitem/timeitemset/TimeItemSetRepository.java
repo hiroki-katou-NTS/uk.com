@@ -11,15 +11,11 @@ import java.util.Optional;
 public interface TimeItemSetRepository {
 
 	List<TimeItemSet> getAllTimeItemSt();
-
-	Optional<TimeItemSet> getTimeItemStById(String cid, String salaryItemId);
+	Optional<TimeItemSet> getTimeItemStById(String cid, int categoryAtr, String itemNameCode);
 
 	void add(TimeItemSet domain);
-
 	void update(TimeItemSet domain);
-
-	void updateAll(List<String> lstSalaryId);
-
-	void remove(String cid, String salaryItemId);
+	void remove(String cid, int categoryAtr, String itemNameCode);
+	void updateAll(List<String> lstCode);
 
 }

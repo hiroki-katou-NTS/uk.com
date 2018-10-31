@@ -12,6 +12,8 @@ public interface StateCorrelationHisClassificationRepository {
 
     Optional<StateCorrelationHisClassification> getStateCorrelationHisClassificationById(String cid, String hisId);
 
+    Optional<StateCorrelationHisClassification> getStateCorrelationHisClassificationByCid(String cid);
+
     void add (String cid, YearMonthHistoryItem history);
 
     void update(String cid, YearMonthHistoryItem history);

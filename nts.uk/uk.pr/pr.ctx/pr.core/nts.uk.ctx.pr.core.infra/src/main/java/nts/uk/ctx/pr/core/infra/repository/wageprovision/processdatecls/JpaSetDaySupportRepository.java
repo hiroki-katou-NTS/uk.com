@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSetDayS
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -15,6 +16,7 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSetDaySupport f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.setDaySupportPk.cid =:cid AND  f.setDaySupportPk.processCateNo =:processCateNo ";
     private static final String SELECT_BY_KEY_AND_YEAR_STRING = SELECT_BY_KEY_STRING + " AND  f.setDaySupportPk.processDate LIKE CONCAT(:year, '%') ORDER BY f.setDaySupportPk.processDate ASC";
+    private static final String SELECT_BY_KEY_AND_PROCESSDATE = SELECT_BY_KEY_STRING + " AND  f.setDaySupportPk.processDate =:processDate";
 
     @Override
     public List<SetDaySupport> getAllSetDaySupport() {
@@ -53,5 +55,14 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
     public void addAll(List<SetDaySupport> domains) {
         List<QpbmtSetDaySupport> entities = domains.stream().map(QpbmtSetDaySupport::toEntity).collect(Collectors.toList());
         this.commandProxy().insertAll(entities);
+    }
+
+    @Override
+    public Optional<SetDaySupport> getSetDaySupportByIdAndProcessDate(String cid, int processCateNo, int processDate) {
+        return this.queryProxy().query(SELECT_BY_KEY_AND_PROCESSDATE, QpbmtSetDaySupport.class)
+                .setParameter("cid", cid)
+                .setParameter("processCateNo", processCateNo)
+                .setParameter("processDate", processDate)
+                .getSingle(c -> c.toDomain());
     }
 }

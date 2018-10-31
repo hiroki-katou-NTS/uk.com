@@ -58,8 +58,8 @@ public class CompareSingleValue<V> extends CheckedCondition {
 		return this;
 	}
 
-	public boolean check(Integer targetValue, Function<List<Integer>, List<Integer>> getItemValue,
-			Function<V, Integer> getValue) {
+	public boolean check(Double targetValue, Function<List<Integer>, List<Double>> getItemValue,
+			Function<V, Double> getValue) {
 		if (targetValue == null) {
 			return false;
 		}
@@ -78,17 +78,17 @@ public class CompareSingleValue<V> extends CheckedCondition {
 		return this.conditionType == ConditionType.ATTENDANCE_ITEM;
 	}
 
-	public boolean checkWithFixedValue(Integer target, Function<V, Integer> getValue) {
+	public boolean checkWithFixedValue(Double target, Function<V, Double> getValue) {
 		return check(target, getValue.apply(value));
 	}
 
-	public boolean checkWithAttendanceItem(Integer target, Function<List<Integer>, List<Integer>> getItemValue,
-			Function<V, Integer> getVValue) {
-		Integer compareValue = getItemValue.apply(Arrays.asList(getVValue.apply(this.value))).get(0);
+	public boolean checkWithAttendanceItem(Double target, Function<List<Integer>, List<Double>> getItemValue,
+			Function<V, Double> getVValue) {
+		Double compareValue = getItemValue.apply(Arrays.asList(getVValue.apply(this.value).intValue())).get(0);
 		return check(target, compareValue);
 	}
 
-	private boolean check(Integer target, Integer compare) {
+	private boolean check(Double target, Double compare) {
 		if(target == null) {
 			return false;
 		}

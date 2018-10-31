@@ -1,0 +1,129 @@
+.table-origin {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 1210px;
+}
+
+.table-origin > .cell:nth-child(1) {
+    width: 370px;
+}
+
+.table-origin > .cell:nth-child(2) {
+    width: 535px;
+}
+
+.table-origin > .cell:nth-child(3) {
+    width: 305px;
+    padding-left: 5px;
+}
+
+.table-origin hr {
+    margin-bottom: 15px;
+}
+
+.table-origin .label-annotate-first {
+    margin-top: 10px;
+    margin-left: 26px;
+}
+
+.table-origin .label-annotate {
+    margin-left: 40px;
+}
+
+.table-search {
+    width: 280px;
+}
+
+.table-search:nth-child(1) {
+    margin-bottom: 5px;
+}
+
+.table-search > .cell:nth-child(1) {
+    width: 90px;
+}
+
+.table-search > .cell:nth-child(2) {
+    width: 190px;
+}
+
+.table-col-3, .table-error-alarm, .table-col-2, .table-col-4 {
+    width: 535px;
+    margin-bottom: 5px;
+}
+
+.table-col-3 > .cell:nth-child(1) {
+    width: 130px;
+}
+
+.table-col-3 > .cell:nth-child(2) {
+    width: 60px;
+}
+
+.table-col-3 > .cell:nth-child(3) {
+    width: 340px;
+}
+
+.table-error-alarm > .cell:nth-child(1) {
+    width: 130px;
+}
+
+.table-error-alarm > .cell:nth-child(2) {
+    width: 235px;
+}
+
+.table-error-alarm > .cell:nth-child(3) {
+    width: 170px;
+}
+
+.table-col-2 > .cell:nth-child(1) {
+    width: 130px;
+}
+
+.table-col-2 > .cell:nth-child(2) {
+    width: 395px;
+}
+
+.table-col-4 > .cell:nth-child(1) {
+    width: 130px;
+}
+
+.table-col-4 > .cell:nth-child(2) {
+    width: 60px;
+}
+
+.table-col-4 > .cell:nth-child(3) {
+    width: 50px;
+}
+
+.table-col-4 > .cell:nth-child(4) {
+    width: 285px;
+}
+
+#btn-register {
+    margin-top: 5px;
+    width: 100%;
+}
+
+.table-origin .acc-content {
+    padding: 10px;
+}
+
+.table-origin .acc-content .acc-table {
+    width: 278px;
+}
+
+.table-origin .acc-content .acc-table > tbody > tr:not(.last-row) > td:first-child {
+    background-color: #CFF1A5;
+}
+
+.table-origin .acc-content .acc-table > tbody > tr > th {
+    white-space: normal;
+}
+
+.table-origin .acc-content .acc-table .nts-fixed-table {
+    margin: 10px;
+}
+
+.table-origin .acc-content .acc-table .nts-fixed-table .fixed-table tr{
+    height: 23px;
+}

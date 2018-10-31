@@ -6,10 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StatementItemCustom {
-    /**
-     * 給与項目ID
-     */
-    private String salaryItemId;
 
     /**
      * カテゴリ区分
@@ -31,8 +27,7 @@ public class StatementItemCustom {
      */
     private Integer deprecatedAtr;
 
-    public StatementItemCustom(String salaryItemId, String categoryAtr, String itemNameCd, String name, String deprecatedAtr) {
-        this.salaryItemId = salaryItemId;
+    public StatementItemCustom(String categoryAtr, String itemNameCd, String name, String deprecatedAtr) {
         this.categoryAtr = Integer.valueOf(categoryAtr).intValue();
         this.itemNameCd = itemNameCd;
         this.name = name;

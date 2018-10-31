@@ -8,4 +8,6 @@ public class StateCorrelationHisCompanySettingCommand {
     StateCorrelationHisCompanyCommand stateCorrelationHisCompanyCommand;
 
     StateLinkSettingCompanyCommand stateLinkSettingCompanyCommand;
+
+    int mode;
 }

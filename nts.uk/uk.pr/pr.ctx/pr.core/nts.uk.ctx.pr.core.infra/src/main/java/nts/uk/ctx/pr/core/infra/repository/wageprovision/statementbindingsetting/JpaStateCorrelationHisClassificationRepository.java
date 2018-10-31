@@ -21,12 +21,21 @@ public class JpaStateCorrelationHisClassificationRepository extends JpaRepositor
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisClass f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND  f.stateCorHisClassPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid ORDER BY f.startYearMonth";
 
     @Override
     public Optional<StateCorrelationHisClassification> getStateCorrelationHisClassificationById(String cid, String hisId){
         List<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisClass.class)
                 .setParameter("cid", cid)
                 .setParameter("hisId", hisId)
+                .getList();
+        return this.toDomain(listStateCorHisClass);
+    }
+
+    @Override
+    public Optional<StateCorrelationHisClassification> getStateCorrelationHisClassificationByCid(String cid){
+        List<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisClass.class)
+                .setParameter("cid", cid)
                 .getList();
         return this.toDomain(listStateCorHisClass);
     }

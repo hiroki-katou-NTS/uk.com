@@ -7,26 +7,35 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
         currentSelect: KnockoutObservable<any> = ko.observable();
-        specCode: KnockoutObservable<string> = ko.observable('TaiTT');
+        salaryCode: KnockoutObservable<string> = ko.observable();
+        bonusCode: KnockoutObservable<string> = ko.observable();
         specName: KnockoutObservable<string> = ko.observable('TaiTT');
         to : KnockoutObservable<string> = ko.observable(' ～ ');
+        mode: KnockoutObservable<number> = ko.observable();
         constructor(){
             block.invisible()
             let self = this;
+            let firstHistory;
             service.getStateCorrelationHisCompanyById().done((data) =>{
-                console.dir(data);
-                _.forEach(data,(o)=>{
-                    self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', self.convertYearMonthToDisplayYearMonth(o.startYearMonth) + self.to() + self.convertYearMonthToDisplayYearMonth(o.endYearMonth)));
-                });
+                if(data){
+                    _.forEach(data,(o)=>{
+                        self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', self.convertYearMonthToDisplayYearMonth(o.startYearMonth) + self.to() + self.convertYearMonthToDisplayYearMonth(o.endYearMonth)));
+                    });
+                    firstHistory = _.head(self.listStateCorrelationHis());
+                    self.currentSelect(firstHistory.code);
+                }
             }).fail((err)=>{
                 if(err)
                     dialog.alertError(err);
             }).always(()=>{
                 block.clear();
             });
-            self.currentSelect.subscribe((data)=>{
-                service.getStateLinkSettingCompanyById(data).done(()=>{
-
+            self.currentSelect.subscribe((hisID)=>{
+                service.getStateLinkSettingCompanyById(hisID).done((data)=>{
+                    if(data){
+                        self.salaryCode(data.salaryCode);
+                        self.bonusCode(data.bonusCode);
+                    }
                 }).fail((err) =>{
                     if(err)
                         dialog.alertError(err);
@@ -36,16 +45,29 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             });
         }
 
-        test(){
-            modal("com","/view/qmm/020/j/index.xhtml");
-        }
         register(){
             block.invisible();
             let self = this;
+            let historyID;
+            if(self.mode() === MODE.NEW){
+                historyID = nts.uk.util.randomId();
+            }else if(self.mode() === MODE.UPDATE){
+                historyID = self.currentSelect();
+            }
             let data: any = {
-                historyID: '1',
-                salaryCode: '01',
-                bonusCode: '02'
+                stateCorrelationHisCompanyCommand: {
+                    cid: '',
+                    historyID: historyID,
+                    startYearMonth: 201809,
+                    endYearMonth: 999912
+                },
+                stateLinkSettingCompanyCommand : {
+                    historyID: historyID,
+                    salaryCode: self.salaryCode(),
+                    bonusCode: self.bonusCode()
+                },
+                mode: self.mode()
+
             }
             service.register(data).done((data)=>{
                 dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -59,6 +81,10 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 block.clear();
             });
 
+        }
+
+        openScreenL(){
+            modal("/view/qmm/020/l/index.xhtml");
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
@@ -75,6 +101,11 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             this.name = name;
             this.display = display;
         }
+    }
+
+    export enum MODE{
+        NEW = 1,
+        UPDATE = 2,
     }
 
 }

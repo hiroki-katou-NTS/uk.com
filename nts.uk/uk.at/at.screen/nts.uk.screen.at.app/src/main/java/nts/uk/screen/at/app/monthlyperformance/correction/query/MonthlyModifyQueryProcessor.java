@@ -28,14 +28,23 @@ public class MonthlyModifyQueryProcessor {
 			return new ArrayList<>();
 		}
 		List<MonthlyRecordWorkDto> lstData = this.monthlyRecordWorkFinder.find(query.getEmployeeIds(), Arrays.asList(yearMonth));
-		return lstData.stream().map(recordData -> {
+		return AttendanceItemUtil.toItemValues(lstData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM).entrySet().stream().map(record -> {
 			return MonthlyModifyResult.builder()
-					.items(AttendanceItemUtil.toItemValues(recordData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
-					.employeeId(recordData.getEmployeeId())
-					.yearMonth(recordData.getYearMonth().v())
-					.closureId(recordData.getClosureID())
-					.closureDate(recordData.getClosureDate())
+					.items(record.getValue())
+					.employeeId(record.getKey().getEmployeeId())
+					.yearMonth(record.getKey().getYearMonth().v())
+					.closureId(record.getKey().getClosureID())
+					.closureDate(record.getKey().getClosureDate())
 					.completed();
 		}).collect(Collectors.toList());
+//		return lstData.stream().map(recordData -> {
+//			return MonthlyModifyResult.builder()
+//					.items(AttendanceItemUtil.toItemValues(recordData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
+//					.employeeId(recordData.getEmployeeId())
+//					.yearMonth(recordData.getYearMonth().v())
+//					.closureId(recordData.getClosureID())
+//					.closureDate(recordData.getClosureDate())
+//					.completed();
+//		}).collect(Collectors.toList());
 	}
 }

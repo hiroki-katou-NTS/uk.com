@@ -28,10 +28,17 @@ public class QpbmtDeductionItemStPk implements Serializable {
 	public String cid;
 
 	/**
-	 * 給与項目ID
+	 * カテゴリ区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "SALARY_ITEM_ID")
-	public String salaryItemId;
+	@Column(name = "CATEGORY_ATR")
+	public int categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "ITEM_NAME_CD")
+	public String itemNameCd;
 
 }

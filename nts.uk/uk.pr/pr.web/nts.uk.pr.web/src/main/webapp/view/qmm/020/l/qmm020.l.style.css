@@ -1,8 +1,11 @@
-#A{
-    margin-left: 100px;
-    margin-top: 8px;
+#L1_9{
+    margin-left: 70px;
+}
+#L1_9 .ntsRadioBox {
+    width: 200px;
+    margin-bottom: 10px;
 }
 
-.sidebar-content{
-    overflow:inherit !important;
+#L2_1{
+    margin-top: 9px;
 }

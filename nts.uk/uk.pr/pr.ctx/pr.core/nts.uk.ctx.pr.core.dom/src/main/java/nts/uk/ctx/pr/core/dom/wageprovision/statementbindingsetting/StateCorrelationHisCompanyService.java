@@ -20,12 +20,14 @@ public class StateCorrelationHisCompanyService {
 
     public void addStateCorrelationHisCompany(String cid, String hisID,YearMonth start, YearMonth end){
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(hisID, new YearMonthPeriod(start, end));
-        Optional<StateCorrelationHisCompany> stateCorrelationHisCompany = stateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid,hisID);
-        if(stateCorrelationHisCompany.isPresent()){
-            stateCorrelationHisCompany.get().add(yearMonthItem);
-            stateCorrelationHisCompanyRepository.add(cid,yearMonthItem);
-            this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisCompany.get());
+        StateCorrelationHisCompany stateCorrelationHisCompany = new StateCorrelationHisCompany(cid,new ArrayList<>());
+        Optional<StateCorrelationHisCompany> oStateCorrelationHisCompany = stateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid);
+        if(oStateCorrelationHisCompany.isPresent()){
+            stateCorrelationHisCompany = oStateCorrelationHisCompany.get();
         }
+        stateCorrelationHisCompany.add(yearMonthItem);
+        stateCorrelationHisCompanyRepository.add(cid,yearMonthItem);
+        this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisCompany);
     }
 
     public void historyCorrectionProcecessing(String cid, String hisId, YearMonth start, YearMonth end){

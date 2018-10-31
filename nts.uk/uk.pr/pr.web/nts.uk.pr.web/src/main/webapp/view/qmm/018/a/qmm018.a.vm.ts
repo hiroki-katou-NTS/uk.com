@@ -20,7 +20,6 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         lstTargetWorkingDaysItem: KnockoutObservableArray<IStatement> = ko.observableArray(null);
 
         categoryAtr: KnockoutObservable<number> = ko.observable(0);
-        salaryItemId: KnockoutObservable<string> = ko.observable('');
         displayData: KnockoutObservable<DisplayData> = ko.observable(new DisplayData(null));
 
         fractionProcessingAtr: KnockoutObservableArray<viewmodel.ItemModel> = ko.observableArray([]);
@@ -257,20 +256,17 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
     }
 
     export interface IStatement {
-        salaryItemId: string;
         categoryAtr: number;
         itemNameCd: string;
         name: string;
     }
 
     export class Statement {
-        salaryItemId: KnockoutObservable<string> = ko.observable(null);
         categoryAtr: KnockoutObservable<number> = ko.observable(null);
         itemNameCd: KnockoutObservable<string> = ko.observable(null);
         name: KnockoutObservable<string> = ko.observable(null);
 
         constructor(params: IStatement) {
-            this.salaryItemId(params ? params.salaryItemId : null);
             this.categoryAtr(params ? params.categoryAtr : null);
             this.itemNameCd(params ? params.itemNameCd : null);
             this.name(params ? params.name : null);
