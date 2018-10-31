@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.processdatecls;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -27,6 +28,14 @@ public class JpaCurrProcessDateRepository extends JpaRepository implements CurrP
 	public List<CurrProcessDate> getCurrProcessDateById(String cid, int processCateNo) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtCurrProcessDate.class).setParameter("cid", cid)
 				.setParameter("processCateNo", processCateNo).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public Optional<CurrProcessDate> getCurrProcessDateByIdAndProcessCateNo(String cid, int processCateNo) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtCurrProcessDate.class)
+				.setParameter("cid", cid)
+				.setParameter("processCateNo", processCateNo)
+				.getSingle(c -> c.toDomain());
 	}
 
 	@Override

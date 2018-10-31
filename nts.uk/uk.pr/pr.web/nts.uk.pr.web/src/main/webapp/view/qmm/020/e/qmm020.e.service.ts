@@ -7,7 +7,7 @@ module nts.uk.pr.view.qmm020.e {
             getStateCorrelationHisClassification: "core/wageprovision/statementbindingsetting/getStateCorrelationHisClassification",
             registerClassification: "core/wageprovision/statementbindingsetting/registerClassification",
             getStateLinkMaster: "core/wageprovision/statementbindingsetting/getStateLinkMaster/{0}",
-            getSpecName: "core/wageprovision/statementbindingsetting/getSpecName/{0}"
+            getSpecName: "core/wageprovision/statementbindingsetting/getStatementName/{0}"
         };
 
         export function getStateCorrelationHisClassification(): JQueryPromise<any> {

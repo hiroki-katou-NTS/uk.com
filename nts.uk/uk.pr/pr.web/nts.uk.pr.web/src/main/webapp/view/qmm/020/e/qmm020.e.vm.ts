@@ -96,7 +96,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             service.getStateLinkMaster(hisId).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(stateLinkSettingMaster);
-                    // self.getSpecName(hisId);
+                    // self.getStatementName(hisId);
                     self.mode(model.MODE.UPDATE);
                 } else {
                     self.mode(model.MODE.NO_REGIS);
