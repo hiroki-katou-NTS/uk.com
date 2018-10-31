@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
@@ -108,7 +109,12 @@ public class DailyAggregationProcessService {
 						.keepsTrack(true)
 						.threadName(this.getClass().getName())
 						.build(() -> {
-							fixed.addAll(this.extractFixedCondition(dailyAlarmCondition, period, employee));
+							try {
+								fixed.addAll(this.extractFixedCondition(dailyAlarmCondition, period, employee));
+							} catch (Exception e2) {
+								e2.printStackTrace();
+								
+							}						
 							// Count down latch.
 							countDownLatch.countDown();
 						});
@@ -118,10 +124,11 @@ public class DailyAggregationProcessService {
 			try {
 				countDownLatch.await();
 			} catch (InterruptedException ie) {
-				throw new RuntimeException(ie);
+				throw new RuntimeException(ie);						
 			} finally {
 				// Force shut down executor services.
 				executorService.shutdown();
+				
 			}
 			listValueExtractAlarm.addAll(fixed);
 		});

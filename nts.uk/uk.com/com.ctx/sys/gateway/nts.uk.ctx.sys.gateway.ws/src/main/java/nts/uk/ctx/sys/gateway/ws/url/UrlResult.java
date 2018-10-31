@@ -1,8 +1,9 @@
 package nts.uk.ctx.sys.gateway.ws.url;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * 
@@ -16,6 +17,22 @@ public class UrlResult {
 	
 	public String screenID;
 	
-	public List<String> urlTaskValueList;
+	public String embeddedId;
+    
+	public String cID;
+    
+	public String loginID;
+    
+	public String contractCD;
+    
+	public GeneralDateTime expiredDate;
+    
+	public GeneralDateTime issueDate;
+    
+	public String sID;
+    
+	public String sCD;
+	
+	public Map<String, String> urlTaskValueList;
 	
 }

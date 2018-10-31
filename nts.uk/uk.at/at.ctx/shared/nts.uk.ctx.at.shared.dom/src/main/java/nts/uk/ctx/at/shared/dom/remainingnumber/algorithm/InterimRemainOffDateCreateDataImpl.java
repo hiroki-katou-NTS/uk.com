@@ -66,9 +66,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		InforFormerRemainData outputData = new InforFormerRemainData(sid, 
 				baseDate, 
 				dayOffTimeIsUse, 
-				Collections.emptyList(), 
+				new ArrayList<>(), 
 				Optional.empty(), 
-				Collections.emptyList(), 
+				new ArrayList<>(), 
 				comHolidaySetting,
 				employmentHolidaySetting);		
 		//最新の勤務種類変更を伴う申請を抽出する
@@ -103,8 +103,16 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		}
 		//残数関連の申請を抽出する
 		List<AppRemainCreateInfor> lstAppInfor = lstAppData.stream()
-				.filter(x -> x.getSid().equals(sid) && x.getWorkTypeCode().isPresent() && (x.getAppDate().equals(baseDate) 
-						|| (x.getStartDate().isPresent() && x.getEndDate().isPresent() && x.getStartDate().get().beforeOrEquals(baseDate) && x.getEndDate().get().afterOrEquals(baseDate))))
+				.filter(x -> x.getSid().equals(sid) 
+						&& x.getWorkTypeCode().isPresent() 
+						&& (x.getAppDate().equals(baseDate)
+								|| (x.getStartDate().isPresent() 
+										&& x.getEndDate().isPresent()
+										&& x.getStartDate().get().beforeOrEquals(baseDate)
+										&& x.getEndDate().get().afterOrEquals(baseDate)
+										)
+								)
+						)
 				.collect(Collectors.toList());
 		if(lstAppInfor.isEmpty()) {
 			return null;
@@ -336,8 +344,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 
 	@Override
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
-		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
+		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), new ArrayList<>(), Optional.empty(), 
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>());
 		if(inforData.getWorkTypeRemain().isEmpty()) {
 			return null;
 		}
@@ -480,7 +488,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//代休振替時間と代休振替日数をクリアする
 		TranferTimeInfor outData = new TranferTimeInfor(createAtr, 0, Optional.of((double) 0));
 		//1日の時間をチェックする
-		if(transferSetting.getDesignatedTime().getOneDayTime().v() < 0) {
+		if(transferSetting.getDesignatedTime().getOneDayTime().v() <= 0) {
 			return outData;
 		}
 		//振替可能時間と1日の時間を比較する
@@ -582,11 +590,4 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		}
 		return "";
 	}
-
-	@Override
-	public String specialHolidayCode(String cid, String holidayFrame) {
-		//ドメインモデル「特別休暇」を取得する
-		return null;
-	}
-
 }

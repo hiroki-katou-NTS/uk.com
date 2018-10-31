@@ -158,7 +158,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		// check login screen
 		boolean isLoginScreen = LOGIN_SCREEN.equals(fromScreen);
 		// check top page job setting or not setting
-		if (topPageJob.getPersonPermissionSet() == PersonPermissionSetting.SET && tpSelfSet != null) {
+		if (topPageJob.getPersonPermissionSet() == PersonPermissionSetting.SET && tpSelfSet != null && !isLoginScreen) {
 			// display top page self set (本人トップページ設定)-C
 			check = false;
 			layoutTopPage = getTopPageByCode(companyId, tpSelfSet.getCode(), System.COMMON.value,
@@ -184,7 +184,11 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			String menuCode = getMenuCode(fromScreen, tpPerson.getTopMenuCode(), tpPerson.getLoginMenuCode());
 			if (!StringUtil.isNullOrEmpty(menuCode, true)) {
 				layoutTopPage = getTopPageByCode(companyId, menuCode, tpPerson.getLoginSystem().value,
-						tpPerson.getMenuClassification().value, isLoginScreen);
+						MenuClassification.TopPage.value, isLoginScreen);
+				if(layoutTopPage == null) {
+					layoutTopPage = getTopPageByCode(companyId, menuCode, tpPerson.getLoginSystem().value,
+							MenuClassification.Standard.value, isLoginScreen);
+				}
 				// case not use my page
 				if (!checkMyPage) {
 					check = true;

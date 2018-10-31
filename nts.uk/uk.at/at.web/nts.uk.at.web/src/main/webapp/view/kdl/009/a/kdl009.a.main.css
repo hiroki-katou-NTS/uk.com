@@ -23,7 +23,7 @@ table#date-fixed-table td {
 }
 
 table.summary-table {
-	margin-top: 5px;	
+	margin-top: 10px;	
 }
 
 table.summary-table tr:first-child {
@@ -54,4 +54,10 @@ table.summary-table td:nth-child(2), table.summary-table td:last-child {
 
 table.summary-table td:last-child { 
     border-left: none;
+}
+#description {
+	margin-top: 5px;
+}
+#expDate{
+	margin-top: 5px;
 }

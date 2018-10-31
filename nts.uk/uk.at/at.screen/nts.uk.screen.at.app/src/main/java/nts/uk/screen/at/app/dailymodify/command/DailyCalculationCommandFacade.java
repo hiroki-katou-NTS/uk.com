@@ -135,8 +135,24 @@ public class DailyCalculationCommandFacade {
 				// update lai daily results gui ve client
 				List<DailyRecordDto> calculatedDtos = editedDomains.stream().map(d -> DailyRecordDto.from(d))
 						.collect(Collectors.toList());
-				List<DailyModifyResult> resultValues = calculatedDtos.stream().map(
-						c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c).stream().map(item -> {
+//				List<DailyModifyResult> resultValues = calculatedDtos.stream().map(
+//						c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c).stream().map(item -> {
+//							return (item.getValueType() == ValueType.TIME || item.getValueType() == ValueType.CLOCK
+//									|| item.getValueType() == ValueType.TIME_WITH_DAY)
+//											? new ItemValue(
+//													item.getValue() == null ? ""
+//															: converTime(item.getValueType().value, item.getValue()),
+//													item.getValueType(), item.getLayoutCode(), item.getItemId(),
+//													item.getPathLink())
+//											: item;
+//						}).collect(Collectors.toList())).workingDate(c.workingDate()).employeeId(c.employeeId())
+//								.completed())
+//						.collect(Collectors.toList());
+				// set state calc 
+				val mapDtoEdits = calculatedDtos.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
+				val resultCompare = dpLoadRowProcessor.itemCalcScreen(mapDtoEdits, mapDtoOld, dataParent.getLstData(), dataParent.getLstAttendanceItem(), dataParent.getCellEdits());
+				List<DailyModifyResult> resultValues = resultCompare.getRight().stream().map(x ->{
+					x.items(x.getItems().stream().map(item -> {
 							return (item.getValueType() == ValueType.TIME || item.getValueType() == ValueType.CLOCK
 									|| item.getValueType() == ValueType.TIME_WITH_DAY)
 											? new ItemValue(
@@ -145,19 +161,15 @@ public class DailyCalculationCommandFacade {
 													item.getValueType(), item.getLayoutCode(), item.getItemId(),
 													item.getPathLink())
 											: item;
-						}).collect(Collectors.toList())).workingDate(c.workingDate()).employeeId(c.employeeId())
-								.completed())
-						.collect(Collectors.toList());
-				// set state calc 
-				val mapDtoEdits = calculatedDtos.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
-				val cellStates = dpLoadRowProcessor.itemCalcScreen(mapDtoEdits, mapDtoOld, dataParent.getLstData(), dataParent.getLstAttendanceItem(), dataParent.getCellEdits());
-				
+						}).collect(Collectors.toList()));
+					return x;
+				}).collect(Collectors.toList());
 				DailyPerformanceCalculationDto returnData = new DailyPerformanceCalculationDto(calculatedDtos,
-						resultValues, null, cellStates);
+						resultValues, null, resultCompare.getLeft());
 				return returnData;
 			}
 		}
-		return new DailyPerformanceCalculationDto(null, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage), Collections.emptyList());
+		return new DailyPerformanceCalculationDto(null, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage, false), Collections.emptyList());
 	}
 
 	/**
@@ -274,7 +286,7 @@ public class DailyCalculationCommandFacade {
 		List<DPItemValue> errorMonth = validatorDataDaily.errorMonth(monthlyResults, null).get(TypeError.ERROR_MONTH.value);
 		resultError.put(TypeError.ERROR_MONTH.value, errorMonth == null ? Collections.emptyList() : errorMonth);
 		
-		return new DataResultAfterIU(resultError, flexError);
+		return new DataResultAfterIU(resultError, flexError, false);
 	}
 
 	private Map<String, List<GeneralDate>> dtoToMapParam(List<DailyRecordDto> dtos) {

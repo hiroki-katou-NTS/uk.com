@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -78,6 +80,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRegister;
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ReflectResult reflectEmployeeOfApp(Application_New appInfor, InformationSettingOfEachApp reflectSetting) {
 		ReflectResult outData = new ReflectResult(true, true);
 		GobackReflectPara appGobackTmp = null;
@@ -211,10 +214,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			} else {
 				lstDate.add(appInfor.getAppDate());	
 			}	
+					
+			appRepo.updateWithVersion(appInfor);
 			if(outData.isRecordResult()) {
 				interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);	
-			}			
-			appRepo.updateWithVersion(appInfor);
+			}	
 		}
 		
 		return outData;
