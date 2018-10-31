@@ -149,18 +149,13 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				int yearMonthYear = yearMonth.year();
 				if(extraction.isToBeThisYear()){
 					if(firstMonth <= yearMonth.month()) {
-						startMonth = YearMonth.of(yearMonthYear, firstMonth);
-						firstMonth = firstMonth - 1;
-						endMonth = yearMonth.addMonths(firstMonth);
 						year = yearMonthYear;
 					}else {
 						year = yearMonthYear - 1;
-						startMonth = YearMonth.of(yearMonthYear - 1, firstMonth);
-						firstMonth = firstMonth - 1;
-						YearMonth endMonthtemp= YearMonth.of( year,yearMonth.month());
-						endMonth = endMonthtemp.addMonths(firstMonth);
-						
 					}
+					startMonth = YearMonth.of(year, firstMonth);
+					firstMonth = firstMonth - 1;
+					endMonth = YearMonth.of(year+1, firstMonth);
 				}else {
 					startMonth = YearMonth.of(yearMonthYear, firstMonth);
 					firstMonth = firstMonth - 1;
