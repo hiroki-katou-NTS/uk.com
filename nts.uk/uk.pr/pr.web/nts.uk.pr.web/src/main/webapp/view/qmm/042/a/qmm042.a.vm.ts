@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         salaryPerUnitPriceNames: KnockoutObservableArray<IndividualPriceName> = ko.observableArray([]);
         salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable('');
 
+        workIndividualPrices:KnockoutObservableArray<WorkIndividualPrice>=ko.observableArray([]);
 
         perUnitPriceName: KnockoutObservable<string> = ko.observable('');
         perUnitPriceCode: KnockoutObservable<string> = ko.observable('');
@@ -17,7 +18,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
         constructor() {
             var self = this;
-
+            $("#A4_7").ntsFixedTable({height: 350, width: 720});
 
 
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
@@ -202,6 +203,63 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             }
         }
     }
+    
+    
+    export interface IWorkIndividualPrice{
+         employeeID:string,
+         historyID:string,
+         employeeCode:string,
+         businessName:string,
+         startYaerMonth:number,
+         endYearMonth:number,
+         amountOfMoney:number,
+    }
+    
+    export class WorkIndividualPrice{
+        employeeID:string;
+        historyID:string;
+        employeeCode:KnockoutObservable<string>=ko.observable('');
+        businessName:KnockoutObservable<string>=ko.observable('');
+
+        startYaerMonth:number;
+        endYearMonth:number;
+
+        period:string;
+
+        amountOfMoney:KnockoutObservable<number>=ko.observable(0);
+
+        constructor(param:IWorkIndividualPrice){
+            this.employeeID=param.employeeID;
+            this.historyID=param.historyID;
+            this.employeeCode(param.employeeCode);
+            this.businessName(param.businessName);
+            this.startYaerMonth=param.startYaerMonth;
+            this.endYearMonth=param.endYearMonth;
+            this.amountOfMoney(param.amountOfMoney);
+            nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ~ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+        }
+        
+    }
+
+    export interface IEmployeeInfoImport{
+        sid:string,
+        scd:string,
+        businessName:string,
+    }
+    
+    
+    export class EmployeeInfoImport{
+          sid:string;
+          scd:string;
+          businessName:string;
+
+          constructor(param:IEmployeeInfoImport){
+              this.sid=param.sid;
+              this.scd=param.scd;
+              this.businessName=param.businessName;
+          }
+    }
+    
 }
 
 

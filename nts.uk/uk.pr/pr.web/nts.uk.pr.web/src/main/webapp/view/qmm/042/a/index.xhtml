@@ -94,42 +94,41 @@
 
                 </div>
 
-                <!--<table tabindex="7" id="A5_9">-->
-                    <!--<colgroup>-->
-                        <!--<col width="130px"/>-->
-                        <!--<col width="120px"/>-->
-                        <!--<col width="160px"/>-->
-                        <!--<col width="158px"/>-->
+                <table tabindex="7" id="A4_7">
+                    <colgroup>
+                        <col width="130px"/>
+                        <col width="120px"/>
+                        <col width="160px"/>
+                        <col width="158px"/>
 
-                    <!--</colgroup>-->
-                    <!--<thead>-->
-                    <!--<tr>-->
-                        <!--<th class="ui-widget-header">#{i18n.getText('qmm042_16')}</th>-->
-                        <!--<th class="ui-widget-header">#{i18n.getText('qmm042_17')}</th>-->
-                        <!--<th class="ui-widget-header">#{i18n.getText('qmm042_18')}</th>-->
-                        <!--<th class="ui-widget-header">#{i18n.getText('qmm042_19')}</th>-->
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_10')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_11')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_12')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_13')}</th>
 
-                    <!--</tr>-->
-                    <!--</thead>-->
-                    <!--<tbody data-bind="foreach: personalDisplay">-->
-                    <!--<tr>-->
-                        <!--<td data-bind="text: employeeCode()"></td>-->
-                        <!--<td data-bind="text: businessName()"></td>-->
-                        <!--<td data-bind="text: period"></td>-->
-                        <!--<td>-->
-                            <!--<input tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {-->
-                                        <!--value: amount,-->
-                                        <!--constraint:'AmountOfMoney',-->
-                                        <!--name:'#[qmm042_20]',-->
-                                        <!--required:true,-->
-                                        <!--option: {-->
-                                            <!--grouplength: 3,-->
-                                            <!--currencyformat: 'JPY'}}"/>-->
-                        <!--</td>-->
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: workIndividualPrices">
+                    <tr>
+                        <td data-bind="text: employeeCode()"></td>
+                        <td data-bind="text: businessName()"></td>
+                        <td data-bind="text: period"></td>
+                        <td>
+                            <input tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
+                                        value: amountOfMoney,
+                                        name:'#[qmm042_13]',
+                                        required:true,
+                                        option: {
+                                            grouplength: 3,
+                                            currencyformat: 'JPY'}}"/>
+                        </td>
 
-                    <!--</tr>-->
-                    <!--</tbody>-->
-                <!--</table>-->
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>
