@@ -4,7 +4,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
+    import windows = nts.uk.ui.windows;
+    import modal = nts.uk.ui.windows.sub.modal
     import shareModel = nts.uk.pr.view.qmm019.share.model;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
 
     export class ScreenModel {
         option: any;
@@ -69,6 +72,18 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         register() {
 
+        }
+
+        openO() {
+            windows.setShared("QMM019O_PARAMS", {itemNameCd: '0003'});
+            modal("/view/qmm/019/o/index.xhtml").onClosed(() => {
+                let results = windows.getShared("QMM019O_RESULTS");
+                if (isNullOrUndefined(results)) {
+
+                } else {
+
+                }
+            });
         }
 
         referenced(){

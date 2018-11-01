@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 340,
+                width: 360,
                 height: 650
             };
         </script>
@@ -23,18 +23,20 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <!--M1_1-->
-            <div id="M1_1" class="label">#{i18n.getText('QMM019_198')}</div>
-            <!--M1_2-->
-            <table id="M1_2" data-bind="ntsGridList: {
-                name: '#[QMM019_199]',
-                rows: 20,
-                dataSource: formulas,
-                primaryKey: 'code',
-                columns: columns,
-                multiple: false,
-                value: formulaSelected
-            }"></table>
+            <div class="content">
+                <!--M1_1-->
+                <div id="M1_1" class="label">#{i18n.getText('QMM019_198')}</div>
+                <!--M1_2-->
+                <table id="M1_2" data-bind="ntsGridList: {
+                    name: '#[QMM019_199]',
+                    rows: 20,
+                    dataSource: formulas,
+                    primaryKey: 'formulaCode',
+                    columns: columns,
+                    multiple: false,
+                    value: formulaCodeSelected
+                }"/>
+            </div>
         </div>
         <div id="functions-area-bottom">
             <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>

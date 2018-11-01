@@ -1,10 +1,16 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
-import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutAndHistDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistFinder;
+
+import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname.SalIndAmountNameDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname.SalIndAmountNameFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,13 +19,41 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-@Path("ctx/pr/core/wageprovision/statementlayout")
+@Path("core/wageprovision/statementlayout")
 @Produces("application/json")
-public class StatementLayoutWebService extends WebService {
+public class StatementLayoutWebService {
+
+    @Inject
+    private SalIndAmountNameFinder salIndAmountNameFinder;
+
+    @Inject
+    private FormulaFinder formulaFinder;
+
+    @Inject
+    private WageTableFinder wageTableFinder;
+
     @Inject
     private StatementLayoutFinder statementLayoutFinder;
     @Inject
     private StatementLayoutHistFinder statementLayoutHistFinder;
+
+    @POST
+    @Path("getSalIndAmountName/{cateIndicator}")
+    public List<SalIndAmountNameDto> getSalIndAmountName(@PathParam("cateIndicator") int cateIndicator) {
+        return salIndAmountNameFinder.getAllSalIndAmountNameByCateIndi(cateIndicator);
+    }
+
+    @POST
+    @Path("getFormulaByYearMonth/{yearMonth}")
+    public List<FormulaDto> getFormulaByYearMonth(@PathParam("yearMonth") int yearMonth) {
+        return formulaFinder.getFormulaByYearMonth(yearMonth);
+    }
+
+    @POST
+    @Path("getWageTableByYearMonth/{yearMonth}")
+    public List<WageTableDto> getWageTableByYearMonth(@PathParam("yearMonth") int yearMonth) {
+        return wageTableFinder.getWageTableByYearMonth(yearMonth);
+    }
 
     @POST
     @Path("getStatementLayoutAndLastHist/{code}")
@@ -32,4 +66,5 @@ public class StatementLayoutWebService extends WebService {
     public List<YearMonthHistoryItemDto> getStatementLayoutAndLastHist(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
         return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth);
     }
+
 }

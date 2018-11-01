@@ -4,7 +4,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
+    import windows = nts.uk.ui.windows;
+    import modal = nts.uk.ui.windows.sub.modal
     import shareModel = nts.uk.pr.view.qmm019.share.model;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
 
     export class ScreenModel {
         option: any;
@@ -66,7 +69,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            $("#fixed-table").ntsFixedTable({ height: 139});
+            $("#fixed-table").ntsFixedTable({height: 139});
             dfd.resolve();
             return dfd.promise();
         }
@@ -75,16 +78,52 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
         }
 
-        referenced(){
+        openI() {
+            windows.setShared("QMM019I_PARAMS", {cateIndicator: 0, individualPriceCode: '02'});
+            modal("/view/qmm/019/i/index.xhtml").onClosed(() => {
+                let results = windows.getShared("QMM019I_RESULTS");
+                if (isNullOrUndefined(results)) {
+
+                } else {
+
+                }
+            });
+        }
+
+        openM() {
+            windows.setShared("QMM019M_PARAMS", {yearMonth: 201802, formulaCode: '0003'});
+            modal("/view/qmm/019/m/index.xhtml").onClosed(() => {
+                let results = windows.getShared("QMM019M_RESULTS");
+                if (isNullOrUndefined(results)) {
+
+                } else {
+
+                }
+            });
+        }
+
+        openN() {
+            windows.setShared("QMM019N_PARAMS", {yearMonth: 201802, wageTableCode: '0003'});
+            modal("/view/qmm/019/n/index.xhtml").onClosed(() => {
+                let results = windows.getShared("QMM019N_RESULTS");
+                if (isNullOrUndefined(results)) {
+
+                } else {
+
+                }
+            });
+        }
+
+        referenced() {
 
         }
 
-        decide(){
-            nts.uk.ui.windows.close();
+        decide() {
+            windows.close();
         }
 
-        cancel(){
-            nts.uk.ui.windows.close();
+        cancel() {
+            windows.close();
         }
     }
 }
