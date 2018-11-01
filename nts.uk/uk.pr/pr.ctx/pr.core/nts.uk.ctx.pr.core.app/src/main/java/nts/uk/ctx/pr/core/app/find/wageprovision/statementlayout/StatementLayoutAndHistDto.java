@@ -6,11 +6,13 @@ import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.Y
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Value
-public class StatementLayoutAndLastHistDto
+public class StatementLayoutAndHistDto
 {
 
     /**
@@ -31,12 +33,12 @@ public class StatementLayoutAndLastHistDto
     /**
      * 履歴
      */
-    private YearMonthHistoryItemDto history;
+    private List<YearMonthHistoryItemDto> history;
 
-    public static StatementLayoutAndLastHistDto fromDomain(StatementLayout statementLayout, Optional<YearMonthHistoryItem> historyItem)
+    public static StatementLayoutAndHistDto fromDomain(StatementLayout statementLayout, List<YearMonthHistoryItem> history)
     {
-        return new StatementLayoutAndLastHistDto(statementLayout.getCid(), statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
-                historyItem.isPresent() ? YearMonthHistoryItemDto.fromDomainToDto(historyItem.get()): null);
+        List<YearMonthHistoryItemDto> yearMonthHistoryItemDto = history.stream().map(item -> YearMonthHistoryItemDto.fromDomainToDto(item)).collect(Collectors.toList());
+        return new StatementLayoutAndHistDto(statementLayout.getCid(), statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(), yearMonthHistoryItemDto);
     }
 
 }

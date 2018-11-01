@@ -13,11 +13,11 @@ public interface StatementLayoutHistRepository
 
     List<StatementLayoutHist> getAllStatementLayoutHist();
 
-    Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int specCd, String histId);
+    List<YearMonthHistoryItem> getStatementLayoutHistById(String histId);
 
-    Optional<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code);
+    List<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code);
 
-    Optional<YearMonthHistoryItem> getHistByCidAndCodeAndAfterDate(String cid, String code, int startYearMonth);
+    List<YearMonthHistoryItem> getHistByCidAndCodeAndAfterDate(String cid, String code, int startYearMonth);
 
     void add(StatementLayoutHist domain);
 
