@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.DeleteStatementLayoutHistCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.StatementLayoutHistCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.UpdateStatementLayoutHistCommandHandler;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutAndHistDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutFinder;
@@ -34,8 +37,15 @@ public class StatementLayoutWebService {
 
     @Inject
     private StatementLayoutFinder statementLayoutFinder;
+
     @Inject
     private StatementLayoutHistFinder statementLayoutHistFinder;
+
+    @Inject
+    private UpdateStatementLayoutHistCommandHandler updateStatementLayoutHistCommandHandler;
+
+    @Inject
+    private DeleteStatementLayoutHistCommandHandler deleteStatementLayoutHistCommandHandler;
 
     @POST
     @Path("getSalIndAmountName/{cateIndicator}")
@@ -67,4 +77,15 @@ public class StatementLayoutWebService {
         return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth);
     }
 
+    @POST
+    @Path("updateStatementLayoutHist")
+    public void updateStatementLayoutHist(StatementLayoutHistCommand command) {
+        this.updateStatementLayoutHistCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("deleteStatementLayoutHist")
+    public void deleteStatementLayoutHist(StatementLayoutHistCommand command) {
+        this.deleteStatementLayoutHistCommandHandler.handle(command);
+    }
 }

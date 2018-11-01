@@ -15,15 +15,19 @@ public interface StatementLayoutHistRepository
 
     List<YearMonthHistoryItem> getStatementLayoutHistById(String histId);
 
+    List<YearMonthHistoryItem> getAllHistByCidAndCode(String cid, String code);
+
+    Optional<StatementLayoutHist> getLayoutHistByCidAndCode(String cid, String code);
+
     List<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code);
 
     List<YearMonthHistoryItem> getHistByCidAndCodeAndAfterDate(String cid, String code, int startYearMonth);
 
     void add(StatementLayoutHist domain);
 
-    void update(StatementLayoutHist domain);
+    void update(String cid, String code, YearMonthHistoryItem domain);
 
-    void remove(String cid, int specCd, String histId);
+    void remove(String cid, String specCd, String histId);
 
     List<String> getStatemetnCode(String cid, String salaryCd, int startYearMonth);
 

@@ -1,8 +1,11 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSetRepository;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutSet;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutSetPk;
 
 import javax.ejb.Stateless;
 import java.util.Collections;
@@ -37,5 +40,8 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
 
     @Override
     public void remove(String histId){
+        for(CategoryAtr category : CategoryAtr.values()) {
+            this.commandProxy().remove(QpbmtStatementLayoutSet.class, new QpbmtStatementLayoutSetPk(histId, category.value));
+        }
     }
 }
