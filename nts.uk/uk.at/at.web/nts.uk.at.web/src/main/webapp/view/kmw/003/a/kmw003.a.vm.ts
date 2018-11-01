@@ -1333,8 +1333,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
-                                header.constraint["min"] = "0";
-                                header.constraint["max"] = "99999999"
+                                header.constraint["min"] = header.constraint.min;
+                                header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
                                 header.constraint["min"] = "0:00";
