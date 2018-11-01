@@ -43,6 +43,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
@@ -3144,6 +3145,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	private String cut(String s, int n) {
+		if(StringUtil.isNullOrEmpty(s, false)) {
+			return s;
+		}
+		
 	    byte[] utf8 = s.getBytes();
 	    if (utf8.length < n) n = utf8.length;
 	    int n16 = 0;
