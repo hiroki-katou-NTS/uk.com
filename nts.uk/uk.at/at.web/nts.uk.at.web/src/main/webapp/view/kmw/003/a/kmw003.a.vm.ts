@@ -401,6 +401,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
                 //画面項目の非活制御をする
                 self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
+                if(self.initMode() == 2 && self.showButton().available_A4_7() == false) {
+                    self.showButton().available_A4_7(true);
+                    self.showButton().available_A1_11(false);
+                    //A4_2
+                    self.showButton().available_A4_2(false);
+                }
                 self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
 //                if (data.showRegisterButton == false) {
 //                    self.showButton().enable_A1_1(data.showRegisterButton);
@@ -1026,7 +1032,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             ];} else {
                 let messId = self.dataAll().mess; 
                 nts.uk.ui.dialog.info({ messageId: messId });
-                $("#cbClosureInfo").hide();
+                if(self.initMode() != 2) {
+                    $("#cbClosureInfo").hide();
+                }
                 features = [
                 {
                     name: 'Resizing',
