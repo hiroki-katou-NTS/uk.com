@@ -33,6 +33,11 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 })
                 self.itemNameSelected(itemName);
             })
+
+            $("[data-toggle='userguide-register']").ntsUserGuide();
+            $("[data-toggle='userguide-exist']").ntsUserGuide();
+            $("[data-toggle='userguide-not-register']").ntsUserGuide();
+
         }
 
         startPage(): JQueryPromise<any> {
@@ -43,7 +48,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         }
 
         register() {
-
+            $(".userguide-register").ntsUserGuide("show");
+            // $(".userguide-exist").ntsUserGuide("show");
+            // $(".userguide-not-register").ntsUserGuide("show");
         }
 
         decide() {
