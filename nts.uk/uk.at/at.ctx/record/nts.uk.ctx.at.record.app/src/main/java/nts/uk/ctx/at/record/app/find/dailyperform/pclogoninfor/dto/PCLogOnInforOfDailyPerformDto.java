@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_PC_LOG_INFO_NAME)
 public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 

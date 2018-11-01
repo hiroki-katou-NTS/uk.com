@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDACE_LEAVE_NAME)
 public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 

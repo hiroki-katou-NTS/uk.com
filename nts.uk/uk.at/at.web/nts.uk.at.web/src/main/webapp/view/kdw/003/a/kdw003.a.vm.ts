@@ -1175,6 +1175,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listErrorMonth = [];
                 let dataChange: any = $("#dpGrid").mGrid("updatedCells");
                 var dataSource = $("#dpGrid").mGrid("dataSource");
+                if(_.isEmpty(dataSource)) {
+                   nts.uk.ui.block.clear();
+                   return;
+                }
                 let dataChangeProcess: any = [];
                 let dataCheckSign: any = [];
                 let dataCheckApproval: any = [];
@@ -2501,7 +2505,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             })
            
-            if(self.isVisibleMIGrid()){
+            if(self.isVisibleMIGrid() && jsonColumnWidthMiGrid != null){
                 let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
                 delete columnWidthMiGrid.monthYear;
                 command.lstHeaderMiGrid = columnWidthMiGrid;
