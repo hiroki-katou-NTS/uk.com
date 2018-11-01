@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.pub.remainingnumber.grantremainingdata.AnnLeaGrantRemDataPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.grantremainingdata.AnnualLeaveGrantRemainDataExport;
 @Stateless
@@ -19,7 +20,7 @@ public class AnnLeaGrantRemDataImpl implements AnnLeaGrantRemDataPub{
 	@Override
 	public List<AnnualLeaveGrantRemainDataExport> getAnnualLeaveGrantRemainingData(String employeeID) {
 		List<AnnualLeaveGrantRemainDataExport> result = new ArrayList<>();
-		List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingDatas = this.annLeaGrantRemDataRepository.find(employeeID);
+		List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingDatas = this.annLeaGrantRemDataRepository.findByCheckState(employeeID, LeaveExpirationStatus.AVAILABLE.value);
 		if(CollectionUtil.isEmpty(annualLeaveGrantRemainingDatas)){
 			return result;
 		}
