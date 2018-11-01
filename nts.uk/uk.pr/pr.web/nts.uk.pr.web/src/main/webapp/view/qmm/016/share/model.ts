@@ -230,18 +230,32 @@ module nts.uk.pr.view.qmm016.share.model {
     export interface IQualificationGroupSettingContent {
         paymentMethod: number,
         qualificationGroupCode: string,
+        qualificationGroupName: string;
         eligibleQualificationCode: Array<string>
+        eligibleQualification: Array<IQualificationInformation>;
     }
 
     // 資格グループ設定内容
     export class QualificationGroupSettingContent {
         paymentMethod: KnockoutObservable<number> = ko.observable(null);
+        displayPaymentMethod: KnockoutObservable<string> = ko.observable(null);
         qualificationGroupCode: KnockoutObservable<string> = ko.observable(null);
+        qualificationGroupName: KnockoutObservable<string> = ko.observable(null);
         eligibleQualificationCode: KnockoutObservableArray<string> = ko.observableArray([]);
+        eligibleQualification: KnockoutObservableArray<QualificationInformation> = ko.observableArray([]);
         constructor (params: IQualificationGroupSettingContent) {
             this.paymentMethod(params ? params.paymentMethod: null);
             this.qualificationGroupCode(params ? params.qualificationGroupCode: null);
-            // this.eligibleQualificationCode([]);
+            this.qualificationGroupName(params ? params.qualificationGroupName: null);
+            this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
+            this.eligibleQualification(params? params.eligibleQualification ? params.eligibleQualification.map(item => new QualificationInformation(item)) : [] : []);
+            this.getDisplayPaymentMethod(this.paymentMethod());
+            this.paymentMethod.subscribe(newValue => {
+                this.getDisplayPaymentMethod(newValue);
+            })
+        }
+        getDisplayPaymentMethod (paymentMethod) {
+            this.displayPaymentMethod(getQualificationPaymentMethodItem()[paymentMethod].name);
         }
     }
 

@@ -28,6 +28,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         elementRangeSetting: KnockoutObservable<model.ElementRangeSetting> = ko.observable(new model.ElementRangeSetting(null));
         wageTableContent: KnockoutObservable<model.WageTableContent> = ko.observable(new model.WageTableContent(null));
 
+        // master data
+        qualificationInformationData: Array<model.QualificationInformation>;
+        qualificationGroupSettingData: Array<model.QualificationGroupSetting>;
         fakeCombobox: KnockoutObservableArray<model.EnumModel> = ko.observableArray([new model.EnumModel(0, 'Item 1'), new model.EnumModel(1, 'Item 2')]);
         fakeSelectedValue: KnockoutObservable<string> = ko.observable(null);
         constructor() {
@@ -51,7 +54,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             $('#A8_2').ntsFixedTable({width: 300});
             $('.normal-fixed-table').ntsFixedTable({width: 600})
             $('.fixed-table-top').ntsFixedTable({width: 300, height: 34});
-            $('.fixed-table-body').ntsFixedTable({width: 600, height: 200});
+            $('.fixed-table-body').ntsFixedTable({width: 600, height: 220});
+            $('#E5_1').ntsFixedTable({width: 710, height :200})
         }
 
         getWageTableList () {
@@ -375,32 +379,35 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let firstElementRange = ko.toJS(self.elementRangeSetting).firstElementRange;
             if (Number(firstElementRange.rangeLowerLimit) > Number(firstElementRange.rangeUpperLimit)) dialog.alertError({messageId: 'MsgQ_3'});
-            self.changeToFakeData();
+            self.wageTableContent(new WageTableContent(self.getSampleData()));
 
         }
         createTwoDimensionWageTable () {
             let self = this;
-            self.changeToFakeData();
+            self.wageTableContent(new WageTableContent(self.getSampleData()));
         }
 
         createThreeDimensionWageTable () {
             let self = this;
-            self.changeToFakeData();
+            self.wageTableContent(new WageTableContent(self.getSampleData()));
         }
 
         createWageTable () {
             let self = this;
-            self.changeToFakeData();
+            self.getQualificationGroupSettingContentData();
+            let wageTableContent: any = self.getSampleData();
+            wageTableContent.qualificationGroupSetting = self.createDisplayQualificationGroupSettingData(wageTableContent.qualificationGroupSetting);
+            self.wageTableContent(new WageTableContent(wageTableContent));
         }
 
         prepareAllWageTable () {
             let self = this;
-            self.changeToFakeData();
+            self.wageTableContent(new WageTableContent(self.getSampleData()));
         }
 
-        changeToFakeData () {
+        getSampleData () {
             let self = this;
-            let fakePayment = [
+            let paymentData = [
                 {
                     wageTablePaymentAmount: 5,
                     elementAttribute: {
@@ -416,12 +423,69 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     }
                 }
             ];
-            let fakeData = {
+            let groupSettingData = [
+                {
+                paymentMethod: 0,
+                qualificationGroupCode: '01',
+                eligibleQualificationCode: ['001', '002', '003']
+                },
+                {
+                    paymentMethod: 1,
+                    qualificationGroupCode: '02',
+                    eligibleQualificationCode: ['001', '002', '003', '005']
+                },
+                {
+                    paymentMethod: 0,
+                    qualificationGroupCode: '03',
+                    eligibleQualificationCode: ['001', '004']
+                }
+            ]
+            let wageTableContent = {
                 historyID: nts.uk.util.randomId(),
-                payment: fakePayment,
-                qualificationGroupSetting: []
+                payment: paymentData,
+                qualificationGroupSetting: groupSettingData
             };
-            self.wageTableContent(new WageTableContent(fakeData));
+            return wageTableContent;
+        }
+        getQualificationGroupSettingContentData () {
+            let self = this;
+            let qualificationGroupData: any = [
+                {
+                    qualificationGroupCode: '01',
+                    paymentMethod: 0,
+                    eligibleQualificationCode: ['001','002'],
+                    qualificationGroupName: 'Group Name 1'
+                },
+                {
+                    qualificationGroupCode: '02',
+                    paymentMethod: 0,
+                    eligibleQualificationCode: ['001','002'],
+                    qualificationGroupName: 'Group Name 2'
+                },
+                {
+                    qualificationGroupCode: '03',
+                    paymentMethod: 0,
+                    eligibleQualificationCode: ['004','005'],
+                    qualificationGroupName: 'Group Name 3'
+                }
+            ];
+            self.qualificationGroupSettingData = qualificationGroupData;
+            let qualificationInformationData = [];
+            for(var i = 1; i < 20; i++) {
+                qualificationInformationData.push({qualificationCode: nts.uk.text.padLeft(i+"", '0', 3), qualificationName: 'Name ' + i})
+            }
+            self.qualificationInformationData = qualificationInformationData;
+        }
+        createDisplayQualificationGroupSettingData (groupSettingData: Array<any>) {
+            let self = this;
+            groupSettingData.map(function(item){
+                item.qualificationGroupName = _.find(self.qualificationGroupSettingData, {qualificationGroupCode: item.qualificationGroupCode}).qualificationGroupName;
+                item.eligibleQualification = self.qualificationInformationData.filter(informationItem =>
+                    item.eligibleQualificationCode.indexOf(informationItem.qualificationCode) >=0
+                );
+                return item;
+            })
+            return groupSettingData;
         }
     }
 }

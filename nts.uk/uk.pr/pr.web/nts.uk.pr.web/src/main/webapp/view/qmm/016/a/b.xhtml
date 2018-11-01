@@ -94,8 +94,8 @@
             <th class="ui-widget-header">#{i18n.getText('QMM016_38')}</th>
         </tr>
         </thead>
-        <tbody>
-        <tr data-bind = "foreach: $vm.wageTableContent().payment">
+        <tbody data-bind = "foreach: $vm.wageTableContent().payment">
+        <tr >
             <td data-bind = "with: elementAttribute().firstElementItem">
                 <div data-bind = "text: frameLowerLimit"></div>
                 <div>#{i18n.getText('QMM016_31')}</div>

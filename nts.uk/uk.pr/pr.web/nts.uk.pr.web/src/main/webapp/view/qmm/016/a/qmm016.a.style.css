@@ -33,3 +33,7 @@
 .custom-fixed-table-body .nts-fixed-table{
     display: inline-block;
 }
+.ui-widget-header {
+    color: #000;
+    background-color: #CFF1A5;
+}
