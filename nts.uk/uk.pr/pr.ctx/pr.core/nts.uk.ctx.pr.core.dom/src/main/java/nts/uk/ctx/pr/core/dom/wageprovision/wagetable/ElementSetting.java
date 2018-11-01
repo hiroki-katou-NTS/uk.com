@@ -6,9 +6,9 @@ package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 */
 public enum ElementSetting {
     
-    FIRST_DIMENSION(0, "一次元"),
-    SECOND_DIMENSION(1, "二次元"),
-    THIRD_DIMENSION(2, "三次元"),
+    ONE_DIMENSION(0, "一次元"),
+    TWO_DIMENSION(1, "二次元"),
+    THREE_DIMENSION(2, "三次元"),
     QUALIFICATION(3, "資格"),
     FINE_WORK(4, "精皆勤");
     

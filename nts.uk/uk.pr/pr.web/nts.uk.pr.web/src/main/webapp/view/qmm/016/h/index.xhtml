@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+
+<body>
+
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width: 1140,
+                height: 830
+            };
+        </script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupCode
+            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupName
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm016.h.service.js"/>
+        <com:scriptfile path="qmm016.h.vm.js"/>
+        <com:scriptfile path="qmm016.h.start.js"/>
+        <com:stylefile path="qmm016.h.style.css"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <button data-bind="click: createQualificationGroup , enable: screenMode() == 1">#{i18n.getText('QMM016_1')}</button>
+            <button class="proceed" data-bind="click: registerQualificationGroup,enable: $root.errors.isEmpty"
+                    >#{i18n.getText('QMM016_2')}</button>
+            <button class="danger"
+                    data-bind="click: deleteQualificationGroup , enable: screenMode() == 1">#{i18n.getText('QMM016_58')}</button>
+            <button data-bind="click: closeDialog">#{i18n.getText('QMM016_59')}</button>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <div id="content-left" class="fixed-flex-layout-left">
+                <div data-bind="ntsPanel:{width: '240px', height: '450px', direction: 'right', showIcon: true, visible: true}"
+                     style="margin-left: 10px; margin-bottom: 20px;">
+                    <div style="width: 240px"
+                         data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'qualificationGroupCode', comId: 'H2_3',
+                        items: qualificationGroupList, selected: selectedQualificationGroupCode, selectedKey: 'laborOfficeCode', fields: ['qualificationGroupCode', 'qualificationGroupCode'], mode: 'igGrid'}"/>
+                    <table id="H2_3"
+                           data-bind="ntsGridList: {
+                            rows: 15,
+                            name: '#[QMM016_60]',
+                            options: qualificationGroupList,
+                            optionsValue: 'qualificationGroupCode',
+                            columns: [
+                                { headerText: '#{i18n.getText('QMM010_8')}', key: 'qualificationGroupCode', width: 60, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM010_9')}', key: 'qualificationGroupName', width: 165, formatter: _.escape }
+                            ],
+                            multiple: false,
+                            value: selectedQualificationGroupCode
+                        }"></table>
+                </div>
+            </div>
+
+            <div id="fixed-flex-layout-right">
+                <div class="flex valign-center" data-bind = "with: selectedQualification">
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: {required: true, constraint: ['QualificationGroupCode', 'QualificationGroupName']}">#{i18n.getText('QMM016_8')}</div>
+                    <input id = "H3_1"
+                           data-bind="ntsTextEditor: {constraint: 'QualificationGroupCode', value: qualificationGroupCode, name: '#[QMM016_61]', required: true , enable: $vm.screenMode() == 0}"/>
+                    <input id = "H3_2" style="margin-left: 5px;"
+                           data-bind="ntsTextEditor: {constraint: 'QualificationGroupName',value: qualificationGroupName, name: '#[QMM016_62]', required: true}"/>
+                </div>
+                <div data-bind = "with: selectedQualification" class="flex valign-center row">
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_51')}</div>
+                    <button style="display: inline-block"
+                            data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?</button>
+                    <div style = "margin-left: 15px;" data-bind="ntsComboBox: {
+                        width: '200px',
+                        name: '#[QMM016_63]',
+                        options: paymentMethodItem,
+                        optionsValue: 'value',
+                        visibleItemsCount: 5,
+                        value: paymentMethod,
+                        optionsText: 'name',
+                        columns: [
+                            { prop: 'name', length: 10 }
+                        ]}">
+
+                    </div>
+                </div>
+                <div class="panel panel-frame">
+                    <div class="flex valign-center row">
+                        <div id="swap-list" data-bind="ntsSwapList: {
+                            showSearchBox: { showLeft : true, showRight: false},
+                            height: 300,
+                            dataSource: qualificationInformationList,
+                            primaryKey: 'qualificationCode',
+                            columns: columns,
+                            value: selectedEligibleQualificationCode,
+                            searchMode: 'filter',
+                            searchCriterion: ['qualificationCode'],
+                            draggable: true,
+                            multipleDrag: { left: true, right: false },
+                            innerDrag: { left: false, right: true },
+                            outerDrag: { left: true, right: true }
+                        }"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -1,3 +1,82 @@
 <div>
-    <h1>EEEE</h1>
+    <div class="flex valign-center tab-row">
+        <div style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+        <div style="width: 200px;" data-bind="with: selectedWageTable">
+            <div style="display: inline-block" data-bind="text: wageTableCode"></div>
+            <div style="display: inline-block; margin-left: 10px;"
+                 data-bind="text: wageTableName"></div>
+        </div>
+        <div style="width: 110px;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
+        <div data-bind="with: selectedHistory">
+            <div style="display: inline-block" data-bind="text: startMonth"></div>
+            <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
+            <div style="display: inline-block; margin-left: 5px;" data-bind="text: endMonth"></div>
+        </div>
+    </div>
+    <hr></hr>
+    <div class="tab-row">
+        <div style="width: 70px; vertical-align: top"
+             data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
+        <div class="fixed-table-container">
+            <table class="custom-fixed-table normal-fixed-table" data-bind = "with: selectedWageTable().elementInformation().oneDimensionElement">
+                <colgroup>
+                    <col width="30px"/>
+                    <col width="220px"/>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="ui-widget-header"></th>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                    <td><div>#{i18n.getText('QMM016_50')}</div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-row" style = "margin-left: 75px; width: 500px; text-align: center;">
+        <button data-bind = "click: $vm.createWageTable" style = "width: 400px;" class = "caret-bottom large-caret">#{i18n.getText('QMM016_35')}</button>
+    </div>
+    <div class="tab-row" style = "margin-top: 40px;">
+        <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
+        <button style = "margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
+    </div>
+    <hr></hr>
+    <div class="tab-row" style = "margin-top: 40px;" data-bind="if: $vm.wageTableContent().payment().length >0">
+        <table class="custom-fixed-table normal-fixed-table">
+            <colgroup>
+                <col width="120px"/>
+                <col width="90px"/>
+            </colgroup>
+            <thead>
+            <tr>
+                <th class="ui-widget-header">
+                    <div data-bind = "with: selectedWageTable().elementInformation().oneDimensionElement">
+                        <div style = "display: inline-block" data-bind="text: fixedElement"></div>
+                        <div style = "display: inline-block" data-bind="text: optionalAdditionalElement"></div>
+                    </div>
+                </th>
+                <th class="ui-widget-header">#{i18n.getText('QMM016_38')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-bind = "foreach: $vm.wageTableContent().payment">
+                <td data-bind = "with: elementAttribute().firstElementItem">
+                    <div data-bind = "text: frameLowerLimit"></div>
+                    <div>#{i18n.getText('QMM016_31')}</div>
+                    <div data-bind = "text: frameUpperLimit"></div>
+                </td>
+                <td>
+                    <div data-bind = "text: wageTablePaymentAmount"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

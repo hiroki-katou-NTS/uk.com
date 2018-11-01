@@ -20,7 +20,7 @@
         <div style="width: 70px; vertical-align: top"
              data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
         <div class="fixed-table-container">
-            <table id="C2_2" class = "custom-fixed-table">
+            <table class = "custom-fixed-table normal-fixed-table">
                 <colgroup>
                     <col width="30px"/>
                     <col width="220px"/>
@@ -43,9 +43,9 @@
                 <tbody>
                 <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
                     <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
-                    <td>
-                        <div data-bind="text: fixedElement"></div>
-                        <div data-bind="text: optionalAdditionalElement"></div>
+                    <td data-bind="if: masterNumericClassification() == 1">
+                        <div data-bind="text: fixedElement, visible: fixedElement()"></div>
+                        <div data-bind="text: optionalAdditionalElement, visible: optionalAdditionalElement()"></div>
                     </td>
                     <td style="text-align: center;"
                         data-bind="if: masterNumericClassification() == 1">
@@ -58,7 +58,7 @@
                         </div>
                     </td>
                     <td style="text-align: center;"
-                        data-bind="if: masterNumericClassification() == 0">
+                        data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
                             <input style="width: 20px;"
                                    data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
@@ -67,9 +67,9 @@
                 </tr>
                 <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
                     <td class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
-                    <td>
-                        <div data-bind="text: fixedElement"></div>
-                        <div data-bind="text: optionalAdditionalElement"></div>
+                    <td data-bind="if: masterNumericClassification() == 1">
+                        <div data-bind="text: fixedElement, visible: fixedElement()"></div>
+                        <div data-bind="text: optionalAdditionalElement, visible: optionalAdditionalElement()"></div>
                     </td>
                     <td style="text-align: center;"
                         data-bind="if: masterNumericClassification() == 1">
@@ -82,7 +82,7 @@
                         </div>
                     </td>
                     <td style="text-align: center;"
-                        data-bind="if: masterNumericClassification() == 0">
+                        data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
                             <input style="width: 20px;"
                                    data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
@@ -106,7 +106,7 @@
         <img style="position: relative; top: 26px;" src="../resource/QMM016_6.png"></img>
         <img style="position: relative;top: 50px; left: 520px;" src="../resource/QMM016_7.png"></img>
         <div>
-            <table id="C5_1">
+            <table class = "fixed-table-body">
                 <colgroup>
                     <col width="100px"/>
                     <col width="100px"/>
@@ -120,16 +120,16 @@
                     <th style="border: none"></th>
                     <th colspan="5" class="ui-widget-header">
                         <div data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
-                            <div data-bind="text: fixedElement"></div>
-                            <div data-bind="text: optionalAdditionalElement"></div>
+                            <div style = "display: inline-block" data-bind="text: fixedElement"></div>
+                            <div style = "display: inline-block" data-bind="text: optionalAdditionalElement"></div>
                         </div>
                     </th>
                 </tr>
                 <tr>
                     <th class="ui-widget-header">
                         <div data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                            <div data-bind="text: fixedElement"></div>
-                            <div data-bind="text: optionalAdditionalElement"></div>
+                            <div style = "display: inline-block" data-bind="text: fixedElement"></div>
+                            <div style = "display: inline-block" data-bind="text: optionalAdditionalElement"></div>
                         </div>
                     </th>
                     <th class="ui-widget-header">次郎</th>

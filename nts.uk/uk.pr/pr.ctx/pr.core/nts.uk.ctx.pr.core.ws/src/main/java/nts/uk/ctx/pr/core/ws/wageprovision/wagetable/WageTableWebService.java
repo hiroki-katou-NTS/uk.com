@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.ws.wageprovision;
+package nts.uk.ctx.pr.core.ws.wageprovision.wagetable;
 
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.WageTableHistoryCommand;
 

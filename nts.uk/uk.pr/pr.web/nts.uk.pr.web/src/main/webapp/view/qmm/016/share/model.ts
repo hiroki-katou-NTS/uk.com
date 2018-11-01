@@ -17,9 +17,9 @@ module nts.uk.pr.view.qmm016.share.model {
     }
     // 要素設定
     export enum ELEMENT_SETTING {
-        FIRST_DIMENSION = 0,
-        SECOND_DIMENSION = 1,
-        THIRD_DIMENSION = 2,
+        ONE_DIMENSION = 0,
+        TWO_DIMENSION = 1,
+        THREE_DIMENSION = 2,
         QUALIFICATION = 3,
         FINE_WORK = 4
     }
@@ -42,21 +42,23 @@ module nts.uk.pr.view.qmm016.share.model {
         N003 = '家族人数',
     }
 
-    export function getElementItemModel () {
+    export enum QualificationPaymentMethod {
+        PAY_ONLY_ONE_HIGHEST_BENEFIT = 0,
+        ADD_MULTIPLE_APPLICABLE_AMOUNT = 1
+    }
+
+    export function getQualificationPaymentMethodItem() {
         return [
-            new EnumModel(ELEMENT_SETTING.FIRST_DIMENSION, '一次元'),
-            new EnumModel(ELEMENT_SETTING.SECOND_DIMENSION, '二次元'),
-            new EnumModel(ELEMENT_SETTING.THIRD_DIMENSION, '三次元'),
-            new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
-            new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, '一番高い手当を1つだけ支給する'),
+            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, '複数該当した金額を加算する')
         ];
     }
 
-    export function getFixedElementItemModel () {
+    export function getElementItemModel () {
         return [
-            new EnumModel(null, '一次元'),
-            new EnumModel(null, '二次元'),
-            new EnumModel(null, '三次元'),
+            new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, '一次元'),
+            new EnumModel(ELEMENT_SETTING.TWO_DIMENSION, '二次元'),
+            new EnumModel(ELEMENT_SETTING.THREE_DIMENSION, '三次元'),
             new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
             new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
         ];
@@ -126,17 +128,17 @@ module nts.uk.pr.view.qmm016.share.model {
             let self = this;
             let imgName = "", elementSettingDisplayText = "";
             switch (elementSetting) {
-                case ELEMENT_SETTING.FIRST_DIMENSION: {
+                case ELEMENT_SETTING.ONE_DIMENSION: {
                     imgName = "QMM016_1.png";
                     elementSettingDisplayText = getText('QMM016_69');
                     break;
                 }
-                case ELEMENT_SETTING.SECOND_DIMENSION: {
+                case ELEMENT_SETTING.TWO_DIMENSION: {
                     imgName = "QMM016_2.png";
                     elementSettingDisplayText = getText('QMM016_70');
                     break;
                 }
-                case ELEMENT_SETTING.THIRD_DIMENSION: {
+                case ELEMENT_SETTING.THREE_DIMENSION: {
                     imgName = "QMM016_3.png";
                     elementSettingDisplayText = getText('QMM016_71');
                     break;
@@ -215,6 +217,8 @@ module nts.uk.pr.view.qmm016.share.model {
         historyID: KnockoutObservable<string> = ko.observable(null);
         payment: KnockoutObservableArray<ElementsCombinationPaymentAmount> = ko.observableArray([]);
         qualificationGroupSetting: KnockoutObservableArray<QualificationGroupSettingContent> = ko.observableArray([]);
+        // control item
+        paymentMethodItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(getQualificationPaymentMethodItem());
         constructor(params: IWageTableContent) {
             this.historyID(params ? params.historyID : null);
             this.payment(params ? params.payment.map(item => new ElementsCombinationPaymentAmount(item)) : []);
@@ -237,7 +241,7 @@ module nts.uk.pr.view.qmm016.share.model {
         constructor (params: IQualificationGroupSettingContent) {
             this.paymentMethod(params ? params.paymentMethod: null);
             this.qualificationGroupCode(params ? params.qualificationGroupCode: null);
-            this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
+            // this.eligibleQualificationCode([]);
         }
     }
 
@@ -358,6 +362,8 @@ module nts.uk.pr.view.qmm016.share.model {
         eligibleQualificationCode: KnockoutObservableArray<string> = ko.observableArray([]);
         qualificationGroupName: KnockoutObservable<string> = ko.observable(null);
         companyID: KnockoutObservable<string> = ko.observable(null);
+        // control item
+        paymentMethodItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(getQualificationPaymentMethodItem());
         constructor(params: IQualificationGroupSetting) {
             this.qualificationGroupCode(params ? params.qualificationGroupCode : null);
             this.paymentMethod(params ? params.paymentMethod : null);
@@ -465,6 +471,20 @@ module nts.uk.pr.view.qmm016.share.model {
                 return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
             }, this);
 
+        }
+    }
+
+    export interface IQualificationInformation {
+        qualificationCode: string,
+        qualificationName: string
+    }
+
+    export class QualificationInformation {
+        qualificationCode: KnockoutObservable<string> = ko.observable(null);
+        qualificationName: KnockoutObservable<string> = ko.observable(null);
+        constructor (params: IQualificationInformation) {
+            this.qualificationCode(params? params.qualificationCode: null);
+            this.qualificationName(params? params.qualificationName: null);
         }
     }
 }

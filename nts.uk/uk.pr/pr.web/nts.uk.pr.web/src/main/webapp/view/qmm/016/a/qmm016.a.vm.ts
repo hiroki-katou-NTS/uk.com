@@ -49,13 +49,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         initComponents () {
             let self = this;
             $('#A8_2').ntsFixedTable({width: 300});
-            $('#B2_2').ntsFixedTable({width: 600});
-            $('#B5_1').ntsFixedTable({width: 600});
-            $('#C2_2').ntsFixedTable({width: 600});
-            $('#C5_1').ntsFixedTable({width: 600, height: 200});
-            $('#D2_2').ntsFixedTable({width: 600});
-            $('#D5_1_top').ntsFixedTable({width: 300, height: 34});
-            $('#D5_1').ntsFixedTable({width: 600, height: 200});
+            $('.normal-fixed-table').ntsFixedTable({width: 600})
+            $('.fixed-table-top').ntsFixedTable({width: 300, height: 34});
+            $('.fixed-table-body').ntsFixedTable({width: 600, height: 200});
         }
 
         getWageTableList () {
@@ -68,17 +64,17 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         oneDimensionElement: {
                             masterNumericClassification: 1,
                             fixedElement: "BBB",
-                            optionalAdditionalElement: ''
+                            optionalAdditionalElement: null
                         },
                         twoDimensionElement: {
                             masterNumericClassification: 1,
                             fixedElement: "BBB",
-                            optionalAdditionalElement: ''
+                            optionalAdditionalElement: null
                         },
                         threeDimensionElement: {
                             masterNumericClassification: 1,
                             fixedElement: "BBB",
-                            optionalAdditionalElement: ''
+                            optionalAdditionalElement: null
                         }
                     },
                     elementSetting: 0,
@@ -96,12 +92,12 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         oneDimensionElement: {
                             masterNumericClassification: 0,
                             fixedElement: "FIXED",
-                            optionalAdditionalElement: ''
+                            optionalAdditionalElement: null
                         },
                         twoDimensionElement: {
                             masterNumericClassification: 1,
-                            fixedElement: "OPT",
-                            optionalAdditionalElement: ''
+                            fixedElement: null,
+                            optionalAdditionalElement: "OPT"
                         },
                         threeDimensionElement: null
                     },
@@ -119,17 +115,17 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     elementInformation: {
                         oneDimensionElement: {
                             masterNumericClassification: 1,
-                            fixedElement: '',
+                            fixedElement: null,
                             optionalAdditionalElement: 'DDD'
                         },
                         twoDimensionElement: {
                             masterNumericClassification: 0,
                             fixedElement: 'DDD',
-                            optionalAdditionalElement: ''
+                            optionalAdditionalElement: null
                         },
                         threeDimensionElement: {
                             masterNumericClassification: 1,
-                            fixedElement: '',
+                            fixedElement: null,
                             optionalAdditionalElement: 'DDD123'
                         }
                     },
@@ -147,11 +143,19 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     elementInformation: {
                         oneDimensionElement: {
                             masterNumericClassification: 1,
-                            fixedElement: 2,
+                            fixedElement: null,
                             optionalAdditionalElement: 'EEE'
                         },
-                        twoDimensionElement: null,
-                        threeDimensionElement: null
+                        twoDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: null,
+                            optionalAdditionalElement: 'EEE1'
+                        },
+                        threeDimensionElement: {
+                            masterNumericClassification: 0,
+                            fixedElement: 'EEE2',
+                            optionalAdditionalElement: null
+                        }
                     },
                     elementSetting: 3,
                     remarkInformation: 'Nothing to write here 4',
@@ -166,12 +170,20 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     wageTableName: 'Wage Table 5',
                     elementInformation: {
                         oneDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: 2,
-                            optionalAdditionalElement: 'FFF'
+                            masterNumericClassification: 0,
+                            fixedElement: 'FFF',
+                            optionalAdditionalElement: null
                         },
-                        twoDimensionElement: null,
-                        threeDimensionElement: null
+                        twoDimensionElement: {
+                            masterNumericClassification: 0,
+                            fixedElement: 'FFF1',
+                            optionalAdditionalElement: null
+                        },
+                        threeDimensionElement: {
+                            masterNumericClassification: 1,
+                            fixedElement: null,
+                            optionalAdditionalElement: 'FFF2'
+                        }
                     },
                     elementSetting: 4,
                     remarkInformation: 'Nothing to write here 5',
@@ -263,7 +275,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             // TODO
         }
         settingQualificationGroup () {
-            // TODO
+            let self = this;
+            modal("/view/qmm/016/h/index.xhtml").onClosed(() => {
+
+            });
         }
         correctMasterDialog () {
             // TODO
@@ -369,6 +384,16 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
 
         createThreeDimensionWageTable () {
+            let self = this;
+            self.changeToFakeData();
+        }
+
+        createWageTable () {
+            let self = this;
+            self.changeToFakeData();
+        }
+
+        prepareAllWageTable () {
             let self = this;
             self.changeToFakeData();
         }
