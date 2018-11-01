@@ -111,8 +111,8 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         updateHistory() {
             let self = this;
             let newHistory = self.selectedHistory;
-            newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
-            newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
+            newHistory.startMonth = self.dateValue().startDate;
+            newHistory.endMonth = self.dateValue().endDate;
 
             let newEmployee = self.selectedEmployee;
             newEmployee.cateIndicator = self.cateIndicator();
@@ -140,8 +140,8 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         deleteHistory() {
             let self = this;
             let newHistory = self.selectedHistory;
-            newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
-            newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
+            newHistory.startMonth = self.dateValue().startDate;
+            newHistory.endMonth = self.dateValue().endDate;
 
             let newEmployee = self.selectedEmployee;
             newEmployee.cateIndicator = self.cateIndicator();

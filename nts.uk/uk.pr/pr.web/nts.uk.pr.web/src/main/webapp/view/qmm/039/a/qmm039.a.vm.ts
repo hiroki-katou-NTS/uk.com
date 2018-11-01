@@ -435,8 +435,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     array.unshift(new ItemModel(
                         0,
                         null,
-                        self.formatYMToInt(params.periodStartYm),
-                        self.formatYMToInt(params.periodEndYm),
+                        params.periodStartYm,
+                        params.periodEndYm,
                         format(getText("QMM039_18"), params.periodStartYm, params.periodEndYm),
                         self.currencyeditor.value() + "¥"
                     ));
@@ -532,8 +532,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         cateIndicator: self.classificationCategory(),
                         yearMonthHistoryItem: [{
                             historyId: historyId,
-                            startMonth: self.formatYMToInt(self.periodStartYM()),
-                            endMonth: self.formatYMToInt(self.periodEndYM()),
+                            startMonth: self.periodStartYM(),
+                            endMonth: self.periodEndYM(),
                         }],
                         salBonusCate: self.salaryBonusCategory()
                     },
