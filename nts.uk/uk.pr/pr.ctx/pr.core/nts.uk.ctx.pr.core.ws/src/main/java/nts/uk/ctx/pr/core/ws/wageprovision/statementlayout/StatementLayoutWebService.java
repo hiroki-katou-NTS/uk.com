@@ -1,16 +1,16 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
+import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutAndHistDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistFinder;
 
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname.SalIndAmountNameDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname.SalIndAmountNameFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutAndLastHistDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableFinder;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -57,14 +57,14 @@ public class StatementLayoutWebService {
 
     @POST
     @Path("getStatementLayoutAndLastHist/{code}")
-    public StatementLayoutAndLastHistDto getStatementLayoutAndLastHist(@PathParam("code") String code) {
+    public StatementLayoutAndHistDto getStatementLayoutAndLastHist(@PathParam("code") String code) {
         return this.statementLayoutFinder.getStatementLayoutAndLastHist(code);
     }
 
     @POST
     @Path("getStatementLayoutAndLastHist/{code}/{startYearMonth}")
-    public YearMonthHistoryItem getStatementLayoutAndLastHist(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
-        return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth).orElse(null);
+    public List<YearMonthHistoryItemDto> getStatementLayoutAndLastHist(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
+        return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth);
     }
 
 }
