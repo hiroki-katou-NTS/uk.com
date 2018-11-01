@@ -175,6 +175,8 @@ module kcp.share.list {
          * when reload gridList, check to remove filter value
          */
         isRemoveFilterWhenReload?: boolean;
+        
+        backupSelectedCode?: any;
     }
     
     export class ClosureSelectionType {
@@ -330,7 +332,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
-            self.isSelectAllAfterReload = _.isNil(data.isSelectAllAfterReload) ? true : data.isSelectAllAfterReload;
+            self.isSelectAllAfterReload = _.isNil(data.isSelectAllAfterReload) ? false : data.isSelectAllAfterReload;
             self.disableSelection = data.disableSelection;
             if (data.isRemoveFilterWhenReload !== undefined) { 
                 self.isRemoveFilterWhenReload = data.isRemoveFilterWhenReload; 
@@ -995,6 +997,13 @@ module kcp.share.list {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
+                let check = _.filter(data, (i: any) => { return i.code == self.componentOption.backupSelectedCode[0];});
+                if (check.length >0) {
+                    self.componentOption.selectedCode(self.componentOption.backupSelectedCode);
+                }
+                else {
+                    self.componentOption.selectedCode([]);
+                }
             })
         }
         

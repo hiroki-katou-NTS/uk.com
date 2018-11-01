@@ -110,7 +110,6 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
 	public Optional<TableList> getByInternal(String internalFileName, String dataRecoveryProcessId) {
 		return this.queryProxy().query(SELECT_INTERNAL_FILE_NAME, SspmtTableList.class)
 				.setParameter("internalFileName", internalFileName)
