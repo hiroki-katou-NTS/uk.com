@@ -104,6 +104,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         isStartScreen: KnockoutObservable<any> = ko.observable(true);
+        noCheckColumn: KnockoutObservable<any> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -352,6 +353,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
                 self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
             }
+            self.noCheckColumn(false);
             service.startScreen(self.monthlyParam()).done((data) => {
                 if (data.selectedClosure) {
                     let closureInfoArray = []
@@ -1031,6 +1033,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             ];} else {
                 let messId = self.dataAll().mess; 
                 nts.uk.ui.dialog.info({ messageId: messId });
+                self.noCheckColumn(true);
                 if(self.initMode() != 2) {
                     $("#cbClosureInfo").hide();
                 }
@@ -1487,6 +1490,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         signAll() {
             let self = this;
+            if(self.noCheckColumn()) return;
             $("#dpGrid").mGrid("checkAll", "identify", true);
             $("#dpGrid").mGrid("checkAll", "approval", true);
         }
@@ -1495,6 +1499,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         releaseAll() {
             let self = this;
+            if(self.noCheckColumn()) return;
             $("#dpGrid").mGrid("uncheckAll", "identify", true);
             $("#dpGrid").mGrid("uncheckAll", "approval", true);
         }
