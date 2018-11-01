@@ -31,7 +31,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             self.selectedTab.subscribe(function(codeChange) {
                 let time = 0;
                 if (self.isStart) {
-                    time = 500;
+                    time = 100;
                     self.isStart = false;
                 }
                 setTimeout(function() {
