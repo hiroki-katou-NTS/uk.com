@@ -20,17 +20,20 @@ public class StateLinkMasterWebService extends WebService {
     @Inject
     private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
 
+
     @POST
-    @Path("getStateLinkMaster")
+    @Path("getStateLinkMaster/{hisId}/{start}")
     public List<StateLinkSettingMasterDto> getStateLinkMaster(@PathParam("hisId") String hisId, @PathParam("start") int start) {
         return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId, start);
     }
 
     @POST
-    @Path("getStatementName")
+    @Path("getStatementName/{hisId}")
     public List<StateLinkSettingMasterDto> getSpecName(@PathParam("hisId") String hisId) {
         //return stateLinkSettingMasterFinder.getStateLinkSettingMasterByHisId(hisId);
         return null;
     }
+
+
 
 }

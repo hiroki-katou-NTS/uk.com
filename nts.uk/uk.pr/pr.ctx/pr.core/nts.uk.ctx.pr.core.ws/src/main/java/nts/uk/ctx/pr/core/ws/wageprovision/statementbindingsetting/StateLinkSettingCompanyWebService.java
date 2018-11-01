@@ -5,6 +5,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.RegisterMode;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -39,9 +40,9 @@ public class StateLinkSettingCompanyWebService extends WebService {
     @POST
     @Path("register")
     public void register(StateCorrelationHisCompanySettingCommand command){
-        if(command.getMode() == 1){
+        if(command.getMode() == RegisterMode.NEW.value){
             addStateCorrelationHisCompanySettingCommandHandler.handle(command);
-        }else{
+        }else if(command.getMode() == RegisterMode.UPDATE.value){
             updateStateLinkSettingCompanyCommandHandler.handle(command);
         }
 

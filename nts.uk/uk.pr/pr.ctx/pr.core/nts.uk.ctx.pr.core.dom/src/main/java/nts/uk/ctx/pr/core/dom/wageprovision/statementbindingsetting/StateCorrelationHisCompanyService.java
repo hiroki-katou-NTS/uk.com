@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.CompanyUnitPriceCode;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -33,14 +32,16 @@ public class StateCorrelationHisCompanyService {
     public void historyCorrectionProcecessing(String cid, String hisId, YearMonth start, YearMonth end){
         Optional<StateCorrelationHisCompany> stateCorrelationHisCompany = stateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid,hisId);
         if(stateCorrelationHisCompany.isPresent()){
-            Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorrelationHisCompany.get().getHistory().stream()
-                    .filter(h -> h.identifier().equals(hisId)).findFirst();
-            if(itemToBeUpdate.isPresent()){
-                stateCorrelationHisCompany.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,end));
-                stateCorrelationHisCompanyRepository.add(cid,itemToBeUpdate.get());
-                this.updateItemBefore(cid,itemToBeUpdate.get(),stateCorrelationHisCompany.get());
-            }
+            return;
         }
+        Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorrelationHisCompany.get().getHistory().stream()
+                .filter(h -> h.identifier().equals(hisId)).findFirst();
+        if(!itemToBeUpdate.isPresent()){
+            return;
+        }
+        stateCorrelationHisCompany.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,end));
+        stateCorrelationHisCompanyRepository.add(cid,itemToBeUpdate.get());
+        this.updateItemBefore(cid,itemToBeUpdate.get(),stateCorrelationHisCompany.get());
     }
 
     private void updateItemBefore( String cId, YearMonthHistoryItem item, StateCorrelationHisCompany stateCorrelationHisCompany){
