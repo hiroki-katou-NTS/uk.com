@@ -1,28 +1,29 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -34,6 +35,10 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	private IWorkChangeRegisterService workChangeRegisterService;
 	@Inject
 	private IFactoryApplication IfacApp;
+	@Inject
+	private CollectAchievement collectAchievement;
+	@Inject
+	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
@@ -71,7 +76,74 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				workChangeCommand.getWorkTimeEnd2(),
 				workChangeCommand.getGoWorkAtr2(), 
 				workChangeCommand.getBackHomeAtr2());
-
+		
+		//1日休日のチェック
+		checkHoliday(applicantSID,addCommand);
+		//ドメインモデル「勤務変更申請設定」の新規登録をする
 		return workChangeRegisterService.registerData(workChangeDomain, app);
+	}
+
+	
+	/**
+	 * 1日休日のチェック
+	 * @param SID
+	 * @param AddAppWorkChangeCommand
+	 */
+	private void checkHoliday(String applicantSID, AddAppWorkChangeCommand addCommand) {
+		boolean isCheck = addCommand.getWorkChange().getExcludeHolidayAtr() == 1;
+		// INPUT．休日除くチェック区分をチェックする
+		if (isCheck) {
+			//申請期間から休日の申請日を取得する
+			List<GeneralDate> dateClears = getHolidayFromApp(applicantSID, addCommand);
+
+			if (!CollectionUtil.isEmpty(dateClears)) {
+				//日付一覧(output)の件数 > 0
+				String dateListString = "";
+
+				for (int i = 0; i < dateClears.size(); i++) {
+					if (dateListString != "") {
+						dateListString += "、";
+					}
+					dateListString += dateClears.get(i).toString("yyyy/MM/dd");
+				}
+				throw new BusinessException("Msg_1459",dateListString);
+			}
+		}
+	}
+
+	
+	/**
+	 * 申請期間から休日の申請日を取得する
+	 * @param SID
+	 * @param AddAppWorkChangeCommand
+	 * @return dateClears
+	 */
+	private List<GeneralDate> getHolidayFromApp(String applicantSID, AddAppWorkChangeCommand addCommand) {
+		// 日付一覧をクリアする（初期化）
+		List<GeneralDate> dateClears = new ArrayList<GeneralDate>();
+
+		GeneralDate curentDate = addCommand.getApplication().getStartDate();
+
+		GeneralDate endDate = addCommand.getApplication().getEndDate();
+
+		String companyID = AppContexts.user().companyId();
+		// INPUT．期間．開始日から期間．終了日までループする
+		do {
+			// 実績の取得
+			AchievementOutput achi = collectAchievement.getAchievement(companyID, applicantSID, curentDate);
+
+			if (achi != null && !StringUtil.isNullOrEmpty(achi.getWorkType().getWorkTypeCode(), true)) {
+				// 1日休日の判定
+				boolean checkOneDay = specHdWkpTypeSv.jubgeHdOneDay(companyID, achi.getWorkType().getWorkTypeCode());
+				if (checkOneDay) {
+					// 日付一覧.Add(ループする日)
+					dateClears.add(curentDate);
+				}
+			}
+
+			curentDate = curentDate.addDays(1);
+		} while (!curentDate.equals(endDate));
+		
+		return dateClears;
 	}
 }
