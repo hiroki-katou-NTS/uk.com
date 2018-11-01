@@ -19,11 +19,14 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
@@ -38,6 +41,13 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
@@ -64,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -119,6 +130,15 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private EmployeeRecordAdapter employeeRecordAdapter;
+	
+	@Inject
+	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
+
+	@Inject
+	private ErrMessageInfoRepository errMessageInfoRepository;
 	
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
@@ -210,13 +230,17 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									//countDownLatch.countDown();
 									return;
 								}
+								
+								// 日別実績の作成入社前、退職後を期間から除く
+								DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime, empCalAndSumExecLogID);
+								
 								// 対象期間 = periodTime
 								// 職場構成期間 = workPlaceHistory
 								// 社員の履歴情報 = employeeGeneralInfoImport
 								// 労働条件 = workingConditionItems ( Map<String, List<DateHistoryItem>> mapLstDateHistoryItem )
 								// 特定日、加給、計算区分情報を取得する
 								// 履歴が区切られている年月日を判断する
-								List<GeneralDate> historySeparatedList = this.historyIsSeparated(periodTime, workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
+								List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod, workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
 								
 								PeriodInMasterList periodInMasterList = new PeriodInMasterList();
 								List<MasterList> masterLists = new ArrayList<>();
@@ -224,7 +248,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 								if (historySeparatedList.size() > 0) {
 									for (int i = 0; i < historySeparatedList.size(); i++) {
 										GeneralDate strDate = historySeparatedList.get(i);
-										GeneralDate endDate = (i == historySeparatedList.size() -1) ? periodTime.end() : historySeparatedList.get(i + 1).addDays(-1);
+										GeneralDate endDate = (i == historySeparatedList.size() -1) ? newPeriod.end() : historySeparatedList.get(i + 1).addDays(-1);
 										
 										// get 職場履歴一覧
 										List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoImport.getExWorkPlaceHistoryImports();
@@ -277,7 +301,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									periodInMasterList.setMasterLists(masterLists);
 								}								
 								
-								ProcessState cStatus = createData(asyncContext, periodTime, executionAttr, companyId,
+								ProcessState cStatus = createData(asyncContext, newPeriod, executionAttr, companyId,
 										empCalAndSumExecLogID, executionLog, dataSetter, employeeGeneralInfoImport,
 										stateHolder, employeeId, stampReflectionManagement, mapWorkingConditionItem,
 										mapDateHistoryItem, periodInMasterList);
@@ -329,6 +353,47 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		}
 
 		return status;
+	}
+	
+	private DatePeriod checkPeriod(String companyId, String employeeId, DatePeriod periodTime,
+			String empCalAndSumExecLogID) {
+
+		DatePeriod datePeriodOutput = periodTime;
+
+		// RequestList1
+		EmployeeRecordImport empInfo = employeeRecordAdapter.getPersonInfor(employeeId);
+
+		if (empInfo == null) {
+			// 社員の日別実績のエラーを作成する
+			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+					periodTime.start(), new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("020"), EnumAdaptor.valueOf(0, ExecutionContent.class), periodTime.start(),
+					new ErrMessageContent(TextResource.localize("Msg_1156")));
+			this.errMessageInfoRepository.add(employmentErrMes);
+			return null;
+		}
+
+		if (datePeriodOutput.start().before(empInfo.getEntryDate())
+				&& datePeriodOutput.end().afterOrEquals(empInfo.getEntryDate())
+				&& datePeriodOutput.end().beforeOrEquals(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(empInfo.getEntryDate(), datePeriodOutput.end());
+		} else if (datePeriodOutput.start().afterOrEquals(empInfo.getEntryDate())
+				&& datePeriodOutput.start().beforeOrEquals(empInfo.getRetiredDate())
+				&& datePeriodOutput.end().after(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(datePeriodOutput.start(), empInfo.getRetiredDate());
+		} else if (datePeriodOutput.start().afterOrEquals(empInfo.getEntryDate())
+				&& datePeriodOutput.end().beforeOrEquals(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(datePeriodOutput.start(), datePeriodOutput.end());
+		} else if (datePeriodOutput.start().beforeOrEquals(empInfo.getEntryDate())
+				&& datePeriodOutput.end().afterOrEquals(empInfo.getRetiredDate())) {
+			datePeriodOutput = new DatePeriod(empInfo.getEntryDate(), empInfo.getRetiredDate());
+		} else
+			datePeriodOutput = null;
+
+		return datePeriodOutput;
 	}
 	
 	// 会社職場個人の加給設定を取得する

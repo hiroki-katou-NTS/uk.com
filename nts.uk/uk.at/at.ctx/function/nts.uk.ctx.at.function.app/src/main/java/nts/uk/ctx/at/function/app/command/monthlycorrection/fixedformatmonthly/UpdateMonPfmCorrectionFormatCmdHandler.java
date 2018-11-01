@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -20,10 +22,11 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyPe
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
 import nts.uk.shr.com.context.AppContexts;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class UpdateMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPfmCorrectionFormatCmd> {
 
-	@Inject
+	@Inject 
 	private MonPfmCorrectionFormatRepository repo;
 	
 	@Inject
@@ -60,6 +63,7 @@ public class UpdateMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPf
 				MonPfmCorrectionFormat dataAfterDelete = repo.getMonPfmCorrectionFormat(companyID, command.getMonthlyPfmFormatCode()).get();
 				//sort
 				Collections.sort(dataAfterDelete.getDisplayItem().getListSheetCorrectedMonthly(), Comparator.comparing(SheetCorrectedMonthly::getSheetNo));
+				
 				//delete all sheet
 				int size = dataAfterDelete.getDisplayItem().getListSheetCorrectedMonthly().size();
 				

@@ -498,7 +498,8 @@ module nts.uk.at.view.kdw008.a {
                     confirm({ messageId: "Msg_18" }).ifYes(() => {
                         service.updateMonPfmCorrectionFormat(temp).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                                self.getListMonPfmCorrectionFormat().done(function(data) {
+                                service.getListMonPfmCorrectionFormat().done(function(data) {
+                                	self.loadData();
                                     self.initSelectedSheetNoHasMutated();
                                 });
                             });
