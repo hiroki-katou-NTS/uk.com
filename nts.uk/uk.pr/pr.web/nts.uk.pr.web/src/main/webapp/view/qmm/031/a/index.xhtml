@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+<ui:composition template="/master/sidebarpage.xhtml">
+    <ui:define name="sidebar-head">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.lifeInsurance.LifeInsuranceCode
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.lifeInsurance.LifeInsuranceName
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.earthquakeInsurance.EarthquakeInsuranceCode
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.earthquakeInsurance.EarthquakeInsuranceName
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm031.a.style.css"/>
+        <com:scriptfile path="qmm031.a.service.js"/>
+        <com:scriptfile path="qmm031.a.vm.js"/>
+        <com:scriptfile path="qmm031.a.start.js"/>
+    </ui:define>
+    <!-- A2_1 -->
+    <ui:define name="sidebar">
+        <ul class="navigator">
+            <!-- A2_2 -->
+            <li data-bind="click: onSelectTabA"><a href="#tabpanel-1"
+                                                   role="tab-navigator">#{i18n.getText('QMM031_9')}</a></li>
+            <!-- A2_3 -->
+            <li data-bind="click: onSelectTabB"><a href="#tabpanel-2"
+                                                   role="tab-navigator">#{i18n.getText('QMM031_10')}</a></li>
+        </ul>
+    </ui:define>
+    <ui:define name="sidebar-content">
+
+        <div id="tabpanel-1" role="tabpanel" style="min-width: 1000px;">
+            <div class="sidebar-content-header">
+                <span class="title">#{i18n.getText('QMM031_9')}</span>
+                <!-- A1_1 -->
+                <button tabindex="1" data-bind="click: newLifeInsurance, enable: !isNewMode()"
+                        style="margin-left: 50px;">#{i18n.getText('QMM031_4')}</button>
+                <!-- A1_2 -->
+                <button tabindex="2" data-bind="click: saveLifeInsurance, enable: $root.errors.isEmpty"
+                        class="proceed">#{i18n.getText('QMM031_5')}</button>
+                <!-- A1_3 -->
+                <button tabindex="3" data-bind="click: pdf, enable: false">#{i18n.getText('QMM031_6')}</button>
+                <!-- A1_4 -->
+                <button tabindex="4" data-bind="click: earthquakeInsurance, enable: false">#{i18n.getText('QMM031_3')}</button>
+                <!-- A1_5 -->
+                <button tabindex="5" data-bind="click: correctionLog, enable: false">#{i18n.getText('QMM031_7')}</button>
+                <!-- A1_6 -->
+                <button tabindex="6" data-bind="click: deleteLifeInsurance, enable: !isNewMode()"
+                        class="danger">#{i18n.getText('QMM031_8')}</button>
+            </div>
+            <ui:include src="../a/contentsB.xhtml"/>
+        </div>
+        <div id="tabpanel-2" role="tabpanel" style="min-width: 1000px;">
+            <div class="sidebar-content-header">
+                <span class="title">#{i18n.getText('QMM031_10')}</span>
+                <!-- A1_1 -->
+                <button tabindex="1" data-bind="click: newEarthquakeInsurance, enable: !isNewMode2()"
+                        style="margin-left: 50px;">#{i18n.getText('QMM031_4')}</button>
+                <!-- A1_2 -->
+                <button tabindex="2" data-bind="click: saveEarthquakeInsurance, enable: $root.errors.isEmpty"
+                        class="proceed">#{i18n.getText('QMM031_5')}</button>
+                <!-- A1_3 -->
+                <button tabindex="3" data-bind="click: pdf, enable: false">#{i18n.getText('QMM031_6')}</button>
+                <!-- A1_4 -->
+                <button tabindex="4" data-bind="click: earthquakeInsurance, enable: false">#{i18n.getText('QMM031_3')}</button>
+                <!-- A1_5 -->
+                <button tabindex="5" data-bind="click: correctionLog, enable: false">#{i18n.getText('QMM031_7')}</button>
+                <!-- A1_6 -->
+                <button tabindex="6" data-bind="click: deleteEarthquakeInsurance, enable: !isNewMode()"
+                        class="danger">#{i18n.getText('QMM031_8')}</button>
+            </div>
+            <ui:include src="../a/contentsC.xhtml"/>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

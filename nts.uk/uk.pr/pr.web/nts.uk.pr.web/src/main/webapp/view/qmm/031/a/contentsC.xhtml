@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div class="table" style="width: 1100px;">
+        <div class="cell valign-top" style="padding: 25px; width: 500px;">
+            <div id="C1_1" class="panel"
+                 data-bind="ntsPanel:{width: '420px', height: '420px',
+                                    direction: 'right',  visible: true, showIcon: true}">
+                <!--C1_2-->
+                <div id="C1_2" tabindex="7"
+                     data-bind="ntsSearchBox: {
+							searchMode: 'highlight',
+							targetKey: 'earthquakeInsuranceCode',
+							comId: 'C1_3',
+							items: lstEarthquakeInsurance,
+							selected: currentEarthquakeInsurance,
+							selectedKey: 'earthquakeInsuranceCode',
+							fields: ['earthquakeInsuranceCode','earthquakeInsuranceName'],
+							mode: 'igGrid'}"/>
+                <!-- C1_3 -->
+                <table id="C1_3" tabindex="8"
+                       data-bind="ntsGridList: { name: '#[QMM031_21]',
+								options: lstEarthquakeInsurance,
+								primaryKey: 'earthquakeInsuranceCode',
+								columns: [
+										{ headerText: '#{i18n.getText('QMM031_12')}', key: 'earthquakeInsuranceCode', width: 90, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM031_13')}', key: 'earthquakeInsuranceName', width: 310, formatter: _.escape }
+										],
+								multiple: false,
+								rows: 15,
+								value: currentCodeEarthquakeInsurance
+							}"></table>
+            </div>
+        </div>
+        <div class="cell valign-top" style="padding-top: 40px;">
+            <div class="table">
+                <div class="cell valign-top">
+                    <!--C2_1-->
+                    <div data-bind="ntsFormLabel: {
+                                constraint: ['EarthquakeInsuranceCode','EarthquakeInsuranceName'],
+                                required: true }">#{i18n.getText('QMM031_14')}</div>
+                    <!--C2_2-->
+                    <input id="earthquakeInsuranceCode" tabindex="9"
+                           data-bind="ntsTextEditor: {
+                                    option: {width: '20px'},
+                                    value: earthquakeInsuranceCode,
+                                    constraint: 'EarthquakeInsuranceCode',
+                                    name:'#[QMM031_22]',
+                                    required: true,
+                                    enable: enableEarthquake
+                             }"/>
+
+                    <!--C2_3-->
+                    <input id="earthquakeInsuranceName" tabindex="10"
+                           data-bind="ntsTextEditor: {
+                                    option: {width: '200px'},
+                                    value: earthquakeInsuranceName,
+                                    constraint: 'EarthquakeInsuranceName',
+                                    name:'#[QMM031_23]',
+                                    required: true,
+                                    enable: true
+                             }"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:composition>

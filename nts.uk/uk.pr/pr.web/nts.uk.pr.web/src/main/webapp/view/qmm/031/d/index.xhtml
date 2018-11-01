@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType.InsuranceTypeCode
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType.InsuranceTypeName
+        </com:ValidatorScript>
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 1100,
+                height: 630
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm031.d.service.js"/>
+        <com:scriptfile path="qmm031.d.start.js"/>
+        <com:scriptfile path="qmm031.d.vm.js"/>
+        <com:stylefile path="qmm031.d.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- D1_1 -->
+            <button data-bind="click: createInsuranceType, enable: !isNewMode()"
+                    tabindex="1">#{i18n.getText('QMM031_4')}</button>
+            <!-- D1_2 -->
+            <button data-bind="click: saveInsuranceType, enable: $root.errors.isEmpty"
+                    tabindex="2" class="proceed">#{i18n.getText('QMM031_5')}</button>
+            <!-- D1_3 -->
+            <button data-bind="click: deleteInsuranceType, enable: !isNewMode()"
+                    tabindex="3" class="danger">#{i18n.getText('QMM031_8')}</button>
+            <!-- D1_4 -->
+            <button data-bind="click: close" tabindex="4">#{i18n.getText('QMM031_24')}</button>
+        </div>
+        <div id="contents-area" style="margin-left: 20px;">
+            <div class="table" style="min-width: 1010px;">
+                <div class="cell valign-top" style="padding: 10px; width: 550px;">
+                    <!-- D2_1 -->
+                    <div class="panel"
+                         data-bind="ntsPanel:{width: '420px', height: '430px', direction: 'right',  visible: true, showIcon: true}">
+                        <div style="width: 100%; margin-top: 5px;">
+                            <!-- D2_2 -->
+                            <div tabindex="5"
+                                 data-bind="ntsSearchBox: {
+							searchMode: 'highlight', 
+							targetKey: 'insuranceTypeCode',
+							comId: 'D2_3',
+							items: lstInsuranceType,
+							selected: currentInsuranceType,
+							selectedKey: 'insuranceTypeCode',
+							fields: ['insuranceTypeCode','insuranceTypeName'],
+							mode: 'igGrid'}"/>
+                        </div>
+                        <!-- D2_3 -->
+                        <table id="D2_3" tabindex="6"
+                               data-bind="ntsGridList: {
+								name: '#[QMM031_19]',
+							    multiple: false,
+								options: lstInsuranceType,
+								optionsValue: 'insuranceTypeCode',
+								rows: 15,
+								columns: [
+										{ headerText: '#{i18n.getText('QMM031_17')}', key: 'atrOfInsuranceType', width: 90, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM031_12')}', key: 'insuranceTypeCode', width: 40, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM031_13')}', key: 'insuranceTypeName', width: 275, formatter: _.escape }
+										], 
+								
+								value: currentCode
+					}"></table>
+                    </div>
+                </div>
+                <div class="table">
+                    <div class="cell valign-top">
+                        <!-- D3_1 -->
+                        <div style="margin-top: 20px; width: 200px;"
+                             data-bind="ntsFormLabel: {}">#{i18n.getText('QMM031_25')}</div>
+                        <!-- D3_2 -->
+                        <div class="label" data-bind="text: viewCode" style="width: 200px;"></div>
+                    </div>
+                </div>
+                <div class="table">
+                    <div class="cell valign-top">
+                        <!-- D3_3 -->
+                        <div style="margin-top: 10px; width: 200px;"
+                             data-bind="ntsFormLabel: {}">#{i18n.getText('QMM031_26')}</div>
+                        <!-- D3_4 -->
+                        <div class="label" data-bind="text: viewName" style="width: 200px;"></div>
+                    </div>
+                </div>
+                <!-- D3_5 -->
+                <hr/>
+                <div class="table">
+                    <div class="valign-center control-group">
+                        <!-- D3_6 -->
+                        <div style="width: 200px;"
+                             data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM031_17')}</div>
+                        <!-- D3_7 D3_8-->
+                        <div tabindex="7" data-bind="ntsComboBox: {
+										 name:'#[QMM031_27]', width:150 ,
+										options: atrOfInsuranceType,
+										optionsValue: 'code',
+										visibleItemsCount: 3,
+										value: selectAtrOfInsuranceType,
+										optionsText: 'name',
+										columns: [
+											{ prop: 'name', length: 5 },
+										]}"></div>
+                    </div>
+                </div>
+                <div class="table">
+                    <div class="cell valign-top">
+                        <!-- D3_9 -->
+                        <div style="width: 200px;" data-bind="ntsFormLabel: {
+                                constraint: ['InsuranceTypeCode','InsuranceTypeName'],
+                                required: true }">#{i18n.getText('QMM031_14')}</div>
+                        <!--D3_10-->
+                        <input id="individualPriceCode" tabindex="8"
+                               data-bind="ntsTextEditor: {
+                                    option: {width: '20px'},
+                                    value: insuranceTypeCode,
+                                    constraint: 'InsuranceTypeCode',
+                                    name:'#[QMM031_28]',
+                                    required: true,
+                                    enable: enableInsuranceTypeCode
+                             }"/>
+
+                        <!--D3_11-->
+                        <input id="individualPriceName" tabindex="9"
+                               data-bind="ntsTextEditor: {
+                                    option: {width: '150px'},
+                                    value: insuranceTypeName,
+                                    constraint: 'InsuranceTypeName',
+                                    name:'#[QMM031_29]',
+                                    required: true,
+                                    enable: true
+                             }"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

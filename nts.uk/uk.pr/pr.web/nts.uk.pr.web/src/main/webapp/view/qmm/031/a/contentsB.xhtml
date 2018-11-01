@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div class="table" style="width: 1100px;">
+        <div class="cell valign-top" style="padding: 25px; width: 500px;">
+            <div id="B1_1" class="panel"
+                 data-bind="ntsPanel:{width: '420px', height: '420px',
+                                    direction: 'right',  visible: true, showIcon: true}">
+                <!--B1_2-->
+                <div id="B1_2" tabindex="7"
+                     data-bind="ntsSearchBox: {
+							searchMode: 'highlight',
+							targetKey: 'lifeInsuranceCode',
+							comId: 'B1_3',
+							items: lstLifeInsurance,
+							selected: currentLifeInsurance,
+							selectedKey: 'lifeInsuranceCode',
+							fields: ['lifeInsuranceCode','lifeInsuranceName'],
+							mode: 'igGrid'}"/>
+                <!-- B1_3 -->
+                <table id="B1_3" tabindex="8"
+                       data-bind="ntsGridList: { name: '#[QMM031_11]',
+								options: lstLifeInsurance,
+								primaryKey: 'lifeInsuranceCode',
+								columns: [
+										{ headerText: '#{i18n.getText('QMM031_12')}', key: 'lifeInsuranceCode', width: 90, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM031_13')}', key: 'lifeInsuranceName', width: 310, formatter: _.escape }
+										],
+								multiple: false,
+								rows: 15,
+								value: currentCodeLifeInsurance
+							}"></table>
+            </div>
+        </div>
+        <div class="cell valign-top" style="padding-top: 40px;">
+            <div class="table">
+                <div class="cell valign-top">
+                    <!--B2_1-->
+                    <div data-bind="ntsFormLabel: {
+                                constraint: ['LifeInsuranceCode','LifeInsuranceName'],
+                                required: true }">#{i18n.getText('QMM031_14')}</div>
+                    <!--B2_2-->
+                    <input id="lifeInsuranceCode" tabindex="9"
+                           data-bind="ntsTextEditor: {
+                                    option: {width: '20px'},
+                                    value: lifeInsuranceCode,
+                                    constraint: 'LifeInsuranceCode',
+                                    name:'#[QMM031_15]',
+                                    required: true,
+                                    enable: enableLifeInsuranceCode
+                             }"/>
+
+                    <!--B2_3-->
+                    <input id="lifeInsuranceName" tabindex="10"
+                           data-bind="ntsTextEditor: {
+                                    option: {width: '200px'},
+                                    value: lifeInsuranceName,
+                                    constraint: 'LifeInsuranceName',
+                                    name:'#[QMM031_16]',
+                                    required: true,
+                                    enable: true
+                             }"/>
+                </div>
+            </div>
+            <!--B2_4-->
+            <hr/>
+            <div class="table">
+                <div class="cell valign-top">
+                    <!--B2_5-->
+                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM031_18')}</div>
+                    <!-- B2_6 -->
+                    <button tabindex="11" data-bind="click: openD"
+                            style="margin-left: 50px;">#{i18n.getText('QMM031_18')}</button>
+                </div>
+            </div>
+            <div class="table" style="margin-left: 106px; margin-top: 15px;">
+                <!-- B2_7 -->
+                <table id="B2_7" tabindex="12"
+                       data-bind="ntsGridList: { name: '#[QMM031_19]',
+								options: lstInsuranceType,
+								primaryKey: 'insuranceTypeCode',
+								columns: [
+										{ headerText: '#{i18n.getText('QMM031_17')}', key: 'atrOfInsuranceType', width: 150, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM031_12')}', key: 'insuranceTypeCode', width: 40, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM031_13')}', key: 'insuranceTypeName', width: 240, formatter: _.escape }
+										],
+								multiple: false,
+								rows: 10,
+								value: currentCodeInsuranceType
+							}"></table>
+            </div>
+        </div>
+    </div>
+</ui:composition>
