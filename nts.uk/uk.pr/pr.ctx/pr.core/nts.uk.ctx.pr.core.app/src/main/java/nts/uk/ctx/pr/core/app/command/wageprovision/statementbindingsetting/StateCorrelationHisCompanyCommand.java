@@ -25,6 +25,10 @@ public class StateCorrelationHisCompanyCommand
     * 終了年月
     */
     private int endYearMonth;
-    
 
+    private int modeEditHistory;
+
+    private int type;
+
+    private String masterCode ;
 }

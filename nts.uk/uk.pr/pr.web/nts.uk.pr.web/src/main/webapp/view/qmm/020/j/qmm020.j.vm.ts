@@ -4,52 +4,68 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
     import model = qmm020.share.model;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import currentScreen = nts.uk.ui.windows.getSelf;
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
-        startYearMonth:         KnockoutObservable<number> = ko.observable();
-
-        endYearMonth:           KnockoutObservable<number> = ko.observable(999912);
-        modeScreen : KnockoutObservable<number> = ko.observable(MODE_SCREEN.MODE_ONE);
+        startYearMonthPeriod: KnockoutObservable<number> = ko.observable();
+        startYearMonthMasterDate: KnockoutObservable<number> = ko.observable();
+        endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
+        modeScreen : KnockoutObservable<number> = ko.observable(null);
+        height : KnockoutObservable<number> = ko.observable(200);
+        params : any = null;
         constructor(){
-
+            if(1 == MODE_SCREEN.MODE_ONE){
+                let windowSize = nts.uk.ui.windows.getSelf();
+                windowSize.$dialog.height(200);
+            }
+            let params = getShared(model.PARAMETERS_SCREEN_J.INPUT);
+            if (params == null || params === undefined) {
+                return;
+            }
+            this.params = params;
+            this.modeScreen(this.params.modeScreen);
 
         }
         submit(){
+            let self = this;
+            if(self.params.isPerson){
+                if (self.startYearMonthPeriod() > self.params.endYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) {
+                    let data :any = {
+                        startYearMonth: self.startYearMonthPeriod(),
+                        endYearMonth: self.endYearMonthPeriod(),
+                        startYearMonthMasterDate: self.startYearMonthMasterDate(),
+                        methodEditing: self.methodEditing()
+                    };
+                    setShared(model.PARAMETERS_SCREEN_J.OUTPUT,data);
 
+                }
+                else {
+                    nts.uk.ui.dialog.info({messageId: 'Msg_16'});
+                }
+                close();
+            }
+            if (self.startYearMonthPeriod() > self.params.endYearMonth) {
+                let data: any = {
+                    startYearMonth: self.startYearMonthPeriod(),
+                    endYearMonth: self.endYearMonthPeriod(),
+                    startYearMonthMasterDate: self.startYearMonthMasterDate(),
+                    methodEditing: self.methodEditing()
+                };
+                setShared("PARAMESE_SCREENJ_OUTPUT", data);
+            }
+            else {
+                nts.uk.ui.dialog.info({messageId: 'Msg_16'});
+            }
+            close();
         }
         cancel(){
             close();
         }
-        getModeScreen(){
-            let self = this;
-            let params = getShared('CMF002_Y_PROCESINGID');
-            if(params.modeScreen() == USAGE_MASTER.DEPARMENT && params.modeScreen() == USAGE_MASTER.POSITION || params.modeScreen() == USAGE_MASTER.DEPARMENT &&  params.modeScreen() != USAGE_MASTER.INDIVIDUAL ){
-                self.modeScreen(MODE_SCREEN.MODE_ONE);
-            }
-            else{
-                if(params.modeScreen() == USAGE_MASTER.DEPARMENT || params.modeScreen() == USAGE_MASTER.POSITION){
-                    self.modeScreen(MODE_SCREEN.MODE_TWO);
-                }
-                else{
-                    self.modeScreen(MODE_SCREEN.MODE_THREE);
-                }
-            }
-        }
-        checkValidate(){
-            let self = this;
-            let params = getShared('CMF002_Y_PROCESINGID');
-            if(params.isPerson){
-                if(self.startYearMonth() > params.endYearMonth && self.startYearMonth() <= self.endYearMonth()){
-                    let data :any = {
-                            startYearMonth : self.startYearMonth(),
 
-                    }
-                    setShared("PARAMESE_SCREENJ_OUTPUT",data);
-                }
-            }
-        }
+
     }
     export function getHistoryEditMethod(): Array<model.ItemModel> {
         return [
@@ -62,22 +78,13 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         UPDATE = 1
     }
     export enum MODE_SCREEN {
+        /* When another screen open*/
         MODE_ONE = 1,
+        /* When screen D, F open */
         MODE_TWO = 2,
+        /*When screen H open*/
         MODE_THREE = 3
     }
-    export enum USAGE_MASTER {
-        /*"部門"*/
-        DEPARMENT = 0,
-        /*雇用*/
-        EMPLOYEE = 1,
-        /*分類*/
-        CLASSIFICATION = 2,
-        /*職位*/
-        POSITION = 3,
-        /*"給与分類"*/
-        SALARY = 4,
-        /* 個人*/
-        INDIVIDUAL = 5
-    }
+
+
 }
