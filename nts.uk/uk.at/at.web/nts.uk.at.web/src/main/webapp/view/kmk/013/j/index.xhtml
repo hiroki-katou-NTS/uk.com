@@ -49,7 +49,7 @@
 						
 						<tr>
 							<td>
-								<div id="form-lb" class="workSelection" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_335')}</div>
+								<div id="form-lb" class="workSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK013_335')}</div>
 							</td>
 						</tr>
 						<tr>
@@ -66,7 +66,7 @@
 									class="limited-label" id="itemname_absenceDay"
 									data-bind="ntsTextEditor:{
 	                                         value: workTypeNames,
-	                                         required: true,
+	                                         required: false,
 	                                         enable: true,
 	                                         readonly:true}" />
 								</span>
@@ -88,7 +88,7 @@
 									class="limited-label" id="itemname_attendanceDay"
 									data-bind="ntsTextEditor:{
 	                                         value: workTypeNamesAttendance,
-	                                         required: true,
+	                                         required: false,
 	                                         enable: true,
 	                                         readonly:true}" />
 								</span>
