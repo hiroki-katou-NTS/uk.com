@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 580, height: 470 };</script>
+        <script>var dialogSize = { width: 580, height: 400 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm001.c.vm.js" />
@@ -18,7 +18,7 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div id="title" style="margin-bottom: 10px">
+            <div id="title" style="margin: 0px 0px 10px 10px;">
                 <!-- C1_1 -->
                 <span id="C1_1" class="label">#{i18n.getText('QMM001_37')}</span>
             </div>

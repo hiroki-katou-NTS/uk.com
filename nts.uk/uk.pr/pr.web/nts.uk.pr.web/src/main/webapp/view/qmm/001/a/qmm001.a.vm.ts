@@ -21,10 +21,10 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             { code: PARATARGETATR.NOT_COVERED+'', name: getText('QMM001_27') }
         ]);
         itemsSwitchParaAvailable: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            { code: SWITCH_EFF_CATEGORY.UNAVAILABLE+'', name:  getText('QMM001_20') },
-            { code: SWITCH_EFF_CATEGORY.AVAILABLE+'', name: getText('QMM001_21') }
+            { code: SWITCH_EFF_CATEGORY.AVAILABLE+'', name:  getText('QMM001_20') },
+            { code: SWITCH_EFF_CATEGORY.UNAVAILABLE+'', name: getText('QMM001_21') }
         ]);
-        selectedSwitchParaAvai: KnockoutObservable<number> = ko.observable(SWITCH_EFF_CATEGORY.UNAVAILABLE);
+        selectedSwitchParaAvai: KnockoutObservable<number> = ko.observable(SWITCH_EFF_CATEGORY.AVAILABLE);
         selectedSwitchParaTargetAtr: KnockoutObservable<number> = ko.observable(PARATARGETATR.TARGET);
         salGenParaIdent: KnockoutObservable<SalGenParaIdentification> = ko.observable(new SalGenParaIdentification() );
         salGenParaHistory:KnockoutObservable<any> = ko.observable(new SalGenParaYearMonthHistory());
@@ -59,7 +59,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 self.salGenParaHistory(_.find(self.listHistory(), {'historyId': data}));
             });
             self.selectedSwitchParaAvai.subscribe((data) => {
-                if(data == SWITCH_EFF_CATEGORY.AVAILABLE){
+                if(data == SWITCH_EFF_CATEGORY.UNAVAILABLE){
                     errors.clearAll();
                     self.value(null);
                 }
@@ -115,7 +115,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                             self.salGenParaValue(null);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
-                            self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
+                            self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
                             self.isDisplayHis(false);
                         }
                     });
@@ -135,7 +135,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         else{
                             self.value(null);
                             self.salGenParaValue(null);
-                            self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
+                            self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
                             self.isDisplayHis(false);
@@ -158,7 +158,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         else{
                             self.value(null);
                             self.salGenParaValue(null);
-                            self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.UNAVAILABLE);
+                            self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
                             self.isDisplayHis(false);
@@ -290,13 +290,14 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         dataSalGenValueTemp  = {
                             historyId :hisId ,
                             selection :null ,
-                            availableAtr: SWITCH_EFF_CATEGORY.UNAVAILABLE,
+                            availableAtr: SWITCH_EFF_CATEGORY.AVAILABLE,
                             numValue :null,
                             charValue :null,
                             timeValue :null,
-                            targetAtr: PARATARGETATR.TARGET
+                            targetAtr: (self.salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TARGET_EXEMPT) ? PARATARGETATR.TARGET : null
                         };
                         self.value(null);
+                        self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
                     }
                     else{
                         dataSalGenValueTemp  ={
@@ -314,11 +315,11 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     dataSalGenValueTemp  = {
                         historyId :hisId ,
                         selection :null ,
-                        availableAtr: SWITCH_EFF_CATEGORY.UNAVAILABLE,
+                        availableAtr: SWITCH_EFF_CATEGORY.AVAILABLE,
                         numValue :null,
                         charValue :null,
                         timeValue :null,
-                        targetAtr: PARATARGETATR.TARGET
+                        targetAtr: (self.salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.TARGET_EXEMPT) ? PARATARGETATR.TARGET : null
                     };
                     self.value(null);
                     self.isDisplayHis(true);
@@ -333,7 +334,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         register() {
             let self = this;
             $('#A4_2').focus();
-            if( self.selectedSwitchParaAvai() == SWITCH_EFF_CATEGORY.UNAVAILABLE ){
+            if( self.selectedSwitchParaAvai() == SWITCH_EFF_CATEGORY.AVAILABLE ){
                 self.validate();
             }
 
@@ -352,7 +353,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         break;
                     }
                     case PARAATTRITYPE.TEXT :{
-                        self.salGenParaValue().charValue = self.value();
+                        self.salGenParaValue().charValue = (self.value()=="")? null : self.value();
                         break;
                     }
 
@@ -481,7 +482,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         }
         isEnableSwitchButton(){
             let self = this;
-            if(MODESCREEN.UPDATE && self.salGenParaIdent()==PARAHISTORYATR.DONOTMANAGE){
+            if(MODESCREEN.UPDATE && self.salGenParaIdent().historyAtr ==PARAHISTORYATR.DONOTMANAGE){
                 return false;
             }
             return true;
@@ -536,6 +537,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 self.isCopy(params.takeOver);
                 self.addHistory(start);
                 self.modeScreen(MODESCREEN.ADD);
+                self.isDisplayHis(true);
             });
         }
         openDialogC(){
@@ -568,7 +570,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 };
             }
             else{
-                if(self.listHistory().length ==1 ){
+                if(self.listHistory().length ==1 || index ==self.listHistory().length-1){
                     startLastDate = 0;
                 }
                 else {
@@ -596,6 +598,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 self.itemSelectionProcess(paraNo,index);
                 self.salGenParaIdent(_.find(self.listItems(), {'paraNo': paraNo}));
                 self.modeScreen(MODESCREEN.ADD);
+                self.isDisplayHis(true);
 
             });
         }

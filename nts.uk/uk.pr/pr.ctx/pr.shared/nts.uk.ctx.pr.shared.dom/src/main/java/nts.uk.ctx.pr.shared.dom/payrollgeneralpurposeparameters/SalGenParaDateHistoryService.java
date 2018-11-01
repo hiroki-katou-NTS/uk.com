@@ -2,11 +2,8 @@ package nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters;
 
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +15,8 @@ public class SalGenParaDateHistoryService {
 
     @Inject
     private SalGenParaDateHistRepository salGenParaDateHistRepository;
+    @Inject
+    private SalGenParaValueRepository salGenParaValueRepository;
 
     public void updateDateHistory(String cId, String paraNo, String hisId, GeneralDate start, GeneralDate end){
         Optional<SalGenParaDateHistory> dateHistory = salGenParaDateHistRepository.getAllSalGenParaDateHist(cId , paraNo);
@@ -48,6 +47,7 @@ public class SalGenParaDateHistoryService {
             return;
         }
         dateHistory.get().remove(itemToBeDelete.get());
+        salGenParaValueRepository.remove(hisId);
         salGenParaDateHistRepository.remove(dateHistory.get().getParaNo(), cId, hisId);
         if (dateHistory.get().getDateHistoryItem().size() > 0 ){
             DateHistoryItem lastestItem = dateHistory.get().getDateHistoryItem().get(0);

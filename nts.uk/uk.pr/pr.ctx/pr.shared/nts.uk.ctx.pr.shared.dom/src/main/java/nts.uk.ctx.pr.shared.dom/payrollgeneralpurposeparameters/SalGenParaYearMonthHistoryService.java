@@ -1,15 +1,13 @@
 package nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters;
 
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Optional;
 
 
 @Stateless
@@ -17,6 +15,8 @@ public class SalGenParaYearMonthHistoryService {
 
     @Inject
     private SalGenParaYMHistRepository salGenParaYMHistRepository;
+    @Inject
+    private SalGenParaValueRepository salGenParaValueRepository;
 
     public void updateYearMonthHistory(String cId, String paraNo,String hisId, YearMonth start, YearMonth end){
         Optional<SalGenParaYearMonthHistory> yearMonthHistory = salGenParaYMHistRepository.getAllSalGenParaYMHist(cId , paraNo);
@@ -46,6 +46,7 @@ public class SalGenParaYearMonthHistoryService {
             return;
         }
         yearMonthHistory.get().remove(itemToBeDelete.get());
+        salGenParaValueRepository.remove(hisId);
         salGenParaYMHistRepository.remove(yearMonthHistory.get().getParaNo(), cId, hisId);
         if (yearMonthHistory.get().getHistory().size() > 0 ){
             YearMonthHistoryItem lastestItem = yearMonthHistory.get().getHistory().get(0);

@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import model = qmm001.share.model;
+    import service = nts.uk.pr.view.qmm001.c.service;
     export class ScreenModel {
         startYearMonth: KnockoutObservable<number> = ko.observable();
         startDate: KnockoutObservable<string> = ko.observable('');
@@ -48,7 +49,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                     self.endYearMonth(params.end);
                 }
                 if (params.historyAtr == 0) {
-                    self.startLastDate(self.convertStringToDate(params.startLastDate));
+                    self.startLastDate((params.startLastDate == 0) ? 0 : self.convertStringToDate(params.startLastDate));
                     self.end(getText('QMM001_31', [params.end]));
                     self.startDate(params.start);
                     self.endDate(params.end);

@@ -53,7 +53,7 @@
 								searchText: '検索',
 								selected: '',
 								selectedKey: 'paraNo',
-								fields: ['paraNo'],
+								fields: ['paraNo','name'],
 								mode: 'igGrid'
 								}"/>
 					<!-- value search resulf  -->
@@ -127,29 +127,30 @@
 						 data-bind="ntsFormLabel: {}">
 						<label>#{i18n.getText('QMM001_17')}</label>
 					</div>
+					<div style="margin: 7px 0px 0px 30px" data-bind="if:salGenParaIdent().historyAtr == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
+							<span id="A3_12">#{i18n.getText('QMM001_18')}</span>
+					</div>
 					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.ADD">
-						<div style="margin: 10px 0px 0px 29px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
+
+						<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
 							<span id="A3_9" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().startYearMonth)"/>
 							<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
 							<span id="A3_11" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().endYearMonth)"/>
 						</div>
-						<div style="margin: 10px 0px 0px 30px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
+						<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
 							<span id="A3_9" data-bind="text: salGenParaHistory().startDate"/>
 							<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
 							<span id="A3_11" data-bind="text: salGenParaHistory().endDate"/>
 						</div>
 					</div>
 					<div  data-bind="if: modeScreen() == nts.uk.pr.view.qmm001.a.viewmodel.MODESCREEN.UPDATE">
-						<div style="margin: 7px 0px 0px 30px" data-bind="if:salGenParaIdent().historyAtr == nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
-							<span id="A3_12">#{i18n.getText('QMM001_18')}</span>
-						</div>
 						<div data-bind="if:salGenParaIdent().historyAtr!= nts.uk.pr.view.qmm001.a.viewmodel.PARAHISTORYATR.DONOTMANAGE">
-							<div style="margin: 10px 0px 0px 29px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
+							<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.YEARMONTH &amp;&amp; isDisplayHis()== true">
 								<span id="A3_9" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().startYearMonth)"/>
 								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
 								<span id="A3_11" data-bind="text: nts.uk.time.formatYearMonth(salGenParaHistory().endYearMonth)"/>
 							</div>
-							<div style="margin: 10px 0px 0px 30px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
+							<div style="margin-top: 10px;" data-bind="if:modeHistory() == nts.uk.pr.view.qmm001.a.viewmodel.MODEHISTORY.DATE &amp;&amp; isDisplayHis()== true" >
 								<span id="A3_9" data-bind="text: salGenParaHistory().startDate"/>
 								<span id="A3_10">#{i18n.getText('QMM001_13')}</span>
 								<span id="A3_11" data-bind="text: salGenParaHistory().endDate"/>
@@ -193,7 +194,7 @@
 																value: value,
 																required: true,
 																constraint: 'ParamNumber',
-																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
 																placeHolder: 'クリア',
 																} "/>
 				</div>
@@ -212,7 +213,7 @@
 																value: value,
 																required: true,
 																constraint: 'ParamTime',
-																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
 																placeHolder: 'クリア',
 																} "/>
 				</div>
@@ -225,13 +226,12 @@
 					</div>
 					<input id="A4_10" style="margin-left: 3px" tabindex="12" class="B3_7"
 						   data-bind="ntsTextEditor: {
-																option : {width: '70px'},
-																option : {width: '70px'},
+																option : {width: '170'},
 																name: '#{i18n.getText('QMM001_24')}',
 																value: value,
 																required: true,
 																constraint: 'ParamCharacter',
-																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.UNAVAILABLE,
+																enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
 																placeHolder: 'クリア',
 																} "/>
                 </div>
