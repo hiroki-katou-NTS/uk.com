@@ -7,9 +7,6 @@ body {
     overflow: hidden;
     /* 	width: 1405px; */
 }
-#contents-area{
-    margin: 10px 0px 0px 10px;
-}
 
 #functions-area button.danger {
     margin-left: 45px;

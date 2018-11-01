@@ -105,24 +105,20 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                 if (self.validateYearMonth()) {
                     return;
                 }
-                dialog.info({messageId: "Msg_15"}).then(() => {
-                    setShared('QMM011_A', {
-                        startYearMonth: self.startYearMonth(),
-                        takeOver: self.takeOver()
-                    });
-                    close();
+                setShared('QMM011_A', {
+                    startYearMonth: self.startYearMonth(),
+                    takeOver: self.takeOver()
                 });
+                close();
             } else {
                 if (self.validateYearMonthDay()) {
                     return;
                 }
-                dialog.info({messageId: "Msg_15"}).then(() => {
-                    setShared('QMM011_A', {
-                        startYearMonthDay: self.startYearMonthDay(),
-                        takeOver: self.takeOver()
-                    });
-                    close();
+                setShared('QMM011_A', {
+                    startYearMonthDay: self.startYearMonthDay(),
+                    takeOver: self.takeOver()
                 });
+                close();
             }
         }
     }

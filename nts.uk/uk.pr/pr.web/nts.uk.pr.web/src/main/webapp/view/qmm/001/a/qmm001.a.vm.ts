@@ -62,8 +62,8 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 if(data == SWITCH_EFF_CATEGORY.UNAVAILABLE){
                     errors.clearAll();
                     self.value(null);
+                    return;
                 }
-
             });
 
 
@@ -112,7 +112,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         }
                         else{
                             self.value(null);
-                            self.salGenParaValue(null);
+                            self.salGenParaValue(itemList);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
@@ -134,7 +134,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         }
                         else{
                             self.value(null);
-                            self.salGenParaValue(null);
+                            self.salGenParaValue(itemList);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
@@ -157,7 +157,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         }
                         else{
                             self.value(null);
-                            self.salGenParaValue(null);
+                            self.salGenParaValue(itemList);
                             self.selectedSwitchParaAvai(SWITCH_EFF_CATEGORY.AVAILABLE);
                             self.listHistory(itemList);
                             self.modeScreen(MODESCREEN.NEW);
@@ -277,7 +277,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                         }
                     }
                     self.selectedSwitchParaAvai(item.availableAtr);
-                    self.selectedSwitchParaTargetAtr(item.targetAtr);
+                    self.selectedSwitchParaTargetAtr((item.targetAtr == null)? PARATARGETATR.TARGET : item.targetAtr);
                     self.valueComboBox((item.selection == null)? 0 : item.selection);
                 }).fail(error => {
                     dialog.alertError(error);
@@ -371,7 +371,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 numValue: (self.salGenParaValue().numValue == null ? null : self.salGenParaValue().numValue),
                 charValue: (self.salGenParaValue().charValue == null ? null : self.salGenParaValue().charValue),
                 timeValue:(self.salGenParaValue().timeValue == null ? null : self.salGenParaValue().timeValue),
-                targetAtr: self.selectedSwitchParaTargetAtr(),
+                targetAtr: (self.selectedSwitchParaAvai() == SWITCH_EFF_CATEGORY.UNAVAILABLE ) ? null : self.selectedSwitchParaTargetAtr(),
                 modeScreen: self.modeScreen()
             };
             dataHisValue = {
@@ -482,7 +482,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         }
         isEnableSwitchButton(){
             let self = this;
-            if(MODESCREEN.UPDATE && self.salGenParaIdent().historyAtr ==PARAHISTORYATR.DONOTMANAGE){
+            if(self.modeScreen() ==  MODESCREEN.UPDATE && self.salGenParaIdent().historyAtr ==PARAHISTORYATR.DONOTMANAGE){
                 return false;
             }
             return true;

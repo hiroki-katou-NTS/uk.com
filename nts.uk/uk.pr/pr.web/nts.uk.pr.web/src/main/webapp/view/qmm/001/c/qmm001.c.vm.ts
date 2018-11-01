@@ -6,7 +6,6 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import model = qmm001.share.model;
-    import service = nts.uk.pr.view.qmm001.c.service;
     export class ScreenModel {
         startYearMonth: KnockoutObservable<number> = ko.observable();
         startDate: KnockoutObservable<string> = ko.observable('');
