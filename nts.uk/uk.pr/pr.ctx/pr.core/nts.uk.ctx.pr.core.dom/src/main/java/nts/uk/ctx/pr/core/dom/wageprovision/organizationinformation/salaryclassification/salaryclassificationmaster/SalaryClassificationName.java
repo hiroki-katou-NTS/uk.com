@@ -10,7 +10,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
 */
 
 @StringMaxLength(10)
-@StringCharType(CharType.ANY_HALF_WIDTH)
 public class SalaryClassificationName extends StringPrimitiveValue<SalaryClassificationName>
 {
     

@@ -10,7 +10,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 
 @StringMaxLength(500)
-@StringCharType(CharType.ANY_HALF_WIDTH)
 public class Memo extends StringPrimitiveValue<Memo> {
 
     public Memo(String rawValue) {

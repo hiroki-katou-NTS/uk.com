@@ -10,7 +10,6 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
         isDeleteEnable: KnockoutObservable<boolean>;
         isCodeEnable: KnockoutObservable<boolean>;
         isUpdateMode: KnockoutObservable<boolean>;
-        dirty: nts.uk.ui.DirtyChecker;
 
         constructor() {
             let self = this;
@@ -24,11 +23,9 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
             self.isDeleteEnable = ko.observable(false);
             self.selectedItem = ko.observable(new model.SalaryClassificationInformation(null));
             self.isUpdateMode = ko.observable(true);
-            self.dirty = new nts.uk.ui.DirtyChecker(self.selectedItem);
             self.selectedCode.subscribe((code) => {
                 if (code) {
                     self.selectedItem(new model.SalaryClassificationInformation(self.find(code)));
-                    self.dirty.reset();
                     self.isUpdateMode(true);
                     self.setUpdateMode();
                 } else {
@@ -88,24 +85,20 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
             }
             let item = self.selectedItem();
             if (self.isUpdateMode()) {
-                if (self.dirty.isDirty()) {
-                    nts.uk.ui.block.invisible();
-                    service.updateSalaryClassificationInformation(ko.toJS(item)).done(function () {
-                        service.getAllSalaryClassificationInformation().done(function (data: any) {
-                            self.dataSource(data);
-                            nts.uk.ui.block.clear();
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
-                                self.dirty.reset();
-                            });
-                        }).fail(function (res) {
-                            nts.uk.ui.block.clear();
-                            nts.uk.ui.dialog.bundledErrors(res);
-                        });
+                nts.uk.ui.block.invisible();
+                service.updateSalaryClassificationInformation(ko.toJS(item)).done(function () {
+                    service.getAllSalaryClassificationInformation().done(function (data: any) {
+                        self.dataSource(data);
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     }).fail(function (res) {
                         nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.bundledErrors(res);
                     });
-                }
+                }).fail(function (res) {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.bundledErrors(res);
+                });
             } else {
                 nts.uk.ui.block.invisible();
                 service.addSalaryClassificationInformation(ko.toJS(item)).done(function () {
@@ -114,7 +107,6 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
                         nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                             self.selectedCode(item.salaryClassificationCode());
-                            self.dirty.reset();
                         });
                     }).fail(function (res) {
                         nts.uk.ui.block.clear();

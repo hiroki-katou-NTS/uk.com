@@ -22,7 +22,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <button tabindex="1" data-bind="click: setNewMode">
+            <button tabindex="1" data-bind="click: setNewMode, enable: isUpdateMode">
                 #{i18n.getText('CMM015_2')}
             </button>
             <!--A1_2-->
@@ -98,7 +98,7 @@
                             enable: true}" tabindex="8"
                                id="A3_3"/>
                     </div>
-                    <div class="valign-center control-group">
+                    <div class="valign-top control-group">
                         <!--A3_4-->
                         <div data-bind="ntsFormLabel: {inline: false, constraint: 'Memo'}"
                              id="A3_4">
