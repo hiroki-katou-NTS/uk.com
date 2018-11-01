@@ -17,7 +17,7 @@ module nts.uk.ui.mgrid {
         _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = () => _mafollicle[_currentPage][_currentSheet], 
         _cstifle = () => _mafollicle[SheetDef][_currentSheet].columns, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth,
         _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers,
-        _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240,
+        _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _remainHeight = 190,
         _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
     
     export class MGrid {
@@ -65,6 +65,9 @@ module nts.uk.ui.mgrid {
             }
             if (!_.isNil(self.subWidth)) {
                 _remainWidth = parseFloat(self.subWidth);
+            }
+            if (!_.isNil(self.subHeight)) {
+                _remainHeight = parseFloat(self.subHeight);
             }
             _$grid.mGrid({});
         }
@@ -2602,7 +2605,7 @@ module nts.uk.ui.mgrid {
          */
         export function screenLargeur(noRowsMin: any, noRowsMax: any) {
             if (!_headerWrappers || _headerWrappers.length === 0) return;
-            let width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
+            let width, height = window.innerHeight - _remainHeight - parseFloat(_headerHeight), btmw;
             let pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
             let sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
             if (_headerWrappers.length > 1) {

@@ -1686,9 +1686,9 @@ var nts;
                     return this.month;
                 };
                 JapanYearMonth.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire + " ")
-                        + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月");
+                    return (this.empire === undefined ? "" : this.empire)
+                        + (this.year === undefined || this.year === "" ? "" : this.year + "年")
+                        + (this.month === undefined || this.month === "" ? "" : this.month + "月");
                 };
                 return JapanYearMonth;
             }());
@@ -1706,6 +1706,9 @@ var nts;
                     return null;
                 }
                 var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
+                if (onlyYear && dateString.length < 5) {
+                    formattedYear = Number(dateString);
+                }
                 for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
                     var i = _a[_i];
                     var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
@@ -16106,6 +16109,7 @@ var nts;
                                 }
                                 //                    container.data("changed", true);
                                 if (typeof result.parsedValue === "string") {
+                                    $input.data("change", true);
                                     if (_.has(data, "type") && ko.toJS(data.type) === "date") {
                                         var momentDate = moment(result.parsedValue);
                                         value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
@@ -16113,6 +16117,7 @@ var nts;
                                     else {
                                         value(result.parsedValue);
                                     }
+                                    $input.data("change", false);
                                     var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                                     if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                         $input.data("change", true);
@@ -17149,12 +17154,13 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var isNotFunctionArea = _.isEmpty($('#functions-area')) && _.isEmpty($('#functions-area-bottom'));
+                        var isNotSideBar = _.isEmpty($('#sidebar'));
                         var isFrame = nts.uk.util.isInFrame();
-                        if (isNotFunctionArea && isFrame) {
+                        if (isNotFunctionArea && isNotSideBar && isFrame) {
                             if (!_.isEmpty(errors)) {
                                 var mesArr_1 = [], mesCodeArr_1 = _.map(errors, function (error) { return error.errorCode; });
                                 _.forEach(errors, function (error) {
-                                    mesArr_1.push(error.message);
+                                    mesArr_1.push(error.messageText);
                                     mesCodeArr_1.push(error.errorCode);
                                 });
                                 var totalMes = _.join(_.uniq(mesArr_1), '\n');
@@ -17556,6 +17562,7 @@ var nts;
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 //$input.ntsError('clear');
                                 if (result.isValid) {
+                                    $input.ntsError('clear');
                                     if (value() === result.parsedValue) {
                                         $input.val(result.parsedValue);
                                     }
@@ -22146,7 +22153,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _remainHeight = 190, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -22186,6 +22193,9 @@ var nts;
                         }
                         if (!_.isNil(self.subWidth)) {
                             _remainWidth = parseFloat(self.subWidth);
+                        }
+                        if (!_.isNil(self.subHeight)) {
+                            _remainHeight = parseFloat(self.subHeight);
                         }
                         _$grid.mGrid({});
                     };
@@ -24606,7 +24616,7 @@ var nts;
                     function screenLargeur(noRowsMin, noRowsMax) {
                         if (!_headerWrappers || _headerWrappers.length === 0)
                             return;
-                        var width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
+                        var width, height = window.innerHeight - _remainHeight - parseFloat(_headerHeight), btmw;
                         var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
@@ -39113,7 +39123,13 @@ var nts;
                             event.preventDefault();
                             var files = evt.originalEvent["dataTransfer"].files;
                             if (!nts.uk.util.isNullOrEmpty(files)) {
-                                self.validateFile(files);
+                                var firstImageFile = self.helper.getFirstFile(files);
+                                if (self.validateFile(firstImageFile)) {
+                                    self.assignImageToView(firstImageFile);
+                                }
+                                else {
+                                    self.changeStatus(ImageStatus.FAIL);
+                                }
                             }
                         });
                         this.$previewArea.on('dragenter', function (event) {

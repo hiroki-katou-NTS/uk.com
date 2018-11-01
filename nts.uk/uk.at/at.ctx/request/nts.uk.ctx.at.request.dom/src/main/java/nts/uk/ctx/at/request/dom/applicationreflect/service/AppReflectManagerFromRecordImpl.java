@@ -124,6 +124,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(status.stream().anyMatch(c -> c == ProcessStateReflect.INTERRUPTION)) {
 			return ProcessStateReflect.INTERRUPTION;
 		}
+		dataSetter.setData("reflectApprovalCount", status.size());
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;
 	}
