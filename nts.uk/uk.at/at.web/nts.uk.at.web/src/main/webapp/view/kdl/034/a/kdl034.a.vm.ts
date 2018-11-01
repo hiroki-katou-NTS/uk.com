@@ -14,6 +14,7 @@ module nts.uk.at.view.kdl034.a {
             version: number = 0;
             applicationContent: ApplicationDto;
             appID: Array<string> = [];
+            sName: string = '';
             constructor() {
                 var self = this;
                 let param = getShared("KDL034_PARAM");
@@ -31,6 +32,7 @@ module nts.uk.at.view.kdl034.a {
                             let approvalFrame = result.approvalFrameDtoForRemand;
                             let listApprover: Array<Approver> = [];
                             self.errorFlag = result.errorFlag;
+                            self.sName = applicant.pname;
                             applicant = new Approver(applicant.pid, applicant.pname, null, null, result.applicantPosition, false);
                             listApprover.push(applicant);
                             approvalFrame.forEach(function(approvalState) {
@@ -66,8 +68,9 @@ module nts.uk.at.view.kdl034.a {
                         let command = {
                             appID: self.appID,
                             version: self.version,
-                            order: currentApprover.phaseOrder,
-                            returnReason: self.returnReason()
+                            order: currentApprover.phaseOrder,//差し戻し先
+                            remandReason: self.returnReason(),//差し戻しコメント
+                            applicaintName: self.sName//申請本人の名前
                         }
                         nts.uk.at.view.kdl034.a.service.remand(command) 
                             .done(function(result){
