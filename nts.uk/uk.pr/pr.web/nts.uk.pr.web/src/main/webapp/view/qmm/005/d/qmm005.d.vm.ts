@@ -398,6 +398,23 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 self.isAdvanceSetting(false);
                 windowSize.$dialog.height(420);
             }
+            
+            // when resize, position of dropdowns > 0. so, it should be set to -99999 
+            self.changePositionOfComboBoxDropDown();
+        }
+        
+        changePositionOfComboBoxDropDown() {
+            var $dropDownElements = $('.ui-igcombo-dropdown.ui-igcombo-no-border');
+            if ($dropDownElements.length <= 0 ) {
+                return;
+            }
+
+            $dropDownElements.each(function() {
+                $(this).css({
+                    top: '-99999px',
+                    left: '-99999px'
+                });     
+            });
         }
 
         startPage(): JQueryPromise<any> {
