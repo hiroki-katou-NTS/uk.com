@@ -1,12 +1,12 @@
 package nts.uk.ctx.pr.core.infra.repository.payrollgeneralpurposeparameters;
 
-import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.infra.entity.payrollgeneralpurposeparameters.QpbmtSalGenParamIdent;
 import nts.uk.ctx.pr.core.infra.entity.payrollgeneralpurposeparameters.QpbmtSalGenParamIdentPk;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaIdentification;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaIdentificationRepository;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ public class JpaSalGenParaIdentificationRepository extends JpaRepository impleme
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalGenParamIdent f";
-    private static final String SELECT_ALL_BY_CID = SELECT_ALL_QUERY_STRING+" WHERE f.salGenParamIdentPk.cid =:cid ";
+    private static final String SELECT_ALL_BY_CID = SELECT_ALL_QUERY_STRING+" WHERE f.salGenParamIdentPk.cid =:cid ORDER BY f.salGenParamIdentPk.paraNo ASC";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenParamIdentPk.paraNo =:paraNo AND  f.salGenParamIdentPk.cid =:cid ";
 
     @Override
