@@ -64,8 +64,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 return;
             }
             if (self.takeoverMethod() == 0) {
-                let startValidPeriod = self.dateValue().startDate.replace('/', '');
-
+                let startValidPeriod = self.dateValue().startDate;
 
                 if (startValidPeriod <= self.startDateString().toString() || startValidPeriod <= self.endDateString().toString()) {
                     dialog.alertError({messageId: "Msg_79"});

@@ -311,7 +311,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
                     } else {
                         self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.individualPriceCode, emp.individualPriceName, wp.name, wp.name));
+                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
                         self.initKCP009();
                         dfd.resolve();
                     }
