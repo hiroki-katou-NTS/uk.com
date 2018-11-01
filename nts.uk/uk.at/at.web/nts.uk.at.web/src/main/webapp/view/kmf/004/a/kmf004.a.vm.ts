@@ -372,6 +372,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             self.ageSelected.subscribe(function(value) {
+                $("#startAge").ntsError('clear');
+                $("#endAge").ntsError('clear');
                 if(value) {
                     self.startAgeEnable(true);
                     self.endAgeEnable(true);
@@ -502,6 +504,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 isMultiple: true,
                 selectedCodes: self.empLst(),
                 showNoSelection: false,
+                isShowWorkClosure: false
             }, true);
             
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
@@ -643,7 +646,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
             $(".period-date-inp").trigger("validate");
-            
+            $("#ageBaseDate").trigger("validate");
+            $("#startDate").trigger("validate");
+            $("#endDate").trigger("validate");
+            $("#startAge").trigger("validate");
+            $("#endAge").trigger("validate");
             let dataItem = self.preData();
             
             if(self.yearReq() && self.dayReq()) {

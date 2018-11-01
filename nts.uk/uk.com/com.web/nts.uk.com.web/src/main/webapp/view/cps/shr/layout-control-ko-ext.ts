@@ -1609,6 +1609,7 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
+                                        constraint.charType = 'AnyHalfWidth';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                         break;
                                     case ITEM_STRING_TYPE.EMPLOYEE_CODE:
@@ -1926,6 +1927,17 @@ module nts.custombinding {
                     def.textValue = ko.observable('');
 
                     def.defValue = ko.toJS(def.value);
+
+                    ko.computed({
+                        read: () => {
+                            let editable = ko.toJS(def.editable);
+
+                            if (!editable && $('#' + def.nameid).ntsError('hasError')) {
+                                $('#' + def.nameid).trigger('change');
+                            }
+                        },
+                        disposeWhen: () => !def.value
+                    });
 
                     if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let fl = true,
@@ -2347,6 +2359,17 @@ module nts.custombinding {
                                         textValue: ko.observable(c.textValue),
                                         value: ko.observable(undefined),
                                         defValue: undefined
+                                    });
+
+                                    ko.computed({
+                                        read: () => {
+                                            let editable = ko.toJS(_r.editable);
+
+                                            if (!editable && $('#' + _r.nameid).ntsError('hasError')) {
+                                                $('#' + _r.nameid).trigger('change');
+                                            }
+                                        },
+                                        disposeWhen: () => !_r.value
                                     });
 
                                     _r.value.subscribe(v => {

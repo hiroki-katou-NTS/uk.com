@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -10,13 +11,14 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 丸め前合計時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class TotalTimeBeforeRound {
@@ -56,12 +58,14 @@ public class TotalTimeBeforeRound {
 	 * @param regAndIrgTimeOfMonthly 月別実績の通常変形時間
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間
 	 * @param flexAggrSet フレックス時間勤務の月の集計設定
+	 * @param outsideOTBDItems 時間外超過設定：内訳項目一覧（積上番号順）
 	 */
 	public void copyValues(
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly,
 			FlexTimeOfMonthly flexTimeOfMonthly,
-			FlexMonthWorkTimeAggrSet flexAggrSet){
+			FlexMonthWorkTimeAggrSet flexAggrSet,
+			List<OutsideOTBRDItem> outsideOTBDItems){
 		
 		// 就業時間をコピーする
 		val workTimeOfMonthly = aggregateTotalWorkingTime.getWorkTime();
@@ -90,19 +94,22 @@ public class TotalTimeBeforeRound {
 							aggrHolidayWorkTime.getTransferTime()));
 		}
 		
-		// 時間外超過対象設定を確認する
-		// ※　現状、固定的に、法定内フレックスを含む　計算とする。2018.5.11 shuichi_ishida
-
-		// 法定外フレックスのみでフレックス時間をコピーする
-		//this.flexExcessTime = new AttendanceTimeMonth(
-		//		flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
-		//		flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
+		// 法定内フレックス時間を含めるか判断する
+		if (ExcessOutsideWorkMng.isIncludeLegalFlexTime(outsideOTBDItems)){
 			
-		// 法定内フレックスを含んでフレックス時間をコピーする
-		this.flexExcessTime = new AttendanceTimeMonth(
-				flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
-				flexTimeOfMonthly.getFlexTime().getLegalFlexTime().v() +
-				flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
+			// 法定内フレックスを含んでフレックス時間をコピーする
+			this.flexExcessTime = new AttendanceTimeMonth(
+					flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
+					flexTimeOfMonthly.getFlexTime().getLegalFlexTime().v() +
+					flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
+		}
+		else {
+
+			// 法定外フレックスのみでフレックス時間をコピーする
+			this.flexExcessTime = new AttendanceTimeMonth(
+					flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v() +
+					flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v());
+		}
 		
 		// 週割増・月割増をコピーする
 		this.weeklyTotalPremiumTime = regAndIrgTimeOfMonthly.getWeeklyTotalPremiumTime();

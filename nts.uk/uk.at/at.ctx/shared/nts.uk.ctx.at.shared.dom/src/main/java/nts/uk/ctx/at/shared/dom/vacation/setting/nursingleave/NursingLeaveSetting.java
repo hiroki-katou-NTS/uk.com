@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -12,8 +11,9 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
- * The class 介護看護休暇設定.
+ * The Class NursingLeaveSetting.
  */
+// 介護看護休暇設定
 @Getter
 public class NursingLeaveSetting extends AggregateRoot {
 

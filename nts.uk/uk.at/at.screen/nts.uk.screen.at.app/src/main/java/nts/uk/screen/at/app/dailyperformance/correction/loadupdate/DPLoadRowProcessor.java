@@ -163,7 +163,7 @@ public class DPLoadRowProcessor {
 		}).collect(Collectors.toList()));
 		
 		Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld = param.getDailys().stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
-		result.setLstCellStateCalc(itemCalcScreen(mapDtoChange, mapDtoOld, param.getLstData(), param.getLstAttendanceItem().stream().collect(Collectors.toMap(x -> x.getId(), x -> x)), param.getCellEdits()));
+		result.setLstCellStateCalc(itemCalcScreen(mapDtoChange, mapDtoOld, param.getLstData(), param.getLstAttendanceItem().stream().collect(Collectors.toMap(x -> x.getId(), x -> x)), param.getCellEdits()).getLeft());
 		Map<String, DailyModifyResult> resultDailyMap = resultDailys.stream().collect(Collectors
 				.toMap(x -> process.mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -183,8 +183,11 @@ public class DPLoadRowProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
 				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
 			}
 		}
@@ -279,8 +282,9 @@ public class DPLoadRowProcessor {
 		return result;
 	}
 	
-	public List<DPCellStateDto> itemCalcScreen(Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange, Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld, List<DPDataDto> lstData, Map<Integer, DPAttendanceItem> itemHeaders, List<CellEdit> cellEdits){
+	public Pair<List<DPCellStateDto>, List<DailyModifyResult>> itemCalcScreen(Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange, Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld, List<DPDataDto> lstData, Map<Integer, DPAttendanceItem> itemHeaders, List<CellEdit> cellEdits){
 		List<DPCellStateDto> lstCellCalcAll = new ArrayList<>();
+		List<DailyModifyResult> dailyModifyResult = new ArrayList<>();
 		mapDtoChange.forEach((key, dtoNew) -> {
 			val dtoOld = mapDtoOld.get(key);
 			DailyItemValue dailyItemNew = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoNew, itemHeaders.keySet()).stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList()))
@@ -291,16 +295,22 @@ public class DPLoadRowProcessor {
 			
 			Optional<DPDataDto> data = lstData.stream().filter(x -> x.getDate().equals(key.getRight()) && x.getEmployeeId().equals(key.getLeft())).findFirst();
 			
-		    if(data.isPresent()) lstCellCalcAll.addAll(lstCellCalc(dailyItemOld.getItems(), dailyItemNew.getItems(), itemHeaders, data.get(), cellEdits));
+			if (data.isPresent()) {
+				val resultCompare = lstCellCalc(dailyItemOld.getItems(), dailyItemNew.getItems(), itemHeaders,
+						data.get(), cellEdits);
+				lstCellCalcAll.addAll(resultCompare.getLeft());
+				dailyModifyResult.add(new DailyModifyResult().employeeId(dailyItemNew.getEmployeeId())
+						.workingDate(dailyItemNew.getDate()).items(resultCompare.getRight()));
+			}
 		});
-		return lstCellCalcAll;
+		return Pair.of(lstCellCalcAll, dailyModifyResult);
 	}
 	
-	public List<DPCellStateDto> lstCellCalc(List<ItemValue> itemOlds, List<ItemValue> itemNews, Map<Integer, DPAttendanceItem> itemHeaders, DPDataDto dataSource, List<CellEdit> cellEdits){
+	public Pair<List<DPCellStateDto>, List<ItemValue>>  lstCellCalc(List<ItemValue> itemOlds, List<ItemValue> itemNews, Map<Integer, DPAttendanceItem> itemHeaders, DPDataDto dataSource, List<CellEdit> cellEdits){
 		List<DPCellStateDto> lstCellCalc = new ArrayList<>();
 		itemOlds = itemOlds.stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		List<ItemValue> itemNewTemps = itemNews.stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
-		List<ItemValue> items = itemOlds.stream().filter(x -> !itemNewTemps.contains(x) && !cellEdits.contains(new CellEdit("_"+dataSource.getId(), x.getItemId()))).collect(Collectors.toList());
+		List<ItemValue> items = compareValue(itemNewTemps, itemOlds, itemHeaders).stream().filter(x ->!cellEdits.contains(new CellEdit("_"+dataSource.getId(), x.getItemId()))).collect(Collectors.toList());
 		items.stream().forEach(x ->{
 			val item = itemHeaders.get(x.getItemId());
 			if (item != null && itemHeaders.get(x.getItemId()).getAttendanceAtr() == 4) {
@@ -312,7 +322,31 @@ public class DPLoadRowProcessor {
 				//
 			}
 		});
-		return lstCellCalc;
+		return Pair.of(lstCellCalc, items);
+	}
+	
+	private List<ItemValue> compareValue(List<ItemValue> itemNewTemps, List<ItemValue> itemOlds,
+			Map<Integer, DPAttendanceItem> itemHeaders) {
+		List<ItemValue> result = new ArrayList<>();
+		val mapItemNew = itemNewTemps.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+		itemOlds.stream().forEach(x -> {
+			val itemNew = mapItemNew.get(x.getItemId());
+			val atr = itemHeaders.get(x.itemId());
+			// TimeWithDay
+			if (atr.isNumber()
+					&& ((itemNew.getValue() == null && x.getValue() != null && Double.parseDouble(x.getValue()) == 0)
+					   || (x.getValue() == null && itemNew.getValue() != null && Double.parseDouble(itemNew.getValue()) == 0) 
+					   || (itemNew.getValue() != null && x.getValue() != null && Double.parseDouble(x.getValue()) == 0 && Double.parseDouble(itemNew.getValue()) == 0))) {
+				itemNew.value(0);
+				x.value(0);
+			}
+            if(x.getValue() != null && itemNew.getValue() != null) {
+            	if(!x.getValue().equals(itemNew.getValue())) result.add(itemNew);
+            }else if (!x.equals(itemNew)) {
+				result.add(itemNew);
+			}
+		});
+		return result;
 	}
 
 }

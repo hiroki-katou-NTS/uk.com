@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class AddSubAttendanceItemsTest {
 	public void calculate_True() {
 		AddSubAttendanceItems items = createItems();
 		
-		assertEquals(items.calculate(c -> c), 20);
+		assertEquals(items.calculate(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())), 20d);
 	}
 	
 	private AddSubAttendanceItems createItems(){

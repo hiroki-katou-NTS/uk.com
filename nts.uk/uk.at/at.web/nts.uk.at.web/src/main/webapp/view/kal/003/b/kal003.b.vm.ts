@@ -6,6 +6,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
+    
 
 
     export class ScreenModel {
@@ -130,12 +131,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.modeScreen(1);
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
-                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
-                    //                    self.settingExtraMon = $.extend({}, shareutils.getDefaultExtraResultMonthly(0), option.data);
-                    //                    let extraResultMonthly = shareutils.convertTransferDataToExtraResultMonthly(self.settingExtraMon);
-                    //                    let data = ko.mapping.fromJS(option.data);
-                    //                    data.currentConditions = ko.observableArray([]);
-                    //                    sharemodel.setupCurrent(data);
+//                    self.listTypeCheckVacation = ko.observableArray(__viewContext.enums.TypeCheckVacation);
+                    self.listTypeCheckVacation = ko.observableArray([
+                        new sharemodel.ItemModel(0, resource.getText('KAL003_112')),
+                        new sharemodel.ItemModel(1, resource.getText('KAL003_113')),
+                        new sharemodel.ItemModel(2, resource.getText('KAL003_114')),
+                        new sharemodel.ItemModel(3, resource.getText('KAL003_115')),
+                        new sharemodel.ItemModel(6, resource.getText('KAL003_118'))
+                    ]);
+                                        
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                     break;
                 }
@@ -1085,7 +1089,50 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this,
                 dfd = $.Deferred<any>();
             service.getSpecialHoliday().done(function(data) {
-                self.listSpecialholidayframe = data;
+                let holidayCode;
+                _.map(self.extraResultMonthly().conditions(), (d) => {
+                    if (d.haveComboboxFrame()) {
+                        if (!nts.uk.util.isNullOrUndefined(d.listItemID()) && d.listItemID() > 0) {
+                            holidayCode = d.listItemID()[0];
+                        }
+                    }
+                });
+                if (!nts.uk.util.isNullOrUndefined(holidayCode)) {
+                    let newdata = [];
+                    let haveInList = false;
+                    let index = 0;
+                    if (!nts.uk.util.isNullOrUndefined(data) && data.length > 0) {
+                        let length = data.length;
+                        _.map(data, (d) => {
+                            if (index == 0 && holidayCode < d.specialHolidayCode) {
+                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
+                                newdata.push(d);
+                            } else if ((holidayCode > d.specialHolidayCode && index == length - 1)
+                                || (holidayCode > d.specialHolidayCode && index < length - 1 && holidayCode < data[index + 1].specialHolidayCode)) {
+                                newdata.push(d);
+                                newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
+                            } else {
+                                newdata.push(d);
+                            }
+
+                            if (d.specialHolidayCode === holidayCode) {
+                                haveInList = true;
+                            }
+                            index++;
+                        });
+                    } else {
+                        newdata.push({ specialHolidayCode: holidayCode, specialHolidayName: resource.getText('KAL003_120') });
+                    }
+
+                    if (!haveInList) {
+                        self.listSpecialholidayframe = newdata;
+                    } else {
+                        self.listSpecialholidayframe = data;
+                    }
+                } else {
+                    self.listSpecialholidayframe = data;
+                }
+
                 dfd.resolve();
             });
             return dfd.promise();

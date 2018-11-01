@@ -287,7 +287,7 @@ public class ErAlWorkRecordCheckService {
 		ContinuousHolidayCheckResult r = new ContinuousHolidayCheckResult();
 		
 		checkSetting.findSpecial(AppContexts.user().companyId()).ifPresent(setting -> {
-			if(setting.isUseAtr()){
+			if(setting.isUseAtr() && setting.getMaxContinuousDays().greaterThan(0) && !setting.getTargetWorkType().isEmpty()){
 				Map<GeneralDate, Integer> result = new HashMap<>();
 				
 				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true, new HashSet<>(workInfos));
@@ -307,7 +307,12 @@ public class ErAlWorkRecordCheckService {
 		boolean finishing = false;
 		List<WorkInfoOfDailyPerformance> subWorkInfos = getWorkInfoInRange(range, employeeId, workInfos);
 
-		if (subWorkInfos.isEmpty()) { return; }
+		if (subWorkInfos.isEmpty()) {
+			if (count >= setting.getMaxContinuousDays().v()) {
+				result.put(markDate, count);
+			}
+			return;	
+		}
 		
 		for (WorkInfoOfDailyPerformance info : subWorkInfos) {
 			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
@@ -350,7 +355,7 @@ public class ErAlWorkRecordCheckService {
 			subWorkInfos.addAll(workInfo.findByListDate(employeeId, dateInRange));
 		}
 		
-		return subWorkInfos;
+		return subWorkInfos.stream().sorted((s1, s2) -> s2.getYmd().compareTo(s1.getYmd())).collect(Collectors.toList());
 	}
 
 	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {
@@ -364,20 +369,20 @@ public class ErAlWorkRecordCheckService {
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 		return condition.checkWith(workInfo, item -> {
 			if (item.isEmpty()) {
-				return item;
+				return new ArrayList<>();
 			}
-			/** TODO: case double value */
+			
 			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
 	}
 
-	private Integer getValue(ItemValue value) {
+	private Double getValue(ItemValue value) {
 		if (value.value() == null) {
 			return null;
 		}
-		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
-				: (Integer) value.value();
+		return value.getValueType().isDouble() ? (Double) value.value()
+												: Double.valueOf((Integer) value.value());
 	}
 
 	private <T> Map<String, T> toEmptyResultMap() {
