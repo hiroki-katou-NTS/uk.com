@@ -24,6 +24,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
@@ -142,6 +143,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
+	
+	public static int MAX_DELAY_PARALLEL = 0;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -214,7 +217,10 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 //				ExecutorService executorService = Executors.newFixedThreadPool(20);
 //				CountDownLatch countDownLatch = new CountDownLatch(emloyeeIds.size());
 
-				this.managedParallelWithContext.forEach(emloyeeIds, employeeId -> {
+				this.managedParallelWithContext.forEach(
+						ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+						emloyeeIds,
+						employeeId -> {
 					if (asyncContext.hasBeenRequestedToCancel()) {
 //						asyncContext.finishedAsCancelled();
 						stateHolder.add(ProcessState.INTERRUPTION);
@@ -527,13 +533,11 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		 * 勤務種別変更時に再作成　=　false reCreateWorkType
 		 * 異動時に再作成　=　false reCreateWorkPlace
 		 * 休職・休業者再作成　=　false reCreateRestTime
+		 * 暫定データ作成もcreateDailyResultEmployeeDomainServiceの中で実行
 		 */
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext,
 				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false, false, false, 
 				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
-		
-		// 暫定データの登録
-		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, periodTime.datesBetween());
 		
 		// ログ情報（実行内容の完了状態）を更新する
 		updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
