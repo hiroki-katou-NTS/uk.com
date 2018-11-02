@@ -838,7 +838,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									if (optRemarkInput.isPresent()) {
 										String value = optRemarkInput.get().getValue();
 //										value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
-										value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
+										if(value != null) {
+											value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
+										}
 										personalPerformanceDate.detailedErrorData += (value == null? "" : value + "　");
 									}
 								}
@@ -1051,8 +1053,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
 //							value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
-							value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
-							detailedDate.errorDetail += (value == null? "" : value + "　");
+							if(value != null) {
+								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
+							}
+							detailedDate.errorDetail += (value == null ? "" : value + "　");
 						}
 					}
 					// Append マスタ未登録
