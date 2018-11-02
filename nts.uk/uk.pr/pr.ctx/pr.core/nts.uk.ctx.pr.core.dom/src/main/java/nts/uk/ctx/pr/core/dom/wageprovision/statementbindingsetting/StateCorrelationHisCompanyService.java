@@ -1,15 +1,15 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Optional;
+
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class StateCorrelationHisCompanyService {

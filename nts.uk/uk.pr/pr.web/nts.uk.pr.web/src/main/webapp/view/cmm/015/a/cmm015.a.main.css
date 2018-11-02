@@ -1,0 +1,36 @@
+#contents-area{
+    width: 1280px;
+}
+
+#left-content {
+    width: 350px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#right-content {
+    width: 500px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#A2_2 {
+    width: 300px;
+}
+
+#A3_1, #A3_4 {
+    width: 200px;
+}
+
+#A3_2 {
+    width: 85px;
+}
+
+#A3_3 {
+    width: 200px;
+}
+
+#A3_5 {
+    width: 350px;
+    height: 135px;
+}

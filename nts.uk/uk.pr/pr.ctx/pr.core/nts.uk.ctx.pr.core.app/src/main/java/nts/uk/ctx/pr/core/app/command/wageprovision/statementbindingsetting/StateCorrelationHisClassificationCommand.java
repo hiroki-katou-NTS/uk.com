@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+
+import  java.util.List;
 
 @Value
 public class StateCorrelationHisClassificationCommand {
@@ -15,7 +15,7 @@ public class StateCorrelationHisClassificationCommand {
     /**
     * 履歴ID
     */
-    private String historyID;
+    private String hisId;
     
     /**
     * 開始年月
@@ -28,4 +28,6 @@ public class StateCorrelationHisClassificationCommand {
     private Integer endYearMonth;
     
     private int Mode;
+
+    List<StateLinkSettingMasterCommand> stateLinkSettingMaster;
 }

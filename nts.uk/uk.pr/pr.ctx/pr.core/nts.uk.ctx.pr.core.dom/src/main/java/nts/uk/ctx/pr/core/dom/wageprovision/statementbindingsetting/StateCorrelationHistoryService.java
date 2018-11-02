@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 @Stateless
 public class StateCorrelationHistoryService {

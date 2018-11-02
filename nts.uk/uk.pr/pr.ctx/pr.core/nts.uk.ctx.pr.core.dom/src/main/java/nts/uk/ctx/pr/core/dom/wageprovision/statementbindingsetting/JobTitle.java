@@ -26,11 +26,4 @@ public class JobTitle {
 
     /** The sequence code. */
     private String sequenceCode;
-
-    /** The start date. */
-    private GeneralDate startDate;
-
-    /** The end date. */
-    private GeneralDate endDate;
-    
 }

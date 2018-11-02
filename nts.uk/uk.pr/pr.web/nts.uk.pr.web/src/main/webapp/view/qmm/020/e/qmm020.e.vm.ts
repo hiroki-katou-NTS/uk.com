@@ -7,13 +7,13 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
     import model = qmm020.share.model;
     import error = nts.uk.ui.errors;
     import modal = nts.uk.ui.windows.sub.modal;
+    import MODE_SCREEN = nts.uk.pr.view.qmm020.share.model.MODE_SCREEN;
 
     export class ScreenModel {
 
         listStateCorrelationHisClassification: KnockoutObservableArray<StateCorrelationHisClassification> =  ko.observableArray([]);
         hisIdSelected: KnockoutObservable<string> = ko.observable();
         currentCode: KnockoutObservable<any> = ko.observable();
-        selectButton: KnockoutObservable<string> = ko.observable("");
         mode: KnockoutObservable<number> = ko.observable();
         listStateLinkSettingMaster: KnockoutObservableArray<StateLinkSettingMaster> =  ko.observableArray([]);
         transferMethod: KnockoutObservable<number> = ko.observable();
@@ -110,7 +110,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         getStateLinkSettingMaster(hisId: string, startYearMonth: number){
             block.invisible();
             let self = this;
-            service.getStateLinkMaster(hisId, startYearMonth).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
+            service.getStateLinkMasterClassification(hisId, startYearMonth).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(StateLinkSettingMaster.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
@@ -128,7 +128,8 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             let self = this;
             let start;
                         setShared('QMM011_M_PARAMS_INPUT', {
-                            startYearMonth: start
+                            startYearMonth: start,
+                            modeScreen: model.MODE_SCREEN.CLASSIFICATION
                         });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
                 let params = getShared('QMM020_M_PARAMS_OUTPUT');
@@ -257,6 +258,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         bonusName:string;
         salaryName: string;
         displayE3_4: string;
+        displayE3_5: string;
         constructor() {
 
         }
@@ -268,9 +270,11 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 dto.masterCode = item.masterCode;
                 dto.categoryName = "分類名称";
                 dto.salaryCode = item.salaryCode;
-                dto.bonusName = item.bonusCode;
+                dto.bonusCode = item.bonusCode;
+                dto.bonusName = item.bonusName;
                 dto.salaryName = item.salaryName;
-                dto.displayE3_4 = item.salaryCode + "    " + item.salaryName;
+                dto.displayE3_4 = item.salaryCode + "      " + item.salaryName;
+                dto.displayE3_5 = item.bonusCode + "      " + item.bonusName;
                 listStateLinkSettingMaster.push(dto);
             });
             return listStateLinkSettingMaster;
