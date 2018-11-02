@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
@@ -56,6 +55,7 @@ public class StateLinkSettingMasterDto {
         this.historyID = historyID;
         this.masterCode = masterCode;
         this.salaryCode = salaryCode;
+        this.categoryName = null;
         this.bonusCode = bonusCode;
         this.bonusName = bonusName;
         this.salaryName = salaryName;

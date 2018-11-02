@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
-import nts.uk.ctx.pr.core.ac.wageprovision.statementbindingsetting.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -49,20 +48,39 @@ public class StateCorrelationHisPositionFinder {
         if(!stateLinkSettingDate.isPresent()) {
             return null;
         }
-        List<JobTitle> listJobTitle = syJobTitleAdapter.findAll(stateLinkSettingDate.get().getDate());
+        List<JobTitle> listJobTitle = syJobTitleAdapter.findAll(cId, stateLinkSettingDate.get().getDate());
         if(listJobTitle == null || listJobTitle.isEmpty()){
             return null;
         }
         List<StatementLayout> statementLayout = statementLayoutFinder.getStatement(cId, startYearMonth);
         List<StateLinkSettingMaster>  listStateLinkSettingMaster = masterFinder.getStateLinkSettingMasterByHisId(hisId);
         List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = listStateLinkSettingMaster.stream()
-                .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout)).collect(Collectors.toList()).stream()
-        return listJobTitle.stream().filter(i -> i.getJobTitleCode().equals());
-    private List<StateLinkSettingMasterDto> addCategoryName(JobTitle job, List<StateLinkSettingMasterDto> stateLinkSettingMasterDto){
-            return null;
-
-        }
+                .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout)).collect(Collectors.toList());
+        return listJobTitle.stream().map(i -> this.addCategoryName(i, listStateLinkSettingMasterDto)).collect(Collectors.toList());
     }
-
+    private StateLinkSettingMasterDto addCategoryName(JobTitle job, List<StateLinkSettingMasterDto> stateLinkSettingMasterDto){
+        Optional<StateLinkSettingMasterDto> jobtitle = stateLinkSettingMasterDto.stream().filter(i -> i.getMasterCode().equals(job.getJobTitleCode())).findFirst();
+        if(jobtitle.isPresent()) {
+        	return new StateLinkSettingMasterDto(
+        			jobtitle.get().getHistoryID(), 
+        			jobtitle.get().getMasterCode(),
+        			job.getJobTitleName(),
+        			jobtitle.get().getSalaryCode(),
+        			jobtitle.get().getBonusCode(),
+        			jobtitle.get().getBonusName(),
+        			jobtitle.get().getSalaryName()
+        			);
+        }
+        return new StateLinkSettingMasterDto(
+    			jobtitle.get().getHistoryID(), 
+    			jobtitle.get().getMasterCode(),
+    			job.getJobTitleName(),
+    			null,
+    			null,
+    			null,
+    			null
+    			);
+    }
+    
 
 }

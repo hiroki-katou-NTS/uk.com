@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingDate;
 
 /**
@@ -11,8 +10,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSet
 */
 @AllArgsConstructor
 @Value
-public class StateLinkSettingDateDto
-{
+public class StateLinkSettingDateDto {
     
     /**
     * 履歴ID

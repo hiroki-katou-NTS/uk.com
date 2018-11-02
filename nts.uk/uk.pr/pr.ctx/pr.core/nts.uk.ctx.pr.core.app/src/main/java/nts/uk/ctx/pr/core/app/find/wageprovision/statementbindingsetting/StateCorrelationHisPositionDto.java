@@ -1,13 +1,11 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisPosition;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisPosition;
 /**
 * 明細書紐付け履歴（職位）: DTO
 */
