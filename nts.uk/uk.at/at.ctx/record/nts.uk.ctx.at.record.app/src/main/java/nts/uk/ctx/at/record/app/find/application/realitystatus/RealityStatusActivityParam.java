@@ -17,4 +17,5 @@ public class RealityStatusActivityParam {
 	private boolean isConfirmData;
 	private List<String> listWorkplaceId;
 	private List<String> listEmpCd;
+	private Integer closureID;
 }

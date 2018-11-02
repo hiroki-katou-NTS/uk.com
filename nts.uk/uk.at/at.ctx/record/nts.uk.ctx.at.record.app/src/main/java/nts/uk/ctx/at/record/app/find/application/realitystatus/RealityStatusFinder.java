@@ -31,7 +31,7 @@ public class RealityStatusFinder {
 	public List<StatusWkpActivityOutput> getStatusWkpActivity(RealityStatusActivityParam wkpInfoDto) {
 		// アルゴリズム「承認状況職場実績起動」を実行する
 		return realityStatusService.getStatusWkpActivity(wkpInfoDto.getListWorkplaceId(), wkpInfoDto.getStartDate(),
-				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData());
+				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData(), wkpInfoDto.getClosureID());
 	}
 
 	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
@@ -65,7 +65,7 @@ public class RealityStatusFinder {
 
 	public List<EmpPerformanceDto> getEmpPerformance(EmpPerformanceParam dto) {
 		List<EmpPerformanceOutput> listEmpPerformance = realityStatusService.getAcquisitionWkpEmpPerformance(
-				dto.getWkpId(), dto.getStartDate(), dto.getEndDate(), dto.getListEmpCd());
+				dto.getWkpId(), dto.getStartDate(), dto.getEndDate(), dto.getListEmpCd(), dto.getClosureID());
 		return this.convertEmpPerformanceDto(listEmpPerformance);
 	}
 
