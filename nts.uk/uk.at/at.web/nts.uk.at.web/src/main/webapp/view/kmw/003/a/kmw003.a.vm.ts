@@ -1360,6 +1360,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 //                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes") {
 //                                        header["columnCssClass"] = "halign-right";
 //                                    }
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" || "AnyItemTimes" || "AnyTimesMonth") {
+                                        header["columnCssClass"] = "halign-right";
+                                        header.constraint["decimallength"] = 2;
+                                    }
                                 } else {
                                     delete header.group[0].constraint.cDisplayType;
                                     delete header.constraint;
