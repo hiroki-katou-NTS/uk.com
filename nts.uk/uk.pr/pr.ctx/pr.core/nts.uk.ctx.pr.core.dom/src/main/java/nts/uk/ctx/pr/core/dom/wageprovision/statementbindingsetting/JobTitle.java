@@ -24,6 +24,4 @@ public class JobTitle {
     /** The job title name. */
     private String jobTitleName;
 
-    /** The sequence code. */
-    private String sequenceCode;
 }

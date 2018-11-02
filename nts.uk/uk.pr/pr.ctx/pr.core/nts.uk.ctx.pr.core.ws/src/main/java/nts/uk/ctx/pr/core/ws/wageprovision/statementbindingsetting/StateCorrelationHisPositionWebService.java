@@ -30,12 +30,12 @@ public class StateCorrelationHisPositionWebService extends WebService {
 
     @POST
     @Path("registerClassification")
-    public void registerClassification(StateLinkSettingCompanyCommand command) {
+    public void registerHisPosition(StateLinkSettingCompanyCommand command) {
 
     }
 
     @POST
-    @Path("getStateLinkMasterClassification/{hisId}/{start}")
+    @Path("getStateLinkMasterPosition/{hisId}/{start}")
     public List<StateLinkSettingMasterDto> getStateLinkMaster(@PathParam("hisId") String hisId, @PathParam("start") int start) {
         return stateCorrelationHisPositionFinder.getStateLinkSettingMaster(hisId, start);
     }

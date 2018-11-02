@@ -29,7 +29,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 let self = this;
                 self.index(self.getIndex(data));
                 if (data != '') {
-                    self.getStateLinkSettingMaster(data, self.listStateCorrelationHisPosition()[self.index()].startYearMonth);
+                    self.getStateLinkSettingMasterPosition(data, self.listStateCorrelationHisPosition()[self.index()].startYearMonth);
                 }
             });
 
@@ -108,9 +108,9 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         }
 
-        getStateLinkSettingMaster(hisId: string, startYeaMonth: number){
+        getStateLinkSettingMasterPosition(hisId: string, startYeaMonth: number){
             let self = this;
-            service.getStateLinkMaster(hisId, startYeaMonth).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
+            service.getStateLinkSettingMasterPosition(hisId, startYeaMonth).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(StateLinkSettingMaster.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
@@ -268,7 +268,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 let dto: StateLinkSettingMaster = new StateLinkSettingMaster();
                 dto.hisId = item.hisId;
                 dto.masterCode = item.masterCode;
-                dto.categoryName = "分類名称";
+                dto.categoryName = item.categoryName;
                 dto.salaryCode = item.salaryCode;
                 dto.bonusCode = item.bonusCode;
                 dto.bonusName = item.bonusName;

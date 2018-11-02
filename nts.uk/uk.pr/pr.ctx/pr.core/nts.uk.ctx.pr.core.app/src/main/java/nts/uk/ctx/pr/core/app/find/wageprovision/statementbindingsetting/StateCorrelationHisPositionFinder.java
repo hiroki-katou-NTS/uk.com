@@ -72,8 +72,8 @@ public class StateCorrelationHisPositionFinder {
         			);
         }
         return new StateLinkSettingMasterDto(
-    			jobtitle.get().getHistoryID(), 
-    			jobtitle.get().getMasterCode(),
+                null,
+                job.getJobTitleCode(),
     			job.getJobTitleName(),
     			null,
     			null,
