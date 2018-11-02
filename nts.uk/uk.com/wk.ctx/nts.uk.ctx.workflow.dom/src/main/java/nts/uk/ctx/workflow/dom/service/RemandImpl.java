@@ -66,7 +66,14 @@ public class RemandImpl implements RemandService {
 
 	@Override
 	public void doRemandForApplicant(String companyID, String rootStateID, Integer rootType) {
+		// アルゴリズム「一括解除する」を実行する
 		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID, rootType);
+		// ドメインモデル「承認ルートインスタンス」．承認フェーズ１．承認区分をupdateする
+		approvalRootStateRepository.findByID(rootStateID, rootType).ifPresent(appRoot -> {
+			appRoot.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+			appRoot.getListApprovalPhaseState().get(0).setApprovalAtr(ApprovalBehaviorAtr.ORIGINAL_REMAND);
+			approvalRootStateRepository.update(appRoot, rootType);
+		});
 	}
 
 	@Override
