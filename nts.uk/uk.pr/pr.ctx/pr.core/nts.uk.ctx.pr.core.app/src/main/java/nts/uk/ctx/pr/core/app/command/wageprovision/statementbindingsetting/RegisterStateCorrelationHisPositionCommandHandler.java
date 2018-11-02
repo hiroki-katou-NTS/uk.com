@@ -15,27 +15,27 @@ import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
-public class RegisterStateCorrelationHisClassificationCommandHandler extends CommandHandler<StateCorrelationHisClassificationCommand> {
+public class RegisterStateCorrelationHisPositionCommandHandler extends CommandHandler<StateCorrelationHisPositionCommand> {
     
     @Inject
-    private StateCorrelationHisClassificationService stateCorrelationHisClassificationService;
+    private StateCorrelationHisPositionService stateCorrelationHisPositionService;
     
     @Override
-    protected void handle(CommandHandlerContext<StateCorrelationHisClassificationCommand> context) {
-        StateCorrelationHisClassificationCommand command = context.getCommand();
+    protected void handle(CommandHandlerContext<StateCorrelationHisPositionCommand> context) {
+        StateCorrelationHisPositionCommand command = context.getCommand();
         YearMonth start = new YearMonth(command.getStartYearMonth());
         YearMonth end = new YearMonth(command.getEndYearMonth());
-
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
             List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
                 return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()) );}).collect(Collectors.toList());
-            stateCorrelationHisClassificationService.addHistoryClassification(hisId, start, end, listStateLinkSettingMaster);
+            stateCorrelationHisPositionService.addHistoryPosition(hisId, start, end, listStateLinkSettingMaster);
         } else {
             String hisId = command.getHisId();
             List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
                 return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()) );}).collect(Collectors.toList());
-            stateCorrelationHisClassificationService.updateHistoryClassification(listStateLinkSettingMaster);
+            stateCorrelationHisPositionService.updateHistoryPosition(listStateLinkSettingMaster);
         }
+    
     }
 }

@@ -26,6 +26,7 @@
                     <button id="F1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
                 </div>
 
+
                 <div style="margin-top: 10px">
                     <table  id="F1_5"  data-bind="ntsGridList: {
                                             height: 250,
@@ -44,26 +45,27 @@
         </div>
         <div class="fixed-flex-layout-right">
             <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
-                <div id="F2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_24')}</div>
+                <div id="D2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_29')}</div>
             </div>
 
             <div>
-                <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'masterCode', comId: 'multi-list',
-	items: listStateLinkSettingMaster, selected: currentCodeList, selectedKey: 'masterCode', fields: ['masterCode', 'categoryName'], mode: 'igGrid'}" />
+                <span  id="D2_3" class="label with-image">
+                    <i class="image image-calendar"/>
+                    <span>#{i18n.getText('QMM020_30')}</span>
+                </span>
+            </div>
 
-                <table id="multi-list" data-bind="ntsGridList: {
-                    height: 320,
-                    options: listStateLinkSettingMaster,
-                    optionsValue: 'masterCode',
-                    columns: [
-                                { headerText: '#{i18n.getText('QMM020_26')}', prop: 'masterCode', width: 100 },
-                                { headerText: '#{i18n.getText('QMM020_27')}', prop: 'categoryName', width: 150 },
-                                { headerText: '#{i18n.getText('QMM020_20')}', prop: 'displayE3_4', width: 250 },
-                                { headerText: '#{i18n.getText('QMM020_22')}', prop: 'salaryName', width: 250 },
-                    ],
-                    multiple: false,
-                    value: currentCodeList
-                }"></table>
+            <div>
+                <div style="width: 700px" data-bind =
+                        "ntsSearchBox: {
+                        targetKey: 'masterCode',
+                        comId: 'multi-list',
+	                    items: listStateLinkSettingMaster,
+	                    selectedKey: 'masterCode',
+	                     fields: ['masterCode', 'categoryName'],
+	                     mode: 'igGrid'}" />
+
+                <table id="F3_1" ></table>
 
             </div>
         </div>

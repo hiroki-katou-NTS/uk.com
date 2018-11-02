@@ -12,7 +12,7 @@ public interface StateCorrelationHisPositionRepository {
 
     Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionById(String cid, String hisId);
 
-    Optional<StateCorrelationHisPosition> getStateCorrelationHisClassificationByCid(String cId);
+    Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionByCid(String cId);
 
     void add(String cid, YearMonthHistoryItem history);
 

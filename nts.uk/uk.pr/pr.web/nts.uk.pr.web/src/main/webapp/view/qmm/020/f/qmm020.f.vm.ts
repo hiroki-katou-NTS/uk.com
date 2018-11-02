@@ -11,9 +11,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
     export class ScreenModel {
 
         listStateCorrelationHisPosition: KnockoutObservableArray<StateCorrelationHisPosition> =  ko.observableArray([]);
-        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         hisIdSelected: KnockoutObservable<string> = ko.observable();
-        currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         mode: KnockoutObservable<number> = ko.observable();
         listStateLinkSettingMaster: KnockoutObservableArray<StateLinkSettingMaster> =  ko.observableArray([]);
         transferMethod: KnockoutObservable<number> = ko.observable();
@@ -21,6 +19,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         endYearMonth: KnockoutObservable<number> = ko.observable(999912);
         startLastYearMonth: KnockoutObservable<number> = ko.observable();
         index: KnockoutObservable<number> = ko.observable(0);
+        baseDate: KnockoutObservable<any> = ko.observable();
 
         constructor(){
             let self = this;
@@ -28,10 +27,35 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
                 let self = this;
-                self.getStateLinkSettingMaster(data);
-
+                self.index(self.getIndex(data));
+                if (data != '') {
+                    self.getStateLinkSettingMaster(data, self.listStateCorrelationHisPosition()[self.index()].startYearMonth);
+                }
             });
 
+        }
+
+        loadGird(){
+            let self = this;
+            $("#F3_1").ntsGrid({
+                height: '320px',
+                dataSource: self.listStateLinkSettingMaster(),
+                primaryKey: 'masterCode',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100' },
+                    { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '150' },
+                    { headerText: getText('QMM020_20'), key: 'salaryCode', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
+                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
+                    { headerText: getText('QMM020_22'), key: 'bonusCode', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
+                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
+
+                ],
+                features: [{ name: 'Sorting', type: 'local' }],
+                ntsControls: [
+                    { name: 'Button', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item) }, controlType: 'Button' }]
+            });
         }
 
         initScreen(hisId: string){
@@ -39,7 +63,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             block.invisible();
             service.getStateCorrelationHisPosition().done((listStateCorrelationHisPosition: Array<StateCorrelationHisPosition>) => {
                 if (listStateCorrelationHisPosition && listStateCorrelationHisPosition.length > 0) {
-                    self.listStateCorrelationHisPosition(StateCorrelationHisClassification.convertToDisplay(listStateCorrelationHisPosition));
+                    self.listStateCorrelationHisPosition(StateCorrelationHisPosition.convertToDisplay(listStateCorrelationHisPosition));
                     if (hisId == null) {
                         self.index(FIRST);
                         self.hisIdSelected(self.listStateCorrelationHisPosition()[FIRST].hisId);
@@ -55,7 +79,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         }
 
-        registerClassification(){
+        registerPosition(){
             let self = this;
             if (self.mode() == model.MODE.NO_REGIS) {
                 return;
@@ -84,12 +108,13 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         }
 
-        getStateLinkSettingMaster(hisId: string){
+        getStateLinkSettingMaster(hisId: string, startYeaMonth: number){
             let self = this;
-            service.getStateLinkMaster(hisId).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
+            service.getStateLinkMaster(hisId, startYeaMonth).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(StateLinkSettingMaster.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
+                    self.loadGird();
                 } else {
                     self.mode(model.MODE.NO_REGIS);
                 }
@@ -103,7 +128,8 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             let self = this;
             let start;
             setShared('QMM011_M_PARAMS_INPUT', {
-                startYearMonth: start
+                startYearMonth: start,
+                modeScreen: model.MODE_SCREEN.POSITION
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
                 let params = getShared('QMM020_M_PARAMS_OUTPUT');
@@ -204,16 +230,16 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
         static convertToDisplay(item){
             let to = getText('QMM020_9');
-            let listClassification = [];
+            let listPosition = [];
             _.each(item, (item) => {
                 let dto: StateCorrelationHisPosition = new StateCorrelationHisPosition();
                 dto.hisId = item.hisId;
                 dto.startYearMonth = item.startYearMonth;
                 dto.endYearMonth = item.endYearMonth;
-                dto.display = getText('QMM020_9', [item.startYearMonth], [item.endYearMonth]);
-                listClassification.push(dto);
+                dto.display = getText('QMM020_16', [item.startYearMonth,item.endYearMonth]);
+                listPosition.push(dto);
             });
-            return listClassification;
+            return listPosition;
         }
         static convertMonthYearToString(yearMonth: any) {
             let year: string, month: string;
@@ -232,30 +258,31 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         bonusName:string;
         salaryName: string;
         displayE3_4: string;
+        displayE3_5: string;
         constructor() {
 
         }
         static convertToDisplay(item){
             let listStateLinkSettingMaster = [];
-            let select = getText("QMM020_21");
-            select = "<button data-bind = 'click: openMScreen'>" + select + "</button>";
             _.each(item, (item) => {
                 let dto: StateLinkSettingMaster = new StateLinkSettingMaster();
                 dto.hisId = item.hisId;
                 dto.masterCode = item.masterCode;
                 dto.categoryName = "分類名称";
                 dto.salaryCode = item.salaryCode;
-                dto.bonusName = item.bonusCode;
+                dto.bonusCode = item.bonusCode;
+                dto.bonusName = item.bonusName;
                 dto.salaryName = item.salaryName;
-                dto.displayE3_4 = select + "  " + "    " + item.salaryName;
+                dto.displayE3_4 = item.salaryCode + "      " + item.salaryName;
+                dto.displayE3_5 = item.bonusCode + "      " + item.bonusName;
                 listStateLinkSettingMaster.push(dto);
             });
             return listStateLinkSettingMaster;
         }
+    }
 
     export const FIRST = 0;
 
     export const HIS_ID_TEMP = "00000";
 
-}
 }

@@ -35,7 +35,7 @@ public class JpaStateCorrelationHisPositionRepository extends JpaRepository impl
     }
 
     @Override
-    public Optional<StateCorrelationHisPosition> getStateCorrelationHisClassificationByCid(String cid){
+    public Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionByCid(String cid){
         List<QpbmtStateCorHisPos> listStateCorHisPos = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisPos.class)
                 .setParameter("cid", cid)
                 .getList();

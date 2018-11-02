@@ -22,10 +22,7 @@ public class SyJobTitleAdapterImplement implements SyJobTitleAdapter{
                 i.getCompanyId(),
                 i.getJobTitleId(),
                 i.getJobTitleCode(),
-                i.getJobTitleName(),
-                i.getSequenceCode(),
-                i.getStartDate(),
-                i.getEndDate()
+                i.getJobTitleName()
         ) ;}).collect(Collectors.toList());
     }
 }

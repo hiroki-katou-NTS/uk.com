@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHis;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -19,26 +17,21 @@ public class StateCorrelationHisClassificationService {
     @Inject
     private StateCorrelationHisClassificationRepository stateCorrelationHisClassificationRepository;
 
-    public void addHistoryClassification(YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
+    @Inject
+    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
+
+    public void addHistoryClassification(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
         String cId = AppContexts.user().companyId();
-        String newHistID = IdentifierUtil.randomUniqueId();
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
         Optional<StateCorrelationHisClassification> itemtoBeAdded = stateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
         itemtoBeAdded.get().add(yearMonthItem);
         stateCorrelationHisClassificationRepository.add(cId, yearMonthItem);
         this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
+        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
-    public void updateHistoryClassification(String cId,String hisId, YearMonth start, YearMonth end){
-        Optional<StateCorrelationHisClassification>  stateCorrelationHisClassification = stateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
-            Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorrelationHisClassification.get().getHistory().stream()
-                    .filter(h -> h.identifier().equals(hisId)).findFirst();
-            if (!itemToBeUpdate.isPresent()) {
-                return;
-            }
-            stateCorrelationHisClassification.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
-            stateCorrelationHisClassificationRepository.update(cId, itemToBeUpdate.get());
-            this.updateItemBefore(stateCorrelationHisClassification.get(), itemToBeUpdate.get(), cId);
+    public void updateHistoryClassification(List<StateLinkSettingMaster> stateLinkSettingMaster){
+        stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
     }
 
     private void updateItemBefore(StateCorrelationHisClassification stateCorrelationHisClassification, YearMonthHistoryItem item, String cId){
