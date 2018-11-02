@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         colorExcluded = 'bg-actual-excluded';
 
         dateFormat = "yyyy/MM/dd";
-
+        closureID: number = null;
         constructor() {
             var self = this;
             this.legendOptions = {
@@ -87,6 +87,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.selectedWplIndex = params.selectedWplIndex;
                 self.listEmpCd = params.listEmployeeCode;
                 self.inputContent = params.inputContent;
+                self.closureID = params.closureID
             }
 
             self.dtPrev(new Date(self.startDateFormat));
@@ -172,7 +173,8 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 wkpId: self.selectedWplId(),
                 startDate: self.startDate,
                 endDate: self.endDate,
-                listEmpCd: self.listEmpCd
+                listEmpCd: self.listEmpCd,
+                closureID: self.closureID
             };
             service.getEmpPerformance(obj).done(function(data: Array<EmpPerformanceDto>) {
                 let lstData = _.sortBy(data, o => o.sname, 'asc');
