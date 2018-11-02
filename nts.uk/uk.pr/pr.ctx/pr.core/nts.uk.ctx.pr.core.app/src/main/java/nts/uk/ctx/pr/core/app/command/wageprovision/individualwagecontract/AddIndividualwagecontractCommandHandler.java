@@ -36,6 +36,9 @@ public class AddIndividualwagecontractCommandHandler extends CommandHandler<AddI
         SalIndAmount salIndAmount = new SalIndAmount(salIndAmountCommand.getHistoryId(), salIndAmountCommand.getAmountOfMoney());
         salIndAmountHisRepository.add(salIndAmountHis);
         salIndAmountRepository.add(salIndAmount);
-        this.salIndAmountHisRepository.updateOldHistorty(contractCommand.getOldHistoryId(),contractCommand.getNewEndMonthOfOldHistory());
+        if(contractCommand.getOldHistoryId() !=null && contractCommand.getNewEndMonthOfOldHistory() !=0){
+            this.salIndAmountHisRepository.updateOldHistorty(contractCommand.getOldHistoryId(),contractCommand.getNewEndMonthOfOldHistory());
+
+        }
     }
 }

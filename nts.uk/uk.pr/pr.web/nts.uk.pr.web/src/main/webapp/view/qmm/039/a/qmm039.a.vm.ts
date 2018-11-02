@@ -84,6 +84,16 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
                 self.changeHistory(self.itemList()[newValue]);
+                    if(self.mode()==MODE.ADD_HISTORY){
+                        let array = self.itemList();
+                        self.itemList([]);
+                        array.shift();
+                        self.itemList(array);
+
+                    }
+                self.mode(MODE.NORMAL);
+
+
             });
             self.currencyeditor = {
                 value: ko.observable(null),
@@ -425,8 +435,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
                 let params = getShared("QMM039_B_RES_PARAMS");
                 if (params) {
+                    self.selectedHisCode(0);
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
                     self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
+
                     if (params.takeoverMethod == 1) {
                         self.currencyeditor.value(0);
                     } else {
@@ -442,9 +454,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         format(getText("QMM039_18"), nts.uk.time.parseYearMonth(params.periodStartYm).format(), nts.uk.time.parseYearMonth(params.periodEndYm).format()),
                         self.currencyeditor.value() + "¥"
                     ));
+                    if (array.length > 1) {
 
-                    array[1].periodEndYm = (params.periodStartYm - 1) % 10 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
-                    array[1].period = format(getText("QMM039_18"), nts.uk.time.parseYearMonth(array[1].periodStartYm).format(), nts.uk.time.parseYearMonth(array[1].periodEndYm).format());
+                        array[1].periodEndYm = (params.periodStartYm - 1) % 10 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
+                        array[1].period = format(getText("QMM039_18"), nts.uk.time.parseYearMonth(array[1].periodStartYm).format(), nts.uk.time.parseYearMonth(array[1].periodEndYm).format());
+
+                    }
 
                     for (let i = 0; i < array.length; i++) {
                         array[i].index = i;
@@ -474,10 +489,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     periodStartYm: self.selectedHis().periodStartYm,
                     periodEndYm: self.selectedHis().periodEndYm
                 },
-                oldPeriod: {
-                    historyId:     self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].historyID,
-                    periodStartYm: self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].periodStartYm
-                }
+
+                lastHistoryId: self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].historyID,
+                lastPeriodEndYm: self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].periodEndYm,
+                lastPeriodStartYm: self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].periodStartYm
+
             }
             setShared("QMM039_C_PARAMS", params);
             modal('/view/qmm/039/c/index.xhtml', {title: '',}).onClosed(function (): any {
@@ -553,11 +569,15 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         historyId: historyId,
                         amountOfMoney: parseInt(self.currencyeditor.value())
                     },
-                    oldHistoryId: self.itemList()[1].historyID,
-                    newEndMonthOfOldHistory: self.itemList()[1].periodEndYm
-
-
+                    oldHistoryId: null,
+                    newEndMonthOfOldHistory: null
                 }
+                if (self.itemList().length > 1) {
+                    command.oldHistoryId = self.itemList()[1].historyID;
+                    command.newEndMonthOfOldHistory = self.itemList()[1].periodEndYm;
+                }
+
+
                 service.addHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     self.historyProcess(self.individualPriceCode(), 0);

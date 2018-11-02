@@ -9,6 +9,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
     import hasError = nts.uk.ui.errors.hasError;
     import model = nts.uk.pr.view.qmm039.share.model;
     import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
+
     export class ScreenModel {
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
@@ -23,11 +24,11 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         salBonusCate: KnockoutObservable<number> = ko.observable(0);
 
 
-        yearMonthStart:KnockoutObservable<number> = ko.observable(201812);
-        yearMonthEnd:KnockoutObservable<string> = ko.observable('');
+        yearMonthStart: KnockoutObservable<number> = ko.observable(201812);
+        yearMonthEnd: KnockoutObservable<string> = ko.observable('');
 
 
-        canDelete:KnockoutObservable<boolean>=ko.observable(false);
+        canDelete: KnockoutObservable<boolean> = ko.observable(false);
 
 
         constructor() {
@@ -97,7 +98,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                     self.endDateString(endYM);
                     self.yearMonthStart(startYM);
                     self.yearMonthEnd(nts.uk.time.parseYearMonth(endYM).format());
-                    if(endYM==999912){
+                    if (endYM == 999912) {
                         self.canDelete(true);
                     }
                 }
@@ -121,18 +122,19 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
 
         updateHistory() {
             let self = this;
+            let params = getShared("QMM039_C_PARAMS");
             let newHistory = self.selectedHistory;
-            newHistory.startMonth = self.dateValue().startDate;
-            newHistory.endMonth = self.dateValue().endDate;
+            newHistory.startMonth = self.yearMonthStart();
+            newHistory.endMonth = params.period.periodEndYm;
 
             let newEmployee = self.selectedEmployee;
             newEmployee.cateIndicator = self.cateIndicator();
             newEmployee.salBonusCate = self.salBonusCate();
 
-            let params = getShared("QMM039_C_PARAMS");
 
-            if(self.yearMonthStart() <= params.oldPeriod.periodStartYm){
-                nts.uk.ui.dialog.info({ messageId: "Msg_107" });
+
+            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm ) {
+                nts.uk.ui.dialog.info({messageId: "Msg_107"});
                 return;
             }
 
@@ -143,16 +145,16 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 cateIndicator: newEmployee.cateIndicator,
                 salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
-                perValCode: newEmployee.personalValcode
-
+                perValCode: newEmployee.personalValcode,
+                lastHistoryId: params.lastHistoryId,
             };
 
-            service.editSalIndividualAmountHistory(command).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    setShared('QMM039_C_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+            service.editSalIndividualAmountHistory(command).done(function () {
+                nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
+                    setShared('QMM039_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
                 });
-            }).fail(function(err) {
+            }).fail(function (err) {
                 dialog.alertError(err.message);
             });
         }
@@ -176,12 +178,12 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 perValCode: newEmployee.personalValcode
             };
 
-            service.deleteSalIndividualAmountHistory(command).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    setShared('QMM039_C_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+            service.deleteSalIndividualAmountHistory(command).done(function () {
+                nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(function () {
+                    setShared('QMM039_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
                 });
-            }).fail(function(err) {
+            }).fail(function (err) {
                 dialog.alertError(err.message);
             });
 
