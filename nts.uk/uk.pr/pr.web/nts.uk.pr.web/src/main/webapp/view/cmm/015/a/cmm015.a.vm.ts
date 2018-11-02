@@ -18,7 +18,7 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
             self.selectedCode = ko.observable();
             self.columns = ko.observableArray([
                 {headerText: getText("CMM015_7"), key: 'salaryClassificationCode'},
-                {headerText: getText("CMM015_8"), key: 'salaryClassificationName'}
+                {headerText: getText("CMM015_8"), key: 'salaryClassificationName', formatter: _.escape}
             ]);
             self.isDeleteEnable = ko.observable(false);
             self.selectedItem = ko.observable(new model.SalaryClassificationInformation(null));
