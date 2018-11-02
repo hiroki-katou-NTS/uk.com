@@ -2,7 +2,7 @@
     <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
 
         <div id="A">
-            <span>#{i18n.getText('QMM020_5')}</span>
+            <span>#{i18n.getText('QMM020_7')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
@@ -29,7 +29,7 @@
                 <div style="margin-top: 10px">
                     <table  id="F1_5"  data-bind="ntsGridList: {
                                             height: 250,
-                                            dataSource: listStateCorrelationHis,
+                                            dataSource: listStateCorrelationHisPosition,
                                             primaryKey: 'code',
                                             columns: [
                                                         { headerText: '', key: 'code', width: 100, hidden: true },
@@ -37,7 +37,7 @@
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
                                             multiple: false,
-                                            value: currentSelect
+                                            value: hisIdSelected
                                         }"></table>
                 </div>
             </div>
@@ -48,14 +48,19 @@
             </div>
 
             <div>
-                <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'empCode', comId: 'multi-list',
-	items: items, selected: currentCodeList, selectedKey: 'empCode', fields: ['empName', 'empCode'], mode: 'igGrid'}" />
+                <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'masterCode', comId: 'multi-list',
+	items: listStateLinkSettingMaster, selected: currentCodeList, selectedKey: 'masterCode', fields: ['masterCode', 'categoryName'], mode: 'igGrid'}" />
 
                 <table id="multi-list" data-bind="ntsGridList: {
                     height: 320,
-                    options: items,
-                    optionsValue: 'empCode',
-                    columns: columns,
+                    options: listStateLinkSettingMaster,
+                    optionsValue: 'masterCode',
+                    columns: [
+                                { headerText: '#{i18n.getText('QMM020_26')}', prop: 'masterCode', width: 100 },
+                                { headerText: '#{i18n.getText('QMM020_27')}', prop: 'categoryName', width: 150 },
+                                { headerText: '#{i18n.getText('QMM020_20')}', prop: 'displayE3_4', width: 250 },
+                                { headerText: '#{i18n.getText('QMM020_22')}', prop: 'salaryName', width: 250 },
+                    ],
                     multiple: false,
                     value: currentCodeList
                 }"></table>

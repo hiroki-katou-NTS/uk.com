@@ -1,0 +1,25 @@
+
+#E3_1_container  tr td:NTH-CHILD(4) {
+    border-left: none;
+}
+
+#E3_1_container tr td:NTH-CHILD(3) {
+    border-right: none;
+}
+
+
+#E3_1_container tr th:NTH-CHILD(4) {
+    border-left: none;
+}
+
+#E3_1_container tr th:NTH-CHILD(5) {
+    border-right: none;
+}
+
+#E3_1_container  tr td:NTH-CHILD(6) {
+    border-left: none;
+}
+
+#E3_1 tr td:NTH-CHILD(5) {
+    border-right: none;
+}

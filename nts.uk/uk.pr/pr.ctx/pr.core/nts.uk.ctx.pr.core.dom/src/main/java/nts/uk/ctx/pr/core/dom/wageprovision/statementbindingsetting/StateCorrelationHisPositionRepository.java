@@ -12,6 +12,8 @@ public interface StateCorrelationHisPositionRepository {
 
     Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionById(String cid, String hisId);
 
+    Optional<StateCorrelationHisPosition> getStateCorrelationHisClassificationByCid(String cId);
+
     void add(String cid, YearMonthHistoryItem history);
 
     void update(String cid, YearMonthHistoryItem history);

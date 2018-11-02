@@ -26,7 +26,7 @@ public class StateLinkSettingMasterFinder {
 
     public List<StateLinkSettingMasterDto> getStateLinkSettingMasterByHisId(String hisId, int startYearMonth){
         String cId = AppContexts.user().companyId();
-        List<StatementLayout> statementLayout = statementLayoutFinder.getStatementCode(cId, startYearMonth);
+        List<StatementLayout> statementLayout = statementLayoutFinder.getStatement(cId, startYearMonth);
         return masterFinder.getStateLinkSettingMasterByHisId(hisId).stream()
                 .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout))
                 .collect(Collectors.toList());

@@ -18,11 +18,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class JpaStateCorrelationHisPositionRepository extends JpaRepository implements StateCorrelationHisPositionRepository
-{
+public class JpaStateCorrelationHisPositionRepository extends JpaRepository implements StateCorrelationHisPositionRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisPos f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND  f.stateCorHisPosPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid ORDER BY f.startYearMonth";
 
     @Override
     public Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionById(String cid, String hisId){
@@ -31,6 +31,14 @@ public class JpaStateCorrelationHisPositionRepository extends JpaRepository impl
                 .setParameter("hisId", hisId)
                 .getList();
 
+        return this.toDomain(listStateCorHisPos);
+    }
+
+    @Override
+    public Optional<StateCorrelationHisPosition> getStateCorrelationHisClassificationByCid(String cid){
+        List<QpbmtStateCorHisPos> listStateCorHisPos = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisPos.class)
+                .setParameter("cid", cid)
+                .getList();
         return this.toDomain(listStateCorHisPos);
     }
 

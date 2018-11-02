@@ -43,7 +43,13 @@ public class StateLinkSettingMasterDto {
     public static StateLinkSettingMasterDto fromDomain(StateLinkSettingMaster domain, List<StatementLayout> specificationLayout) {
         Optional<StatementLayout> tempSalary = specificationLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getSalaryCode().get().v())).findFirst();
         Optional<StatementLayout> tempBonus = specificationLayout.stream().filter(item ->item.getStatementCode().v() == domain.getBonusCode().get().v()).findFirst();
-        return new StateLinkSettingMasterDto(domain.getHistoryID(), domain.getMasterCode().v(), domain.getSalaryCode().get().v(), domain.getBonusCode().get().v(), tempBonus.get().getStatementName().v(), tempSalary.get().getStatementName().v());
+        return new StateLinkSettingMasterDto(
+                domain.getHistoryID(),
+                domain.getMasterCode().v(),
+                domain.getSalaryCode().isPresent() ? domain.getSalaryCode().get().v() : null,
+                domain.getBonusCode().isPresent() ? domain.getBonusCode().get().v() : null,
+                tempBonus.isPresent() ? tempBonus.get().getStatementName().v() : null,
+                tempSalary.isPresent() ? tempSalary.get().getStatementName().v() : null);
     }
 
 }
