@@ -564,5 +564,27 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		});
 		return result;
 	}
+
+	@Override
+	public List<ApproverApproveExport> getApproverByPeriodMonth(String employeeID, Integer closureID,
+			YearMonth yearMonth, ClosureDate closureDate, GeneralDate date) {
+		String companyID = AppContexts.user().companyId();
+		List<ApproverToApprove> approverToApproveLst = new ArrayList<>();
+		// 対象者と期間から承認ルート中間データを取得する
+		Optional<AppRootInstance> opAppRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, date, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootInstance.isPresent()){
+			return Collections.emptyList();
+		}
+		// ドメインモデル「就業実績確認状態」を取得する
+		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpMonth(companyID, employeeID, yearMonth, closureID, closureDate, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootConfirm.isPresent()){
+			return Collections.emptyList();
+		}
+		// 中間データから承認ルートインスタンスに変換する
+		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(opAppRootInstance.get(), opAppRootConfirm.get());
+		// 承認するべき承認者を取得する
+		approverToApproveLst.add(appRootInstanceService.getApproverToApprove(approvalRootState));
+		return approverToApproveLst.stream().map(x -> convertApproverApprove(x)).collect(Collectors.toList());
+	}
 	
 }
