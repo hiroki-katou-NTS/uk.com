@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.pub.resultrecord;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -239,5 +240,5 @@ public interface IntermediateDataPub {
 	 * @param date
 	 * @return
 	 */
-	public List<ApproverApproveExport> getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date); 
+	public ApproverApproveExport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date); 
 }

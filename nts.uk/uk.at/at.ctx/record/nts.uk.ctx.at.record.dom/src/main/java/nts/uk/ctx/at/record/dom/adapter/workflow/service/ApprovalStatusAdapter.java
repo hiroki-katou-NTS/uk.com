@@ -178,5 +178,5 @@ public interface ApprovalStatusAdapter {
 	/**
 	 * RequestList 538
 	 */
-	public List<ApproverApproveImport> getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date);
+	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date);
 }
