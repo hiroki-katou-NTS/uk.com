@@ -327,7 +327,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
 				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay();
 		}
-		return new NumberOfRemainOutput(yearRemain, subHdRemain, subVacaRemain, stockRemain);
+		return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain);
 	}
 	
 }
