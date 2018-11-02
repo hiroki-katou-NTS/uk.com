@@ -124,8 +124,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			SpecialHolidayRemainInfor grantDetailAfter = getOffsetDay.getRemainDays().getGrantDetailAfter().isPresent() ? getOffsetDay.getRemainDays().getGrantDetailAfter().get() :
 				new SpecialHolidayRemainInfor(0, 0, 0);
 			//付与後の残数情報をまとめる
-			grantDetailAfter = this.grantDetailAfter(getOffsetDay.getLstSpeLeaveGrantDetails(), grantDetailAfter);
-			getOffsetDay.getRemainDays().setGrantDetailAfter(Optional.of(grantDetailAfter));
+			getOffsetDay = this.grantDetailAfter(grantDetailAfter, getOffsetDay);
+			
 			getOffsetDay.setUseOutPeriod(useInfor.getUseDaysOutPeriod());
 		}
 		if(param.isMngAtr()) {
@@ -804,13 +804,27 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	}
 
 	@Override
-	public SpecialHolidayRemainInfor grantDetailAfter(List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails,
-			SpecialHolidayRemainInfor grantDetailAfter) {
+	public InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter, InPeriodOfSpecialLeave getOffsetDay) {
 		//付与後明細．残数と付与数=0（初期化）
 		double grantDays = 0;
 		double remainDays = 0;
+		List<SpecialLeaveGrantDetails> lstTmp = new ArrayList<>(getOffsetDay.getLstSpeLeaveGrantDetails());
 		//パラメータ．特別休暇の付与明細をループする
-		for (SpecialLeaveGrantDetails speDetail : lstSpeLeaveGrantDetails) {
+		for (SpecialLeaveGrantDetails speDetail : lstTmp) {
+			//ループ中のパラメータ．特別休暇の付与明細．データ区分をチェックする
+			if(speDetail.getDataAtr() == DataAtr.GRANTED) {
+				double remainDaysMinus = speDetail.getDetails().getRemainDays();
+				//ループ中のパラメータ．特別休暇の付与明細．明細．残数をチェックする
+				if(remainDaysMinus < 0) {
+					//ループ中のパラメータ．特別休暇の付与明細．明細．使用数 += ループ中のパラメータ．特別休暇の付与明細．明細．残数
+					double useDayMinus = speDetail.getDetails().getUseDays() + remainDaysMinus;
+					getOffsetDay.getLstSpeLeaveGrantDetails().remove(speDetail);
+					speDetail.getDetails().setUseDays(useDayMinus < 0 ? 0 : useDayMinus);
+					//ループ中のパラメータ．特別休暇の付与明細．明細．残数 = 0
+					speDetail.getDetails().setRemainDays(0);
+					getOffsetDay.getLstSpeLeaveGrantDetails().add(speDetail);
+				}
+			}
 			//ループ中のパラメータ．特別休暇の付与明細．期限切れ区分をチェックする
 			if(speDetail.getExpirationStatus() == LeaveExpirationStatus.AVAILABLE) {
 				//付与後明細．残数 += ループ中のパラメータ．特別休暇の付与明細．明細．残数
@@ -821,10 +835,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				//付与後明細．付与数 += ループ中のパラメータ．特別休暇の付与明細．明細．付与数
 				grantDays += speDetail.getDetails().getGrantDays();
 			}
-			
 		}
 		grantDetailAfter.setGrantDays(grantDays);
 		grantDetailAfter.setRemainDays(remainDays);
-		return grantDetailAfter;
+		getOffsetDay.getRemainDays().setGrantDetailAfter(Optional.of(grantDetailAfter));
+		return getOffsetDay;
 	}
 }
