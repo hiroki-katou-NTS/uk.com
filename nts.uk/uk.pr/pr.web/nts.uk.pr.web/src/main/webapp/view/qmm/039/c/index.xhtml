@@ -30,7 +30,7 @@
                     <div id="H1_6" tabindex="1"
                          data-bind="ntsRadioBoxGroup: {
 										value: modifyMethod,
-										enable: true,
+										enable: canDelete,
 										options: modifyItem,
 										optionsValue: 'value',
 										optionsText: 'name'}"></div>
@@ -38,13 +38,12 @@
                 <div style="margin-top: 20px; margin-left: 150px;" class="flex valign-center">
                     <div style="width: 50px;display: inline-block;margin-left: 35px;"
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>
-                    <div id="H1_10" style="display: inline-block"
-                         data-bind="ntsDateRangePicker: {
-							required: true, enable: true, name: '#[QMM039_23]',
-									showNextPrevious: false, value: dateValue, type: 'yearmonth',valueFormat: 'YYYYMM', enable: modifyMethod() == 1}"
-                         tabindex="2"/>
+                    <div data-bind="ntsDatePicker: {value: yearMonthStart, dateFormat: 'yearmonth'}"></div>
+                    <span style="padding-left: 5px; padding-right: 5px"> ~  </span> <span data-bind="text :yearMonthEnd()" ></span>
                 </div>
             </div>
+
+
         </div>
         <div id="functions-area-bottom">
             <button tabindex="3" class="x-large proceed "

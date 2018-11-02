@@ -44,7 +44,7 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1">
-            <div class="sidebar-content-header">
+            <div class="sidebar-content-header" style="width: 1150px">
                 <span class="title" data-bind="text : titleTab"></span>
                 <!--A1_1 登録-->
                 <button tabindex="1" data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
@@ -55,7 +55,7 @@
             </div>
             <div class="contents-area">
                 <!--A3_3 社員検索-->
-                <div style="display: table; margin: 15px 0px 15px 65px;">
+                <div style="display: table; margin: 15px 0px 15px 65px; width: 915px;">
                     <!--A3_1 対象者-->
                     <div tabindex="2" id="emp-component" style="display: table-cell;"></div>
                     <!--A3_2 金額の一覧を表示する-->
@@ -130,7 +130,7 @@
                                     ]}"></div>
                         </div>
                     </div>
-                    <div class="cell group-center">
+                    <div class="cell group-center" style="width: 50px; min-width: 50px">
                         <!--A6_1 キャレット-->
                         <span class="caret-right"></span>
                     </div>
@@ -141,7 +141,7 @@
                                 <!--A7_1 項目区分-->
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_20')}</div>
                             </div>
-                            <div class="cell">
+                            <div class="cell cell-space">
                                 <!--A7_2 項目区分-->
                                 <div class="label" data-bind="text: itemClassLabel"></div>
                             </div>
@@ -153,7 +153,7 @@
                                 <!--A7_3 コード・名称-->
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_22')}</div>
                             </div>
-                            <div class="cell">
+                            <div class="cell cell-space" >
                                 <span class="label" data-bind="text: individualPriceCode"></span>
                                 <!--A7_4 コード-->
                                 <span class="label" data-bind="text: individualPriceName"></span>
@@ -165,7 +165,7 @@
                                 <!--A7_6 期間-->
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_23')}</div>
                             </div>
-                            <div class="cell">
+                            <div class="cell cell-space">
                                 <!--A7_7 履歴開始年月-->
                                 <span class="label" data-bind="text: periodStartYM"></span>
                                 <!--A7_8 ～-->
@@ -174,12 +174,12 @@
                                 <span class="label" data-bind="text: periodEndYM"></span>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" style="width: 300px;min-width: 300px;">
                             <div class="cell label-space">
                                 <!--A7_10 金額-->
                                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_25')}</div>
                             </div>
-                            <div class="cell">
+                            <div class="cell cell-space">
                                 <!--A7_11 金額-->
                                 <div data-bind="with: currencyeditor">
                                     <input tabindex="10" data-bind="ntsNumberEditor: {

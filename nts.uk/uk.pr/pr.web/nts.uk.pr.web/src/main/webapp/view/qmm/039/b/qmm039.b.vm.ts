@@ -15,6 +15,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
         endDateString: KnockoutObservable<string>;
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
+        yearMonthStart:KnockoutObservable<number>=ko.observable(0);
 
 
         constructor() {
@@ -22,17 +23,17 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
 
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");
-            self.dateValue = ko.observable({});
-
-            self.startDateString.subscribe(function (value) {
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();
-            });
-
-            self.endDateString.subscribe(function (value) {
-                self.dateValue().endDate = value;
-                self.dateValue.valueHasMutated();
-            });
+            // self.dateValue = ko.observable({});
+            //
+            // self.startDateString.subscribe(function (value) {
+            //     self.dateValue().startDate = value;
+            //     self.dateValue.valueHasMutated();
+            // });
+            //
+            // self.endDateString.subscribe(function (value) {
+            //     self.dateValue().endDate = value;
+            //     self.dateValue.valueHasMutated();
+            // });
 
             let params = getShared("QMM039_A_PARAMS");
             if (params) {
@@ -44,7 +45,15 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                     displayLastestStartHistory = String(startYM).substring(0, 4) + "/" + String(startYM).substring(4, 6);
                     self.startDateString(startYM);
                     self.endDateString(endYM);
+                    self.yearMonthStart(startYM);
                 }
+
+
+
+
+
+
+
 
                 if (params.historyID) {
                     self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.WITH_HISTORY, getText('QMM039_29', [displayLastestStartHistory])));
@@ -64,9 +73,9 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 return;
             }
             if (self.takeoverMethod() == 0) {
-                let startValidPeriod = self.dateValue().startDate;
 
-                if (startValidPeriod <= self.startDateString().toString() || startValidPeriod <= self.endDateString().toString()) {
+
+                if (self.startDateString() >= self.yearMonthStart()) {
                     dialog.alertError({messageId: "Msg_79"});
                     return;
                 }
@@ -75,8 +84,8 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
             let historyID = getShared("QMM039_A_PARAMS").historyID;
             setShared('QMM039_B_RES_PARAMS', {
                 historyID: historyID,
-                periodStartYm: self.dateValue().startDate,
-                periodEndYm: self.dateValue().endDate,
+                periodStartYm: self.yearMonthStart(),
+                periodEndYm: 999912,
                 takeoverMethod: self.takeoverMethod()
             });
             nts.uk.ui.windows.close();

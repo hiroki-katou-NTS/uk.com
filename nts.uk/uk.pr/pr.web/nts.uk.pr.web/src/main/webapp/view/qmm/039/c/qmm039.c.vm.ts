@@ -23,6 +23,12 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         salBonusCate: KnockoutObservable<number> = ko.observable(0);
 
 
+        yearMonthStart:KnockoutObservable<number> = ko.observable(201812);
+        yearMonthEnd:KnockoutObservable<string> = ko.observable('');
+
+
+        canDelete:KnockoutObservable<boolean>=ko.observable(false);
+
 
         constructor() {
             var self = this;
@@ -89,6 +95,11 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                     displayLastestStartHistory = String(startYM).substring(0, 4) + "/" + String(startYM).substring(4, 6);
                     self.startDateString(startYM);
                     self.endDateString(endYM);
+                    self.yearMonthStart(startYM);
+                    self.yearMonthEnd(nts.uk.time.parseYearMonth(endYM).format());
+                    if(endYM==999912){
+                        self.canDelete(true);
+                    }
                 }
 
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.DELETE, getText('QMM039_36')));
