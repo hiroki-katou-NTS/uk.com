@@ -96,7 +96,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<KrcstOptionalItem> items;
 		try (val stmt = this.connection().prepareStatement(
 					"select * from KRCST_OPTIONAL_ITEM"
-					+ " where CID = ?")) {
+					+ " where CID = ? ORDER BY OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
 			
 			items = new NtsResultSet(stmt.executeQuery()).getList(rec -> {

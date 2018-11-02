@@ -143,11 +143,11 @@ module nts.uk.at.view.kdm001.b.viewmodel {
         filterByPeriod() {
             let self = this;
             if (!nts.uk.ui.errors.hasError()) {
-                self.getSubstituteDataList(self.getSearchCondition());
+                self.getSubstituteDataList(self.getSearchCondition(),true);
                 $('#substituteDataGrid').focus();
             }
         }
-        getSubstituteDataList(searchCondition: any) {
+        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean) {
             let self = this;
             if (self.selectedPeriodItem() == 1){
                 $("#daterangepicker .ntsDatepicker").trigger("validate");
@@ -166,7 +166,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.extraData;
-                        self.convertToDisplayList();
+                        self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
                         if (result.empSettingExpiredDate.length>0){
@@ -197,7 +197,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             }
             return searchCondition;
         }
-        convertToDisplayList() {
+        convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
             let totalRemain = 0, dayOffDate, occurredDays, remain, expired, requireDays, listData = [];
             _.forEach(self.listExtractData, data => {
@@ -235,7 +235,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
                     listData.push(new SubstitutedData(data.comDayOffID, null, null, null, dayOffDate, requireDays, data.linked == 1 ? getText('KDM001_130') : "", remain, expired, data.linked, 1));
                 }
             });
-            if (self.listExtractData.length == 0) {
+            if (isShowMsg && self.listExtractData.length == 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
             self.subData = listData;

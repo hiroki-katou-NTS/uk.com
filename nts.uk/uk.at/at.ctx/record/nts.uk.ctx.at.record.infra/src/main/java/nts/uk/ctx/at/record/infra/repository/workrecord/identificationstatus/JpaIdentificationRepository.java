@@ -74,7 +74,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 				PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT * from KRCDT_CONFIRMATION_DAY h"
 						+ " WHERE h.PROCESSING_YMD <= ? and h.PROCESSING_YMD >= ? AND h.CID = ?  AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
-				statement.setDate(1, Date.valueOf(startDate.localDate()));
+				statement.setDate(1, Date.valueOf(endDate.localDate()));
 				statement.setDate(2, Date.valueOf(startDate.localDate()));
 				statement.setString(3, AppContexts.user().companyId());
 				for (int i = 0; i < subList.size(); i++) {
