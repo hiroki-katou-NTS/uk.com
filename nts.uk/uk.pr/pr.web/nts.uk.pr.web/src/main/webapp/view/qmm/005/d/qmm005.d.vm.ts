@@ -11,9 +11,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
     export class ScreenModel {
 
 
-
-
-        isAdvanceSetting:KnockoutObservable<boolean>=ko.observable(false);
+        isAdvanceSetting: KnockoutObservable<boolean> = ko.observable(false);
         enableCloseDate: KnockoutObservable<boolean>;
         mode: number;
 
@@ -36,8 +34,6 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         incomeTaxBaseYear: model.IncomeTaxBaseYear;
         socialInsuranceStanDate: model.SocialInsuranceStanDate;
         closeDate: model.CloseDate;
-
-
 
 
         //D2_3
@@ -134,22 +130,19 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         incomeTaxBaseDate: KnockoutObservableArray<model.ItemModel>;
         incomeTaxBaseDateSelectedCode: KnockoutObservable<number>;
 
-        processCategoryNoDisPlay:string;
+        processCategoryNoDisPlay: string;
 
         constructor() {
 
             var self = this;
 
 
-            let init=getShared('QMM005_output_D');
-            self.mode=init.mode;
-            self.processInfomation=new model.ProcessInfomation(ko.toJS(init.processInfomation));
-            self.processCategoryNo=self.processInfomation.processCateNo;
+            let init = getShared('QMM005_output_D');
+            self.mode = init.mode;
+            self.processInfomation = new model.ProcessInfomation(ko.toJS(init.processInfomation));
+            self.processCategoryNo = self.processInfomation.processCateNo;
 
-            self.processCategoryNoDisPlay=nts.uk.text.format(nts.uk.resource.getText("QMM005_98"), self.processCategoryNo);
-
-
-
+            self.processCategoryNoDisPlay = nts.uk.text.format(nts.uk.resource.getText("QMM005_98"), self.processCategoryNo);
 
 
             self.numberOfWorkingDays = ko.observable(null);
@@ -356,11 +349,11 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.isEnable = ko.observable(true);
 
             self.enableCheckBox = ko.observable(false);
-            if(self.mode==0){
-                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableCheckBox() ? model.Abolition.ABOLITION:model.Abolition.NOT_ABOLITION);
+            if (self.mode == 0) {
+                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableCheckBox() ? model.Abolition.ABOLITION : model.Abolition.NOT_ABOLITION);
             }
             else {
-                 self.DiscontinueThisProcessClassificationSelectedCode=ko.observable(model.Abolition.NOT_ABOLITION);
+                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(model.Abolition.NOT_ABOLITION);
 
             }
 
@@ -369,62 +362,47 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         saveCharacterSetting(): void {
             let self = this;
             $('.nts-input').trigger("validate");
-            if(nts.uk.ui.errors.hasError()){
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             this.saveToDB();
         }
 
         cancelCharacterSetting(): void {
-            let self=this;
-            let param={
-                action:3,
-                processInfomationUpdate:self.processInfomation
+            let self = this;
+            let param = {
+                action: 3,
+                processInfomationUpdate: self.processInfomation
             }
 
-            setShared("QMM005_output_A",param);
+            setShared("QMM005_output_A", param);
             nts.uk.ui.windows.close();
 
         }
 
         reSize(): void {
-            let self=this;
+            let self = this;
             let windowSize = nts.uk.ui.windows.getSelf();
 
             if (!self.isAdvanceSetting()) {
                 windowSize.$dialog.height(510);
                 self.isAdvanceSetting(true);
-            }else {
+            } else {
                 self.isAdvanceSetting(false);
                 windowSize.$dialog.height(420);
             }
-            
-            // when resize, position of dropdowns > 0. so, it should be set to -99999 
-            self.changePositionOfComboBoxDropDown();
-        }
-        
-        changePositionOfComboBoxDropDown() {
-            var $dropDownElements = $('.ui-igcombo-dropdown.ui-igcombo-no-border');
-            if ($dropDownElements.length <= 0 ) {
-                return;
-            }
 
-            $dropDownElements.each(function() {
-                $(this).css({
-                    top: '-99999px',
-                    left: '-99999px'
-                });     
-            });
+            $('html').css('overflow', 'hidden');
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-            if(self.mode==0){
+            if (self.mode == 0) {
                 service.findDisplayRegister(this.processCategoryNo).done(function (data) {
                     console.log(data);
-                    self.valPayDateSet=new model.ValPayDateSet(data);
+                    self.valPayDateSet = new model.ValPayDateSet(data);
                     console.log(self.valPayDateSet)
 
                     //basic
@@ -436,31 +414,30 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                     self.numberOfWorkingDays(self.valPayDateSet.basicSetting.workDay);
                     //advan
 
-                        self.timeCloseDateSelectedCode(self.valPayDateSet.advancedSetting.closeDate.timeCloseDate);
-                        self.timeBaseYearSelectedCode(self.valPayDateSet.advancedSetting.closeDate.baseYear);
-                        self.timeReferenceStandardDaySelectedCode(self.valPayDateSet.advancedSetting.closeDate.refeDate);
-                        self.timeClosingStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.closeDate.baseMonth);
+                    self.timeCloseDateSelectedCode(self.valPayDateSet.advancedSetting.closeDate.timeCloseDate);
+                    self.timeBaseYearSelectedCode(self.valPayDateSet.advancedSetting.closeDate.baseYear);
+                    self.timeReferenceStandardDaySelectedCode(self.valPayDateSet.advancedSetting.closeDate.refeDate);
+                    self.timeClosingStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.closeDate.baseMonth);
 
-                        self.yearSelectClassificationSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.baseYear);
-                        self.incomeTaxBaseMonthSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.baseMonth);
-                        self.incomeTaxBaseDateSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.refeDate);
-                        self.printingMonthSelectedCode(self.valPayDateSet.advancedSetting.detailPrintingMon.printingMonth);
-                        self.monthsCollectedSelectedCode(self.valPayDateSet.advancedSetting.salaryInsuColMon.monthCollected);
-                        self.guaranteedBaseYearSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.baseYear);
-                        self.guaranteedBaseMonthSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.baseMonth);
-                        self.guaranteedBaseDateSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.refeDate);
-                        self.employmentInsuranceStandardDateSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.refeDate);
-                        self.employmentInsuranceStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.baseMonth);
+                    self.yearSelectClassificationSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.baseYear);
+                    self.incomeTaxBaseMonthSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.baseMonth);
+                    self.incomeTaxBaseDateSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.refeDate);
+                    self.printingMonthSelectedCode(self.valPayDateSet.advancedSetting.detailPrintingMon.printingMonth);
+                    self.monthsCollectedSelectedCode(self.valPayDateSet.advancedSetting.salaryInsuColMon.monthCollected);
+                    self.guaranteedBaseYearSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.baseYear);
+                    self.guaranteedBaseMonthSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.baseMonth);
+                    self.guaranteedBaseDateSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.refeDate);
+                    self.employmentInsuranceStandardDateSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.refeDate);
+                    self.employmentInsuranceStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.baseMonth);
 
 
-                        self.processCategoryNo=self.processInfomation.processCateNo;
-                        self.processName(self.processInfomation.processCls());
-                        self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate);
-                        self.enableCheckBox(self.processInfomation.deprecatCate ==model.Abolition.NOT_ABOLITION ? false:true);
+                    self.processCategoryNo = self.processInfomation.processCateNo;
+                    self.processName(self.processInfomation.processCls());
+                    self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate);
+                    self.enableCheckBox(self.processInfomation.deprecatCate == model.Abolition.NOT_ABOLITION ? false : true);
 
                 })
-                
-                
+
 
             }
             return dfd.promise();
@@ -473,9 +450,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         }
 
 
-
-
-        saveToDB():void{
+        saveToDB(): void {
             let self = this;
 
 
@@ -506,7 +481,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 monthlyPaymentDate: self.monthlyPaymentDate,
                 employeeExtractionReferenceDate: self.employeeExtractionReferenceDate,
                 accountingClosureDate: self.accountingClosureDate,
-                workDay: nts.uk.ntsNumber.getDecimal(self.numberOfWorkingDays(),2)
+                workDay: nts.uk.ntsNumber.getDecimal(self.numberOfWorkingDays(), 2)
             }
 
             self.basicSetting = new model.BasicSetting(bassicSettingParam);
@@ -531,79 +506,77 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             self.processInfomation = new model.ProcessInfomation(processInfomationParam);
 
-            if(self.mode==1){
+            if (self.mode == 1) {
                 service.registerprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
                 }).done(function () {
-                    let param={
-                        action:1,
-                        processInfomationUpdate:self.processInfomation
+                    let param = {
+                        action: 1,
+                        processInfomationUpdate: self.processInfomation
                     }
 
-                    setShared("QMM005_output_A",param);
+                    setShared("QMM005_output_A", param);
                     nts.uk.ui.windows.close();
                 })
-             }
+            }
 
-            if(self.mode==0){
-                self.enableCheckBox() ? self.processInfomation.deprecatCate=model.Abolition.ABOLITION : self.processInfomation.deprecatCate=model.Abolition.NOT_ABOLITION;
+            if (self.mode == 0) {
+                self.enableCheckBox() ? self.processInfomation.deprecatCate = model.Abolition.ABOLITION : self.processInfomation.deprecatCate = model.Abolition.NOT_ABOLITION;
 
                 service.updateprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
                 }).done(function () {
-                    let param={
-                        action:0,
-                        processInfomationUpdate:self.processInfomation
+                    let param = {
+                        action: 0,
+                        processInfomationUpdate: self.processInfomation
                     }
 
-                    setShared("QMM005_output_A",ko.toJS(param));
+                    setShared("QMM005_output_A", ko.toJS(param));
                     nts.uk.ui.windows.close();
                 })
             }
         }
 
 
-
-
         pushDaytoList(itemList: KnockoutObservableArray<model.ItemModel>, codeEnum: any): void {
             let items = itemList;
             let code = codeEnum;
 
-             itemList.push(new model.ItemModel(1,getText('Enum_DateSelectClassification_DAY_1')));
-             itemList.push(new model.ItemModel(2,getText('Enum_DateSelectClassification_DAY_2')));
-             itemList.push(new model.ItemModel(3,getText('Enum_DateSelectClassification_DAY_3')));
-             itemList.push(new model.ItemModel(4,getText('Enum_DateSelectClassification_DAY_4')));
-             itemList.push(new model.ItemModel(5,getText('Enum_DateSelectClassification_DAY_5')));
-             itemList.push(new model.ItemModel(6,getText('Enum_DateSelectClassification_DAY_6')));
-             itemList.push(new model.ItemModel(7,getText('Enum_DateSelectClassification_DAY_7')));
-             itemList.push(new model.ItemModel(8,getText('Enum_DateSelectClassification_DAY_8')));
-             itemList.push(new model.ItemModel(9,getText('Enum_DateSelectClassification_DAY_9')));
-             itemList.push(new model.ItemModel(10,getText('Enum_DateSelectClassification_DAY_10')));
-             itemList.push(new model.ItemModel(11,getText('Enum_DateSelectClassification_DAY_11')));
-             itemList.push(new model.ItemModel(12,getText('Enum_DateSelectClassification_DAY_12')));
-             itemList.push(new model.ItemModel(13,getText('Enum_DateSelectClassification_DAY_13')));
-             itemList.push(new model.ItemModel(14,getText('Enum_DateSelectClassification_DAY_14')));
-             itemList.push(new model.ItemModel(15,getText('Enum_DateSelectClassification_DAY_15')));
-             itemList.push(new model.ItemModel(16,getText('Enum_DateSelectClassification_DAY_16')));
-             itemList.push(new model.ItemModel(17,getText('Enum_DateSelectClassification_DAY_17')));
-             itemList.push(new model.ItemModel(18,getText('Enum_DateSelectClassification_DAY_18')));
-             itemList.push(new model.ItemModel(19,getText('Enum_DateSelectClassification_DAY_19')));
-             itemList.push(new model.ItemModel(20,getText('Enum_DateSelectClassification_DAY_20')));
-             itemList.push(new model.ItemModel(21,getText('Enum_DateSelectClassification_DAY_21')));
-             itemList.push(new model.ItemModel(22,getText('Enum_DateSelectClassification_DAY_22')));
-             itemList.push(new model.ItemModel(23,getText('Enum_DateSelectClassification_DAY_23')));
-             itemList.push(new model.ItemModel(24,getText('Enum_DateSelectClassification_DAY_24')));
-             itemList.push(new model.ItemModel(25,getText('Enum_DateSelectClassification_DAY_25')));
-             itemList.push(new model.ItemModel(26,getText('Enum_DateSelectClassification_DAY_26')));
-             itemList.push(new model.ItemModel(27,getText('Enum_DateSelectClassification_DAY_27')));
-             itemList.push(new model.ItemModel(28,getText('Enum_DateSelectClassification_DAY_28')));
-             itemList.push(new model.ItemModel(29,getText('Enum_DateSelectClassification_DAY_29')));
-             itemList.push(new model.ItemModel(30,getText('Enum_DateSelectClassification_DAY_30')));
+            itemList.push(new model.ItemModel(1, getText('Enum_DateSelectClassification_DAY_1')));
+            itemList.push(new model.ItemModel(2, getText('Enum_DateSelectClassification_DAY_2')));
+            itemList.push(new model.ItemModel(3, getText('Enum_DateSelectClassification_DAY_3')));
+            itemList.push(new model.ItemModel(4, getText('Enum_DateSelectClassification_DAY_4')));
+            itemList.push(new model.ItemModel(5, getText('Enum_DateSelectClassification_DAY_5')));
+            itemList.push(new model.ItemModel(6, getText('Enum_DateSelectClassification_DAY_6')));
+            itemList.push(new model.ItemModel(7, getText('Enum_DateSelectClassification_DAY_7')));
+            itemList.push(new model.ItemModel(8, getText('Enum_DateSelectClassification_DAY_8')));
+            itemList.push(new model.ItemModel(9, getText('Enum_DateSelectClassification_DAY_9')));
+            itemList.push(new model.ItemModel(10, getText('Enum_DateSelectClassification_DAY_10')));
+            itemList.push(new model.ItemModel(11, getText('Enum_DateSelectClassification_DAY_11')));
+            itemList.push(new model.ItemModel(12, getText('Enum_DateSelectClassification_DAY_12')));
+            itemList.push(new model.ItemModel(13, getText('Enum_DateSelectClassification_DAY_13')));
+            itemList.push(new model.ItemModel(14, getText('Enum_DateSelectClassification_DAY_14')));
+            itemList.push(new model.ItemModel(15, getText('Enum_DateSelectClassification_DAY_15')));
+            itemList.push(new model.ItemModel(16, getText('Enum_DateSelectClassification_DAY_16')));
+            itemList.push(new model.ItemModel(17, getText('Enum_DateSelectClassification_DAY_17')));
+            itemList.push(new model.ItemModel(18, getText('Enum_DateSelectClassification_DAY_18')));
+            itemList.push(new model.ItemModel(19, getText('Enum_DateSelectClassification_DAY_19')));
+            itemList.push(new model.ItemModel(20, getText('Enum_DateSelectClassification_DAY_20')));
+            itemList.push(new model.ItemModel(21, getText('Enum_DateSelectClassification_DAY_21')));
+            itemList.push(new model.ItemModel(22, getText('Enum_DateSelectClassification_DAY_22')));
+            itemList.push(new model.ItemModel(23, getText('Enum_DateSelectClassification_DAY_23')));
+            itemList.push(new model.ItemModel(24, getText('Enum_DateSelectClassification_DAY_24')));
+            itemList.push(new model.ItemModel(25, getText('Enum_DateSelectClassification_DAY_25')));
+            itemList.push(new model.ItemModel(26, getText('Enum_DateSelectClassification_DAY_26')));
+            itemList.push(new model.ItemModel(27, getText('Enum_DateSelectClassification_DAY_27')));
+            itemList.push(new model.ItemModel(28, getText('Enum_DateSelectClassification_DAY_28')));
+            itemList.push(new model.ItemModel(29, getText('Enum_DateSelectClassification_DAY_29')));
+            itemList.push(new model.ItemModel(30, getText('Enum_DateSelectClassification_DAY_30')));
 
 
-            itemList.push(new model.ItemModel(31,getText('Enum_DateSelectClassification_LAST_DAY_MONTH')));
+            itemList.push(new model.ItemModel(31, getText('Enum_DateSelectClassification_LAST_DAY_MONTH')));
 
         }
 
