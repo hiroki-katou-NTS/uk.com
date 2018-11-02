@@ -233,7 +233,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		}
 		SpecialHoliday specialHoliday = optSpecialHoliday.get();
 		//社員の特別休暇情報を取得する
-		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = inforSpeLeaveEmpService.getInforSpecialLeaveOfEmployee(cid, sid, specialLeaveCode, complileDate,specialHoliday);
+		DatePeriod compDateEmp = new DatePeriod(complileDate.start().addDays(1), complileDate.end());
+		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = inforSpeLeaveEmpService.getInforSpecialLeaveOfEmployee(cid, sid, specialLeaveCode, compDateEmp,specialHoliday);
 		if(getSpecialHolidayOfEmp.getStatus() != InforStatus.NOTGRANT
 				&& getSpecialHolidayOfEmp.getStatus() != InforStatus.NOTUSE
 				&& getSpecialHolidayOfEmp.getStatus() != InforStatus.OUTOFSERVICE) {
