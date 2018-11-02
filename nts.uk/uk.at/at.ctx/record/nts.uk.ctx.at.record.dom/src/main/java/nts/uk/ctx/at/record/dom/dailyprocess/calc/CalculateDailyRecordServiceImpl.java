@@ -550,18 +550,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(timeSheetAtr.isSchedule()) {
 			flexWorkSetOpt = shareContainer.getShared("PRE_FLEX_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 					() -> flexWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
-			
-			if (flexWorkSetOpt == null) {
-				System.out.println("flexWorkSetOpt is null.\n"
-						+ "  worktimecode: " + workInfo.getRecordInfo().getWorkTimeCode().v() + "\n"
-						+ "  employeeId: " + employeeId);
-			}
-		}
-		
-		if (flexWorkSetOpt == null) {
-			System.out.println("flexWorkSetOpt is null.\n"
-					+ "  worktimecode: " + workInfo.getRecordInfo().getWorkTimeCode().v() + "\n"
-					+ "  employeeId: " + employeeId);
 		}
 		
 		Optional<FlexCalcSetting> flexCalcSetting = Optional.empty();
@@ -696,16 +684,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				if(timeSheetAtr.isSchedule()) {
 					fixedWorkSetting = shareContainer.getShared("PRE_FIXED_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 							() -> fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordInfo().getWorkTimeCode().v()));
-					
-					System.out.println("SCHEDULE fixedWorkSetting is null.\n"
-							+ "  code: " + workInfo.getRecordInfo().getWorkTimeCode().v() + "\n"
-							+ "  employeeId: " + employeeId);
-				}
-				
-				if (fixedWorkSetting == null) {
-					System.out.println("fixedWorkSetting is null.\n"
-							+ "  code: " + workInfo.getRecordInfo().getWorkTimeCode().v() + "\n"
-							+ "  employeeId: " + employeeId);
 				}
 				
 				if(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
