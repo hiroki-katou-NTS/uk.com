@@ -274,4 +274,19 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 						.collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<ApproverApproveImport> getApproverByPeriodMonth(String employeeID, Integer closureID,
+			YearMonth yearMonth, ClosureDate closureDate, GeneralDate date) {
+		return intermediateDataPub.getApproverByPeriodMonth(employeeID, closureID, yearMonth, closureDate, date)
+				.stream().map(x -> new ApproverApproveImport(
+						x.getDate(), 
+						x.getEmployeeID(), 
+						x.getAuthorList().stream().map(y -> new ApproverEmpImport(
+								y.getEmployeeID(), 
+								y.getEmployeeCD(), 
+								y.getEmployeeName()))
+						.collect(Collectors.toList())))
+				.collect(Collectors.toList());
+	}
 }
