@@ -4,11 +4,21 @@ module nts.uk.pr.view.qmm020.c {
          * define path to service
          */
         var path: any = {
-            getStateLinkSettingCompanyById: "core/wageprovision/statementbindingsetting/getStateLinkSettingCompanyById",
+            getStateCorrelationHisEmployeeById: "core/wageprovision/statementbindingsetting/getStateCorrelationHisEmployeeById",
+            registerStateCorrelationHisEmployee: "core/wageprovision/statementbindingsetting/registerStateCorrelationHisEmployee",
+            findEmploymentAll: "core/wageprovision/statementbindingsetting/findEmploymentAll",
         };
 
-        export function getStateLinkSettingCompanyById(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getStateLinkSettingCompanyById);
+        export function getStateCorrelationHisEmployeeById(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getStateCorrelationHisEmployeeById);
+        }
+
+        export function registerStateCorrelationHisEmployee(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.registerStateCorrelationHisEmployee,data);
+        }
+
+        export function findEmploymentAll(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.findEmploymentAll);
         }
 
     }

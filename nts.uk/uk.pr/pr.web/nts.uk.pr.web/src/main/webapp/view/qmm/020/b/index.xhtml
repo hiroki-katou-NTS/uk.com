@@ -51,16 +51,16 @@
 
                         <div class="control-group" style="margin-top: 40px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button style="margin-left: 15px;">#{i18n.getText('QMM020_21')}</button>
+                                <button style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
                                 <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
-                                <span style="margin-left: 10px;" data-bind="text: specName"></span>
+                                <span style="margin-left: 10px;" data-bind="text: salaryLayoutName"></span>
                         </div>
 
                         <div class="control-group" style="margin-top: 15px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button style="margin-left: 15px;">#{i18n.getText('QMM020_21')}</button>
+                                <button style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
                                 <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
-                                <span style="margin-left: 10px;" data-bind="text: specName"></span>
+                                <span style="margin-left: 10px;" data-bind="text: bonusLayoutName"></span>
                         </div>
 
                 </div>

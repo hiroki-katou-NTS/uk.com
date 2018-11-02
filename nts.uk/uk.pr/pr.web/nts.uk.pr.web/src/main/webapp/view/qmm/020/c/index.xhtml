@@ -1,10 +1,10 @@
-<div data-bind="with: $vm.viewmodelA.viewmodelC">
+<div>
     <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
 
         <div id="A">
             <span>#{i18n.getText('QMM020_5')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+                    data-bind="click: registerStateCorrelationHisDeparment, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
             <button id="A1_2" tabindex="2"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
@@ -37,7 +37,7 @@
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
                                             multiple: false,
-                                            value: currentSelect
+                                            value: currentSelectedHis
                                         }"></table>
                 </div>
             </div>
@@ -48,17 +48,10 @@
             </div>
 
             <div>
-                <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'empCode', comId: 'multi-list',
+               <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'empCode', comId: 'multi-list',
 	items: items, selected: currentCodeList, selectedKey: 'empCode', fields: ['empName', 'empCode'], mode: 'igGrid'}" />
 
-                <table id="multi-list" data-bind="ntsGridList: {
-                    height: 320,
-                    options: items,
-                    optionsValue: 'empCode',
-                    columns: columns,
-                    multiple: false,
-                    value: currentCodeList
-                }"></table>
+                <table id="grid2"></table>
 
             </div>
         </div>

@@ -29,21 +29,6 @@ public class StateCorrelationHisCompanyService {
         this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisCompany);
     }
 
-    public void historyCorrectionProcecessing(String cid, String hisId, YearMonth start, YearMonth end){
-        Optional<StateCorrelationHisCompany> stateCorrelationHisCompany = stateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid,hisId);
-        if(stateCorrelationHisCompany.isPresent()){
-            return;
-        }
-        Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorrelationHisCompany.get().getHistory().stream()
-                .filter(h -> h.identifier().equals(hisId)).findFirst();
-        if(!itemToBeUpdate.isPresent()){
-            return;
-        }
-        stateCorrelationHisCompany.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,end));
-        stateCorrelationHisCompanyRepository.add(cid,itemToBeUpdate.get());
-        this.updateItemBefore(cid,itemToBeUpdate.get(),stateCorrelationHisCompany.get());
-    }
-
     private void updateItemBefore( String cId, YearMonthHistoryItem item, StateCorrelationHisCompany stateCorrelationHisCompany){
         Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorrelationHisCompany.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
