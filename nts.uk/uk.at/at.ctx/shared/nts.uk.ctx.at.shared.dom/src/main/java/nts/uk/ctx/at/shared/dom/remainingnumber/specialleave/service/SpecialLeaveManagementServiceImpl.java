@@ -209,7 +209,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			DatePeriod complileDate) {
 		
 		//ドメインモデル「特別休暇付与残数データ」を取得する
-		List<SpecialLeaveGrantRemainingData> lstDataBase = speLeaveRepo.getByPeriodStatus(sid, specialLeaveCode, LeaveExpirationStatus.AVAILABLE,
+		List<SpecialLeaveGrantRemainingData> lstDataBase = speLeaveRepo.getByPeriodStatus(sid,
+				specialLeaveCode,
+				LeaveExpirationStatus.AVAILABLE,
+				complileDate.end().addDays(1),
 				complileDate.start());
 		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = lstDataBase.stream().map(c -> {
 			SpecialLeaveGrantNumber a = new SpecialLeaveGrantNumber(c.getDetails().getGrantNumber().getDayNumberOfGrant(), c.getDetails().getGrantNumber().getTimeOfGrant());
