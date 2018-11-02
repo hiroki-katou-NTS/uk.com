@@ -2,6 +2,38 @@
     padding: 10px 0 0 10px;
 }
 
-#B2_1{
-    margin-top:10px;
+#B2_1 {
+    margin-top: 10px;
+}
+
+.table-col-2 {
+    width: 420px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.table-col-2 .cell:nth-child(1) {
+    width: 120px;
+}
+
+.table-col-2 .cell:nth-child(2) {
+    width: 300px;
+}
+
+.table-col-3 {
+    width: 420px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.table-col-3 .cell:nth-child(1) {
+    width: 120px;
+}
+
+.table-col-3 .cell:nth-child(2) {
+    width: 90px;
+}
+
+.table-col-3 .cell:nth-child(3) {
+    width: 210px;
 }

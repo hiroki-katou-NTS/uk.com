@@ -45,12 +45,18 @@ public class JpaWelfarePensionStandardMonthlyFeeRepository extends JpaRepository
      * @return WelfarePensionStandardMonthlyFee
      */
     private WelfarePensionStandardMonthlyFee toDomain( List<QpbmtWelfarePensionStandardGradePerMonth> standardGradePerMonthEntity) {
-        return new WelfarePensionStandardMonthlyFee(standardGradePerMonthEntity.get(0).targetStartYm, standardGradePerMonthEntity.get(0).targetEndYm, standardGradePerMonthEntity.stream().map(x -> new WelfarePensionStandardGradePerMonth(x.penStdGraMonPk.welfarePensionGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
+        return new WelfarePensionStandardMonthlyFee(
+                standardGradePerMonthEntity.get(0).penStdGraMonPk.historyId,
+                standardGradePerMonthEntity.get(0).targetStartYm,
+                standardGradePerMonthEntity.get(0).targetEndYm,
+                standardGradePerMonthEntity.stream().map(x -> new WelfarePensionStandardGradePerMonth(x.penStdGraMonPk.welfarePensionGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
     }
 
-
-
     private MonthlyScopeOfWelfarePensionCompensation toDomainCom(List<QpbmtWelfarePensionStandardGradePerMonth> standardGradePerMonthEntity) {
-        return new MonthlyScopeOfWelfarePensionCompensation(standardGradePerMonthEntity.get(0).targetStartYm, standardGradePerMonthEntity.get(0).targetEndYm, standardGradePerMonthEntity.stream().map(x -> new WelfarePensionGradePerRewardMonthlyRange(x.penStdGraMonPk.welfarePensionGrade, x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
+        return new MonthlyScopeOfWelfarePensionCompensation(
+                standardGradePerMonthEntity.get(0).penStdGraMonPk.historyId,
+                standardGradePerMonthEntity.get(0).targetStartYm,
+                standardGradePerMonthEntity.get(0).targetEndYm,
+                standardGradePerMonthEntity.stream().map(x -> new WelfarePensionGradePerRewardMonthlyRange(x.penStdGraMonPk.welfarePensionGrade, x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
     }
 }
