@@ -862,8 +862,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		YearMonth endDate = query.getEndYearMonth();
 		// Always has item because this has passed error check
-		//TODO domain man C
-		OutputItemMonthlyWorkSchedule outSche = new OutputItemMonthlyWorkSchedule(); //outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
+		OutputItemMonthlyWorkSchedule outSche = outputItemRepo
+				.findByCidAndCode(AppContexts.user().companyId(), query.getCode()).get();
 		
 		// Get all data from query data container
 		List<YearMonth> datePeriod = queryData.getMonthPeriod();
