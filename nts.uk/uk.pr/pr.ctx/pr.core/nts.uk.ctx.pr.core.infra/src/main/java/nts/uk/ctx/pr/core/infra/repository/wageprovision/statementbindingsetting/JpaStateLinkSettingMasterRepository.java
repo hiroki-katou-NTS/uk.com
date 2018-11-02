@@ -40,8 +40,18 @@ public class JpaStateLinkSettingMasterRepository extends JpaRepository implement
     }
 
     @Override
+    public void addAll(List<StateLinkSettingMaster> domain) {
+        this.commandProxy().insertAll(QpbmtStateLinkSetMas.toEntity(domain));
+    }
+
+    @Override
     public void update(StateLinkSettingMaster domain){
         this.commandProxy().update(QpbmtStateLinkSetMas.toEntity(domain));
+    }
+
+    @Override
+    public void updateAll(List<StateLinkSettingMaster> domain){
+        this.commandProxy().updateAll(QpbmtStateLinkSetMas.toEntity(domain));
     }
 
     @Override

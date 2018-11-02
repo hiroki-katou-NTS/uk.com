@@ -17,21 +17,17 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         height : KnockoutObservable<number> = ko.observable(200);
         params : any = null;
         constructor(){
-
-            // let self=this;
-            // let windowSize = nts.uk.ui.windows.getSelf();
-            //
-            //
-            //     windowSize.$dialog.height(1000);
-            //
-            //     windowSize.$dialog.height(1000);
-
+            if(1 == MODE_SCREEN.MODE_ONE){
+                let windowSize = nts.uk.ui.windows.getSelf();
+                windowSize.$dialog.height(200);
+            }
             let params = getShared(model.PARAMETERS_SCREEN_J.INPUT);
             if (params == null || params === undefined) {
                 return;
             }
             this.params = params;
             this.modeScreen(this.params.modeScreen);
+
         }
         submit(){
             let self = this;
@@ -66,8 +62,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             close();
         }
         cancel(){
-            modal("/view/qmm/020/k/index.xhtml").onClosed(() => {
-            });
+            close();
         }
 
 

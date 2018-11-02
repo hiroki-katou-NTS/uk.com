@@ -21,7 +21,7 @@ public class JpaStateCorrelationHisCompanyRepository extends JpaRepository imple
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisCom f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND  f.stateCorHisComPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid ORDER BY f.endYearMonth DESC";
 
     @Override
     public Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid, String hisId){

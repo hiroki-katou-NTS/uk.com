@@ -67,10 +67,10 @@
                         <span style="margin-left: 5px;" class="label">#{i18n.getText('QMM020_56')}</span>
                     </td>
                     <td>
-                        <div data-bind="if: modeScreen() != MODE_SCREEN.MODE_THREE">
+                        <div data-bind="if: modeScreen() != nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_THREE">
                             <span class="label" style="margin: 5px 0px 0px 5px;" data-bind="text : endYearMonthPeriod"></span>
                         </div>
-                        <div data-bind="if: modeScreen() == MODE_SCREEN.MODE_THREE">
+                        <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_THREE">
                             <div id="K1_12" style="margin: 5px 0px 0px 5px;" tabindex="3" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM020_62')}',
 												value: endYearMonthPeriod,
@@ -84,7 +84,7 @@
                     </td>
                 </tr>
             </table>
-            <div data-bind="if: modeScreen() == MODE_SCREEN.MODE_TWO ">
+            <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_TWO ">
                 <div id="K1_10" data-bind="ntsFormLabel: {}" style="margin: 10px 10px 0px 10px;">
                     <span class="label">#{i18n.getText('QMM020_62')}</span>
                     <div id="K1_11" style="margin-left: 27px;" data-bind="ntsDatePicker: {

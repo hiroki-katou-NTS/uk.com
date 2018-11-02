@@ -3,10 +3,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisCompanyService;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompany;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompanyRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -31,11 +28,20 @@ public class AddStateCorrelationHisCompanySettingCommandHandler extends CommandH
 
         StateCorrelationHisCompanyCommand stateCorrelationHisCompanyCommand = commandHandlerContext.getCommand().getStateCorrelationHisCompanyCommand();
 
-        repository.add(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
-                stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
-                stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
+        int mode = commandHandlerContext.getCommand().getMode();
+        if(mode == RegisterMode.NEW.value){
+            repository.add(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
+                    stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
+                    stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
 
-        stateCorrelationHisCompanyService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()));
+            stateCorrelationHisCompanyService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()));
+        }else if(mode == RegisterMode.UPDATE.value){
+            repository.update(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
+                    stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
+                    stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
+            stateCorrelationHisCompanyService.historyCorrectionProcecessing(cid,stateCorrelationHisCompanyCommand.getHistoryID(),new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()));
+        }
+
 
     }
 }

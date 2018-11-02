@@ -104,8 +104,8 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
     }
 
     export enum MODE{
-        NEW = 1,
-        UPDATE = 2,
+        NEW = 0,
+        UPDATE = 1,
     }
 
 }

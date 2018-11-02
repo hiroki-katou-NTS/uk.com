@@ -11,6 +11,8 @@ public interface StateCorrelationHisDeparmentRepository {
 
     Optional<StateCorrelationHisDeparment> getStateCorrelationHisDeparmentById(String cid, String hisId);
 
+    Optional<StateCorrelationHisDeparment> getStateCorrelationHisDeparmentById(String cid);
+
     void add(String cid, YearMonthHistoryItem history);
 
     void update(String cid, YearMonthHistoryItem history);
