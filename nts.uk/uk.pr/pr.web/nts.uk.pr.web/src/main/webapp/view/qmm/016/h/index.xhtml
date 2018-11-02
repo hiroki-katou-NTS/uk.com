@@ -90,12 +90,12 @@
                     <div class="flex valign-center row">
                         <div id="swap-list" data-bind="ntsSwapList: {
                             showSearchBox: { showLeft : true, showRight: false},
-                            height: 300,
+                            height: 330,
                             dataSource: qualificationInformationList,
                             primaryKey: 'qualificationCode',
                             columns: columns,
                             value: selectedEligibleQualificationCode,
-                            searchMode: 'filter',
+                            searchMode: 'highlight',
                             searchCriterion: ['qualificationCode'],
                             draggable: true,
                             multipleDrag: { left: true, right: false },

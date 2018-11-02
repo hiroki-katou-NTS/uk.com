@@ -262,7 +262,7 @@
                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==0"><ui:include src="b.xhtml" /></div>
                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==1"><ui:include src="c.xhtml" /></div>
                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==2"><ui:include src="d.xhtml" /></div>
-                        <div data-bind = "if: $vm.selectedWageTable().elementSetting()==3"><div>
+                        <div data-bind = "visible: $vm.selectedWageTable().elementSetting()==3"><div>
                             <div class="flex valign-center tab-row">
                                 <div style="width: 110px;"
                                      data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
@@ -317,7 +317,7 @@
                                     <colgroup>
                                         <col width="100px"/>
                                         <col width="130px"/>
-                                        <col width="80px"/>
+                                        <col width="70px"/>
                                         <col width="400px"/>
                                     </colgroup>
                                     <thead>
@@ -333,15 +333,18 @@
                                         <tr >
                                             <td class = "ui-widget-header" data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.qualificationGroupName">
                                             </td>
+                                            <!--<td></td>-->
                                             <td class = "ui-widget-header">
                                                 <div data-bind = "text: qualificationName"></div>
                                             </td>
                                             <td>
                                                 10000
                                             </td>
-                                            <td data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}">
-                                                <div style = "width: 350px;" data-bind = "text: $parent.displayPaymentMethod"></div>
+                                            <td data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.displayPaymentMethod">
+
                                             </td>
+
+                                            <!--<td></td>-->
                                         </tr>
                                     </com:ko>
                                     </tbody>

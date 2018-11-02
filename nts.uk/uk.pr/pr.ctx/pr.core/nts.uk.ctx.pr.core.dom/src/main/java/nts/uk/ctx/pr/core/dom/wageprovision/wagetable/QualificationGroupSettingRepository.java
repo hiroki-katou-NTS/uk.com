@@ -6,17 +6,16 @@ import java.util.List;
 /**
 * 資格グループ設定
 */
-public interface QualificationGroupSettingRepository
-{
+public interface QualificationGroupSettingRepository {
 
-    List<QualificationGroupSetting> getAllQualificationlGroupSetting();
+    List<QualificationGroupSetting> getQualificationGroupSettingByCompanyID();
 
-    Optional<QualificationGroupSetting> getQualificationlGroupSettingById();
+    Optional<QualificationGroupSetting> getQualificationGroupSettingById(String qualificationGroupCode);
 
     void add(QualificationGroupSetting domain);
 
     void update(QualificationGroupSetting domain);
 
-    void remove();
+    void remove(QualificationGroupSetting domain);
 
 }

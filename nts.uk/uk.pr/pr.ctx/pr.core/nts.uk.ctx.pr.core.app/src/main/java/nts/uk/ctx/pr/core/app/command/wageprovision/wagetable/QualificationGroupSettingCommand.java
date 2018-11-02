@@ -15,7 +15,12 @@ import java.util.stream.Collectors;
 */
 @NoArgsConstructor
 @Data
-public class QualificationGroupSettingCommand extends AggregateRoot {
+public class QualificationGroupSettingCommand{
+
+    /**
+     * 会社ID
+     */
+    private String companyID;
 
     /**
     * 資格グループコード
@@ -37,13 +42,8 @@ public class QualificationGroupSettingCommand extends AggregateRoot {
     */
     private String qualificationGroupName;
 
-    /**
-    * 会社ID
-    */
-    private String companyID;
-
     public QualificationGroupSetting fromCommandToDomain() {
-        return new QualificationGroupSetting(qualificationGroupCode, paymentMethod, eligibleQualificationCode, qualificationGroupName, companyID);
+        return new QualificationGroupSetting(companyID, qualificationGroupCode, paymentMethod, eligibleQualificationCode, qualificationGroupName);
     }
     
 }

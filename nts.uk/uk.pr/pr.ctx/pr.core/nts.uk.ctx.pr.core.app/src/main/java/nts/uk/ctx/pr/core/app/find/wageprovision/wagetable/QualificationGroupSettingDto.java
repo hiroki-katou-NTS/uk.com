@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 */
 @NoArgsConstructor
 @Data
-public class QualificationGroupSettingDto extends AggregateRoot {
+public class QualificationGroupSettingDto{
 
     /**
     * 資格グループコード

@@ -16,7 +16,12 @@ import nts.arc.enums.EnumAdaptor;
 */
 @Getter
 public class QualificationGroupSetting extends AggregateRoot {
-    
+
+    /**
+     * 会社ID
+     */
+    private String companyID;
+
     /**
     * 資格グループコード
     */
@@ -36,13 +41,9 @@ public class QualificationGroupSetting extends AggregateRoot {
     * 資格グループ名
     */
     private QualificationGroupName qualificationGroupName;
+
     
-    /**
-    * 会社ID
-    */
-    private String companyID;
-    
-    public QualificationGroupSetting(String qualificationGroupCode, Integer paymentMethod, List<String> eligibleQualificationCode, String qualificationGroupName, String companyID) {
+    public QualificationGroupSetting(String companyID, String qualificationGroupCode, Integer paymentMethod, List<String> eligibleQualificationCode, String qualificationGroupName) {
         this.qualificationGroupCode = new QualificationGroupCode(qualificationGroupCode);
         this.paymentMethod = EnumAdaptor.valueOf(paymentMethod, QualificationPaymentMethod.class);
         this.eligibleQualificationCode = eligibleQualificationCode.stream().map(item -> new QualificationCode(item)).collect(Collectors.toList());
