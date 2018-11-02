@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 300, height: 200};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationCode
+            nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationName
+            nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.Memo
+        </com:ValidatorScript>
+        <com:stylefile path="cmm015.a.main.css"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="cmm015.a.start.js"/>
+        <com:scriptfile path="cmm015.a.vm.js"/>
+        <com:scriptfile path="cmm015.a.service.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button tabindex="1" data-bind="click: setNewMode, enable: isUpdateMode">
+                #{i18n.getText('CMM015_2')}
+            </button>
+            <!--A1_2-->
+            <button class="proceed" tabindex="2" data-bind="click: registerSalaryClassificationInformation, enable: $root.errors.isEmpty">
+                #{i18n.getText('CMM015_3')}
+            </button>
+            <!--A1_3-->
+            <button tabindex="3" data-bind="enable: false">
+                #{i18n.getText('CMM015_4')}
+            </button>
+            <!--A1_4-->
+            <button class="danger" tabindex="4"
+                    data-bind="click: removeSalaryClassificationInformation, enable: isDeleteEnable">
+                #{i18n.getText('CMM015_5')}
+            </button>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <!--A2_1-->
+            <div id="left-content" class="fixed-flex-layout-left">
+                <div data-bind="ntsPanel:{showIcon: true, width: 300}" class="cf">
+                    <!--A2_2-->
+                    <div data-bind="ntsSearchBox: {
+                                comId: 'single-list',
+                                items: dataSource,
+                                mode: 'igGrid',
+                                targetKey: 'salaryClassificationCode',
+                                selected: selectedCode,
+                                selectedKey: 'salaryClassificationName',
+                                fields: ['salaryClassificationName', 'salaryClassificationCode']}"
+                         id="A2_2"
+                         tabindex="5"/>
+                    <!--A2_3-->
+                    <table id="single-list"
+                           data-bind="ntsGridList: {
+                                name: '#[CMM015_6]',
+                                width: 300,
+                                height: 400,
+                                rows: 15,
+                                columns: columns,
+                                options: dataSource,
+                                optionsValue: 'salaryClassificationCode',
+                                multiple: false,
+                                value: selectedCode}"
+                           tabindex="6"/>
+                </div>
+            </div>
+            <div id="right-content" class="fixed-flex-layout-right">
+                <div data-bind="with: selectedItem">
+                    <div class="valign-center control-group">
+                        <!--A3_1-->
+                        <div data-bind="ntsFormLabel: {
+                            constraint: ['SalaryClassificationCode', 'SalaryClassificationName'],
+                            required: true,
+                            inline: false }"
+                             id="A3_1">
+                            #{i18n.getText('CMM015_9')}
+                        </div>
+                        <!--A3_2-->
+                        <input data-bind="ntsTextEditor: {
+                            value: salaryClassificationCode,
+                            constraint: 'SalaryClassificationCode',
+                            name: '#[CMM015_10]',
+                            required: true,
+                            enable: $vm.isCodeEnable}"
+                               tabindex="7"
+                               id="A3_2"/>
+                        <!--A3_3-->
+                        <input data-bind="ntsTextEditor: {
+                            value: salaryClassificationName,
+                            constraint: 'SalaryClassificationName',
+                            name: '#[CMM015_11]',
+                            required: true,
+                            enable: true}" tabindex="8"
+                               id="A3_3"/>
+                    </div>
+                    <div class="valign-top control-group">
+                        <!--A3_4-->
+                        <div data-bind="ntsFormLabel: {inline: false, constraint: 'Memo'}"
+                             id="A3_4">
+                            #{i18n.getText('CMM015_12')}
+                        </div>
+                        <!--A3_5-->
+                        <textarea id="A3_5"
+                                  data-bind="ntsMultilineEditor: {
+                                  name: '#[CMM015_12]',
+                                  constraint: 'Memo',
+                                  value: memo}"
+                                  tabindex="9"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

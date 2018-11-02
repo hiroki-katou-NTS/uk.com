@@ -20,6 +20,12 @@ import lombok.NoArgsConstructor;
 public class QpbmtHealthInsuranceStandardGradePerMonthPk implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 履歴ID
+     */
+    @Basic(optional = false)
+    @Column(name = "HISTORY_ID")
+    public String historyId;
 
     /**
      * 健康保険等級
