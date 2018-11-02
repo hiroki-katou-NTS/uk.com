@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSet
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
 import nts.uk.shr.com.context.AppContexts;
 
+
 @Stateless
 @Transactional
 public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends CommandHandler<ListStateLinkSettingMasterCommand> {
@@ -35,18 +36,17 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         List<StateLinkSettingMaster> stateLinkSettingMaster = new ArrayList<StateLinkSettingMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
             stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item ->{
-                return new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()), new StatementCode(item.getSalaryCode()), new StatementCode(item.getBonusCode()));
+                return new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
+                        item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
+                        item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()));
             }).collect(Collectors.toList());
         }
 
         StateLinkSettingDateCommand stateLinkSettingDateCommand = context.getCommand().getStateLinkSettingDateCommand();
 
-        String[] date = stateLinkSettingDateCommand.getDate().split("/");
-        int y = Integer.valueOf(date[0]);
-        int m = Integer.valueOf(date[1]);
-        int d = Integer.valueOf(date[2]);
+        GeneralDate date = this.convertStringToGeneralDate(stateLinkSettingDateCommand.getDate());
 
-        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(stateLinkSettingDateCommand.getHistoryID(), GeneralDate.ymd(y,m,d));
+        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(stateLinkSettingDateCommand.getHistoryID(), date);
         StateCorrelationHisDeparmentCommand stateCorrelationHisDeparmentCommand = context.getCommand().getStateCorrelationHisDeparmentCommand();
         int mode = context.getCommand().getMode();
         String hisID = stateCorrelationHisDeparmentCommand.getHistoryID();
@@ -54,5 +54,15 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         YearMonth end = new YearMonth(stateCorrelationHisDeparmentCommand.getEndYearMonth());
 
         stateCorrelationHisDeparmentService.addOrUpdate(cid,hisID,start,end,mode,stateLinkSettingDate,stateLinkSettingMaster);
+    }
+
+    private GeneralDate convertStringToGeneralDate(String strDate){
+
+        String[] date = strDate.split("/");
+        int y = Integer.valueOf(date[0]);
+        int m = Integer.valueOf(date[1]);
+        int d = Integer.valueOf(date[2]);
+
+        return GeneralDate.ymd(y,m,d);
     }
 }

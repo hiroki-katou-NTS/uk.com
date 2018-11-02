@@ -167,11 +167,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 self.searchByDepID(o.childs,depID,salaryCode,bonusCode);
             });
         }
-        openTest(data){
-            let self = this;
-            self.searchByDepID(self.items(),self.currentSelectedDep()[0],"09","08");
-            self.items(self.items());
-        }
+
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return nts.uk.time.formatYearMonth(yearMonth);
         }

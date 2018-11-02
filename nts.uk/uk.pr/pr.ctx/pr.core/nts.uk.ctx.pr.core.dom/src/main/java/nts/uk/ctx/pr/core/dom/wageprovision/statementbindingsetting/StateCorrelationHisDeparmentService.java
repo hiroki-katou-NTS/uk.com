@@ -31,7 +31,6 @@ public class StateCorrelationHisDeparmentService {
         }else if(mode == RegisterMode.UPDATE.value){
             stateLinkSettingDateRepository.update(stateLinkSettingDate);
             stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
-            this.historyCorrectionProcecessing(cid,hisId,start,end);
         }
     }
 
@@ -45,22 +44,6 @@ public class StateCorrelationHisDeparmentService {
         stateCorrelationHisDeparment.add(yearMonthItem);
         stateCorrelationHisDeparmentRepository.add(cid,yearMonthItem);
         this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisDeparment);
-    }
-
-    public void historyCorrectionProcecessing(String cid, String hisId, YearMonth start, YearMonth end){
-        Optional<StateCorrelationHisDeparment> stateCorrelationHisDeparment = stateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cid);
-
-        if (!stateCorrelationHisDeparment.isPresent()) {
-            return;
-        }
-        Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorrelationHisDeparment.get().getHistory().stream()
-                .filter(h -> h.identifier().equals(hisId)).findFirst();
-        if (!itemToBeUpdate.isPresent()) {
-            return;
-        }
-        stateCorrelationHisDeparment.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
-        stateCorrelationHisDeparmentRepository.update(cid,itemToBeUpdate.get());
-        this.updateItemBefore(cid,itemToBeUpdate.get(),stateCorrelationHisDeparment.get());
     }
 
     private void updateItemBefore( String cId, YearMonthHistoryItem item, StateCorrelationHisDeparment stateCorrelationHisDeparment){

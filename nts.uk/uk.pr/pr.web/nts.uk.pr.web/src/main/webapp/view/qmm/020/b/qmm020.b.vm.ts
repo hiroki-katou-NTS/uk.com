@@ -8,8 +8,9 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
         currentSelect: KnockoutObservable<any> = ko.observable();
         salaryCode: KnockoutObservable<string> = ko.observable();
+        salaryLayoutName: KnockoutObservable<string> = ko.observable();
         bonusCode: KnockoutObservable<string> = ko.observable();
-        specName: KnockoutObservable<string> = ko.observable('TaiTT');
+        bonusLayoutName: KnockoutObservable<string> = ko.observable();
         to : KnockoutObservable<string> = ko.observable(' ～ ');
         mode: KnockoutObservable<number> = ko.observable();
         constructor(){
@@ -17,7 +18,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             let self = this;
             let firstHistory;
             service.getStateCorrelationHisCompanyById().done((data) =>{
-                if(data){
+                if(data.length > 0){
                     _.forEach(data,(o)=>{
                         self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', self.convertYearMonthToDisplayYearMonth(o.startYearMonth) + self.to() + self.convertYearMonthToDisplayYearMonth(o.endYearMonth)));
                     });
@@ -34,7 +35,9 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 service.getStateLinkSettingCompanyById(hisID).done((data)=>{
                     if(data){
                         self.salaryCode(data.salaryCode);
+                        self.salaryLayoutName(data.salaryLayoutName);
                         self.bonusCode(data.bonusCode);
+                        self.bonusLayoutName(data.bonusLayoutName);
                     }
                 }).fail((err) =>{
                     if(err)
@@ -63,8 +66,8 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 },
                 stateLinkSettingCompanyCommand : {
                     historyID: historyID,
-                    salaryCode: self.salaryCode(),
-                    bonusCode: self.bonusCode()
+                    salaryCode: self.salaryCode() === '' ? null : self.salaryCode(),
+                    bonusCode: self.bonusCode() === '' ? null : self.bonusCode()
                 },
                 mode: self.mode()
 
@@ -85,6 +88,10 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
         openScreenL(){
             modal("/view/qmm/020/l/index.xhtml");
+        }
+
+        openScreenM(){
+            modal("/view/qmm/020/m/index.xhtml");
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {

@@ -39,7 +39,6 @@ public class AddStateCorrelationHisCompanySettingCommandHandler extends CommandH
             repository.update(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
                     stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
                     stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
-            stateCorrelationHisCompanyService.historyCorrectionProcecessing(cid,stateCorrelationHisCompanyCommand.getHistoryID(),new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()));
         }
 
 
