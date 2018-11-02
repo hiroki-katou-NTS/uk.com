@@ -86,12 +86,14 @@
 
         </div>
         <div id= "functions-area-bottom" style="z-index: auto;">
-            <!-- C2_1 登録 -->
-            <button id="C2_1" tabindex="4" class="proceed large"
-                    data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_43')}</button>
-            <!-- C2_2 削除 -->
-            <button id="C2_2" tabindex="5"
-                    data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
+            <div id="center">
+                <!-- C2_1 登録 -->
+                <button id="C2_1" tabindex="4" class="proceed large"
+                        data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_43')}</button>
+                <!-- C2_2 削除 -->
+                <button id="C2_2" tabindex="5"
+                        data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

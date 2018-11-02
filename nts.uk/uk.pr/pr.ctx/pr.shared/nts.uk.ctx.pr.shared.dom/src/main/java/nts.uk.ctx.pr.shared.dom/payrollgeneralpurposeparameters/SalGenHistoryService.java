@@ -26,7 +26,7 @@ public class SalGenHistoryService {
 
     private final static int MODE_HISTORY_YEARMONTH = 1;
 
-    public void addEmpInsurBusBurRatio(String newHistID,String paraNo, String start, String end, SalGenParaValue salGenParaValue,int modeHistory){
+    public void addSalGenParam(String newHistID,String paraNo, String start, String end, SalGenParaValue salGenParaValue,int modeHistory){
         String cId = AppContexts.user().companyId();
         if(modeHistory == MODE_HISTORY_YEARMONTH){
             YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(new YearMonth(Integer.valueOf(start)), new YearMonth(Integer.valueOf(end))));

@@ -29,7 +29,7 @@ public class AddSalGenParaValueCommandHandler extends CommandHandler<SalGenParaY
         SalGenParaYeahMonthValueCommand command = context.getCommand();
         if (command.getMSalGenParaValueCommand().getModeScreen() == MODE_SCREEN_ADD) {
             String newHistID = IdentifierUtil.randomUniqueId();
-            salGenHistoryService.addEmpInsurBusBurRatio(newHistID, command.getParaNo(),
+            salGenHistoryService.addSalGenParam(newHistID, command.getParaNo(),
                     command.getStartTime(),
                     command.getEndTime(),
                     new SalGenParaValue(newHistID,
