@@ -523,7 +523,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //view all code of selected item 
                 var childData = nts.uk.ui.windows.getShared('childData');
                 if (childData) {
-
+                    dataWork.selectedWorkTypeCd = childData.selectedWorkTypeCode;
+                    dataWork.selectedWorkTimeCd = childData.selectedWorkTimeCode;
                     workChange.workTypeCd(childData.selectedWorkTypeCode);
                     workChange.workTypeName(childData.selectedWorkTypeName);
                     workChange.workTimeCd(childData.selectedWorkTimeCode);
