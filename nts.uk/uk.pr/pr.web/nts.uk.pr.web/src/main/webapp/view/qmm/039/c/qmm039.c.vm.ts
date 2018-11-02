@@ -128,6 +128,14 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
             let newEmployee = self.selectedEmployee;
             newEmployee.cateIndicator = self.cateIndicator();
             newEmployee.salBonusCate = self.salBonusCate();
+
+            let params = getShared("QMM039_C_PARAMS");
+
+            if(self.yearMonthStart() <= params.oldPeriod.periodStartYm){
+                nts.uk.ui.dialog.info({ messageId: "Msg_107" });
+                return;
+            }
+
             let command = {
                 //emp history
                 yearMonthHistoryItem: [newHistory],
@@ -136,6 +144,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
                 perValCode: newEmployee.personalValcode
+
             };
 
             service.editSalIndividualAmountHistory(command).done(function() {

@@ -475,8 +475,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     periodEndYm: self.selectedHis().periodEndYm
                 },
                 oldPeriod: {
-                    historyId:     self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[self.selectedHisCode() + 1].historyID,
-                    periodStartYm: self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[self.selectedHisCode() + 1].periodStartYm
+                    historyId:     self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].historyID,
+                    periodStartYm: self.itemList().length == (self.itemList()[self.selectedHisCode()].index + 1) ? null : self.itemList()[parseInt(self.selectedHisCode()) + 1].periodStartYm
                 }
             }
             setShared("QMM039_C_PARAMS", params);
