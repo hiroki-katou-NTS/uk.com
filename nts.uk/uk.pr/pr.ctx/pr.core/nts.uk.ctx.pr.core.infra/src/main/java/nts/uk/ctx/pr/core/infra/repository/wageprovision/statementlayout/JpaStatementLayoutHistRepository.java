@@ -26,7 +26,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     private static final String SELECT_LATEST_BY_CID_AND_CODE = SELECT_BY_CID_AND_CODE +
             " AND f.startYearMonth = (SELECT MAX(o.startYearMonth) FROM QpbmtStatementLayoutHist o " +
             " WHERE o.statementLayoutHistPk.cid = :cid AND o.statementLayoutHistPk.statementCd = :statementCd) ";
-    private static final String ORDER_BY_START_DATE = " ORDER BY f.startYearMonth";
+    private static final String ORDER_BY_START_DATE = " ORDER BY f.startYearMonth DESC";
 
     @Override
     public List<StatementLayoutHist> getAllStatementLayoutHist() {
@@ -34,10 +34,10 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
     @Override
-    public List<YearMonthHistoryItem> getStatementLayoutHistById(String histId) {
+    public Optional<YearMonthHistoryItem> getStatementLayoutHistById(String histId) {
         return this.queryProxy().query(SELECT_BY_ID, QpbmtStatementLayoutHist.class)
                 .setParameter("histId", histId)
-                .getList(c -> toYearMonthDomain(c));
+                .getSingle(c -> toYearMonthDomain(c));
     }
 
     @Override
@@ -48,17 +48,17 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
     @Override
-    public Optional<StatementLayoutHist> getLayoutHistByCidAndCode(String cid, String code) {
+    public StatementLayoutHist getLayoutHistByCidAndCode(String cid, String code) {
         return toDomain(this.queryProxy().query(SELECT_BY_CID_AND_CODE + ORDER_BY_START_DATE, QpbmtStatementLayoutHist.class)
                 .setParameter("cid", cid).setParameter("statementCd", code)
                 .getList());
     }
 
     @Override
-    public List<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code) {
+    public Optional<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code) {
         return this.queryProxy().query(SELECT_LATEST_BY_CID_AND_CODE, QpbmtStatementLayoutHist.class)
                 .setParameter("cid", cid).setParameter("statementCd", code)
-                .getList(c -> toYearMonthDomain(c));
+                .getSingle(c -> toYearMonthDomain(c));
     }
 
     @Override
@@ -88,18 +88,14 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
         return null;
     }
 
-    private Optional<StatementLayoutHist> toDomain(List<QpbmtStatementLayoutHist> entityList) {
-        if(entityList.size() > 0) {
-            String cid = entityList.get(0).statementLayoutHistPk.cid;
-            String code = entityList.get(0).statementLayoutHistPk.statementCd;
-            List<YearMonthHistoryItem> yearMonthHistoryItemList = entityList.stream().map(
-                    i -> new YearMonthHistoryItem(i.statementLayoutHistPk.histId,
-                    new YearMonthPeriod(new YearMonth(i.startYearMonth), new YearMonth(i.endYearMonth))))
-                    .collect(Collectors.toList());
-            return Optional.of(new StatementLayoutHist(cid, code, yearMonthHistoryItemList));
-        } else {
-            return Optional.empty();
-        }
+    private StatementLayoutHist toDomain(List<QpbmtStatementLayoutHist> entityList) {
+        String cid = entityList.get(0).statementLayoutHistPk.cid;
+        String code = entityList.get(0).statementLayoutHistPk.statementCd;
+        List<YearMonthHistoryItem> yearMonthHistoryItemList = entityList.stream().map(
+                i -> new YearMonthHistoryItem(i.statementLayoutHistPk.histId,
+                new YearMonthPeriod(new YearMonth(i.startYearMonth), new YearMonth(i.endYearMonth))))
+                .collect(Collectors.toList());
+        return new StatementLayoutHist(cid, code, yearMonthHistoryItemList);
     }
 
     private YearMonthHistoryItem toYearMonthDomain(QpbmtStatementLayoutHist entity) {

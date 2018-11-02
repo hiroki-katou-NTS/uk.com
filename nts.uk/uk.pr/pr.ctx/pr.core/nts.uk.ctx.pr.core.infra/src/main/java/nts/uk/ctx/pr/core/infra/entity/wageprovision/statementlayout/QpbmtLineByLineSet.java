@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItem;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -35,8 +37,23 @@ public class QpbmtLineByLineSet extends UkJpaEntity implements Serializable {
     @Column(name = "ITEM_POSITION")
     public int itemPosition;
 
+    // ????????????????????????????????????????????????????????????????
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumns({
+        @JoinColumn(name="ITEM_ID", referencedColumnName="ITEM_NAME_CD")
+    })
+    public QpbmtStatementItemName statementItemName;
+
     @Override
     protected Object getKey() {
         return lineByLineSetPk;
+    }
+
+    public Integer getLine() {
+        return lineByLineSetPk.lineNumber;
+    }
+
+    public static SettingByItem toDomain(QpbmtLineByLineSet entity) {
+        return new SettingByItem(entity.itemPosition, entity.lineByLineSetPk.itemID);
     }
 }

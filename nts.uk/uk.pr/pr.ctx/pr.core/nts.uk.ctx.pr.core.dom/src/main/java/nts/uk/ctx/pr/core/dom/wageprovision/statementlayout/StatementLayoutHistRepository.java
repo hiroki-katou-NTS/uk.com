@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout;
 
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 明細書レイアウト履歴
@@ -13,13 +13,13 @@ public interface StatementLayoutHistRepository
 
     List<StatementLayoutHist> getAllStatementLayoutHist();
 
-    List<YearMonthHistoryItem> getStatementLayoutHistById(String histId);
+    Optional<YearMonthHistoryItem> getStatementLayoutHistById(String histId);
 
     List<YearMonthHistoryItem> getAllHistByCidAndCode(String cid, String code);
 
-    Optional<StatementLayoutHist> getLayoutHistByCidAndCode(String cid, String code);
+    StatementLayoutHist getLayoutHistByCidAndCode(String cid, String code);
 
-    List<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code);
+    Optional<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code);
 
     List<YearMonthHistoryItem> getHistByCidAndCodeAndAfterDate(String cid, String code, int startYearMonth);
 

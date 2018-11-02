@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.UpdateStatem
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutAndHistDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistDataDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistFinder;
 
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
@@ -66,15 +67,27 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getAllStatementLayoutAndLastHist")
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
+        return this.statementLayoutFinder.getAllStatementLayoutAndLastHist();
+    }
+
+    @POST
     @Path("getStatementLayoutAndLastHist/{code}")
     public StatementLayoutAndHistDto getStatementLayoutAndLastHist(@PathParam("code") String code) {
         return this.statementLayoutFinder.getStatementLayoutAndLastHist(code);
     }
 
     @POST
-    @Path("getStatementLayoutAndLastHist/{code}/{startYearMonth}")
-    public List<YearMonthHistoryItemDto> getStatementLayoutAndLastHist(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
+    @Path("getHistByCidAndCodeAndAfterDate/{code}/{startYearMonth}")
+    public List<YearMonthHistoryItemDto> getHistByCidAndCodeAndAfterDate(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
         return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth);
+    }
+
+    @POST
+    @Path("getStatementLayoutHistData/{code}/{histId}")
+    public StatementLayoutHistDataDto getStatementLayoutHistData(@PathParam("code") String code, @PathParam("histId") String histId) {
+        return this.statementLayoutHistFinder.getStatementLayoutHistData(code, histId).orElse(null);
     }
 
     @POST
