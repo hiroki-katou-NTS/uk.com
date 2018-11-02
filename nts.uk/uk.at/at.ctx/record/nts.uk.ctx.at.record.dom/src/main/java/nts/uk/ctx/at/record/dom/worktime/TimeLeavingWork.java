@@ -147,4 +147,15 @@ public class TimeLeavingWork extends DomainObject{
 		return true;
 	}
 	
+	/**
+	 * 打刻順序不正であるかチェックする
+	 * @return　順序不正である
+	 */
+	public boolean isReverseOrder() {
+		if(this.getTimespan().getStart().greaterThan(this.getTimespan().getEnd())) {
+			return true;
+		}
+		return false;
+	}
+	
 }

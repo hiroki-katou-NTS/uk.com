@@ -90,38 +90,39 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
 					+ "LEFT JOIN KCTMT_DIGEST_TIME_COM KDTC ON KCLC.CID = KDTC.CID "
 					+ "WHERE KCLC.CID = ?";
 
-			PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc);
+			try(PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
-			stmt.setString(1, companyId);
-
-			Optional<KclmtCompensLeaveCom> result = new NtsResultSet(stmt.executeQuery())
-					.getSingle(rec -> {
-						KclmtAcquisitionCom kclmtAcquisitionCom = new KclmtAcquisitionCom();
-						kclmtAcquisitionCom.setCid(rec.getString("CID"));
-						kclmtAcquisitionCom.setExpTime(rec.getInt("EXP_TIME"));
-						kclmtAcquisitionCom.setPreempPermitAtr(rec.getInt("PREEMP_PERMIT_ATR"));
-						kclmtAcquisitionCom.setDeadlCheckMonth(rec.getInt("KACDEADL_CHECK_MONTH"));
-
-						KctmtDigestTimeCom kctmtDigestTimeCom = new KctmtDigestTimeCom();
-						kctmtDigestTimeCom.setCid(rec.getString("CID"));
-						kctmtDigestTimeCom.setManageAtr(rec.getInt("KDTCMANAGE_ATR"));
-						kctmtDigestTimeCom.setDigestiveUnit(rec.getInt("DIGESTIVE_UNIT"));
-
-						KclmtCompensLeaveCom entity = new KclmtCompensLeaveCom();
-						entity.setCid(rec.getString("CID"));
-						entity.setManageAtr(rec.getInt("KCLCMANAGE_ATR"));
-						entity.setDeadlCheckMonth(rec.getInt("KCLCDEADL_CHECK_MONTH"));
-						entity.setKclmtAcquisitionCom(kclmtAcquisitionCom);
-						entity.setKctmtDigestTimeCom(kctmtDigestTimeCom);
-						entity.setListOccurrence(listOccurrence);
-						return entity;
-					});
-
-			if (!result.isPresent()) {
-				return null;
+				stmt.setString(1, companyId);
+	
+				Optional<KclmtCompensLeaveCom> result = new NtsResultSet(stmt.executeQuery())
+						.getSingle(rec -> {
+							KclmtAcquisitionCom kclmtAcquisitionCom = new KclmtAcquisitionCom();
+							kclmtAcquisitionCom.setCid(rec.getString("CID"));
+							kclmtAcquisitionCom.setExpTime(rec.getInt("EXP_TIME"));
+							kclmtAcquisitionCom.setPreempPermitAtr(rec.getInt("PREEMP_PERMIT_ATR"));
+							kclmtAcquisitionCom.setDeadlCheckMonth(rec.getInt("KACDEADL_CHECK_MONTH"));
+	
+							KctmtDigestTimeCom kctmtDigestTimeCom = new KctmtDigestTimeCom();
+							kctmtDigestTimeCom.setCid(rec.getString("CID"));
+							kctmtDigestTimeCom.setManageAtr(rec.getInt("KDTCMANAGE_ATR"));
+							kctmtDigestTimeCom.setDigestiveUnit(rec.getInt("DIGESTIVE_UNIT"));
+	
+							KclmtCompensLeaveCom entity = new KclmtCompensLeaveCom();
+							entity.setCid(rec.getString("CID"));
+							entity.setManageAtr(rec.getInt("KCLCMANAGE_ATR"));
+							entity.setDeadlCheckMonth(rec.getInt("KCLCDEADL_CHECK_MONTH"));
+							entity.setKclmtAcquisitionCom(kclmtAcquisitionCom);
+							entity.setKctmtDigestTimeCom(kctmtDigestTimeCom);
+							entity.setListOccurrence(listOccurrence);
+							return entity;
+						});
+	
+				if (!result.isPresent()) {
+					return null;
+				}
+	
+				return new CompensatoryLeaveComSetting(new JpaCompensLeaveComGetMemento(result.get()));
 			}
-
-			return new CompensatoryLeaveComSetting(new JpaCompensLeaveComGetMemento(result.get()));
 		}
 	}
 

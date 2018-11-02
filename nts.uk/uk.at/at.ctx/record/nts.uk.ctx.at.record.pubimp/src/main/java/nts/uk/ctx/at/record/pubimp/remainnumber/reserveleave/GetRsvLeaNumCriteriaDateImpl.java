@@ -63,11 +63,12 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 		if (!closureStartOpt.isPresent()) return Optional.empty();
 		val closureStart = closureStartOpt.get();
 		
-		// 集計終了日　←　締め開始日+1年-1日
-		GeneralDate aggrEnd = closureStart.addYears(1).addDays(-1);
+		// 集計終了日　←　「基準日」+1年-1日
+		GeneralDate aggrEnd = criteria.addYears(1).addDays(-1);
 		
 		// 「次回年休付与を計算」を実行
-		val nextAnnualLeaveGrants = this.calcNextAnnualLeaveGrantNum.algorithm(companyId, employeeId, Optional.empty());
+		val nextAnnualLeaveGrants = this.calcNextAnnualLeaveGrantNum.algorithm(
+				companyId, employeeId, Optional.of(new DatePeriod(criteria, aggrEnd)));
 		if (nextAnnualLeaveGrants.size() > 0){
 			// 次回付与日前日　←　先頭の「次回年休付与」．付与年月日-1日
 			GeneralDate prevNextGrant = nextAnnualLeaveGrants.get(0).getGrantDate().addDays(-1);

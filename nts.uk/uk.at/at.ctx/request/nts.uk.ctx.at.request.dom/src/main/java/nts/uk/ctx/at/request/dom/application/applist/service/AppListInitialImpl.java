@@ -183,13 +183,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		ListApplicantOutput checkMySelf = this.getListApplicantForListApp(param);
 		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - get List Application By SID
 		List<Application_New> lstApp = new ArrayList<>();
-		if(checkMySelf.isMySelf()){//【自分の申請＝Trueの場合】
+//		2018/11/02　EA2892(#102518)
+//		・社員指定ができるため代行申請分の表示は不要
+//		「自分の申請」に関する条件も不要
+//		if(checkMySelf.isMySelf()){//【自分の申請＝Trueの場合】
 			//・申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
-			lstApp = repoApp.getByListSID(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
-		}else{
+//			lstApp = repoApp.getByListSID(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
+//		}else{
 			//・申請者ID＝社員ID（リスト）
 			lstApp = repoApp.getByListApplicant(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
-		}
+//		}
 		List<Application_New> lstOverTime = lstApp.stream().filter(c -> c.isAppOverTime()).collect(Collectors.toList());
 		List<Application_New> lstGoBack = lstApp.stream().filter(d -> d.isAppGoBack()).collect(Collectors.toList());
 		List<Application_New> lstHdWork = lstApp.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());
