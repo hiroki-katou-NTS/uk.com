@@ -294,9 +294,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				String sqlJdbcWc = "SELECT * FROM KSHMT_WORK_CAT_TIME_ZONE KWCTZ WHERE KWCTZ.HIST_ID IN ("
 						+ NtsStatement.In.createParamsString(subList) + ")";
 				
-				PreparedStatement statement;
-				try {
-					statement = this.connection().prepareStatement(sqlJdbcWc);
+				try (PreparedStatement statement = this.connection().prepareStatement(sqlJdbcWc)) {
 					for (int i = 0; i < subList.size(); i++) {
 						statement.setString(i + 1, subList.get(i));
 					}
@@ -314,7 +312,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 								return entity;
 							}));
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					throw new RuntimeException(e1);
 				}
 			});
 
@@ -323,9 +321,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				String sqlJdbcWc = "SELECT * FROM KSHMT_PER_WORK_CAT KPWC WHERE KPWC.HIST_ID IN ("
 						+ NtsStatement.In.createParamsString(subList) + ")";
-				PreparedStatement statement;
-				try {
-					statement = this.connection().prepareStatement(sqlJdbcWc);
+				try (PreparedStatement statement = this.connection().prepareStatement(sqlJdbcWc)) {
 					for (int i = 0; i < subList.size(); i++) {
 						statement.setString(i + 1, subList.get(i));
 					}
@@ -351,9 +347,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				String sqlJdbcWc = "SELECT * FROM KSHMT_DAYOFWEEK_TIME_ZONE KDTZ WHERE KDTZ.HIST_ID IN ("
 						+ NtsStatement.In.createParamsString(subList) + ")";
-				PreparedStatement statement;
-				try {
-					statement = this.connection().prepareStatement(sqlJdbcWc);
+				;
+				try (PreparedStatement statement = this.connection().prepareStatement(sqlJdbcWc)) {
 					for (int i = 0; i < subList.size(); i++) {
 						statement.setString(i + 1, subList.get(i));
 					}
@@ -371,7 +366,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 								return entity;
 							}));
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					throw new RuntimeException(e1);
 				}
 			});
 
@@ -380,9 +375,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				String sqlJdbcWc = "SELECT * FROM KSHMT_PERSONAL_DAY_OF_WEEK KPDW WHERE KPDW.HIST_ID IN ("
 						+ NtsStatement.In.createParamsString(subList) + ")";
-				PreparedStatement statement;
-				try {
-					statement = this.connection().prepareStatement(sqlJdbcWc);
+				
+				try (PreparedStatement statement = this.connection().prepareStatement(sqlJdbcWc)) {
 					for (int i = 0; i < subList.size(); i++) {
 						statement.setString(i + 1, subList.get(i));
 					}
@@ -401,7 +395,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 								return entity;
 							}));
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					throw new RuntimeException(e1);
 				}
 			});
 

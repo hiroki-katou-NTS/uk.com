@@ -32,13 +32,14 @@ public class JpaIdentityProcessRepository extends JpaRepository implements Ident
     @Override
     @SneakyThrows
     public Optional<IdentityProcess> getIdentityProcessById(String cid){
-    	PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_SELF_CHECK_SET h WHERE h.CID = ?");
-		statement.setString(1, cid);
-		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			return new IdentityProcess(cid, rec.getInt("USE_DAILY_SELF_CHECK"), 
-	        		rec.getInt("USE_MONTHLY_SELF_CHECK"),
-	        		rec.getInt("YOURSELF_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("YOURSELF_CONFIRM_ERROR"), YourselfConfirmError.class));
-		});
+    	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_SELF_CHECK_SET h WHERE h.CID = ?")) {
+			statement.setString(1, cid);
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				return new IdentityProcess(cid, rec.getInt("USE_DAILY_SELF_CHECK"), 
+		        		rec.getInt("USE_MONTHLY_SELF_CHECK"),
+		        		rec.getInt("YOURSELF_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("YOURSELF_CONFIRM_ERROR"), YourselfConfirmError.class));
+			});
+    	}
     }
 
     @Override

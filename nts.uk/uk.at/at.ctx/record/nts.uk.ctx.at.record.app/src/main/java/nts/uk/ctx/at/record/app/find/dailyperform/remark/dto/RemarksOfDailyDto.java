@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.remark.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_REMARKS_NAME)
 public class RemarksOfDailyDto extends AttendanceItemCommon {
 	

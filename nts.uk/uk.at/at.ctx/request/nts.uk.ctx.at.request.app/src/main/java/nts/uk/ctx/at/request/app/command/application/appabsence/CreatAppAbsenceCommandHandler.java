@@ -269,28 +269,30 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		//hoatt - QA#100286
 		//ドメインモデル「休暇申請設定」を取得する(lấy domain 「休暇申請設定」)
 		Optional<HdAppSet> hdAppSet = repoHdAppSet.getAll();
-		/**	・代休チェック区分 */
+		/**	・代休チェック区分 - HolidayType: 1*/
 		boolean chkSubHoliday = false;
-		/**	・振休チェック区分 */
+		/**	・振休チェック区分  - HolidayType: 7*/
 		boolean chkPause = false;
-		/**	・年休チェック区分 */
+		/**	・年休チェック区分 - HolidayType: 0*/
 		boolean chkAnnual = false;
-		/**	・積休チェック区分 */
+		/**	・積休チェック区分 - HolidayType: 4*/
 		boolean chkFundingAnnual = false;
-		/**	・特休チェック区分 */
+		/**	・特休チェック区分 - HolidayType: 3*/
 		boolean chkSpecial = true;
 		/**	・公休チェック区分 */
 		boolean chkPublicHoliday = false;
-		/**	・超休チェック区分 */
+		/**	・超休チェック区分*/
 		boolean chkSuperBreak = true;
+		int holidayAppType = command.getHolidayAppType();
 		if(hdAppSet.isPresent()){
 			HdAppSet hdSet = hdAppSet.get();
 			//Bug#100448
-			chkSubHoliday = hdSet.getRegisShortLostHd().value == 1 ? true : false;//休暇申請設定．代休残数不足登録できる
-			chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;//休暇申請設定．振休残数不足登録できる
-			chkAnnual = hdSet.getRegisNumYear().value == 1 ? true : false;//休暇申請設定．年休残数不足登録できる
-			chkFundingAnnual = hdSet.getRegisShortReser().value == 1 ? true : false;//休暇申請設定．積立年休残数不足登録できる
-			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 ? true : false;//休暇申請設定．公休残数不足登録できる
+			//Bug#101701
+			chkSubHoliday = hdSet.getRegisShortLostHd().value == 1 && holidayAppType == 1 ? true : false;//休暇申請設定．代休残数不足登録できる
+			chkPause = hdSet.getRegisInsuff().value == 1 && holidayAppType == 7 ? true : false;//休暇申請設定．振休残数不足登録できる
+			chkAnnual = hdSet.getRegisNumYear().value == 1 && holidayAppType == 0 ? true : false;//休暇申請設定．年休残数不足登録できる
+			chkFundingAnnual = hdSet.getRegisShortReser().value == 1 && holidayAppType == 4 ? true : false;//休暇申請設定．積立年休残数不足登録できる
+//			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 && holidayAppType == 1 ? true : false;//休暇申請設定．公休残数不足登録できる
 		}
 		//社員の当月の期間を算出する - 4.社員の当月の期間を算出する
 //		＜INPUT＞

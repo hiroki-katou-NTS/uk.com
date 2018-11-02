@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -347,9 +348,17 @@ public class MonthlyPerformanceCorrectionProcessor {
 	//締め情報の表示
 	private void displayClosureInfo(MonthlyPerformanceCorrectionDto screenDto, String companyId, Integer closureId,
 			Integer processYM){
-		
 		//ドメインモデル「締め」を取得する
-		List<ClosureHistory> lstClosureHistory = this.closureRepository.findByCurrentMonth(companyId, new YearMonth(processYM));
+		//List<ClosureHistory> lstClosureHistory = this.closureRepository.findByCurrentMonth(companyId, new YearMonth(processYM));
+		List<Closure> lstClosure = this.closureRepository.findAllUse(companyId);
+		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
+		lstClosure.forEach(item -> {
+			lstClosureHistory.addAll(item.getClosureHistories().stream().filter(closureItem -> 
+				closureItem.getStartYearMonth().v() <= processYM.intValue() && 
+						closureItem.getEndYearMonth().v() >= processYM.intValue()).collect(Collectors.toList()));
+			
+		});
+		
 		
 		List<ClosureInfoOuput> lstClosureInfoOuput = new ArrayList<>();
 		//取得した実績期間を画面に表示する

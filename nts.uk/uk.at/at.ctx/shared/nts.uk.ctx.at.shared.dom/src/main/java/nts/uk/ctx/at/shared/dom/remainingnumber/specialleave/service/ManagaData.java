@@ -21,4 +21,12 @@ public class ManagaData {
 	 * 蓄積上限日数
 	 */
 	Optional<Integer> limitDays;
+	/**
+	 * 特別休暇付与残数データ : 付与予定
+	 */
+	List<SpecialLeaveGrantRemainingData> lstGrantDataMemory;//付与予定
+	/**
+	 * 特別休暇付与残数データ : 付与済
+	 */
+	List<SpecialLeaveGrantRemainingData> lstGrantDatabase;//付与済
 }

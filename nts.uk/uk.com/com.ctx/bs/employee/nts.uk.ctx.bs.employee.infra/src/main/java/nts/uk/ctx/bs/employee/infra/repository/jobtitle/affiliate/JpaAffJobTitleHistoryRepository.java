@@ -377,10 +377,9 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	public List<AffJobTitleHistory> getListByListHidSid(List<String> sid, GeneralDate targetDate) {
 		List<AffJobTitleHistory> data = new ArrayList<>();
 		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT h.HIST_ID, h.SID, h.CID, h.END_DATE, h.START_DATE from BSYMT_AFF_JOB_HIST h"
-						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setDate(1, Date.valueOf(targetDate.localDate()));
 				statement.setDate(2, Date.valueOf(targetDate.localDate()));
 				for (int i = 0; i < subList.size(); i++) {
