@@ -12,16 +12,19 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateSalaryClassificationInformationCommandHandler extends CommandHandler<SalaryClassificationInformationCommand>
-{
-    
+public class UpdateSalaryClassificationInformationCommandHandler extends CommandHandler<SalaryClassificationInformationCommand> {
+
     @Inject
     private SalaryClassificationInformationRepository repository;
-    
+
     @Override
     protected void handle(CommandHandlerContext<SalaryClassificationInformationCommand> context) {
         SalaryClassificationInformationCommand command = context.getCommand();
-        repository.update(new SalaryClassificationInformation(AppContexts.user().companyId(), command.getSalaryClassificationCode(), command.getSalaryClassificationName(), command.getMemo()));
-    
+        repository.update(new SalaryClassificationInformation(
+                AppContexts.user().companyId(),
+                command.getSalaryClassificationCode(),
+                command.getSalaryClassificationName(),
+                command.getMemo().isEmpty() ? null : command.getMemo()
+        ));
     }
 }
