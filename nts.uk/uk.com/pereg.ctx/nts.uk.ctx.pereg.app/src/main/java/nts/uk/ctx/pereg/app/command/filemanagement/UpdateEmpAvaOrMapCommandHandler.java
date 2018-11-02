@@ -79,7 +79,7 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user != null ? user.getUserID() : "",
 				user != null ? user.getEmpID() : "", 
-				user != null ?user.getUserName(): "",
+				user != null ?user.getEmpName(): "",
 				PersonInfoProcessAttr.UPDATE,
 				null);
 		// set correction log

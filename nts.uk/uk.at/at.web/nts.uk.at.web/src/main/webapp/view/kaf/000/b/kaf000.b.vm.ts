@@ -130,7 +130,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 if(self.displayReturnReasonPanel()){
-                    self.reasonApp(data.applicationDto.reversionReason);    
+                    let returnReason = data.applicationDto.reversionReason;
+                    $("#returnReason").html(returnReason.replace(/\n/g,"\<br/>"));
                 }
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {

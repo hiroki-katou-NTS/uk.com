@@ -50,7 +50,7 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 				PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 						user != null ? user.getUserID() : "",
 						user != null ? user.getEmpID() : "", 
-						user != null ?user.getUserName(): "",
+						user != null ?user.getEmpName(): "",
 					    PersonInfoProcessAttr.COMPLETE_DELETE, null);
 				
 				DataCorrectionContext.setParameter(target.getHashID(), target);

@@ -1944,6 +1944,8 @@ public class ProgramsManager {
 	 */
 	public static final Program CMF004A = new Program(WebAppId.COM, ProgramIdConsts.CMF004A, "CMF004_1",
 			"/view/cmf/004/a/index.xhtml");
+	public static final Program CMF004B = new Program(WebAppId.COM, ProgramIdConsts.CMF004B, "CMF004_2",
+			"/view/cmf/004/b/index.xhtml");
 	public static final Program CMF004C = new Program(WebAppId.COM, ProgramIdConsts.CMF004C, "CMF004_3",
 			"/view/cmf/004/c/index.xhtml");
 	public static final Program CMF004D = new Program(WebAppId.COM, ProgramIdConsts.CMF004D, "CMF004_4",

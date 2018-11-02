@@ -58,7 +58,7 @@
 							<tr>
 								<td><label>#{i18n.getText('KMF001_109')}</label></td>
 								<td><div tabindex="5"
-										data-bind="ntsMonthDays: {value: monthDay, enable: enableNursing}" >
+										data-bind="ntsMonthDays: {name: nts.uk.resource.getText('KMF001_109'), value: monthDay, enable: enableNursing, required: enableNursing}" >
 									</div></td>
 								<td><div></div></td>
 							</tr>
@@ -167,7 +167,7 @@
 							</tr>
 							<tr>
 								<td><label>#{i18n.getText('KMF001_117')}</label></td>
-								<td><div tabindex="10" data-bind="ntsMonthDays: {value: monthDay, enable: enableNursing}">
+								<td><div tabindex="10" data-bind="ntsMonthDays: {name: nts.uk.resource.getText('KMF001_117'), value: monthDay, enable: enableNursing, required: enableNursing}">
 									</div></td>
 								<td><div></div></td>
 							</tr>

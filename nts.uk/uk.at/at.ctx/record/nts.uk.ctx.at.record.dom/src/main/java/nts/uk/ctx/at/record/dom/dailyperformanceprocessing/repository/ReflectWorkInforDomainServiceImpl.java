@@ -61,6 +61,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
@@ -85,12 +86,14 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -289,6 +292,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
+	
+	@Inject
+	private DeleteWorkInfoOfDailyPerforService deleteWorkInfoOfDailyPerforService;
+	
+	@Inject
+	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
+	
+	@Inject
+	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
 
 	@Resource
 	private SessionContext scContext;
@@ -331,7 +343,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType , reCreateWorkPlace);
 
 				if (exitStatus == ExitStatus.RECREATE) {
-					this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+			    	this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
+					this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
+					this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
+					this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
+					this.workTypeOfDailyPerforRepository.delete(employeeId, day);
 
 					this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
 							employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,

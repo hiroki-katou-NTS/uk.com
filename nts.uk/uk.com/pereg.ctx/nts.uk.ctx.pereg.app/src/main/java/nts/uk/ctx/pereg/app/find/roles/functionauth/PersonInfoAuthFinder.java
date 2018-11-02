@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.roles.functionauth;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,6 +30,13 @@ public class PersonInfoAuthFinder {
 		String companyId = AppContexts.user().companyId();
 		List<AuthFullInfoObject> authObjectList = personInfoAuthSerice.getFullInfo(companyId, roleId);
 		return authObjectList.stream().map(x -> new PersonInfoAuthDto(x)).collect(Collectors.toList());
+	}
+	
+	public PersonInfoAuthDto getAllFunctionAuthByPersonInfo() {
+		String companyId = AppContexts.user().companyId();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		Optional<AuthFullInfoObject> authObjectList = personInfoAuthSerice.getFullInfo(companyId, roleId).stream().filter(c -> c.getFunctionNo() == 11).findFirst();
+		return authObjectList.isPresent() == true? new PersonInfoAuthDto(authObjectList.get()): null;
 	}
 
 }

@@ -20,11 +20,11 @@ public class ActualSpecialLeave extends DomainObject{
 	/**
 	 * 残数
 	 */
-	private SpecialLeaveRemain remain;
+	private ActualSpecialLeaveRemain remain;
 	/**
 	 * 残数付与前
 	 */
-	private SpecialLeaveRemain beforRemainGrant;
+	private ActualSpecialLeaveRemain beforRemainGrant;
 	/**
 	 * 使用数
 	 */
@@ -32,5 +32,5 @@ public class ActualSpecialLeave extends DomainObject{
 	/**
 	 * 残数付与後
 	 */
-	private Optional<SpecialLeaveRemain> afterRemainGrant;
+	private Optional<ActualSpecialLeaveRemain> afterRemainGrant;
 }

@@ -31,13 +31,10 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 * @param entityDvgcAttendance
 	 *            the entity dvgc attendance
 	 */
-	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entityDvgcTime,
-			@SuppressWarnings("unchecked") List<KrcstDvgcAttendance>... entityDvgcAttendance) {
+	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entityDvgcTime, List<KrcstDvgcAttendance> entityDvgcAttendance) {
 
 		this.entityDvgcTime = entityDvgcTime;
-		if (entityDvgcAttendance.length > 0) {
-			this.entityDvgcAttendance = entityDvgcAttendance[0];
-		}
+		this.entityDvgcAttendance = entityDvgcAttendance;
 	}
 
 	/*
