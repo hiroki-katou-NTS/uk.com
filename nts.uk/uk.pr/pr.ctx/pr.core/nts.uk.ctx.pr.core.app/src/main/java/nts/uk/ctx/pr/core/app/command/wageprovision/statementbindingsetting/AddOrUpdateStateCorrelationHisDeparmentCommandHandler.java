@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.HEAD;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -20,9 +19,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSet
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
 import nts.uk.shr.com.context.AppContexts;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -40,10 +36,9 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         List<StateLinkSettingMaster> stateLinkSettingMaster = new ArrayList<StateLinkSettingMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
             stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item ->{
-                return new StateLinkSettingMaster(item.getHistoryID(),new MasterCode(item.getMasterCode()),
+                return new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
                         item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
                         item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()));
-                return new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()), new StatementCode(item.getSalaryCode()), new StatementCode(item.getBonusCode()));
             }).collect(Collectors.toList());
         }
 
