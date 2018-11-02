@@ -293,8 +293,18 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//「特別休暇付与残数データ」(output)をソートする
 		lstDataSpeDataBase = lstDataSpeDataBase.stream().sorted((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()))
 				.collect(Collectors.toList());
-		List<SpecialLeaveGrantRemainingData> lstGrantDatabase = lstDataSpeDataBase.stream().filter(x -> lstDataBase.contains(x)).collect(Collectors.toList());
-		List<SpecialLeaveGrantRemainingData> lstGrantDataMemory = lstDataSpeDataBase.stream().filter(x -> !lstDataBase.contains(x)).collect(Collectors.toList());
+		List<SpecialLeaveGrantRemainingData> lstGrantDatabase = new ArrayList<>();
+		List<SpecialLeaveGrantRemainingData> lstGrantDataMemory = new ArrayList<>();
+		if(!lstDataSpeDataBase.isEmpty()) {
+			for (SpecialLeaveGrantRemainingData x : lstDataSpeDataBase) {
+				List<SpecialLeaveGrantRemainingData> db = lstDataBase.stream().filter(y -> y.getSpecialId().equals(x.getSpecialId())).collect(Collectors.toList());
+				if(db.isEmpty()) {
+					lstGrantDataMemory.add(x);
+				} else {
+					lstGrantDatabase.add(x);
+				}
+			}
+		}
 		ManagaData outputData = new ManagaData(lstDataSpeDataBase, getSpecialHolidayOfEmp.getUpLimiDays(), lstGrantDataMemory, lstGrantDatabase);
 		return outputData;
 	}
