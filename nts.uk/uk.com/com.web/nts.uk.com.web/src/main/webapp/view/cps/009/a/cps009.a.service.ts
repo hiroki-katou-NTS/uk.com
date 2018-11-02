@@ -9,7 +9,8 @@ module nts.uk.com.view.cps009.a.service {
         update: "ctx/pereg/person/info/setting/init/ctg/update",
         filterHisSel: "ctx/pereg/person/info/setting/selection/findAllCombox",
         checkItemWorkType: "ctx/pereg/person/common/checkStartEnd",
-        checkItemWorkTime: "ctx/pereg/person/common/checkAllMutilTime"
+        checkItemWorkTime: "ctx/pereg/person/common/checkAllMutilTime",
+        checkFunctionNo: "ctx/pereg/functions/auth/find-with-role-person-info"
     }
     /**
      * Get all init value setting
@@ -66,6 +67,10 @@ module nts.uk.com.view.cps009.a.service {
     export function checkMutiTime(params: any) {
         return ajax(paths.checkItemWorkTime, params);
     }
-
+    
+/** 「今まで25.10,対応していません 」 */
+    export function checkFunctionNo() {
+        return ajax(paths.checkFunctionNo);
+    }
 
 }
