@@ -627,6 +627,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					.filter(x -> x.getGrantDate().beforeOrEquals(interimMng.getYmd())
 							&& interimMng.getYmd().beforeOrEquals(x.getDeadlineDate())
 							&& x.getExpirationStatus() == LeaveExpirationStatus.AVAILABLE)
+					.collect(Collectors.toList())
+					.stream().sorted((a,b) -> a.getGrantDate().compareTo(b.getGrantDate()))
 					.collect(Collectors.toList());
 			if(tmpGrantRemainingData.isEmpty()) {
 				//ループ中の「特別休暇暫定データ」を「特別休暇期間外の使用」に追加する
@@ -648,6 +650,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				double remainDays = speInterimUsedays;
 				for (SpecialLeaveGrantRemainingData grantData : specialLeaverDataTmp) {
 					count += 1;
+					if(grantData.getDetails().getRemainingNumber().getDayNumberOfRemain().v() == 0
+							&& count < specialLeaverDataTmp.size()) {
+						continue;
+					}					
 					lstOuput.remove(grantData);
 					//特別休暇暫定データ．特休使用をDBから取得した付与日の古い特別休暇付与残数データから引く
 					DayNumberOfRemain remainDaysInfor = grantData.getDetails().getRemainingNumber().getDayNumberOfRemain();
@@ -708,11 +714,15 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			remaintDays = remaintDays < 0 ? 0 : remaintDays;
 			//繰越超えた値 = 付与予定の「特別休暇付与残数データ」．「明細」．付与 + 付与前の残数 -INPUT．蓄積上限日数
 			overCarryDays = dayNumberOfGrant + remaintDays - accumulationMaxDays;
-			double grantDaysOld = 0;
+			double grantDaysOld = overCarryDays;
 			//繰越上限を超えたかチェックする
 			if(overCarryDays > 0) {
 				List<SpecialLeaveGrantRemainingData> lstGrantDatabaseTmp = new ArrayList<>(lstGrantDatabase);
+				lstGrantDatabaseTmp = lstGrantDatabaseTmp.stream().sorted((a,b) -> a.getGrantDate().compareTo(b.getGrantDate()))
+						.collect(Collectors.toList());
+				int count = 0;
 				for (SpecialLeaveGrantRemainingData speLeaverData : lstGrantDatabaseTmp) {
+					count += 1;
 					//ドメインモデル「特別休暇付与残数データ」．期限切れ状態をチェックする
 					if(speLeaverData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) {
 						continue;
@@ -720,13 +730,17 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					double remainLeaverDays = speLeaverData.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
 					//古い日付順から、付与済の「特別休暇付与残数データ」．「明細」．残数から繰越超えた値を引く
 					grantDaysOld -= remainLeaverDays;
+					lstGrantDatabase.remove(speLeaverData);	
+					if(grantDaysOld > 0 && count < lstGrantDatabaseTmp.size()) {
+						speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) 0.0));	
+					} else {
+						speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) -grantDaysOld));	
+					}
 					//未消化数=繰越超えた値
 					unDisgesteDays = overCarryDays;										
 					//特別休暇の利用情報．上限超過消滅日数 += 繰越超えた値
 					limitDays.put(speLeaverData.getGrantDate(), overCarryDays);					
 					//特別休暇の利用情報 set 上限超過消滅日数．日数
-					lstGrantDatabase.remove(speLeaverData);
-					speLeaverData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain((double) grantDaysOld));
 					lstGrantDatabase.add(speLeaverData);
 				}
 			}

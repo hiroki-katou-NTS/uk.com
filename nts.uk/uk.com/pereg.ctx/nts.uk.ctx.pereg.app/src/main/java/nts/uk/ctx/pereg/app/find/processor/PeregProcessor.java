@@ -171,14 +171,14 @@ public class PeregProcessor {
 						break;
 					}
 				}
-
-				 //edit with category CS00021 勤務種別 change type of category when history item is latest
-				if (query.getCategoryCode().equals("CS00021")) {
-					BusinessTypeDto businessTypeDto = (BusinessTypeDto) peregDto.getDomainDto();
-					if (businessTypeDto.isLatestHistory()) {
-						changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
-					}
-				}
+				//liên quan đến bug #102480, sửa script categoryType = 6 => 3
+//				 //edit with category CS00021 勤務種別 change type of category when history item is latest
+//				if (query.getCategoryCode().equals("CS00021")) {
+//					BusinessTypeDto businessTypeDto = (BusinessTypeDto) peregDto.getDomainDto();
+//					if (businessTypeDto.isLatestHistory()) {
+//						changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
+//					}
+//				}
 			}
 
 		} else {
@@ -192,11 +192,11 @@ public class PeregProcessor {
 			}
 
 		}
-
-		// edit with category CS00021 勤務種別 change type of category when create new
-		if (query.getCategoryCode().equals("CS00021") && query.getInfoId() == null) {
-			changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
-		}
+		//liên quan đến bug #102480, sửa script categoryType = 6 => 3
+//		// edit with category CS00021 勤務種別 change type of category when create new
+//		if (query.getCategoryCode().equals("CS00021") && query.getInfoId() == null) {
+//			changeCategoryType(classItemList, CategoryType.NODUPLICATEHISTORY);
+//		}
 		
 		// get Combo-Box List
 		layoutControlComboBox.getComboBoxListForSelectionItems(query.getEmployeeId(), perInfoCtg, classItemList,
@@ -204,15 +204,16 @@ public class PeregProcessor {
 
 		return classItemList;
 	}
-
-	private void changeCategoryType(List<LayoutPersonInfoClsDto> classItemList, CategoryType type) {
-		classItemList.forEach(classItem -> {
-			classItem.getItems().forEach(item -> {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				valueItem.setCtgType(type.value);
-			});
-		});
-	}
+	
+//liên quan đến bug #102480, sửa script categoryType = 6 => 3
+//	private void changeCategoryType(List<LayoutPersonInfoClsDto> classItemList, CategoryType type) {
+//		classItemList.forEach(classItem -> {
+//			classItem.getItems().forEach(item -> {
+//				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+//				valueItem.setCtgType(type.value);
+//			});
+//		});
+//	}
 
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem, PersonInfoCategory perInfoCtg) {
 		return lstClsItem.stream().map(item -> {

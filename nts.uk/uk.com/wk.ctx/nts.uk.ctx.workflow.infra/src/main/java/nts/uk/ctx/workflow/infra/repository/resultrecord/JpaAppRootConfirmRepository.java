@@ -191,42 +191,34 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
 		Connection conn = this.connection();
 		String sQue = "SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
-						"WHERE appRoot.CID = ? AND appRoot.EMPLOYEE_ID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE = ?";
+						"WHERE appRoot.CID = '" + companyID + "' AND appRoot.ROOT_TYPE = "
+						+ rootType +"  AND appRoot.EMPLOYEE_ID = '"+ employeeID +"' AND appRoot.RECORD_DATE = '"+date.toString("yyyy/MM/dd")+"'";
+		String rootID = "";
 		try(PreparedStatement statement = conn.prepareStatement(sQue)){
-			statement.setString(1, companyID);
-			statement.setString(2, employeeID);
-			statement.setInt(3, rootType);
-			statement.setDate(4, Date.valueOf(date.localDate()));
-			new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				String rootId = rec.getString("ROOT_ID");
-				String DELETE_PHASE_APPROVER_FOR_424_V2 = 
-						"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID = ?";
+//			statement.setString(1, companyID);
+//			statement.setString(2, employeeID);
+//			statement.setInt(3, rootType);
+//			statement.setDate(4, Date.valueOf(date.localDate()));
+			rootID = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
 				
-				String DELETE_FRAME_APPROVER_FOR_424_V2 = 
-						"DELETE  FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID = ?";
-				
-				String DELETE_APP_ROOT_CONFIRM_FOR_424_V2 = 
-						"DELETE  FROM WWFDT_APP_ROOT_CONFIRM WHERE ROOT_ID = ?";
-				try{
-					try(PreparedStatement dStatement1 = conn.prepareStatement(DELETE_FRAME_APPROVER_FOR_424_V2)){
-						dStatement1.setString(1, rootId);
-						dStatement1.executeUpdate();
-					}
-					try(PreparedStatement dStatement2 = conn.prepareStatement(DELETE_PHASE_APPROVER_FOR_424_V2)){
-						dStatement2.setString(1, rootId);
-						dStatement2.executeUpdate();
-					}
-					try(PreparedStatement dStatement3 = conn.prepareStatement(DELETE_APP_ROOT_CONFIRM_FOR_424_V2)){
-						dStatement3.setString(1, rootId);
-						dStatement3.executeUpdate();
-					}
-				}catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-				return rootId;
-			});
+				return rec.getString("ROOT_ID");
+			}).orElse("");
 		}
 		
+		if(!rootID.isEmpty()){
+			try(PreparedStatement dStatement1 = conn.prepareStatement("DELETE  FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID = ?")){
+				dStatement1.setString(1, rootID);
+				dStatement1.executeUpdate();
+			}
+			try(PreparedStatement dStatement2 = conn.prepareStatement("DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID = ?")){
+				dStatement2.setString(1, rootID);
+				dStatement2.executeUpdate();
+			}
+			try(PreparedStatement dStatement3 = conn.prepareStatement("DELETE  FROM WWFDT_APP_ROOT_CONFIRM WHERE ROOT_ID = ?")){
+				dStatement3.setString(1, rootID);
+				dStatement3.executeUpdate();
+			}
+		}
 	}
 
 	private WwfdtAppRootConfirm fromDomain(AppRootConfirm appRootConfirm){

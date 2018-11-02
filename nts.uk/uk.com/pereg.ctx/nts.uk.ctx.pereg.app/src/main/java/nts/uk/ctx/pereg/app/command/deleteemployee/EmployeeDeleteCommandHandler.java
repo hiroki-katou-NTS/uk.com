@@ -148,7 +148,7 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user != null ? user.getUserID() : "",
 				user != null ? user.getEmpID() : "", 
-				user != null ?user.getUserName(): "",
+				user != null ?user.getEmpName(): "",
 			    PersonInfoProcessAttr.LOGICAL_DELETE,
 			    command.getReason());
 		DataCorrectionContext.setParameter(target.getHashID(), target);
