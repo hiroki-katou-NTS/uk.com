@@ -317,7 +317,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 															  ManagePerPersonDailySet personCommonSetting, DailyRecordToAttendanceItemConverter converter, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		//打刻順序不正のチェック
 		//不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
-		if(!dailyRecordCreateErrorAlermService.stampIncorrectOrderAlgorithm(integrationOfDaily).isEmpty()) {
+		val errorList = dailyRecordCreateErrorAlermService.stampIncorrectOrderAlgorithm(integrationOfDaily);
+		if(!errorList.stream().filter(tc -> tc!= null).collect(Collectors.toList()).isEmpty()) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
 		}
 		val copyCalcAtr = integrationOfDaily.getCalAttr();
