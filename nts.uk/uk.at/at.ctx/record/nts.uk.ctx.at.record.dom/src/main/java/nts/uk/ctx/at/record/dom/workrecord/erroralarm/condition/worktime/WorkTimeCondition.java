@@ -8,6 +8,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * @author hungnm
@@ -37,5 +38,15 @@ public class WorkTimeCondition extends DomainObject {
 	
 	public boolean isUse() {
 		return this.useAtr;
+	}
+	
+	public void clearDuplicate() { }
+	
+	public void addWorkTime(WorkTimeCode plan, WorkTimeCode actual) { } 
+	
+	public void setupWorkTime(boolean usePlan, boolean useActual) { }
+	
+	public WorkTimeCondition chooseOperator(int operator) {
+		return this;
 	}
 }
