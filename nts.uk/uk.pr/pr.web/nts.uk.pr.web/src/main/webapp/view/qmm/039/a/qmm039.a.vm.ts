@@ -80,15 +80,19 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceName(self.dataSource()[index].name);
                     self.historyProcess(self.dataSource()[index].code, 0);
                 }
+                self.selectedHisCode(0);
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
                 self.changeHistory(self.itemList()[newValue]);
                     if(self.mode()==MODE.ADD_HISTORY){
-                        let array = self.itemList();
-                        self.itemList([]);
-                        array.shift();
-                        self.itemList(array);
+                        // let array = self.itemList();
+                        // self.itemList([]);
+                        // array.shift();
+                        // self.itemList(array);
+                        //self.singleSelectedCode();
+                        self.singleSelectedCode.valueHasMutated();
+                        self.selectedHisCode(newValue);
 
                     }
                 self.mode(MODE.NORMAL);
