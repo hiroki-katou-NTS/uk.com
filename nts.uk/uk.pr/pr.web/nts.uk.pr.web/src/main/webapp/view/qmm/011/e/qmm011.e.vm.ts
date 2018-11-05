@@ -60,22 +60,13 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
         }
         
         convertMonthYearToString(yearMonth: any) {
-            let self = this;
             let year: string, month: string;
             yearMonth = yearMonth.toString();
             year = yearMonth.slice(0, 4);
             month = yearMonth.slice(4, 6);
             return year + "/" + month;
         }
-        
-        convertStringToYearMonth(yearMonth: any){
-            let self = this;
-            let year: string, month: string;
-            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
-            return Number(yearMonth);
-        }
-        
-     
+
     }
     
 
