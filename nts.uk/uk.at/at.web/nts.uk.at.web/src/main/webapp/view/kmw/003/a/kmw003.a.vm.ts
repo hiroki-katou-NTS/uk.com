@@ -213,6 +213,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 // $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
                 self.displayNumberZero1();
             });
+            
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 230) + 'px !IMPORTANT');
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 230) + 'px !IMPORTANT');
+            });
 
         }
 
