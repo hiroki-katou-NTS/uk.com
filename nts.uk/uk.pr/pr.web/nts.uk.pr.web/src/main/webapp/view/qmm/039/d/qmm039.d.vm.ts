@@ -20,9 +20,11 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
             self.referenceYear = ko.observable(201812);
             self.items = ko.observableArray();
             this.currentCode = ko.observable();
+
         }
 
         cancel() {
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.close();
         }
 
@@ -67,13 +69,14 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
                     if (data != null) {
                         for (let i = 0; i < data.length; i++) {
                             for (let j = 0; j < data[i].period.length; j++) {
-                                array.push(new ItemModel(data[i].perValCode, data[i].perValName,
+                                array.push(new ItemModel(data[i].empId,data[i].perValCode, data[i].perValName,
                                     format(getText("QMM039_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney + "¥"
                                 ))
                             }
                         }
                     }
                     self.items(array);
+                $('#D2_8').focus();
                 }
             )
         }
@@ -83,6 +86,8 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
         }
     }
     class ItemModel {
+        empId:string;
+
         code: string;
         //D3_6 コード
         name: string;
@@ -91,7 +96,8 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
         //D3_8 期間
         amount: string;
         //D3_9 金額
-        constructor(code: string, name: string, period: string, amount: string) {
+        constructor(empId:string,code: string, name: string, period: string, amount: string) {
+            this.empId=empId;
             this.code = code;
             this.name = name;
             this.period = period;

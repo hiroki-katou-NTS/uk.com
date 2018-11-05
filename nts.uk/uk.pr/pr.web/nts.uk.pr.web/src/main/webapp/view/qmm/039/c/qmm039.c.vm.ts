@@ -9,6 +9,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
     import hasError = nts.uk.ui.errors.hasError;
     import model = nts.uk.pr.view.qmm039.share.model;
     import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
+
     export class ScreenModel {
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
@@ -22,6 +23,12 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         cateIndicator: KnockoutObservable<number> = ko.observable(0);
         salBonusCate: KnockoutObservable<number> = ko.observable(0);
 
+
+        yearMonthStart: KnockoutObservable<number> = ko.observable(201812);
+        yearMonthEnd: KnockoutObservable<string> = ko.observable('');
+
+
+        canDelete: KnockoutObservable<boolean> = ko.observable(false);
 
 
         constructor() {
@@ -89,11 +96,17 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                     displayLastestStartHistory = String(startYM).substring(0, 4) + "/" + String(startYM).substring(4, 6);
                     self.startDateString(startYM);
                     self.endDateString(endYM);
+                    self.yearMonthStart(startYM);
+                    self.yearMonthEnd(nts.uk.time.parseYearMonth(endYM).format());
+                    if (endYM == 999912) {
+                        self.canDelete(true);
+                    }
                 }
 
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.DELETE, getText('QMM039_36')));
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.UPDATE, getText('QMM039_37')));
             }
+            $('#C1_3').focus();
             block.clear();
         }
 
@@ -110,13 +123,22 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
 
         updateHistory() {
             let self = this;
+            let params = getShared("QMM039_C_PARAMS");
             let newHistory = self.selectedHistory;
-            newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
-            newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
+            newHistory.startMonth = self.yearMonthStart();
+            newHistory.endMonth = params.period.periodEndYm;
 
             let newEmployee = self.selectedEmployee;
             newEmployee.cateIndicator = self.cateIndicator();
             newEmployee.salBonusCate = self.salBonusCate();
+
+
+
+            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm ) {
+                nts.uk.ui.dialog.info({messageId: "Msg_107"});
+                return;
+            }
+
             let command = {
                 //emp history
                 yearMonthHistoryItem: [newHistory],
@@ -124,24 +146,26 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 cateIndicator: newEmployee.cateIndicator,
                 salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
-                perValCode: newEmployee.personalValcode
+                perValCode: newEmployee.personalValcode,
+                lastHistoryId: params.lastHistoryId,
             };
 
-            service.editSalIndividualAmountHistory(command).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    setShared('QMM039_C_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+            service.editSalIndividualAmountHistory(command).done(function () {
+                nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
+                    setShared('QMM039_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
                 });
-            }).fail(function(err) {
+            }).fail(function (err) {
                 dialog.alertError(err.message);
             });
         }
 
         deleteHistory() {
             let self = this;
+            let params = getShared("QMM039_C_PARAMS");
             let newHistory = self.selectedHistory;
-            newHistory.startMonth = parseInt(self.dateValue().startDate.replace('/', ''));
-            newHistory.endMonth = parseInt(self.dateValue().endDate.replace('/', ''));
+            newHistory.startMonth = self.dateValue().startDate;
+            newHistory.endMonth = self.dateValue().endDate;
 
             let newEmployee = self.selectedEmployee;
             newEmployee.cateIndicator = self.cateIndicator();
@@ -153,15 +177,16 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 cateIndicator: newEmployee.cateIndicator,
                 salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
-                perValCode: newEmployee.personalValcode
+                perValCode: newEmployee.personalValcode,
+                lastHistoryId : params.lastHistoryId,
             };
 
-            service.deleteSalIndividualAmountHistory(command).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    setShared('QMM039_C_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+            service.deleteSalIndividualAmountHistory(command).done(function () {
+                nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(function () {
+                    setShared('QMM039_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
                 });
-            }).fail(function(err) {
+            }).fail(function (err) {
                 dialog.alertError(err.message);
             });
 
