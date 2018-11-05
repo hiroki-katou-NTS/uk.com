@@ -14,7 +14,6 @@ public interface StatementLayoutHistRepository
     List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid,int startYearMonth);
 
     Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int specCd, String histId);
-
     void add(StatementLayoutHist domain);
 
     void update(StatementLayoutHist domain);
