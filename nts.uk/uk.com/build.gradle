@@ -490,7 +490,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project (':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.pub')
-		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.env.pub')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
 		
 		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
