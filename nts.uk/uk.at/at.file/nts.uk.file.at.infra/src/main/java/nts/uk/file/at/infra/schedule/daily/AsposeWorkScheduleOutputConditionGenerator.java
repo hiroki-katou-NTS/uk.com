@@ -2363,7 +2363,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private void writeDetailValue(ActualValue actualValue, Cell cell) {
 		Style style = cell.getStyle();
 		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-		if (valueTypeEnum.isTime() && valueTypeEnum.isDouble()) {
+		if (valueTypeEnum.isTime() || valueTypeEnum.isDouble()) {
 			String value = actualValue.getValue();
 			if (value != null) {
 				if (valueTypeEnum == ValueType.TIME) {
