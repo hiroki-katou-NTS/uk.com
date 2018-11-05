@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class JpaStatementLayoutRepository extends JpaRepository implements StatementLayoutRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayout f";
+    private static final String SELECT_ALL_BY_CID = SELECT_ALL_QUERY_STRING + "WHERE f.statementLayoutPk.cid =:cid ORDER BY f.statementLayoutPk.statementCd ASC";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid AND  f.statementLayoutPk.statementCd =:statementCd ";
     private static final String SELECT_SPEC_NAME = "SELECT e.specCode, e.specName FROM QpbmtStatementLayoutHist f INNER JOIN QpbmtStatementLayout e on e.statementLayoutPk.statementCd = f.statementLayoutPk.statementCd" +
             " Where f.startYearMonth > :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
@@ -24,6 +25,13 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
                 .setParameter("startYearMonth", startYearMonth)
                 .setParameter("cid", cid)
                 .getList().stream().map(i->i.toDomain()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StatementLayout> getAllStatementLayoutByCid(String cid){
+        return this.queryProxy().query(SELECT_ALL_BY_CID, QpbmtStatementLayout.class)
+                .setParameter("cid", cid)
+                .getList(item -> item.toDomain());
     }
 
     @Override

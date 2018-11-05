@@ -46,5 +46,5 @@ public class QpbmtLineByLineSetPk implements Serializable {
      */
     @Basic(optional = false)
     @Column(name="ITEM_ID")
-    public int itemID;
+    public String itemID;
 }

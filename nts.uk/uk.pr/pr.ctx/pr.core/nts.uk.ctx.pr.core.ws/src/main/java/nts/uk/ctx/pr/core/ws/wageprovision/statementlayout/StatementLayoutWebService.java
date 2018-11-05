@@ -1,13 +1,15 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.DeleteStatementLayoutHistCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.StatementLayoutHistCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.UpdateStatementLayoutHistCommandHandler;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemCustomDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.*;
-
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname.SalIndAmountNameDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.salaryindividualamountname.SalIndAmountNameFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemCustomDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableFinder;
 
@@ -33,8 +35,15 @@ public class StatementLayoutWebService {
 
     @Inject
     private StatementLayoutFinder statementLayoutFinder;
+
     @Inject
     private StatementLayoutHistFinder statementLayoutHistFinder;
+
+    @Inject
+    private UpdateStatementLayoutHistCommandHandler updateStatementLayoutHistCommandHandler;
+
+    @Inject
+    private DeleteStatementLayoutHistCommandHandler deleteStatementLayoutHistCommandHandler;
 
     @POST
     @Path("getSalIndAmountName/{cateIndicator}")
@@ -68,15 +77,38 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getAllStatementLayoutAndLastHist")
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
+        return this.statementLayoutFinder.getAllStatementLayoutAndLastHist();
+    }
+
+    @POST
     @Path("getStatementLayoutAndLastHist/{code}")
     public StatementLayoutAndHistDto getStatementLayoutAndLastHist(@PathParam("code") String code) {
         return this.statementLayoutFinder.getStatementLayoutAndLastHist(code);
     }
 
     @POST
-    @Path("getStatementLayoutAndLastHist/{code}/{startYearMonth}")
-    public List<YearMonthHistoryItemDto> getStatementLayoutAndLastHist(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
+    @Path("getHistByCidAndCodeAndAfterDate/{code}/{startYearMonth}")
+    public List<YearMonthHistoryItemDto> getHistByCidAndCodeAndAfterDate(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
         return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth);
     }
 
+    @POST
+    @Path("getStatementLayoutHistData/{code}/{histId}")
+    public StatementLayoutHistDataDto getStatementLayoutHistData(@PathParam("code") String code, @PathParam("histId") String histId) {
+        return this.statementLayoutHistFinder.getStatementLayoutHistData(code, histId).orElse(null);
+    }
+
+    @POST
+    @Path("updateStatementLayoutHist")
+    public void updateStatementLayoutHist(StatementLayoutHistCommand command) {
+        this.updateStatementLayoutHistCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("deleteStatementLayoutHist")
+    public void deleteStatementLayoutHist(StatementLayoutHistCommand command) {
+        this.deleteStatementLayoutHistCommandHandler.handle(command);
+    }
 }

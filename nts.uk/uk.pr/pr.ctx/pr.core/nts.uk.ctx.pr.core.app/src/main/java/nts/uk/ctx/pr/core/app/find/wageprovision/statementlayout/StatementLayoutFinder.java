@@ -12,6 +12,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,26 +32,36 @@ public class StatementLayoutFinder {
         String cid = AppContexts.user().companyId();
 
         Optional<StatementLayout> statementLayout = statementLayoutRepo.getStatementLayoutById(cid, code);
-        List<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getLatestHistByCidAndCode(cid, code);
+        Optional<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getLatestHistByCidAndCode(cid, code);
+        List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<>();
+        yearMonthHistoryItem.ifPresent(i -> yearMonthHistoryItemList.add(i));
 
-        if(statementLayout.isPresent()) {
-            return StatementLayoutAndHistDto.fromDomain(statementLayout.get(), yearMonthHistoryItem);
-        } else {
-            return null;
-        }
+        return statementLayout.map(x -> StatementLayoutAndHistDto.fromDomain(x, yearMonthHistoryItemList)).orElse(null);
     }
 
     public StatementLayoutAndHistDto getStatementLayoutAndHistById(String code, String histId) {
         String cid = AppContexts.user().companyId();
 
         Optional<StatementLayout> statementLayout = statementLayoutRepo.getStatementLayoutById(cid, code);
-        List<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getStatementLayoutHistById(histId);
+        Optional<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getStatementLayoutHistById(histId);
+        List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<>();
+        yearMonthHistoryItem.ifPresent(i -> yearMonthHistoryItemList.add(i));
 
-        if(statementLayout.isPresent()) {
-            return StatementLayoutAndHistDto.fromDomain(statementLayout.get(), yearMonthHistoryItem);
-        } else {
-            return null;
+        return statementLayout.map(x -> StatementLayoutAndHistDto.fromDomain(x, yearMonthHistoryItemList)).orElse(null);
+    }
+
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
+        List<StatementLayoutAndHistDto> result = new ArrayList<>();
+        String cid = AppContexts.user().companyId();
+
+        List<StatementLayout> statementLayoutList = statementLayoutRepo.getAllStatementLayoutByCid(cid);
+
+        for(StatementLayout statementLayout : statementLayoutList) {
+            List<YearMonthHistoryItem> yearMonthHistoryItemList = statementLayoutHistRepo.getAllHistByCidAndCode(cid, statementLayout.getStatementCode().v());
+            result.add(StatementLayoutAndHistDto.fromDomain(statementLayout, yearMonthHistoryItemList));
         }
+
+        return result;
     }
 
     public List<StatementItemCustomDto> getStatementItem() {

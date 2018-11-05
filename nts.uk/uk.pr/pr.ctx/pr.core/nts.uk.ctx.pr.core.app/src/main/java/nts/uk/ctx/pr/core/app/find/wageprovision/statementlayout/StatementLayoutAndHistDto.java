@@ -16,11 +16,6 @@ public class StatementLayoutAndHistDto
 {
 
     /**
-     * 会社ID
-     */
-    private String cid;
-
-    /**
      * 明細書コード
      */
     private String statementCode;
@@ -38,7 +33,7 @@ public class StatementLayoutAndHistDto
     public static StatementLayoutAndHistDto fromDomain(StatementLayout statementLayout, List<YearMonthHistoryItem> history)
     {
         List<YearMonthHistoryItemDto> yearMonthHistoryItemDto = history.stream().map(item -> YearMonthHistoryItemDto.fromDomainToDto(item)).collect(Collectors.toList());
-        return new StatementLayoutAndHistDto(statementLayout.getCid(), statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(), yearMonthHistoryItemDto);
+        return new StatementLayoutAndHistDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(), yearMonthHistoryItemDto);
     }
 
 }
