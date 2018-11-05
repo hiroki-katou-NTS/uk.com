@@ -292,7 +292,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                                 data.period[i].periodEndYm,
                                 format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney + "¥"))
                     }
-                    array=_.sortBy(array, [function(o) { return o.periodStartYm; }],'desc');
 
                     self.itemList(array);
                     self.isRegistrationable(true);

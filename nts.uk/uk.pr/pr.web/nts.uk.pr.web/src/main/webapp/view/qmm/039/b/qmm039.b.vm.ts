@@ -74,7 +74,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            if (self.takeoverMethod() == 0) {
+
 
 
                 if (self.startDateString() >= self.yearMonthStart()) {
@@ -82,7 +82,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                     return;
                 }
 
-            }
+
             let historyID = getShared("QMM039_A_PARAMS").historyID;
             setShared('QMM039_B_RES_PARAMS', {
                 historyID: historyID,
