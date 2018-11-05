@@ -577,9 +577,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                    let tempSelected=self.selectedHisCode();
+                    self.historyProcess(self.individualPriceCode(), tempSelected);
 
-                    self.historyProcess(self.individualPriceCode(), 0);
-                    self.selectedHisCode(0);
+                    self.selectedHisCode(tempSelected);
+
                 });
             } else if (self.mode() == MODE.ADD_HISTORY) {
                 let historyId = nts.uk.util.randomId();
