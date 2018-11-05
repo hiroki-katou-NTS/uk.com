@@ -1,10 +1,10 @@
-<div data-bind="with: $vm.viewmodelA.viewmodelD">
+<div>
     <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
 
         <div id="A">
             <span>#{i18n.getText('QMM020_5')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+                    data-bind="click: callconvertToCommand, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
             <button id="A1_2" tabindex="2"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
@@ -37,7 +37,7 @@
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
                                             multiple: false,
-                                            value: currentSelect
+                                            value: currentSelectedHis
                                         }"></table>
                 </div>
             </div>
@@ -55,11 +55,12 @@
             </div>
 
             <div>
-                <div style="width: 390px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid', items: items, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"></div>
+                <div style="width: 390px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid', items: items, selected: currentSelectedDep, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"></div>
 
-                <table id="treegrid" data-bind="ntsTreeGridView:{           width: 1000,            height: 250,           options: items,           virtualization: true,            virtualizationMode: 'continuous',           selectedValues: selectedCode,           optionsValue: 'code',           optionsChild: 'childs',           optionsText: 'nodeText',           multiple: true,           enable: true,           columns: columns,           showCheckBox: false}">
+                <table id="treegrid" data-bind="ntsTreeGridView:{           width: 1000,            height: 250,           options: items,           virtualization: true,            virtualizationMode: 'continuous',           selectedValues: currentSelectedDep,           optionsValue: 'code',           optionsChild: 'childs',           optionsText: 'nodeText',           multiple: true,           enable: true,           columns: columns,           showCheckBox: false , ntsControls: ntsControls}">
                 </table>
-
+                <!--<table id="treegrid" data-bind="ntsTreeGridView:{           width: 1000,           height: 250,           dataSource: items,           value: currentSelectedDep,           columns: columns,           initialExpandDepth: 0,           primaryKey: 'code',           childDataKey: 'childs',           primaryText: 'nodeText',           multiple: false,           enable: true,           showCheckBox: false}">
+                </table>-->
             </div>
         </div>
     </div>

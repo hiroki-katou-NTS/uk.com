@@ -14,7 +14,11 @@ public interface StateLinkSettingMasterRepository {
 
     void add(StateLinkSettingMaster domain);
 
+    void addAll(List<StateLinkSettingMaster> domain);
+
     void update(StateLinkSettingMaster domain);
+
+    void updateAll(List<StateLinkSettingMaster> domain);
 
     void remove(String hisId, String masterCode);
 

@@ -7,7 +7,7 @@ import java.util.List;
 * 明細書レイアウト
 */
 public interface StatementLayoutRepository {
-    List<StatementLayout> getStatementCode(String cid, int startYearMonth);
+    List<StatementLayout> getStatement(String cid, int startYearMonth);
 
     List<StatementLayout> getAllStatementLayout();
 

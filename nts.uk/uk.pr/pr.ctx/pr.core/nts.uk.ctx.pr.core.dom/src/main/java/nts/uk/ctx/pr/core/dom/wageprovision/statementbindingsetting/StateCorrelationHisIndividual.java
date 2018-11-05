@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -28,7 +29,7 @@ public class StateCorrelationHisIndividual extends AggregateRoot implements Undu
     }
 
     @Override
-    public List items() {
+    public List<YearMonthHistoryItem> items() {
         return history;
     }
 

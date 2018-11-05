@@ -2,7 +2,7 @@
     <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
 
         <div id="A">
-            <span>#{i18n.getText('QMM020_5')}</span>
+            <span>#{i18n.getText('QMM020_7')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
@@ -26,10 +26,11 @@
                     <button id="F1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
                 </div>
 
+
                 <div style="margin-top: 10px">
                     <table  id="F1_5"  data-bind="ntsGridList: {
                                             height: 250,
-                                            dataSource: listStateCorrelationHis,
+                                            dataSource: listStateCorrelationHisPosition,
                                             primaryKey: 'code',
                                             columns: [
                                                         { headerText: '', key: 'code', width: 100, hidden: true },
@@ -37,28 +38,34 @@
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
                                             multiple: false,
-                                            value: currentSelect
+                                            value: hisIdSelected
                                         }"></table>
                 </div>
             </div>
         </div>
         <div class="fixed-flex-layout-right">
             <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
-                <div id="F2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_24')}</div>
+                <div id="D2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_29')}</div>
             </div>
 
             <div>
-                <div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'empCode', comId: 'multi-list',
-	items: items, selected: currentCodeList, selectedKey: 'empCode', fields: ['empName', 'empCode'], mode: 'igGrid'}" />
+                <span  id="D2_3" class="label with-image">
+                    <i class="image image-calendar"/>
+                    <span>#{i18n.getText('QMM020_30')}</span>
+                </span>
+            </div>
 
-                <table id="multi-list" data-bind="ntsGridList: {
-                    height: 320,
-                    options: items,
-                    optionsValue: 'empCode',
-                    columns: columns,
-                    multiple: false,
-                    value: currentCodeList
-                }"></table>
+            <div>
+                <div style="width: 700px" data-bind =
+                        "ntsSearchBox: {
+                        targetKey: 'masterCode',
+                        comId: 'multi-list',
+	                    items: listStateLinkSettingMaster,
+	                    selectedKey: 'masterCode',
+	                     fields: ['masterCode', 'categoryName'],
+	                     mode: 'igGrid'}" />
+
+                <table id="F3_1" ></table>
 
             </div>
         </div>
