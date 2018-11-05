@@ -19,7 +19,7 @@ public class StatementLayoutService {
     /**
      * 支給項目一覧を更新する
      */
-    public List<StatementItemCustom> getStatementItem() {
+    public List<StatementItemCustom> getStatementItem(int categoryAtr) {
         String cid = AppContexts.user().companyId();
         // ドメインモデル「固定項目区分一覧」を取得する
         List<String> itemNameCds = fixedItemClassificationListRepo
@@ -29,6 +29,6 @@ public class StatementLayoutService {
         // TODO #125441
         // ドメインモデル「明細書項目」を取得する
         // ドメインモデル「明細書項目名称」を取得する
-        return statementItemRepo.getItemCustomByCtgAndExcludeCodes(cid, CategoryAtr.PAYMENT_ITEM.value, itemNameCds);
+        return statementItemRepo.getItemCustomByCtgAndExcludeCodes(cid, categoryAtr, itemNameCds);
     }
 }

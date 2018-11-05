@@ -83,9 +83,9 @@ public class StatementLayoutWebService {
     }
 
     @POST
-    @Path("getStatementItem")
-    public List<StatementItemCustomDto> getStatementItem() {
-        return statementLayoutFinder.getStatementItem();
+    @Path("getStatementItem/{categoryAtr}")
+    public List<StatementItemCustomDto> getStatementItem(@PathParam("categoryAtr") int categoryAtr) {
+        return statementLayoutFinder.getStatementItem(categoryAtr);
     }
 
     @POST

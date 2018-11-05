@@ -105,11 +105,11 @@
 }
 
 .table-origin .acc-content {
-    padding: 10px;
+    padding: 5px;
 }
 
 .table-origin .acc-content .acc-table {
-    width: 278px;
+    width: 288px;
 }
 
 .table-origin .acc-content .acc-table > tbody > tr:not(.last-row) > td:first-child {
@@ -121,9 +121,18 @@
 }
 
 .table-origin .acc-content .acc-table .nts-fixed-table {
-    margin: 10px;
+    margin: 5px;
 }
 
 .table-origin .acc-content .acc-table .nts-fixed-table .fixed-table tr{
     height: 23px;
+}
+
+.label.range-setting{
+    text-align: right;
+}
+
+.label.range-setting .label:last-child{
+    width: 92px;
+    text-align: left;
 }

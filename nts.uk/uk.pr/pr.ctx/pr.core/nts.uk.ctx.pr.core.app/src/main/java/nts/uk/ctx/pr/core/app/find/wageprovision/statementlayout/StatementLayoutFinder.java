@@ -68,8 +68,8 @@ public class StatementLayoutFinder {
         return result;
     }
 
-    public List<StatementItemCustomDto> getStatementItem() {
-        return statementLayoutService.getStatementItem().stream().map(StatementItemCustomDto::new).collect(Collectors.toList());
+    public List<StatementItemCustomDto> getStatementItem(int categoryAtr) {
+        return statementLayoutService.getStatementItem(categoryAtr).stream().map(StatementItemCustomDto::new).collect(Collectors.toList());
     }
 
     public PaymentItemSetDto getPaymentItemStById(int categoryAtr, String itemNameCode) {

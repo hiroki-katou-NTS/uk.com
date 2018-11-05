@@ -41,7 +41,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.itemNameSelected = ko.observable(new shareModel.ItemModel(null, null));
 
             self.value = ko.observable(1000);
-            self.breakdownAtrs = ko.observableArray(shareModel.getDeductionTotalObjAtr());
+            self.breakdownAtrs = ko.observableArray(shareModel.getPaymentTotalObjAtr());
             self.breakdownAtrSelected = ko.observable(null);
             self.calcMethods = ko.observableArray(shareModel.getDeductionCaclMethodAtr());
             self.calcMethodSelected = ko.observable(null);

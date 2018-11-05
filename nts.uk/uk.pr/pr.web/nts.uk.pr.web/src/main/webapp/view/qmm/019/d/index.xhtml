@@ -80,11 +80,13 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D2_2-->
-                            <div class="label" data-bind="text: $vm.itemNameSelected().itemNameCd"/>
+                            <div class="label"
+                                 data-bind="text: $vm.itemNameSelected().itemNameCd, visible: $vm.screenMode() != $vm.unselectMode"/>
                         </div>
                         <div class="cell valign-center">
                             <!--D2_3-->
-                            <div class="label" data-bind="text: $vm.itemNameSelected().name"/>
+                            <div class="label"
+                                 data-bind="text: $vm.itemNameSelected().name, visible: $vm.screenMode() != $vm.unselectMode"/>
                         </div>
                     </div>
                     <div class="table table-col-2">
@@ -102,6 +104,7 @@
                                 value: totalObject,
                                 optionsText: 'name',
                                 required: true,
+                                enable: $vm.screenMode() == $vm.selectMode,
                                 selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
@@ -123,6 +126,7 @@
                                 value: calcMethod,
                                 optionsText: 'name',
                                 required: true,
+                                enable: (calcMethod() != nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr.BREAKDOWN_ITEM &amp;&amp; $vm.paymentItemSet().taxAtr() !=  nts.uk.pr.view.qmm019.share.model.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER),
                                 selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
@@ -166,7 +170,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D6-4-->
-                            <div class="label">AAA BBB CCC</div>
+                            <div class="label" data-bind="text: perValName"/>
                         </div>
                     </div>
                     <div class="table table-col-4">
@@ -184,7 +188,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D7-4-->
-                            <div class="label">AAA BBB CCC</div>
+                            <div class="label" data-bind="text: formulaName"/>
                         </div>
                     </div>
                     <div class="table table-col-4">
@@ -202,7 +206,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D8-4-->
-                            <div class="label">AAA BBB CCC</div>
+                            <div class="label" data-bind="text: wageTableName"/>
                         </div>
                     </div>
                     <div class="table table-col-2">
@@ -338,15 +342,15 @@
                 </div>
                 <div class="cell valign-top">
                     <!--D2_10-->
-                    <div data-bind="ntsAccordion: { }">
+                    <div data-bind="ntsAccordion: { enable:  screenMode() != unselectMode}">
                         <h3>#{i18n.getText('QMM019_113')}</h3>
                         <div class="acc-content">
                             <!--D11_1-->
                             <div class="ui-iggrid">
-                                <table class="acc-table">
+                                <table class="acc-table" data-bind="with: paymentItemSet()">
                                     <colgroup>
                                         <col width="90px"/>
-                                        <col width="188px"/>
+                                        <col width="198px"/>
                                     </colgroup>
                                     <tr>
                                         <th class="ui-widget-header">
@@ -355,6 +359,7 @@
                                         </th>
                                         <td>
                                             <!--D11_16-->
+                                            <div class="label" data-bind="text: $vm.itemNameSelected().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -364,6 +369,7 @@
                                         </th>
                                         <td>
                                             <!--D11_17-->
+                                            <div class="label" data-bind="text: $vm.categoryAtrText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -373,6 +379,7 @@
                                         </th>
                                         <td>
                                             <!--D11_20-->
+                                            <div class="label" data-bind="text: taxAtrText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -382,6 +389,7 @@
                                         </th>
                                         <td>
                                             <!--D11_21-->
+                                            <div class="label" data-bind="text: limitAmount"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -391,6 +399,7 @@
                                         </th>
                                         <td>
                                             <!--D11_22-->
+                                            <div class="label" data-bind="text: socialInsuranceCategoryText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -400,6 +409,7 @@
                                         </th>
                                         <td>
                                             <!--D11_23-->
+                                            <div class="label" data-bind="text: laborInsuranceCategoryText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -409,6 +419,7 @@
                                         </th>
                                         <td>
                                             <!--D11_24-->
+                                            <div class="label" data-bind="text: everyoneEqualSetText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -418,6 +429,7 @@
                                         </th>
                                         <td>
                                             <!--D11_25-->
+                                            <div class="label" data-bind="text: averageWageAtrText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -427,11 +439,19 @@
                                             <!--D11_13-->
                                             <div class="label">#{i18n.getText('QMM019_157')}</div>
                                         </th>
-                                        <td>
-                                            <!--D11_27-->
-                                            <!--D11_28-->
-                                            <!--D11_29-->
-                                            <!--D11_30-->
+                                        <td data-bind="with: errorRangeSetting">
+                                            <div class="label range-setting">
+                                                <!--D11_27-->
+                                                <span class="label" data-bind="text: upperLimitSetting.rangeValue()"/>
+                                                <!--D11_28-->
+                                                <span class="label">円を超える場合</span>
+                                            </div>
+                                            <div class="label range-setting">
+                                                <!--D11_29-->
+                                                <span class="label" data-bind="text: lowerLimitSetting.rangeValue()"/>
+                                                <!--D11_30-->
+                                                <span class="label">円未満の場合</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -441,11 +461,19 @@
                                             <!--D11_15-->
                                             <div class="label">#{i18n.getText('QMM019_157')}</div>
                                         </th>
-                                        <td>
-                                            <!--D11_31-->
-                                            <!--D11_32-->
-                                            <!--D11_33-->
-                                            <!--D11_34-->
+                                        <td data-bind="with: alarmRangeSetting">
+                                            <div class="label range-setting">
+                                                <!--D11_31-->
+                                                <span class="label" data-bind="text: upperLimitSetting.rangeValue()"/>
+                                                <!--D11_32-->
+                                                <span class="label">円を超える場合</span>
+                                            </div>
+                                            <div class="label range-setting">
+                                                <!--D11_33-->
+                                                <span class="label" data-bind="text: lowerLimitSetting.rangeValue()"/>
+                                                <!--D11_34-->
+                                                <span class="label">円未満の場合</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -459,8 +487,8 @@
                                             <!--D12_1-->
                                             <table id="fixed-table">
                                                 <colgroup>
-                                                    <col width="60px"/>
-                                                    <col width="170px"/>
+                                                    <col width="70px"/>
+                                                    <col width="*"/>
                                                 </colgroup>
                                                 <thead>
                                                 <tr>
@@ -470,48 +498,15 @@
                                                     <th class="ui-widget-header">#{i18n.getText('QMM019_109')}</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody data-bind="foreach: $vm.breakdownItemSets">
                                                 <tr>
                                                     <td>
-                                                        123
+                                                        <div class="label" data-bind="text: breakdownItemCode"/>
                                                     </td>
                                                     <td>
-                                                        AAA DFDDD ad
+                                                        <div class="label" data-bind="text: breakdownItemName"/>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        123
-                                                    </td>
-                                                    <td>
-                                                        AAA DFDDD ad
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        123
-                                                    </td>
-                                                    <td>
-                                                        AAA DFDDD ad
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        123
-                                                    </td>
-                                                    <td>
-                                                        AAA DFDDD ad
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        123
-                                                    </td>
-                                                    <td>
-                                                        AAA DFDDD ad
-                                                    </td>
-                                                </tr>
-
                                                 </tbody>
                                             </table>
                                         </td>
