@@ -293,7 +293,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				
 				// Insert 3 columns to make the table at center area 
 				// it should be 3 columns at both sides
-				cells.insertColumns(0, 3);
+				cells.insertColumns(0, 2);
 			}
 			
 			// Rename sheet
