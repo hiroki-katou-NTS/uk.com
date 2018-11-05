@@ -1,6 +1,12 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.sendmail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,6 +23,8 @@ import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.MailDestinationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.MailDestinationImport;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -27,7 +35,7 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 @Stateless
 @Transactional
 public class SendMailInfoFormGCommandHandler
-		extends CommandHandlerWithResult<SendMailInfoFormGCommand, SendMailReturnDto> {
+		extends CommandHandlerWithResult<SendMailInfoFormGCommand, List<SendMailReturnDto>> {
 
 	/** The user adapter. */
 	@Inject
@@ -41,9 +49,16 @@ public class SendMailInfoFormGCommandHandler
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
 
+	/** The employee info adapter. */
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
 
+	/** The mail destination adapter. */
+	@Inject
+	private MailDestinationAdapter mailDestinationAdapter;
+	
+	/** The Constant LOGIN_FUNCTION_ID. */
+	private static final Integer LOGIN_FUNCTION_ID =1;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,38 +67,44 @@ public class SendMailInfoFormGCommandHandler
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected SendMailReturnDto handle(CommandHandlerContext<SendMailInfoFormGCommand> context) {
+	protected List<SendMailReturnDto> handle(CommandHandlerContext<SendMailInfoFormGCommand> context) {
 		// get command
 		SendMailInfoFormGCommand command = context.getCommand();
 
 		String companyId = command.getContractCode() + "-" + command.getCompanyCode();
+		// Imported（GateWay）「社員」を取得する
+		EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId, command.getEmployeeCode());
 
-		if (!command.getEmployeeCode().isEmpty()) {
-			// Get EmployeeInfo
-			EmployeeInfoDtoImport employee = this.employeeInfoAdapter.getEmployeeInfo(companyId,
-					command.getEmployeeCode());
+		if (employee != null) {
+			// 社員のメールアドレスを取得する
+			MailDestinationImport mailDestinationImport = mailDestinationAdapter.getMailofEmployee(companyId,
+					Arrays.asList(employee.getEmployeeId()), LOGIN_FUNCTION_ID);
+			// get userInfo
+			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
 
-			if (employee != null) {
-				// get userInfo
-				Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
-
-				if (user.isPresent()) {
+			if (user.isPresent()) {
+				if (mailDestinationImport.getOutGoingMails().isEmpty()) {
 					// check mail present
 					if (user.get().getMailAddress().get().isEmpty()) {
 						throw new BusinessException("Msg_1129");
 					} else {
 						// Send Mail アルゴリズム「メール送信実行」を実行する
-						return this.sendMail(user.get().getMailAddress().get(), user.get().getLoginId(), command, employee);
+						return this.sendMail(Arrays.asList(user.get().getMailAddress().get()), user.get().getLoginId(),
+								command, employee);
 					}
+					// return new SendMailReturnDto(null);
+				} else {
+					return this.sendMail(mailDestinationImport.getOutGoingMails(), user.get().getLoginId(), command,
+							employee);
 				}
-				return new SendMailReturnDto(null);
-			}
-			//fixbug #101548 EA修正履歴 No.2891 
-			else {
-				throw new BusinessException("Msg_176");
+			} else {
+				return Arrays.asList(new SendMailReturnDto(null));
 			}
 		}
-		return new SendMailReturnDto(null);
+		// fixbug #101548 EA修正履歴 No.2891
+		else {
+			throw new BusinessException("Msg_176");
+		}
 	}
 
 	/**
@@ -96,23 +117,24 @@ public class SendMailInfoFormGCommandHandler
 	 * @return true, if successful
 	 */
 	// Send Mail アルゴリズム「メール送信実行」を実行する
-	private SendMailReturnDto sendMail(String mailto, String loginId, SendMailInfoFormGCommand command,
+	private List<SendMailReturnDto> sendMail(List<String> toMails, String loginId, SendMailInfoFormGCommand command,
 			EmployeeInfoDtoImport employee) {
 		// get URL from CCG033
 		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 3, 24, employee.getEmployeeId(),
 				command.getContractCode(), loginId, employee.getEmployeeCode(), 1, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") + " \n" + url);
-
+		List<SendMailReturnDto> dtos = new ArrayList<>();
 		try {
-			mailSender.sendFromAdmin(mailto, contents);
-			SendMailReturnDto dto = new SendMailReturnDto(url);
-			return dto;
+			toMails.stream().forEach(item -> {
+				mailSender.sendFromAdmin(item, contents);
+				SendMailReturnDto dto = new SendMailReturnDto(url);
+				dtos.add(dto);
+			});
+			return dtos;
 		} catch (SendMailFailedException e) {
 			// Send mail fail
 			throw new BusinessException("Msg_208");
 		}
-
 	}
-
 }
