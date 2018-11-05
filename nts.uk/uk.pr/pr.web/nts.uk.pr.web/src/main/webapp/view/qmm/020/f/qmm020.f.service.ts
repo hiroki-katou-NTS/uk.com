@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm020.f {
         var path: any = {
             getStateCorrelationHisPosition: "core/wageprovision/statementbindingsetting/getStateCorrelationHisPosition",
             registerCorrelationHisPosition: "core/wageprovision/statementbindingsetting/registerCorrelationHisPosition",
-            getStateLinkMaster: "core/wageprovision/statementbindingsetting/getStateLinkMaster/{0}/{1}"
+            getStateLinkSettingMasterPosition: "core/wageprovision/statementbindingsetting/getStateLinkMasterPosition/{0}/{1}"
         };
 
         export function getStateCorrelationHisPosition(): JQueryPromise<any> {
@@ -16,8 +16,8 @@ module nts.uk.pr.view.qmm020.f {
             return nts.uk.request.ajax(path.getStateCorrelationHisPosition);
         }
 
-        export function getStateLinkMaster(hisId :string, start :number): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.getStateLinkMaster, hisId, start);
+        export function getStateLinkSettingMasterPosition(hisId :string, start :number): JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getStateLinkSettingMasterPosition, hisId, start);
             return nts.uk.request.ajax("pr", _path);
         }
     }

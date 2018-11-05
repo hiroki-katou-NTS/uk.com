@@ -14,19 +14,20 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         startYearMonthMasterDate: KnockoutObservable<number> = ko.observable();
         endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
         modeScreen : KnockoutObservable<number> = ko.observable(null);
-        height : KnockoutObservable<number> = ko.observable(200);
+        height : KnockoutObservable<number> = ko.observable(null;
         params : any = null;
         constructor(){
-            if(1 == MODE_SCREEN.MODE_ONE){
-                let windowSize = nts.uk.ui.windows.getSelf();
-                windowSize.$dialog.height(200);
-            }
+
             let params = getShared(model.PARAMETERS_SCREEN_J.INPUT);
             if (params == null || params === undefined) {
                 return;
             }
             this.params = params;
             this.modeScreen(this.params.modeScreen);
+            if(this.modeScreen() == MODE_SCREEN.MODE_ONE){
+                let windowSize = nts.uk.ui.windows.getSelf();
+                windowSize.$dialog.height(250);
+            }
 
         }
         submit(){

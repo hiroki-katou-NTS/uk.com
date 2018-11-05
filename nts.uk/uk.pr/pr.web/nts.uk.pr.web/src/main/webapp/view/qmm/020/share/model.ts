@@ -42,7 +42,11 @@ module nts.uk.pr.view.qmm020.share.model {
         POSITION = 4,
         SALARY = 5,
         INDIVIDUAL = 6
-
-
+}
+    export enum PARAMETERS_SCREEN_M {
+        /* When another screen open*/
+        INPUT = "PARAM_INPUT_SCREEN_SONTUNGMTP_QMM020_QWE!@#$",
+        /* When screen D, F open */
+        OUTPUT = "PARAM_OUTPUT_SCREEN_SONTUNGMTP_QMM020_QWE!@#$"
     }
 }
