@@ -55,14 +55,15 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         value: KnockoutObservable<number>;
         currencyeditor: any;
 
-        columns:any;
+        columns: any;
+
         constructor() {
             let self = this;
             self.selectedTab = ko.observable('tab-1');
             self.columns = [
-                { key: 'index', length: 0, hidden: true},
-                { key: 'period', length: 8 },
-                { key: 'amount', length: 6, template: "<div style='text-align: right'>${amount}</div>" }
+                {key: 'index', length: 0, hidden: true},
+                {key: 'period', length: 8},
+                {key: 'amount', length: 6, template: "<div style='text-align: right'>${amount}</div>"}
             ];
             // initial ccg options
             self.itemList = ko.observableArray([]);
@@ -89,28 +90,27 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
-                if(newValue ==""){
+                if (newValue == "") {
                     return;
                 }
                 self.changeHistory(self.itemList()[newValue]);
-                    if(self.mode()==MODE.ADD_HISTORY){
-                        // let array = self.itemList();
-                        // self.itemList([]);
-                        // array.shift();
-                        // self.itemList(array);
-                        //self.singleSelectedCode();
-                        self.singleSelectedCode.valueHasMutated().done(function () {
-                            
-                        })
-                        //setTimeout(function () {
+                if (self.mode() == MODE.ADD_HISTORY) {
+                    // let array = self.itemList();
+                    // self.itemList([]);
+                    // array.shift();
+                    // self.itemList(array);
+                    //self.singleSelectedCode();
+                    self.singleSelectedCode.valueHasMutated().done(function () {
 
-                            //self.selectedHisCode((parseInt(newValue) -1)+'');
-                        //},200);
+                    })
+                    //setTimeout(function () {
+
+                    //self.selectedHisCode((parseInt(newValue) -1)+'');
+                    //},200);
 
 
-
-                        self.mode(MODE.NORMAL);
-                    }
+                    self.mode(MODE.NORMAL);
+                }
 
 
             });
@@ -436,10 +436,20 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 self.openModalB(params);
             } else {
                 service.processYearFromEmp(self.individualPriceCode()).done(function (data) {
-                    params = {
-                        period: {
-                            periodStartYm: data,
-                            periodEndYm: 999912
+                    if (data) {
+                        params = {
+                            period: {
+                                periodStartYm: data,
+                                periodEndYm: 999912
+                            }
+                        }
+                    }
+                    else {
+                        params = {
+                            period: {
+                                periodStartYm: null,
+                                periodEndYm: 999912
+                            }
                         }
                     }
                     self.openModalB(params);
@@ -550,7 +560,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 personalValCode: self.individualPriceCode(),
                 personalValName: self.individualPriceCode(),
                 cateIndicator: self.classificationCategory(),
-                salBonusCate :self.salaryBonusCategory()
+                salBonusCate: self.salaryBonusCategory()
             }
             setShared("QMM039_D_PARAMS", params);
             modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {
@@ -569,7 +579,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
+
                     self.historyProcess(self.individualPriceCode(), 0);
+                    self.selectedHisCode(0);
                 });
             } else if (self.mode() == MODE.ADD_HISTORY) {
                 let historyId = nts.uk.util.randomId();
@@ -602,6 +614,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     self.historyProcess(self.individualPriceCode(), 0);
                     self.isEditableHis(true);
+
                     self.mode(MODE.NORMAL);
                 });
             }
