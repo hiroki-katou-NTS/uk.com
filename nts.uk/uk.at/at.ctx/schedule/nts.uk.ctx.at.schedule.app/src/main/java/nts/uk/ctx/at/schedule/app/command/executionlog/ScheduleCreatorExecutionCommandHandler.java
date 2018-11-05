@@ -15,12 +15,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.infra.data.EntityManagerLoader;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
