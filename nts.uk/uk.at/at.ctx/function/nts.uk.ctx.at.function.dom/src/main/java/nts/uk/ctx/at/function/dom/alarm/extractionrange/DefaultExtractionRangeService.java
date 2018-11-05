@@ -149,23 +149,29 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				int yearMonthYear = yearMonth.year();
 				if(extraction.isToBeThisYear()){
 					if(firstMonth <= yearMonth.month()) {
-						startMonth = YearMonth.of(yearMonthYear, firstMonth);
-						firstMonth = firstMonth - 1;
-						endMonth = yearMonth.addMonths(firstMonth);
 						year = yearMonthYear;
 					}else {
 						year = yearMonthYear - 1;
-						startMonth = YearMonth.of(yearMonthYear - 1, firstMonth);
-						firstMonth = firstMonth - 1;
-						YearMonth endMonthtemp= YearMonth.of( year,yearMonth.month());
-						endMonth = endMonthtemp.addMonths(firstMonth);
-						
 					}
+					if (firstMonth == 1) {
+						startMonth = YearMonth.of(year, firstMonth);
+						endMonth = YearMonth.of(year, 12);
+					} else {
+						startMonth = YearMonth.of(year, firstMonth);
+						firstMonth = firstMonth - 1;
+						endMonth = YearMonth.of(year + 1, firstMonth);
+					}
+					
 				}else {
-					startMonth = YearMonth.of(yearMonthYear, firstMonth);
-					firstMonth = firstMonth - 1;
-					endMonth = YearMonth.of(yearMonthYear + 1, firstMonth);
 					year = extraction.getYear();
+					if (firstMonth == 1) {
+						startMonth = YearMonth.of(year, firstMonth);
+						endMonth = YearMonth.of(year, 12);
+					}else{
+						startMonth = YearMonth.of(year, firstMonth);
+						firstMonth = firstMonth - 1;
+						endMonth = YearMonth.of(year + 1, firstMonth);
+					}
 				}
 				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );
 				yearDto.setTabOrder(5);
