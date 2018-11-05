@@ -33,7 +33,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
         salGenParamOptions: KnockoutObservable<SalGenParamOptions> = ko.observable(null);
         //data combo box
         listSalGenOptions: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        valueComboBox :KnockoutObservable<number> = ko.observable(0);
+        valueComboBox :KnockoutObservable<number> = ko.observable(null);
         modeHistory:KnockoutObservable<number> = ko.observable(MODEHISTORY.YEARMONTH);
         isDisplayHis:KnockoutObservable<boolean> = ko.observable(false);
 
@@ -278,7 +278,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                     }
                     self.selectedSwitchParaAvai(item.availableAtr);
                     self.selectedSwitchParaTargetAtr((item.targetAtr == null)? PARATARGETATR.TARGET : item.targetAtr);
-                    self.valueComboBox((item.selection == null)? 0 : item.selection);
+                    self.valueComboBox((item.selection == null)? null : item.selection);
                 }).fail(error => {
                     dialog.alertError(error);
                 });
@@ -362,7 +362,10 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             let dataHisValue: any = null;
             let valueCombobox : number = null;
             if(self.salGenParaIdent().attributeType == PARAATTRITYPE.SELECTION){
-                valueCombobox =self.valueComboBox();
+                valueCombobox =(self.valueComboBox() == null)? null : self.valueComboBox();
+            }
+            if(self.salGenParaIdent().attributeType != PARAATTRITYPE.TARGET_EXEMPT){
+                self.selectedSwitchParaTargetAtr(null);
             }
             let dataValue: any = {
                 historyId: self.selectedSalGenParaHistory(),

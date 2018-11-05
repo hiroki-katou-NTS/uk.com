@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 440, height: 420 };</script>
+			<script>var dialogSize = { width: 505, height: 380 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm001.b.vm.js" />
@@ -27,7 +27,7 @@
 					<!-- B2_3 会社単価コード -->
 					<span id="B1_3" class="label" style="margin-left: 50px" data-bind = "text: code"></span>
 					<!-- B1_4 会社単価名称 -->
-					<span id="B1_4" class="label" style="margin-left: 60px" data-bind = "text: name"></span>
+					<span id="B1_4" class="label" style="margin-left: 15px" data-bind = "text: name"></span>
 				</div>
 				<!-- B1_5 期間 -->
 				<div id="B1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
@@ -95,12 +95,14 @@
 			</div>
 			</div>
 			<div id="functions-area-bottom" style="z-index: auto;">
-				<!-- E2_1 登録 -->
+				<!-- B2_1 登録 -->
+			<div id="center">
 				<button id="B2_1" tabindex="4" class="proceed large"
 					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM001_35')}</button>
-				<!-- E2_2 削除 -->
+				<!-- B2_2 削除 -->
 				<button id="B2_2" tabindex="5"
 					data-bind="click: cancel">#{i18n.getText('QMM001_36')}</button>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

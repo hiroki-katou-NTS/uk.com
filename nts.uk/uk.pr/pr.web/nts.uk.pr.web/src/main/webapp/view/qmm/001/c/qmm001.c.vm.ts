@@ -154,7 +154,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
                 return false;
             }
             if ((!(self.startLastYearMonth() < self.startYearMonth())) || (self.startYearMonth() > Number(self.endYearMonth()))) {
-                $('#C1_12').ntsError('set', { messageId: "Msg_107" });
+                dialog.alertError({ messageId: "Msg_127" });
                 return true;
             }
             return false;
@@ -166,7 +166,7 @@ module nts.uk.pr.view.qmm001.c.viewmodel {
             }
             let self = this;
             if ((!(self.startLastDate() < self.startDate())) ||  (self.startYearMonth() > Number(self.endDate())) ) {
-                $('#C1_11').ntsError('set', { messageId: "Msg_107" });
+                dialog.alertError({ messageId: "Msg_127" });
                 return true;
             }
             return false;
