@@ -13,7 +13,7 @@ public interface StatementLayoutHistRepository
 
     List<StatementLayoutHist> getAllStatementLayoutHist();
 
-    List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid,int startYearMonth paramsPeriod);
+    List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid,YearMonthHistoryItem paramsPeriod);
 
     Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int specCd, String histId);
 

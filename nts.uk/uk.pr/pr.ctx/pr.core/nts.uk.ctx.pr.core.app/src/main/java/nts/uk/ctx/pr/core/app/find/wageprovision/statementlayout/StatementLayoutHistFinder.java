@@ -26,16 +26,16 @@ public class StatementLayoutHistFinder
     public List<StatementLayoutHistDto> getAllStatementLayoutHist(int startYearMonth) {
         String cid = AppContexts.user().companyId();
         List<StatementLayoutHistDto> resulf = new ArrayList<StatementLayoutHistDto>();
-        List<StatementLayoutHist> mStatementLayoutHist = mStatementLayoutHistRepository.getAllStatementLayoutHistByCid(cid, paramsPeriod);
-        List<StatementLayout> mStatementLayout = mStatementLayoutRepository.getStatementCode(cid,startYearMonth);
-        mStatementLayoutHist.forEach(item ->
+       /* List<StatementLayoutHist> mStatementLayoutHist = mStatementLayoutHistRepository.getAllStatementLayoutHistByCid(cid, paramsPeriod);
+        List<StatementLayout> mStatementLayout = mStatementLayoutRepository.getStatementCode(cid,startYearMonth);*/
+        /*mStatementLayoutHist.forEach(item ->
                 resulf.add(new StatementLayoutHistDto(item.getCid(), item.getStatementCode().v(), mStatementLayout.stream().filter(
                         x -> x.getStatementCode().v().equals(item.getStatementCode().v())
                 ).findFirst().get().getStatementName().v(), item.getHistory().get(0).identifier(),
                         item.getHistory().get(0).start().v()
                         , item.getHistory().get(0).end().v()
                 ))
-        );
+        );*/
         return resulf;
     }
 
