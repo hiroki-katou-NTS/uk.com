@@ -14,4 +14,11 @@ public class NumberOfRemainOutput {
 	private Double subVacaRemain;
 	//ストック休暇残数
 	private Double stockRemain;
+	
+	public static NumberOfRemainOutput init(Double yearRemain, Double subHdRemain, Double subVacaRemain, Double stockRemain){
+		return new NumberOfRemainOutput(yearRemain == null ? new Double(0L) : yearRemain,
+						subHdRemain == null ? new Double(0L) : subHdRemain,
+						subVacaRemain == null ? new Double(0L) : subVacaRemain,
+						stockRemain == null ? new Double(0L) : stockRemain);
+	}
 }

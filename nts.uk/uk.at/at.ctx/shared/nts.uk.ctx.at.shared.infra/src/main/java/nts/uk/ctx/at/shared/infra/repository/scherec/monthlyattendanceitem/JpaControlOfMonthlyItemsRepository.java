@@ -56,10 +56,9 @@ public class JpaControlOfMonthlyItemsRepository extends JpaRepository implements
 	public List<ControlOfMonthlyItems> getListControlOfMonthlyItem(String companyID, List<Integer> itemMonthlyIDs) {
 		List<ControlOfMonthlyItems> data = new ArrayList<>();
 		CollectionUtil.split(itemMonthlyIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT * from KSHST_MON_ITEM_CONTROL h"
-						+ " WHERE h.CID = ? AND h.ITEM_MONTHLY_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.CID = ? AND h.ITEM_MONTHLY_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setString(1, companyID);
 				for (int i = 0; i < subList.size(); i++) {
 					statement.setInt(i + 2, subList.get(i));

@@ -86,6 +86,12 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		return this;
 	}
 
+	public void clearDuplicate(){
+		this.checkTargetCondtion.clearDuplicate();
+		this.workTimeCondition.clearDuplicate();
+		this.workTypeCondition.clearDuplicate();
+	}
+	
 	/**
 	 * 
 	 * @param filterByBusinessType
@@ -130,6 +136,14 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTypePlan(boolean filterAtr, List<String> lstWorkType) {
 		((PlanActualWorkType) this.workTypeCondition).setWorkTypePlan(filterAtr, lstWorkType);
 	}
+	
+	public void setWorkType(boolean usePlan, boolean useActual) {
+		this.workTypeCondition.setupWorkType(usePlan, useActual);
+	}
+	
+	public void setWorkTime(boolean usePlan, boolean useActual) {
+		this.workTimeCondition.setupWorkTime(usePlan, useActual);
+	}
 
 	/**
 	 * Set WorkTypeActual
@@ -150,8 +164,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		((SingleWorkType) this.workTypeCondition).setTargetWorkType(filterAtr, lstWorkType);
 	}
 
-	public void chooseWorkTypeOperator(int operator) {
-		((PlanActualWorkType) this.workTypeCondition).chooseOperator(operator);
+	public void chooseWorkTypeOperator(Integer operator) {
+		this.workTypeCondition.chooseOperator(operator);
 	}
 
 	/**
@@ -198,7 +212,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	}
 
 	public void chooseWorkTimeOperator(int operator) {
-		((PlanActualWorkTime) this.workTimeCondition).chooseOperator(operator);
+		this.workTimeCondition.chooseOperator(operator);
 	}
 
 	/**

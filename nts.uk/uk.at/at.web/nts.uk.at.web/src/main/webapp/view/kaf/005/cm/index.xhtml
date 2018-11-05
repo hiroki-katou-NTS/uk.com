@@ -23,7 +23,7 @@
 							<!--A2_11 実績ラベル--> 						
 							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_26')}</th>
 							<!--A2_12  申請ラベル-->	
-							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_27')}</th>
+							<th class="kaf005_overtimeAgreement_header" style="display: none">#{i18n.getText('KAF005_27')}</th>
 							<!--A2_13  合計ラベル-->
 							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_28')}</th>
 						</tr>
@@ -37,7 +37,7 @@
 							<!--A2_16 実績ラベル--> 						
 							<td data-bind="text: actualTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_17  申請ラベル-->
-							<td data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<td style="display: none" data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 							<!--A2_18  合計ラベル-->
 							<td data-bind="text: totalTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
 						</tr>

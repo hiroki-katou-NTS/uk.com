@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
@@ -46,7 +48,8 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	 *             0: AND 1: OR
 	 * @return itself
 	 */
-	public PlanActualWorkType chooseOperator(int operator) {
+	@Override
+	public PlanActualWorkType chooseOperator(Integer operator) {
 		this.operatorBetweenPlanActual = EnumAdaptor.valueOf(operator, LogicalOperator.class);
 		return this;
 	}
@@ -61,6 +64,32 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	public PlanActualWorkType setWorkTypePlan(boolean filterAtr, List<String> lstWorkType) {
 		this.workTypePlan = TargetWorkType.createFromJavaType(filterAtr, lstWorkType);
 		return this;
+	}
+
+	@Override
+	public void clearDuplicate() {
+		if(this.workTypePlan != null){
+			this.workTypePlan.clearDuplicate();
+		}
+		if(this.workTypeActual != null){
+			this.workTypeActual.clearDuplicate();
+		}
+	}
+
+	@Override
+	public void addWorkType(WorkTypeCode plan, WorkTypeCode actual){ 
+		if (this.workTypePlan != null && plan != null) {
+			this.workTypePlan.getLstWorkType().add(plan);
+		}
+		if (this.workTypeActual != null && actual != null) {
+			this.workTypeActual.getLstWorkType().add(actual);
+		}
+	}
+
+	@Override
+	public void setupWorkType(boolean usePlan, boolean useActual){
+		this.workTypePlan = TargetWorkType.createFromJavaType(usePlan, new ArrayList<>());
+		this.workTypeActual = TargetWorkType.createFromJavaType(useActual, new ArrayList<>());
 	}
 
 	/**
