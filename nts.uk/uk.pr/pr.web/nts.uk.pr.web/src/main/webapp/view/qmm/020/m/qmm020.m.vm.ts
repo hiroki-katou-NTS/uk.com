@@ -21,11 +21,11 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
         initScreen(){
             let self = this;
             let params = getShared(model.PARAMETERS_SCREEN_M.INPUT);
-            // if(params == null || params == undefined){
-            //     return;
-            // }
-            // this.params(params);
-            nts.uk.pr.view.qmm020.m.service.getDataStatement('201803').done((data)=>{
+            if(params == null || params == undefined){
+                return;
+            }
+            this.params(params);
+            nts.uk.pr.view.qmm020.m.service.getDataStatement(this.params().startYearMonth).done((data)=>{
                 if(data){
                     this.items(StatementDto.fromApp(data));
                     self.currentCodeList(self.items()[0].statementCode);
