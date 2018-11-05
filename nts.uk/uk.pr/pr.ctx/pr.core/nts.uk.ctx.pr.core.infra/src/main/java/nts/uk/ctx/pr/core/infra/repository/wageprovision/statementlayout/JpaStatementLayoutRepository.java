@@ -18,9 +18,6 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid AND  f.statementLayoutPk.statementCd =:statementCd ";
 
     private static final String SELECT_BY_KEY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid ";
-    private static final String SELECT_SPEC_NAME = "SELECT e.specCode, e.specName FROM QpbmtStatementLayoutHist f INNER JOIN QpbmtStatementLayout e on e.statementLayoutPk.statementCd = f.statementLayoutPk.statementCd" +
-            " Where f.startYearMonth > :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
-
     private static final String SELECT_STATEMENT = "SELECT f FROM QpbmtStatementLayout f Where f.statementLayoutPk.statementCd IN  " +
             "(SELECT e.statementLayoutHistPk.statementCd from QpbmtStatementLayoutHist e WHERE e.startYearMonth < :startYearMonth AND e.endYearMonth > :startYearMonth AND e.statementLayoutHistPk.cid = :cid)";
 

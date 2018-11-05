@@ -1,15 +1,12 @@
-module nts.uk.pr.view.qmm020.m {
-    export module service {
-        /**
-         * define path to service
-         */
-        var path: any = {
-            getStateUseUnitSettingById: "core/wageprovision/statementbindingsetting/getStateUseUnitSettingById",
-        };
+module nts.uk.pr.view.qmm020.m.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    let paths : any = {
+        getAllStatementLayoutHist: "core/wageprovision/statementlayout/getAllStatementLayoutHist/{0}"
+    };
 
-        export function getStateUseUnitSettingById(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getStateUseUnitSettingById);
-        }
-
+    export function getDataStatement(param :any): JQueryPromise<any> {
+        let _path = format(paths.getAllStatementLayoutHist, param);
+        return ajax("pr", _path);
     }
 }

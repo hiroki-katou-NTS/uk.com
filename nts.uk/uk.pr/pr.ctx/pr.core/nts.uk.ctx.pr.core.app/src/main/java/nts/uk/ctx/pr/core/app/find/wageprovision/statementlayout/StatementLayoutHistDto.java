@@ -39,6 +39,9 @@ public class StatementLayoutHistDto
      * 終了年月
      */
     private int endYearMonth;
+
+
+
     
     
 

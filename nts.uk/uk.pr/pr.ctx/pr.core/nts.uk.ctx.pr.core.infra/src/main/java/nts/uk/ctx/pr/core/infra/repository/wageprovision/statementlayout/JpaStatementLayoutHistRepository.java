@@ -12,12 +12,13 @@ import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaStatementLayoutHistRepository extends JpaRepository implements StatementLayoutHistRepository {
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f";
-    private static final String SELECT_BY_CID_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.QpbmtStatementLayoutHistPk.cid =:cid ";
+    private static final String SELECT_BY_CID_KEY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f Where f.startYearMonth <= :startYearMonth AND f.endYearMonth >= :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
+
+
 
     @Override
     public List<StatementLayoutHist> getAllStatementLayoutHist() {
@@ -25,10 +26,11 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
     @Override
-    public  List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid,YearMonthHistoryItem paramsPeriod) {
+    public  List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid,int startYearMonth) {
         List<StatementLayoutHist> statementLayoutHist = toDomain(this.queryProxy().query(SELECT_BY_CID_KEY_STRING, QpbmtStatementLayoutHist.class)
+                .setParameter("startYearMonth", startYearMonth)
                 .setParameter("cid", cid)
-                .getList(),paramsPeriod);
+                .getList());
         if (statementLayoutHist.isEmpty()){
             return new ArrayList<StatementLayoutHist>();
         }
@@ -61,14 +63,11 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
 
-    private List<StatementLayoutHist> toDomain(List<QpbmtStatementLayoutHist> entities,YearMonthHistoryItem paramsPeriod) {
+    private List<StatementLayoutHist> toDomain(List<QpbmtStatementLayoutHist> entities) {
         if (entities == null || entities.isEmpty()) {
             return null;
         }
         List<StatementLayoutHist> arrDataResulf = new ArrayList<StatementLayoutHist>();
-        entities.stream()
-                .filter( i -> i.startYearMonth <= paramsPeriod.start().v() &&  i.endYearMonth <= paramsPeriod.end().v())
-                .collect(Collectors.toList());
         entities.forEach(item -> {
             List<YearMonthHistoryItem> history = new ArrayList<YearMonthHistoryItem>();
             history.add(new YearMonthHistoryItem(item.statementLayoutHistPk.histId,new YearMonthPeriod(

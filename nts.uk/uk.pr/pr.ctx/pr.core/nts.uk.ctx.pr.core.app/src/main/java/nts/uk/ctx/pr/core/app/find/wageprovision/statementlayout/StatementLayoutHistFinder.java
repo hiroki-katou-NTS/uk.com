@@ -5,7 +5,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,17 +25,18 @@ public class StatementLayoutHistFinder
     public List<StatementLayoutHistDto> getAllStatementLayoutHist(int startYearMonth) {
         String cid = AppContexts.user().companyId();
         List<StatementLayoutHistDto> resulf = new ArrayList<StatementLayoutHistDto>();
-        List<StatementLayoutHist> mStatementLayoutHist = mStatementLayoutHistRepository.getAllStatementLayoutHistByCid(cid, paramsPeriod);
-        List<StatementLayout> mStatementLayout = mStatementLayoutRepository.getStatementCode(cid,startYearMonth);
-        mStatementLayoutHist.forEach(item ->
-                resulf.add(new StatementLayoutHistDto(item.getCid(), item.getStatementCode().v(), mStatementLayout.stream().filter(
-                        x -> x.getStatementCode().v().equals(item.getStatementCode().v())
-                ).findFirst().get().getStatementName().v(), item.getHistory().get(0).identifier(),
-                        item.getHistory().get(0).start().v()
-                        , item.getHistory().get(0).end().v()
-                ))
-        );
+        List<StatementLayoutHist> listStatementLayoutHistory = mStatementLayoutHistRepository.getAllStatementLayoutHistByCid(cid,startYearMonth);
+        List<StatementLayout> listStatementLayout =  mStatementLayoutRepository.getStatementLayoutByCId(cid);
+        listStatementLayoutHistory.forEach(item -> {
+            resulf.add(new StatementLayoutHistDto(item.getCid(),item.getStatementCode().v(),
+                    listStatementLayout.stream().filter(elementToSearch -> elementToSearch.getStatementCode().v().equals(item.getStatementCode().v())).findFirst().get().getStatementName().v(),
+                    item.getHistory().get(0).identifier(),
+                    item.getHistory().get(0).start().v(),
+                    item.getHistory().get(0).end().v()
+            ));
+        });
         return resulf;
+
     }
 
 }

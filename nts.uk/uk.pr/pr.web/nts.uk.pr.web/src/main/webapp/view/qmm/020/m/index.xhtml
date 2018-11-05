@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 350, height: 440 };</script>
+        <script>var dialogSize = { width: 400, height: 440 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm020.m.vm.js" />
@@ -25,11 +25,11 @@
         <div id="content" class="cf">          
             <div class="cf" style="margin: 15px 0px 0px 30px;">
                     <div tabindex="1" style="height: 30px;width: 200px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list',
-									items: items,  selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+									items: items,  selectedKey: 'code', fields: ['statementCode', 'statementName'], mode: 'igGrid'}" />
                     <table tabindex="2" id="multi-list" data-bind="ntsGridList: {
 										height: 205,
 										options: items,
-										optionsValue: 'code',
+										optionsValue: 'statementCode',
 										columns: columns,
 										value: currentCodeList
 									}"></table>
@@ -39,12 +39,15 @@
         </div>
         </div>
         <div id="functions-area-bottom" style="z-index: auto">
-            <!-- M2_1 登録 -->
-            <button id="M2_1" tabindex="3" class="proceed large"
-                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
-            <!-- M2_2 削除 -->
-            <button id="M2_2" tabindex="4"
-                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+            <div id="center">
+                <!-- M2_1 登録 -->
+                <button id="M2_1" tabindex="3" class="proceed large"
+                        data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+                <!-- M2_2 削除 -->
+                <button id="M2_2" tabindex="4"
+                        data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+            </div>
+
         </div>
     </ui:define>
 </ui:composition>
