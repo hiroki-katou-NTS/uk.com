@@ -471,7 +471,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 {
                     qualificationGroupCode: '03',
                     paymentMethod: 0,
-                    eligibleQualificationCode: ['004','005'],
+                    eligibleQualificationCode: ['004','005']
                     qualificationGroupName: 'Group Name 3'
                 }
             ];
