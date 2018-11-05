@@ -168,7 +168,7 @@ module nts.uk.ui.jqueryExtentions {
             let dataSource = $treegrid.igTreeGrid('option', 'dataSource');
             let multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
 
-            if (!selectedValue) {
+            if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                 $treegrid.igTreeGridSelection("clearSelection");
             } else {
                 let uiSR =  $treegrid.ntsTreeView('getSelected');
