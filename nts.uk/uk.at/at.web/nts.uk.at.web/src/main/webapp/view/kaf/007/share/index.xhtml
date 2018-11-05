@@ -66,11 +66,11 @@
 														enable: true }"></div>
 
 				<div id="daterangepicker"
-					data-bind="ntsDateRangePicker: {name:'#[KAF007_12]',startName: '#[KAF007_12]' ,endName: '#[KAF007_12]' , value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
+					data-bind="ntsDateRangePicker: {name:'#[KAF007_12]',startName: '#[KAF007_12]' ,endName: '#[KAF007_12]' , value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate()" />
 
 
 				<div id="singleDate"
-					data-bind="ntsDatePicker: {value: $parent.dateSingle, dateFormat: 'YYYY/MM/DD' , required:$parent.multiDate()==false , name:'#{i18n.getText('KAF006_8')}'},visible:$parent.multiDate()==false "></div>
+					data-bind="ntsDatePicker: {value: $parent.dateSingle, dateFormat: 'YYYY/MM/DD' , required:$parent.multiDate() , name:'#{i18n.getText('KAF006_8')}'},visible:!$parent.multiDate()"></div>
 
 
 
