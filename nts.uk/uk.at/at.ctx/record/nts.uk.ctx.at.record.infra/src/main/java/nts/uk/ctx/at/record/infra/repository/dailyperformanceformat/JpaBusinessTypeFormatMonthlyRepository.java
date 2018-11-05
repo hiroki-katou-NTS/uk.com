@@ -169,7 +169,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		itemIds.addAll(lstHeader.keySet());
 		List<KrcmtBusinessTypeMonthly> items = this.getListBusinessTypeFormat(companyId, formatCodes).stream()
 				.map(x -> toEntity(x)).collect(Collectors.toList());
-		List<KrcmtBusinessTypeMonthly> entities = items.stream()
+		List<KrcmtBusinessTypeMonthly> entities = items.stream().filter(x -> lstHeader.containsKey(x.krcmtBusinessTypeMonthlyPK.attendanceItemId))
 				.map(x -> new KrcmtBusinessTypeMonthly(x.krcmtBusinessTypeMonthlyPK, x.order,
 						new BigDecimal(lstHeader.get(x.krcmtBusinessTypeMonthlyPK.attendanceItemId))))
 				.collect(Collectors.toList());

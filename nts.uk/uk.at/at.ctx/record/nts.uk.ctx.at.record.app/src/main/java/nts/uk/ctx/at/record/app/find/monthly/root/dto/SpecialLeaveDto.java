@@ -54,10 +54,10 @@ public class SpecialLeaveDto implements ItemConst {
 	}
 	
 	public ActualSpecialLeave toActualDomain(){
-		return new ActualSpecialLeave(remain == null ? null : remain.toSpecial(), 
-									beforeRemainGrant == null ? null : beforeRemainGrant.toSpecial(), 
+		return new ActualSpecialLeave(remain == null ? null : remain.toActualSpecial(), 
+									beforeRemainGrant == null ? null : beforeRemainGrant.toActualSpecial(), 
 									useNumber == null ? null : useNumber.toDomain(),
-									Optional.ofNullable(afterRemainGrant == null ? null : afterRemainGrant.toSpecial()));
+									Optional.ofNullable(afterRemainGrant == null ? null : afterRemainGrant.toActualSpecial()));
 	}
 	
 	public SpecialLeave toDomain(){

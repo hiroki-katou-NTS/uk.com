@@ -12,8 +12,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
         topPageCode: KnockoutObservable<string>;
+        isStart: boolean;
         constructor() {
             var self = this;
+            self.isStart = true;
             self.topPageCode = ko.observable('');
             self.displayButton = true;
             self.dataSource = ko.observable(null);
@@ -27,14 +29,21 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             ]);
             self.selectedTab = ko.observable(null);
             self.selectedTab.subscribe(function(codeChange) {
-                if (codeChange == 'tab-1') {//display data top page
-                    self.placementsTopPage([]);
-                    self.showToppage(self.dataSource().topPage);
+                let time = 0;
+                if (self.isStart) {
+                    time = 100;
+                    self.isStart = false;
                 }
-                if (codeChange == 'tab-2') {//display data my page
-                    self.placementsMyPage([]);
-                    self.showMypage(self.dataSource().myPage);
-                }
+                setTimeout(function() {
+                    if (codeChange == 'tab-1') {//display data top page
+                        self.placementsTopPage([]);
+                        self.showToppage(self.dataSource().topPage);
+                    }
+                    if (codeChange == 'tab-2') {//display data my page
+                        self.placementsMyPage([]);
+                        self.showMypage(self.dataSource().myPage);
+                    }
+                }, time);
             });
         }
         start(): JQueryPromise<any> {

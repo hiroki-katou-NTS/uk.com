@@ -24,7 +24,7 @@ public class DeleteWorkInfoOfDailyPerforServiceImpl implements DeleteWorkInfoOfD
 		
 		// RequestList 424
 		// 日別実績の就業実績確認状態を削除する
-		this.createDailyApproverAdapter.deleteApprovalStatus(employeeID, processingDate, 1);
+//		this.createDailyApproverAdapter.deleteApprovalStatus(employeeID, processingDate, 1);
 	}
 
 }

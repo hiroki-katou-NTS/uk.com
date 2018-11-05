@@ -67,11 +67,11 @@ public class CompareRange<V> extends CheckedCondition {
     }
 
     public boolean checkRange(Double targetV, Function<V, Double> value) {
-    	if(targetV == null){
-    		return false;
-    	}
     	Double startV = value.apply(startValue);
     	Double endV = value.apply(endValue);
+    	if(targetV == null || startV == null || endV == null){
+    		return false;
+    	}
         switch (this.compareOperator) {
             case BETWEEN_RANGE_CLOSED:
                 return targetV.compareTo(startV) >= 0 && targetV.compareTo(endV) <= 0;

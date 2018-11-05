@@ -1364,16 +1364,17 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@SneakyThrows
 	public List<MonthlyPerformanceAuthorityDto> findAuthority(String roleId, BigDecimal availability) {
 		List<MonthlyPerformanceAuthorityDto> data = new ArrayList<>();
-		PreparedStatement statement = this.connection().prepareStatement(
-				"SELECT * from KRCMT_DAI_PERFORMANCE_AUT h WHERE h.ROLE_ID = ? AND h.AVAILABILITY = ?");
-		statement.setString(1, roleId);
-		statement.setBigDecimal(2, availability);
-		boolean avai = availability.intValue() == 1;
-		data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			return new MonthlyPerformanceAuthorityDto(roleId, rec.getBigDecimal("FUNCTION_NO"), avai);
-		}));
-
-		return data;
+		try (PreparedStatement statement = this.connection().prepareStatement(
+				"SELECT * from KRCMT_DAI_PERFORMANCE_AUT h WHERE h.ROLE_ID = ? AND h.AVAILABILITY = ?")) {
+			statement.setString(1, roleId);
+			statement.setBigDecimal(2, availability);
+			boolean avai = availability.intValue() == 1;
+			data.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				return new MonthlyPerformanceAuthorityDto(roleId, rec.getBigDecimal("FUNCTION_NO"), avai);
+			}));
+	
+			return data;
+		}
 	}
 
 	@Override

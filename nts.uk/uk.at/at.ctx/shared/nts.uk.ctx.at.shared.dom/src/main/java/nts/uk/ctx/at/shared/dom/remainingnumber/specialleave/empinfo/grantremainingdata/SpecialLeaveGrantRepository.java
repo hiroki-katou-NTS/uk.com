@@ -24,12 +24,12 @@ public interface SpecialLeaveGrantRepository {
 	 * @param sid ・社員ID=INPUT．社員ID
 	 * @param specialLeaveCode ・特別休暇コード=INPUT．特別休暇コード
 	 * @param expirationStatus ・期限切れ状態＝”使用可能”
-	 * @param grantDate ・付与日<=集計開始日
+	 * @param grantDate ・付与日<=集計終了日．AddDays(1) 
 	 * @param deadlineDate ・集計開始日<=期限日
 	 * @return
 	 */
 	List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode, LeaveExpirationStatus expirationStatus,
-			GeneralDate ymd);
+			GeneralDate grantDate, GeneralDate deadlineDate);
 	boolean isHasData(String sid, String specialID,GeneralDate grantDate, int specialLeaCode);
 
 }

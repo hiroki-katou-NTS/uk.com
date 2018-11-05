@@ -203,10 +203,11 @@ public class WorkTimeOfMonthly implements Cloneable {
 		this.workTime = this.workTime.addMinutes(holidayWorkTime.getLegalHolidayWorkTime(datePeriod).v());
 		
 		// 就業時間に「加算した休暇使用時間」を加算する
-		this.workTime = this.workTime.addMinutes(
-				actualWorkingTime.getAddedVacationUseTime().getAddTimePerMonth().v());
-		this.workTime = this.workTime.addMinutes(
-				flexTime.getAddedVacationUseTime().getAddTimePerMonth().v());
+		// Redmine#102512
+//		this.workTime = this.workTime.addMinutes(
+//				actualWorkingTime.getAddedVacationUseTime().getAddTimePerMonth().v());
+//		this.workTime = this.workTime.addMinutes(
+//				flexTime.getAddedVacationUseTime().getAddTimePerMonth().v());
 		
 		// 就業時間から週割増合計時間・月割増合計時間を引く
 		this.workTime = this.workTime.minusMinutes(actualWorkingTime.getWeeklyTotalPremiumTime().v());
