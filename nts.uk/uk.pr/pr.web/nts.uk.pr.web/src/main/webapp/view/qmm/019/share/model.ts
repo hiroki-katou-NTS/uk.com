@@ -19,17 +19,23 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 控除合計対象区分
      */
-    export enum DeductionTotalObjAtr {
-        // 合計対象外
-        OUTSIDE = 0,
+    export enum PaymentTotalObjAtr {
         // 合計対象内
-        INSIDE = 1
+        INSIDE = 0,
+        // 合計対象外
+        OUTSIDE = 1,
+        // 合計対象内（現物）
+        INSIDE_ACTUAL = 2,
+        // 合計対象外（現物）
+        OUTSIDE_ACTUAL = 3
     }
 
-    export function getDeductionTotalObjAtr(): Array<ItemModel> {
+    export function getPaymentTotalObjAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, '合計対象外'),
-            new model.ItemModel(DeductionTotalObjAtr.INSIDE, '合計対象内'),
+            new model.ItemModel(PaymentTotalObjAtr.INSIDE, '合計対象内'),
+            new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
+            new model.ItemModel(PaymentTotalObjAtr.INSIDE_ACTUAL, '合計対象内（現物）'),
+            new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）'),
         ];
     }
 
@@ -119,6 +125,35 @@ module nts.uk.pr.view.qmm019.share.model {
             new model.ItemModel(WorkingAtr.TRANSPORT_FACILITIES, getText('交通機関')),
             new model.ItemModel(WorkingAtr.TRANSPORT_EQUIPMENT, getText('交通用具'))
         ];
+    }
+
+    /**
+     * 範囲利用区分
+     */
+    export enum UseRangeAtr{
+        // 設定する
+        USE = 1,
+        // 設定しない
+        NOT_USE = 0
+    }
+
+    /**
+     * 範囲値の属性
+     */
+    export enum RangeValueEnum{
+        AMOUNT_OF_MONEY = 0,
+        TIME = 1,
+        TIMES = 2
+    }
+
+    /**
+     * 按分方法区分
+     */
+    export enum ProportionalMethodAtr{
+        // 割合で計算
+        BY_PROPORTION = 0,
+        // 日数控除
+        DAYS_DEDUCTION = 1
     }
 
     // 年月期間の汎用履歴項目

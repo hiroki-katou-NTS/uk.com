@@ -1,9 +1,8 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutAndHistDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemCustomDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.*;
 
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaFinder;
@@ -53,6 +52,19 @@ public class StatementLayoutWebService {
     @Path("getWageTableByYearMonth/{yearMonth}")
     public List<WageTableDto> getWageTableByYearMonth(@PathParam("yearMonth") int yearMonth) {
         return wageTableFinder.getWageTableByYearMonth(yearMonth);
+    }
+
+    @POST
+    @Path("getStatementItem")
+    public List<StatementItemCustomDto> getStatementItem() {
+        return statementLayoutFinder.getStatementItem();
+    }
+
+    @POST
+    @Path("getPaymentItemStById/{categoryAtr}/{itemNameCode}")
+    public PaymentItemSetDto getPaymentItemStById(@PathParam("categoryAtr") int categoryAtr,
+                                                  @PathParam("itemNameCode") String itemNameCode) {
+        return statementLayoutFinder.getPaymentItemStById(categoryAtr, itemNameCode);
     }
 
     @POST

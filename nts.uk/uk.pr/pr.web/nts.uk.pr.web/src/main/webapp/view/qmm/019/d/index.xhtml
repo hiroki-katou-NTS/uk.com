@@ -47,12 +47,12 @@
                                 <!--D1_5-->
                                 <div style="width: 190px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
-									targetKey: 'code',
+									targetKey: 'itemNameCd',
 									comId: 'D1_6',
 									items: itemNames,
 									selected: selectedSearchIitemName,
-									selectedKey: 'code',
-									fields: ['code', 'name'],
+									selectedKey: 'itemNameCd',
+									fields: ['itemNameCd', 'name'],
 									mode: 'igGrid'}"/>
                             </div>
                         </div>
@@ -61,9 +61,9 @@
                             rows: 15,
                             name: '#[QMM019_161]',
                             dataSource: itemNames,
-                            primaryKey: 'code',
+                            primaryKey: 'itemNameCd',
                             columns: [
-                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 50, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'itemNameCd', width: 50, formatter: _.escape},
                                 { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 213, formatter: _.escape}
                             ],
                             multiple: false,
@@ -72,7 +72,7 @@
                         <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
                     </div>
                 </div>
-                <div class="cell valign-top">
+                <div class="cell valign-top" data-bind="with: dataScreen()">
                     <div class="table table-col-3">
                         <div class="cell valign-center">
                             <!--D2_1-->
@@ -80,11 +80,11 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D2_2-->
-                            <div class="label" data-bind="text: itemNameSelected().code"/>
+                            <div class="label" data-bind="text: $vm.itemNameSelected().itemNameCd"/>
                         </div>
                         <div class="cell valign-center">
                             <!--D2_3-->
-                            <div class="label" data-bind="text: itemNameSelected().name"/>
+                            <div class="label" data-bind="text: $vm.itemNameSelected().name"/>
                         </div>
                     </div>
                     <div class="table table-col-2">
@@ -96,10 +96,10 @@
                             <!--D2_5-->
                             <div id="D2_5" data-bind="ntsComboBox: {
                                 name: '#[QMM019_111]',
-                                options: breakdownAtrs,
+                                options: $vm.totalObjAtrs,
                                 optionsValue: 'code',
                                 visibleItemsCount: 4,
-                                value: breakdownAtrSelected,
+                                value: totalObject,
                                 optionsText: 'name',
                                 required: true,
                                 selectFirstIfNull: false,
@@ -117,10 +117,10 @@
                             <!--D2_8-->
                             <div id="D2_8" data-bind="ntsComboBox: {
                                 name: '#[QMM019_112]',
-                                options: calcMethods,
+                                options: $vm.calcMethods,
                                 optionsValue: 'code',
                                 visibleItemsCount: 6,
-                                value: calcMethodSelected,
+                                value: calcMethod,
                                 optionsText: 'name',
                                 required: true,
                                 selectFirstIfNull: false,
@@ -139,10 +139,10 @@
                             <!--D5-2-->
                             <div id="D5" data-bind="ntsComboBox: {
                                 name: '#[QMM019_132]',
-                                options: workingAtrs,
+                                options: $vm.workingAtrs,
                                 optionsValue: 'code',
                                 visibleItemsCount: 2,
-                                value: workingAtrSelected,
+                                value: workingAtr,
                                 optionsText: 'name',
                                 required: true,
                                 selectFirstIfNull: false,
@@ -158,11 +158,11 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D6-2-->
-                            <button data-bind="click: openI">#{i18n.getText('QMM019_134')}</button>
+                            <button data-bind="click: $vm.openI">#{i18n.getText('QMM019_134')}</button>
                         </div>
                         <div class="cell valign-center">
                             <!--D6-3-->
-                            <div class="label">001</div>
+                            <div class="label" data-bind="text: perValCode"/>
                         </div>
                         <div class="cell valign-center">
                             <!--D6-4-->
@@ -176,11 +176,11 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D7-2-->
-                            <button data-bind="click: openM">#{i18n.getText('QMM019_134')}</button>
+                            <button data-bind="click: $vm.openM">#{i18n.getText('QMM019_134')}</button>
                         </div>
                         <div class="cell valign-center">
                             <!--D7-3-->
-                            <div class="label">001</div>
+                            <div class="label" data-bind="text: formulaCode"/>
                         </div>
                         <div class="cell valign-center">
                             <!--D7-4-->
@@ -194,11 +194,11 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D8-2-->
-                            <button data-bind="click: openN">#{i18n.getText('QMM019_134')}</button>
+                            <button data-bind="click: $vm.openN">#{i18n.getText('QMM019_134')}</button>
                         </div>
                         <div class="cell valign-center">
                             <!--D8-3-->
-                            <div class="label">001</div>
+                            <div class="label" data-bind="text: wageTableCode"/>
                         </div>
                         <div class="cell valign-center">
                             <!--D8-4-->
@@ -214,8 +214,8 @@
                             <!--D9-2-->
                             <input data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_143]',
-                                value: value,
-                                option: option,
+                                value: commonAmount,
+                                option: $vm.option,
                                 constraint: 'CommonAmount'}"/>
                         </div>
                     </div>
@@ -228,10 +228,10 @@
                             <!--D3-2-->
                             <div class="cf" data-bind="ntsSwitchButton: {
                                 name: '#[QMM019_115]',
-                                options: proportionalDivisionSetAtrs,
+                                options: $vm.proportionalDivisionSetAtrs,
                                 optionsValue: 'code',
                                 optionsText: 'name',
-                                value: proportionalDivisionSetAtrSelected,
+                                value: proportionalAtr,
                                 required: false}"/>
                         </div>
                     </div>
@@ -241,10 +241,10 @@
                             <!--D3_6-->
                             <div id="E3_6" data-bind="ntsComboBox: {
                                 name: '#[QMM019_119]',
-                                options: proportionalDivisionRatioSetAtrs,
+                                options: $vm.proportionalDivisionRatioSetAtrs,
                                 optionsValue: 'code',
                                 visibleItemsCount: 3,
-                                value: proportionalDivisionRatioSetAtrSelected,
+                                value: proportionalMethod,
                                 optionsText: 'name',
                                 required: false,
                                 selectFirstIfNull: false,
@@ -253,19 +253,20 @@
                                 ]}"/>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: errorRangeSetting.upperLimitSetting">
                         <div class="cell valign-center">
                             <!--D3_8-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
                         </div>
                         <div class="cell valign-center">
                             <!--D3_9-->
-                            <div data-bind="ntsCheckBox: { }"/>
+                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_10-->
                             <input data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_121]',
-                                value: value,
-                                option: option,
+                                value: rangeValue,
+                                option: $vm.option,
                                 constraint: 'DetailAmountType'}"/>
                         </div>
                         <div class="cell valign-center">
@@ -273,16 +274,17 @@
                             <div class="label">#{i18n.getText('QMM019_122')}</div>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: errorRangeSetting.lowerLimitSetting">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_12-->
-                            <div data-bind="ntsCheckBox: { }"/>
+                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_13-->
                             <input data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_123]',
-                                value: value,
-                                option: option,
+                                value: rangeValue,
+                                option: $vm.option,
                                 constraint: 'DetailAmountType'}"/>
                         </div>
                         <div class="cell valign-center">
@@ -290,19 +292,20 @@
                             <div class="label">#{i18n.getText('QMM019_124')}</div>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: alarmRangeSetting.upperLimitSetting">
                         <div class="cell valign-center">
                             <!--D3_15-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
                         </div>
                         <div class="cell valign-center">
                             <!--D3_16-->
-                            <div data-bind="ntsCheckBox: { }"/>
+                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_17-->
                             <input data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_126]',
-                                value: value,
-                                option: option,
+                                value: rangeValue,
+                                option: $vm.option,
                                 constraint: 'DetailAmountType'}"/>
                         </div>
                         <div class="cell valign-center">
@@ -310,16 +313,17 @@
                             <div class="label">#{i18n.getText('QMM019_127')}</div>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: alarmRangeSetting.upperLimitSetting">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_19-->
-                            <div data-bind="ntsCheckBox: { }"/>
+                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_20-->
                             <input data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_128]',
-                                value: value,
-                                option: option,
+                                value: rangeValue,
+                                option: $vm.option,
                                 constraint: 'DetailAmountType'}"/>
                         </div>
                         <div class="cell valign-center">

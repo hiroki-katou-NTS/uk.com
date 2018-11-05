@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
@@ -17,15 +19,20 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatemen
 public class JpaStatementItemRepository extends JpaRepository implements StatementItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItem f";
-	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemPk.cid =:cid";
+	private static final String ORDER_BY_ITEM_NAME_CD_ASC = " ORDER BY f.statementItemPk.itemNameCd ASC";
+	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemPk.cid =:cid"
+			+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_BY_CATEGORY = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr";
+			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr"
+			+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_BY_ITEM_NAME_CD = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
-			+ " f.statementItemPk.itemNameCd =:itemNameCd ";
+			+ " f.statementItemPk.itemNameCd =:itemNameCd "
+			+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
-			+ " f.statementItemPk.itemNameCd =:itemNameCd";
+			+ " f.statementItemPk.itemNameCd =:itemNameCd"
+			+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_CUSTOM =
 			"SELECT f.statementItemPk.categoryAtr, f.statementItemPk.itemNameCd, n.name, f.deprecatedAtr "
 					+ " FROM QpbmtStatementItem f INNER JOIN QpbmtStatementItemName n "
@@ -35,11 +42,21 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 					+ " WHERE  f.statementItemPk.cid =:cid ";
 	private static final String SELECT_CUSTOM_BY_CATE_AND_DEP = SELECT_CUSTOM
 					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
-					+ " AND f.deprecatedAtr = 0 ";
+					+ " AND f.deprecatedAtr = 0 "
+					+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_CUSTOM_BY_CATE = SELECT_CUSTOM
-					+ " AND f.statementItemPk.categoryAtr =:categoryAtr ";
+					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
+					+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_CUSTOM_BY_DEP = SELECT_CUSTOM
-					+ " AND f.deprecatedAtr = 0 ";
+					+ " AND f.deprecatedAtr = 0 "
+					+ ORDER_BY_ITEM_NAME_CD_ASC;
+	private static final String SELECT_CUSTOM_BY_CTG = SELECT_CUSTOM
+					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
+					+ ORDER_BY_ITEM_NAME_CD_ASC;
+	private static final String SELECT_CUSTOM_BY_CTG_AND_EX_CODE = SELECT_CUSTOM
+					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
+					+ " AND f.statementItemPk.itemNameCd NOT IN :itemNameCdExs "
+					+ ORDER_BY_ITEM_NAME_CD_ASC;
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {
@@ -91,6 +108,26 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
 						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : ""));
 
+		return result;
+	}
+
+	@Override
+	public List<StatementItemCustom> getItemCustomByCtgAndExcludeCodes(String cid, int categoryAtr, List<String> itemNameCdExs) {
+		TypedQueryWrapper<Object[]> typeQuery = null;
+		if (itemNameCdExs == null || itemNameCdExs.isEmpty()) {
+			typeQuery = this.queryProxy().query(SELECT_CUSTOM_BY_CTG, Object[].class)
+					.setParameter("cid", cid)
+					.setParameter("categoryAtr", categoryAtr);
+		} else {
+			typeQuery = this.queryProxy().query(SELECT_CUSTOM_BY_CTG_AND_EX_CODE, Object[].class)
+					.setParameter("cid", cid)
+					.setParameter("categoryAtr", categoryAtr)
+					.setParameter("itemNameCdExs", itemNameCdExs);
+		}
+
+		List<StatementItemCustom> result = typeQuery
+				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : ""));
 		return result;
 	}
 
