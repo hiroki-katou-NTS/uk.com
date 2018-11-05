@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
             self.referenceYear = ko.observable(201812);
             self.items = ko.observableArray();
             this.currentCode = ko.observable();
+
         }
 
         cancel() {
@@ -75,6 +76,7 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
                         }
                     }
                     self.items(array);
+                $('#D2_8').focus();
                 }
             )
         }

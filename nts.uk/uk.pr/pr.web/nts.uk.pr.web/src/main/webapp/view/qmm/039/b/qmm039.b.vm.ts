@@ -62,6 +62,8 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.NO_HISTORY, getText('QMM039_30')));
 
             }
+
+            $('#B1_3').focus();
             block.clear();
         }
 

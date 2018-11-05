@@ -55,9 +55,15 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         value: KnockoutObservable<number>;
         currencyeditor: any;
 
+        columns:any;
         constructor() {
             let self = this;
             self.selectedTab = ko.observable('tab-1');
+            self.columns = [
+                { key: 'index', length: 0, hidden: true},
+                { key: 'period', length: 8 },
+                { key: 'amount', length: 6, template: "<div style='text-align: right'>${amount}</div>" }
+            ];
             // initial ccg options
             self.itemList = ko.observableArray([]);
             self.itemList.subscribe(function (newValue) {

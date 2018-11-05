@@ -28,7 +28,7 @@
                     <div style="width: 150px;"
                          data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM039_34')}</div>
                     <div style="width: 200px; display: inline-flex">
-                        <div id="H1_6" tabindex="1"
+                        <div id="C1_3" tabindex="1"
                              data-bind="ntsRadioBoxGroup: {
 										value: modifyMethod,
 										enable: canDelete,
@@ -39,9 +39,9 @@
                     <div style="margin-top: 20px; margin-left: 150px;" class="flex valign-center">
                         <div style="width: 50px;display: inline-block;margin-left: 35px;"
                              data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>
-                        <div data-bind="ntsDatePicker: {value: yearMonthStart, dateFormat: 'yearmonth',required: true,name : '#[QMM008_197]'}"></div>
-                        <span style="padding-left: 5px; padding-right: 5px"> ~  </span> <span
-                            data-bind="text :yearMonthEnd()"></span>
+                        <div tabindex="2" data-bind="ntsDatePicker: {value: yearMonthStart, dateFormat: 'yearmonth',required: true,name : '#[QMM008_197]'}"></div>
+                        <span style="padding-left: 5px; padding-right: 5px"> ~  </span>
+                        <span data-bind="text: yearMonthEnd()"></span>
                     </div>
                 </div>
 

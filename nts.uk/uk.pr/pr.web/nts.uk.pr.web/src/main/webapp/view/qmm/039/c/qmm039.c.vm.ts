@@ -106,6 +106,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.DELETE, getText('QMM039_36')));
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.UPDATE, getText('QMM039_37')));
             }
+            $('#C1_3').focus();
             block.clear();
         }
 
