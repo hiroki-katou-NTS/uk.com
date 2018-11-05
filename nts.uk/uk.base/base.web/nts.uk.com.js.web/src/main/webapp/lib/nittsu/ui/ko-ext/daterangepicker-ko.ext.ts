@@ -144,11 +144,11 @@ module nts.uk.ui.koExtentions {
             let $startDateArea = self.$datePickerArea.find(".ntsStartDate");
             let $endDateArea = self.$datePickerArea.find(".ntsEndDate");
             
-            $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
-            $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
+            $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+            $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
             self.$start = $startDateArea.find(".ntsStartDatePicker");
             self.$end = $endDateArea.find(".ntsEndDatePicker");
-            let $input = self.$container.find(".input");
+            let $input = self.$container.find(".nts-input");
             // Init Datepicker
 //            $input.datepicker({
 //                language: 'ja-JP',
@@ -176,10 +176,12 @@ module nts.uk.ui.koExtentions {
                 var newText = $target.val(); 
                 let oldValue = self.value();
                 
-                $target.ntsError('clear');
-                self.$ntsDateRange.ntsError("clear");
-                
-                self.validateProcess(newText, oldValue);
+//                $target.ntsError('clear');
+//                self.$ntsDateRange.ntsError("clear");
+                if(!$target.ntsError('hasError')){
+                    self.$ntsDateRange.ntsError("clear"); 
+                    self.validateProcess(newText, oldValue);
+                }
             }));
             
             self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
