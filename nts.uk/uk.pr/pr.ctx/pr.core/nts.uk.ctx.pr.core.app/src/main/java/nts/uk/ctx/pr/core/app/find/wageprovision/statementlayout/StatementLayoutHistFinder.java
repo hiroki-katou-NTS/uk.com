@@ -19,6 +19,10 @@ public class StatementLayoutHistFinder {
     private StatementLayoutHistRepository statementLayoutHistRepo;
     @Inject
     private StatementLayoutSetRepository statementLayoutSetRepo;
+    @Inject
+    private PaymentItemDetailSetRepository paymentItemDetailSetRepo;
+    @Inject
+    private DeductionItemDetailSetRepository deductionItemDetailSetRepo;
 
     public List<YearMonthHistoryItemDto> getHistByCidAndCodeAndAfterDate(String code, int startYearMonth) {
         String cid = AppContexts.user().companyId();
@@ -40,7 +44,32 @@ public class StatementLayoutHistFinder {
             StatementLayoutSet statementLayoutSet = statementLayoutSetOptional.get();
 
             return Optional.of(new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
-                    yearMonthHistoryItem.identifier(), yearMonthHistoryItem.start().v(), yearMonthHistoryItem.end().v(), new StatementLayoutSetDto(statementLayoutSet)));
+                    yearMonthHistoryItem.identifier(), yearMonthHistoryItem.start().v(), yearMonthHistoryItem.end().v(), new StatementLayoutSetDto(statementLayoutSet), null, null));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<StatementLayoutHistDataDto> getLastStatementLayoutHistData(String code) {
+        String cid = AppContexts.user().companyId();
+
+        Optional<StatementLayout> statementLayoutOptional = statementLayoutRepo.getStatementLayoutById(cid, code);
+        StatementLayoutHist statementLayoutHist = statementLayoutHistRepo.getLayoutHistByCidAndCode(cid, code);
+        Optional<YearMonthHistoryItem> yearMonthHistoryItemLastOptional = statementLayoutHist.latestStartItem();
+
+        if(statementLayoutOptional.isPresent() && yearMonthHistoryItemLastOptional.isPresent()) {
+            StatementLayout statementLayout = statementLayoutOptional.get();
+            YearMonthHistoryItem yearMonthHistoryItemLast = yearMonthHistoryItemLastOptional.get();
+            String histId = yearMonthHistoryItemLast.identifier();
+            StatementLayoutSetDto statementLayoutSetDto = statementLayoutSetRepo.getStatementLayoutSetById(histId).map(i -> new StatementLayoutSetDto(i)).orElse(null);
+            PaymentItemDetailDto paymentItemDetailSetDto = paymentItemDetailSetRepo.getPaymentItemDetailSetById(histId).map(i -> new PaymentItemDetailDto(i)).orElse(null);
+            DeductionItemDetailDto deductionItemDetailSetDto = deductionItemDetailSetRepo.getDeductionItemDetailSetById(histId).map(i -> new DeductionItemDetailDto(i)).orElse(null);
+
+            StatementLayoutHistDataDto result = new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
+                    yearMonthHistoryItemLast.identifier(), yearMonthHistoryItemLast.start().v(), yearMonthHistoryItemLast.end().v(),
+                    statementLayoutSetDto, paymentItemDetailSetDto, deductionItemDetailSetDto);
+
+            return Optional.of(result);
         } else {
             return Optional.empty();
         }

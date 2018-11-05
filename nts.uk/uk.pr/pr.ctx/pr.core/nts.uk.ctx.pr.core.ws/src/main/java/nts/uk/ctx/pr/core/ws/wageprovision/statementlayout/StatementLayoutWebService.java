@@ -101,6 +101,12 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getLastStatementLayoutHistData/{code}")
+    public StatementLayoutHistDataDto getLastStatementLayoutHistData(@PathParam("code") String code) {
+        return this.statementLayoutHistFinder.getLastStatementLayoutHistData(code).orElse(null);
+    }
+
+    @POST
     @Path("updateStatementLayoutHist")
     public void updateStatementLayoutHist(StatementLayoutHistCommand command) {
         this.updateStatementLayoutHistCommandHandler.handle(command);
