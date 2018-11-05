@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="qmm042.a.start.js"/>
+        <com:scriptfile path="qmm042.a.service.js"/>
+        <com:scriptfile path="qmm042.a.vm.js"/>
+        <com:stylefile path="qmm042.a.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM042_2')}</button>
+
+            <a tabindex="11" class="goout" style="margin-left: 700px"
+               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM042_14')}</a>
+        </div>
+
+        <div class="contents-area fixed-flex-layout">
+            <div style="margin-left: 20px"  id="com-ccg001"></div>
+            <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
+                <div style="float: left;width: 335px;">
+
+                    <div tabindex="-1" class="panel" style=" margin-top: 15px"
+                         data-bind="ntsPanel:{width: '280px', height: '470px',showIcon: true, direction: 'bottom', visible: true}">
+                        <!--A4_3 検索-->
+                        <div tabindex="3" style="width: 280px"
+                             data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',items: salaryPerUnitPriceNames, searchText: '検索', selected: salaryPerUnitPriceNamesSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
+                        <!--A4_4 項目リスト-->
+                        <!--A4_5 コード-->
+                        <!--A4_6 名称-->
+                        <!--A4_7 コード-->
+                        <!--A4_8 名称-->
+                        <table tabindex="4" id="treegrid"
+                               data-bind="ntsGridList:{
+                                   name: '#[QMM042_3]',
+                                width: 280,
+                                height: 420,
+                                dataSource: salaryPerUnitPriceNames,
+                                columns: [
+                                    {key:'index', length: 0, hidden: true},
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 3},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 3}
+                                ],
+                                value: salaryPerUnitPriceNamesSelectedCode,
+                                primaryText: 'name',
+                                optionsValue: 'code',
+                                multiple: false,
+                                enable: true,
+                                showCheckBox: false}">
+                        </table>
+                    </div>
+
+
+                </div>
+                <div style="float: left;height: 400px;width: 50px;margin-top: 130px;">
+                    <span id="custom-caret" class="caret-right"></span>
+                </div>
+
+
+            </div>
+
+            <div id="panel-right" class="fixed-flex-layout-right margin-top">
+
+                <div class="flex valign-center margin-top-item">
+                    <!--A4_1 コード・名称-->
+                    <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM042_6')}</div>
+                    <!--A4_2 コード-->
+                    <span class="label margin-left-item" data-bind="text: perUnitPriceCode()"></span>
+                    <!--A4_3 名称-->
+                    <span style="margin-left: 5px" class="label" data-bind="text: perUnitPriceName()"></span>
+                </div>
+
+                <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">
+                    <!--A4_4 基準年月-->
+                    <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM042_7')}</div>
+                    <!--A4_5 基準年月-->
+                    <div id="A5_7" tabindex="5" class="margin-left-item"
+                         data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"></div>
+                    <!--A4_6 抽出-->
+                    <button tabindex="6" class="caret-bottom" data-bind="click: filterData"
+                            style="margin-left: 13px">#{i18n.getText('QMM042_8')}</button>
+
+                </div>
+
+                <table tabindex="7" id="A4_7">
+                    <colgroup>
+                        <col width="130px"/>
+                        <col width="120px"/>
+                        <col width="160px"/>
+                        <col width="158px"/>
+
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_10')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_11')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_12')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('qmm042_13')}</th>
+
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: workIndividualPrices">
+                    <tr>
+                        <td data-bind="text: employeeCode()"></td>
+                        <td data-bind="text: businessName()"></td>
+                        <td data-bind="text: period"></td>
+                        <td>
+                            <input tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
+                                        value: amountOfMoney,
+                                        name:'#[qmm042_13]',
+                                        required:true,
+                                        option: {
+                                            grouplength: 3,
+                                            currencyformat: 'JPY'}}"/>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.PerProcessClsSet;
 
+import java.util.Objects;
+
 /**
  * 個人処理区分設定
  */
@@ -27,6 +29,9 @@ public class PerProcesClsSetDto {
     private String cid;
 
     public static PerProcesClsSetDto fromDomain(PerProcessClsSet domain){
+        if(Objects.isNull(domain)){
+            return null;
+        }
         return new PerProcesClsSetDto(domain.getProcessCateNo(),domain.getUid(),domain.getCid());
     }
 }

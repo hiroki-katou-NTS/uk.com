@@ -40,6 +40,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 {headerText: getText('QMM040_8'), key: 'individualPriceCode', width: 100},
                 {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
 
+
             ]);
             self.personalAmount =ko.observableArray([]);
             self.personalDisplay =ko.observableArray([]);
@@ -64,6 +65,16 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
                 self.personalAmount.removeAll();
                 self.personalDisplay.removeAll();
+                nts.uk.ui.errors.clearAll();
+                $('#A5_7').ntsError('check');
+                if(self.personalDisplay().length<=10){
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').removeClass('edge_scroll_header');
+                    } else {
+                        $('.scroll-header').removeClass('ci_scroll_header');
+                    }
+                }
+
                 if (!data)
                     return;
                 let temp = _.find(self.salIndAmountNames(), function (o) {
@@ -85,7 +96,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.employeeReferenceDate().done(function (data) {
-                self.reloadCcg001(data.empExtraRefeDate);
+                if(data)
+                    self.reloadCcg001(data.empExtraRefeDate);
+                else
+                    self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
             })
 
             dfd.resolve(self);
@@ -153,8 +167,11 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
 
                 if (data) {
-                    self.salIndAmountNames(data);
+                    self.salIndAmountNames(_.sortBy(data,function (o) {
+                        return o.individualPriceCode;
+                    }));
                     if (data.length > 0) {
+
                         self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
                         self.salIndAmountNamesSelectedCode.valueHasMutated();
                     }
@@ -246,6 +263,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 tabindex: 2,
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
+                    nts.uk.ui.errors.clearAll();
+                    $('#A5_7').ntsError('check');
                     //self.selectedEmployee(data.listEmployee);
                     if (data && data.listEmployee.length>0) {
                         self.employeeList=data.listEmployee;
@@ -262,6 +281,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                             self.employeeInfoImports=dataNameAndAmount.employeeInfoImports;
                             let personalAmountData:Array<any>=new Array();
                             personalAmountData=dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
+                            personalAmountData=_.sortBy(personalAmountData,function (o) {
+                                return o.startYearMonth;
+                            })
                             console.log(dataNameAndAmount);
                             self.personalAmount(personalAmountData);
                             self.personalDisplay(personalAmountData);
@@ -274,6 +296,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                                     self.personalAmount()[i].businessName(self.employeeInfoImports[index].businessName);
                                 }
                             }
+
+
+
 
                             setTimeout(function () {
                                 if( self.personalDisplay().length > 10) {
@@ -290,7 +315,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
                         })
                     }
-                    self.referenceDate(moment.utc(data.baseDate).format("YYYY/MM/DD"));
                 }
             }
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
