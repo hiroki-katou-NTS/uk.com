@@ -52,15 +52,34 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getSalIndAmountNameById/{individualPriceCode}/{cateIndicator}")
+    public SalIndAmountNameDto getSalIndAmountNameById(@PathParam("individualPriceCode") String individualPriceCode,
+                                                       @PathParam("cateIndicator") int cateIndicator) {
+        return salIndAmountNameFinder.getSalIndAmountNameById(individualPriceCode, cateIndicator);
+    }
+
+    @POST
     @Path("getFormulaByYearMonth/{yearMonth}")
     public List<FormulaDto> getFormulaByYearMonth(@PathParam("yearMonth") int yearMonth) {
         return formulaFinder.getFormulaByYearMonth(yearMonth);
     }
 
     @POST
+    @Path("getFormulaById/{formulaCode}")
+    public FormulaDto getFormulaById(@PathParam("formulaCode") String formulaCode) {
+        return formulaFinder.getFormulaById(formulaCode);
+    }
+
+    @POST
     @Path("getWageTableByYearMonth/{yearMonth}")
     public List<WageTableDto> getWageTableByYearMonth(@PathParam("yearMonth") int yearMonth) {
         return wageTableFinder.getWageTableByYearMonth(yearMonth);
+    }
+
+    @POST
+    @Path("getWageTableById/{wageTableCode}")
+    public WageTableDto getWageTableById(@PathParam("wageTableCode") String wageTableCode) {
+        return wageTableFinder.getWageTableById(wageTableCode);
     }
 
     @POST
@@ -74,6 +93,13 @@ public class StatementLayoutWebService {
     public PaymentItemSetDto getPaymentItemStById(@PathParam("categoryAtr") int categoryAtr,
                                                   @PathParam("itemNameCode") String itemNameCode) {
         return statementLayoutFinder.getPaymentItemStById(categoryAtr, itemNameCode);
+    }
+
+    @POST
+    @Path("getDeductionItemStById/{categoryAtr}/{itemNameCode}")
+    public DeductionItemSetDto getDeductionItemStById(@PathParam("categoryAtr") int categoryAtr,
+                                                  @PathParam("itemNameCode") String itemNameCode) {
+        return statementLayoutFinder.getDeductionItemStById(categoryAtr, itemNameCode);
     }
 
     @POST
