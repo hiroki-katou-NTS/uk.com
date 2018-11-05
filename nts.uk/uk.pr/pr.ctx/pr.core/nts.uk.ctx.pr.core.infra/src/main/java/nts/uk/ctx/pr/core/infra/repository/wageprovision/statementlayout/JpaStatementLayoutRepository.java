@@ -16,6 +16,7 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayout f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid AND  f.statementLayoutPk.statementCd =:statementCd ";
+    private static final String SELECT_BY_KEY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid ";
     private static final String SELECT_SPEC_NAME = "SELECT e.specCode, e.specName FROM QpbmtStatementLayoutHist f INNER JOIN QpbmtStatementLayout e on e.statementLayoutPk.statementCd = f.statementLayoutPk.statementCd" +
             " Where f.startYearMonth > :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
     @Override
@@ -38,6 +39,13 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
         .setParameter("cid", cid)
         .setParameter("statementCd", statementCd)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public List<StatementLayout> getStatementLayoutByCId(String cid) {
+        return this.queryProxy().query(SELECT_BY_KEY_CID_STRING, QpbmtStatementLayout.class)
+                .setParameter("cid", cid)
+                .getList(item -> item.toDomain());
     }
 
     @Override

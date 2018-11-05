@@ -2,10 +2,6 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
 * 明細書レイアウト履歴: DTO
@@ -24,6 +20,10 @@ public class StatementLayoutHistDto
     * 明細書コード
     */
     private String statementCode;
+    /**
+     * 明細書名称
+     */
+    private String statementName;
     
     /**
     * 履歴ID
@@ -41,12 +41,6 @@ public class StatementLayoutHistDto
     private int endYearMonth;
     
     
-    public static List<StatementLayoutHistDto> fromDomain(StatementLayoutHist domain)
-    {
-        List<StatementLayoutHistDto> statementLayoutHistDtoList = domain.getHistory().stream().map(item -> {
-            return new StatementLayoutHistDto(domain.getCid(),domain.getStatementCode().toString(),item.identifier(), item.start().v(), item.end().v());
-        }).collect(Collectors.toList());
-        return statementLayoutHistDtoList;
-    }
+
     
 }
