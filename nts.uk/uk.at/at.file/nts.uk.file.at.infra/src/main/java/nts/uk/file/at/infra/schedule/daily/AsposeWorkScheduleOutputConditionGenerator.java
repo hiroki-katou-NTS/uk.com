@@ -246,7 +246,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int LIMIT_DATA_PACK = 5;
 	
 	/** The Constant LIMIT_REMARK_INPUT. */
-	private static final int LIMIT_REMARK_INPUT = 20;
+	private static final int LIMIT_REMARK_INPUT = 19;
 	
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
@@ -841,7 +841,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 										if(value != null) {
 											value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 										}
-										personalPerformanceDate.detailedErrorData += (value == null? "" : value + "　");
+										personalPerformanceDate.detailedErrorData += (value == null? "" : value + " ");
 									}
 								}
 								// Append マスタ未登録
@@ -1056,7 +1056,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							if(value != null) {
 								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 							}
-							detailedDate.errorDetail += (value == null ? "" : value + "　");
+							detailedDate.errorDetail += (value == null ? "" : value + " ");
 						}
 					}
 					// Append マスタ未登録
