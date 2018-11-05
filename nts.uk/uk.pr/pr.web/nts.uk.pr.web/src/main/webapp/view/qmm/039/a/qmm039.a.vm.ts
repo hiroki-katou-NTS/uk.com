@@ -87,6 +87,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.historyProcess(self.dataSource()[index].code, 0);
                 }
                 self.selectedHisCode(0);
+
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
@@ -100,9 +101,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     // array.shift();
                     // self.itemList(array);
                     //self.singleSelectedCode();
-                    self.singleSelectedCode.valueHasMutated().done(function () {
-
-                    })
+                    self.singleSelectedCode.valueHasMutated();
                     //setTimeout(function () {
 
                     //self.selectedHisCode((parseInt(newValue) -1)+'');
@@ -281,7 +280,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
                     self.isRegistrationable(true);
-                    console.log(244);
                     self.currencyeditor.enable(true);
                     self.mode(MODE.NORMAL);
                     let array = [];
@@ -294,9 +292,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                                 data.period[i].periodEndYm,
                                 format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney + "¥"))
                     }
+                    array=_.sortBy(array, [function(o) { return o.periodStartYm; }],'desc');
+
                     self.itemList(array);
                     self.isRegistrationable(true);
-                    console.log(259);
                     self.changeHistory(array[selectedIndex]);
                     if (self.focusStartPage) {
                         $('#emp-component').focus();
