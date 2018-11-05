@@ -13,10 +13,19 @@ import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmDto;
 public interface AlarmListGenerator {
 
 	/**
-	 * Generate.
+	 * Generate excel for send mail
 	 *
 	 * @param fileContext the file context
 	 * @param exportData the export data
 	 */
 	AlarmExportDto generate(FileGeneratorContext generatorContext, List<ValueExtractAlarmDto> dataSource);
+	
+	/**
+	 * Generate excel for screen
+	 *
+	 * @param fileContext the file context
+	 * @param exportData the export data
+	 * @return 
+	 */
+	 void generateExcelScreen(FileGeneratorContext generatorContext, List<ValueExtractAlarmDto> dataSource);
 }

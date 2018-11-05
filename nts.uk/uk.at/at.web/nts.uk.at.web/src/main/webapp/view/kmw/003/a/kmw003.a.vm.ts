@@ -213,6 +213,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 // $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
                 self.displayNumberZero1();
             });
+            
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 230) + 'px !IMPORTANT');
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 230) + 'px !IMPORTANT');
+            });
 
         }
 
@@ -1752,6 +1758,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.enable_A1_2(true);
                 //A5_4
                 self.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
+                if (formatPerformance == 0) { //権限
+                    self.enable_A1_5(true);
+                } else if (formatPerformance == 1) { //勤務種別
+                    self.enable_A1_5(false);
+                }
             }
             self.prevData = data;
             self.prevInitMode = initMode;

@@ -1021,7 +1021,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                     }
                     dataParent["monthValue"] = self.valueUpdateMonth;
-                } else if(self.displayFormat() == 1) {
+                } else {
                     dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[0].dateDetail } : null;
                 }
 

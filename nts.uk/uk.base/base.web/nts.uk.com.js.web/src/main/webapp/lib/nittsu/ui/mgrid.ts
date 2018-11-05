@@ -1833,12 +1833,13 @@ module nts.uk.ui.mgrid {
                 let value = $_container.scrollTop();
 //                $container.stop().animate({ scrollTop: value }, 10);
                 let os = ti.isIE() ? 25 : 50;
-//                if (!abnorm && ((direction < 0 && value === 0)
-//                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
-//                    try {
-//                        window.dispatchEvent(event);
-//                    } catch (e) {}
-//                }
+                if (!abnorm && ((direction < 0 && value === 0)
+                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) {
+                    let $contents = document.getElementById("contents-area");
+                    if ($contents) {
+                        $contents.scrollTop += direction * os;
+                    }
+                }
                 
                 $_container.scrollTop(value + direction * os);
                 
@@ -3353,6 +3354,7 @@ module nts.uk.ui.mgrid {
         
         export const EDITOR = "meditor";
         export let _copieMode;
+        export let afterCollertar;
         
         /**
          * Binding.
@@ -3548,6 +3550,7 @@ module nts.uk.ui.mgrid {
                 
                 if (!_copie) return;
                 if (evt.ctrlKey && evt.keyCode === 86 && _collerer) {
+                    afterCollertar = document.activeElement;
                     _collerer.focus();
                 } else if (evt.ctrlKey && evt.keyCode === 67) {
                     copieData();
@@ -4118,6 +4121,7 @@ module nts.uk.ui.mgrid {
                 return;
             }
             
+            if (afterCollertar) afterCollertar.focus({ preventScroll: true });
             let formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
             
             let inputRidd = function($t, rowIdx, columnKey, dFormat) {
@@ -4178,6 +4182,17 @@ module nts.uk.ui.mgrid {
             if (_copieMode === 0) {
                 if (dkn.controlType[coord.columnKey] !== dkn.TEXTBOX || target.classList.contains(color.Disable)
                     || !col || col.length === 0) return;
+                let validator = _validators[coord.columnKey];
+                if (validator) {
+                    let result = validator.probe(data); 
+                    let cell = { id: _dataSource[coord.rowIdx][_pk], index: coord.rowIdx, columnKey: coord.columnKey, element: target };
+                    khl.clear(cell);
+                    
+                    if (!result.isValid) {
+                        khl.set(cell, result.errorMessage);
+                    }
+                }
+                
                 formatted = su.format(col[0], data);
                 target.innerHTML = formatted;
                 disFormat = su.formatSave(col[0], data);
@@ -4225,6 +4240,18 @@ module nts.uk.ui.mgrid {
                         || !pointCol || pointCol.length === 0) {
                         return;
                     }
+                    
+                    let validator = _validators[pointCoord.columnKey];
+                    if (validator) {
+                        let result = validator.probe(c); 
+                        let cell = { id: _dataSource[pointCoord.rowIdx][_pk], index: pointCoord.rowIdx, columnKey: pointCoord.columnKey, element: e };
+                        khl.clear(cell);
+                        
+                        if (!result.isValid) {
+                            khl.set(cell, result.errorMessage);
+                        }
+                    }
+                    
                     formatted = su.format(pointCol[0], c);
                     e.innerHTML = formatted;
                     disFormat = su.formatSave(pointCol[0], c);
@@ -4244,7 +4271,7 @@ module nts.uk.ui.mgrid {
         export function copieData(coupe?: any) {
             let keys = Object.keys(_selected);
             if (!_selected || keys.length === 0) return;
-            let coord, key, struct = "", ds = _dataSource, sess;
+            let coord, key, struct = "", ds = _dataSource, sess, onetar;
             if (coupe) {
                 sess = { tx: util.randomId(), o: [] };
             }
@@ -4265,9 +4292,11 @@ module nts.uk.ui.mgrid {
                 }
                 
                 if (_copieer) {
+                    onetar = document.activeElement;
                     _copieer.value = struct;
                     _copieer.select();
                     document.execCommand("copy");
+                    onetar.focus({ preventScroll: true });
                 }
                 return;
             }
@@ -4332,9 +4361,11 @@ module nts.uk.ui.mgrid {
             }
             
             if (_copieer) {
+                onetar = document.activeElement;
                 _copieer.value = struct;
                 _copieer.select();
                 document.execCommand("copy");
+                onetar.focus({ preventScroll: true });
             }
         }
         
@@ -5521,7 +5552,32 @@ module nts.uk.ui.mgrid {
             if (!markCell($cell)) return;
             let coord = ti.getCellCoord($cell);
             addSelect($grid, coord.rowIdx, coord.columnKey, notLast);
-            $cell.focus();
+            
+            if (ti.isChrome() && (!_fixedColumns || !_.some(_fixedColumns, c => c.key === coord.columnKey))) {
+                if (!_bodyWrappers || _bodyWrappers.length === 0) return;
+                $grid.focus({ preventScroll: true });
+                let wrapper = _bodyWrappers[_bodyWrappers.length > 1 ? 1 : 0];
+                let offsetLeft = $cell.offsetLeft, left = offsetLeft + $cell.offsetWidth,
+                    scrollLeft = wrapper.scrollLeft, width = scrollLeft  + parseFloat(wrapper.style.width); 
+//                let scroll = function() {
+//                    wrapper.addXEventListener(ssk.SCROLL_EVT + ".select", e => {
+//                        setTimeout(() => {
+//                            $cell.focus();
+//                        }, 100);
+//                        wrapper.removeXEventListener(ssk.SCROLL_EVT + ".select");
+//                    });
+//                };
+                
+                if (left > width) {
+//                    scroll();
+                    wrapper.scrollLeft += (left - width + 100);
+                } else if (offsetLeft < scrollLeft) {
+//                    scroll();
+                    wrapper.scrollLeft -= (scrollLeft - offsetLeft + 100)
+                } else {
+                    $cell.focus({ preventScroll: true });
+                }
+            } else $cell.focus();
         }
         
         /**
