@@ -85,18 +85,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             // 申請日を変更する          
             //Start Date
             self.datePeriod.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                nts.uk.ui.block.grayout();
-                let startDate, endDate;
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
-                    nts.uk.ui.block.clear();
+                if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
                     return;
                 }
+                nts.uk.ui.block.grayout();
+                let startDate, endDate;
                 startDate = value.startDate;
                 endDate = value.endDate;
-
                 self.changeApplicationDate(startDate, endDate).done(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -333,8 +328,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let self = this,
                 workchange = self.appWorkChange().workChange();
             nts.uk.ui.errors.clearAll();
-            $(".ntsStartDatePicker").trigger("validate");
-            $(".ntsEndDatePicker").trigger("validate");
+            $('#daterangepicker').find(".nts-input").trigger('validate');
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             $("#singleDate").trigger("validate");
