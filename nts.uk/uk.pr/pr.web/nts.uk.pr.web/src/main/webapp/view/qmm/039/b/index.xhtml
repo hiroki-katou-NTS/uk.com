@@ -19,46 +19,33 @@
     </ui:define>
     <ui:define name="content">
         <div id="contents-area">
-            <div class="label dialog-title">#{i18n.getText('QMM039_26')}</div>
-            <!--<div style="margin-top: 20px;" class="flex valign-center">-->
-                <!--<div style="width: 150px; display: inline-block;"-->
-                     <!--data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>-->
-                <!--<div style="width: 280px;display: inline-flex">-->
-                    <!--<div style="display: inline-block;" id="B1_3"-->
-                         <!--data-bind="ntsDateRangePicker: {-->
-							<!--required: true, enable: true, name: '#[QMM039_23]',-->
-									<!--showNextPrevious: false, value: dateValue, type: 'yearmonth',valueFormat: 'YYYYMM'}"-->
-                         <!--tabindex="1"/>-->
+            <div style="width: 500px">
+                <div class="label dialog-title">#{i18n.getText('QMM039_26')}</div>
 
 
-                  <!---->
-                <!--</div>-->
+                <div class="flex valign-center" style="margin-top: 15px">
+                    <div style="width: 150px; display: inline-block;"
+                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>
+                    <div style="margin-left: 5px;"
+                         data-bind="ntsDatePicker: {value: yearMonthStart, dateFormat: 'yearmonth',required: true,name : '#[QMM008_197]' }"></div>
+                    <span style="margin-left: 5px"> ～ 9999/12</span>
+                </div>
 
-
-            <!--</div>-->
-
-
-            <div class="flex valign-center" style="margin-top: 15px">
-                <div style="width: 150px; display: inline-block;"
-                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM039_23')}</div>
-                <div style="margin-left: 5px;" data-bind="ntsDatePicker: {value: yearMonthStart, dateFormat: 'yearmonth'}"></div>
-                <span style="margin-left: 5px"> ～ 9999/12</span>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <div style="width: 150px; display: inline-block;"
-                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM039_28')}</div>
-                <div style="width: 280px;display: inline-flex">
-                    <div tabindex="2" id="B1_6" data-bind="ntsRadioBoxGroup: {
+                <div style="margin-top: 20px;">
+                    <div style="width: 150px; display: inline-block;"
+                         data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM039_28')}</div>
+                    <div style="width: 280px;display: inline-flex">
+                        <div tabindex="2" id="B1_6" data-bind="ntsRadioBoxGroup: {
                                     name:'#[QMM039_28]',
 									options: takeoverItem,
 									optionsValue: 'value',
 									optionsText: 'name',
 									value: takeoverMethod
 									}"></div>
+                    </div>
+
+
                 </div>
-
-
             </div>
 
         </div>

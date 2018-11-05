@@ -161,6 +161,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
 
         deleteHistory() {
             let self = this;
+            let params = getShared("QMM039_C_PARAMS");
             let newHistory = self.selectedHistory;
             newHistory.startMonth = self.dateValue().startDate;
             newHistory.endMonth = self.dateValue().endDate;
@@ -175,7 +176,8 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                 cateIndicator: newEmployee.cateIndicator,
                 salBonusCate: newEmployee.salBonusCate,
                 empId: newEmployee.empId,
-                perValCode: newEmployee.personalValcode
+                perValCode: newEmployee.personalValcode,
+                lastHistoryId : params.lastHistoryId,
             };
 
             service.deleteSalIndividualAmountHistory(command).done(function () {

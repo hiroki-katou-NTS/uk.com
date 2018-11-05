@@ -23,6 +23,7 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
         }
 
         cancel() {
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.close();
         }
 

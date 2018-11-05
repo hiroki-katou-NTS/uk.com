@@ -1,11 +1,10 @@
 module nts.uk.pr.view.qmm039.a.viewmodel {
-    import SalIndAmountHis = nts.uk.pr.view.qmm039.share.model.SalIndAmountHis;
+
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     import format = nts.uk.text.format;
-    import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
-    import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
+
     import ITEM_CLASS = nts.uk.pr.view.qmm039.share.model.ITEM_CLASS;
     import PERVALUECATECLS = nts.uk.pr.view.qmm039.share.model.PERVALUECATECLS;
     import SALBONUSCATE = nts.uk.pr.view.qmm039.share.model.SALBONUSCATE;
@@ -84,6 +83,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
+                if(newValue ==""){
+                    return;
+                }
                 self.changeHistory(self.itemList()[newValue]);
                     if(self.mode()==MODE.ADD_HISTORY){
                         // let array = self.itemList();
@@ -91,11 +93,18 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         // array.shift();
                         // self.itemList(array);
                         //self.singleSelectedCode();
-                        self.singleSelectedCode.valueHasMutated();
-                        self.selectedHisCode(newValue);
+                        self.singleSelectedCode.valueHasMutated().done(function () {
+                            
+                        })
+                        //setTimeout(function () {
 
+                            //self.selectedHisCode((parseInt(newValue) -1)+'');
+                        //},200);
+
+
+
+                        self.mode(MODE.NORMAL);
                     }
-                self.mode(MODE.NORMAL);
 
 
             });
@@ -460,7 +469,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     ));
                     if (array.length > 1) {
 
-                        array[1].periodEndYm = (params.periodStartYm - 1) % 10 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
+                        array[1].periodEndYm = (params.periodStartYm - 1) % 100 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
                         array[1].period = format(getText("QMM039_18"), nts.uk.time.parseYearMonth(array[1].periodStartYm).format(), nts.uk.time.parseYearMonth(array[1].periodEndYm).format());
 
                     }
@@ -534,7 +543,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 itemClassification: self.itemClassLabel(),
                 personalValCode: self.individualPriceCode(),
                 personalValName: self.individualPriceCode(),
-                cateIndicator: self.classificationCategory()
+                cateIndicator: self.classificationCategory(),
+                salBonusCate :self.salaryBonusCategory()
             }
             setShared("QMM039_D_PARAMS", params);
             modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {

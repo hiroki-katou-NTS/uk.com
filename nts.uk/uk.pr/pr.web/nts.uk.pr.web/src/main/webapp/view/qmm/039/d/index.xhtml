@@ -65,10 +65,10 @@
                     <div class="cell">
                         <!--D2_8 基準年月-->
                         <div id="D2_8" tabindex="2"
-                             data-bind="ntsDatePicker: {name: '#[QMM039_42]', value: referenceYear, dateFormat: 'yearmonth'}"></div>
+                             data-bind="ntsDatePicker: {name: '#[QMM039_42]', value: referenceYear, dateFormat: 'yearmonth',required: true}"></div>
                         <!--D2_9 抽出-->
                         <button tabindex="3" id="D2_9" class="caret-bottom"
-                                data-bind="click: extract">#{i18n.getText('QMM039_43')}</button>
+                                data-bind="click: extract,  enable: $root.errors.isEmpty">#{i18n.getText('QMM039_43')}</button>
                     </div>
                 </div>
 
