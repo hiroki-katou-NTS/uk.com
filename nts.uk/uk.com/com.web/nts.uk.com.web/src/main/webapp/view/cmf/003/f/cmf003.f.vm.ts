@@ -51,37 +51,37 @@ module nts.uk.com.view.cmf003.f {
                 self.storeProcessingId = params.storeProcessingId;
                 self.dataSaveSetName = params.dataSaveSetName;
                 
-                if(_.isNil(params.dayValue.startDate)) {
+                if(!params.dayValue.startDate) {
                     self.dayStartValue = ""
                 } else {
                     self.dayStartValue = moment.utc(params.dayValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
                 }
                 
-                if(_.isNil(params.dayValue.endDate)) {
+                if(!params.dayValue.endDate) {
                     self.dayEndValue = ""
                 } else {
                     self.dayEndValue = moment.utc(params.dayValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
                 }
                 
-                if(_.isNil(params.monthValue.startDate)) {
+                if(!params.monthValue.startDate) {
                     self.monthStartValue = "";
                 } else {
                     self.monthStartValue = moment.utc(params.monthValue.startDate, 'YYYY/MM/DD').format("YYYY/MM");
                 }
                 
-                if(_.isNil(params.monthValue.endDate)) {
+                if(!params.monthValue.endDate) {
                     self.monthEndValue = "";
                 } else {
                     self.monthEndValue = moment.utc(params.monthValue.endDate, 'YYYY/MM/DD').format("YYYY/MM");
                 }
                 
-                if(_.isNil(params.yearValue.startDate)) {
+                if(!params.yearValue.startDate) {
                     self.yearStartValue = "";
                 } else {
                     self.yearStartValue = moment.utc(params.yearValue.startDate, 'YYYY/MM/DD').format("YYYY");
                 }
                 
-                if(_.isNil(params.yearValue.endDate)) {
+                if(!params.yearValue.endDate) {
                     self.yearEndValue = "";
                 } else {
                     self.yearEndValue = moment.utc(params.yearValue.endDate, 'YYYY/MM/DD').format("YYYY");
