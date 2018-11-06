@@ -62,7 +62,7 @@ public class QpbmtStatementLayoutSet extends UkJpaEntity implements Serializable
                 int line = entry.getKey();
                 List<QpbmtLineByLineSet> itemsInLine = entry.getValue();
                 int printSet = itemsInLine.get(0).printSet;
-                List<SettingByItem> listSetByItem = itemsInLine.stream().map(x -> QpbmtLineByLineSet.toDomain(x)).collect(Collectors.toList());
+                List<SettingByItem> listSetByItem = itemsInLine.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 
                 listLineByLineSetDomain.add(new LineByLineSetting(printSet, line, listSetByItem));
             }
