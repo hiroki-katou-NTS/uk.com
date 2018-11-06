@@ -194,19 +194,19 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             let self = this;
             switch (data){
                 case PARAATTRITYPE.NUMBER:{
-                    return '数値';
+                    return getText('Enum_ParaAttributeType_NUMBER');
                 }
                 case PARAATTRITYPE.SELECTION:{
-                    return '選択肢';
+                    return getText('Enum_ParaAttributeType_TARGET_SELECTION');
                 }
                 case PARAATTRITYPE.TARGET_EXEMPT:{
-                    return '対象/対象外';
+                    return getText('Enum_ParaAttributeType_TARGET_EXEMPT');
                 }
                 case PARAATTRITYPE.TIME:{
-                    return '時間';
+                    return getText('Enum_ParaAttributeType_TIME');
                 }
                 case PARAATTRITYPE.TEXT:{
-                    return '文字';
+                    return getText('Enum_ParaAttributeType_TEXT');
                 }
             }
         }
@@ -223,13 +223,13 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             let self = this;
             switch (data){
                 case PARAHISTORYATR.YMDHIST:{
-                    return '年月日履歴';
+                    return getText('Enum_ParaHistoryAtr_YMDHIST');
                 }
                 case PARAHISTORYATR.YMHIST:{
-                    return '年月履歴';
+                    return getText('Enum_ParaHistoryAtr_YMHIST');
                 }
                 case PARAHISTORYATR.DONOTMANAGE:{
-                    return '履歴管理しない';
+                    return getText('Enum_ParaHistoryAtr_DONOTMANAGE');
                 }
             }
         }
@@ -369,7 +369,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             }
             let dataValue: any = {
                 historyId: self.selectedSalGenParaHistory(),
-                selection: valueCombobox,
+                selection: (self.selectedSwitchParaAvai() == SWITCH_EFF_CATEGORY.UNAVAILABLE ) ? null : valueCombobox,
                 availableAtr: self.selectedSwitchParaAvai(),
                 numValue: (self.salGenParaValue().numValue == null ? null : self.salGenParaValue().numValue),
                 charValue: (self.salGenParaValue().charValue == null ? null : self.salGenParaValue().charValue),
@@ -1038,7 +1038,7 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
     }
 
 
-    export const HIS_ID_TEMP = "00000devphuc.tc";
+    export const HIS_ID_TEMP = "00000HISIDTEMP";
     export const FIRST = 0;
 
 }

@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -57,42 +57,40 @@
 					<span class="label" data-bind =" text: end"></span>
 				</div>
 				<!-- B1_9 開始年月和暦 -->
-				<div id="B1_9" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
-					<com:ko-if bind="!isFisrtHistory()">
-					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM001_32')}</span>
-
-					<div id = "B1_10" tabIndex = "3" style= "display: inline-block;text-align: left;margin-left: 30px">
-							<div  class="cell" tabindex="-1"
-							 	data-bind="ntsRadioButton: {
-										checked: takeOver,
-										option: listTakeOver()[0],
-										optionValue: 'code',
-										optionText: 'name',
-										group: 'periodOption'}" >
-							</div>
-							<br/>
-							<div  class="cell" tabindex="-1"
-							 	data-bind="ntsRadioButton: {
-										checked: takeOver,
-										option: listTakeOver()[1],
-										optionValue: 'code',
-										optionText: 'name',
-										group: 'periodOption'}" >
-							</div>
-					</div>
-					</com:ko-if>
-					<com:ko-if bind="isFisrtHistory()">
-						<span class="label" >#{i18n.getText('QMM001_32')}</span>
-						<div  class="cell" tabindex="3" style= "display: inline-block;text-align: left; margin-left:32px;"
-							  data-bind="ntsRadioButton: {
-										checked: takeOver,
-										option: listTakeOver()[1],
-										optionValue: 'code',
-										optionText: 'name',
-										group: 'periodOption'}" >
+				<div class=" table table-col-2" id="B1_9" >
+					<div class ="cell valign-top">
+						<div data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+							<span class="label" >#{i18n.getText('QMM001_32')}</span>
 						</div>
-					</com:ko-if>
-			</div>
+					</div>
+					<div class ="cell valign-top" style="">
+						<com:ko-if bind="!isFisrtHistory()">
+							<div id="B1_10" class="cell valign-top" tabIndex="3"
+								 style="display: inline-block;text-align: left;margin-left: 5px">
+								<div class="cell" tabindex="1"
+									 data-bind="ntsRadioBoxGroup:  {
+										value: takeOver,
+										options: listTakeOver(),
+										optionsValue: 'code',
+										optionsText: 'name'}">
+								</div>
+							</div>
+						</com:ko-if>
+						<com:ko-if bind="isFisrtHistory()">
+							<div  class="cell" tabindex="3" style= "display: inline-block;text-align: left; margin-left:5px;"
+								  data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+							</div>
+						</com:ko-if>
+					</div>
+				</div>
+
+
+
 			</div>
 			<div id="functions-area-bottom" style="z-index: auto;">
 				<!-- B2_1 登録 -->

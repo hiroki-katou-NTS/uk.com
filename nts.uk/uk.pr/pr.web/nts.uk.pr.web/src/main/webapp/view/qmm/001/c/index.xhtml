@@ -30,32 +30,24 @@
                 <!-- C1_4 保険名称 -->
                 <span id="C1_4" class="label"  style="margin-left: 15px" data-bind = "text: name"></span>
             </div>
-            <div class = "control-group" style ="display: inline-flex;">
-                <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 5px 10px 10px 10px;">
-                    <span class="label" >#{i18n.getText('QMM001_38')}</span>
+            <div class = "control-group table table-col-2" style ="display: inline-flex;">
+                <div class ="cell valign-top">
+                    <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 5px 10px 10px 10px;">
+                        <span class="label" >#{i18n.getText('QMM001_38')}</span>
+                    </div>
                 </div>
-                <div id="C1_6" tabindex="1" style="margin-right: 20px;height: 80px;">
-                         <div class="cell" style="margin-top: 10px;"
-                                 data-bind="ntsRadioButton: {
-										checked: methodEditing,
-										option: itemList()[0],
-										optionValue: 'code',
-										enable: isFirst,
-										optionText: 'name',
-										group: 'periodOption'}">
-                         </div>
-                          <br/>
-                          <div class="cell" style="margin-top: 15px;"
-                                 data-bind="ntsRadioButton: {
-										checked: methodEditing,
-										option: itemList()[1],
-										optionValue: 'code',
-										enable: isFirst,
-										optionText: 'name',
-										group: 'periodOption'}">
-                            </div>
-                        </div>
-                        <span id = "C1_9" class="label warning" style="height: 50px;">#{i18n.getText('QMM001_42')}</span>
+                <div class ="cell valign-top">
+                        <div id="C1_6" tabindex="1" style="margin-right: 20px;margin-top: 10px;height: 80px;" class="cell"
+                             data-bind="ntsRadioBoxGroup:  {
+                             value: methodEditing,
+                             options: itemList(),
+                             optionsValue: 'code',
+                             enable: isFirst,
+                             optionsText: 'name'}">
+                    </div>
+
+                </div>
+                <span id = "C1_9" class="label warning" style="height: 50px;">#{i18n.getText('QMM001_42')}</span>
             </div>
             <div  style="margin: 0px 0px 0px 165px;">
 

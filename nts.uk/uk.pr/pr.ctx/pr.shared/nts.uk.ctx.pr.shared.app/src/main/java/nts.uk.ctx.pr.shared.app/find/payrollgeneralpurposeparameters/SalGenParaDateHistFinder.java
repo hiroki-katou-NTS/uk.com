@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.shared.app.find.payrollgeneralpurposeparameters;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaDateHistRepository;
 import nts.uk.ctx.pr.shared.dom.payrollgeneralpurposeparameters.SalGenParaDateHistory;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,7 +23,7 @@ public class SalGenParaDateHistFinder
     @Inject
     private SalGenParaDateHistRepository repository;
 
-    private final static String HIS_ID_TEMP = "00000devphuc.tc";
+    private final static String HIS_ID_TEMP = "00000HISIDTEMP";
 
     public List<SalGenParaDateHistDto> getAllSalGenParaDateHist(String paraNo){
         String cId = AppContexts.user().companyId();
