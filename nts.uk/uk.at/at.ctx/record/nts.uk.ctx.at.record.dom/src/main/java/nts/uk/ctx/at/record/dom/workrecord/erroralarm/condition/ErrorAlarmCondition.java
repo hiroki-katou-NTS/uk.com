@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.management.RuntimeErrorException;
@@ -85,6 +86,12 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		return this;
 	}
 
+	public void clearDuplicate(){
+		this.checkTargetCondtion.clearDuplicate();
+		this.workTimeCondition.clearDuplicate();
+		this.workTypeCondition.clearDuplicate();
+	}
+	
 	/**
 	 * 
 	 * @param filterByBusinessType
@@ -129,6 +136,14 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTypePlan(boolean filterAtr, List<String> lstWorkType) {
 		((PlanActualWorkType) this.workTypeCondition).setWorkTypePlan(filterAtr, lstWorkType);
 	}
+	
+	public void setWorkType(boolean usePlan, boolean useActual) {
+		this.workTypeCondition.setupWorkType(usePlan, useActual);
+	}
+	
+	public void setWorkTime(boolean usePlan, boolean useActual) {
+		this.workTimeCondition.setupWorkTime(usePlan, useActual);
+	}
 
 	/**
 	 * Set WorkTypeActual
@@ -149,8 +164,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		((SingleWorkType) this.workTypeCondition).setTargetWorkType(filterAtr, lstWorkType);
 	}
 
-	public void chooseWorkTypeOperator(int operator) {
-		((PlanActualWorkType) this.workTypeCondition).chooseOperator(operator);
+	public void chooseWorkTypeOperator(Integer operator) {
+		this.workTypeCondition.chooseOperator(operator);
 	}
 
 	/**
@@ -197,7 +212,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	}
 
 	public void chooseWorkTimeOperator(int operator) {
-		((PlanActualWorkTime) this.workTimeCondition).chooseOperator(operator);
+		this.workTimeCondition.chooseOperator(operator);
 	}
 
 	/**
@@ -284,9 +299,11 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	}
 	
 	private boolean evaluate(WorkCheckResult workTypeCheck, WorkCheckResult workTimeCheck, WorkCheckResult atdCheck){
-		return Stream.of(workTypeCheck, workTimeCheck, atdCheck)
-						.filter(c -> c != WorkCheckResult.NOT_CHECK)
-						.allMatch(c -> c == WorkCheckResult.ERROR);
+		List<WorkCheckResult> result = Stream.of(workTypeCheck, workTimeCheck, atdCheck).filter(c -> c != WorkCheckResult.NOT_CHECK).collect(Collectors.toList());
+		if(result.isEmpty()){
+			return false;
+		}
+		return result.stream().allMatch(c -> c == WorkCheckResult.ERROR);
 	}
 	
 	/**

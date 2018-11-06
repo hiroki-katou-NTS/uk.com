@@ -111,7 +111,7 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 			results.addAll(this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
 					.setParameter("attendanceItemIds", subList).getList());
 		});
-		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
+		return results.stream().map(f -> f.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 					.setParameter("attendanceItemIds", subList)
 					.setParameter("typeOfItem", type.value).getList());
 		});
-		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
+		return results.stream().map(f -> f.toDomain()).collect(Collectors.toList());
 	}
 
 	/*

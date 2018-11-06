@@ -87,8 +87,13 @@
 							<div class="div-table-col-big">
 								<div class="div-table-row-1"></div>
 								<!-- A3_4  期間範囲 -->
-							    <div class="div-table-row-2" id="daterangepickerA" tabindex="4"
-										data-bind="ntsDateRangePicker: { required: selectedPeriodItem()==1, enable: selectedPeriodItem()==1, showNextPrevious: true, value: dateValue}" />
+								<div class="div-table-row-2" id="daterangepickerA" tabindex="4"
+									data-bind="ntsDateRangePicker: {
+									      required: selectedPeriodItem()==1,
+										  enable: selectedPeriodItem()==1, 
+										  showNextPrevious: true, 
+										  value: dateValue,
+										  name: '#[KDM001_6]',}" />
 							</div>
 							<div class="div-table-col-big">
 								<div class="div-table-row-1"></div>

@@ -150,4 +150,17 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		}
 		return returnList;
 	}
+	
+	/**
+	 * 打刻順序不正かどうかチェックする
+	 * @return 打刻順序不正である
+	 */
+	public boolean isReverseOrder() {
+		for(TimeLeavingWork tl : this.getTimeLeavingWorks()) {
+			if(tl.isReverseOrder()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

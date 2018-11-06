@@ -446,6 +446,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @param deductionTimeSheet
 	 * @param bonuspaySetting
 	 * @param midNightTimeSheet
+	 * @param isLastIndex 
+	 * @param isFirstIndex 
 	 * @return
 	 */
 	public static WithinWorkTimeFrame createWithinWorkTimeFrame(WithinWorkTimeFrame duplicateTimeSheet,
@@ -462,7 +464,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																Optional<CoreTimeSetting> coreTimeSetting,List<TimeSheetOfDeductionItem> breakTimeList
 																,WorkType workType,PredetermineTimeSetForCalc predetermineTimeForSet,
 																Optional<WorkTimezoneCommonSet> commonSetting,
-																Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
+																Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets, boolean isFirstIndex, boolean isLastIndex) {
 		
 		EmTimeZoneSet dupTimeSheet = new EmTimeZoneSet(duplicateTimeSheet.getWorkingHoursTimeNo(),   
 													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
@@ -499,7 +501,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	   																														   commonSetting);
   	   				 //遅刻時間帯がそもそも存在しない　→　引数dupTimeSheetの開始をそのまま（現状維持)　控除しない場合　→　lateTimeのstart する場合　→lateTimeのEnd
   	   				 TimeWithDayAttr startOclock = test1;
-  	   				 if(lateTimeSheet.getForDeducationTimeSheet().isPresent()) {
+  	   				 if(lateTimeSheet.getForDeducationTimeSheet().isPresent() && isFirstIndex) {
   	   					 startOclock = isDeductLateTime ? lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd()
   	   							 										: lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart();
   	   				 }
@@ -544,7 +546,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
  	   				 
   	   				 //早退時間帯がそもそも存在しない　→　引数dupTimeSheetの終了をそのまま（現状維持)　控除しない場合　→　leaveearlyのend する場合　→ leaveEarlyのstart
   	   				 TimeWithDayAttr endOclock = test2;
-  	   				 if(LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()) {
+  	   				 if(LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent() && isLastIndex) {
   	   					 endOclock = isDeductLeaveEarly ? LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart()
   	   							 						: LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd();
   	   				 }

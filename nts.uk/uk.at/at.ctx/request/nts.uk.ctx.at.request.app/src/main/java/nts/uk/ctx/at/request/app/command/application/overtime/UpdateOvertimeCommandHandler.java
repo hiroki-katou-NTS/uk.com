@@ -90,7 +90,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		applicationRepository.updateWithVersion(appOverTime.getApplication());
 		// 暫定データの登録
 		interimRemainDataMngRegisterDateChange.registerDateChange(
-				command.getCompanyID(), 
+				companyID, 
 				command.getApplicantSID(), 
 				Arrays.asList(command.getApplicationDate()));
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());

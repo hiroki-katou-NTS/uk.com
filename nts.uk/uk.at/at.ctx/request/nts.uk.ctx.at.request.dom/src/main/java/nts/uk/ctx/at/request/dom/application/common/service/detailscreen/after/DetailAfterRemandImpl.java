@@ -84,14 +84,21 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	 * 11-2.詳細画面差し戻し後の処理
 	 */
 	@Override
-	public MailSenderResult doRemand(String companyID, List<String> lstAppID, Long version, Integer order, String returnReason) {
+	public MailSenderResult doRemand(String companyID, RemandCommand remandCm) {
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		boolean isSendMail = true;
-		for (String appID : lstAppID) {
+		for (String appID : remandCm.getAppID()) {
 			Application_New application = applicationRepository.findByID(companyID, appID).get();
 			//ドメインモデル「申請」の差し戻し理由を画面のコメントで更新する-(update lý do trả về của domain 「申請」 bằng comment trên màn hình)
-			application.setReversionReason(new AppReason(returnReason));
+			//Bug#101502
+			//差し戻しの日付(Short_YMD) + 全角スペース +差し戻しを行った承認者の名前 + "⇒" + 差し戻し先 + "：" + 改行 + 差し戻しコメント(C1-5)
+			Integer order = remandCm.getOrder();
+			String destination = order != null && order > 0 ? "フェーズ" + order + "の承認者" : remandCm.getApplicaintName();
+			//差し戻しを行った承認者の名前
+			String reSname = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+			String remandReason = GeneralDate.today().toString() + "　" + reSname + "⇒" + destination + "：" + "\n" + remandCm.getRemandReason();
+			application.setReversionReason(new AppReason(remandReason));
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
 					.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 			MailSenderResult mailResult = new MailSenderResult(new ArrayList<>(), new ArrayList<>());
@@ -102,7 +109,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				//承認処理時に自動でメールを送信するが　trueの場合(check sendMailWhenApprove trong domain Applicationsetting)
 				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 					//「申請種類別設定」．新規登録時に自動でメールを送信するがtrue
-					mailResult = this.getMailSenderResult(application, employeeList, returnReason, isSendMail);
+					mailResult = this.getMailSenderResult(application, employeeList, remandReason, isSendMail);
 				}
 			} else {// 差し戻し先が申請本人の場合
 				//Imported（承認申請）「差し戻しする（本人まで）」-(Trả về bản thân người làm đơn)
@@ -116,7 +123,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
 				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
 					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
-					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), returnReason, isSendMail);
+					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), remandReason, isSendMail);
 				}
 			}
 			successList.addAll(mailResult.getSuccessList());

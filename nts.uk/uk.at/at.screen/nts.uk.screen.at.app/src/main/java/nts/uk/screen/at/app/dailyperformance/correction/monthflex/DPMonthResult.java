@@ -16,7 +16,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyRes
 public class DPMonthResult {
 	private FlexShortageDto flexShortage;
 	private List<MonthlyModifyResult> results;
-	private boolean hasItem;
+	private boolean hasItem = false;
 	private Integer month;
 	private List<FormatDailyDto> formatDaily;
 	private AgreementInfomationDto agreementInfo;

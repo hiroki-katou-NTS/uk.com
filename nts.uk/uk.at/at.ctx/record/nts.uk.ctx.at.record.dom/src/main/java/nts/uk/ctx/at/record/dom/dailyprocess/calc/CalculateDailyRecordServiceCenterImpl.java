@@ -119,11 +119,11 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 									  Optional.empty(),
 									  companySet,
 									  Collections.emptyList()).getLst();
-		//勤務情報のステータスを変更
-		result.forEach(tc ->{
-			tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
-			//dailyCalculationEmployeeService.upDateCalcState(tc);
-		});
+//		//勤務情報のステータスを変更
+//		result.forEach(tc ->{
+//			tc.integrationOfDaily.getWorkInformation().changeCalcState(CalculationState.Calculated);
+//			//dailyCalculationEmployeeService.upDateCalcState(tc);
+//		});
 		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
 	}
 	
@@ -182,7 +182,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			ManagePerCompanySet companySet,
 			List<ClosureStatusManagement> closureList) {
 		val result = commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),closureList);
-		
+		result.getLst().forEach(listItem ->{
+			dailyCalculationEmployeeService.upDateCalcState(listItem);
+		});
 		return new CalcStatus(result.getPs(), result.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList())); 
 	}
 	
@@ -315,11 +317,18 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
 					dailyUnit = new DailyUnit(new TimeOfDay(0));
 				//実績計算
-				returnList.add(calculate.calculate(calcOption, record, 
+				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
 													   companyCommonSetting,
 													   new ManagePerPersonDailySet(Optional.of(nowWorkingItem.get().getValue()), dailyUnit),
 													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(-1)),
-													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(1))));
+													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(1)));
+				if(result.isCalc()) {
+					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
+				}
+				else {
+					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.No_Calculated);
+				}
+				returnList.add(result);
 			}
 			else {
 				returnList.add(ManageCalcStateAndResult.successCalc(record));

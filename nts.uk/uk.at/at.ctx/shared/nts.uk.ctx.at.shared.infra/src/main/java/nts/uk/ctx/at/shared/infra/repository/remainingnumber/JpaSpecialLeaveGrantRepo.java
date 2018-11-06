@@ -85,10 +85,9 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@SneakyThrows
 	@Override
 	public Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId) {
-		try (
-				PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
-						+ " WHERE SPECIAL_LEAVE_ID = ?");
-				){
+		try (PreparedStatement sql = this.connection().prepareStatement(
+				"SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+				+ " WHERE SPECIAL_LEAVE_ID = ?")) {
 
 			sql.setString(1, specialId);
 			Optional<SpecialLeaveGrantRemainingData> entities = new NtsResultSet(sql.executeQuery())
@@ -243,22 +242,20 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@SneakyThrows
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
-			LeaveExpirationStatus expirationStatus, GeneralDate ymd) {
+			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
 			
-		try(
-				PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
 						+ " WHERE SID = ?"
 						+ " AND SPECIAL_LEAVE_CD = ?"
 						+ " AND GRANT_DATE <= ?"
 						+ " AND DEADLINE_DATE >= ?"
 						+ " AND EXPIRED_STATE = ?"
-						+ " ORDER BY GRANT_DATE ASC");
-				){
+						+ " ORDER BY GRANT_DATE ASC")){
 
 			sql.setString(1, sid);
 			sql.setInt(2, specialLeaveCode);
-			sql.setDate(3, Date.valueOf(ymd.toLocalDate()));
-			sql.setDate(4, Date.valueOf(ymd.toLocalDate()));
+			sql.setDate(3, Date.valueOf(grantDate.toLocalDate()));
+			sql.setDate(4, Date.valueOf(deadlineDate.toLocalDate()));
 			sql.setInt(5, expirationStatus.value);
 			List<SpecialLeaveGrantRemainingData> entities = new NtsResultSet(sql.executeQuery())
 					.getList(x -> toDomain(x));
