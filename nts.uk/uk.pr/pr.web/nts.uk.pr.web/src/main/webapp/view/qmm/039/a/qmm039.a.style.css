@@ -1,0 +1,54 @@
+.panel {
+    margin: 10px;
+}
+
+.row {
+    display: inline-block;
+    width: 100%;
+}
+
+.group-master {
+    padding-left: 45px;
+}
+
+.group-center {
+    vertical-align: middle;
+    width: 45px;
+}
+
+.cell {
+    display: table-cell;
+}
+
+.label-space {
+    padding: 6px;
+    width: 150px;
+}
+.left {
+    float: left !important;
+}
+
+.right {
+    float: right !important;
+}
+
+.margin-bottom-12 {
+    margin-bottom: 12px;
+}
+
+.caret-background.caret-bottom:after {
+    left: 59px;
+    top: 100%;
+    border-width: 35px 70px;
+}
+#tabpanel-1 > div.contents-area > div.row > div:nth-child(2) > span:after{
+    font-size: 2em !important;
+    border-left: 1em solid;
+    border-top: 5em solid transparent;
+    border-bottom: 5em solid transparent;
+    color: #e0f59e !important;
+}
+.cell-space{
+
+}
+
