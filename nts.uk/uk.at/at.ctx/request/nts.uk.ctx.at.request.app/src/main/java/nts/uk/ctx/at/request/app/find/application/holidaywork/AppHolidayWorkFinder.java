@@ -556,7 +556,8 @@ public class AppHolidayWorkFinder {
 				1, EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
-		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,siftCD);
+		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,
+				appDate,approvalFunctionSetting,siftCD, false);
 		startTime1 = recordWorkOutput.getStartTime1();
 		endTime1 = recordWorkOutput.getEndTime1();
 		startTime2 = recordWorkOutput.getStartTime2();
@@ -712,7 +713,7 @@ public class AppHolidayWorkFinder {
 		result.setDisplayCaculationTime(false);
 		if(approvalFunctionSetting != null){
 			// 時刻計算利用チェック
-			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+//			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				result.setDisplayCaculationTime(true);
 				// 4.勤務種類を取得する :
 				GeneralDate baseDate = appCommonSettingOutput.generalDate;
@@ -746,7 +747,7 @@ public class AppHolidayWorkFinder {
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
 				result.setDisplayRestTime(displayRestTime);
-			}
+//			}
 		}
 	}
 	/**
@@ -762,15 +763,17 @@ public class AppHolidayWorkFinder {
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if(approvalFunctionSetting != null){
 			result.setDisplayCaculationTime(false);
-			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+//			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				result.setDisplayCaculationTime(true);
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getWorkTime() == null ? workTimeCode : result.getWorkTime().getSiftCode());
+				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, 
+						employeeID,appDate,approvalFunctionSetting,result.getWorkTime() == null ? 
+								workTimeCode : result.getWorkTime().getSiftCode(), false);
 				result.setWorkClockStart1(recordWorkOutput.getStartTime1());
 				result.setWorkClockStart2(recordWorkOutput.getStartTime2());
 				result.setWorkClockEnd1(recordWorkOutput.getEndTime1());
 				result.setWorkClockEnd2(recordWorkOutput.getEndTime2());
-			}
+//			}
 		}
 	}
 	/**
