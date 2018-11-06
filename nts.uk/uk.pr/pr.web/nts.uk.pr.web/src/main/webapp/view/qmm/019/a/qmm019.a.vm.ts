@@ -108,7 +108,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public outputExcel(): void {
-
+            modal("/view/qmm/019/d/index.xhtml");
         }
 
         public modifyLog(): void {

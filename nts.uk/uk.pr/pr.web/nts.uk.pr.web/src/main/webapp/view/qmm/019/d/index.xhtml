@@ -81,12 +81,12 @@
                         <div class="cell valign-center">
                             <!--D2_2-->
                             <div class="label"
-                                 data-bind="text: $vm.itemNameSelected().itemNameCd, visible: $vm.screenMode() != $vm.unselectMode"/>
+                                 data-bind="text: itemNameCode, visible: $vm.screenMode() != $vm.unselectMode"/>
                         </div>
                         <div class="cell valign-center">
                             <!--D2_3-->
                             <div class="label"
-                                 data-bind="text: $vm.itemNameSelected().name, visible: $vm.screenMode() != $vm.unselectMode"/>
+                                 data-bind="text: name, visible: $vm.screenMode() != $vm.unselectMode"/>
                         </div>
                     </div>
                     <div class="table table-col-2">
@@ -104,7 +104,6 @@
                                 value: totalObject,
                                 optionsText: 'name',
                                 required: true,
-                                enable: $vm.screenMode() == $vm.selectMode,
                                 selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
@@ -141,7 +140,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D5-2-->
-                            <div id="D5" data-bind="ntsComboBox: {
+                            <div id="D5_2" data-bind="ntsComboBox: {
                                 name: '#[QMM019_132]',
                                 options: $vm.workingAtrs,
                                 optionsValue: 'code',
@@ -162,7 +161,8 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D6-2-->
-                            <button data-bind="click: $vm.openI">#{i18n.getText('QMM019_134')}</button>
+                            <button id="D6-2"
+                                    data-bind="click: function(){$vm.openI()} ">#{i18n.getText('QMM019_134')}</button>
                         </div>
                         <div class="cell valign-center">
                             <!--D6-3-->
@@ -180,7 +180,8 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D7-2-->
-                            <button data-bind="click: $vm.openM">#{i18n.getText('QMM019_134')}</button>
+                            <button id="D7-2"
+                                    data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
                         </div>
                         <div class="cell valign-center">
                             <!--D7-3-->
@@ -198,7 +199,8 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D8-2-->
-                            <button data-bind="click: $vm.openN">#{i18n.getText('QMM019_134')}</button>
+                            <button id="D8-2"
+                                    data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
                         </div>
                         <div class="cell valign-center">
                             <!--D8-3-->
@@ -216,9 +218,10 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D9-2-->
-                            <input data-bind="ntsNumberEditor: {
+                            <input id="D9_2" data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_143]',
                                 value: commonAmount,
+                                required: true,
                                 option: $vm.option,
                                 constraint: 'CommonAmount'}"/>
                         </div>
@@ -267,7 +270,7 @@
                             <!--D3_9-->
                             <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_10-->
-                            <input data-bind="ntsNumberEditor: {
+                            <input id="D3_10" data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_121]',
                                 value: rangeValue,
                                 option: $vm.option,
@@ -285,7 +288,7 @@
                             <!--D3_12-->
                             <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_13-->
-                            <input data-bind="ntsNumberEditor: {
+                            <input id="D3_13" data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_123]',
                                 value: rangeValue,
                                 option: $vm.option,
@@ -306,7 +309,7 @@
                             <!--D3_16-->
                             <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_17-->
-                            <input data-bind="ntsNumberEditor: {
+                            <input id="D3_17" data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_126]',
                                 value: rangeValue,
                                 option: $vm.option,
@@ -318,13 +321,13 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.upperLimitSetting">
+                         data-bind="with: alarmRangeSetting.lowerLimitSetting">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_19-->
                             <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
                             <!--D3_20-->
-                            <input data-bind="ntsNumberEditor: {
+                            <input id="D3_20" data-bind="ntsNumberEditor: {
                                 name: '#[QMM019_128]',
                                 value: rangeValue,
                                 option: $vm.option,
@@ -350,7 +353,7 @@
                                 <table class="acc-table" data-bind="with: paymentItemSet()">
                                     <colgroup>
                                         <col width="90px"/>
-                                        <col width="198px"/>
+                                        <col width="*"/>
                                     </colgroup>
                                     <tr>
                                         <th class="ui-widget-header">
@@ -359,7 +362,7 @@
                                         </th>
                                         <td>
                                             <!--D11_16-->
-                                            <div class="label" data-bind="text: $vm.itemNameSelected().name"/>
+                                            <div class="label" data-bind="text: $vm.dataScreen().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -540,7 +543,8 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button data-bind="click: decide, enable: $root.errors.isEmpty"
+                    class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>

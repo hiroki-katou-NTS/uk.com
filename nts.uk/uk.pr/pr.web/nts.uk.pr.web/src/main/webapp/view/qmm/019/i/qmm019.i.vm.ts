@@ -8,14 +8,12 @@ module nts.uk.pr.view.qmm019.i.viewmodel {
         columns: KnockoutObservableArray<any>;
         salIndAmounts: KnockoutObservableArray<ISalIndAmountName>;
         individualPriceCodeSelected: KnockoutObservable<string>;
-        salIndAmountSelected: KnockoutObservable<ISalIndAmountName>;
 
         constructor() {
             let self = this;
 
             self.salIndAmounts = ko.observableArray([]);
             self.individualPriceCodeSelected = ko.observable(null);
-            self.salIndAmountSelected = ko.observable(null);
 
             this.columns = ko.observableArray([
                 {headerText: getText("QMM019_108"), key: 'individualPriceCode', width: 60, formatter: _.escape},
@@ -56,14 +54,12 @@ module nts.uk.pr.view.qmm019.i.viewmodel {
                 if (!isNullOrUndefined(salIndAmount)) {
                     // パラメータ.個人金額コードの項目を選択状態にする
                     self.individualPriceCodeSelected(individualPriceCode);
-                    self.salIndAmountSelected(salIndAmount);
                     return;
                 }
             }
 
             // 一覧の先頭を選択状態に宇する
             let firstItem: ISalIndAmountName = _.head(self.salIndAmounts());
-            self.salIndAmountSelected(firstItem);
             if (isNullOrUndefined(firstItem)) {
                 self.individualPriceCodeSelected(null);
             } else {
@@ -73,7 +69,10 @@ module nts.uk.pr.view.qmm019.i.viewmodel {
 
         decide() {
             let self = this;
-            windows.setShared("QMM019I_RESULTS", self.salIndAmountSelected());
+            let salIndAmount = _.find(self.salIndAmounts(), (item: ISalIndAmountName) => {
+                return item.individualPriceCode == self.individualPriceCodeSelected();
+            })
+            windows.setShared("QMM019I_RESULTS", salIndAmount);
             windows.close();
         }
 

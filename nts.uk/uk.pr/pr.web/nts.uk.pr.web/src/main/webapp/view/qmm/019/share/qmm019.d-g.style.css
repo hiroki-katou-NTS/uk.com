@@ -68,11 +68,11 @@
 }
 
 .table-error-alarm > .cell:nth-child(2) {
-    width: 235px;
+    width: 240px;
 }
 
 .table-error-alarm > .cell:nth-child(3) {
-    width: 170px;
+    width: 165px;
 }
 
 .table-col-2 > .cell:nth-child(1) {

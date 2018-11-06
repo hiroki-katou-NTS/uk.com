@@ -1,8 +1,10 @@
 module nts.uk.pr.view.qmm019.d.viewmodel {
+    import block = nts.uk.ui.block;
     import windows = nts.uk.ui.windows;
     import modal = nts.uk.ui.windows.sub.modal;
     import shareModel = nts.uk.pr.view.qmm019.share.model;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
 
     export class ScreenModel {
         screenMode: KnockoutObservable<number>;
@@ -14,9 +16,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         selectedSearchIitemName: KnockoutObservable<string>;
         itemNames: KnockoutObservableArray<StatementItem>;
         codeSelected: KnockoutObservable<string>;
-        itemNameSelected: KnockoutObservable<StatementItem>;
 
-        value: KnockoutObservable<number>;
+        categoryAtr: number;
         totalObjAtrs: KnockoutObservableArray<shareModel.ItemModel>;
         calcMethods: KnockoutObservableArray<shareModel.ItemModel>;
         workingAtrs: KnockoutObservableArray<shareModel.ItemModel>;
@@ -42,9 +43,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.selectedSearchIitemName = ko.observable(null);
             self.itemNames = ko.observableArray([]);
             self.codeSelected = ko.observable(null);
-            self.itemNameSelected = ko.observable(new StatementItem(null));
 
-            self.value = ko.observable(1000);
+            self.categoryAtr = shareModel.CategoryAtr.PAYMENT_ITEM;
             self.totalObjAtrs = ko.observableArray(shareModel.getPaymentTotalObjAtr());
             self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr());
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
@@ -59,12 +59,14 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.breakdownItemSets = ko.observableArray([]);
 
             self.codeSelected.subscribe(value => {
-                let itemName = _.find(self.itemNames(), (item: IStatementItem) => {
+                block.invisible();
+                let itemName: StatementItem = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
                 })
-                self.itemNameSelected(itemName);
+                self.dataScreen().itemNameCode(itemName.itemNameCd);
+                self.dataScreen().name(itemName.name);
                 self.getDataAccordion().done(() => {
-
+                    block.clear();
                 })
             })
 
@@ -79,26 +81,33 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 dfd = $.Deferred();
             $("#fixed-table").ntsFixedTable({height: 139});
             // let params: IParams = windows.getShared("QMM019D_PARAMS");
-            let params: IParams = new Params(null);
-            params.workingAtr = 1;
-            params.totalObject = 1;
-            params.calcMethod = 1;
-            params.proportionalAtr = 1;
-            params.proportionalMethod = 1;
-            params.rangeValAttribute = 1;
+            let params: IParams = <IParams>{};
+            params.yearMonth = 201802;
+            params.workingAtr = null;
+            params.totalObject = null;
+            params.calcMethod = null;
+            params.proportionalAtr = null;
+            params.proportionalMethod = null;
+            params.rangeValAttribute = null;
+            params.errorRangeSetting = <IErrorAlarmRangeSetting>{};
+            params.errorRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
             params.errorRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.upperLimitSetting.rangeValue = 111;
+            params.errorRangeSetting.upperLimitSetting.rangeValue = null;
+            params.errorRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
             params.errorRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.lowerLimitSetting.rangeValue = 10;
+            params.errorRangeSetting.lowerLimitSetting.rangeValue = null;
+            params.alarmRangeSetting = <IErrorAlarmRangeSetting>{};
+            params.alarmRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
             params.alarmRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.upperLimitSetting.rangeValue = 30;
+            params.alarmRangeSetting.upperLimitSetting.rangeValue = null;
+            params.alarmRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
             params.alarmRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.lowerLimitSetting.rangeValue = 50;
-            params.perValCode = "08";
-            params.formulaCode = "0002";
-            params.wageTableCode = "0003";
-            params.commonAmount = 10;
-            service.getStatementItem(shareModel.CategoryAtr.PAYMENT_ITEM).done((data: Array<IStatementItem>) => {
+            params.alarmRangeSetting.lowerLimitSetting.rangeValue = null;
+            params.perValCode = null;
+            params.formulaCode = null;
+            params.wageTableCode = null;
+            params.commonAmount = null;
+            service.getStatementItem(self.categoryAtr).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen(params);
             })
@@ -118,23 +127,22 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
             // 選択モードへ移行する
             self.selectedMode();
-            let item: IStatementItem = _.head(self.itemNames());
-            self.codeSelected(item.itemNameCd);
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen(new Params(params));
+            let item: IStatementItem = _.head(self.itemNames());
+            self.codeSelected(item.itemNameCd);
             // TODO
         }
 
         getDataAccordion(): JQueryPromise<any> {
             let self = this,
-                dfd = $.Deferred(),
-                ctgAtr = self.itemNameSelected().categoryAtr;
+                dfd = $.Deferred();
             // ドメインモデル「支給項目設定」を取得する
-            let sv1 = service.getPaymentItemStById(ctgAtr, self.codeSelected());
+            let sv1 = service.getPaymentItemStById(self.categoryAtr, self.dataScreen().itemNameCode());
             // ドメインモデル「内訳項目設定」を取得する
-            let sv2 = service.getAllBreakdownItemSetById(ctgAtr, self.codeSelected());
+            let sv2 = service.getAllBreakdownItemSetById(self.categoryAtr, self.dataScreen().itemNameCode());
             // ドメインモデル「給与個人別金額名称」を取得する
-            let sv3 = service.getSalIndAmountNameById(self.dataScreen().perValCode(), ctgAtr);
+            let sv3 = service.getSalIndAmountNameById(self.dataScreen().perValCode(), self.categoryAtr);
             // ドメインモデル「計算式」を取得する
             let sv4 = service.getFormulaById(self.dataScreen().formulaCode());
             // ドメインモデル「賃金テーブル」を取得する
@@ -144,14 +152,15 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                                                   perVal: any,
                                                   formula: any,
                                                   wageTable: any) => {
-                self.categoryAtrText(shareModel.getCategoryAtrText(ctgAtr));
+                self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 self.paymentItemSet(isNullOrUndefined(pay) ? new PaymentItemSet(null) : new PaymentItemSet(pay));
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
                 self.dataScreen().wageTableName(isNullOrUndefined(wageTable) ? null : wageTable.wageTableName);
+                dfd.resolve();
             })
-            dfd.resolve();
+
             return dfd.promise();
         }
 
@@ -174,46 +183,58 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         }
 
         openI() {
-            windows.setShared("QMM019I_PARAMS", {cateIndicator: 0, individualPriceCode: '02'});
+            let self = this;
+            windows.setShared("QMM019I_PARAMS", {
+                cateIndicator: self.categoryAtr,
+                individualPriceCode: self.dataScreen().perValCode()
+            });
             modal("/view/qmm/019/i/index.xhtml").onClosed(() => {
                 let results = windows.getShared("QMM019I_RESULTS");
-                if (isNullOrUndefined(results)) {
-
-                } else {
-
+                if (!isNullOrUndefined(results)) {
+                    self.dataScreen().perValCode(results.individualPriceCode);
+                    self.dataScreen().perValName(results.individualPriceName);
                 }
             });
         }
 
         openM() {
-            windows.setShared("QMM019M_PARAMS", {yearMonth: 201802, formulaCode: '0003'});
+            let self = this;
+            windows.setShared("QMM019M_PARAMS", {
+                yearMonth: self.dataScreen().yearMonth,
+                formulaCode: self.dataScreen().formulaCode()
+            });
             modal("/view/qmm/019/m/index.xhtml").onClosed(() => {
                 let results = windows.getShared("QMM019M_RESULTS");
-                if (isNullOrUndefined(results)) {
-
-                } else {
-
+                if (!isNullOrUndefined(results)) {
+                    self.dataScreen().formulaCode(results.formulaCode);
+                    self.dataScreen().formulaName(results.formulaName);
                 }
             });
         }
 
         openN() {
-            windows.setShared("QMM019N_PARAMS", {yearMonth: 201802, wageTableCode: '0003'});
+            let self = this;
+            windows.setShared("QMM019N_PARAMS", {
+                yearMonth: self.dataScreen().yearMonth,
+                wageTableCode: self.dataScreen().wageTableCode()
+            });
             modal("/view/qmm/019/n/index.xhtml").onClosed(() => {
                 let results = windows.getShared("QMM019N_RESULTS");
-                if (isNullOrUndefined(results)) {
-
-                } else {
-
+                if (!isNullOrUndefined(results)) {
+                    self.dataScreen().wageTableCode(results.wageTableCode);
+                    self.dataScreen().wageTableName(results.wageTableName);
                 }
             });
         }
 
-        referenced() {
-
-        }
-
         decide() {
+            let self = this;
+            // アルゴリズム「決定時チェック処理」を実施
+            self.dataScreen().checkDecide();
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             windows.close();
         }
 
@@ -270,6 +291,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     }
 
     interface IParams {
+        yearMonth: number;
         itemNameCode: string;
         workingAtr: number;
         totalObject: number;
@@ -286,34 +308,39 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     }
 
     class Params {
+        yearMonth: number;
         /**
          * 項目名コード
          */
-        itemNameCode: string;
+        itemNameCode: KnockoutObservable<string>;
+        /**
+         * 名称
+         */
+        name: KnockoutObservable<string>;
         /**
          * 通勤区分
          */
-        workingAtr: KnockoutObservable<number>;
+        workingAtr: KnockoutObservable<string>;
         /**
          * 合計対象
          */
-        totalObject: KnockoutObservable<number>;
+        totalObject: KnockoutObservable<string>;
         /**
          * 計算方法
          */
-        calcMethod: KnockoutObservable<number>;
+        calcMethod: KnockoutObservable<string>;
         /**
          * 按分区分
          */
-        proportionalAtr: KnockoutObservable<number>;
+        proportionalAtr: KnockoutObservable<string>;
         /**
          * 按分方法
          */
-        proportionalMethod: KnockoutObservable<number>;
+        proportionalMethod: KnockoutObservable<string>;
         /**
          * 範囲値の属性
          */
-        rangeValAttribute: KnockoutObservable<number>;
+        rangeValAttribute: KnockoutObservable<string>;
         /**
          * エラー範囲設定
          */
@@ -352,46 +379,213 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         commonAmount: KnockoutObservable<number>;
 
         constructor(data: IParams) {
-            this.perValName = ko.observable(null);
-            this.formulaName = ko.observable(null);
-            this.wageTableName = ko.observable(null);
+            let self = this;
+            self.name = ko.observable(null);
+            self.perValName = ko.observable(null);
+            self.formulaName = ko.observable(null);
+            self.wageTableName = ko.observable(null);
             if (isNullOrUndefined(data)) {
-                this.itemNameCode = null;
-                this.workingAtr = ko.observable(null);
-                this.totalObject = ko.observable(null);
-                this.calcMethod = ko.observable(null);
-                this.proportionalAtr = ko.observable(null);
-                this.proportionalMethod = ko.observable(null);
-                this.rangeValAttribute = ko.observable(null);
-                this.errorRangeSetting = new ErrorAlarmRangeSetting(null);
-                this.alarmRangeSetting = new ErrorAlarmRangeSetting(null);
-                this.perValCode = ko.observable(null);
-                this.formulaCode = ko.observable(null);
-                this.wageTableCode = ko.observable(null);
-                this.commonAmount = ko.observable(null);
+                self.yearMonth = null;
+                self.itemNameCode = ko.observable(null);
+                self.workingAtr = ko.observable(null);
+                self.totalObject = ko.observable(null);
+                self.calcMethod = ko.observable(null);
+                self.proportionalAtr = ko.observable(null);
+                self.proportionalMethod = ko.observable(null);
+                self.rangeValAttribute = ko.observable(null);
+                self.errorRangeSetting = new ErrorAlarmRangeSetting(null);
+                self.alarmRangeSetting = new ErrorAlarmRangeSetting(null);
+                self.perValCode = ko.observable(null);
+                self.formulaCode = ko.observable(null);
+                self.wageTableCode = ko.observable(null);
+                self.commonAmount = ko.observable(null);
                 return;
             }
-            this.itemNameCode = data.itemNameCode;
-            this.workingAtr = ko.observable(data.workingAtr);
-            this.totalObject = ko.observable(data.totalObject);
-            this.calcMethod = ko.observable(data.calcMethod);
-            this.proportionalAtr = ko.observable(data.proportionalAtr);
-            this.proportionalMethod = ko.observable(data.proportionalMethod);
-            this.rangeValAttribute = ko.observable(data.rangeValAttribute);
-            this.errorRangeSetting = new ErrorAlarmRangeSetting(data.errorRangeSetting);
-            this.alarmRangeSetting = new ErrorAlarmRangeSetting(data.alarmRangeSetting);
-            this.perValCode = ko.observable(data.perValCode);
-            this.formulaCode = ko.observable(data.formulaCode);
-            this.wageTableCode = ko.observable(data.wageTableCode);
-            this.commonAmount = ko.observable(data.commonAmount);
+            self.yearMonth = data.yearMonth;
+            self.itemNameCode = ko.observable(data.itemNameCode);
+            self.workingAtr = ko.observable(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
+            self.totalObject = ko.observable(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
+            self.calcMethod = ko.observable(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
+            self.proportionalAtr = ko.observable(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
+            self.proportionalMethod = ko.observable(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
+            self.rangeValAttribute = ko.observable(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            self.errorRangeSetting = new ErrorAlarmRangeSetting(data.errorRangeSetting);
+            self.alarmRangeSetting = new ErrorAlarmRangeSetting(data.alarmRangeSetting);
+            self.perValCode = ko.observable(data.perValCode);
+            self.formulaCode = ko.observable(data.formulaCode);
+            self.wageTableCode = ko.observable(data.wageTableCode);
+            self.commonAmount = ko.observable(data.commonAmount);
 
-            this.commonAmount.subscribe(value => {
-                console.log(value)
-            })
+            self.calcMethod.subscribe(() => {
+                self.clearError("#D6-2");
+                self.clearError("#D7-2");
+                self.clearError("#D8-2");
+            });
+            self.perValCode.subscribe(() => {
+                self.clearError("#D6-2");
+            });
+            self.formulaCode.subscribe(() => {
+                self.clearError("#D7-2");
+            });
+            self.wageTableCode.subscribe(() => {
+                self.clearError("#D8-2");
+            });
 
-            this.proportionalAtr.subscribe(value => {
-                console.log(value)
-            })
+
+            self.errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
+                self.clearError("#D3_10");
+            });
+            self.errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
+                self.clearError("#D3_13");
+            });
+            self.errorRangeSetting.upperLimitSetting.rangeValue.subscribe(() => {
+                self.clearError("#D3_13");
+                self.checkError("#D3_13");
+            });
+
+            self.alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
+                self.clearError("#D3_17");
+            });
+            self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
+                self.clearError("#D3_20");
+            });
+            self.alarmRangeSetting.upperLimitSetting.rangeValue.subscribe(() => {
+                self.clearError("#D3_20");
+                self.checkError("#D3_20");
+            });
+        }
+
+        /**
+         * 決定時チェック処理
+         */
+        checkDecide() {
+            let self = this;
+            self.validate();
+            self.checkCalcMethod();
+            self.checkErrorRange();
+            self.checkAlarmRange();
+        }
+
+        validate() {
+            let self = this;
+            self.checkError("#D2_5");
+            self.checkError("#D2_8");
+            self.checkError("#D5_2");
+            self.checkError("#D9_2");
+        }
+
+        checkCalcMethod() {
+            let self = this;
+            // 設定された計算方法を確認する
+            switch (parseInt(self.calcMethod())) {
+                case shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF:
+                    // 個人金額コードが設定されているか確認する
+                    if (isNullOrEmpty(self.perValCode())) {
+                        // alertError({messageId: "MsgQ_11"});
+                        self.setError("#D6-2", "MsgQ_11");
+                    }
+                    break;
+                case shareModel.PaymentCaclMethodAtr.CACL_FOMULA:
+                    // 計算式コードが設定されているか確認する
+                    if (isNullOrEmpty(self.formulaCode())) {
+                        // alertError({messageId: "MsgQ_12"});
+                        self.setError("#D7-2", "MsgQ_11");
+                    }
+                    break;
+                case shareModel.PaymentCaclMethodAtr.WAGE_TABLE:
+                    // 賃金テーブルコードが設定されているか確認する
+                    if (isNullOrEmpty(self.wageTableCode())) {
+                        // alertError({messageId: "MsgQ_13"});
+                        self.setError("#D8-2", "MsgQ_11");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        checkErrorRange() {
+            let self = this;
+            // エラー範囲上限値チェック状況を確認する
+            if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+                // エラー範囲上限値の入力を確認する
+                if (isNullOrEmpty(self.errorRangeSetting.upperLimitSetting.rangeValue())) {
+                    // alertError({messageId: "MsgQ_14"});
+                    self.setError("#D3_10", "MsgQ_14");
+                } else {
+                    // エラー範囲下限値チェック状況を確認する
+                    if (self.errorRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                        // エラー範囲下限値の入力を確認する
+                        if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
+                            // alertError({messageId: "MsgQ_15"});
+                            self.setError("#D3_13", "MsgQ_15");
+                        } else {
+                            // エラー範囲の入力確認をする
+                            if (parseInt(self.errorRangeSetting.lowerLimitSetting.rangeValue()) > parseInt(self.errorRangeSetting.upperLimitSetting.rangeValue())) {
+                                // alertError({messageId: "MsgQ_1"});
+                                self.setError("#D3_13", "MsgQ_1");
+                            }
+                        }
+                    }
+                }
+            } else {
+                // エラー範囲下限値チェック状況を確認する
+                if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+                    // エラー範囲下限値の入力を確認する
+                    if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
+                        // alertError({messageId: "MsgQ_15"});
+                        self.setError("#D3_13", "MsgQ_15");
+                    }
+                }
+            }
+        }
+
+        checkAlarmRange() {
+            let self = this;
+            // アラーム範囲上限値チェック状況を確認する
+            if (self.alarmRangeSetting.upperLimitSetting.valueSettingAtr()) {
+                // アラーム範囲上限値の入力を確認する
+                if (isNullOrEmpty(self.alarmRangeSetting.upperLimitSetting.rangeValue())) {
+                    // alertError({messageId: "MsgQ_16"});
+                    self.setError("#D3_17", "MsgQ_16");
+                } else {
+                    // アラーム範囲下限値チェック状況を確認する
+                    if (self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                        // アラーム範囲下限値の入力を確認する
+                        if (isNullOrEmpty(self.alarmRangeSetting.lowerLimitSetting.rangeValue())) {
+                            // alertError({messageId: "MsgQ_17"});
+                            self.setError("#D3_20", "MsgQ_17");
+                        } else {
+                            // エラー範囲の入力確認をする
+                            if (parseInt(self.alarmRangeSetting.lowerLimitSetting.rangeValue()) > parseInt(self.alarmRangeSetting.upperLimitSetting.rangeValue())) {
+                                // alertError({messageId: "MsgQ_2"});
+                                self.setError("#D3_20", "MsgQ_2");
+                            }
+                        }
+                    }
+                }
+            } else {
+                // アラーム範囲下限値チェック状況を確認する
+                if (self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                    // アラーム範囲下限値の入力を確認する
+                    if (isNullOrEmpty(self.alarmRangeSetting.lowerLimitSetting.rangeValue())) {
+                        // alertError({messageId: "MsgQ_17"});
+                        self.setError("#D3_20", "MsgQ_17");
+                    }
+                }
+            }
+        }
+
+        setError(control, messageId) {
+            $(control).ntsError('set', {messageId: messageId});
+        }
+
+        clearError(control) {
+            $(control).ntsError('clear');
+        }
+
+        checkError(control) {
+            $(control).ntsError('check');
         }
     }
 
@@ -430,23 +624,20 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         /**
          * 値設定区分
          */
-        valueSettingAtr: KnockoutObservable<number>;
+        valueSettingAtr: KnockoutObservable<boolean>;
         /**
          * 範囲値
          */
-        rangeValue: KnockoutObservable<number>;
+        rangeValue: KnockoutObservable<string>;
 
         constructor(data: IErrorAlarmValueSetting) {
             if (isNullOrUndefined(data)) {
-                this.valueSettingAtr = ko.observable(null);
+                this.valueSettingAtr = ko.observable(false);
                 this.rangeValue = ko.observable(null);
                 return;
             }
-            this.valueSettingAtr = ko.observable(data.valueSettingAtr);
-            this.rangeValue = ko.observable(data.rangeValue);
-            this.rangeValue.subscribe(value => {
-                console.log(value)
-            })
+            this.valueSettingAtr = ko.observable(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
+            this.rangeValue = ko.observable(isNullOrUndefined(data.rangeValue) ? null : data.rangeValue.toString());
         }
     }
 

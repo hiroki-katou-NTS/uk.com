@@ -7,14 +7,12 @@ module nts.uk.pr.view.qmm019.n.viewmodel {
 
         columns: KnockoutObservableArray<any>;
         wageTables: KnockoutObservableArray<IWageTable>;
-        wageTableSelected: KnockoutObservable<IWageTable>;
         wageTableCodeSelected: KnockoutObservable<string>;
 
         constructor() {
             let self = this;
 
             self.wageTables = ko.observableArray([]);
-            self.wageTableSelected = ko.observable(null);
             self.wageTableCodeSelected = ko.observable(null);
 
             this.columns = ko.observableArray([
@@ -49,20 +47,18 @@ module nts.uk.pr.view.qmm019.n.viewmodel {
             // パラメータ.賃金テーブルコードを確認する
             if (!isNullOrUndefined(wageTableCode)) {
                 // 賃金テーブル一覧にパラメータ.賃金テーブルコードがあるか確認する
-                let formula = _.find(self.wageTables(), (item: IWageTable) => {
+                let wageTable = _.find(self.wageTables(), (item: IWageTable) => {
                     return item.wageTableCode == wageTableCode;
                 })
-                if (!isNullOrUndefined(formula)) {
+                if (!isNullOrUndefined(wageTable)) {
                     // パラメータ.賃金テーブルコードの項目を選択状態にする
                     self.wageTableCodeSelected(wageTableCode);
-                    self.wageTableSelected(formula);
                     return;
                 }
             }
 
             // 一覧の先頭を選択状態に宇する
             let firstItem: IWageTable = _.head(self.wageTables());
-            self.wageTableSelected(firstItem);
             if (isNullOrUndefined(firstItem)) {
                 self.wageTableCodeSelected(null);
             } else {
@@ -72,7 +68,10 @@ module nts.uk.pr.view.qmm019.n.viewmodel {
 
         decide() {
             let self = this;
-            windows.setShared("QMM019N_RESULTS", self.wageTableSelected());
+            let wageTable = _.find(self.wageTables(), (item: IWageTable) => {
+                return item.wageTableCode == self.wageTableCodeSelected();
+            })
+            windows.setShared("QMM019N_RESULTS", wageTable);
             windows.close();
         }
 
