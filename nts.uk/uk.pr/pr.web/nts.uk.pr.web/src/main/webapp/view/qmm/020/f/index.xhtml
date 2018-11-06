@@ -1,29 +1,17 @@
 <div>
     <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
-
-        <div id="A">
-            <span>#{i18n.getText('QMM020_7')}</span>
+            <span class="title">#{i18n.getText('QMM020_7')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
-
-            <button id="A1_2" tabindex="2"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
-
-            <button id="A1_3" tabindex="3"
-                    data-bind="enable: false">#{i18n.getText('QMM020_3')}</button>
-
-            <button id="A1_4" tabindex="4"
-                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
-        </div>
+                    data-bind="click: registerPosition, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
     </div>
     <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
         <div class="fixed-flex-layout-left" style="margin-left: 25px">
             <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="F1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
+                    <button id="F1_3" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_13')}</button>
 
-                    <button id="F1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
+                    <button id="F1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
 
@@ -31,10 +19,9 @@
                     <table  id="F1_5"  data-bind="ntsGridList: {
                                             height: 250,
                                             dataSource: listStateCorrelationHisPosition,
-                                            primaryKey: 'code',
+                                            primaryKey: 'hisId',
                                             columns: [
-                                                        { headerText: '', key: 'code', width: 100, hidden: true },
-                                                        { headerText: '', key: 'name', width: 150, hidden: true },
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
                                             multiple: false,
@@ -45,21 +32,21 @@
         </div>
         <div class="fixed-flex-layout-right">
             <div class="control-group" style="border-bottom: #CCCCCC 1px solid;">
-                <div id="D2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_29')}</div>
+                <div id="F2_1" style="margin-bottom: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_38')}</div>
             </div>
 
-            <div>
-                <span  id="D2_3" class="label with-image">
+            <div style="margin-bottom: 10px">
+                <span  id="F2_3" class="label with-image" style=" width: 260px;">
                     <i class="image image-calendar"/>
-                    <span>#{i18n.getText('QMM020_30')}</span>
+                    <span id = "F2_4" data-bind = "text: baseDate" ></span>
                 </span>
             </div>
 
             <div>
-                <div style="width: 700px" data-bind =
+                <div style="width: 260px" data-bind =
                         "ntsSearchBox: {
                         targetKey: 'masterCode',
-                        comId: 'multi-list',
+                        comId: 'F3_1',
 	                    items: listStateLinkSettingMaster,
 	                    selectedKey: 'masterCode',
 	                     fields: ['masterCode', 'categoryName'],
