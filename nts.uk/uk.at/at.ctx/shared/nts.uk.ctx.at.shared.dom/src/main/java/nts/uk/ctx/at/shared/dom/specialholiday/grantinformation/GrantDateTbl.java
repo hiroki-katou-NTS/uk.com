@@ -41,7 +41,7 @@ public class GrantDateTbl extends AggregateRoot {
 	/** テーブル以降の固定付与をおこなう */
 	private boolean fixedAssign;
 	
-	/** テーブル以降の固定付与をおこなう */
+	/** テーブル以降の毎年付与日数 */
 	private Integer numberOfDays;
 	
 	/** 経過年数に対する付与日数 */
