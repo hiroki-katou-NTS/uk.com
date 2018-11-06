@@ -83,7 +83,7 @@
 					data-bind="ntsDatePicker: {
 											value: $parent.dateSingle, 
 											dateFormat: 'YYYY/MM/DD' , 
-											required:$parent.multiDate() , 
+											required:!$parent.multiDate() , 
 											name:'#{i18n.getText('KAF006_8')}'
 											},
 					visible:!$parent.multiDate()"></div>
