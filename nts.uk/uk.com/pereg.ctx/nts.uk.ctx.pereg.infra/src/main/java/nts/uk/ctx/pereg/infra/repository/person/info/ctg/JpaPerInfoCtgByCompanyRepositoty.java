@@ -3,12 +3,10 @@ package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
@@ -19,7 +17,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
-import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -108,7 +105,6 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		} catch (Exception e) {
 			throw e;
 		}
-
 	}
 
 	/*
@@ -143,9 +139,7 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	
 	@Override
 	public void updatePerCtgOrder(List<PersonInfoCtgOrder> domainList) {
-		List<PpemtPerInfoCtgOrder> orderEntities = domainList.stream().map(domain -> toEntityCategoryOrder(domain))
-				.collect(Collectors.toList());
-		this.commandProxy().updateAll(orderEntities);
+		this.commandProxy().updateAll(domainList.stream().map(domain -> toEntityCategoryOrder(domain)).collect(Collectors.toList()));
 	}
 
 	@Override
