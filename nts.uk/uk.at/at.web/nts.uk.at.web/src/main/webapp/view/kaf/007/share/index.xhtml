@@ -163,7 +163,7 @@
 					</div>
 				</div>
 				<div class="cell valign-center row-width-inputTime"
-					style="margin-left: 10px; width: auto !important; display: inline-block;">
+					style="margin-left: 90px; width: auto !important; display: inline-block;">
 					<div class="row-cell-margin">
 						<!--A7_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -184,7 +184,7 @@
 				</div>
 
 			</div>
-			<div class="table" data-bind="if : false">
+			<div class="table">
 				<div class="cell valign-top lblTitle-kaf007"></div>
 				<div class="cell valign-center row-width">
 					<!--A7_4 直行区分-->
@@ -200,7 +200,7 @@
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr1,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 						</div>
 					</div>
 				</div>
@@ -217,14 +217,13 @@
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr1,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 					</div>
 				</div>
 			</div>
 		</div>
 		<!--A8 勤務時間２-->
-		<!-- <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> -->
-		<div class="valign-center control-group-kaf007" data-bind="if: false">
+		 <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> 
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007"
@@ -243,7 +242,7 @@
 					</div>
 				</div>
 				<!--A8_3 勤務時間２直帰-->
-				<div class="cell valign-center row-width-inputTime">
+				<div style="margin-left: 90px;width: auto !important;display: inline-block;" class="cell valign-center row-width-inputTime">
 					<div class="row-cell-margin">
 						<!--A8_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -271,7 +270,7 @@
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr2,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 						</div>
 					</div>
 				</div>
@@ -288,7 +287,7 @@
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr2,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 					</div>
 				</div>
 			</div>
@@ -314,7 +313,7 @@
 					</div>
 				</div>
 				<!--A9_3 終了時刻-->
-				<div class="cell valign-center row-width-inputTime">
+				<div class="cell valign-center row-width-inputTime" >
 					<div class="row-cell-margin">
 						<!--A9_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
