@@ -83,7 +83,7 @@
 					data-bind="ntsDatePicker: {
 											value: $parent.dateSingle, 
 											dateFormat: 'YYYY/MM/DD' , 
-											required:$parent.multiDate() , 
+											required:!$parent.multiDate() , 
 											name:'#{i18n.getText('KAF006_8')}'
 											},
 					visible:!$parent.multiDate()"></div>
@@ -163,7 +163,7 @@
 					</div>
 				</div>
 				<div class="cell valign-center row-width-inputTime"
-					style="margin-left: 10px; width: auto !important; display: inline-block;">
+					style="margin-left: 90px; width: auto !important; display: inline-block;">
 					<div class="row-cell-margin">
 						<!--A7_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -184,7 +184,7 @@
 				</div>
 
 			</div>
-			<div class="table" data-bind="if : false">
+			<div class="table">
 				<div class="cell valign-top lblTitle-kaf007"></div>
 				<div class="cell valign-center row-width">
 					<!--A7_4 直行区分-->
@@ -194,13 +194,13 @@
 						<div class="row-cell-margin"
 							data-bind="ntsSwitchButton: {
 									options:ko.observableArray([
-							                { goCode: 1, goName: '#{i18n.getText('KAF007_16')}' },
-							                { goCode: 0, goName: '#{i18n.getText('KAF007_17')}' }
+							                { goCode: 0, goName: '#{i18n.getText('KAF007_16')}' },
+							                { goCode: 1, goName: '#{i18n.getText('KAF007_17')}' }
 							                ]),
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr1,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 						</div>
 					</div>
 				</div>
@@ -211,20 +211,19 @@
 					<div class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
-											{ backCode: 1, backName: '#{i18n.getText('KAF007_18')}' },
-							                { backCode: 0, backName: '#{i18n.getText('KAF007_19')}' }
+											{ backCode: 0, backName: '#{i18n.getText('KAF007_18')}' },
+							                { backCode: 1, backName: '#{i18n.getText('KAF007_19')}' }
 									]),
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr1,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 					</div>
 				</div>
 			</div>
 		</div>
 		<!--A8 勤務時間２-->
-		<!-- <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> -->
-		<div class="valign-center control-group-kaf007" data-bind="if: false">
+		 <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> 
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007"
@@ -243,7 +242,7 @@
 					</div>
 				</div>
 				<!--A8_3 勤務時間２直帰-->
-				<div class="cell valign-center row-width-inputTime">
+				<div style="margin-left: 90px;width: auto !important;display: inline-block;" class="cell valign-center row-width-inputTime">
 					<div class="row-cell-margin">
 						<!--A8_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -265,13 +264,13 @@
 						<div class="row-cell-margin"
 							data-bind="ntsSwitchButton: {
 									options:ko.observableArray([
-							                { goCode: 1, goName: '#{i18n.getText('KAF007_16')}' },
-							                { goCode: 0, goName: '#{i18n.getText('KAF007_17')}' }
+							                { goCode: 0, goName: '#{i18n.getText('KAF007_16')}' },
+							                { goCode: 1, goName: '#{i18n.getText('KAF007_17')}' }
 							                ]),
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr2,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 						</div>
 					</div>
 				</div>
@@ -282,13 +281,13 @@
 					<div class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
-											{ backCode: 1, backName: '#{i18n.getText('KAF007_18')}' },
-							                { backCode: 0, backName: '#{i18n.getText('KAF007_19')}' }
+											{ backCode: 0, backName: '#{i18n.getText('KAF007_18')}' },
+							                { backCode: 1, backName: '#{i18n.getText('KAF007_19')}' }
 									]),
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr2,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 					</div>
 				</div>
 			</div>
@@ -314,7 +313,7 @@
 					</div>
 				</div>
 				<!--A9_3 終了時刻-->
-				<div class="cell valign-center row-width-inputTime">
+				<div class="cell valign-center row-width-inputTime" >
 					<div class="row-cell-margin">
 						<!--A9_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -329,7 +328,7 @@
 			</div>
 		</div>
 		<!--A10 休日に関して-->
-		<div class="valign-center control-group-kaf007">
+		<div class="valign-center control-group-kaf007" data-bind="visible:$parent.screenModeNew()">
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007"

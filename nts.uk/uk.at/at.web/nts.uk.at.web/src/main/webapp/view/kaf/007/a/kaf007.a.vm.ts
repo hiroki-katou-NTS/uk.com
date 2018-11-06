@@ -54,6 +54,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         dateSingle: KnockoutObservable<any> = ko.observable(null);
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
+        timeRequired: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
@@ -242,7 +243,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 //A8 勤務時間２ ※A7
                 //共通設定.複数回勤務
-                // self.isMultipleTime(settingData.multipleTime);
+                 self.isMultipleTime(settingData.multipleTime);
             }
             //Setting default value data work:
             self.appWorkChange().dataWork(settingData.dataWorkDto);
@@ -250,7 +251,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.appWorkChange().workChange().workTypeName(settingData.dataWorkDto.selectedWorkTypeName === null ? '' : settingData.dataWorkDto.selectedWorkTypeName);
             self.appWorkChange().workChange().workTimeCd(settingData.dataWorkDto.selectedWorkTimeCd === null ? '' : settingData.dataWorkDto.selectedWorkTimeCd);
             self.appWorkChange().workChange().workTimeName(settingData.dataWorkDto.selectedWorkTimeName === null ? '' : settingData.dataWorkDto.selectedWorkTimeName);
+            if(!nts.uk.util.isNullOrUndefined(settingData.dataWorkDto.startTime1)){
+                self.appWorkChange().workChange().workTimeStart1(settingData.dataWorkDto.startTime1);    
+            }
+            if(!nts.uk.util.isNullOrUndefined(settingData.dataWorkDto.endTime1)){
+                self.appWorkChange().workChange().workTimeEnd1(settingData.dataWorkDto.endTime1);    
+            }
             self.requiredCheckTime(self.isWorkChange() && settingData.timeRequired);
+            self.timeRequired(settingData.timeRequired);
         }
 
         /**

@@ -768,7 +768,8 @@ public class AppOvertimeFinder {
 				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 					result.setDisplayCaculationTime(true);
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-					RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null ? siftCD : result.getSiftType().getSiftCode());
+					RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,
+							approvalFunctionSetting,result.getSiftType() == null ? siftCD : result.getSiftType().getSiftCode(), true);
 					result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
 					result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
 					result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
@@ -858,7 +859,8 @@ public class AppOvertimeFinder {
 					return dto;
 				}).collect(Collectors.toList()));
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null? "" :result.getSiftType().getSiftCode());
+				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,
+						approvalFunctionSetting,result.getSiftType() == null? "" :result.getSiftType().getSiftCode(), true);
 				result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
 				result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
 				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
@@ -1215,7 +1217,8 @@ public class AppOvertimeFinder {
 				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), inputDate);
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
-		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,siftCD);
+		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,
+				approvalFunctionSetting,siftCD, true);
 		startTime1 = recordWorkOutput.getStartTime1();
 		endTime1 = recordWorkOutput.getEndTime1();
 		startTime2 = recordWorkOutput.getStartTime2();
