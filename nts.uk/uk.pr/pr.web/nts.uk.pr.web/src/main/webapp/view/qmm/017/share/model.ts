@@ -9,7 +9,8 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export enum SCREEN_MODE {
         NEW = 0,
-        UPDATE = 1
+        UPDATE = 1,
+        ADD_HISTORY =2
     }
     export enum TAKEOVER_METHOD {
         FROM_LAST_HISTORY = 0,

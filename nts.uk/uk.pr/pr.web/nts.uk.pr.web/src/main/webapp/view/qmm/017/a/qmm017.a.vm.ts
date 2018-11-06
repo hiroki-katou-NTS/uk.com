@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
     export class ScreenModel {
         // screen state
         isOnStartUp = true;
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
         // tabs variables
@@ -149,6 +150,14 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         changeToUpdateMode() {
             var self = this;
             self.screenMode(model.SCREEN_MODE.UPDATE);
+            self.selectedTab('tab-1');
+            nts.uk.ui.errors.clearAll();
+        }
+
+        changeToAddHistoryMode() {
+            var self = this;
+            self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
+            self.selectedTab('tab-2');
             nts.uk.ui.errors.clearAll();
         }
 
@@ -178,6 +187,63 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+
+        createNewHistory () {
+            let self = this;
+            let selectedFormula = ko.toJS(self.formulaList);
+            let history = selectedFormula.history;
+            setShared("QMM017_H_PARAMS", { selectedFormula: selectedFormula, history: history });
+            modal("/view/qmm/016/h/index.xhtml").onClosed(function () {
+                var params = getShared("QMM016_H_RES_PARAMS");
+                if (params) {
+                    let formulaList = ko.toJS(self.formulaList);
+                    let historyID = nts.uk.util.randomId();
+                    // update previous history
+                    if (history.length > 0) {
+                        let beforeLastMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
+                        history[0].endMonth = beforeLastMonth.format('YYYYMM');
+                    }
+                    // add new history
+                    history.unshift({ historyID: historyID, startMonth: params.startMonth, endMonth: '999912' });
+                    formulaList.forEach(function (formula) {
+                        if (formula.formulaCode == selectedFormula.formulaCode) {
+                            formula.history = history;
+                            formula = new model.Formula(formula);
+                        }
+                    });
+                    // update wage table and tree grid
+                    self.convertToTreeList(formulaList);
+                    self.selectedFormula(selectedFormula.wageTableCode + historyID);
+                    // clone data
+                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
+                    }
+                    else {
+                    }
+                    self.isUpdateMode(false);
+                }
+            });
+        };
+        editHistory () {
+            var self = this;
+            var selectedFormula = ko.toJS(self.selectedFormula), selectedHistory = ko.toJS(self.selectedHistory);
+            var history = selectedFormula.history;
+            setShared("QMM016_I_PARAMS", { selectedFormula: selectedFormula, history: history, selectedHistory: selectedHistory });
+            modal("/view/qmm/016/i/index.xhtml").onClosed(function () {
+                var params = getShared("QMM016_I_RES_PARAMS");
+                if (params) {
+                    // reload data
+                    // change selected value
+                    if (params.modifyMethod == model.MODIFY_METHOD.DELETE) {
+                        if (history.length <= 1) {
+                            self.selectedFormulaIdentifier(selectedFormula.wageTableCode);
+                        }
+                        else {
+                            self.selectedFormulaIdentifier(selectedFormula.wageTableCode + history[1].historyID);
+                        }
+                    }
+                }
+            });
+        };
     }
 
 }

@@ -42,8 +42,12 @@
 								fields: ['formulaCode', 'formulaName']}" />
 						</div>
 						<div class="valign-center control-group cf">
-							<button tabindex="7">#{i18n.getText('QMM017_9')}</button>
-							<button tabindex="8">#{i18n.getText('QMM017_10')}</button>
+							<!--A2_4 履歴追加ボタン-->
+							<button id="A2_4" tabindex="7"
+									data-bind="click: createNewHistory, enable: isUpdateMode">#{i18n.getText('QMM017_9')}</button>
+							<!--A2_5 履歴編集ボタン-->
+							<button style="float: right" id="A2_5" tabindex="9"
+									data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM017_10')}</button>
 						</div>
 						<table id="formula-tree" tabindex="9"
 							data-bind="ntsTreeGridView:{
@@ -70,11 +74,12 @@
 							</div>
 							<div class="valign-center control-group cf">
 								<div data-bind="ntsFormLabel: { required: true, constraint: ['FormulaCode', 'FormulaName'] }">#{i18n.getText('QMM017_8')}</div>
-								<input tabindex="11" data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', option: {width: '40px'}}" />
-								<input tabindex="12" data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName', option: {width: '345px'}}" />
+								<input tabindex="11" data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 1}" />
+								<input tabindex="12" data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName'}" />
 							</div>
-							<div class="valign-center control-group cf">
+							<div class="valign-center control-group cf" data-bind = "with: $vm.selectedHistory">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_12')}</div>
+								
 							</div>
 							<div class="valign-center control-group cf">
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_17')}</div>
