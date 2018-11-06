@@ -83,17 +83,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
             
-             self.multiDate.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                if (value) {
-                    self.datePeriod({startDate:self.dateSingle(),endDate:""});
-                    $(".ntsStartDatePicker").focus();
-                } else {
-                    self.dateSingle(self.datePeriod().startDate);
-                    $("#singleDate").focus();
-                }
-
-            });
+            
 
             // 申請日を変更する          
             //Start Date
@@ -171,7 +161,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //Focus process
                 self.selectedReason.subscribe(value => { $("#inpReasonTextarea").focus(); });
                 //フォーカス制御
-                self.changeFocus('.ntsStartDatePicker');
+                self.changeFocus('#singleDate');
+                //phải để subscribe ở đây khi change multiDate focus mới ăn
+                self.registerEvent();
+               
                 dfd.resolve();
             }).fail((res) => {
                 if (res.messageId == 'Msg_426') {
@@ -186,6 +179,22 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
             return dfd.promise();
+        }
+        
+        registerEvent() {
+            let self = this;
+
+            self.multiDate.subscribe(value => {
+                nts.uk.ui.errors.clearAll();
+                if (value) {
+                    self.datePeriod({ startDate: self.dateSingle(), endDate: "" });
+                    $(".ntsStartDatePicker").focus();
+                } else {
+                    self.dateSingle(self.datePeriod().startDate);
+                    $("#singleDate").focus();
+                }
+
+            });
         }
 
         setData(settingData) {
