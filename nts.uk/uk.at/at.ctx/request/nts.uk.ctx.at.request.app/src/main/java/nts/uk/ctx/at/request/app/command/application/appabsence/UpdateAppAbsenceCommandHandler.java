@@ -179,7 +179,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		}
 		if (!listDate.isEmpty()) {
 			interimRemainDataMngRegisterDateChange.registerDateChange(
-					command.getCompanyID(), 
+					companyID, 
 					command.getEmployeeID(), 
 					listDate);	
 		}

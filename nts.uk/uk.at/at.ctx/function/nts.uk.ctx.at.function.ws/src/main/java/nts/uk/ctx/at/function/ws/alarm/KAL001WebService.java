@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.at.function.app.command.alarm.alarmlist.ErrorAlarmListCommand;
 import nts.uk.ctx.at.function.app.command.alarm.alarmlist.ErrorAlarmListExtractCommandHandler;
@@ -16,6 +17,8 @@ import nts.uk.ctx.at.function.app.command.alarm.extraprocessstatus.FinishAlarmLi
 import nts.uk.ctx.at.function.app.command.alarm.extraprocessstatus.StartAlarmListExtraProcessHandler;
 import nts.uk.ctx.at.function.app.command.alarm.sendemail.ParamAlarmSendEmailCommand;
 import nts.uk.ctx.at.function.app.command.alarm.sendemail.StartAlarmSendEmailProcessHandler;
+import nts.uk.ctx.at.function.app.export.alarm.AlarmExportQuery;
+import nts.uk.ctx.at.function.app.export.alarm.AlarmExportService;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CheckConditionTimeFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CodeNameAlarmDto;
@@ -59,6 +62,9 @@ public class KAL001WebService {
 	
 	@Inject
 	private StartAlarmSendEmailProcessHandler startSendEmailHandler;
+	
+	@Inject
+	private AlarmExportService alarmExportService;
 	
 	@POST
 	@Path("pattern/setting")
@@ -108,5 +114,11 @@ public class KAL001WebService {
 	@Path("send-email")
 	public JavaTypeResult<String> sendEmailStarting(ParamAlarmSendEmailCommand command) {
 		return new JavaTypeResult<String>(startSendEmailHandler.handle(command));
+	}
+	
+	@POST
+	@Path("export-alarm-data")
+	public ExportServiceResult generate(AlarmExportQuery query) {
+		return this.alarmExportService.start(query);
 	}
 }

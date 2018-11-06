@@ -18,7 +18,7 @@ module nts.uk.com.view.cmm018.i {
                 //TH: add New
                 if (self.dataSource.startDate == '') {
                     self.addNew = true;
-                    self.beginStartDate = ko.observable(moment('1900/01/01').add(1, 'days').format("YYYY/MM/DD"));
+                    self.beginStartDate = ko.observable(moment('1900/01/01').format("YYYY/MM/DD"));
                 }else{
                     self.beginStartDate = ko.observable(moment(self.dataSource.startDate).add(1, 'days').format("YYYY/MM/DD"));
                 }

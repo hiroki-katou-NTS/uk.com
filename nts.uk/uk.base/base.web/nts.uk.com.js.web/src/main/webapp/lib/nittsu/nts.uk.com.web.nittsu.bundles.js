@@ -4211,6 +4211,7 @@ var nts;
                                     $companyName.text(comp.companyName);
                                     $userName.text(personName);
                                     $companyList.css("right", $user.outerWidth() + 30);
+                                    location.reload(true);
                                 });
                             });
                         });
@@ -23869,12 +23870,13 @@ var nts;
                             var value = $_container.scrollTop();
                             //                $container.stop().animate({ scrollTop: value }, 10);
                             var os = ti.isIE() ? 25 : 50;
-                            //                if (!abnorm && ((direction < 0 && value === 0)
-                            //                    || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) { 
-                            //                    try {
-                            //                        window.dispatchEvent(event);
-                            //                    } catch (e) {}
-                            //                }
+                            if (!abnorm && ((direction < 0 && value === 0)
+                                || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) {
+                                var $contents = document.getElementById("contents-area");
+                                if ($contents) {
+                                    $contents.scrollTop += direction * os;
+                                }
+                            }
                             $_container.scrollTop(value + direction * os);
                             if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
                                 var cbx = dkn.controlType[_mEditor.columnKey];
@@ -25611,6 +25613,7 @@ var nts;
                             if (!_copie)
                                 return;
                             if (evt.ctrlKey && evt.keyCode === 86 && _collerer) {
+                                su.afterCollertar = document.activeElement;
                                 _collerer.focus();
                             }
                             else if (evt.ctrlKey && evt.keyCode === 67) {
@@ -26204,6 +26207,8 @@ var nts;
                             $input.value = data;
                             return;
                         }
+                        if (su.afterCollertar)
+                            su.afterCollertar.focus({ preventScroll: true });
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
@@ -26265,6 +26270,15 @@ var nts;
                             if (dkn.controlType[coord.columnKey] !== dkn.TEXTBOX || target.classList.contains(color.Disable)
                                 || !col || col.length === 0)
                                 return;
+                            var validator = _validators[coord.columnKey];
+                            if (validator) {
+                                var result = validator.probe(data);
+                                var cell = { id: _dataSource[coord.rowIdx][_pk], index: coord.rowIdx, columnKey: coord.columnKey, element: target };
+                                khl.clear(cell);
+                                if (!result.isValid) {
+                                    khl.set(cell, result.errorMessage);
+                                }
+                            }
                             formatted = su.format(col[0], data);
                             target.innerHTML = formatted;
                             disFormat = su.formatSave(col[0], data);
@@ -26312,6 +26326,15 @@ var nts;
                                     || !pointCol || pointCol.length === 0) {
                                     return;
                                 }
+                                var validator = _validators[pointCoord.columnKey];
+                                if (validator) {
+                                    var result = validator.probe(c);
+                                    var cell = { id: _dataSource[pointCoord.rowIdx][_pk], index: pointCoord.rowIdx, columnKey: pointCoord.columnKey, element: e };
+                                    khl.clear(cell);
+                                    if (!result.isValid) {
+                                        khl.set(cell, result.errorMessage);
+                                    }
+                                }
                                 formatted = su.format(pointCol[0], c);
                                 e.innerHTML = formatted;
                                 disFormat = su.formatSave(pointCol[0], c);
@@ -26331,7 +26354,7 @@ var nts;
                         var keys = Object.keys(_selected);
                         if (!_selected || keys.length === 0)
                             return;
-                        var coord, key, struct = "", ds = _dataSource, sess;
+                        var coord, key, struct = "", ds = _dataSource, sess, onetar;
                         if (coupe) {
                             sess = { tx: uk.util.randomId(), o: [] };
                         }
@@ -26351,9 +26374,11 @@ var nts;
                                 }
                             }
                             if (_copieer) {
+                                onetar = document.activeElement;
                                 _copieer.value = struct_1;
                                 _copieer.select();
                                 document.execCommand("copy");
+                                onetar.focus({ preventScroll: true });
                             }
                             return;
                         }
@@ -26415,9 +26440,11 @@ var nts;
                             }
                         }
                         if (_copieer) {
+                            onetar = document.activeElement;
                             _copieer.value = struct;
                             _copieer.select();
                             document.execCommand("copy");
+                            onetar.focus({ preventScroll: true });
                         }
                     }
                     su.copieData = copieData;
@@ -27546,7 +27573,34 @@ var nts;
                             return;
                         var coord = ti.getCellCoord($cell);
                         addSelect($grid, coord.rowIdx, coord.columnKey, notLast);
-                        $cell.focus();
+                        if (ti.isChrome() && (!_fixedColumns || !_.some(_fixedColumns, function (c) { return c.key === coord.columnKey; }))) {
+                            if (!_bodyWrappers || _bodyWrappers.length === 0)
+                                return;
+                            $grid.focus({ preventScroll: true });
+                            var wrapper = _bodyWrappers[_bodyWrappers.length > 1 ? 1 : 0];
+                            var offsetLeft = $cell.offsetLeft, left = offsetLeft + $cell.offsetWidth, scrollLeft = wrapper.scrollLeft, width = scrollLeft + parseFloat(wrapper.style.width);
+                            //                let scroll = function() {
+                            //                    wrapper.addXEventListener(ssk.SCROLL_EVT + ".select", e => {
+                            //                        setTimeout(() => {
+                            //                            $cell.focus();
+                            //                        }, 100);
+                            //                        wrapper.removeXEventListener(ssk.SCROLL_EVT + ".select");
+                            //                    });
+                            //                };
+                            if (left > width) {
+                                //                    scroll();
+                                wrapper.scrollLeft += (left - width + 100);
+                            }
+                            else if (offsetLeft < scrollLeft) {
+                                //                    scroll();
+                                wrapper.scrollLeft -= (scrollLeft - offsetLeft + 100);
+                            }
+                            else {
+                                $cell.focus({ preventScroll: true });
+                            }
+                        }
+                        else
+                            $cell.focus();
                     }
                     lch.selectCell = selectCell;
                     /**
@@ -37114,7 +37168,7 @@ var nts;
                     function selectRows($treegrid, selectedValue) {
                         var dataSource = $treegrid.igTreeGrid('option', 'dataSource');
                         var multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
-                        if (!selectedValue) {
+                        if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                             $treegrid.igTreeGridSelection("clearSelection");
                         }
                         else {

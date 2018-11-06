@@ -148,7 +148,7 @@ public class DPMonthFlexProcessor {
 				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
 		//setAgreeItem(itemMonthFlexResults, agreeDto);
 		
-		return new DPMonthResult(flexShortageDto, itemMonthResults, !itemIds.isEmpty(),
+		return new DPMonthResult(flexShortageDto, itemMonthResults, !itemIds.isEmpty() && !itemMonthResults.isEmpty(),
 				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
 	}
 

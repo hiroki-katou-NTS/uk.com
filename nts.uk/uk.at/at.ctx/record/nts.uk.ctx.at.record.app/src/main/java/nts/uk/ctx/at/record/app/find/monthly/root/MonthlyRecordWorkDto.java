@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 
 @Data
 /** 月別実績（WORK） */
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(isContainer = true, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 

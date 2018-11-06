@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalRange;
 
 /**
@@ -15,6 +16,7 @@ import nts.arc.primitive.constraint.DecimalRange;
  */
 // 任意項目入力値
 @Getter
+@DecimalMantissaMaxLength(2)
 @DecimalRange(min = "0.00", max = "99999.99")
 public class InputValue extends DecimalPrimitiveValue<InputValue> {
 

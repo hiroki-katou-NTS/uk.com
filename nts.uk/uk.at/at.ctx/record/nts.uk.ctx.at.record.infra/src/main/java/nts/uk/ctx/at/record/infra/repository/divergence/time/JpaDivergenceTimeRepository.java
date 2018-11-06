@@ -456,5 +456,50 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 					return new DivergenceTime(memento);
 				}).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<DivergenceTime> getUsedDivTimeListByNoV3(String companyId, List<Integer> divTimeNo) {
+
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<Tuple> cq = builder.createTupleQuery();
+
+		// From table
+		Root<KrcstDvgcTime> root = cq.from(KrcstDvgcTime.class);
+		Root<KrcstDvgcAttendance> root2 = cq.from(KrcstDvgcAttendance.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), companyId));
+		//predicateList.add(builder.isTrue(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.no).in(divTimeNo)));
+		predicateList.add(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.no).in(divTimeNo));
+		predicateList.add(builder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.no), 
+										root2.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.no)));
+		predicateList.add(builder.equal(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.cid), 
+				root2.get(KrcstDvgcAttendance_.id).get(KrcstDvgcAttendancePK_.cid)));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		
+		// order by
+		cq.orderBy(builder.asc(root.get(KrcstDvgcTime_.id).get(KrcstDvgcTimePK_.no)));
+		
+		// Get NO and optional attr only
+		/** TODO: JOIN */
+		cq = cq.multiselect(root, root2);
+
+		// Get results
+		List<Tuple> results = em.createQuery(cq).getResultList();
+		return results.stream().collect(Collectors.groupingBy(c -> (KrcstDvgcTime) c.get(0), Collectors.collectingAndThen(Collectors.toList(),
+				list -> list.stream().map(dt -> (KrcstDvgcAttendance) dt.get(1)).collect(Collectors.toList())))).entrySet().stream().map(c -> {
+					DivergenceTimeGetMemento memento = new JpaDivergenceTimeGetMemento(c.getKey(), c.getValue());
+
+					return new DivergenceTime(memento);
+				}).collect(Collectors.toList());
+	}
 
 }

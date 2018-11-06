@@ -114,6 +114,15 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the list
 	 */
 	List<WorkplaceConfigInfo> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds, List<String> workplaceIds);
+
+	/**
+	 * Find by history ids.
+	 *
+	 * @param companyId the company id
+	 * @param historyIds the history ids
+	 * @return the list
+	 */
+	List<WorkplaceConfigInfo> findByHistoryIds(String companyId, List<String> historyIds);
 	
 	/**
 	 * Find all parent by wkp id.
