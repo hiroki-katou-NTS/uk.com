@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
 
         constructor() {
             var self = this;
-            self.referenceYear = ko.observable(201812);
+            self.referenceYear = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.items = ko.observableArray();
             this.currentCode = ko.observable();
 
@@ -54,12 +54,19 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
 
         startupScreen() {
             var self = this;
-            let dto = {
-                empId: self.params.empId,
-                cateIndicator: self.params.cateIndicator,
-                salBonusCate: self.params.salBonusCate,
-            }
-            self.getSalIndAmountHis(dto);
+
+            service.processYearFromEmp(self.params.personalValCode).done(function (data) {
+                if(data != 0){
+                    self.referenceYear(data);
+                }
+                let dto = {
+                    empId: self.params.empId,
+                    cateIndicator: self.params.cateIndicator,
+                    salBonusCate: self.params.salBonusCate,
+                    currentProcessYearMonth: self.referenceYear()
+                }
+                self.getSalIndAmountHis(dto);
+            })
         }
 
         getSalIndAmountHis(dto) {

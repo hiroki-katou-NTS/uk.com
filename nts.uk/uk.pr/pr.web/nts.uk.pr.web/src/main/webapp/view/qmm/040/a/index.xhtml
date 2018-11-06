@@ -42,7 +42,7 @@
         <div id="tabpanel-1" role="tabpanel1">
             <div class="sidebar-content-header flex valign-center">
 
-                <span class="title" data-bind="text : titleTab"></span>
+                <div class="title" data-bind="text : titleTab"></div>
                 <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
                 <a tabindex="9" class="goout" style="margin-left: 700px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
@@ -52,29 +52,7 @@
                 <div  id="com-ccg001"></div>
                 <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
                     <div style="float: left;width: 335px;">
-                        <!--<div style=" margin-top: 15px"-->
-                             <!--data-bind="ntsPanel:{width: '320px', height: '450px', direction: 'right', showIcon: true, visible: true}">-->
 
-                            <!--<div style="width: 300px" data-bind="ntsSearchBox: {-->
-                    <!--searchMode: 'filter',-->
-                    <!--targetKey: 'individualPriceCode',-->
-                    <!--comId: 'A4_4',-->
-	                    <!--items: salIndAmountNames,-->
-	                    <!--selected: salIndAmountNamesSelectedCode,-->
-	                    <!--selectedKey: 'individualPriceCode',-->
-	                     <!--fields: ['individualPriceName', 'individualPriceCode'],-->
-	                      <!--mode: 'igGrid'}"/>-->
-                            <!--<table id="A4_4" data-bind="ntsGridList: {-->
-                        <!--height: 400,-->
-                        <!--options: salIndAmountNames,-->
-                        <!--optionsValue: 'individualPriceCode',-->
-                        <!--columns: tilteTable,-->
-                        <!--multiple: false,-->
-                        <!--value: salIndAmountNamesSelectedCode-->
-                    <!--}"></table>-->
-
-
-                        <!--</div>-->
                         <div tabindex="-1" class="panel" style=" margin-top: 15px"
                              data-bind="ntsPanel:{width: '280px', height: '470px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
@@ -94,7 +72,7 @@
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
                                     {headerText: '#{i18n.getText('QMM039_13')}', key:'individualPriceCode', length: 3},
-                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'individualPriceName', length: 3}
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'individualPriceName', length: 3, formatter: _.escape}
                                 ],
                                 value: salIndAmountNamesSelectedCode,
                                 primaryText: 'individualPriceName',
@@ -139,7 +117,7 @@
                         <div id="A5_7" tabindex="5" class="margin-left-item"
                              data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM040_13]',required: true}"></div>
                         <!--A5_8 抽出-->
-                        <button tabindex="6" class="caret-bottom" data-bind="click: filterData"
+                        <button tabindex="6" class="caret-bottom" data-bind="click: filterData ,enable: $root.errors.isEmpty"
                                 style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
 
                     </div>

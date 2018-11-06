@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDate;
 
+import java.util.Objects;
+
 /**
 * 現在処理年月
 */
@@ -30,6 +32,8 @@ public class CurrProcessDateDto
     
     public static CurrProcessDateDto fromDomain(CurrProcessDate domain)
     {
+        if(Objects.isNull(domain))
+            return null;
         return new CurrProcessDateDto(domain.getCid(), domain.getProcessCateNo(), domain.getGiveCurrTreatYear().v());
     }
     
