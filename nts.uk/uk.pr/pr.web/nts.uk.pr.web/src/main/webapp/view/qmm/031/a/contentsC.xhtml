@@ -9,18 +9,18 @@
                  data-bind="ntsPanel:{width: '420px', height: '420px',
                                     direction: 'right',  visible: true, showIcon: true}">
                 <!--C1_2-->
-                <div id="C1_2" tabindex="7"
+                <div id="C1_2" tabindex="6"
                      data-bind="ntsSearchBox: {
 							searchMode: 'highlight',
 							targetKey: 'earthquakeInsuranceCode',
 							comId: 'C1_3',
 							items: lstEarthquakeInsurance,
-							selected: currentEarthquakeInsurance,
+							selected: selectEarthquakeInsurance,
 							selectedKey: 'earthquakeInsuranceCode',
 							fields: ['earthquakeInsuranceCode','earthquakeInsuranceName'],
 							mode: 'igGrid'}"/>
                 <!-- C1_3 -->
-                <table id="C1_3" tabindex="8"
+                <table id="C1_3" tabindex="7"
                        data-bind="ntsGridList: { name: '#[QMM031_21]',
 								options: lstEarthquakeInsurance,
 								primaryKey: 'earthquakeInsuranceCode',
@@ -42,7 +42,7 @@
                                 constraint: ['EarthquakeInsuranceCode','EarthquakeInsuranceName'],
                                 required: true }">#{i18n.getText('QMM031_14')}</div>
                     <!--C2_2-->
-                    <input id="earthquakeInsuranceCode" tabindex="9"
+                    <input id="earthquakeInsuranceCode" tabindex="8"
                            data-bind="ntsTextEditor: {
                                     option: {width: '20px'},
                                     value: earthquakeInsuranceCode,
@@ -53,7 +53,7 @@
                              }"/>
 
                     <!--C2_3-->
-                    <input id="earthquakeInsuranceName" tabindex="10"
+                    <input id="earthquakeInsuranceName" tabindex="9"
                            data-bind="ntsTextEditor: {
                                     option: {width: '200px'},
                                     value: earthquakeInsuranceName,

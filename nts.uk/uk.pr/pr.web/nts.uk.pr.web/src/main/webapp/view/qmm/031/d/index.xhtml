@@ -64,12 +64,7 @@
 								options: lstInsuranceType,
 								optionsValue: 'insuranceTypeCode',
 								rows: 15,
-								columns: [
-										{ headerText: '#{i18n.getText('QMM031_17')}', key: 'atrOfInsuranceType', width: 90, formatter: _.escape },
-										{ headerText: '#{i18n.getText('QMM031_12')}', key: 'insuranceTypeCode', width: 40, formatter: _.escape },
-										{ headerText: '#{i18n.getText('QMM031_13')}', key: 'insuranceTypeName', width: 275, formatter: _.escape }
-										], 
-								
+								columns: columns,
 								value: currentCode
 					}"></table>
                     </div>
@@ -89,7 +84,7 @@
                         <div style="margin-top: 10px; width: 200px;"
                              data-bind="ntsFormLabel: {}">#{i18n.getText('QMM031_26')}</div>
                         <!-- D3_4 -->
-                        <div class="label" data-bind="text: viewName" style="width: 200px;"></div>
+                        <div class="limited-label" data-bind="text: viewName" style="width: 200px;"></div>
                     </div>
                 </div>
                 <!-- D3_5 -->
@@ -119,7 +114,7 @@
                                 constraint: ['InsuranceTypeCode','InsuranceTypeName'],
                                 required: true }">#{i18n.getText('QMM031_14')}</div>
                         <!--D3_10-->
-                        <input id="individualPriceCode" tabindex="8"
+                        <input id="insuranceTypeCode" tabindex="8"
                                data-bind="ntsTextEditor: {
                                     option: {width: '20px'},
                                     value: insuranceTypeCode,
@@ -130,7 +125,7 @@
                              }"/>
 
                         <!--D3_11-->
-                        <input id="individualPriceName" tabindex="9"
+                        <input id="insuranceTypeName" tabindex="9"
                                data-bind="ntsTextEditor: {
                                     option: {width: '150px'},
                                     value: insuranceTypeName,

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <!--<com:ValidatorScript>
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType.InsuranceTypeCode
+            nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType.InsuranceTypeName
+        </com:ValidatorScript>-->
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 400,
+                height: 180
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm031.e.service.js"/>
+        <com:scriptfile path="qmm031.e.start.js"/>
+        <com:scriptfile path="qmm031.e.vm.js"/>
+        <com:stylefile path="qmm031.e.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <!-- E1_1 -->
+            <div class="label" style="white-space: normal;">#{i18n.getText('QMM031_30')}</div>
+        </div>
+        <div id="functions-area-bottom" style="height: 45px;">
+            <!-- E1_2-->
+            <button data-bind="click: execution"
+                    tabindex="1" class="proceed">#{i18n.getText('QMM031_31')}</button>
+            <!-- E1_3 -->
+            <button data-bind="click: close"
+                    tabindex="2">#{i18n.getText('QMM031_32')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -3,27 +3,27 @@ module nts.uk.pr.view.qmm031.d.service {
     import format = nts.uk.text.format;
 
     var paths = {
-        /*getAllBreakdownItemSetById: "ctx/pr/core/breakdownItem/getAllBreakdownItemSetById/{0}/{1}",
-        addBreakdownItemSet: "ctx/pr/core/breakdownItem/addBreakdownItemSet",
-        updateBreakdownItemSet: "ctx/pr/core/breakdownItem/updateBreakdownItemSet",
-        removeBreakdownItemSet: "ctx/pr/core/breakdownItem/removeBreakdownItemSet"*/
-        
+        getInsuranceType: "ctx/pr/yearend/insuranceType/getInsuranceType/{0}",
+        addInsuranceType: "ctx/pr/yearend/insuranceType/addInsuranceType",
+        updateInsuranceType: "ctx/pr/yearend/insuranceType/updateInsuranceType",
+        removeInsuranceType: "ctx/pr/yearend/insuranceType/removeInsuranceType"
+
     }
-/*
-    export function getAllBreakdownItemSetById(categoryAtr: number, itemNameCd: string): JQueryPromise<any> {
-        var _path = format(paths.getAllBreakdownItemSetById, categoryAtr, itemNameCd);
+
+    export function getInsuranceType(lifeInsuranceCode: string): JQueryPromise<any> {
+        var _path = format(paths.getInsuranceType, lifeInsuranceCode);
         return ajax('pr', _path);
     };
-    
-     export function addBreakdownItemSet(breakdownItem: any): JQueryPromise<any> {
-            return ajax('pr', paths.addBreakdownItemSet, breakdownItem);
-        };
-    
-    export function updateBreakdownItemSet(breakdownItem: any): JQueryPromise<any> {
-        return ajax('pr', paths.updateBreakdownItemSet, breakdownItem);
+
+    export function addInsuranceType(command: any): JQueryPromise<any> {
+        return ajax('pr', paths.addInsuranceType, command);
     };
-    
-    export function removeBreakdownItemSet(breakdownItem: any): JQueryPromise<any> {
-        return ajax('pr', paths.removeBreakdownItemSet, breakdownItem);
-    };*/
+
+    export function updateInsuranceType(command: any): JQueryPromise<any> {
+        return ajax('pr', paths.updateInsuranceType, command);
+    };
+
+    export function removeInsuranceType(command: any): JQueryPromise<any> {
+        return ajax('pr', paths.removeInsuranceType, command);
+    };
 }

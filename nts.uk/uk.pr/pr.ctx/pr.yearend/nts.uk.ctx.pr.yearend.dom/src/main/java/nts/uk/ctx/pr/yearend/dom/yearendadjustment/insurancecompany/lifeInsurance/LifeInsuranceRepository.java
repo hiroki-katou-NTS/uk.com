@@ -11,6 +11,8 @@ public interface LifeInsuranceRepository
 
     List<LifeInsurance> getAllLifeInsurance();
 
+    List<LifeInsurance> getLifeInsuranceBycId(String cid);
+
     Optional<LifeInsurance> getLifeInsuranceById(String cid, String lifeInsuranceCode);
 
     void add(LifeInsurance domain);
@@ -18,5 +20,7 @@ public interface LifeInsuranceRepository
     void update(LifeInsurance domain);
 
     void remove(String cid, String lifeInsuranceCode);
+
+    void removeLifeInsurance(String cid, String lifeInsuranceCode);
 
 }
