@@ -22,7 +22,7 @@ public class JpaStateCorrelationHisPositionRepository extends JpaRepository impl
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisPos f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND  f.stateCorHisPosPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid ORDER BY f.startYearMonth";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid ORDER BY f.startYearMonth DESC";
 
     @Override
     public Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionById(String cid, String hisId){

@@ -8,19 +8,21 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
-        isFirst:              KnockoutObservable<boolean> = ko.observable(true);
+        isFirst:              KnockoutObservable<boolean> = ko.observable(null);
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         startYearMonthPeriod:         KnockoutObservable<number> = ko.observable();
         startYearMonthMasterDate:         KnockoutObservable<number> = ko.observable();
         endYearMonthPeriod:           KnockoutObservable<number> = ko.observable(999912);
         modeScreen : KnockoutObservable<number> = ko.observable(null);
-        params : any ;
+        isUpdate : KnockoutObservable<boolean> = ko.observable(null);
+        params : KnockoutObservable<any> = ko.observable(null);
         constructor(){
+            let self = this;
             let params = getShared(model.PARAMETERS_SCREEN_K.INPUT);
             if(params == null || params == undefined)
                 return;
-            this.params = params ;
-            this.modeScreen(this.getMode(this.params.modeScreen));
+            self.innitView(params);
+
         }
         submit(){
             let self = this;
@@ -31,17 +33,35 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 endYearMonth : self.endYearMonthPeriod,
                 modeEditHistory : self.methodEditing,
                 type : self.params.modeScreen,
-                masterCode : self.params.masterCode
-            }
+                masterCode : self.params.masterCode,
+                isUpdate : self.isUpdate()
+            };
             service.deleteStateCorrelationHis(data).done(()=>{
-                dialog({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    close();
+                });
             }).fail((err) =>{
                 if(err)
                     dialog.alertError(err);
             });
         }
+        innitView(params:any){
+            let self = this;
+            self.params(params);
+            self.modeScreen(self.getMode(self.params().modeScreen));
+            self.startYearMonthMasterDate( self.params().startYearMonthMasterDate);
+            self.isUpdate((self.startYearMonthPeriod() > self.startYearMonthMasterDate())?true :false);
+            self.isFirst(self.params().isFirst);
+        }
         cancel(){
             close();
+        }
+        isCanPickDate(){
+            let self = this;
+            if(self.methodEditing() == EDIT_METHOD.DELETE){
+                return false;
+            }
+            return true;
         }
         getMode(modeScreen : number ){
             switch (modeScreen) {

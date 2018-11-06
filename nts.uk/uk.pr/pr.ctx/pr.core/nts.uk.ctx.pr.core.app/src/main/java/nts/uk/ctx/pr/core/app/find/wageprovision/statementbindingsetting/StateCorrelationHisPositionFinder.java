@@ -42,6 +42,14 @@ public class StateCorrelationHisPositionFinder {
         return StateCorrelationHisPositionDto.fromDomain(hisPosition.get());
     }
 
+    public StateLinkSettingDateDto getDateBase(String hisId){
+        Optional<StateLinkSettingDate>  stateLinkSettingDate = stateLinkSettingDateFinder.getStateLinkSettingDateById(hisId);
+        if(stateLinkSettingDate.isPresent()) {
+            return StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get());
+        }
+        return null;
+    }
+
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){
         String cId = AppContexts.user().companyId();
         Optional<StateLinkSettingDate> stateLinkSettingDate = stateLinkSettingDateFinder.getStateLinkSettingDateById(hisId);
@@ -81,6 +89,5 @@ public class StateCorrelationHisPositionFinder {
     			null
     			);
     }
-    
 
 }

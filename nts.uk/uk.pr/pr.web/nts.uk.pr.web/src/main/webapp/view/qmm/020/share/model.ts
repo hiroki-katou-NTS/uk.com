@@ -45,8 +45,8 @@ module nts.uk.pr.view.qmm020.share.model {
 }
     export enum PARAMETERS_SCREEN_M {
         /* When another screen open*/
-        INPUT = "PARAM_INPUT_SCREEN_SONTUNGMTP_QMM020_QWE!@#$",
+        INPUT = "PARAM_INPUT_SCREEN_M",
         /* When screen D, F open */
-        OUTPUT = "PARAM_OUTPUT_SCREEN_SONTUNGMTP_QMM020_QWE!@#$"
+        OUTPUT = "PARAM_OUTPUT_SCREEN_M"
     }
 }

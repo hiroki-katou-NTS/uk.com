@@ -31,9 +31,6 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
                 .setParameter("startYearMonth", startYearMonth)
                 .setParameter("cid", cid)
                 .getList());
-        if (statementLayoutHist.isEmpty()){
-            return new ArrayList<StatementLayoutHist>();
-        }
         return statementLayoutHist;
     }
 
@@ -65,7 +62,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
 
     private List<StatementLayoutHist> toDomain(List<QpbmtStatementLayoutHist> entities) {
         if (entities == null || entities.isEmpty()) {
-            return null;
+            return new ArrayList<StatementLayoutHist>();
         }
         List<StatementLayoutHist> arrDataResulf = new ArrayList<StatementLayoutHist>();
         entities.forEach(item -> {

@@ -21,32 +21,26 @@
                 <span id="K1_1" class="label">#{i18n.getText('QMM020_66')}</span>
             </div>
             <!-- K1_2 名称 -->
-            <div style="display: inline-flex;margin-top: 10px;">
-                <div id="K1_2" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
-                    <span class="label">#{i18n.getText('QMM020_67')}</span>
-                </div>
-                <div id="K1_3" style="margin-top: 10px;">
-                    <div style="" class="cell" tabIndex="-1"
-                         data-bind="ntsRadioButton: {
-										checked: methodEditing,
-										option: itemList()[0],
-										optionValue: 'code',
-										enable: isFirst,
-										optionText: 'name',
-										group: 'periodOption'}">
-                    </div>
-                    <br/>
-                    <div class="cell" style="margin-top: 10px" tabIndex="-1"
-                         data-bind="ntsRadioButton: {
-										checked: methodEditing,
-										option: itemList()[1],
-										optionValue: 'code',
-										enable: isFirst,
-										optionText: 'name',
-										group: 'periodOption'}">
-                    </div>
-                </div>
+            <div class=" table table-col-2">
 
+                <div id="K1_2" class ="cell valign-top" style="display: inline-flex;margin-top: 10px;">
+                    <div  data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                        <span class="label">#{i18n.getText('QMM020_67')}</span>
+                    </div>
+                    <div class ="cell valign-top" id="K1_3" style="margin-top: 10px;">
+                        <div style="" class="cell" tabIndex="-1"
+                             data-bind="ntsRadioBoxGroup: {
+										value: methodEditing,
+										option: itemList(),
+										optionValue: 'code',
+										enable: isFirst,
+										optionText: 'name',
+										}">
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
             <table style="margin-top: 10px;">
                 <tr>
@@ -60,7 +54,7 @@
 												name: '#{i18n.getText('QMM020_62')}',
 												value: startYearMonthPeriod,
 												required: true,
-												enable: true,
+												enable: isCanPickDate,
 												valueFormat: 'YYYYMM',
 												dateFormat: 'yearmonth'}">
                         </div>
@@ -75,7 +69,7 @@
 												name: '#{i18n.getText('QMM020_62')}',
 												value: endYearMonthPeriod,
 												required: true,
-												enable: true,
+												enable: isCanPickDate,
 												valueFormat: 'YYYYMM',
 												dateFormat: 'yearmonth'}">
                             </div>
@@ -87,14 +81,7 @@
             <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_TWO ">
                 <div id="K1_10" data-bind="ntsFormLabel: {}" style="margin: 10px 10px 0px 10px;">
                     <span class="label">#{i18n.getText('QMM020_62')}</span>
-                    <div id="K1_11" style="margin-left: 27px;" data-bind="ntsDatePicker: {
-												name: '#{i18n.getText('QMM020_62')}',
-												value: startYearMonthMasterDate,
-												required: true,
-												enable: true,
-												valueFormat: 'YYYYMM',
-												dateFormat: 'yearmonth'}">
-                    </div>
+                    <span id="K1_11" style="margin-left: 27px;" data-bind="text: startYearMonthMasterDate"></span>
                 </div>
             </div>
         </div>

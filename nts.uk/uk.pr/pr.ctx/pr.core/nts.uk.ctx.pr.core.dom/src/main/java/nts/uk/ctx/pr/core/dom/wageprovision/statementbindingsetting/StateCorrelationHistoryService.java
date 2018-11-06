@@ -1,11 +1,12 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import nts.arc.error.BusinessException;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 @Stateless
 public class StateCorrelationHistoryService {
@@ -51,73 +52,144 @@ public class StateCorrelationHistoryService {
     @Inject
     private StateCorrelationHisIndividualRepository mStateCorrelationHisIndividualRepository;
 
-    public void editHistoryProcess(int type, int modeEdit, String hisId,String masterCode, YearMonthHistoryItem history){
+
+    public void editHistoryProcess(int type, int modeEdit, String hisId, String masterCode, YearMonthHistoryItem history, boolean isUpdate) {
         String cid = AppContexts.user().companyId();
         switch (type){
             case COMPANY : {
-                mStateLinkSettingCompanyRepository.remove(hisId);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisCompanyRepository.remove(cid,hisId);
-                    return;
+                    mStateLinkSettingCompanyRepository.remove(hisId);
+                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid, hisId).get().items().size() == 1) {
+                        mStateCorrelationHisCompanyRepository.remove(cid, hisId);
+                        return;
+                    }
+                    mStateCorrelationHisCompanyRepository.update(cid, history);
+                    break;
+                } else {
+                    if (isUpdate) {
+                        mStateCorrelationHisCompanyRepository.update(cid, history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+
                 }
-                mStateCorrelationHisCompanyRepository.update(cid,history);
-                break;
+
             }
             case EMPLOYEE : {
-                masterRepository.remove(hisId,masterCode);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisEmployeeRepository.remove(cid,hisId);
-                    return;
+                    masterRepository.remove(hisId,masterCode);
+                    if(modeEdit == MODE_DELETE){
+                        mStateCorrelationHisEmployeeRepository.remove(cid,hisId);
+                        return;
+                    }
+                    mStateCorrelationHisEmployeeRepository.update(cid,history);
+                    break;
                 }
-                mStateCorrelationHisEmployeeRepository.update(cid,history);
-                break;
+                else{
+                    if (isUpdate) {
+                        mStateCorrelationHisEmployeeRepository.update(cid,history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+                }
+
             }
             case DEPARMENT : {
-                masterRepository.remove(hisId,masterCode);
-                mStateLinkSettingDateRepository.remove(hisId);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisDeparmentRepository.remove(cid,hisId);
-                    return;
+                    masterRepository.remove(hisId,masterCode);
+                    mStateLinkSettingDateRepository.remove(hisId);
+                    if(modeEdit == MODE_DELETE){
+                        mStateCorrelationHisDeparmentRepository.remove(cid,hisId);
+                        return;
+                    }
+                    mStateCorrelationHisDeparmentRepository.update(cid,history);
+                    break;
                 }
-                mStateCorrelationHisDeparmentRepository.update(cid,history);
-                break;
+                else{
+                    if (isUpdate) {
+                        mStateCorrelationHisDeparmentRepository.update(cid,history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+                }
+
             }
             case CLASSIFICATION : {
-                masterRepository.remove(hisId,masterCode);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisClassificationRepository.remove(cid,hisId);
-                    return;
+                    masterRepository.remove(hisId,masterCode);
+                    if(modeEdit == MODE_DELETE){
+                        mStateCorrelationHisClassificationRepository.remove(cid,hisId);
+                        return;
+                    }
+                    mStateCorrelationHisClassificationRepository.update(cid,history);
+                    break;
                 }
-                mStateCorrelationHisClassificationRepository.update(cid,history);
-                break;
+                else{
+                    if (isUpdate) {
+                        mStateCorrelationHisClassificationRepository.update(cid,history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+                }
+
             }
             case POSITION : {
-                masterRepository.remove(hisId,masterCode);
-                mStateLinkSettingDateRepository.remove(hisId);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisPositionRepository.remove(cid,hisId);
-                    return;
+                    masterRepository.remove(hisId,masterCode);
+                    mStateLinkSettingDateRepository.remove(hisId);
+                    if(modeEdit == MODE_DELETE){
+                        mStateCorrelationHisPositionRepository.remove(cid,hisId);
+                        return;
+                    }
+                    mStateCorrelationHisPositionRepository.update(cid,history);
+                    break;
                 }
-                mStateCorrelationHisPositionRepository.update(cid,history);
-                break;
+                else{
+                    if (isUpdate) {
+                        mStateCorrelationHisPositionRepository.update(cid,history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+                }
+
             }
             case SALARY : {
-                masterRepository.remove(hisId,masterCode);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisSalaryRepository.remove(cid,hisId);
-                    return;
+                    masterRepository.remove(hisId,masterCode);
+                    if(modeEdit == MODE_DELETE){
+                        mStateCorrelationHisSalaryRepository.remove(cid,hisId);
+                        return;
+                    }
+                    mStateCorrelationHisSalaryRepository.update(cid,history);
+                    break;
                 }
-                mStateCorrelationHisSalaryRepository.update(cid,history);
-                break;
+                else{
+                    if (isUpdate) {
+                        mStateCorrelationHisSalaryRepository.update(cid,history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+                }
+
             }
             case INDIVIDUAL : {
-                mStateLinkSettingIndividualRepository.remove(hisId);
                 if(modeEdit == MODE_DELETE){
-                    mStateCorrelationHisIndividualRepository.remove(cid,hisId);
-                    return;
+                    mStateLinkSettingIndividualRepository.remove(hisId);
+                    if(modeEdit == MODE_DELETE){
+                        mStateCorrelationHisIndividualRepository.remove(cid,hisId);
+                        return;
+                    }
+                    mStateCorrelationHisIndividualRepository.update(cid,history);
+                    break;
                 }
-                mStateCorrelationHisIndividualRepository.update(cid,history);
-                break;
+                else{
+                    if (isUpdate) {
+                        mStateCorrelationHisIndividualRepository.update(cid,history);
+                        return;
+                    }
+                    throw new BusinessException("Msg_107");
+                }
+
             }
 
         }
