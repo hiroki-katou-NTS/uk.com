@@ -4361,7 +4361,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) {
             var self = this;
             if (dataInit != undefined) {
-                this.changePeriodAtr = dataInit.changePeriodAtr;
+                this.changePeriodAtr = (dataInit.changePeriodAtr == null || dataInit.changePeriodAtr == undefined) ? false : true;
                 this.errorRefStartAtr = dataInit.errorRefStartAtr;
                 this.initClock = dataInit.initClock == undefined ? null : new SPRTime(dataInit.initClock);
                 this.lstEmployeeShare = dataInit.lstEmployee;
