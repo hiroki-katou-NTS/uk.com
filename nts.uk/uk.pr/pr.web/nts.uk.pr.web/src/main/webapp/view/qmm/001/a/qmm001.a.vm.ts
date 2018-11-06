@@ -46,17 +46,22 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             let self = this;
             self.initView();
             self.selectedSalGenParaIdent.subscribe((data) => {
-                errors.clearAll();
                 self.itemSelectionProcess(data,FIRST);
                 self.salGenParaIdent(_.find(self.listItems(), {'paraNo': data}));
+                setTimeout(function () {
+                    nts.uk.ui.errors.clearAll()
+                }, 50)
             });
             self.selectedSalGenParaHistory.subscribe((data) => {
                 if(data == null){
                     return;
                 }
-                errors.clearAll();
                 self.getSalGenParaValue(data, self.isCopy());
                 self.salGenParaHistory(_.find(self.listHistory(), {'historyId': data}));
+                setTimeout(function () {
+                    nts.uk.ui.errors.clearAll()
+                }, 50)
+
             });
             self.selectedSwitchParaAvai.subscribe((data) => {
                 if(data == SWITCH_EFF_CATEGORY.UNAVAILABLE){
