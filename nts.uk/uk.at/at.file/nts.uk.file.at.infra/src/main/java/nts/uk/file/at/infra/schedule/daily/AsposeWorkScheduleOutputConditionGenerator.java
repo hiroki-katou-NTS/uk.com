@@ -1835,13 +1835,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell dateCell = cells.get(currentRow, 1);
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
 			
-			// A2_3
-			Cell dayMonCell = cells.get(currentRow + 1, 1);
-			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
-			
-			// A2_4
-			Cell dayCell = cells.get(currentRow + 1, 2);
-			dayCell.setValue(headerData.getFixedHeaderData().get(3));
+//			// A2_3
+//			Cell dayMonCell = cells.get(currentRow + 1, 1);
+//			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
+//			
+//			// A2_4
+//			Cell dayCell = cells.get(currentRow + 1, 2);
+//			dayCell.setValue(headerData.getFixedHeaderData().get(3));
 			
 			// A2_6
 			Cell remarkCell = cells.get(currentRow, 35);
@@ -1896,7 +1896,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	cell.setValue(outputItem.getItemName());
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemCode());
+//            	cell.setValue(outputItem.getItemCode());
             }
         }
 	}
