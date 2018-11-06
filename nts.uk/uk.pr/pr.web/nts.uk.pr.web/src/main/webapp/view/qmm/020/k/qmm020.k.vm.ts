@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 modeEditHistory : self.methodEditing,
                 type : self.params.modeScreen,
                 masterCode : self.params.masterCode
-            }
+            };
             service.deleteStateCorrelationHis(data).done(()=>{
                 dialog({ messageId: "Msg_15" });
             }).fail((err) =>{
