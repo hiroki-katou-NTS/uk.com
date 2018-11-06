@@ -65,7 +65,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
 
     private List<StatementLayoutHist> toDomain(List<QpbmtStatementLayoutHist> entities) {
         if (entities == null || entities.isEmpty()) {
-            return null;
+            return new ArrayList<StatementLayoutHist>();
         }
         List<StatementLayoutHist> arrDataResulf = new ArrayList<StatementLayoutHist>();
         entities.forEach(item -> {

@@ -31,4 +31,6 @@ public class StateCorrelationHisCompanyCommand
     private int type;
 
     private String masterCode ;
+
+    private boolean isUpdate;
 }

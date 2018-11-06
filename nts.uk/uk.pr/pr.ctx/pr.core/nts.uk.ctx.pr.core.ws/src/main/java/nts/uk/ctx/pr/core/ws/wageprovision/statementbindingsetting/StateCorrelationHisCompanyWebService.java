@@ -42,6 +42,7 @@ public class StateCorrelationHisCompanyWebService extends WebService {
                 command.getMasterCode(),
                 new YearMonthHistoryItem(
                         command.getHistoryID(),
-                        new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth()))));
+                        new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth()))),
+                command.isUpdate());
     }
 }
