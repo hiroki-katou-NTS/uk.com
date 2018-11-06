@@ -5,7 +5,6 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddO
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.ListStateLinkSettingMasterCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisDeparmentDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisDeparmentFinder;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.RegisterMode;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;

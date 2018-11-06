@@ -5,6 +5,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSet
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -30,11 +31,13 @@ public class StateLinkSettingCompanyFinder {
         String bonusLayoutName = null;
         if(stateLinkSettingCompany.isPresent()){
             stateLinkSettingCompanyDto = StateLinkSettingCompanyDto.fromDomain(stateLinkSettingCompany.get());
-            Optional<StatementLayout> salaryLayout = statementLayoutRepository.getStatementLayoutById(cid,stateLinkSettingCompanyDto.getSalaryCode());
+
+            List<StatementLayout> listSatementLayout = statementLayoutRepository.getAllStatementLayout();
+            Optional<StatementLayout> salaryLayout = listSatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getSalaryCode())).findFirst();
             if(salaryLayout.isPresent()){
                 salaryLayoutName = salaryLayout.get().getStatementName().v();
             }
-            Optional<StatementLayout> bonusLayout = statementLayoutRepository.getStatementLayoutById(cid,stateLinkSettingCompanyDto.getBonusCode());
+            Optional<StatementLayout> bonusLayout = listSatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getBonusCode())).findFirst();
             if(bonusLayout.isPresent()){
                 bonusLayoutName = bonusLayout.get().getStatementName().v();
             }
