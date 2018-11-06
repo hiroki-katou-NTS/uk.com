@@ -714,7 +714,7 @@ public class AppHolidayWorkFinder {
 		if(approvalFunctionSetting != null){
 			// 時刻計算利用チェック
 //			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-				result.setDisplayCaculationTime(true);
+				result.setDisplayCaculationTime(approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE));
 				// 4.勤務種類を取得する :
 				GeneralDate baseDate = appCommonSettingOutput.generalDate;
 				//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
@@ -762,9 +762,9 @@ public class AppHolidayWorkFinder {
 	private void getWorkingHour(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,String workTimeCode){
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if(approvalFunctionSetting != null){
-			result.setDisplayCaculationTime(false);
+			result.setDisplayCaculationTime(approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE));
 //			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-				result.setDisplayCaculationTime(true);
+//				result.setDisplayCaculationTime(true);
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
 				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, 
 						employeeID,appDate,approvalFunctionSetting,result.getWorkTime() == null ? 
