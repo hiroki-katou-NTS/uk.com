@@ -31,9 +31,6 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
                 .setParameter("startYearMonth", startYearMonth)
                 .setParameter("cid", cid)
                 .getList());
-        if (statementLayoutHist.isEmpty()){
-            return new ArrayList<StatementLayoutHist>();
-        }
         return statementLayoutHist;
     }
 

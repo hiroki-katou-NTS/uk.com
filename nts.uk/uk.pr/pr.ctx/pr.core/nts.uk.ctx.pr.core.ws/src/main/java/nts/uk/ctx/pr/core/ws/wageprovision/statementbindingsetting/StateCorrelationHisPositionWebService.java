@@ -2,9 +2,11 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateLinkSettingCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.RegisterStateCorrelationHisPositionCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisPositionCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisPositionDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisPositionFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingDateDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingMasterDto;
 
 
@@ -22,6 +24,9 @@ public class StateCorrelationHisPositionWebService extends WebService {
     @Inject
     private StateCorrelationHisPositionFinder stateCorrelationHisPositionFinder;
 
+    @Inject
+    private RegisterStateCorrelationHisPositionCommandHandler  registerStateCorrelationHisPositionCommandHandler;
+
     @POST
     @Path("getStateCorrelationHisPosition")
     public List<StateCorrelationHisPositionDto> getStateCorrelationHisPosition() {
@@ -29,9 +34,15 @@ public class StateCorrelationHisPositionWebService extends WebService {
     }
 
     @POST
-    @Path("registerClassification")
-    public void registerHisPosition(StateLinkSettingCompanyCommand command) {
+    @Path("registerHisPosition")
+    public void registerHisPosition(StateCorrelationHisPositionCommand command) {
+        registerStateCorrelationHisPositionCommandHandler.handle(command);
+    }
 
+    @Path("getDateBase/{hisId}")
+    @POST
+    public StateLinkSettingDateDto getDateBase(@PathParam("hisId") String hisId) {
+        return stateCorrelationHisPositionFinder.getDateBase(hisId);
     }
 
     @POST
