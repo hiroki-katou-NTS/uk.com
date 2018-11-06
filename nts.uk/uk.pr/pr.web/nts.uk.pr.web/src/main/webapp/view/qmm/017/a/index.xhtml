@@ -8,8 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+            <com:scriptfile path="../share/model.js"/>
 			<com:scriptfile path="qmm017.a.vm.js" />
-			<com:scriptfile path="../d/qmm017.d.vm.js" />
 			<com:ValidatorScript>
 		        nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaCode
 		        nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaName
@@ -27,19 +27,19 @@
 				<button tabindex="5">#{i18n.getText('QMM017_5')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left">
-					<div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+				<div class="fixed-flex-layout-left" style ="margin-left: 10px; margin-top: 20px;">
+					<div data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'right', showIcon: true, visible: true}">
 						<div class="valign-center control-group cf">
 							<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('QMM017_8')}</div>
-							<div class="pull-left" tabindex="6" style="width: 240px" data-bind="ntsSearchBox: {
-								targetKey: 'code', 
+							<div class="pull-left" tabindex="6" style="width: 200px" data-bind="ntsSearchBox: {
+								targetKey: 'identifier',
 								mode:'igTree', 
 								comId:'formula-tree', 
 								items: formulaList, 
-								selected: selectedFormulaCode, 
-								selectedKey: 'code', 
-								childField: 'childs', 
-								fields: ['name', 'code']}" />
+								selected: selectedFormulaIdentifier,
+								selectedKey: 'identifier',
+								childField: 'history',
+								fields: ['formulaCode', 'formulaName']}" />
 						</div>
 						<div class="valign-center control-group cf">
 							<button tabindex="7">#{i18n.getText('QMM017_9')}</button>
@@ -49,12 +49,12 @@
 							data-bind="ntsTreeGridView:{
 							name: '#[QMM017_13]',
 							width: 300,
-							height: 250,
+							rows: 12,
 							dataSource: formulaList,
-							value: selectedFormulaCode,
+							value: selectedFormulaIdentifier,
 							headers: headers,
-							primaryKey: 'code',
-							childDataKey: 'childs',
+							primaryKey: 'identifier',
+							childDataKey: 'history',
 							primaryText: 'nodeText',
 							multiple: false,
 							enable: true,
