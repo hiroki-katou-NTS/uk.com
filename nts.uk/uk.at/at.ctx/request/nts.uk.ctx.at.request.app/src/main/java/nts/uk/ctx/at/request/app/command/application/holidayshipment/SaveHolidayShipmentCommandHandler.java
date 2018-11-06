@@ -209,11 +209,7 @@ public class SaveHolidayShipmentCommandHandler
 			String appName = "";
 			if (hdAppSetOpt.isPresent()) {
 				HdAppSet hdSet = hdAppSetOpt.get();
-				chkSubHoliday = hdSet.getRegisShortLostHd().value == 1 ? true : false;// 休暇申請設定．代休残数不足登録できる
 				chkPause = hdSet.getRegisInsuff().value == 1 ? true : false;// 休暇申請設定．振休残数不足登録できる
-				chkAnnual = hdSet.getRegisNumYear().value == 1 ? true : false;// 休暇申請設定．年休残数不足登録できる
-				chkFundingAnnual = hdSet.getRegisShortReser().value == 1 ? true : false;// 休暇申請設定．積立年休残数不足登録できる
-				chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 ? true : false;// 休暇申請設定．公休残数不足登録できる
 				if (hdSet.getFurikyuName() != null) {
 					appName = hdSet.getFurikyuName().v();
 				}

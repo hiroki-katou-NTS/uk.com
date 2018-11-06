@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -129,6 +130,15 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	public void setCheckId(String errorAlarmCheckID) {
 		this.errorAlarmCheckID = errorAlarmCheckID;
+	}
+	
+	public void clearDuplicate(){
+		if(this.lstApplication != null){
+			this.lstApplication = this.lstApplication.stream().distinct().collect(Collectors.toList());
+		}
+		if(this.errorAlarmCondition != null){
+			this.errorAlarmCondition.clearDuplicate();
+		}
 	}
 	
 

@@ -46,4 +46,8 @@ public class TargetWorkTime extends DomainObject {
 	public boolean isUse() {
 		return this.filterAtr;
 	}
+	
+	public void clearDuplicate() {
+		this.lstWorkTime = this.lstWorkTime.stream().distinct().collect(Collectors.toList());
+	}
 }

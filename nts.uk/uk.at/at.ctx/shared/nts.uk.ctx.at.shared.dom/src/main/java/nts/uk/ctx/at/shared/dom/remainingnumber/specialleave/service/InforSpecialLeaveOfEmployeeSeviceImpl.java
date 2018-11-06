@@ -296,11 +296,14 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		if(elapseYear.isEmpty()) {
 			return new GrantDaysInforByDates(outputDate, lstOutput);
 		}
+		int lastYear = granDate.year();
 		for (ElapseYear yearData : elapseYear) {
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
 			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
 			outputDate = granDateTmp;
+			//最後の経過年数 = 処理中の「特別休暇付与テーブル．経過年数．年数
+			lastYear = granDateTmp.year();
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
 			if(period.start().beforeOrEquals(granDateTmp)
 					&& period.end().afterOrEquals(granDateTmp)) {
@@ -317,11 +320,35 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 					lstOutput.add(output);
 				}
 			} else if(period.end().before(granDateTmp)) {
-				
 				break;
 			}
 		}
-		
+		//パラメータ「付与日数一覧」の件数= 0 AND
+		//ドメインモデル「特別休暇付与テーブル」．テーブル以降の固定付与をおこなうが「チェックある」
+		if(lstOutput.isEmpty() 
+				&& (optGranDateTbl.isPresent() && optGranDateTbl.get().isSpecified())) {
+			GeneralDate grantDateNext = GeneralDate.ymd(lastYear + 1, granDate.month(), granDate.day());
+			for(GeneralDate loopDate = grantDateNext; loopDate.beforeOrEquals(period.end());) {
+				//「期間．開始日」≦「比較年月日」≦「期間．終了日」
+				if(period.start().beforeOrEquals(loopDate)
+						&& loopDate.beforeOrEquals(period.end())) {
+					//利用条件をチェックする
+					ErrorFlg errorFlg = this.checkUse(cid, sid, loopDate, speHoliday);
+					if(errorFlg.isAgeError()
+							|| errorFlg.isClassError()
+							|| errorFlg.isEmploymentError()
+							|| errorFlg.isGenderError()) {
+						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.of(errorFlg), 0);
+						lstOutput.add(output);
+					} else {
+						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.empty(), optGranDateTbl.get().getNumberOfDays());
+						lstOutput.add(output);
+					}
+				}
+				loopDate = loopDate.addYears(1);
+				outputDate = loopDate;
+			}
+		}
 
 		return new GrantDaysInforByDates(outputDate, lstOutput);
 	}

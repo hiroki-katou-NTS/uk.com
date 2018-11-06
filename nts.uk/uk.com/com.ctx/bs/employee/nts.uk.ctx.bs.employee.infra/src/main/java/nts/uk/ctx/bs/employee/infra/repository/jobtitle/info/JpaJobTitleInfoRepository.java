@@ -448,11 +448,10 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	public List<JobTitleInfo> findByIds(List<String> jobIds, GeneralDate baseDate) {
 		List<JobTitleInfo> data = new ArrayList<>();
 		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT j.CID, j.HIST_ID, j.JOB_ID, j.JOB_CD, j.JOB_NAME, j.SEQUENCE_CD, j.IS_MANAGER from BSYMT_JOB_INFO j"
 						+ " INNER JOIN BSYMT_JOB_HIST h ON h.HIST_ID = j.HIST_ID"
-						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND j.JOB_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND j.JOB_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setDate(1, Date.valueOf(baseDate.localDate()));
 				statement.setDate(2, Date.valueOf(baseDate.localDate()));
 				for (int i = 0; i < subList.size(); i++) {

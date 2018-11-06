@@ -357,16 +357,16 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				sql.append(joinParam(c));
 				sql.append(" ) ");
 				
-				PreparedStatement statement = this.connection().prepareStatement(sql.toString());
-				statement.setString(1, compID);
-				statement.setInt(2, rootType.value);
-				statement.setDate(3, Date.valueOf(period.start().localDate()));
-				statement.setDate(4, Date.valueOf(period.end().localDate()));
-				for (int i = 0; i < employeeIDLst.size(); i++) {
-					statement.setString(i + 5, employeeIDLst.get(i));
+				try (PreparedStatement statement = this.connection().prepareStatement(sql.toString())) {
+					statement.setString(1, compID);
+					statement.setInt(2, rootType.value);
+					statement.setDate(3, Date.valueOf(period.start().localDate()));
+					statement.setDate(4, Date.valueOf(period.end().localDate()));
+					for (int i = 0; i < employeeIDLst.size(); i++) {
+						statement.setString(i + 5, employeeIDLst.get(i));
+					}
+					result.addAll(toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootInstance(rs,compID, rootType.value))));
 				}
-				result.addAll(toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootInstance(rs,compID, rootType.value))));
-				
 			} catch (SQLException e) {
 				exception.set(e);
 			}
