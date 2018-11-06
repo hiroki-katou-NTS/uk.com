@@ -211,6 +211,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
 
             self.updateDataList(true);
+            
+            $('#compositePayOutSubMngDataGrid').focus();
         }
 
         updateDataList(isShowMsg) {

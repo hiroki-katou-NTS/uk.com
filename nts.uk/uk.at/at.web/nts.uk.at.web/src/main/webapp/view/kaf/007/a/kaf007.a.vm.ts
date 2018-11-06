@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import text = nts.uk.resource.getText;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     export class ScreenModel {
+        multiDate: KnockoutObservable<boolean> = ko.observable(false);
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
         recordWorkInfo: KnockoutObservable<common.RecordWorkInfo> = ko.observable(new common.RecordWorkInfo());
@@ -49,10 +50,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         employeeList = ko.observableArray([]);
         selectedEmployee = ko.observable(null);
         totalEmployeeText = ko.observable("");
-        multiDate: KnockoutObservable<boolean> = ko.observable(false);
+        
         dateSingle: KnockoutObservable<any> = ko.observable(null);
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
+        timeRequired: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
@@ -81,22 +83,22 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 });
                 nts.uk.ui.block.clear();
             });
+            
+            
 
             // 申請日を変更する          
             //Start Date
             self.datePeriod.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                nts.uk.ui.block.grayout();
-                let startDate, endDate;
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
-                    nts.uk.ui.block.clear();
+                if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
                     return;
                 }
+                let startDate, endDate;
                 startDate = value.startDate;
                 endDate = value.endDate;
-
+                if(!startDate && !endDate){
+                    return;
+                }
+                 nts.uk.ui.block.grayout();
                 self.changeApplicationDate(startDate, endDate).done(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -106,7 +108,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 let startDate, endDate;
                 $("#singleDate").trigger("validate");
-                if (nts.uk.ui.errors.hasError()) {
+                if (nts.uk.ui.errors.hasError() || !value) {
                     return;
                 }
                 startDate = endDate = value;
@@ -116,15 +118,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 });
             });
 
-            self.multiDate.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                if (value) {
-                    $(".ntsStartDatePicker").focus();
-                } else {
-                    $("#singleDate").focus();
-                }
-
-            });
+           
 
             self.employeeList.subscribe((datas) => {
                 if (datas.length) {
@@ -168,7 +162,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //Focus process
                 self.selectedReason.subscribe(value => { $("#inpReasonTextarea").focus(); });
                 //フォーカス制御
-                self.changeFocus('.ntsStartDatePicker');
+                self.changeFocus('#singleDate');
+                //phải để subscribe ở đây khi change multiDate focus mới ăn
+                self.registerEvent();
+               
                 dfd.resolve();
             }).fail((res) => {
                 if (res.messageId == 'Msg_426') {
@@ -183,6 +180,22 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
             return dfd.promise();
+        }
+        
+        registerEvent() {
+            let self = this;
+
+            self.multiDate.subscribe(value => {
+                nts.uk.ui.errors.clearAll();
+                if (value) {
+                    self.datePeriod({ startDate: self.dateSingle(), endDate: "" });
+                    $(".ntsStartDatePicker").focus();
+                } else {
+                    self.dateSingle(self.datePeriod().startDate);
+                    $("#singleDate").focus();
+                }
+
+            });
         }
 
         setData(settingData) {
@@ -230,7 +243,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 //A8 勤務時間２ ※A7
                 //共通設定.複数回勤務
-                // self.isMultipleTime(settingData.multipleTime);
+                 self.isMultipleTime(settingData.multipleTime);
             }
             //Setting default value data work:
             self.appWorkChange().dataWork(settingData.dataWorkDto);
@@ -238,7 +251,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.appWorkChange().workChange().workTypeName(settingData.dataWorkDto.selectedWorkTypeName === null ? '' : settingData.dataWorkDto.selectedWorkTypeName);
             self.appWorkChange().workChange().workTimeCd(settingData.dataWorkDto.selectedWorkTimeCd === null ? '' : settingData.dataWorkDto.selectedWorkTimeCd);
             self.appWorkChange().workChange().workTimeName(settingData.dataWorkDto.selectedWorkTimeName === null ? '' : settingData.dataWorkDto.selectedWorkTimeName);
+            if(!nts.uk.util.isNullOrUndefined(settingData.dataWorkDto.startTime1)){
+                self.appWorkChange().workChange().workTimeStart1(settingData.dataWorkDto.startTime1);    
+            }
+            if(!nts.uk.util.isNullOrUndefined(settingData.dataWorkDto.endTime1)){
+                self.appWorkChange().workChange().workTimeEnd1(settingData.dataWorkDto.endTime1);    
+            }
             self.requiredCheckTime(self.isWorkChange() && settingData.timeRequired);
+            self.timeRequired(settingData.timeRequired);
         }
 
         /**
@@ -333,11 +353,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let self = this,
                 workchange = self.appWorkChange().workChange();
             nts.uk.ui.errors.clearAll();
-            $(".ntsStartDatePicker").trigger("validate");
-            $(".ntsEndDatePicker").trigger("validate");
+            if (self.multiDate()) {
+                $('#daterangepicker').find(".nts-input").trigger('validate');
+            } else {
+                $("#singleDate").trigger("validate");
+            }
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
-            $("#singleDate").trigger("validate");
             $("#pre-post").trigger("validate");
             
 
@@ -410,7 +432,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 tmpStartDate = moment(tmpStartDate).add(1, 'day').format(self.dateFormat);
             }
             //実績の内容
-            service.getRecordWorkInfoByDate({appDate : moment(endDate === null ? startDate : endDate).format(self.dateFormat), employeeID : null}).done((recordWorkInfo) => {
+            service.getRecordWorkInfoByDate({appDate : moment(!endDate ? startDate : endDate).format(self.dateFormat), employeeID : null}).done((recordWorkInfo) => {
                 //Binding data
                 ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
                 if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){

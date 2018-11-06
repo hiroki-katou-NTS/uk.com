@@ -58,7 +58,8 @@
 		<!--A4 申請日付（ラベル）-->
 		<div class="valign-center control-group-kaf007">
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_11')}</div>
-			<!--A4_1 申請日付-->
+			<!--A4_1 申請日付-->			
+			
 			<div data-bind="if: $parent.screenModeNew()" class="mode-style">
 				<div
 					data-bind="ntsCheckBox: { checked: $parent.multiDate , 
@@ -66,11 +67,26 @@
 														enable: true }"></div>
 
 				<div id="daterangepicker"
-					data-bind="ntsDateRangePicker: {name:'#[KAF007_12]',startName: '#[KAF007_12]' ,endName: '#[KAF007_12]' , value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
+					data-bind="ntsDateRangePicker: {
+													name:'#[KAF007_12]',
+													startName: '#[KAF007_12]' ,
+													endName: '#[KAF007_12]' , 
+													value: $parent.datePeriod, 
+													maxRange: 'none', 
+													required: $parent.multiDate , 
+													showNextPrevious: false 
+													},
+								visible:$parent.multiDate()" />
 
 
 				<div id="singleDate"
-					data-bind="ntsDatePicker: {value: $parent.dateSingle, dateFormat: 'YYYY/MM/DD' , required:$parent.multiDate()==false , name:'#{i18n.getText('KAF006_8')}'},visible:$parent.multiDate()==false "></div>
+					data-bind="ntsDatePicker: {
+											value: $parent.dateSingle, 
+											dateFormat: 'YYYY/MM/DD' , 
+											required:!$parent.multiDate() , 
+											name:'#{i18n.getText('KAF006_8')}'
+											},
+					visible:!$parent.multiDate()"></div>
 
 
 
@@ -147,7 +163,7 @@
 					</div>
 				</div>
 				<div class="cell valign-center row-width-inputTime"
-					style="margin-left: 10px; width: auto !important; display: inline-block;">
+					style="margin-left: 90px; width: auto !important; display: inline-block;">
 					<div class="row-cell-margin">
 						<!--A7_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -168,7 +184,7 @@
 				</div>
 
 			</div>
-			<div class="table" data-bind="if : false">
+			<div class="table">
 				<div class="cell valign-top lblTitle-kaf007"></div>
 				<div class="cell valign-center row-width">
 					<!--A7_4 直行区分-->
@@ -184,7 +200,7 @@
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr1,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 						</div>
 					</div>
 				</div>
@@ -201,14 +217,13 @@
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr1,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 					</div>
 				</div>
 			</div>
 		</div>
 		<!--A8 勤務時間２-->
-		<!-- <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> -->
-		<div class="valign-center control-group-kaf007" data-bind="if: false">
+		 <div class="valign-center control-group-kaf007" data-bind="if: $parent.isMultipleTime"> 
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007"
@@ -227,7 +242,7 @@
 					</div>
 				</div>
 				<!--A8_3 勤務時間２直帰-->
-				<div class="cell valign-center row-width-inputTime">
+				<div style="margin-left: 90px;width: auto !important;display: inline-block;" class="cell valign-center row-width-inputTime">
 					<div class="row-cell-margin">
 						<!--A8_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -255,7 +270,7 @@
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr2,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 						</div>
 					</div>
 				</div>
@@ -272,7 +287,7 @@
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr2,
-									enable: $parent.editable }">
+									enable: $parent.timeRequired }">
 					</div>
 				</div>
 			</div>
@@ -298,7 +313,7 @@
 					</div>
 				</div>
 				<!--A9_3 終了時刻-->
-				<div class="cell valign-center row-width-inputTime">
+				<div class="cell valign-center row-width-inputTime" >
 					<div class="row-cell-margin">
 						<!--A9_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
