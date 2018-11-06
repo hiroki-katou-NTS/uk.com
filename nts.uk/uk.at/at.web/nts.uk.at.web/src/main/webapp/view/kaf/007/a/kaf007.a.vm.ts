@@ -251,6 +251,12 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.appWorkChange().workChange().workTypeName(settingData.dataWorkDto.selectedWorkTypeName === null ? '' : settingData.dataWorkDto.selectedWorkTypeName);
             self.appWorkChange().workChange().workTimeCd(settingData.dataWorkDto.selectedWorkTimeCd === null ? '' : settingData.dataWorkDto.selectedWorkTimeCd);
             self.appWorkChange().workChange().workTimeName(settingData.dataWorkDto.selectedWorkTimeName === null ? '' : settingData.dataWorkDto.selectedWorkTimeName);
+            if(!nts.uk.util.isNullOrUndefined(settingData.dataWorkDto.startTime1)){
+                self.appWorkChange().workChange().workTimeStart1(settingData.dataWorkDto.startTime1);    
+            }
+            if(!nts.uk.util.isNullOrUndefined(settingData.dataWorkDto.endTime1)){
+                self.appWorkChange().workChange().workTimeEnd1(settingData.dataWorkDto.endTime1);    
+            }
             self.requiredCheckTime(self.isWorkChange() && settingData.timeRequired);
             self.timeRequired(settingData.timeRequired);
         }
