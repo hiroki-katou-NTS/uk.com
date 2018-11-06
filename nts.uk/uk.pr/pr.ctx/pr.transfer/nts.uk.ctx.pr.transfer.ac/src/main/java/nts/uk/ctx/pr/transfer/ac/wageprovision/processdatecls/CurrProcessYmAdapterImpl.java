@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.transfer.ac.wageprovision.processdatecls;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,6 +35,12 @@ public class CurrProcessYmAdapterImpl implements CurrProcessYmAdapter {
 
 	private CurrProcessYmImport fromExport(CurrProcessYmExport export) {
 		return new CurrProcessYmImport(export.getCid(), export.getProcessCateNo(), export.getCurrentYm());
+	}
+
+	@Override
+	public List<CurrProcessYmImport> getCurrentSalaryProcessYm(String companyId, List<Integer> processCateNo) {
+		return currYmPub.getCurrentSalaryProcessYm(companyId, processCateNo).stream().map(i -> fromExport(i))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.transfer.dom.sourcebank;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -50,17 +51,17 @@ public class TransferSourceBank extends AggregateRoot {
 	/**
 	 * 委託者情報
 	 */
-	private List<EntrustorInfor> entrustorInfor;
+	private Optional<List<EntrustorInfor>> entrustorInfor;
 
 	/**
 	 * 振込依頼者名
 	 */
-	private TransferRequesterName transferRequesterName;
+	private Optional<TransferRequesterName> transferRequesterName;
 
 	/**
 	 * メモ
 	 */
-	private Memo memo;
+	private Optional<Memo> memo;
 
 	public TransferSourceBank(String companyId, String code, String name, String branchId, String accountNumber,
 			int accountAtr, List<EntrustorInfor> entrustorInfor, String transferRequesterName, String memo) {
@@ -71,9 +72,9 @@ public class TransferSourceBank extends AggregateRoot {
 		this.branchId = branchId;
 		this.accountNumber = new AccountNumber(accountNumber);
 		this.accountAtr = AccountAtr.of(accountAtr);
-		this.entrustorInfor = entrustorInfor;
-		this.transferRequesterName = new TransferRequesterName(transferRequesterName);
-		this.memo = new Memo(memo);
+		this.entrustorInfor = entrustorInfor.isEmpty() ? Optional.empty() : Optional.of(entrustorInfor);
+		this.transferRequesterName = transferRequesterName == null ? Optional.empty() : Optional.of(new TransferRequesterName(transferRequesterName));
+		this.memo = memo == null ? Optional.empty() : Optional.of(new Memo(memo));
 	}
 
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.pubimp.wageprovision.processdatecls;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -29,6 +31,17 @@ public class CurrProcessYmPubImpl implements CurrProcessYmPub {
 			return Optional.of(CurrProcessYmExport.fromDomain(optCurrYm.get()));
 		else
 			return Optional.empty();
+	}
+
+	@Override
+	public List<CurrProcessYmExport> getCurrentSalaryProcessYm(String companyId, List<Integer> processCateNo) {
+		List<CurrProcessYmExport> result = new ArrayList<>();
+		for (Integer i : processCateNo) {
+			Optional<CurrProcessDate> optCurrYm = currYmRepo.getCurrProcessDateByKey(companyId, i);
+			if (optCurrYm.isPresent())
+				result.add(CurrProcessYmExport.fromDomain(optCurrYm.get()));
+		}
+		return result;
 	}
 
 }
