@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -17,8 +19,10 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -250,4 +254,31 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	}
 
+	@Override
+	@SneakyThrows
+	public Optional<EmploymentHistory> getEmploymentHistory(String historyId, String employmentCode) {
+		try (PreparedStatement statement = this.connection().prepareStatement(
+				"SELECT DISTINCT b.* FROM BSYMT_EMPLOYMENT_HIST a INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM b ON a.HIST_ID = b.HIST_ID"
+						  + " WHERE a.HIST_ID = ? AND  b.EMP_CD = ?")) {
+			statement.setString(1, historyId);
+			statement.setString(2, employmentCode);
+			
+			Optional<BsymtEmploymentHist>  optionData =  new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				BsymtEmploymentHist employmentHist = new BsymtEmploymentHist();
+				employmentHist.companyId = rec.getString("CID");
+				employmentHist.sid = rec.getString("SID");
+				employmentHist.hisId = rec.getString("HIST_ID");
+				employmentHist.endDate = rec.getGeneralDate("END_DATE");
+				employmentHist.strDate = rec.getGeneralDate("START_DATE");
+				return employmentHist;
+			});
+			if (optionData.isPresent()) {
+				BsymtEmploymentHist entity = optionData.get();
+				return Optional.of(toDomain(entity));
+			}
+		} catch (SQLException e) {
+		throw new RuntimeException(e);
+	}
+	return Optional.empty();
+	}
 }
