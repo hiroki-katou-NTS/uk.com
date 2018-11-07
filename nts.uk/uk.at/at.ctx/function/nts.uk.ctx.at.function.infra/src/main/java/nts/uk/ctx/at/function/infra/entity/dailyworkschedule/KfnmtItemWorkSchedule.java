@@ -26,26 +26,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KfnmtItemWorkSchedule.
  */
-
-/**
- * Gets the lst kfnmt print remark cont.
- *
- * @return the lst kfnmt print remark cont
- */
 @Getter
-
-/**
- * Sets the lst kfnmt print remark cont.
- *
- * @param lstKfnmtPrintRemarkCont the new lst kfnmt print remark cont
- */
 @Setter
 @Entity
 @Table(name="KFNMT_ITEM_WORK_SCHEDULE")
-
-/**
- * Instantiates a new kfnmt item work schedule.
- */
 @NoArgsConstructor
 public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 	
@@ -83,7 +67,6 @@ public class KfnmtItemWorkSchedule extends UkJpaEntity implements Serializable {
 			@JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD")
 	})
 	private List<KfnmtPrintRemarkCont> lstKfnmtPrintRemarkCont;
-	
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

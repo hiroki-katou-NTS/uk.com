@@ -4,30 +4,37 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK_;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay_;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK_;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule_;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkCont;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkContPK;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
@@ -125,31 +132,68 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCidAndCode(java.lang.String, int)
 	 */
 	@Override
+	@SneakyThrows
 	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code) {
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		// Create builder
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-
-		// Create query
-		CriteriaQuery<KfnmtItemWorkSchedule> cq = builder.createQuery(KfnmtItemWorkSchedule.class);
-
-		// From table
-		Root<KfnmtItemWorkSchedule> root = cq.from(KfnmtItemWorkSchedule.class);
-
-		// Add where condition
-		cq.where(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId), 
-				 builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.itemCode),code));
-		// Get results
-		KfnmtItemWorkSchedule entity;
-		try {
-			entity = em.createQuery(cq).getSingleResult();
-		} catch (NoResultException e) {
-			return Optional.empty();
+		List<KfnmtAttendanceDisplay> lstKfnmtAttendanceDisplay = new ArrayList<>();
+		String sqlJDBC1 = "select * from KFNMT_ATTENDANCE_DISPLAY where CD = ? and ITEM_CD = ? ORDER BY ORDER_NO";
+		try (PreparedStatement statement1 = this.connection().prepareStatement(sqlJDBC1)) {
+			statement1.setString(1, companyId);
+			statement1.setString(2, code);
+			lstKfnmtAttendanceDisplay
+					.addAll(new NtsResultSet(statement1.executeQuery()).getList(rec -> {
+						KfnmtAttendanceDisplayPK pk = new KfnmtAttendanceDisplayPK();
+						pk.setCid(rec.getString("CID"));
+						pk.setItemCode(rec.getString("ITEM_CD"));
+						pk.setOrderNo(rec.getLong("ORDER_NO"));
+						KfnmtAttendanceDisplay entity = new KfnmtAttendanceDisplay();
+						entity.setId(pk);
+						entity.setAtdDisplay(rec.getBigDecimal("ATD_DISPLAY"));
+						return entity;
+					}));
 		}
-		
-		return Optional.ofNullable(this.toDomain(entity));
+
+		List<KfnmtPrintRemarkCont> lstKfnmtPrintRemarkCont = new ArrayList<>();
+		String sqlJDBC2 = "select * from KFNMT_PRINT_REMARK_CONT where CD = ? and ITEM_CD = ?";
+		try (PreparedStatement statement2 = this.connection().prepareStatement(sqlJDBC2)) {
+			statement2.setString(1, companyId);
+			statement2.setString(2, code);
+			lstKfnmtPrintRemarkCont
+					.addAll(new NtsResultSet(statement2.executeQuery()).getList(rec -> {
+						KfnmtPrintRemarkContPK pk = new KfnmtPrintRemarkContPK();
+						pk.setCid(rec.getString("CID"));
+						pk.setItemCode(rec.getString("ITEM_CD"));
+						pk.setPrintItem(rec.getLong("PRINT_ITEM"));
+						KfnmtPrintRemarkCont entity = new KfnmtPrintRemarkCont();
+						entity.setId(pk);
+						entity.setUseCls(rec.getBigDecimal("USE_CLS"));
+						return entity;
+					}));
+		}
+
+		Map<String, List<KfnmtAttendanceDisplay>> mapKfnmtAttendanceDisplay = lstKfnmtAttendanceDisplay
+				.stream().collect(Collectors.groupingBy(item -> item.getId().getItemCode()));
+		Map<String, List<KfnmtPrintRemarkCont>> mapKfnmtPrintRemarkCont = lstKfnmtPrintRemarkCont
+				.stream().collect(Collectors.groupingBy(item -> item.getId().getItemCode()));
+		String sqlJDBC3 = "select * from KFNMT_ITEM_WORK_SCHEDULE where CD = ? and ITEM_CD = ?";
+		try (PreparedStatement statement3 = this.connection().prepareStatement(sqlJDBC3)) {
+			statement3.setString(1, companyId);
+			statement3.setString(2, code);
+			return new NtsResultSet(statement3.executeQuery()).getSingle(rec -> {
+				KfnmtItemWorkSchedulePK pk = new KfnmtItemWorkSchedulePK();
+				pk.setCid(rec.getString("CID"));
+				pk.setItemCode(rec.getString("ITEM_CD"));
+				KfnmtItemWorkSchedule entity = new KfnmtItemWorkSchedule();
+				entity.setId(pk);
+				entity.setItemName(rec.getString("ITEM_NAME"));
+				entity.setWorkTypeNameDisplay(rec.getBigDecimal("WORKTYPE_NAME_DISPLAY"));
+				entity.setRemarkInputNo(rec.getBigDecimal("REMARK_INPUT_NO"));
+				entity.setLstKfnmtAttendanceDisplay(mapKfnmtAttendanceDisplay
+						.getOrDefault(pk.getItemCode(), Collections.emptyList()));
+				entity.setLstKfnmtPrintRemarkCont(mapKfnmtPrintRemarkCont
+						.getOrDefault(pk.getItemCode(), Collections.emptyList()));
+				return this.toDomain(entity);
+			});
+		}
 	}
 	
 	/**
