@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -60,10 +62,10 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);
 		appHolidayWork.setAppOvertimeDetail(appOvertimeDetailOtp);
 		appHolidayWork.setHolidayShiftNight(updateHolidayWorkCommand.getHolidayWorkShiftNight());
-		appHolidayWork.setWorkTimeCode(new WorkTimeCode(updateHolidayWorkCommand.getSiftTypeCode()));
+		appHolidayWork.setWorkTimeCode(Strings.isBlank(updateHolidayWorkCommand.getSiftTypeCode()) ? null : new WorkTimeCode(updateHolidayWorkCommand.getSiftTypeCode()));
 		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(updateHolidayWorkCommand.getWorkClockStart1(), updateHolidayWorkCommand.getWorkClockEnd1(), updateHolidayWorkCommand.getGoAtr1(), updateHolidayWorkCommand.getBackAtr1()));
 		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(updateHolidayWorkCommand.getWorkClockStart2(), updateHolidayWorkCommand.getWorkClockEnd2(), updateHolidayWorkCommand.getGoAtr2(), updateHolidayWorkCommand.getBackAtr2()));
-		appHolidayWork.setWorkTypeCode(new WorkTypeCode(updateHolidayWorkCommand.getWorkTypeCode()));
+		appHolidayWork.setWorkTypeCode(Strings.isBlank(updateHolidayWorkCommand.getWorkTypeCode()) ? null : new WorkTypeCode(updateHolidayWorkCommand.getWorkTypeCode()));
 		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
 		appHolidayWork.setVersion(appHolidayWork.getVersion());
 		appHolidayWork.getApplication().setVersion(updateHolidayWorkCommand.getVersion());
