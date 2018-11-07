@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
-        methodEditing:          KnockoutObservable<number> = ko.observable(1);
+        transferMethod:          KnockoutObservable<number> = ko.observable(1);
         startYearMonthPeriod: KnockoutObservable<number> = ko.observable();
         startYearMonthMasterDate: KnockoutObservable<number> = ko.observable();
         endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
@@ -36,10 +36,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             if(self.params.isPerson){
                 if (self.startYearMonthPeriod() > self.params.endYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) {
                     let data :any = {
-                        startYearMonth: self.startYearMonthPeriod(),
-                        endYearMonth: self.endYearMonthPeriod(),
-                        startYearMonthMasterDate: self.startYearMonthMasterDate(),
-                        methodEditing: self.methodEditing()
+                        start: self.startYearMonthPeriod(),
+                        end: self.endYearMonthPeriod(),
+                        baseDate: self.startYearMonthMasterDate(),
+                        transferMethod: self.transferMethod()
                     };
                     setShared(model.PARAMETERS_SCREEN_J.OUTPUT,data);
 
@@ -51,10 +51,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             }
             if (self.startYearMonthPeriod() > self.params.endYearMonth) {
                 let data: any = {
-                    startYearMonth: self.startYearMonthPeriod(),
-                    endYearMonth: self.endYearMonthPeriod(),
-                    startYearMonthMasterDate: self.startYearMonthMasterDate(),
-                    methodEditing: self.methodEditing()
+                    start: self.startYearMonthPeriod(),
+                    end: self.endYearMonthPeriod(),
+                    baseDate: self.startYearMonthMasterDate(),
+                    transferMethod: self.transferMethod()
                 };
                 setShared("PARAMESE_SCREENJ_OUTPUT", data);
             }
