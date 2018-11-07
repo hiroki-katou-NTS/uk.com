@@ -553,6 +553,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     workChange.workTimeName(childData.selectedWorkTimeName);
                     service.isTimeRequired( workChange.workTypeCd()).done((rs) =>{
                         self.requiredCheckTime(self.isWorkChange() && rs);    
+                        if(self.requiredCheckTime()){
+                            workChange.workTimeStart1(childData.first.start);
+                            workChange.workTimeEnd1(childData.first.end); 
+                        }
                     });
                 }
                 //フォーカス制御
