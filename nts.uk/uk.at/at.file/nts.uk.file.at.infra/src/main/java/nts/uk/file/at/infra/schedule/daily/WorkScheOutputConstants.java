@@ -51,16 +51,16 @@ public class WorkScheOutputConstants {
 	public static final String TOTAL_DAY = "日数計";
 	
 	// Record part
-	public static final String WORKPLACE = "【職場】";
+	public static final String WORKPLACE = "[職場]";
 	
 	/** The Constant EMPLOYEE. */
-	public static final String EMPLOYEE = "【個人】";
+	public static final String EMPLOYEE = "[個人]";
 	
 	/** The Constant EMPLOYMENT. */
-	public static final String EMPLOYMENT = "【雇用】";
+	public static final String EMPLOYMENT = "[雇用]";
 	
 	/** The Constant POSITION. */
-	public static final String POSITION = "【職位】";
+	public static final String POSITION = "[職位]";
 	
 	/** The Constant DATE_BRACKET. */
 	public static final String DATE_BRACKET = "[日付]";
