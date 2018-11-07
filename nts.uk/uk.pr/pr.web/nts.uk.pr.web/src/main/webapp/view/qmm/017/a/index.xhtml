@@ -1,37 +1,38 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-            <com:scriptfile path="../share/model.js"/>
-			<com:scriptfile path="qmm017.a.vm.js" />
-			<com:ValidatorScript>
-		        nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaCode
-		        nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaName
-		    </com:ValidatorScript>
-			<com:scriptfile path="qmm017.a.start.js" />
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm017.a.vm.js"/>
+        <com:stylefile path="qmm017.a.style.css"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaCode
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaName
+        </com:ValidatorScript>
+        <com:scriptfile path="qmm017.a.start.js"/>
 
-		</ui:define>
+    </ui:define>
 
-		<ui:define name="content">
-			<div id="functions-area">
-				<button tabindex="1">#{i18n.getText('QMM017_1')}</button>
-				<button tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
-				<button tabindex="3">#{i18n.getText('QMM017_3')}</button>
-				<button tabindex="4">#{i18n.getText('QMM017_4')}</button>
-				<button tabindex="5">#{i18n.getText('QMM017_5')}</button>
-			</div>
-			<div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left" style ="margin-left: 10px; margin-top: 20px;">
-					<div data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'right', showIcon: true, visible: true}">
-						<div class="valign-center control-group cf">
-							<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('QMM017_8')}</div>
-							<div class="pull-left" tabindex="6" style="width: 200px" data-bind="ntsSearchBox: {
+    <ui:define name="content">
+        <div id="functions-area">
+            <button tabindex="1">#{i18n.getText('QMM017_1')}</button>
+            <button tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
+            <button tabindex="3">#{i18n.getText('QMM017_3')}</button>
+            <button tabindex="4">#{i18n.getText('QMM017_4')}</button>
+            <button tabindex="5">#{i18n.getText('QMM017_5')}</button>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <div class="fixed-flex-layout-left" style="margin-left: 20px; margin-top: 15px;">
+                <div data-bind="ntsPanel:{width: '270px', height: '420px', direction: 'right', showIcon: true, visible: true}">
+                    <div class="valign-center control-group cf">
+                        <div tabindex="6" style="width: 270px" data-bind="ntsSearchBox: {
+								label: '#{i18n.getText('QMM017_8')}',
 								targetKey: 'identifier',
 								mode:'igTree', 
 								comId:'formula-tree', 
@@ -39,122 +40,121 @@
 								selected: selectedFormulaIdentifier,
 								selectedKey: 'identifier',
 								childField: 'history',
-								fields: ['formulaCode', 'formulaName']}" />
-						</div>
-						<div class="valign-center control-group cf">
-							<!--A2_4 履歴追加ボタン-->
-							<button id="A2_4" tabindex="7"
-									data-bind="click: createNewHistory, enable: isUpdateMode">#{i18n.getText('QMM017_9')}</button>
-							<!--A2_5 履歴編集ボタン-->
-							<button style="float: right" id="A2_5" tabindex="9"
-									data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM017_10')}</button>
-						</div>
-						<table id="formula-tree" tabindex="9"
-							data-bind="ntsTreeGridView:{
+								fields: ['formulaCode', 'formulaName']}"/>
+                    </div>
+                    <div class="valign-center control-group cf">
+                        <!--A2_4 履歴追加ボタン-->
+                        <button id="A2_4" tabindex="7"
+                                data-bind="click: createNewHistory, enable: isUpdateMode">#{i18n.getText('QMM017_9')}</button>
+                        <!--A2_5 履歴編集ボタン-->
+                        <button style="float: right" id="A2_5" tabindex="9"
+                                data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM017_10')}</button>
+                    </div>
+                    <table id="formula-tree" tabindex="9"
+                           data-bind="ntsTreeGridView:{
 							name: '#[QMM017_13]',
-							width: 300,
+							width: 270,
 							rows: 12,
 							dataSource: formulaList,
 							value: selectedFormulaIdentifier,
-							headers: headers,
 							primaryKey: 'identifier',
 							childDataKey: 'history',
 							primaryText: 'nodeText',
 							multiple: false,
 							enable: true,
 							showCheckBox: false}"></table>
-					</div>
-				</div>
-				<div class="fixed-flex-layout-right">
-					<div id="tab-panel" tabindex="10"
-						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-						<div class="tab-content-1" data-bind="with: selectedFormula">
-							<div class="valign-center control-group cf">
-								<div class="label warning">#{i18n.getText('QMM017_11')}</div>
-							</div>
-							<div class="valign-center control-group cf">
-								<div data-bind="ntsFormLabel: { required: true, constraint: ['FormulaCode', 'FormulaName'] }">#{i18n.getText('QMM017_8')}</div>
-								<input tabindex="11" data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 1}" />
-								<input tabindex="12" data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName'}" />
-							</div>
-							<div class="valign-center control-group cf" data-bind = "with: $vm.selectedHistory">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_12')}</div>
-								
-							</div>
-							<div class="valign-center control-group cf">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_17')}</div>
-								<div class="cf" data-bind="ntsSwitchButton: {
+                </div>
+            </div>
+            <div class="fixed-flex-layout-right">
+                <div id="tab-panel" tabindex="10"
+                     data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                    <div class="tab-content-1" data-bind="with: selectedFormula">
+                        <div class="tab-row">
+                            <div class="label warning">#{i18n.getText('QMM017_11')}</div>
+                        </div>
+                        <div class="tab-row">
+                            <div class="column-1"
+                                 data-bind="ntsFormLabel: { required: true, constraint: ['FormulaCode', 'FormulaName'] }">#{i18n.getText('QMM017_8')}</div>
+                            <input tabindex="11"
+                                   data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 1}"/>
+                            <input tabindex="12"
+                                   data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName'}"/>
+                        </div>
+                        <div class="tab-row" data-bind="with: $vm.selectedHistory">
+
+                            <div id="A6_1" class="column-1"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_16')}</div>
+                            <!--A3_6 -->
+                            <div id="A3_6" tabindex="13"
+                                 data-bind="ntsDatePicker: {
+                                    name: '#[QMM017_12]',
+                                    value: startMonth,
+                                    dateFormat: 'yearmonth',
+                                    valueFormat: 'YYYYMM',
+                                    required: true,
+                                    enable: !$vm.isUpdateMode()}"
+                            />
+                            <div style="margin-left: 10px; display: inline-block"
+                                 data-bind="text: displayJapanStartYearMonth, visible: startMonth"/>
+                        </div>
+                        <div class="tab-row">
+                            <div class="column-1"
+                                 data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_17')}</div>
+                            <!--A3_9-->
+                            <div class="cf" data-bind="ntsSwitchButton: {
 									name: '#[QMM017_17]',
-									options: $vm.settingMethods,
-									optionsValue: 'code',
+									options: formulaSettingMethodItem,
+									optionsValue: 'value',
 									optionsText: 'name',
 									value: settingMethod,
 									required: true,
-									enable: true }"></div>
-							</div>
-							<div>
-								<div class="valign-center control-group cf">
-									<span class="label">#{i18n.getText('QMM017_19')}</span>
-								</div>
-								<hr></hr>
-								<com:ko-if bind="settingMethod() == 0">
-									<div class="valign-center control-group cf">
-										<span class="label">#{i18n.getText('QMM017_20')}</span>
-									</div>
-									<div class="valign-center control-group cf">
-										<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
-									</div>
-									<div class="valign-center control-group cf">
-										<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
-									</div>
-								</com:ko-if>
-								<com:ko-if bind="settingMethod() == 1">
-									<div class="valign-center control-group cf">
-										<span class="label">#{i18n.getText('QMM017_25')}</span>
-									</div>
-									<div class="valign-center control-group cf">
-										<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_26')}</div>
-									</div>
-								</com:ko-if>
-							</div>
-						</div>
-						<div class="tab-content-2">
-							<com:ko-if bind="selectedFormula().settingMethod() == 0">
-								<ui:include src="../b/index.xhtml" />
-							</com:ko-if>
-							<com:ko-if bind="selectedFormula().settingMethod() == 1">
-								<div data-bind="with: viewModelD">
-									<div id="tab-panel-screen-d"
-										data-bind="ntsTabPanel: { dataSource: screenDtabs, active: screenDselectedTab}">
-										<div class="tab-content-1">
-											
-										</div>
-										<div class="tab-content-2">
-											
-										</div>
-										<div class="tab-content-3">
-											
-										</div>
-										<div class="tab-content-4">
-											
-										</div>
-										<div class="tab-content-5">
-											
-										</div>
-										<div class="tab-content-6">
-											
-										</div>
-										<div class="tab-content-7">
-											
-										</div>
-									</div>
-								</div>
-							</com:ko-if>
-						</div>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+									enable: $vm.isUpdateMode }"></div>
+                        </div>
+                        <div class="tab-row">
+                            <div class="column-2">
+                                <div data-bind="if: settingMethod() == 0">
+                                    <div class="tab-row-medium">
+                                        <span class="label">#{i18n.getText('QMM017_19')}</span>
+                                    </div>
+                                    <hr></hr>
+                                    <div class="tab-row-medium">
+                                        <!--A3_14-->
+                                        <span class="label">#{i18n.getText('QMM017_20')}</span>
+                                    </div>
+                                    <div class="tab-row-medium">
+                                        <!--A3_15-->
+                                        <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
+                                    </div>
+                                    <!--A3_19-->
+                                    <div class="tab-row-medium">
+                                        <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
+                                    </div>
+
+                                </div>
+                                <div data-bind="if: settingMethod() == 1">
+                                    <div class="tab-row-medium">
+                                        <span class="label">#{i18n.getText('QMM017_25')}</span>
+                                    </div>
+                                    <div class="tab-row-medium">
+                                        <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_26')}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content-2">
+                        <com:ko-if bind="selectedFormula().settingMethod() == 0">
+                            <ui:include src="../b/index.xhtml"/>
+                        </com:ko-if>
+                        <com:ko-if bind="selectedFormula().settingMethod() == 1">
+                            <div>
+                            </div>
+                        </com:ko-if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>

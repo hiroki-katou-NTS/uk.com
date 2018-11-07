@@ -12,7 +12,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
     export class ScreenModel {
         // screen state
         isOnStartUp = true;
+        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
+        isAddHistoryMode: KnockoutObservable<boolean> = ko.observable(false);
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
         // tabs variables
@@ -24,13 +26,15 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         selectedFormulaIdentifier: KnockoutObservable<string> = ko.observable(null);
         selectedFormula: KnockoutObservable<model.Formula> = ko.observable(new model.Formula(null));
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
-        headers: any;
 
         constructor() {
             var self = this;
-            self.headers = ko.observableArray([getText('QMM017_8')]);
             self.initTabPanel();
-            self.initFormulaData();
+            self.screenMode.subscribe(newValue => {
+                self.isNewMode(newValue == model.SCREEN_MODE.NEW);
+                self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
+                self.isAddHistoryMode(newValue == model.SCREEN_MODE.ADD_HISTORY);
+            })
             self.selectedFormulaIdentifier.subscribe(newValue => {
                 if (newValue) {
                     self.showWageTableInfoByValue(newValue);
@@ -38,6 +42,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.changeToNewMode();
                 }
             });
+            self.initFormulaData();
         }
 
         initTabPanel() {
@@ -219,7 +224,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     }
                     else {
                     }
-                    self.isUpdateMode(false);
+                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                 }
             });
         };

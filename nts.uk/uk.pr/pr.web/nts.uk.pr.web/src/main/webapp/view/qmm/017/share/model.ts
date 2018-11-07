@@ -2,7 +2,7 @@ module nts.uk.pr.view.qmm017.share.model {
 
     import getText = nts.uk.resource.getText;
 
-    export enum SETTING_METHOD {
+    export enum FORMULA_SETTING_METHOD {
         SIMPLE_SETTING = 0,
         DETAIL_SETTING = 1
     }
@@ -48,13 +48,20 @@ module nts.uk.pr.view.qmm017.share.model {
         N003 = '家族人数',
     }
 
-    export function getElementItemModel () {
+    export function getElementEnumModel () {
         return [
             new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, '一次元'),
             new EnumModel(ELEMENT_SETTING.TWO_DIMENSION, '二次元'),
             new EnumModel(ELEMENT_SETTING.THREE_DIMENSION, '三次元'),
             new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
             new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+        ];
+    }
+
+    export function getFormulaSettingMethodEnumModel () {
+        return [
+            new EnumModel(FORMULA_SETTING_METHOD.SIMPLE_SETTING, 'かんたん設定'),
+            new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, '詳細設定')
         ];
     }
 
@@ -92,12 +99,51 @@ module nts.uk.pr.view.qmm017.share.model {
         settingMethod: KnockoutObservable<number> = ko.observable(null);
         nestedAtr: KnockoutObservable<number> = ko.observable(null);
         history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
+        // control item
+        formulaSettingMethodItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getFormulaSettingMethodEnumModel());
         constructor(params: IFormula) {
             this.formulaCode(params ? params.formulaCode : null);
             this.formulaName(params ? params.formulaName : null);
-            this.settingMethod(params ? params.settingMethod : null);
-            this.nestedAtr(params ? params.nestedAtr : null);
+            this.settingMethod(params ? params.settingMethod : 0);
+            this.nestedAtr(params ? params.nestedAtr : 0);
             this.history(params? params.history : []);
+        }
+    }
+
+    export interface IDetailFormulaSetting {
+        roundingMethod: number;
+        roundingPosition: number;
+        referenceMonth: number;
+        detailCalculationFormula: Array<IDetailCalculationFormula>;
+        historyId: string;
+    }
+    export class DetailFormulaSetting {
+        roundingMethod: KnockoutObservable<number> = ko.observable(null);
+        roundingPosition: KnockoutObservable<number> = ko.observable(null);
+        referenceMonth: KnockoutObservable<number> = ko.observable(null);
+        detailCalculationFormula: KnockoutObservableArray<IDetailCalculationFormula> = ko.observableArray([]);
+        historyId: KnockoutObservable<string> = ko.observable(null);
+        constructor(params: IDetailFormulaSetting) {
+            this.roundingMethod(params ? params.roundingMethod : null);
+            this.roundingPosition(params ? params.roundingPosition : null);
+            this.referenceMonth(params ? params.referenceMonth : null);
+            this.detailCalculationFormula(params ? params.detailCalculationFormula : []);
+            this.historyId(params ? params.historyId : null);
+        }
+    }
+
+    export interface IDetailCalculationFormula {
+        elementOrder: string;
+        formulaElement: string;
+    }
+
+    export class DetailCalculationFormula {
+
+        elementOrder: KnockoutObservable<string> = ko.observable(null);
+        formulaElement: KnockoutObservable<string> = ko.observable(null);
+        constructor(params: IDetailCalculationFormula) {
+            this.elementOrder(params ? params.elementOrder : null);
+            this.formulaElement(params ? params.formulaElement : null);
         }
     }
 
