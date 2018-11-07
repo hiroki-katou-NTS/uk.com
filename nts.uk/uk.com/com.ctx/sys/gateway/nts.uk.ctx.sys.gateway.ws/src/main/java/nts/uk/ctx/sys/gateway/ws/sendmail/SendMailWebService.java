@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.ws.sendmail;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -50,7 +52,7 @@ public class SendMailWebService extends WebService {
 	 */
 	@POST
 	@Path("submit2")
-	public SendMailReturnDto submitSendMail2(SendMailInfoFormGCommand command) {
+	public List<SendMailReturnDto> submitSendMail2(SendMailInfoFormGCommand command) {
 		//sendMailformG
 		return this.sendMailInfoFormGCommandHandler.handle(command);
 	}

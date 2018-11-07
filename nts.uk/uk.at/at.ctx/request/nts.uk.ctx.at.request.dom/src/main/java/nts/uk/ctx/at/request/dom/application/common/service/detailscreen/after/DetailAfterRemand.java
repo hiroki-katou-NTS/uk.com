@@ -21,7 +21,7 @@ public interface DetailAfterRemand {
 	 * @param returnReason
 	 * @return
 	 */
-	public MailSenderResult doRemand(String companyID, List<String> lstAppID, Long version, Integer order, String returnReason);
+	public MailSenderResult doRemand(String companyID, RemandCommand remandCm);
 	
 	/**
 	 * 申請者本人にメール送信する

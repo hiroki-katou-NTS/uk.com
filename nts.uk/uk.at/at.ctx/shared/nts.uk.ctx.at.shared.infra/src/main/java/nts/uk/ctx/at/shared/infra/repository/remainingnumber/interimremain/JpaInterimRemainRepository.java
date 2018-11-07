@@ -57,8 +57,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	@SneakyThrows
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
-		try(
-				PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
 						+ " WHERE SID = ?"
 						+ " AND YMD >= ?"
 						+ " AND YMD <= ?"
@@ -158,8 +157,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	public List<InterimRemain> getDataBySidDates(String sid, List<GeneralDate> baseDates) {
 		List<InterimRemain> resultList = new ArrayList<>();
 		CollectionUtil.split(baseDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try(
-					PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+			try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
 							+ " WHERE SID = ?"
 							+ " AND YMD  IN ("
 							+ NtsStatement.In.createParamsString(subList) + ")");

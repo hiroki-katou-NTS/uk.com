@@ -812,7 +812,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
 				companyID, //・ログイン会社ID
 				employeeID, //・INPUT．社員ID
-				new DatePeriod(period.start(), period.start().addYears(1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年
+				new DatePeriod(period.start(), period.start().addYears(1).addDays(-1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年－１日
 				date, //・基準日＝INPUT．基準日
 				false, //・モード＝その他モード
 				false, //・上書きフラグ=false

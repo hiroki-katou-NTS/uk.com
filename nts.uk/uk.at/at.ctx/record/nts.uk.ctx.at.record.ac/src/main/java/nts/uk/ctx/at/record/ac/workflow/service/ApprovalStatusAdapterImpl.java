@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
+import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
@@ -273,5 +274,17 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 								y.getEmployeeName()))
 						.collect(Collectors.toList())))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID,
+			YearMonth yearMonth, ClosureDate closureDate, GeneralDate date) {
+		ApproverApproveExport approverApproveExport = intermediateDataPub.getApproverByPeriodMonth(employeeID, closureID, yearMonth, closureDate, date);
+		return new ApproverApproveImport(date, employeeID, 
+				approverApproveExport.getAuthorList().stream().map(y -> new ApproverEmpImport(
+						y.getEmployeeID(), 
+						y.getEmployeeCD(), 
+						y.getEmployeeName()))
+				.collect(Collectors.toList()));
 	}
 }

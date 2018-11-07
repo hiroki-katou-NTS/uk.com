@@ -39,7 +39,7 @@ public class InsertWorkInfoOfDailyPerforServiceImpl implements InsertWorkInfoOfD
 			this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
 			// 日別実績の就業実績確認状態を作成する
 			// RequestList 523
-			this.createDailyApproverAdapter.createApprovalStatus(employeeID, processingDate, 1);
+//			this.createDailyApproverAdapter.createApprovalStatus(employeeID, processingDate, 1);
 		}
 
 	}

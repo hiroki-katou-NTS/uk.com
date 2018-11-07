@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
-        methodEditing:          KnockoutObservable<number> = ko.observable(1);
+        transferMethod:          KnockoutObservable<number> = ko.observable(1);
         startYearMonthPeriod: KnockoutObservable<number> = ko.observable();
         startYearMonthMasterDate: KnockoutObservable<number> = ko.observable();
         endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
@@ -23,11 +23,12 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 return;
             }
             this.params = params;
-            this.modeScreen(this.params.modeScreen);
+            this.modeScreen(this.getMode(this.params.modeScreen));
             if(this.modeScreen() == MODE_SCREEN.MODE_ONE){
                 let windowSize = nts.uk.ui.windows.getSelf();
                 windowSize.$dialog.height(250);
             }
+
 
         }
         submit(){
@@ -35,10 +36,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             if(self.params.isPerson){
                 if (self.startYearMonthPeriod() > self.params.endYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) {
                     let data :any = {
-                        startYearMonth: self.startYearMonthPeriod(),
-                        endYearMonth: self.endYearMonthPeriod(),
-                        startYearMonthMasterDate: self.startYearMonthMasterDate(),
-                        methodEditing: self.methodEditing()
+                        start: self.startYearMonthPeriod(),
+                        end: self.endYearMonthPeriod(),
+                        baseDate: self.startYearMonthMasterDate(),
+                        transferMethod: self.transferMethod()
                     };
                     setShared(model.PARAMETERS_SCREEN_J.OUTPUT,data);
 
@@ -50,10 +51,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             }
             if (self.startYearMonthPeriod() > self.params.endYearMonth) {
                 let data: any = {
-                    startYearMonth: self.startYearMonthPeriod(),
-                    endYearMonth: self.endYearMonthPeriod(),
-                    startYearMonthMasterDate: self.startYearMonthMasterDate(),
-                    methodEditing: self.methodEditing()
+                    start: self.startYearMonthPeriod(),
+                    end: self.endYearMonthPeriod(),
+                    baseDate: self.startYearMonthMasterDate(),
+                    transferMethod: self.transferMethod()
                 };
                 setShared("PARAMESE_SCREENJ_OUTPUT", data);
             }
@@ -64,6 +65,20 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         cancel(){
             close();
+        }
+        getMode(modeScreen : number ){
+            switch (modeScreen) {
+                case model.MODE_SCREEN.INDIVIDUAL : {
+                    return 3;
+                }
+                case model.MODE_SCREEN.DEPARMENT : {
+                    return 2;
+                }
+                case model.MODE_SCREEN.POSITION : {
+                    return 2;
+                }
+                default : return 1;
+            }
         }
 
 

@@ -24,7 +24,7 @@ public enum CategoryType {
 //	Continuous history (period designation): 6
 //	→ In the case of employment contract history, it is necessary to have the contract expiration date (end date)
 //	This category was established.
-//	※ Other continuous history can be changed only on the start date
+//	※ Other continuous history can be changed only on the start date , lien quan den CS00021-勤務種別
 	CONTINUOUS_HISTORY_FOR_ENDDATE(6);
 	
 	public final int value;

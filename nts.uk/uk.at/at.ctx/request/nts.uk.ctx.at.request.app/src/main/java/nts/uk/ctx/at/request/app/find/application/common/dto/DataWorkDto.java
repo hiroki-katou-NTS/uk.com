@@ -35,8 +35,13 @@ public class DataWorkDto {
 	 */
 	String selectedWorkTimeName;
 	
+	Integer startTime1;
+	
+	Integer endTime1;
+	
 	public static DataWorkDto fromDomain(DataWork domain) {
 		return new DataWorkDto(domain.getWorkTypeCodes(), domain.getWorkTimeCodes(), domain.getSelectedWorkTypeCd(),
-				domain.getSelectedWorkTypeName(), domain.getSelectedWorkTimeCd(), domain.getSelectedWorkTimeName());
+				domain.getSelectedWorkTypeName(), domain.getSelectedWorkTimeCd(), domain.getSelectedWorkTimeName(),
+				domain.getStartTime1(), domain.getEndTime1());
 	}
 }
