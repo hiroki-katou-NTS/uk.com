@@ -9,6 +9,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable('');
 
         workIndividualPrices: KnockoutObservableArray<WorkIndividualPrice> = ko.observableArray([]);
+        workIndividualPricesDisplay: KnockoutObservableArray<WorkIndividualPrice> = ko.observableArray([]);
 
         perUnitPriceName: KnockoutObservable<string> = ko.observable('');
         perUnitPriceCode: KnockoutObservable<string> = ko.observable('');
@@ -22,6 +23,21 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
 
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
+
+
+                self.workIndividualPrices.removeAll();
+                self.workIndividualPricesDisplay.removeAll();
+                nts.uk.ui.errors.clearAll();
+                $('#A4_5').ntsError('check');
+
+                if(self.workIndividualPrices().length<=10){
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').removeClass('edge_scroll_header');
+                    } else {
+                        $('.scroll-header').removeClass('ci_scroll_header');
+                    }
+                }
+
                 if (!selectcode)
                     return;
                 let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
@@ -32,18 +48,61 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.perUnitPriceName(temp.name);
 
                 }
+
+
             })
 
 
         }
 
         filterData(): void {
+            let self=this;
 
+            let temp = new Array();
+
+            for(let i=0;i<self.workIndividualPrices().length;i++){
+                if(self.workIndividualPrices()[i].startYaerMonth <= this.yearMonthFilter() && self.workIndividualPrices()[i].endYearMonth >= this.yearMonthFilter()){
+                    temp.push(self.workIndividualPrices()[i])
+                }
+            }
+
+            self.workIndividualPricesDisplay(temp);
+
+
+
+
+
+
+
+            if (self.workIndividualPricesDisplay().length > 10) {
+                if (/Edge/.test(navigator.userAgent)) {
+                    $('.scroll-header').addClass('edge_scroll_header');
+                    $('.nts-fixed-body-container').addClass('edge_scroll_body');
+                } else {
+                    $('.scroll-header').addClass('ci_scroll_header');
+                    $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                }
+
+            }
+            if(self.workIndividualPricesDisplay().length<=10){
+                if (/Edge/.test(navigator.userAgent)) {
+                    $('.scroll-header').removeClass('edge_scroll_header');
+                    $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+                } else {
+                    $('.scroll-header').removeClass('ci_scroll_header');
+                    $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+                }
+            }
         }
 
 
         registerAmount(): void {
+            let self = this;
 
+            service.empSalUnitUpdateAll({
+                salIndAmountUpdateCommandList: ko.toJS(self.workIndividualPrices)}).done(function () {
+                dialog.info({messageId: "Msg_15"});
+            })
         }
 
         startPage(): JQueryPromise<any> {
@@ -111,9 +170,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                         employeeIds: data.listEmployee.map(v => v.employeeId)
                     }
                     service.employeeSalaryUnitPriceHistory(command).done(function (dataNameAndAmount) {
-
-                        console.log(dataNameAndAmount);
-
                         self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                         let personalAmountData: Array<any> = new Array();
                         personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
@@ -122,6 +178,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                         })
                         console.log(dataNameAndAmount);
                         self.workIndividualPrices(personalAmountData);
+                        self.workIndividualPricesDisplay(personalAmountData);
                         //self.personalDisplay(personalAmountData);
                         for (let i = 0; i < self.workIndividualPrices().length; i++) {
                             let index = _.findIndex(self.employeeInfoImports, function (o) {
@@ -145,6 +202,15 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                                 }
 
                             }
+                            if(self.workIndividualPrices().length<=10){
+                                if (/Edge/.test(navigator.userAgent)) {
+                                    $('.scroll-header').removeClass('edge_scroll_header');
+                                } else {
+                                    $('.scroll-header').removeClass('ci_scroll_header');
+                                }
+                            }
+
+
                         }, 100);
 
 

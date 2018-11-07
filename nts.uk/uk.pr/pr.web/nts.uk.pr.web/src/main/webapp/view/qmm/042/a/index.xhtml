@@ -86,7 +86,7 @@
                     <!--A4_4 基準年月-->
                     <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM042_7')}</div>
                     <!--A4_5 基準年月-->
-                    <div id="A5_7" tabindex="5" class="margin-left-item"
+                    <div id="A4_5" tabindex="5" class="margin-left-item"
                          data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"></div>
                     <!--A4_6 抽出-->
                     <button tabindex="6" class="caret-bottom" data-bind="click: filterData"
@@ -111,7 +111,7 @@
 
                     </tr>
                     </thead>
-                    <tbody data-bind="foreach: workIndividualPrices">
+                    <tbody data-bind="foreach: workIndividualPricesDisplay">
                     <tr>
                         <td data-bind="text: employeeCode()"></td>
                         <td data-bind="text: businessName()"></td>
