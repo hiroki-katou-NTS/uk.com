@@ -117,7 +117,7 @@ public class RegisterDailyPerformanceInfoService {
 		// BreakTimeOfDailyPerformance
 		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
 			if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 1).isPresent()) {
-				this.breakTimeOfDailyPerformanceRepository.update(breakTimeOfDailyPerformance);
+				this.breakTimeOfDailyPerformanceRepository.updateForEachOfType(breakTimeOfDailyPerformance);
 			} else {
 				this.breakTimeOfDailyPerformanceRepository.insert(breakTimeOfDailyPerformance);
 			}
@@ -149,7 +149,7 @@ public class RegisterDailyPerformanceInfoService {
 			if (stampOutput.getBreakTimeOfDailyPerformance() != null
 					&& !stampOutput.getBreakTimeOfDailyPerformance().getBreakTimeSheets().isEmpty()) {
 				if (this.breakTimeOfDailyPerformanceRepository.find(employeeID, day, 0).isPresent()) {
-					this.breakTimeOfDailyPerformanceRepository.update(stampOutput.getBreakTimeOfDailyPerformance());
+					this.breakTimeOfDailyPerformanceRepository.updateForEachOfType(stampOutput.getBreakTimeOfDailyPerformance());
 				} else {
 					this.breakTimeOfDailyPerformanceRepository.insert(stampOutput.getBreakTimeOfDailyPerformance());
 				}
