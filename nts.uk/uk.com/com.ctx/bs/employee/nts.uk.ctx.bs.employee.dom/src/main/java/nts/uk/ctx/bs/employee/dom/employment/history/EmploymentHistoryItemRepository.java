@@ -100,5 +100,15 @@ public interface EmploymentHistoryItemRepository {
 	//List<EmploymentHistoryItem> getListEmptByListCodeAndDatePeriod(DatePeriod datePeriod, List<String> employmentCodes );
 	
 	List<String> getLstSidByListCodeAndDatePeriod(DatePeriod datePeriod, List<String> employmentCodes );
+	
+	/**
+	 * @author lanlt
+	 * getEmploymentHistoryItem
+	 * @param cid
+	 * @param baseDate
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getEmploymentHistoryItem(String cid, GeneralDate baseDate);
+
 
 }
