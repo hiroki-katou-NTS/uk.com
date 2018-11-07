@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm017.h.viewmodel {
                 }
                 self.formulaCode(selectedFormula.formulaCode);
                 self.formulaName(selectedFormula.formulaName);
-                self.displayCalculationMethod(model.getFormulaSettingMethodEnumModel()[selectedFormula.settingMethod].name);
+                self.displayCalculationMethod(selectedFormula.displaySettingMethod);
                 if (displayLastHistory.length > 0) {
                     self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LAST_HISTORY, getText('QMM008_200', [displayLastHistory])));
                     self.takeoverMethod(0);

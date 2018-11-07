@@ -1,8 +1,65 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	How to set calculation formula = Easy setting<br/>
-	Use conditional branch by master in simple calculation formula = Do not use
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div style="margin-top: 20px; min-width: 550px">
+        <div class = "tab-row" data-bind="with: selectedFormula">
+
+            <div style="width: 130px; display: inline-block;"
+                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
+            <div style="display: inline-block;"
+                 data-bind="text: formulaCode"></div>
+            <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
+                  data-bind="text: formulaName"></span>
+        </div>
+        <div class = "tab-row">
+            <div style="width: 130px; display: inline-block;"
+                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_23')}</div>
+            <div style="display: inline-block;"
+                 data-bind="text: basicFormulaSetting().displayMasterUse"></div>
+        </div>
+        <hr></hr>
+        <table id = "C2_1">
+            <colgroup>
+                <col width="250px" />
+                <col width="120px" />
+                <col width="300px" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class = "ui-widget-header">
+                        <span style="white-space: pre-line">#{i18n.getText('QMM017_30')}</span>
+                        </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <table id = "C3_1">
+            <colgroup>
+                <col width="250px" />
+                <col width="120px" />
+                <col width="300px" />
+            </colgroup>
+            <thead>
+            <tr>
+                <th class = "ui-widget-header">
+                    UNKNOWN
+                </th>
+                <th colspan="2" class = "ui-widget-header">
+                    <button>#{i18n.getText('QMM017_34')}</button>
+                    <button>#{i18n.getText('QMM017_35')}</button>
+                </th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: basicCalculationFormulaList">
+            <tr>
+                <td data-bind="text: masterUseCode"></td>
+                <td data-bind="text: lastName"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </ui:composition>

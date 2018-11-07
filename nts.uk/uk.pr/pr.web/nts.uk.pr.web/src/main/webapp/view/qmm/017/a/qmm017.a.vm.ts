@@ -43,7 +43,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.changeToNewMode();
                 }
             });
+            self.initComponents();
             self.initFormulaData();
+        }
+
+        initComponents () {
+            $('#C2_1').ntsFixedTable({});
+            $('#C3_1').ntsFixedTable({});
         }
 
         initTabPanel() {
@@ -156,7 +162,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         changeToUpdateMode() {
             var self = this;
             self.screenMode(model.SCREEN_MODE.UPDATE);
-            self.selectedTab('tab-1');
+            self.selectedTab('tab-2');
             nts.uk.ui.errors.clearAll();
         }
 
@@ -249,6 +255,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     }
                 }
             });
+        };
+        doConfiguration () {
+            let self = this;
         };
     }
 

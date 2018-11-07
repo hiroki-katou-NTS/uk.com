@@ -144,10 +144,21 @@ module nts.uk.pr.view.qmm017.share.model {
         // control item
         masterUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterUseEnumModel());
         masterBranchUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterBranchUseEnumModel());
+        // display item
+        displayMasterUse: KnockoutObservable<string> = ko.observable(null);
+        displayMasterBranchUse: KnockoutObservable<string> = ko.observable(null);
+
         constructor(params: IBasicFormulaSetting) {
-            this.masterUse(params ? params.masterUse : null);
+            this.masterUse(params ? params.masterUse : MASTER_USE.EMPLOYMENT);
             this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
             this.historyID(params ? params.historyID : null);
+            this.displayMasterUse = ko.computed(function() {
+                return this.masterUseItem()[this.masterUse()].name;
+            }, this);
+            this.displayMasterBranchUse = ko.computed(function() {
+                return this.masterBranchUseItem()[this.masterBranchUse()].name;
+            }, this);
+
         }
     }
 
@@ -168,12 +179,21 @@ module nts.uk.pr.view.qmm017.share.model {
         // control item
         formulaSettingMethodItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getFormulaSettingMethodEnumModel());
         nestedAtrItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getNestedUseClsEnumModel());
+        // display item
+        displaySettingMethod: KnockoutObservable<string> = ko.observable(null);
+        displayNestedAtr: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IFormula) {
             this.formulaCode(params ? params.formulaCode : null);
             this.formulaName(params ? params.formulaName : null);
             this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.SIMPLE_SETTING);
             this.nestedAtr(params ? params.nestedAtr : NESTED_USE_CLS.NOT_USE);
             this.history(params? params.history : []);
+            this.displayNestedAtr = ko.computed(function() {
+                return this.nestedAtrItem()[this.nestedAtr()].name;
+            }, this);
+            this.displaySettingMethod = ko.computed(function() {
+                return this.formulaSettingMethodItem()[this.settingMethod()].name;
+            }, this);
         }
     }
 
@@ -211,6 +231,65 @@ module nts.uk.pr.view.qmm017.share.model {
         constructor(params: IDetailCalculationFormula) {
             this.elementOrder(params ? params.elementOrder : null);
             this.formulaElement(params ? params.formulaElement : null);
+        }
+    }
+
+    export interface IBasicCalculationFormula {
+        calculationFormulaClassification: number;
+        masterUseCode: string;
+        historyID: string;
+        basicCalculationFormula: number;
+        standardAmountClassification: number;
+        standardFixedValue: number;
+        targetItemCodeList: Array<string>;
+        attendanceItem: string;
+        coefficientClassification: number;
+        coefficientFixedValue: number;
+        formulaType: number;
+        roundingResult: number;
+        adjustmentClassification: number;
+        baseItemClassification: number;
+        baseItemFixedValue: number;
+        premiumRate: number;
+        roundingMethod: number;
+
+    }
+    export class BasicCalculationFormula {
+        calculationFormulaClassification: KnockoutObservable<number> = ko.observable(null);
+        masterUseCode: KnockoutObservable<string> = ko.observable(null);
+        historyID: KnockoutObservable<string> = ko.observable(null);
+        basicCalculationFormula: KnockoutObservable<number> = ko.observable(null);
+        standardAmountClassification: KnockoutObservable<number> = ko.observable(null);
+        standardFixedValue: KnockoutObservable<number> = ko.observable(null);
+        targetItemCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
+        attendanceItem: KnockoutObservable<string> = ko.observable(null);
+        coefficientClassification: KnockoutObservable<number> = ko.observable(null);
+        coefficientFixedValue: KnockoutObservable<number> = ko.observable(null);
+        formulaType: KnockoutObservable<number> = ko.observable(null);
+        roundingResult: KnockoutObservable<number> = ko.observable(null);
+        adjustmentClassification: KnockoutObservable<number> = ko.observable(null);
+        baseItemClassification: KnockoutObservable<number> = ko.observable(null);
+        baseItemFixedValue: KnockoutObservable<number> = ko.observable(null);
+        premiumRate: KnockoutObservable<number> = ko.observable(null);
+        roundingMethod: KnockoutObservable<number> = ko.observable(null);
+        constructor(params: IBasicCalculationFormula) {
+            this.masterUseCode(params ? params.masterUseCode : null);
+            this.calculationFormulaClassification(params ? params.calculationFormulaClassification : null);
+            this.basicCalculationFormula(params ? params.basicCalculationFormula : null);
+            this.premiumRate(params ? params.premiumRate : null);
+            this.roundingMethod(params ? params.roundingMethod : null);
+            this.roundingResult(params ? params.roundingResult : null);
+            this.adjustmentClassification(params ? params.adjustmentClassification : null);
+            this.formulaType(params ? params.formulaType : null);
+            this.standardAmountClassification(params ? params.standardAmountClassification : null);
+            this.standardFixedValue(params ? params.standardFixedValue : null);
+            this.targetItemCodeList(params ? params.targetItemCodeList : []);
+            this.baseItemClassification(params ? params.baseItemClassification : null);
+            this.baseItemFixedValue(params ? params.baseItemFixedValue : null);
+            this.attendanceItem(params ? params.attendanceItem : null);
+            this.coefficientClassification(params ? params.coefficientClassification : null);
+            this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
+            this.historyID(params ? params.historyID : null);
         }
     }
 

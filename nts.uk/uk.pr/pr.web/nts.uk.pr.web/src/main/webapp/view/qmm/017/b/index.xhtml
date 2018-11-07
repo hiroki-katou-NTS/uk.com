@@ -1,8 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	How to set calculation formula = Easy setting<br/>
-	Use Conditional Branch by Master in Easy Calculation Formula = Use
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div style="margin-top: 20px; min-width: 550px" data-bind = "with: selectedFormula">
+        <div style="width: 130px; display: inline-block;"
+             data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
+        <div style="display: inline-block;"
+             data-bind="text: formulaCode"></div>
+        <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
+              data-bind="text: formulaName"></span>
+        <button data-bind = "click: $vm.doConfiguration">#{i18n.getText('QMM017_27')}</button>
+        <div style = "display: inline-block" data-bind = "text: displaySettingMethod"></div>
+    </div>
 </ui:composition>

@@ -67,7 +67,7 @@
             </div>
             <div class="fixed-flex-layout-right">
                 <div id="tab-panel" tabindex="10"
-                     data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                     data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}" style="width: 850px; margin-bottom: 20px;">
                     <div class="tab-content-1" data-bind="with: selectedFormula">
                         <div class="tab-row">
                             <div class="label warning">#{i18n.getText('QMM017_11')}</div>
@@ -177,11 +177,15 @@
                     </div>
                     <div class="tab-content-2">
                         <com:ko-if bind="selectedFormula().settingMethod() == 0">
-                            <ui:include src="../b/index.xhtml"/>
+                            <com:ko-if bind="basicFormulaSetting().masterBranchUse() == 1">
+                                <ui:include src="../b/index.xhtml"/>
+                            </com:ko-if>
+                            <com:ko-if bind="basicFormulaSetting().masterBranchUse() == 0">
+                                <ui:include src="../c/index.xhtml"/>
+                            </com:ko-if>
                         </com:ko-if>
                         <com:ko-if bind="selectedFormula().settingMethod() == 1">
-                            <div>
-                            </div>
+                            <ui:include src="../d/index.xhtml"/>
                         </com:ko-if>
                     </div>
                 </div>
