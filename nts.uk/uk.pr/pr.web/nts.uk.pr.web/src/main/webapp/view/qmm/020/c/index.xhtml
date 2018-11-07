@@ -21,18 +21,18 @@
         <div class="fixed-flex-layout-left" style="margin-left: 25px">
             <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="C1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
+                    <button id="C1_3" data-bind="click: openScreenJ, enable: $root.errors.isEmpty">履歴追加</button>
 
-                    <button id="C1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
+                    <button id="C1_4" data-bind="click: openScreenK, enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
                 </div>
 
                 <div style="margin-top: 10px">
                     <table  id="C1_5"  data-bind="ntsGridList: {
                                             height: 250,
                                             dataSource: listStateCorrelationHis,
-                                            primaryKey: 'code',
+                                            primaryKey: 'hisId',
                                             columns: [
-                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
                                                         { headerText: '', key: 'name', width: 150, hidden: true },
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
@@ -48,7 +48,7 @@
             </div>
 
             <div>
-                <div style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['id']}"></div>
+                <div id="C2_3" style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['employeeCode','employeeName']}"></div>
                 <table id="grid2"></table>
 
 

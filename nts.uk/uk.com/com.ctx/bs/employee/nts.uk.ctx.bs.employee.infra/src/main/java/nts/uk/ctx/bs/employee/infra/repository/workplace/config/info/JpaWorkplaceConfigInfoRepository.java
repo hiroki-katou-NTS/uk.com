@@ -543,6 +543,55 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.
+	 * WorkplaceConfigInfoRepository#findByHistoryIds(java.lang.String,
+	 * java.util.List)
+	 */
+	@Override
+	public List<WorkplaceConfigInfo> findByHistoryIds(String companyId, List<String> historyIds) {
+		if (CollectionUtil.isEmpty(historyIds)) {
+			return Collections.emptyList();
+		}
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder.createQuery(BsymtWkpConfigInfo.class);
+		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+
+		// select root
+		cq.select(root);
+
+		List<BsymtWkpConfigInfo> resultList = new ArrayList<>();
+
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
+
+			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
+					.get(BsymtWkpConfigInfoPK_.historyId).in(subHistorieIds));
+
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+
+		// check empty
+		if (resultList.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return resultList.stream()
+				.map(entity -> new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * Gets the all parent by wkp id.
 	 *

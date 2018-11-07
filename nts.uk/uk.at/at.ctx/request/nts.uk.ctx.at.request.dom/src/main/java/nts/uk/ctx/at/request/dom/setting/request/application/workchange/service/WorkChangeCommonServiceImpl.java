@@ -76,7 +76,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		wcBasicData.setWorkingData(workingData);
 		
 		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));
-		
+		//就業時間帯の必須チェック
 		wcBasicData.setTimeRequired(workChangeRegisterService.isTimeRequired(workingData.getSelectedWorkTypeCd()));
 		
 		// 勤務変更申請基本データ

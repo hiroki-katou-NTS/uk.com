@@ -21,7 +21,7 @@
                 <div class="fixed-flex-layout-left" style="margin-left: 25px">
                         <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                                 <div>
-                                        <button id="B1_3" data-bind="enable: $root.errors.isEmpty">履歴追加</button>
+                                        <button id="B1_3" data-bind="click: openScreenJ, enable: $root.errors.isEmpty">履歴追加</button>
 
                                         <button id="B1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">履歴編集</button>
                                 </div>
@@ -30,9 +30,9 @@
                                         <table  id="A1_5"  data-bind="ntsGridList: {
                                             height: 250,
                                             dataSource: listStateCorrelationHis,
-                                            primaryKey: 'code',
+                                            primaryKey: 'hisId',
                                             columns: [
-                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
                                                         { headerText: '', key: 'name', width: 150, hidden: true },
                                                         { headerText: '', key: 'display', width: 180,formatter: _.escape},
                                                     ],
