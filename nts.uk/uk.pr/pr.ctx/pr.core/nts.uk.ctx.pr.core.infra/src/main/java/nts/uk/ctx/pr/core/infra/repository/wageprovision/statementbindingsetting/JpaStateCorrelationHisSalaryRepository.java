@@ -21,7 +21,7 @@ public class JpaStateCorrelationHisSalaryRepository extends JpaRepository implem
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisSal f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND  f.stateCorHisSalPk.hisId =:hisId ";
-
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid";
 
     @Override
     public Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryById(String cid, String hisId){
@@ -30,6 +30,14 @@ public class JpaStateCorrelationHisSalaryRepository extends JpaRepository implem
                 .setParameter("hisId", hisId)
                 .getList();
 
+        return this.toDomain(listStateCorHisSal);
+    }
+
+    @Override
+    public  Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryByCid(String cid){
+        List<QpbmtStateCorHisSal> listStateCorHisSal = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisSal.class)
+                .setParameter("cid", cid)
+                .getList();
         return this.toDomain(listStateCorHisSal);
     }
 
