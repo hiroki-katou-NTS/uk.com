@@ -17,20 +17,20 @@
 	</ui:define>
 	<ui:define name="content">
 		<div class="contents-area" style="margin-left: 20px;">
-			<div class="label dialog-title">#{i18n.getText('QMM016_78')}</div>
+			<div class="label dialog-title">#{i18n.getText('QMM017_160')}</div>
 			<div style="margin-top: 20px; min-width: 550px">
 				<div style="width: 130px; display: inline-block;"
-					 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+					 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
 				<div style="display: inline-block;"
-					 data-bind="text: wageTableCode"></div>
+					 data-bind="text: formulaCode"></div>
 				<span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class = "limited-label"
-					  data-bind="text: wageTableName"></span>
+					  data-bind="text: formulaName"></span>
 			</div>
 			<div style="margin-top: 20px; min-width: 550px">
 				<div style="width: 130px;"
-					 data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM016_79')}</div>
+					 data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM017_162')}</div>
 				<div style="width: 200px; display: inline-flex; position: absolute">
-					<div id="J3_2" tabindex="1"
+					<div id="I1_6" tabindex="1"
 						 data-bind="ntsRadioBoxGroup: {
 										value: modifyMethod,
 										enable: isLastHistory,
@@ -39,13 +39,13 @@
 										optionsText: 'name'}"></div>
 
 				</div>
-				<span style = "position: absolute; z-index: -1; margin-top: 30px; margin-left: 10px;" class="label warning tab-row">#{i18n.getText('QMM016_80')}</span>
+				<span style = "position: absolute; z-index: -1; margin-top: 30px; margin-left: 10px;" class="label warning tab-row">#{i18n.getText('QMM017_164')}</span>
 				<div style="margin-top: 100px; margin-left: 150px;  min-width: 420px">
 					<div style="width: 100px; display: inline-block"
-						 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_75')}</div>
-					<div id="J4_2" style="display: inline-block"
+						 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_165')}</div>
+					<div id="I1_11" style="display: inline-block"
 						 data-bind="ntsDatePicker: {
-							name: '#[QMM016_16]',
+							name: '#[QMM017_12]',
 							value: startMonth,
 							dateFormat: 'yearmonth',
 							valueFormat: 'YYYYMM',
@@ -59,8 +59,8 @@
 		</div>
 		<div id="functions-area-bottom">
 			<button tabindex="3" class="x-large proceed "
-					data-bind="click: editHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM016_81')}</button>
-			<button tabindex="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM016_55')}</button>
+					data-bind="click: editHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_153')}</button>
+			<button tabindex="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
 		</div>
 	</ui:define>
 </ui:composition>

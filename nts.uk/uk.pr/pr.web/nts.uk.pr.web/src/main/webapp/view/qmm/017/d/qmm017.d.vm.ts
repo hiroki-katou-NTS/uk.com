@@ -8,9 +8,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
-    export class ScreenModelD {
+    export class ScreenModel {
         // tabs variables
-        screenDtabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        screenDtabs: KnockoutObservableArray<any>;
         screenDselectedTab: KnockoutObservable<string>;
         
         constructor() {

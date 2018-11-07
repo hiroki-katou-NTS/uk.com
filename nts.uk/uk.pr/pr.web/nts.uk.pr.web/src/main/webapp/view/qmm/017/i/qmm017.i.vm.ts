@@ -7,8 +7,8 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
     import model = nts.uk.pr.view.qmm017.share.model;
     import service = nts.uk.pr.view.qmm017.i.service;
     export class ScreenModel {
-        wageTableCode: KnockoutObservable<string> = ko.observable('');
-        wageTableName: KnockoutObservable<string> = ko.observable('');
+        formulaCode: KnockoutObservable<string> = ko.observable('');
+        formulaName: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
         displayEndMonth: KnockoutObservable<string> = ko.observable('');
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
@@ -19,10 +19,10 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
         previousHistory: any = null;
         constructor() {
             let self = this;
-            let params = getShared("QMM016_J_PARAMS");
+            let params = getShared("QMM017_I_PARAMS");
             if (params) {
                 block.invisible();
-                let selectedWageTable = params.selectedWageTable;
+                let selectedFormula = params.selectedFormula;
                 self.selectedHistory = params.selectedHistory;
                 self.startMonth(self.selectedHistory.startMonth);
                 self.displayEndMonth(getText('QMM016_31') + "  " + nts.uk.time.parseYearMonth(self.selectedHistory.endMonth).format());
@@ -34,11 +34,12 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
                     });
                     self.isLastHistory(params.selectedHistory.startMonth == history[0].startMonth);
                 }
-                self.wageTableCode(selectedWageTable.wageTableCode);
-                self.wageTableName(selectedWageTable.wageTableName);
+                self.formulaCode(selectedFormula.formulaCode);
+                self.formulaName(selectedFormula.formulaName);
                 self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.DELETE, getText('QMM008_206')));
                 self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.UPDATE, getText('QMM008_207')));
             }
+            self.isLastHistory() ? setTimeout(function(){$('#I1_11').focus()}, 100) : $('#I1_6').focus();
             block.clear();
         }
         editHistory() {
@@ -66,10 +67,10 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
             let self = this;
             let newHistory = self.selectedHistory;
             newHistory.startMonth = self.startMonth();
-            let command = { wageTableCode: self.wageTableName(), yearMonthHistoryItem: newHistory };
-            service.editWageTableHistory(command).done(function() {
+            let command = { formulaCode: self.formulaCode(), yearMonthHistoryItem: newHistory };
+            service.editFormulaHistory(command).done(function() {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    setShared('QMM016_J_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    setShared('QMM016_I_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                     nts.uk.ui.windows.close();
                 })
             }).fail(function(err) {
@@ -79,10 +80,10 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
 
         deleteHistory() {
             let self = this;
-            let command = { wageTableCode: self.wageTableCode(), yearMonthHistoryItem: self.selectedHistory };
-            service.deleteWageTableHistory(command).done(function() {
+            let command = { formulaCode: self.formulaCode(), yearMonthHistoryItem: self.selectedHistory };
+            service.deleteFormulaHistory(command).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    setShared('QMM016_J_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    setShared('QMM016_I_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                     nts.uk.ui.windows.close();
                 });
             }).fail(function(err) {

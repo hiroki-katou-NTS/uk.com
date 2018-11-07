@@ -24,9 +24,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         // tree grid variables
         formulaList: KnockoutObservableArray<model.Formula> = ko.observableArray([]);
         selectedFormulaIdentifier: KnockoutObservable<string> = ko.observable(null);
+        // setting item
         selectedFormula: KnockoutObservable<model.Formula> = ko.observable(new model.Formula(null));
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
-
+        basicFormulaSetting: KnockoutObservable<model.BasicFormulaSetting> = ko.observable(new model.BasicFormulaSetting(null));
         constructor() {
             var self = this;
             self.initTabPanel();
@@ -195,11 +196,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         createNewHistory () {
             let self = this;
-            let selectedFormula = ko.toJS(self.formulaList);
+            let selectedFormula = ko.toJS(self.selectedFormula);
             let history = selectedFormula.history;
             setShared("QMM017_H_PARAMS", { selectedFormula: selectedFormula, history: history });
-            modal("/view/qmm/016/h/index.xhtml").onClosed(function () {
-                var params = getShared("QMM016_H_RES_PARAMS");
+            modal("/view/qmm/017/h/index.xhtml").onClosed(function () {
+                var params = getShared("QMM017_H_RES_PARAMS");
                 if (params) {
                     let formulaList = ko.toJS(self.formulaList);
                     let historyID = nts.uk.util.randomId();
@@ -232,9 +233,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             var self = this;
             var selectedFormula = ko.toJS(self.selectedFormula), selectedHistory = ko.toJS(self.selectedHistory);
             var history = selectedFormula.history;
-            setShared("QMM016_I_PARAMS", { selectedFormula: selectedFormula, history: history, selectedHistory: selectedHistory });
-            modal("/view/qmm/016/i/index.xhtml").onClosed(function () {
-                var params = getShared("QMM016_I_RES_PARAMS");
+            setShared("QMM017_I_PARAMS", { selectedFormula: selectedFormula, history: history, selectedHistory: selectedHistory });
+            modal("/view/qmm/017/i/index.xhtml").onClosed(function () {
+                var params = getShared("QMM017_I_RES_PARAMS");
                 if (params) {
                     // reload data
                     // change selected value

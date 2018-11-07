@@ -112,31 +112,64 @@
                         </div>
                         <div class="tab-row">
                             <div class="column-2">
+                                <div class="tab-row-medium">
+                                    <span class="label">#{i18n.getText('QMM017_19')}</span>
+                                </div>
+                                <hr></hr>
                                 <div data-bind="if: settingMethod() == 0">
-                                    <div class="tab-row-medium">
-                                        <span class="label">#{i18n.getText('QMM017_19')}</span>
+                                    <div data-bind = "with: $vm.basicFormulaSetting">
+                                        <div class="tab-row-medium">
+                                            <!--A3_14-->
+                                            <span class="label">#{i18n.getText('QMM017_20')}</span>
+                                        </div>
+                                        <div class="tab-row-medium">
+                                            <!--A3_15-->
+                                            <div style="display: block;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
+                                            <div style="margin-left: 25px;" tabindex = "15" class="cf" data-bind="ntsSwitchButton: {
+                                                name: '#[QMM017_22]',
+                                                options: masterBranchUseItem,
+                                                optionsValue: 'value',
+                                                optionsText: 'name',
+                                                value: masterBranchUse,
+                                                required: true,
+                                                enable: $vm.isUpdateMode }">
+                                            </div>
+                                        </div>
+                                        <!--A3_19-->
+                                        <div class="tab-row-medium">
+                                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
+                                            <div style = "vertical-align: middle" tabindex = "16" data-bind="ntsComboBox: {
+                                                name: '#[QMM016_6]',
+                                                options: masterUseItem,
+                                                optionsValue: 'value',
+                                                visibleItemsCount: 5,
+                                                value: masterUse,
+                                                optionsText: 'name',
+                                                enable: $vm.isUpdateMode,
+                                                required: true,
+                                                columns: [
+                                                    { prop: 'fix_length', length: 0 },
+                                                    { prop: 'name', length: 10 },
+                                                ]}, visible: masterBranchUse() == 0">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <hr></hr>
-                                    <div class="tab-row-medium">
-                                        <!--A3_14-->
-                                        <span class="label">#{i18n.getText('QMM017_20')}</span>
-                                    </div>
-                                    <div class="tab-row-medium">
-                                        <!--A3_15-->
-                                        <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
-                                    </div>
-                                    <!--A3_19-->
-                                    <div class="tab-row-medium">
-                                        <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
-                                    </div>
-
                                 </div>
                                 <div data-bind="if: settingMethod() == 1">
                                     <div class="tab-row-medium">
                                         <span class="label">#{i18n.getText('QMM017_25')}</span>
                                     </div>
                                     <div class="tab-row-medium">
-                                        <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_26')}</div>
+                                        <div  style="display: block" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_26')}</div>
+                                        <div style="margin-left: 25px;" tabindex = "15" class="cf" data-bind="ntsSwitchButton: {
+                                                name: '#[QMM017_22]',
+                                                options: nestedAtrItem,
+                                                optionsValue: 'value',
+                                                optionsText: 'name',
+                                                value: nestedAtr,
+                                                required: true,
+                                                enable: $vm.isUpdateMode }">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

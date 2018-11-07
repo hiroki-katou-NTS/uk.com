@@ -2,20 +2,22 @@ package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 
 /**
-* 計算式の設定方法
+* 式中端数処理
 */
-public enum FormulaSettingMethod
+public enum RoundingMethod
 {
     
-    SIMPLE_SETTING(0, "かんたん設定"),
-    DETAIL_SETTING(1, "詳細設定");
+    ROUND_OFF(0, "四捨五入"),
+    ROUND_UP(1, "切り上げ"),
+    TRUNCATION(2, "切り捨て"),
+    DO_NOTHING(3, "何もしない");
     
     /** The value. */
     public final int value;
     
     /** The name id. */
     public final String nameId;
-    private FormulaSettingMethod(int value, String nameId) 
+    private RoundingMethod(int value, String nameId) 
     {
         this.value = value;
         this.nameId = nameId;

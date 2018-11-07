@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 570, height: 400 };</script>
+        <script>var dialogSize = { width: 570, height: 600 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm017.h.vm.js" />
@@ -16,35 +16,35 @@
     </ui:define>
     <ui:define name="content">
         <div class="contents-area" style="margin-left: 20px;">
-            <div class="label dialog-title">#{i18n.getText('QMM016_74')}</div>
+            <div class="label dialog-title">#{i18n.getText('QMM017_174')}</div>
             <div style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px; display: inline-block;"
-                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
+                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
                 <div style="display: inline-block;"
-                     data-bind="text: wageTableCode"></div>
+                     data-bind="text: formulaCode"></div>
                 <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class = "limited-label"
-                      data-bind="text: wageTableName"></span>
+                      data-bind="text: formulaName"></span>
             </div>
             <div style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px;"
-                     data-bind="ntsFormLabel: {required: true}" id="C2_1">#{i18n.getText('QMM016_75')}</div>
-                <div id ="I3_2"
+                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_12')}</div>
+                <div
                      data-bind="ntsDatePicker: {
-							name: '#[QMM016_16]',
+							name: '#[QMM017_12]',
 							value: startMonth,
 							dateFormat: 'yearmonth',
 							valueFormat: 'YYYYMM',
 							required: true,
 							enable: true}"
                      tabindex="1" />
-                <div
-                        style="width: 100px; margin-left: 10px; display: inline-block;">#{i18n.getText('QMM016_76')}</div>
+                <div style = "display: inline-block" data-bind = "text: displayStartJapanYearMonth"></div>
+                <div style="width: 100px; margin-left: 10px; display: inline-block;">#{i18n.getText('QMM016_76')}</div>
             </div>
             <div style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px;"
-                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM016_77')}</div>
+                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_151')}</div>
                 <div style = "width: 280px;display: inline-flex">
-                    <div id = "I4_2" tabindex = "2"
+                    <div tabindex = "2" id = "H1_9"
                          data-bind="ntsRadioBoxGroup: {
 										value: takeoverMethod,
 										enable: true,
@@ -52,14 +52,25 @@
 										optionsValue: 'value',
 										optionsText: 'name'}"></div>
                 </div>
-
             </div>
-
+            <div style="margin-top: 20px; min-width: 550px">
+                <div style="width: 130px; margin-left: 150px;"
+                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_17')}</div>
+                <div style = "display: inline-block" data-bind = "text: displayCalculationMethod"></div>
+            </div>
+            <div style="margin-top: 20px; min-width: 550px">
+                <div style="width: 130px; margin-left: 180px;"
+                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
+            </div>
+            <div style="margin-top: 20px; min-width: 550px">
+                <div style="width: 130px; margin-left: 180px;"
+                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
+            </div>
         </div>
         <div id="functions-area-bottom">
             <button tabindex ="3" class="x-large proceed "
-                    data-bind="click: addNewHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM016_54')}</button>
-            <button tabindex ="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM016_55')}</button>
+                    data-bind="click: addNewHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_153')}</button>
+            <button tabindex ="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
         </div>
     </ui:define>
 </ui:composition>

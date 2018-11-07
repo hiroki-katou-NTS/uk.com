@@ -7,6 +7,11 @@ module nts.uk.pr.view.qmm017.share.model {
         DETAIL_SETTING = 1
     }
 
+    export enum NESTED_USE_CLS {
+        NOT_USE = 0,
+        USE = 1
+    }
+
     export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1,
@@ -48,6 +53,20 @@ module nts.uk.pr.view.qmm017.share.model {
         N003 = '家族人数',
     }
 
+    export enum MASTER_BRANCH_USE {
+        NOT_USE = 0,
+        USE = 1
+    }
+
+    export enum MASTER_USE {
+        EMPLOYMENT = 0,
+        DEPARTMENT = 1,
+        CLASSIFICATION = 2,
+        JOB_TITLE = 3,
+        SALARY_CLASSIFICATION = 4,
+        SALARY_FROM = 5
+    }
+
     export function getElementEnumModel () {
         return [
             new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, '一次元'),
@@ -62,6 +81,32 @@ module nts.uk.pr.view.qmm017.share.model {
         return [
             new EnumModel(FORMULA_SETTING_METHOD.SIMPLE_SETTING, 'かんたん設定'),
             new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, '詳細設定')
+        ];
+    }
+
+    export function getNestedUseClsEnumModel () {
+        return [
+            new EnumModel(NESTED_USE_CLS.USE, '利用可能'),
+            new EnumModel(NESTED_USE_CLS.NOT_USE, '利用不可')
+        ];
+    }
+
+    export function getMasterUseEnumModel () {
+        return [
+            new EnumModel(MASTER_USE.EMPLOYMENT, '雇用'),
+            new EnumModel(MASTER_USE.DEPARTMENT, '部門'),
+            new EnumModel(MASTER_USE.CLASSIFICATION, '分類'),
+            new EnumModel(MASTER_USE.JOB_TITLE, '職位'),
+            new EnumModel(MASTER_USE.SALARY_CLASSIFICATION, '給与分類'),
+            new EnumModel(MASTER_USE.SALARY_FROM, '給与形態')
+        ];
+    }
+
+
+    export function getMasterBranchUseEnumModel () {
+        return [
+            new EnumModel(MASTER_BRANCH_USE.NOT_USE, '利用しない'),
+            new EnumModel(MASTER_BRANCH_USE.USE, '利用する')
         ];
     }
 
@@ -85,6 +130,27 @@ module nts.uk.pr.view.qmm017.share.model {
         }
     }
 
+    // かんたん計算式設定
+    export interface IBasicFormulaSetting {
+        masterUse: number;
+        masterBranchUse: number;
+        historyID: string;
+    }
+    // かんたん計算式設定
+    export class BasicFormulaSetting {
+        masterUse: KnockoutObservable<number> = ko.observable(null);
+        masterBranchUse: KnockoutObservable<number> = ko.observable(null);
+        historyID: KnockoutObservable<string> = ko.observable(null);
+        // control item
+        masterUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterUseEnumModel());
+        masterBranchUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterBranchUseEnumModel());
+        constructor(params: IBasicFormulaSetting) {
+            this.masterUse(params ? params.masterUse : null);
+            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
+            this.historyID(params ? params.historyID : null);
+        }
+    }
+
     export interface IFormula {
         formulaCode: string
         formulaName: string
@@ -101,11 +167,12 @@ module nts.uk.pr.view.qmm017.share.model {
         history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
         // control item
         formulaSettingMethodItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getFormulaSettingMethodEnumModel());
+        nestedAtrItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getNestedUseClsEnumModel());
         constructor(params: IFormula) {
             this.formulaCode(params ? params.formulaCode : null);
             this.formulaName(params ? params.formulaName : null);
-            this.settingMethod(params ? params.settingMethod : 0);
-            this.nestedAtr(params ? params.nestedAtr : 0);
+            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.SIMPLE_SETTING);
+            this.nestedAtr(params ? params.nestedAtr : NESTED_USE_CLS.NOT_USE);
             this.history(params? params.history : []);
         }
     }

@@ -2,20 +2,20 @@ package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 
 /**
-* 計算式の設定方法
+* マスタ分岐利用
 */
-public enum FormulaSettingMethod
+public enum MasterBranchUse
 {
     
-    SIMPLE_SETTING(0, "かんたん設定"),
-    DETAIL_SETTING(1, "詳細設定");
+    NOT_USE(0, "利用しない"),
+    USE(1, "利用する");
     
     /** The value. */
     public final int value;
     
     /** The name id. */
     public final String nameId;
-    private FormulaSettingMethod(int value, String nameId) 
+    private MasterBranchUse(int value, String nameId) 
     {
         this.value = value;
         this.nameId = nameId;
