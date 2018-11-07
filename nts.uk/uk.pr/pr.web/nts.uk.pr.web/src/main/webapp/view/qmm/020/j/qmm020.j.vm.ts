@@ -23,11 +23,12 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 return;
             }
             this.params = params;
-            this.modeScreen(this.params.modeScreen);
+            this.modeScreen(this.getMode(this.params.modeScreen));
             if(this.modeScreen() == MODE_SCREEN.MODE_ONE){
                 let windowSize = nts.uk.ui.windows.getSelf();
                 windowSize.$dialog.height(250);
             }
+
 
         }
         submit(){
@@ -64,6 +65,20 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         cancel(){
             close();
+        }
+        getMode(modeScreen : number ){
+            switch (modeScreen) {
+                case model.MODE_SCREEN.INDIVIDUAL : {
+                    return 3;
+                }
+                case model.MODE_SCREEN.DEPARMENT : {
+                    return 2;
+                }
+                case model.MODE_SCREEN.POSITION : {
+                    return 2;
+                }
+                default : return 1;
+            }
         }
 
 
