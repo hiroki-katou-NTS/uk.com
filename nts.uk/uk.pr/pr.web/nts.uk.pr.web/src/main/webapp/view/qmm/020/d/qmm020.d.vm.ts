@@ -17,7 +17,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         selectedCodes2: any;
         list: any;
         button : string = '<button  data-bind = "click: $vm.viewmodelD.openTest"> Test </button>';
-        ntsControls: KnockoutObservableArray<any> = ko.observableArray([]);
         mode: KnockoutObservable<number> = ko.observable(0);
         constructor(){
             block.invisible();
@@ -78,12 +77,14 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
 
             self.selectedCodes2 = ko.observable([]);
             self.index = 0;
-            self.columns = ko.observableArray([{ headerText: getText('QMM020_33'), width: "450px", key: 'code', dataType: "string" },
-                { headerText: getText('QMM020_20'), key: 'nodeText', width: "250px", dataType: "string", ntsControl: 'Button' },
-                { headerText: getText('QMM020_23'), key: 'custom', width: "250px", dataType: "string", ntsControl: 'Button' }]);
+            let template = '<button class="setting" onclick="openDlg()" style="margin-left: 20px;">設定</button>${custom}';
 
-            self.ntsControls = ko.observableArray( [
-                { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' } ]);
+            self.columns = ko.observableArray([{ headerText: getText('QMM020_33'), width: "450px", key: 'code', dataType: "string" },
+                /*{ headerText: getText('QMM020_20'), key: 'nodeText', width: "250px", dataType: "string", ntsControl: 'Button' },
+                { headerText: getText('QMM020_23'), key: 'custom', width: "250px", dataType: "string", ntsControl: 'Button' }]),*/
+                { headerText: getText('QMM020_23'), key: 'custom', width: '100px', template: template},
+                { headerText: getText('QMM020_23'), key: 'custom', width: '100px', template: template}]);
+
         }
 
         createList(){
@@ -172,7 +173,10 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             return nts.uk.time.formatYearMonth(yearMonth);
         }
 
+
+
     }
+
     export class ItemModel {
         code: string;
         name: string;
@@ -223,3 +227,9 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         UPDATE = 1,
     }
 }
+
+let openDlg = function() {
+    nts.uk.ui.windows.sub.modal("/view/qmm/020/m/index.xhtml").onClosed(() => {
+        alert("OK");
+    });
+};
