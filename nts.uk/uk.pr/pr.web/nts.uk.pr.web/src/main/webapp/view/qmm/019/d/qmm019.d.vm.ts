@@ -247,7 +247,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         categoryAtr: number;
         itemNameCd: string;
         name: string;
-        deprecatedAtr: number;
+        defaultAtr: number;
     }
 
     class StatementItem {
@@ -264,22 +264,22 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
          */
         name: string;
         /**
-         * 廃止区分
+         * 既定区分
          */
-        deprecatedAtr: number;
+        defaultAtr: number;
 
         constructor(data: IStatementItem) {
             if (isNullOrUndefined(data)) {
                 this.categoryAtr = null;
                 this.itemNameCd = null;
                 this.name = null;
-                this.deprecatedAtr = null;
+                this.defaultAtr = null;
                 return;
             }
             this.categoryAtr = data.categoryAtr;
             this.itemNameCd = data.itemNameCd;
             this.name = data.name;
-            this.deprecatedAtr = data.deprecatedAtr;
+            this.defaultAtr = data.defaultAtr;
         }
 
         static fromApp(data: Array<IStatementItem>): Array<StatementItem> {

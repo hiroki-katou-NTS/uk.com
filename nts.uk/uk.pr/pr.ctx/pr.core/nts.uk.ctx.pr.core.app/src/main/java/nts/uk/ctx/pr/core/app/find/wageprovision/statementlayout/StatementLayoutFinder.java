@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout;
 
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemCustomDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
