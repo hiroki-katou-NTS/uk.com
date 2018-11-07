@@ -171,4 +171,13 @@ public interface SyEmployeePub {
 	 */
 	Optional<EmpInfoRegistered> getEmpInfo(String cid, String pid);
 	
+	/**
+	 * Gets the sid cd pname by S ids.
+	 *
+	 * @param sIdsInput the s ids input
+	 * @return the sid cd pname by S ids
+	 */
+	// RequestList126-2
+	List<EmployeIdCdPnameExport> getSidCdPnameBySIds(List<String> sIdsInput);
+	
 }
