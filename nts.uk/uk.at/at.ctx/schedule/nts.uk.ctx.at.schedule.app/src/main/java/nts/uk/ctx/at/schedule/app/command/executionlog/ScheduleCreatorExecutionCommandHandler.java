@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -278,9 +279,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// EA No2017
 		// マスタ情報を取得する
 		CreateScheduleMasterCache masterCache = this.acquireData(companyId, employeeIds, period);
-
-		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
-				employeeIds, scheduleExecutionLog.getPeriod());
 		
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -288,47 +286,49 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 		
-		CollectionUtil.split(
+		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
-						100, subCreators -> {
-			this.parallel.forEach(subCreators, scheduleCreator -> {
-				
-				// check is client submit cancel
-				if (asyncTask.hasBeenRequestedToCancel()) {
-					// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
-					this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-					return;
-				}
-	
-				// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-				StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-						command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
-						masterCache.getEmpGeneralInfo());
-	
-				if (stateAndValueDatePeriod.state) {
-					DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-				
-					// process each by 2 months to make transaction small for performance
-					final int unitMonthsOfTransaction = 2;
-					dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
-						this.transaction.execute(
-								command,
-								scheduleExecutionLog,
-								context,
-								companyId,
-								exeId,
-								subPeriod,
-								masterCache,
-								listBasicSchedule,
-								asyncTask,
-								companySetting,
-								scheduleCreator);
-					});
-				} else {
-					scheduleCreator.updateToCreated();
-					this.scheduleCreatorRepository.update(scheduleCreator);
-				}
-			});
+				scheduleCreator -> {
+			
+			// check is client submit cancel
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
+				return;
+			}
+
+			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
+					masterCache.getEmpGeneralInfo());
+
+			if (stateAndValueDatePeriod.state) {
+				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+			
+				// process each by 2 months to make transaction small for performance
+				final int unitMonthsOfTransaction = 2;
+				dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
+
+					List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
+							Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
+					
+					this.transaction.execute(
+							command,
+							scheduleExecutionLog,
+							context,
+							companyId,
+							exeId,
+							subPeriod,
+							masterCache,
+							listBasicSchedule,
+							asyncTask,
+							companySetting,
+							scheduleCreator);
+				});
+			} else {
+				scheduleCreator.updateToCreated();
+				this.scheduleCreatorRepository.update(scheduleCreator);
+			}
 		});
 		
 		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
