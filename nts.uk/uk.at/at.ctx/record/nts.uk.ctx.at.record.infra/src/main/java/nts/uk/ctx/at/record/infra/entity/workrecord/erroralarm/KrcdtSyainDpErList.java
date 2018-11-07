@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -60,11 +61,28 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 
 	@OneToMany(mappedBy = "erAttendanceItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcdtErAttendanceItem> erAttendanceItem;
+	
+	@Transient
+	public KrcdtErAttendanceItem krcdtErAttendanceItem;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return this.id;
+	}
+
+	public KrcdtSyainDpErList(String id, String errorCode, String employeeId, GeneralDate processingDate,
+			String companyID, Integer errorCancelable, String errorAlarmMessage,
+			List<KrcdtErAttendanceItem> erAttendanceItem) {
+		super();
+		this.id = id;
+		this.errorCode = errorCode;
+		this.employeeId = employeeId;
+		this.processingDate = processingDate;
+		this.companyID = companyID;
+		this.errorCancelable = errorCancelable;
+		this.errorAlarmMessage = errorAlarmMessage;
+		this.erAttendanceItem = erAttendanceItem;
 	}
 
 	public static KrcdtSyainDpErList toEntity(EmployeeDailyPerError employeeDailyPerError) {
@@ -83,5 +101,13 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 				this.processingDate, this.errorCode, erAttendanceItem.stream()
 						.map(c -> c.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()),
 				this.errorCancelable, this.errorAlarmMessage);
+	}
+
+	public static EmployeeDailyPerError toDomainForRes(List<KrcdtSyainDpErList> entities) {
+		return new EmployeeDailyPerError(entities.get(0).companyID, entities.get(0).employeeId,
+				entities.get(0).processingDate, entities.get(0).errorCode, entities.stream()
+						.filter(item -> item.krcdtErAttendanceItem != null)
+						.map(c -> c.krcdtErAttendanceItem.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()),
+						entities.get(0).errorCancelable, entities.get(0).errorAlarmMessage);
 	}
 }
