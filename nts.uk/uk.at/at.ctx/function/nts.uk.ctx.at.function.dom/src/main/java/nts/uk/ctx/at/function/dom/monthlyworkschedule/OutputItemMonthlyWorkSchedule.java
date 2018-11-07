@@ -46,7 +46,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	private RemarkInputContent remarkInputNo;
 	
 	/** The Constant MAX_ATTENDANCE_ITEM. */
-	private static final String MAX_ATTENDANCE_ITEM = "39";
+	private static final int MAX_ATTENDANCE_ITEM = 48;
 
 	/**
 	 * Instantiates a new output item monthly work schedule.
@@ -99,8 +99,8 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 			throw new BusinessException("Msg_880");
 		}
 		
-		if (this.lstDisplayedAttendance.size() > 39) {
-			throw new BusinessException("Msg_1297", new String[]{MAX_ATTENDANCE_ITEM});
+		if (this.lstDisplayedAttendance.size() > MAX_ATTENDANCE_ITEM) {
+			throw new BusinessException("Msg_1297", String.valueOf(MAX_ATTENDANCE_ITEM));
 		}
 	}
 
