@@ -74,6 +74,11 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
     @Override
+    public void add(String cid, String code, YearMonthHistoryItem domain) {
+        this.commandProxy().insert(yearMonthToEntity(cid, code, domain));
+    }
+
+    @Override
     public void update(String cid, String code, YearMonthHistoryItem domain) {
         this.commandProxy().update(yearMonthToEntity(cid, code, domain));
     }

@@ -44,7 +44,7 @@ public class StatementLayoutHistFinder {
             StatementLayoutSet statementLayoutSet = statementLayoutSetOptional.get();
 
             return Optional.of(new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
-                    yearMonthHistoryItem.identifier(), yearMonthHistoryItem.start().v(), yearMonthHistoryItem.end().v(), new StatementLayoutSetDto(statementLayoutSet), null, null));
+                    yearMonthHistoryItem.identifier(), yearMonthHistoryItem.start().v(), yearMonthHistoryItem.end().v(), new StatementLayoutSetDto(statementLayoutSet)));
         } else {
             return Optional.empty();
         }
@@ -62,12 +62,10 @@ public class StatementLayoutHistFinder {
             YearMonthHistoryItem yearMonthHistoryItemLast = yearMonthHistoryItemLastOptional.get();
             String histId = yearMonthHistoryItemLast.identifier();
             StatementLayoutSetDto statementLayoutSetDto = statementLayoutSetRepo.getStatementLayoutSetById(histId).map(i -> new StatementLayoutSetDto(i)).orElse(null);
-            PaymentItemDetailDto paymentItemDetailSetDto = paymentItemDetailSetRepo.getPaymentItemDetailSetById(histId).map(i -> new PaymentItemDetailDto(i)).orElse(null);
-            DeductionItemDetailDto deductionItemDetailSetDto = deductionItemDetailSetRepo.getDeductionItemDetailSetById(histId).map(i -> new DeductionItemDetailDto(i)).orElse(null);
 
             StatementLayoutHistDataDto result = new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
                     yearMonthHistoryItemLast.identifier(), yearMonthHistoryItemLast.start().v(), yearMonthHistoryItemLast.end().v(),
-                    statementLayoutSetDto, paymentItemDetailSetDto, deductionItemDetailSetDto);
+                    statementLayoutSetDto);
 
             return Optional.of(result);
         } else {

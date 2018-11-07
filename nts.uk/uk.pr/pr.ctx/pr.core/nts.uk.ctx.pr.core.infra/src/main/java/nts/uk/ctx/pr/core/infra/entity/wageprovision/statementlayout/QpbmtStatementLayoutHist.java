@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;

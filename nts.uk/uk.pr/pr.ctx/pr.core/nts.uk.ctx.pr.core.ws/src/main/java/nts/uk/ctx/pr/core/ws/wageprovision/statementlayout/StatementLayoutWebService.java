@@ -1,8 +1,6 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.DeleteStatementLayoutHistCommandHandler;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.StatementLayoutHistCommand;
-import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.UpdateStatementLayoutHistCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.*;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaFinder;
@@ -40,6 +38,9 @@ public class StatementLayoutWebService {
 
     @Inject
     private UpdateStatementLayoutHistCommandHandler updateStatementLayoutHistCommandHandler;
+
+    @Inject
+    private UpdateStatLayoutHistDataCommandHandler updateStatLayoutHistDataCommandHandler;
 
     @Inject
     private DeleteStatementLayoutHistCommandHandler deleteStatementLayoutHistCommandHandler;
@@ -129,6 +130,12 @@ public class StatementLayoutWebService {
     @Path("getLastStatementLayoutHistData/{code}")
     public StatementLayoutHistDataDto getLastStatementLayoutHistData(@PathParam("code") String code) {
         return this.statementLayoutHistFinder.getLastStatementLayoutHistData(code).orElse(null);
+    }
+
+    @POST
+    @Path("updateStatementLayoutHistData")
+    public void updateStatementLayoutHistData(StatementLayoutHistDataCommand command) {
+        this.updateStatLayoutHistDataCommandHandler.handle(command);
     }
 
     @POST
