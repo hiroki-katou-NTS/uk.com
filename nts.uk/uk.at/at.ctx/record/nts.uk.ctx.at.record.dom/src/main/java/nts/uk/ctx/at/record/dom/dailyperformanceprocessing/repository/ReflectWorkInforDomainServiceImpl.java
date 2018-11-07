@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -286,19 +287,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-	
+
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-	
+
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
-	
+
 	@Inject
 	private DeleteWorkInfoOfDailyPerforService deleteWorkInfoOfDailyPerforService;
-	
+
 	@Inject
 	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
-	
+
 	@Inject
 	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
 
@@ -316,8 +317,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, boolean reCreateWorkPlace,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			boolean reCreateWorkPlace, EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
@@ -330,7 +331,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
 					employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
-					periodInMasterList , null);
+					periodInMasterList, null);
 		} else {
 			// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 			if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
@@ -340,20 +341,26 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						mapDateHistoryItem, periodInMasterList, null);
 			} else {
 				// 勤務種別変更時に再作成する
-				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType , reCreateWorkPlace);
+				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType,
+						reCreateWorkPlace);
 
 				if (exitStatus == ExitStatus.RECREATE) {
-			    	this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
+					this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
 					this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
 					this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
 					this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
 					this.workTypeOfDailyPerforRepository.delete(employeeId, day);
-					
-					Optional<TimeLeavingOfDailyPerformance> timeLeaving = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, day);
+					List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
+							631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
+							832);
+					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemIds);
+
+					Optional<TimeLeavingOfDailyPerformance> timeLeaving = this.timeLeavingOfDailyPerformanceRepository
+							.findByKey(employeeId, day);
 
 					this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
 							employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
-							mapDateHistoryItem, periodInMasterList , timeLeaving.isPresent() ? timeLeaving.get() : null);
+							mapDateHistoryItem, periodInMasterList, timeLeaving.isPresent() ? timeLeaving.get() : null);
 				} else {
 					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
 							.find(employeeId, day).get();
@@ -383,8 +390,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void reflectWorkInformationWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType , boolean reCreateWorkPlace ,
-			Optional<StampReflectionManagement> stampReflectionManagement) {
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			boolean reCreateWorkPlace, Optional<StampReflectionManagement> stampReflectionManagement) {
 
 		// pharse 2
 		// start --
@@ -402,7 +409,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						reCreateWorkType, stampReflectionManagement, null);
 			} else {
 				// 勤務種別変更時に再作成する
-				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType , reCreateWorkPlace);
+				ExitStatus exitStatus = this.reCreateWorkType(employeeId, day, empCalAndSumExecLogID, reCreateWorkType,
+						reCreateWorkPlace);
 
 				if (exitStatus == ExitStatus.RECREATE) {
 					this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
@@ -410,11 +418,17 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
 					this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
 					this.workTypeOfDailyPerforRepository.delete(employeeId, day);
+					List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
+							631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
+							832);
+					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemIds);
 
-					Optional<TimeLeavingOfDailyPerformance> timeLeaving = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, day);
-					
+					Optional<TimeLeavingOfDailyPerformance> timeLeaving = this.timeLeavingOfDailyPerformanceRepository
+							.findByKey(employeeId, day);
+
 					this.self.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr,
-							reCreateWorkType, stampReflectionManagement, timeLeaving.isPresent() ? timeLeaving.get() : null);
+							reCreateWorkType, stampReflectionManagement,
+							timeLeaving.isPresent() ? timeLeaving.get() : null);
 				} else {
 					WorkInfoOfDailyPerformance workInfoOfDailyPerformance = this.workInformationRepository
 							.find(employeeId, day).get();
@@ -447,7 +461,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList , TimeLeavingOfDailyPerformance timeLeavingOptional) {
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
+			TimeLeavingOfDailyPerformance timeLeavingOptional) {
 		// 勤務種別を反映する
 		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
 				empCalAndSumExecLogID);
@@ -480,7 +495,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Override
 	public void reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
-			Optional<StampReflectionManagement> stampReflectionManagement, TimeLeavingOfDailyPerformance timeLeavingPerformance) {
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			TimeLeavingOfDailyPerformance timeLeavingPerformance) {
 		// 勤務種別を反映する
 		WorkTypeOfDailyPerformance workTypeOfDailyPerformance = reflectWorkType(companyId, employeeId, day,
 				empCalAndSumExecLogID);
@@ -498,7 +514,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
 				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID,
 						affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(), reCreateAttr,
-						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, null, null, null , timeLeavingPerformance);
+						workTypeOfDailyPerformance, reCreateWorkType, stampReflectionManagement, null, null, null,
+						timeLeavingPerformance);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -618,7 +635,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	}
 
 	public ExitStatus reCreateWorkType(String employeeId, GeneralDate day, String empCalAndSumExecLogID,
-			boolean reCreateWorkType ,boolean reCreateWorkPlace) {
+			boolean reCreateWorkType, boolean reCreateWorkPlace) {
 		ExitStatus exitStatus = ExitStatus.DO_NOT_RECREATE;
 
 		/**
@@ -650,23 +667,26 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						return exitStatus;
 					} else {
 						if (businessTypeOfEmployee.get().getBusinessTypeCode()
-								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {							
+								.equals(workTypeOfDailyPerformance.get().getWorkTypeCode())) {
 							// パラメータ「異動時に再作成」を確認する
 							// check reCreateWorkPlace
 							if (reCreateWorkPlace == true) {
 								// ReqL30 :
-								Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
-								
-								Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, day);
-								
+								Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter
+										.findBySidAndDate(employeeId, day);
+
+								Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository
+										.findByKey(employeeId, day);
+
 								if (workPlaceHasData.isPresent() && affiliationInfo.isPresent()) {
-									if (!workPlaceHasData.get().getWorkplaceId().equals(affiliationInfo.get().getWplID())) {
+									if (!workPlaceHasData.get().getWorkplaceId()
+											.equals(affiliationInfo.get().getWplID())) {
 										exitStatus = ExitStatus.RECREATE;
 										return exitStatus;
 									}
 								}
 							}
-							
+
 							return exitStatus;
 						} else {
 							exitStatus = ExitStatus.RECREATE;
@@ -688,10 +708,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// check reCreateWorkPlace
 			if (reCreateWorkPlace == true) {
 				// ReqL30 :
-				Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
-				
-				Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, day);
-				
+				Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId,
+						day);
+
+				Optional<AffiliationInforOfDailyPerfor> affiliationInfo = this.affiliationInforOfDailyPerforRepository
+						.findByKey(employeeId, day);
+
 				if (workPlaceHasData.isPresent() && affiliationInfo.isPresent()) {
 					if (!workPlaceHasData.get().getWorkplaceId().equals(affiliationInfo.get().getWplID())) {
 						exitStatus = ExitStatus.RECREATE;
@@ -1252,8 +1274,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						.checkWorkDay(workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 				if (workStyle != WorkStyle.ONE_DAY_REST) {
 					TimeLeavingOfDailyPerformance timeLeavingOptional = createStamp(companyId,
-							workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingPerformance, employeeID, day,
-							stampReflectionManagement);
+							workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingPerformance, employeeID,
+							day, stampReflectionManagement);
 					// check tay
 					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
 							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID, reCreateAttr,
@@ -1730,7 +1752,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						// 所定時間帯を取得する
 						PredetermineTimeSetForCalc predetemineTimeSetting = workTimeSettingService
-								.getPredeterminedTimezone(companyId,workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(),
+								.getPredeterminedTimezone(companyId,
+										workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(),
 										workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v(), null);
 
 						if (!predetemineTimeSetting.getTimezones().isEmpty()) {
