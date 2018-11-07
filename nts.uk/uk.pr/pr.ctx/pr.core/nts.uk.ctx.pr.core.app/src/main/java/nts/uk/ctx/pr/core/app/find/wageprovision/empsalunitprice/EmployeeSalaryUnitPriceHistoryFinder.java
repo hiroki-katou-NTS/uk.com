@@ -11,7 +11,7 @@ import java.util.List;
 public class EmployeeSalaryUnitPriceHistoryFinder {
 
     @Inject
-    EmployeeSalaryUnitPriceHistoryRepository employeeSalaryUnitPriceHistoryRepository;
+    private EmployeeSalaryUnitPriceHistoryRepository employeeSalaryUnitPriceHistoryRepository;
 
     @Inject
     private EmployeeInfoAdapter employeeInfoAdapter;
