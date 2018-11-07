@@ -11,6 +11,8 @@ public interface StateCorrelationHisSalaryRepository {
 
     Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryById(String cid, String hisId);
 
+    Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryByCid(String cid);
+
     void add(String cid, YearMonthHistoryItem history);
 
     void update(String cid, YearMonthHistoryItem history);
