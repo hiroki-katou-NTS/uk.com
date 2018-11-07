@@ -555,8 +555,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 empName: empName,
                 empId: self.selectedItem(),
                 itemClassification: self.itemClassLabel(),
-                personalValCode: self.individualPriceCode(),
-                personalValName: self.individualPriceCode(),
+                personalValCode: self.individualPriceCode() +'',
                 cateIndicator: self.classificationCategory(),
                 salBonusCate: self.salaryBonusCategory()
             }
