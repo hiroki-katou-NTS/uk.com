@@ -125,7 +125,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            $("#B3_1").focus();
+            $("#F3_1").focus();
 
         }
 
@@ -202,16 +202,16 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         openJScreen() {
             block.invisible();
             let self = this;
-                        setShared(model.PARAMETERS_SCREEN_J, {
-                            startYearMonth: self.startYearMonth,
+                        setShared(model.PARAMETERS_SCREEN_J.INPUT, {
+                            startYearMonth: self.startYearMonth(),
                             isPerson: false,
                             modeScreen: model.MODE_SCREEN.POSITION
                         });
             modal("/view/qmm/020/j/index.xhtml").onClosed(() =>{
-                let params = getShared('QMM020_J_PARAMS_OUTPUT');
+                let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if (params) {
                     self.transferMethod(params.transferMethod);
-                    self.baseDate(params.baseDate);
+                    self.baseDate(getText('QMM020_39', [params.baseDate]));
                     self.listStateCorrelationHisPosition.unshift(self.createStateCorrelationHisPosition(params.start, params.end));
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
@@ -247,7 +247,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 if(params && params.methodEditing == 0) {
                     self.initScreen(null);
                 }
-                $('#E2_1').focus();
+                $('#F2_1').focus();
 
             });
             block.clear();
@@ -265,10 +265,18 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
 
         createStateCorrelationHisPosition(start: number, end: number){
+            let self = this;
+            if (self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
+                self.listStateCorrelationHisPosition()[FIRST].display = getText('QMM020_16',
+                    [model.convertMonthYearToString(self.listStateCorrelationHisPosition()[FIRST].startYearMonth), model.convertMonthYearToString(end)]);
+            }
             let stateCorrelationHisPosition: StateCorrelationHisPosition = new StateCorrelationHisPosition();
             stateCorrelationHisPosition.hisId = HIS_ID_TEMP;
             stateCorrelationHisPosition.startYearMonth = start;
             stateCorrelationHisPosition.endYearMonth = end;
+            stateCorrelationHisPosition.display = getText('QMM020_16', [model.convertMonthYearToString(start),model.convertMonthYearToString(end)]);
+
             return stateCorrelationHisPosition;
         }
 
@@ -289,7 +297,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 dto.hisId = item.hisId;
                 dto.startYearMonth = item.startYearMonth;
                 dto.endYearMonth = item.endYearMonth;
-                dto.display = getText('QMM020_16', [item.startYearMonth,item.endYearMonth]);
+                dto.display = getText('QMM020_16', [model.convertMonthYearToString(item.startYearMonth),model.convertMonthYearToString(item.endYearMonth)]);
                 listPosition.push(dto);
             });
             return listPosition;

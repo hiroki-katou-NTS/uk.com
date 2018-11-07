@@ -190,13 +190,13 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         openJScreen() {
             block.invisible();
             let self = this;
-            setShared(model.PARAMETERS_SCREEN_J, {
-                startYearMonth: self.startYearMonth,
+            setShared(model.PARAMETERS_SCREEN_J.INPUT, {
+                startYearMonth: self.startYearMonth(),
                 isPerson: false,
-                modeScreen: model.MODE_SCREEN.POSITION
+                modeScreen: model.MODE_SCREEN.SALARY
             });
             modal("/view/qmm/020/j/index.xhtml").onClosed(() =>{
-                let params = getShared('QMM020_J_PARAMS_OUTPUT');
+                let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if (params) {
                     self.transferMethod(params.transferMethod);
                     self.listStateCorrelationHisSalary.unshift(self.createStateCorrelationHisSalary(params.start, params.end));
@@ -252,10 +252,17 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         createStateCorrelationHisSalary(start: number, end: number){
+            let self = this;
+            if (self.listStateCorrelationHisSalary() && self.listStateCorrelationHisSalary().length > 0) {
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
+                self.listStateCorrelationHisSalary()[FIRST].display = getText('QMM020_16',
+                    [model.convertMonthYearToString(self.listStateCorrelationHisSalary()[FIRST].startYearMonth), model.convertMonthYearToString(end)]);
+            }
             let stateCorrelationHisSalary: StateCorrelationHisSalary = new StateCorrelationHisSalary();
             stateCorrelationHisSalary.hisId = HIS_ID_TEMP;
             stateCorrelationHisSalary.startYearMonth = start;
             stateCorrelationHisSalary.endYearMonth = end;
+            stateCorrelationHisSalary.display = getText('QMM020_16', [model.convertMonthYearToString(start),model.convertMonthYearToString(end)]);
             return stateCorrelationHisSalary;
         }
 
@@ -274,20 +281,14 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             _.each(item, (item) => {
                 let dto: StateCorrelationHisSalary = new StateCorrelationHisSalary();
                 dto.hisId = item.hisId;
-                dto.startYearMonth = item.start;
-                dto.endYearMonth = item.end;
-                dto.display = getText('QMM020_16', [item.start,item.end]);
+                dto.startYearMonth = item.startYearMonth;
+                dto.endYearMonth = item.endYearMonth;
+                dto.display = getText('QMM020_16', [model.convertMonthYearToString(item.startYearMonth),model.convertMonthYearToString(item.endYearMonth)]);
                 listSalary.push(dto);
             });
             return listSalary;
         }
-        static convertMonthYearToString(yearMonth: any) {
-            let year: string, month: string;
-            yearMonth = yearMonth.toString();
-            year = yearMonth.slice(0, 4);
-            month = yearMonth.slice(4, 6);
-            return year + "/" + month;
-        }
+
     }
     export class StateLinkSettingMaster {
         hisId: string;
