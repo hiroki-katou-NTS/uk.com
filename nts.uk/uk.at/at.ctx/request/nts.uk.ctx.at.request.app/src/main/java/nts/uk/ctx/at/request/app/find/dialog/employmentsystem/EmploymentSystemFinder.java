@@ -199,7 +199,7 @@ public class EmploymentSystemFinder {
 		
 		result.setDeadLineDetails(deadLine);
 		//アルゴリズム「期間内の休出代休残数を取得する」を実行する
-		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyId, employeeId, new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(2)), 
+		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyId, employeeId, getDatePeroid(closingPeriod.start()), 
 				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		BreakDayOffRemainMngOfInPeriod breakDay = this.breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 		
@@ -209,6 +209,10 @@ public class EmploymentSystemFinder {
 		return result;
 	}
 	
+	private DatePeriod getDatePeroid(GeneralDate startDate) {
+		return new DatePeriod(startDate, startDate.addYears(1).addDays(-1));
+	}
+
 	private DeadlineDetails getDeadlineDetails(String companyId, Optional<EmploymentHistoryImported> empImpOpt) {
 		DeadlineDetails  result  = null;
 		
@@ -334,7 +338,7 @@ public class EmploymentSystemFinder {
 		//アルゴリズム「期間内の振出振休残数を取得する」を実行する
 		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId,
 																			employeeId,
-																			new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1)),
+																			getDatePeroid(closingPeriod.start()),
 																			GeneralDate.today(),
 																			false,
 																			false, 

@@ -1021,7 +1021,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                     }
                     dataParent["monthValue"] = self.valueUpdateMonth;
-                } else if(self.displayFormat() == 1) {
+                } else {
                     dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[0].dateDetail } : null;
                 }
 
@@ -4361,7 +4361,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) {
             var self = this;
             if (dataInit != undefined) {
-                this.changePeriodAtr = dataInit.changePeriodAtr;
+                this.changePeriodAtr = (dataInit.changePeriodAtr == null || dataInit.changePeriodAtr == undefined) ? true : dataInit.changePeriodAtr;
                 this.errorRefStartAtr = dataInit.errorRefStartAtr;
                 this.initClock = dataInit.initClock == undefined ? null : new SPRTime(dataInit.initClock);
                 this.lstEmployeeShare = dataInit.lstEmployee;

@@ -50,6 +50,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBre
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 //import nts.uk.ctx.at.record.dom.dailyprocess.calc.ootsuka.OotsukaProcessService;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
@@ -235,6 +236,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
 	
+	@Inject
+	//日別作成側にあったエラーチェック処理
+	private DailyRecordCreateErrorAlermService dailyRecordCreateErrorAlermService;
+	
 	/**
 	 * 勤務情報を取得して計算
 	 * @param calculateOption
@@ -253,8 +258,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
 		//計算できる状態にあるかのチェック①(勤務情報、会社共通の設定、個人共通の設定)
-		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null || personCommonSetting == null)
+		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null || personCommonSetting == null) {
+			val zeroValueClass = AttendanceTimeOfDailyPerformance.allZeroValue(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+																			   integrationOfDaily.getAffiliationInfor().getYmd());
+			integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(zeroValueClass));
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
+		}
 		
 		boolean isShareContainerNotInit = companyCommonSetting.getShareContainer() == null;
 		if(isShareContainerNotInit) {
@@ -310,7 +319,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private ManageCalcStateAndResult calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
 															  ManagePerCompanySet companyCommonSetting, 
 															  ManagePerPersonDailySet personCommonSetting, DailyRecordToAttendanceItemConverter converter, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
-		
+		//打刻順序不正のチェック
+		//不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
+		val errorList = dailyRecordCreateErrorAlermService.stampIncorrectOrderAlgorithm(integrationOfDaily);
+		if(!errorList.stream().filter(tc -> tc!= null).collect(Collectors.toList()).isEmpty()) {
+			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
+		}
 		val copyCalcAtr = integrationOfDaily.getCalAttr();
 		//予定の時間帯
 		val schedule = createSchedule(integrationOfDaily,companyCommonSetting,personCommonSetting,converter,yesterDayInfo,tomorrowDayInfo);

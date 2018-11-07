@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.shared.dom.attendance;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
+import nts.gul.util.Nullable;
 
 public class MasterShareBus {
 
@@ -28,7 +29,7 @@ public class MasterShareBus {
 
 	private static class ShareContainer<U> implements MasterShareContainer<U> {
 		
-		private Map<U, Object> DATA_CONTAINER;
+		private Map<U, Nullable<Object>> DATA_CONTAINER;
 		
 		private ShareContainer() {
 			System.out.println("CONSTRUCT ShareContainer");
@@ -37,7 +38,7 @@ public class MasterShareBus {
 
 		@Override
 		public void share(U key, Object value) {
-			DATA_CONTAINER.put(key, value);
+			DATA_CONTAINER.put(key, Nullable.of(value));
 		}
 
 		@Override
@@ -48,12 +49,12 @@ public class MasterShareBus {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <T> T getShared(U key) {
-			Object value = DATA_CONTAINER.get(key);
-			if (value == null) {
+			Nullable<Object> value = DATA_CONTAINER.get(key);
+			if (value.isNull()) {
 				System.out.println("DATA_CONAINTER return null: " + key);
 				System.out.println(DATA_CONTAINER.toString());
 			}
-			return value == null ? null : (T) value;
+			return value.isNull() ? null : (T) value.get();
 		}
 
 		@Override
