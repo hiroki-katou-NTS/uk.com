@@ -3606,10 +3606,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 keyId: any,
                 valueError: any,
                 dataChange: any,
-                dataChageRow: any;
+                dataChageRow: any,
+                errorGrid: any;
             __viewContext.vm.flagCalculation = false;
             $("#next-month").ntsError("clear");
+            // get error grid
+            errorGrid = $("#dpGrid").mGrid("errors");
             
+            let hasErrorValidate = _.find(errorGrid, row =>{
+                return row.rowId == rowId;
+            })
             _.remove(__viewContext.vm.listCheck28(), error => {
                 return error.rowId == rowId;
             })
@@ -3637,7 +3643,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
 //                    return data.rowId == rowId && columnKey != "A29";
 //                });
-                if (valueError != undefined) {
+                if (valueError != undefined || hasErrorValidate != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
                     //nts.uk.ui.block.invisible();
