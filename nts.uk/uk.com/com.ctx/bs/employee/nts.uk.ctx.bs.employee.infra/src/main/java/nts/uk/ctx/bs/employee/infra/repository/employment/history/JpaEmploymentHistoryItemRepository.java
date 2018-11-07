@@ -29,6 +29,7 @@ import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository.SingleHistoryItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
@@ -512,4 +513,32 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		return listSid;
 	}
 
+	@Override
+	@SneakyThrows
+	public List<EmploymentHistoryItem> getEmploymentHistoryItem(String cid, GeneralDate baseDate) {
+		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
+				try(PreparedStatement statement = this.connection().prepareStatement(
+						"SELECT DISTINCT b.* FROM BSYMT_EMPLOYMENT_HIST a INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM b ON a.HIST_ID = b.HIST_ID"
+					  + " WHERE a.CID = ? AND a.START_DATE  <= ? AND a.END_DATE >= ? ORDER BY b.EMP_CD")){
+					statement.setString(1, cid);
+					statement.setDate(2, Date.valueOf(baseDate.localDate()));
+					statement.setDate(3, Date.valueOf(baseDate.localDate()));
+					List<BsymtEmploymentHistItem> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+						BsymtEmploymentHistItem entity = new BsymtEmploymentHistItem();
+						entity.hisId = rec.getString("HIST_ID");
+						entity.sid = rec.getString("SID");
+						entity.empCode = rec.getString("EMP_CD");
+						entity.salarySegment  = rec.getInt("SALARY_SEGMENT");
+						return entity;
+					});
+					
+					listHistItem.addAll(results);
+					
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				};
+		
+		return listHistItem.stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
+	}
 }
