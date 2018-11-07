@@ -1380,39 +1380,36 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         clickButtonCS0017() {
-            let self = this;
-            service.checkFunctionNo().done(data =>{
-                setShared('inputCDL008', {
-                    selectedCodes: [self.selectedCode()],
-                    baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
-                    isMultiple: false,
-                    selectedSystemType: 1,// 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                    isrestrictionOfReferenceRange: data.available,
-                    isShowBaseDate: false
-                }, true);
-            });
-            
-            if($("#date1").ntsError('hasError')) return;
-            
-            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                // Check is cancel.
-                if (getShared('CDL008Cancel')) {
-                    return;
-                }
+            let self = this,
+                baseDate = moment.utc(__viewContext["viewModel"].baseDate());
+            if(baseDate._isValid){
+                service.checkFunctionNo().done(data => {
+                    setShared('inputCDL008', {
+                        selectedCodes: [self.selectedCode()],
+                        baseDate: baseDate.toDate(),
+                        isMultiple: false,
+                        selectedSystemType: 1,// 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                        isrestrictionOfReferenceRange: data.available,
+                        isShowBaseDate: false
+                    }, true);
+                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                        // Check is cancel.
+                        if (getShared('CDL008Cancel')) {
+                            return;
+                        }
 
-                //view all code of selected item 
-                let output = getShared('outputCDL008');
-                if (output) {
-                    let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
-                    self.selectionName(objSel == undefined ? "" : objSel.optionText);
-                    self.selectedCode(output);
-                }
-                
-            });
+                        //view all code of selected item 
+                        let output = getShared('outputCDL008');
+                        if (output) {
+                            let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
+                            self.selectionName(objSel == undefined ? "" : objSel.optionText);
+                            self.selectedCode(output);
+                        }
+
+                    });
+                });
+            }
         }
-
-
-
     }
 
     export interface IPerInfoInitValueSettingDto {
