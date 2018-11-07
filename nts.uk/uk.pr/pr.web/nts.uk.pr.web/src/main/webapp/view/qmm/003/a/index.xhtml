@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm003.a.service.js"/>
+        <com:scriptfile path="qmm003.a.vm.js"/>
+        <com:scriptfile path="qmm003.a.start.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- A1_1 -->
+            <button tabindex="1">#{i18n.getText('QMM003_1')}</button>
+            <!-- A1_2 -->
+            <button tabindex="2" class="proceed">#{i18n.getText('QMM003_2')}</button>
+            <!-- A1_3 -->
+            <button tabindex="3" data-bind="enable: false">#{i18n.getText('QMM003_3')}</button>
+            <!-- A1_4 -->
+            <button tabindex="4">#{i18n.getText('QMM003_4')}</button>
+            <!-- A1_5 -->
+            <button tabindex="5">#{i18n.getText('QMM003_5')}</button>
+            <!-- A1_6 -->
+            <button tabindex="6" class="danger">#{i18n.getText('QMM003_6')}</button>
+            <!-- A1_7 -->
+            <button tabindex="7" class="danger">#{i18n.getText('QMM003_7')}</button>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+			<div class="fixed-flex-layout-left">
+				<!-- A2_1 -->
+				<div data-bind="ntsPanel:{width: '400px', height: '600px', direction: 'right', showIcon: true, visible: true}">
+					<!-- A2_2 -->
+					<div style="width: 400px" 
+						data-bind="ntsSearchBox: {
+							targetKey: 'code', 
+							mode:'igTree', 
+							comId:'rsdTree', 
+							items: items2, 
+							selected: singleSelectedCode, 
+							selectedKey: 'code', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />
+					<!-- A2_3 -->
+					<table id="rsdTree"
+						data-bind="ntsTreeGridView:{
+							width: 400,
+							rows: 20,
+							name: '#[#QMM003_8]', 
+							dataSource: items2,
+							value: singleSelectedCode,
+							headers: headers,
+							primaryKey: 'code',
+							childDataKey: 'childs',
+							primaryText: 'nodeText',
+							multiple: false,
+							enable: true,
+							showCheckBox: false}"></table>
+					<!-- A1_9 -->
+					<div class="label">#{i18n.getText('QMM003_10')}</div>
+				</div>
+			</div>
+			<div class="fixed-flex-layout-right">
+				<div class="valign-center control-group">
+					<!-- A3_1 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM003_9')}</div>
+					<!-- A3_2 -->
+					<!-- A3_3 -->
+					<!-- A3_4 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_5 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_14')}</div>
+					<!-- A3_6 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_7 -->
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM003_15')}</div>
+					<!-- A3_8 -->
+					<!-- A3_9 -->
+				</div>
+				<!-- A3_10 -->
+				<hr/>
+				<div class="valign-center control-group">
+					<!-- A3_11 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_16')}</div>
+					<!-- A3_12 -->
+					<!-- A3_13 -->
+					<!-- A3_14 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_15 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_17')}</div>
+					<!-- A3_16 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_17 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_18')}</div>
+					<!-- A3_18 -->
+				</div>
+				<!-- A3_19 -->
+				<hr/>
+				<div class="valign-center control-group">
+					<!-- A3_20 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_19')}</div>
+					<!-- A3_21 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_22 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_20')}</div>
+					<!-- A3_23 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_24 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_21')}</div>
+					<!-- A3_25 -->
+				</div>
+				<div class="valign-center control-group">
+					<!-- A3_26 -->
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_22')}</div>
+					<!-- A3_27 -->
+				</div>
+			</div>
+		</div>
+    </ui:define>
+
+</ui:composition>
+
+</body>
+</html>
