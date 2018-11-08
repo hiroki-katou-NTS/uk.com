@@ -52,9 +52,9 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 	@Override
 	public List<MonthlyAttendanceResult> getMonthlyValueOf(Collection<String> employeeId, YearMonth yearMonth,
 			int closureId, int clouseDate, boolean lastDayOfMonth, Collection<Integer> itemIds) {
-		return getMonthlyValueOf(employeeId, yearMonth, itemIds).stream()
-			.filter(c -> c.getClosureId() == closureId && c.getClouseDate() == clouseDate && c.isLastDayOfMonth() == lastDayOfMonth)
-			.collect(Collectors.toList());
+		return employeeId.stream()
+				.map(c -> getMonthlyValueOf(c, yearMonth, closureId, clouseDate, lastDayOfMonth, itemIds))
+				.collect(Collectors.toList());
 	}
 
 	@Override
