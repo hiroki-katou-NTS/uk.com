@@ -215,6 +215,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             stateCorrelationHisClassification.hisId = HIS_ID_TEMP;
             stateCorrelationHisClassification.startYearMonth = start;
             stateCorrelationHisClassification.endYearMonth = end;
+            stateCorrelationHisClassification.display = getText('QMM020_16', [start, end]);
             return stateCorrelationHisClassification;
         }
 

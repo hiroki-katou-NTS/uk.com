@@ -49,14 +49,14 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 }
                 close();
             }
-            if (self.startYearMonthPeriod() > self.params.endYearMonth) {
+            if (self.startYearMonthPeriod() > self.params.startYearMonth) {
                 let data: any = {
                     start: self.startYearMonthPeriod(),
                     end: self.endYearMonthPeriod(),
                     baseDate: self.startYearMonthMasterDate(),
                     transferMethod: self.transferMethod()
                 };
-                setShared("PARAMESE_SCREENJ_OUTPUT", data);
+                setShared(model.PARAMETERS_SCREEN_J.OUTPUT, data);
             }
             else {
                 nts.uk.ui.dialog.info({messageId: 'Msg_16'});

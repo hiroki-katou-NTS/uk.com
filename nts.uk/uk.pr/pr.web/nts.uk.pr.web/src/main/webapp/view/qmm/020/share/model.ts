@@ -9,6 +9,14 @@ module nts.uk.pr.view.qmm020.share.model {
         }
     }
 
+    export function convertMonthYearToString(yearMonth: any) {
+        let year: string, month: string;
+        yearMonth = yearMonth.toString();
+        year = yearMonth.slice(0, 4);
+        month = yearMonth.slice(4, 6);
+        return year + "/" + month;
+    }
+
     export enum MODE {
         NEW = 0,
         UPDATE = 1,

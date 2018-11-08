@@ -1,17 +1,16 @@
 <div>
-    <div class="functions-area sidebar-content-header flex" style = "min-width: 1000px;">
+    <div class="sidebar-content-header" style = "min-width: 1000px;">
             <span class="title">#{i18n.getText('QMM020_7')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
                     data-bind="click: registerPosition, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
     </div>
-    <div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
+    <div style="margin-top: 15px;" class="contents-area fixed-flex-layout">
         <div class="fixed-flex-layout-left" style="margin-left: 25px">
             <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="F1_3" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_13')}</button>
-
-                    <button id="F1_4" data-bind="enable: $root.errors.isEmpty" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                    <button id="F1_3" data-bind="click: openJScreen, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_13')}</button>
+                    <button id="F1_4" data-bind="click: openKScreen, enable: $root.errors.isEmpty" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
 
@@ -45,12 +44,12 @@
             <div>
                 <div style="width: 260px" data-bind =
                         "ntsSearchBox: {
-                        targetKey: 'masterCode',
+                        targetKey: 'id',
                         comId: 'F3_1',
 	                    items: listStateLinkSettingMaster,
-	                    selectedKey: 'masterCode',
-	                     fields: ['masterCode', 'categoryName'],
-	                     mode: 'igGrid'}" />
+	                    selectedKey: 'id',
+	                    fields: ['masterCode', 'categoryName'],
+	                    mode: 'igGrid'}" />
 
                 <table id="F3_1" ></table>
 
