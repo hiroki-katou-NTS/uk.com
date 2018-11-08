@@ -14,6 +14,9 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
             block.invisible();
             var self = this;
             self.init();
+            self.selectedMasterUse.subscribe((data)=>{
+                console.dir(data);
+            });
             service.getStateUseUnitSettingById().done((data)=>{
                 if(data){
                     self.selectedMasterUse(data.masterUse);
@@ -38,13 +41,13 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
         init(){
             let self = this;
             self.masterUse = ko.observableArray([
-                { code: '1', name: getText('QMM020_74') },
-                { code: '0', name: getText('QMM020_77') }
+                { code: 1, name: getText('QMM020_74') },
+                { code: 0, name: getText('QMM020_77') }
             ]);
 
             self.individualUse = ko.observableArray([
-                { code: '1', name: getText('QMM020_74') },
-                { code: '0', name: getText('QMM020_77') }
+                { code: 1, name: getText('QMM020_74') },
+                { code: 0, name: getText('QMM020_77') }
             ]);
 
             self.usageMaster = ko.observableArray([
