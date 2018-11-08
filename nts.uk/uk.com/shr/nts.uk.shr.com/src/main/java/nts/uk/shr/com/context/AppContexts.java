@@ -27,6 +27,10 @@ public final class AppContexts {
 	public static RequestInfo requestedWebApi() {
 		return RequestContextProvider.get().get(AppContextsConfig.REQUEST_WEBAPI);
 	}
+	
+	public static RequestInfo beforeRequestedWebApi() {
+		return RequestContextProvider.get().get(AppContextsConfig.BEFORE_REQUEST_WEBAPI);
+	}
 
 	public static WindowsAccount windowsAccount() {
 		WindowsAccount account = SessionContextProvider.get().get(AppContextsConfig.WINS_ACCOUNT);
