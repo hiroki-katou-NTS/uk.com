@@ -52,7 +52,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
             })
 
-
+            $('A4_5').focus();
         }
 
         filterData(): void {
@@ -99,8 +99,10 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         registerAmount(): void {
             let self = this;
 
+
+
             service.empSalUnitUpdateAll({
-                salIndAmountUpdateCommandList: ko.toJS(self.workIndividualPrices)}).done(function () {
+                payrollInformationCommands: ko.toJS(self.workIndividualPricesDisplay)}).done(function () {
                 dialog.info({messageId: "Msg_15"});
             })
         }
@@ -178,8 +180,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                         })
                         console.log(dataNameAndAmount);
                         self.workIndividualPrices(personalAmountData);
-                        self.workIndividualPricesDisplay(personalAmountData);
-                        //self.personalDisplay(personalAmountData);
+                        //self.workIndividualPricesDisplay(personalAmountData);
                         for (let i = 0; i < self.workIndividualPrices().length; i++) {
                             let index = _.findIndex(self.employeeInfoImports, function (o) {
                                 return o.sid == self.workIndividualPrices()[i].employeeID
@@ -189,31 +190,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                                 self.workIndividualPrices()[i].businessName(self.employeeInfoImports[index].businessName);
                             }
                         }
-
-
-                        setTimeout(function () {
-                            if (self.workIndividualPrices().length > 10) {
-                                if (/Edge/.test(navigator.userAgent)) {
-                                    $('.scroll-header').addClass('edge_scroll_header');
-                                    $('.nts-fixed-body-container').addClass('edge_scroll_body');
-                                } else {
-                                    $('.scroll-header').addClass('ci_scroll_header');
-                                    $('.nts-fixed-body-container').addClass('ci_scroll_body');
-                                }
-
-                            }
-                            if(self.workIndividualPrices().length<=10){
-                                if (/Edge/.test(navigator.userAgent)) {
-                                    $('.scroll-header').removeClass('edge_scroll_header');
-                                } else {
-                                    $('.scroll-header').removeClass('ci_scroll_header');
-                                }
-                            }
-
-
-                        }, 100);
-
-
                     })
                 }
             }
