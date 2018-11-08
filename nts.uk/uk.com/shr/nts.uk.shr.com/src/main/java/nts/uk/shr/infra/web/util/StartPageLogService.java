@@ -33,15 +33,14 @@ public class StartPageLogService {
 	@Inject
 	private StartPageLogStorageRepository logFactory;
 	
-	public void writeLog(String url) {
+	public void writeLog(String url, String beforeUrl) {
 		
-		writeLog(ScreenIdentifier.create(url));
+		writeLog(beforeUrl, ScreenIdentifier.create(url));
 	}
 	
-	public void writeLog(ScreenIdentifier targetPg) {
+	public void writeLog(String beforeUrl, ScreenIdentifier targetPg) {
 		LoginUserContext context = AppContexts.user();
 		RequestInfo requseted = AppContexts.requestedWebApi();
-		RequestInfo beforeRequseted = AppContexts.beforeRequestedWebApi();
 		WindowsAccount windowsAccount = AppContexts.windowsAccount();
 		
 		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true) || FilterHelper.isLoginPage(targetPg)){
@@ -81,7 +80,7 @@ public class StartPageLogService {
 					return getValue(c.roles(), role -> DefaultLoginUserRoles.cloneFrom(role));
 				}), targetPg, Optional.empty());
 		
-		getLogStorage().save(initLog(basic, getValue(beforeRequseted, c -> c.getFullRequestPath())));
+		getLogStorage().save(initLog(basic, beforeUrl));
 	}
 	
 	private ShareStandardMenuAdapter getMenuAdapter(){

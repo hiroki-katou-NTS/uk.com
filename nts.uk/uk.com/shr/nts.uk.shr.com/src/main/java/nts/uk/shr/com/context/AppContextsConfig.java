@@ -10,8 +10,6 @@ public class AppContextsConfig {
 	
 	public static final String REQUEST_WEBAPI = "requestedWebAPI";
 	
-	public static final String BEFORE_REQUEST_WEBAPI = "beforeRequestedWebAPI";
-	
 	public static final String WINS_ACCOUNT = "windowsAccount";
 
 	public static void setProgramId(String programId) {
@@ -20,10 +18,6 @@ public class AppContextsConfig {
 	
 	public static void setRequestedWebAPI(RequestInfo webApi) {
 		RequestContextProvider.get().put(REQUEST_WEBAPI, webApi);
-	}
-	
-	public static void setBeforeRequestedWebAPI(RequestInfo webApi) {
-		RequestContextProvider.get().put(BEFORE_REQUEST_WEBAPI, webApi);
 	}
 	
 	public static void setWindowsAccount(WindowsAccount account) {
