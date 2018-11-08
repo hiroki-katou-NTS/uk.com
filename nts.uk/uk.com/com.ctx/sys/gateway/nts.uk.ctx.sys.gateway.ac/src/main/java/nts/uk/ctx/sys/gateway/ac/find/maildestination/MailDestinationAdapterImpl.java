@@ -36,7 +36,9 @@ public class MailDestinationAdapterImpl implements MailDestinationAdapter {
 		lstMail.stream().forEach(i -> {
 			List<String> mailAdds = new ArrayList<>();
 			i.getOutGoingMails().stream().forEach(e -> {
-				mailAdds.add(e.getEmailAddress());
+				if (e.getEmailAddress() != null) {
+					mailAdds.add(e.getEmailAddress());
+				}
 			});
 			mailDestinationImport.addMail(mailAdds);
 		});
