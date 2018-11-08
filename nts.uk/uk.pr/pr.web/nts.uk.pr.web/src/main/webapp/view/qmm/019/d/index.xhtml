@@ -79,14 +79,16 @@
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
                         </div>
                         <div class="cell valign-center">
-                            <!--D2_2-->
-                            <div class="label"
-                                 data-bind="text: itemNameCode, visible: $vm.screenMode() != $vm.unselectMode"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD2_2()">
+                                <!--D2_2-->
+                                <div class="label" data-bind="text: itemNameCode"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--D2_3-->
-                            <div class="label"
-                                 data-bind="text: name, visible: $vm.screenMode() != $vm.unselectMode"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD2_3()">
+                                <!--D2_3-->
+                                <div class="label" data-bind="text: name"/>
+                            </com:ko-if>
                         </div>
                     </div>
                     <div class="table table-col-2">
@@ -104,6 +106,7 @@
                                 value: totalObject,
                                 optionsText: 'name',
                                 required: true,
+                                enable: $vm.screenControl().enableD2_5(),
                                 selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
@@ -125,7 +128,7 @@
                                 value: calcMethod,
                                 optionsText: 'name',
                                 required: true,
-                                enable: (calcMethod() != nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr.BREAKDOWN_ITEM &amp;&amp; $vm.paymentItemSet().taxAtr() !=  nts.uk.pr.view.qmm019.share.model.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER),
+                                enable: $vm.screenControl().enableD2_8(),
                                 selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
@@ -133,112 +136,123 @@
                         </div>
                     </div>
                     <hr/>
+                    <com:ko-if bind="$vm.screenControl().visibleD5()">
+                        <div class="table table-col-2">
+                            <div class="cell valign-center">
+                                <!--D5_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_132')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D5_2-->
+                                <div id="D5_2" data-bind="ntsComboBox: {
+                                    name: '#[QMM019_132]',
+                                    options: $vm.workingAtrs,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 2,
+                                    value: workingAtr,
+                                    optionsText: 'name',
+                                    required: true,
+                                    selectFirstIfNull: false,
+                                    columns: [
+                                        { prop: 'name', length: 10 },
+                                    ]}"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD6()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D6_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_133')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_2-->
+                                <button id="D6_2"
+                                        data-bind="click: function(){$vm.openI()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_3-->
+                                <div class="label" data-bind="text: perValCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D6_4-->
+                                <div class="label" data-bind="text: perValName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD7()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D7_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_137')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_2-->
+                                <button id="D7_2"
+                                        data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_3-->
+                                <div class="label" data-bind="text: formulaCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D7_4-->
+                                <div class="label" data-bind="text: formulaName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD8()">
+                        <div class="table table-col-4">
+                            <div class="cell valign-center">
+                                <!--D8_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_140')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_2-->
+                                <button id="D8_2"
+                                        data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_3-->
+                                <div class="label" data-bind="text: wageTableCode"/>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D8_4-->
+                                <div class="label" data-bind="text: wageTableName"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD9()">
+                        <div class="table table-col-2">
+                            <div class="cell valign-center">
+                                <!--D9_1-->
+                                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_143')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--D9_2-->
+                                <input id="D9_2" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_143]',
+                                    value: commonAmount,
+                                    required: true,
+                                    option: $vm.option,
+                                    constraint: 'CommonAmount'}"/>
+                            </div>
+                        </div>
+                    </com:ko-if>
                     <div class="table table-col-2">
                         <div class="cell valign-center">
-                            <!--D5-1-->
-                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_132')}</div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D5-2-->
-                            <div id="D5_2" data-bind="ntsComboBox: {
-                                name: '#[QMM019_132]',
-                                options: $vm.workingAtrs,
-                                optionsValue: 'code',
-                                visibleItemsCount: 2,
-                                value: workingAtr,
-                                optionsText: 'name',
-                                required: true,
-                                selectFirstIfNull: false,
-                                columns: [
-                                    { prop: 'name', length: 10 },
-                                ]}"/>
-                        </div>
-                    </div>
-                    <div class="table table-col-4">
-                        <div class="cell valign-center">
-                            <!--D6-1-->
-                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_133')}</div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D6-2-->
-                            <button id="D6-2"
-                                    data-bind="click: function(){$vm.openI()} ">#{i18n.getText('QMM019_134')}</button>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D6-3-->
-                            <div class="label" data-bind="text: perValCode"/>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D6-4-->
-                            <div class="label" data-bind="text: perValName"/>
-                        </div>
-                    </div>
-                    <div class="table table-col-4">
-                        <div class="cell valign-center">
-                            <!--D7-1-->
-                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_137')}</div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D7-2-->
-                            <button id="D7-2"
-                                    data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D7-3-->
-                            <div class="label" data-bind="text: formulaCode"/>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D7-4-->
-                            <div class="label" data-bind="text: formulaName"/>
-                        </div>
-                    </div>
-                    <div class="table table-col-4">
-                        <div class="cell valign-center">
-                            <!--D8-1-->
-                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_140')}</div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D8-2-->
-                            <button id="D8-2"
-                                    data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D8-3-->
-                            <div class="label" data-bind="text: wageTableCode"/>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D8-4-->
-                            <div class="label" data-bind="text: wageTableName"/>
-                        </div>
-                    </div>
-                    <div class="table table-col-2">
-                        <div class="cell valign-center">
-                            <!--D9-1-->
-                            <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_143')}</div>
-                        </div>
-                        <div class="cell valign-center">
-                            <!--D9-2-->
-                            <input id="D9_2" data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_143]',
-                                value: commonAmount,
-                                required: true,
-                                option: $vm.option,
-                                constraint: 'CommonAmount'}"/>
-                        </div>
-                    </div>
-                    <div class="table table-col-2">
-                        <div class="cell valign-center">
-                            <!--D3-1-->
+                            <!--D3_1-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_114')}</div>
                         </div>
                         <div class="cell valign-center">
-                            <!--D3-2-->
+                            <!--D3_2-->
                             <div class="cf" data-bind="ntsSwitchButton: {
                                 name: '#[QMM019_115]',
                                 options: $vm.proportionalDivisionSetAtrs,
                                 optionsValue: 'code',
                                 optionsText: 'name',
                                 value: proportionalAtr,
+                                enable: $vm.screenControl().enableD3_2(),
                                 required: false}"/>
                         </div>
                     </div>
@@ -254,6 +268,7 @@
                                 value: proportionalMethod,
                                 optionsText: 'name',
                                 required: false,
+                                enable: $vm.screenControl().enableD3_6(),
                                 selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
@@ -268,17 +283,24 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D3_9-->
-                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
+                            <div data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableD3_9()}"/>
                             <!--D3_10-->
-                            <input id="D3_10" data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_121]',
-                                value: rangeValue,
-                                option: $vm.option,
-                                constraint: 'DetailAmountType'}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_10()">
+                                <input id="D3_10" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_121]',
+                                    value: rangeValue,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_10(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--D3_11-->
-                            <div class="label">#{i18n.getText('QMM019_122')}</div>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_11()">
+                                <!--D3_11-->
+                                <div class="label">#{i18n.getText('QMM019_122')}</div>
+                            </com:ko-if>
                         </div>
                     </div>
                     <div class="table table-error-alarm"
@@ -286,17 +308,24 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_12-->
-                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
-                            <!--D3_13-->
-                            <input id="D3_13" data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_123]',
-                                value: rangeValue,
-                                option: $vm.option,
-                                constraint: 'DetailAmountType'}"/>
+                            <div data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableD3_12()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_13()">
+                                <!--D3_13-->
+                                <input id="D3_13" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_123]',
+                                    value: rangeValue,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_13(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--D3_14-->
-                            <div class="label">#{i18n.getText('QMM019_124')}</div>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_14()">
+                                <!--D3_14-->
+                                <div class="label">#{i18n.getText('QMM019_124')}</div>
+                            </com:ko-if>
                         </div>
                     </div>
                     <div class="table table-error-alarm"
@@ -307,17 +336,24 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D3_16-->
-                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
-                            <!--D3_17-->
-                            <input id="D3_17" data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_126]',
-                                value: rangeValue,
-                                option: $vm.option,
-                                constraint: 'DetailAmountType'}"/>
+                            <div data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableD3_16()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_17()">
+                                <!--D3_17-->
+                                <input id="D3_17" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_126]',
+                                    value: rangeValue,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_17(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--D3_18-->
-                            <div class="label">#{i18n.getText('QMM019_127')}</div>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_18()">
+                                <!--D3_18-->
+                                <div class="label">#{i18n.getText('QMM019_127')}</div>
+                            </com:ko-if>
                         </div>
                     </div>
                     <div class="table table-error-alarm"
@@ -325,27 +361,38 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_19-->
-                            <div data-bind="ntsCheckBox: { checked: valueSettingAtr }"/>
-                            <!--D3_20-->
-                            <input id="D3_20" data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_128]',
-                                value: rangeValue,
-                                option: $vm.option,
-                                constraint: 'DetailAmountType'}"/>
+                            <div data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableD3_19()}"/>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_20()">
+                                <!--D3_20-->
+                                <input id="D3_20" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_128]',
+                                    value: rangeValue,
+                                    option: $vm.option,
+                                    enable: $vm.screenControl().enableD3_20(),
+                                    constraint: 'DetailAmountType'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--D3_21-->
-                            <div class="label">#{i18n.getText('QMM019_129')}</div>
+                            <com:ko-if bind="$vm.screenControl().visibleD3_21()">
+                                <!--D3_21-->
+                                <div class="label">#{i18n.getText('QMM019_129')}</div>
+                            </com:ko-if>
                         </div>
                     </div>
-                    <!--D3_22-->
-                    <div class="label label-annotate-first">#{i18n.getText('QMM019_130')}</div>
-                    <!--D3_23-->
-                    <div class="label label-annotate">#{i18n.getText('QMM019_131')}</div>
+                    <com:ko-if bind="$vm.screenControl().visibleD3_22()">
+                        <!--D3_22-->
+                        <div class="label label-annotate-first">#{i18n.getText('QMM019_130')}</div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleD3_23()">
+                        <!--D3_23-->
+                        <div class="label label-annotate">#{i18n.getText('QMM019_131')}</div>
+                    </com:ko-if>
                 </div>
                 <div class="cell valign-top">
                     <!--D2_10-->
-                    <div data-bind="ntsAccordion: { enable:  screenMode() != unselectMode}">
+                    <div data-bind="ntsAccordion: { enable: $vm.screenControl().enableD2_10() }">
                         <h3>#{i18n.getText('QMM019_113')}</h3>
                         <div class="acc-content">
                             <!--D11_1-->
@@ -520,21 +567,21 @@
                     </div>
                 </div>
             </div>
-            <!--D1_10-->
+            <!--D10_1-->
             <div class="userguide-register" data-toggle="userguide-register" data-target="#btn-register"
                  data-direction="right">
                 <div data-target="#btn-register" data-direction="right">
                     #{i18n.getText('QMM019_144')}
                 </div>
             </div>
-            <!--D1_11-->
+            <!--D10_2-->
             <div class="userguide-exist" data-toggle="userguide-exist" data-target="#D1_6_container"
                  data-direction="right">
                 <div data-target="#D1_6_container" data-direction="right">
                     #{i18n.getText('QMM019_145')}
                 </div>
             </div>
-            <!--D1_12-->
+            <!--D10_3-->
             <div class="userguide-not-register" data-toggle="userguide-not-register" data-target="#D1_6_container"
                  data-direction="right">
                 <div data-target="#D1_6_container" data-direction="right">
@@ -543,7 +590,7 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide, enable: $root.errors.isEmpty"
+            <button data-bind="click: decide, enable: $root.errors.isEmpty || $vm.screenControl().enableD4_1()"
                     class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>

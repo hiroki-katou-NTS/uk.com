@@ -280,6 +280,16 @@ module nts.uk.pr.view.qmm019.share.model {
         COVERED = 1
     }
 
+    /**
+     * 既定区分
+     */
+    export enum DefaultAtr {
+        // ユーザ作成
+        USER_CREATE = 0,
+        // システム既定
+        SYSTEM_DEFAULT = 1
+    }
+
     export function getAverageWageAtrText(e: AverageWageAtr){
         switch (e){
             case AverageWageAtr.NOT_COVERED: return "対象外";

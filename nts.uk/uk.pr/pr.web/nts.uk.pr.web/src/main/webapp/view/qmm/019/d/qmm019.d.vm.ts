@@ -7,9 +7,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
 
     export class ScreenModel {
-        screenMode: KnockoutObservable<number>;
-        unselectMode: number = 0;
-        selectMode: number = 1
+        isInitSubscribe: boolean;
+        screenControl: KnockoutObservable<ScreenControl>;
 
         option: any;
 
@@ -29,16 +28,17 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         dataScreen: KnockoutObservable<Params>;
         categoryAtrText: KnockoutObservable<string>;
         paymentItemSet: KnockoutObservable<PaymentItemSet>;
-        breakdownItemSets: KnockoutObservableArray<BreakdownItemSet>
+        breakdownItemSets: KnockoutObservableArray<BreakdownItemSet>;
 
         constructor() {
             let self = this;
-            self.screenMode = ko.observable(0);
+            self.isInitSubscribe = false;
+            self.screenControl = ko.observable(new ScreenControl());
             self.option = {
                 grouplength: 3,
                 textalign: "right",
                 currencyformat: "JPY"
-            }
+            };
 
             self.selectedSearchIitemName = ko.observable(null);
             self.itemNames = ko.observableArray([]);
@@ -48,9 +48,9 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.totalObjAtrs = ko.observableArray(shareModel.getPaymentTotalObjAtr());
             self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr());
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
-            self.proportionalDivisionSetAtrs = ko.observableArray(shareModel.getProportionalDivisionSetAtr())
+            self.proportionalDivisionSetAtrs = ko.observableArray(shareModel.getProportionalDivisionSetAtr());
             self.proportionalDivisionSetAtrSelected = ko.observable(null);
-            self.proportionalDivisionRatioSetAtrs = ko.observableArray(shareModel.getProportionalDivisionRatioSetAtr())
+            self.proportionalDivisionRatioSetAtrs = ko.observableArray(shareModel.getProportionalDivisionRatioSetAtr());
             self.proportionalDivisionRatioSetAtrSelected = ko.observable(null);
 
             self.dataScreen = ko.observable(new Params(null));
@@ -58,34 +58,39 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.paymentItemSet = ko.observable(new PaymentItemSet(null));
             self.breakdownItemSets = ko.observableArray([]);
 
+            // D10_1
+            $("[data-toggle='userguide-register']").ntsUserGuide();
+            // D10_2
+            $("[data-toggle='userguide-exist']").ntsUserGuide();
+            // D10_3
+            $("[data-toggle='userguide-not-register']").ntsUserGuide();
+
             self.codeSelected.subscribe(value => {
                 block.invisible();
                 let itemName: StatementItem = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
-                })
+                });
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
                 self.dataScreen().name(itemName.name);
                 self.getDataAccordion().done(() => {
+                    // 選択モードへ移行する
+                    self.selectedMode(itemName.defaultAtr);
                     block.clear();
                 })
-            })
-
-            $("[data-toggle='userguide-register']").ntsUserGuide();
-            $("[data-toggle='userguide-exist']").ntsUserGuide();
-            $("[data-toggle='userguide-not-register']").ntsUserGuide();
-
+            });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            $("#fixed-table").ntsFixedTable({height: 139});
+            $("#fixed-table").ntsFixedTable({height: 139, width: 272});
             // let params: IParams = windows.getShared("QMM019D_PARAMS");
             let params: IParams = <IParams>{};
+            params.itemNameCode = "0002";
             params.yearMonth = 201802;
             params.workingAtr = null;
-            params.totalObject = null;
-            params.calcMethod = null;
+            params.totalObject = shareModel.PaymentTotalObjAtr.INSIDE;
+            params.calcMethod = shareModel.PaymentCaclMethodAtr.COMMON_AMOUNT;
             params.proportionalAtr = null;
             params.proportionalMethod = null;
             params.rangeValAttribute = null;
@@ -110,7 +115,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             service.getStatementItem(self.categoryAtr).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen(params);
-            })
+            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -123,15 +128,24 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.unselectedMode();
                 return;
             }
+            if (isNullOrUndefined(params.itemNameCode)) {
+                // 未選択モードへ移行する
+                self.unselectedMode();
+                return;
+            }
+            let item: IStatementItem = _.find(self.itemNames(), (item: IStatementItem) => {
+                return item.itemNameCd == params.itemNameCode;
+            });
+            if (isNullOrUndefined(item)) {
+                // 未選択モードへ移行する
+                self.unselectedMode();
+                return;
+            }
+            self.codeSelected(item.itemNameCd);
             // TODO #125441
-
-            // 選択モードへ移行する
-            self.selectedMode();
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen(new Params(params));
-            let item: IStatementItem = _.head(self.itemNames());
-            self.codeSelected(item.itemNameCd);
-            // TODO
+            self.initSubscribeDataScreen();
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -146,7 +160,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             // ドメインモデル「計算式」を取得する
             let sv4 = service.getFormulaById(self.dataScreen().formulaCode());
             // ドメインモデル「賃金テーブル」を取得する
-            let sv5 = service.getWageTableById(self.dataScreen().wageTableCode())
+            let sv5 = service.getWageTableById(self.dataScreen().wageTableCode());
             $.when(sv1, sv2, sv3, sv4, sv5).done((pay: IPaymentItemSet,
                                                   breakItems: Array<IBreakdownItemSet>,
                                                   perVal: any,
@@ -159,27 +173,242 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
                 self.dataScreen().wageTableName(isNullOrUndefined(wageTable) ? null : wageTable.wageTableName);
                 dfd.resolve();
-            })
+            });
 
             return dfd.promise();
         }
 
+        initSubscribeDataScreen() {
+            let self = this;
+            if (self.isInitSubscribe) return;
+            self.isInitSubscribe = true;
+
+            self.dataScreen().calcMethod.subscribe(value => {
+                self.condition43(value, self.paymentItemSet().taxAtr());
+            });
+
+            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition8(value);
+            });
+
+            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition9(value);
+            });
+
+            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition10(value);
+            });
+
+            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition11(value);
+            });
+
+            self.dataScreen().calcMethod.subscribe(value => {
+                self.condition12(self.paymentItemSet().taxAtr(), value);
+                self.condition13(self.paymentItemSet().taxAtr(), value);
+                self.condition14(value);
+                self.condition15(value);
+                self.condition16(value);
+            })
+        }
+
         unselectedMode() {
             let self = this;
-            self.screenMode(self.unselectMode);
+            self.codeSelected(null);
             self.paymentItemSet = ko.observable(new PaymentItemSet(null));
+            self.condition6(self.itemNames(), self.codeSelected());
+            self.condition7(self.itemNames());
+            self.screenControl().visibleD2_2(false);
+            self.screenControl().visibleD2_3(false);
+            self.screenControl().enableD2_5(false);
+            self.screenControl().enableD2_8(false);
+            self.screenControl().enableD2_10(false);
+            self.screenControl().enableD3_2(false);
+            self.screenControl().enableD3_6(false);
+            self.screenControl().enableD3_9(false);
+            self.screenControl().visibleD3_10(false);
+            self.screenControl().enableD3_10(false);
+            self.screenControl().visibleD3_11(false);
+            self.screenControl().enableD3_12(false);
+            self.screenControl().visibleD3_13(false);
+            self.screenControl().enableD3_13(false);
+            self.screenControl().visibleD3_14(false);
+            self.screenControl().enableD3_16(false);
+            self.screenControl().visibleD3_17(false);
+            self.screenControl().enableD3_17(false);
+            self.screenControl().visibleD3_18(false);
+            self.screenControl().enableD3_19(false);
+            self.screenControl().visibleD3_20(false);
+            self.screenControl().enableD3_20(false);
+            self.screenControl().visibleD3_21(false);
+            self.screenControl().visibleD3_22(false);
+            self.screenControl().visibleD3_23(false);
+            self.screenControl().enableD4_1(false);
+            self.screenControl().visibleD5(false);
+            self.screenControl().visibleD6(false);
+            self.screenControl().visibleD7(false);
+            self.screenControl().visibleD8(false);
+            self.screenControl().visibleD9(false);
         }
 
-        selectedMode() {
+        selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            self.screenMode(self.selectMode);
+            self.initSubscribeDataScreen();
+            if (defaultAtr != share.model.DefaultAtr.SYSTEM_DEFAULT) {
+                self.screenControl().visibleD2_2(true);
+                self.screenControl().visibleD2_3(true);
+                self.screenControl().enableD2_5(true);
+                self.condition43(self.dataScreen().calcMethod(), self.paymentItemSet().taxAtr());
+                self.screenControl().enableD2_10(true);
+                self.screenControl().enableD3_2(true);
+                self.screenControl().enableD3_6(true);
+                self.screenControl().enableD3_9(true);
+                self.screenControl().visibleD3_10(true);
+                self.condition8(self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_11(true);
+                self.screenControl().enableD3_12(true);
+                self.screenControl().visibleD3_13(true);
+                self.condition9(self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_14(true);
+                self.screenControl().enableD3_16(true);
+                self.screenControl().visibleD3_17(true);
+                self.condition10(self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_18(true);
+                self.screenControl().enableD3_19(true);
+                self.screenControl().visibleD3_20(true);
+                self.condition11(self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_21(true);
+                self.screenControl().visibleD3_22(true);
+                self.screenControl().visibleD3_23(true);
+                self.screenControl().enableD4_1(true);
+                self.condition12(self.paymentItemSet().taxAtr(), self.dataScreen().calcMethod());
+                self.condition13(self.paymentItemSet().taxAtr(), self.dataScreen().calcMethod());
+                self.condition14(self.dataScreen().calcMethod());
+                self.condition15(self.dataScreen().calcMethod());
+                self.condition16(self.dataScreen().calcMethod());
+            } else {
+                self.screenControl().visibleD2_2(true);
+                self.screenControl().visibleD2_3(true);
+                self.screenControl().enableD2_5(false);
+                self.screenControl().enableD2_8(false);
+                self.screenControl().enableD2_10(true);
+                self.screenControl().enableD3_2(false);
+                self.screenControl().enableD3_6(false);
+                self.screenControl().enableD3_9(true);
+                self.screenControl().visibleD3_10(true);
+                self.condition8(self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_11(true);
+                self.screenControl().enableD3_12(true);
+                self.screenControl().visibleD3_13(true);
+                self.condition9(self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_14(true);
+                self.screenControl().enableD3_16(true);
+                self.screenControl().visibleD3_17(true);
+                self.condition10(self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_18(true);
+                self.screenControl().enableD3_19(true);
+                self.screenControl().visibleD3_20(true);
+                self.condition11(self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.screenControl().visibleD3_21(true);
+                self.screenControl().visibleD3_22(true);
+                self.screenControl().visibleD3_23(true);
+                self.screenControl().enableD4_1(true);
+                self.condition12(self.paymentItemSet().taxAtr(), self.dataScreen().calcMethod());
+                self.condition13(self.paymentItemSet().taxAtr(), self.dataScreen().calcMethod());
+                self.condition14(self.dataScreen().calcMethod());
+                self.condition15(self.dataScreen().calcMethod());
+                self.condition16(self.dataScreen().calcMethod());
+            }
         }
 
+        condition6(list: Array, code: string) {
+            if (!_.isEmpty(list) && isNullOrEmpty(code)) {
+                // D10_1
+                $(".userguide-register").ntsUserGuide("show");
+                // D10_2
+                $(".userguide-exist").ntsUserGuide("show");
+            }
+        }
+
+        condition7(list: Array) {
+            if (_.isEmpty(list)) {
+                // D10_3
+                $(".userguide-not-register").ntsUserGuide("show");
+            }
+        }
+
+        condition8(check: boolean) {
+            let self = this;
+            self.screenControl().enableD3_10(check);
+        }
+
+        condition9(check: boolean) {
+            let self = this;
+            self.screenControl().enableD3_13(check);
+        }
+
+        condition10(check: boolean) {
+            let self = this;
+            self.screenControl().enableD3_17(check);
+        }
+
+        condition11(check: boolean) {
+            let self = this;
+            self.screenControl().enableD3_20(check);
+        }
+
+        condition12(taxAtr: number, calcMethod: any) {
+            let self = this;
+            if (taxAtr == shareModel.TaxAtr.COMMUTING_EXPENSES_MANUAL && calcMethod != shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF) {
+                self.screenControl().visibleD5(true);
+            } else {
+                self.screenControl().visibleD5(false);
+            }
+        }
+
+        condition13(taxAtr: number, calcMethod: any) {
+            let self = this;
+            if (taxAtr != shareModel.TaxAtr.COMMUTING_EXPENSES_MANUAL && calcMethod == shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF) {
+                self.screenControl().visibleD6(true);
+            } else {
+                self.screenControl().visibleD6(false);
+            }
+        }
+
+        condition14(calcMethod: any) {
+            let self = this;
+            if (calcMethod == shareModel.PaymentCaclMethodAtr.CACL_FOMULA) {
+                self.screenControl().visibleD7(true);
+            } else {
+                self.screenControl().visibleD7(false);
+            }
+        }
+
+        condition15(calcMethod: any) {
+            let self = this;
+            if (calcMethod == shareModel.PaymentCaclMethodAtr.WAGE_TABLE) {
+                self.screenControl().visibleD8(true);
+            } else {
+                self.screenControl().visibleD8(false);
+            }
+        }
+
+        condition16(calcMethod: any) {
+            let self = this;
+            if (calcMethod == shareModel.PaymentCaclMethodAtr.COMMON_AMOUNT) {
+                self.screenControl().visibleD9(true);
+            } else {
+                self.screenControl().visibleD9(false);
+            }
+        }
+
+        condition43(calcMethod: any, taxAtr: any) {
+            let self = this;
+            self.screenControl().enableD2_8(calcMethod != shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM && taxAtr != shareModel.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER);
+        }
 
         register() {
-            // $(".userguide-register").ntsUserGuide("show");
-            // $(".userguide-exist").ntsUserGuide("show");
-            $(".userguide-not-register").ntsUserGuide("show");
+
         }
 
         openI() {
@@ -242,6 +471,50 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             windows.close();
         }
     }
+
+    class ScreenControl {
+        // screenMode: ScreenMode = ScreenMode.UNSELECTED;
+        visibleD2_2: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD2_3: KnockoutObservable<boolean> = ko.observable(false);
+        enableD2_5: KnockoutObservable<boolean> = ko.observable(false);
+        enableD2_8: KnockoutObservable<boolean> = ko.observable(false);
+        enableD2_10: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_2: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_6: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_9: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_10: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_10: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_11: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_12: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_13: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_13: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_14: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_16: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_17: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_17: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_18: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_19: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_20: KnockoutObservable<boolean> = ko.observable(false);
+        enableD3_20: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_21: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_22: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD3_23: KnockoutObservable<boolean> = ko.observable(false);
+        enableD4_1: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD5: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD6: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD7: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD8: KnockoutObservable<boolean> = ko.observable(false);
+        visibleD9: KnockoutObservable<boolean> = ko.observable(false);
+
+        constructor() {
+        }
+    }
+
+    /*enum ScreenMode {
+        UNSELECTED = 0,
+        SELECTED = 1,
+        SYSTEM = 2
+    }*/
 
     interface IStatementItem {
         categoryAtr: number;
@@ -399,43 +672,52 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.formulaCode = ko.observable(null);
                 self.wageTableCode = ko.observable(null);
                 self.commonAmount = ko.observable(null);
-                return;
+            } else {
+                self.yearMonth = data.yearMonth;
+                self.itemNameCode = ko.observable(data.itemNameCode);
+                self.workingAtr = ko.observable(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
+                self.totalObject = ko.observable(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
+                self.calcMethod = ko.observable(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
+                self.proportionalAtr = ko.observable(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
+                self.proportionalMethod = ko.observable(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
+                self.rangeValAttribute = ko.observable(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+                self.errorRangeSetting = new ErrorAlarmRangeSetting(data.errorRangeSetting);
+                self.alarmRangeSetting = new ErrorAlarmRangeSetting(data.alarmRangeSetting);
+                self.perValCode = ko.observable(data.perValCode);
+                self.formulaCode = ko.observable(data.formulaCode);
+                self.wageTableCode = ko.observable(data.wageTableCode);
+                self.commonAmount = ko.observable(data.commonAmount);
             }
-            self.yearMonth = data.yearMonth;
-            self.itemNameCode = ko.observable(data.itemNameCode);
-            self.workingAtr = ko.observable(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
-            self.totalObject = ko.observable(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
-            self.calcMethod = ko.observable(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
-            self.proportionalAtr = ko.observable(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
-            self.proportionalMethod = ko.observable(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
-            self.rangeValAttribute = ko.observable(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
-            self.errorRangeSetting = new ErrorAlarmRangeSetting(data.errorRangeSetting);
-            self.alarmRangeSetting = new ErrorAlarmRangeSetting(data.alarmRangeSetting);
-            self.perValCode = ko.observable(data.perValCode);
-            self.formulaCode = ko.observable(data.formulaCode);
-            self.wageTableCode = ko.observable(data.wageTableCode);
-            self.commonAmount = ko.observable(data.commonAmount);
 
             self.calcMethod.subscribe(() => {
-                self.clearError("#D6-2");
-                self.clearError("#D7-2");
-                self.clearError("#D8-2");
+                self.perValCode(null);
+                self.perValName(null);
+                self.clearError("#D6_2");
+                self.formulaCode(null);
+                self.formulaName(null);
+                self.clearError("#D7_2");
+                self.wageTableCode(null);
+                self.wageTableName(null);
+                self.clearError("#D8_2");
+                self.commonAmount(null);
+                self.clearError("#D9_2");
             });
             self.perValCode.subscribe(() => {
-                self.clearError("#D6-2");
+                self.clearError("#D6_2");
             });
             self.formulaCode.subscribe(() => {
-                self.clearError("#D7-2");
+                self.clearError("#D7_2");
             });
             self.wageTableCode.subscribe(() => {
-                self.clearError("#D8-2");
+                self.clearError("#D8_2");
             });
 
-
             self.errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
+                self.errorRangeSetting.upperLimitSetting.rangeValue(null);
                 self.clearError("#D3_10");
             });
             self.errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
+                self.errorRangeSetting.lowerLimitSetting.rangeValue(null);
                 self.clearError("#D3_13");
             });
             self.errorRangeSetting.upperLimitSetting.rangeValue.subscribe(() => {
@@ -444,9 +726,11 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             });
 
             self.alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
+                self.alarmRangeSetting.upperLimitSetting.rangeValue(null);
                 self.clearError("#D3_17");
             });
             self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
+                self.alarmRangeSetting.lowerLimitSetting.rangeValue(null);
                 self.clearError("#D3_20");
             });
             self.alarmRangeSetting.upperLimitSetting.rangeValue.subscribe(() => {
@@ -460,7 +744,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
          */
         checkDecide() {
             let self = this;
-            self.validate();
+            // self.validate();
             self.checkCalcMethod();
             self.checkErrorRange();
             self.checkAlarmRange();
@@ -482,21 +766,21 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                     // 個人金額コードが設定されているか確認する
                     if (isNullOrEmpty(self.perValCode())) {
                         // alertError({messageId: "MsgQ_11"});
-                        self.setError("#D6-2", "MsgQ_11");
+                        self.setError("#D6_2", "MsgQ_11");
                     }
                     break;
                 case shareModel.PaymentCaclMethodAtr.CACL_FOMULA:
                     // 計算式コードが設定されているか確認する
                     if (isNullOrEmpty(self.formulaCode())) {
                         // alertError({messageId: "MsgQ_12"});
-                        self.setError("#D7-2", "MsgQ_11");
+                        self.setError("#D7_2", "MsgQ_12");
                     }
                     break;
                 case shareModel.PaymentCaclMethodAtr.WAGE_TABLE:
                     // 賃金テーブルコードが設定されているか確認する
                     if (isNullOrEmpty(self.wageTableCode())) {
                         // alertError({messageId: "MsgQ_13"});
-                        self.setError("#D8-2", "MsgQ_11");
+                        self.setError("#D8_2", "MsgQ_13");
                     }
                     break;
                 default:
