@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface DepartmentAdapter {
     Optional<Department> getDepartmentByBaseDate(String employeeId, GeneralDate baseDate);
+    Optional<Department> getDepartmentByDepartmentId(String departmentId);
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.Optional;
@@ -12,6 +13,8 @@ public interface StateCorrelationHisCompanyRepository {
     Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid, String hisId);
 
     Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid);
+
+    Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyByDate(String cid,GeneralDate baseDate);
 
     void add(String cid, YearMonthHistoryItem history);
 

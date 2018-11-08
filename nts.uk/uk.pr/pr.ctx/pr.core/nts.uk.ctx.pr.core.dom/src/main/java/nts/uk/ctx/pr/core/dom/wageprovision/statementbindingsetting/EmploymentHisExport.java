@@ -10,10 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Department {
-    /*階層コード*/
-    private String hierarchyCd;
-    /** The workplace id. */
-    // 部門ID
-    private String departmentId;
+public class EmploymentHisExport {
+    /*雇用コード*/
+    private String employmentCode;
 }
