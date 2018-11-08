@@ -168,7 +168,6 @@ public class ScheduleCreatorExecutionTransaction {
 	 *            the domain
 	 */
 	// スケジュールを再設定する
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
 			DatePeriod targetPeriod,

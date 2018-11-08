@@ -61,4 +61,14 @@ public interface EmploymentHistoryRepository {
 	
 	// query from RequetsList 264
 	List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
+	
+	
+	/**
+	 * @author lanlt
+	 * getEmploymentHistoryItem
+	 * @param historyId
+	 * @param employmentCode
+	 * @return
+	 */
+	Optional<EmploymentHistory> getEmploymentHistory(String historyId, String employmentCode);
 }

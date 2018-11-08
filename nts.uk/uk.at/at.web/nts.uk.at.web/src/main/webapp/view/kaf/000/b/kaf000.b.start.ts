@@ -63,7 +63,7 @@ function getProgramName(programID: string, screenID: string){
     var namePath = nts.uk.text.format("sys/portal/standardmenu/findProgramName/{0}/{1}", programID, screenID);
     nts.uk.request.ajax("com", namePath).done((value) => {
         if(!nts.uk.util.isNullOrEmpty(value)){
-            $("#pg-name").append(value);      
+            $("#pg-name").text(value);
         }   
     });           
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -337,6 +338,26 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 					.entrySet().stream().map(c -> group(c.getValue())).flatMap(List::stream).collect(Collectors.toList()));
 		});
 		return result;
+	}
+
+	@Override
+	public void updateForEachOfType(BreakTimeOfDailyPerformance breakTime) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			for(BreakTimeSheet breakTimeSheet : breakTime.getBreakTimeSheets()){
+			
+				String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
+						+ breakTimeSheet.getStartTime().valueAsMinutes() + " AND END_STAMP_TIME = " + breakTimeSheet.getEndTime().valueAsMinutes()
+						+ " WHERE SID = '"
+						+ breakTime.getEmployeeId() + "' AND YMD = '" + breakTime.getYmd() + "'" + " AND BREAK_TYPE = " 
+						+ breakTime.getBreakType().value 
+						+ " AND BREAK_FRAME_NO = " + breakTimeSheet.getBreakFrameNo().v();
+				Statement statementU = con.createStatement();
+				statementU.executeUpdate(updateTableSQL);
+			}
+		} catch (Exception e) {
+			
+		}
 	}
 
 }
