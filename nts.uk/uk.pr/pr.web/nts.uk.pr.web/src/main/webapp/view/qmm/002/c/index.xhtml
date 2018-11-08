@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 942, height: 640 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="qmm002.c.service.js" />
+			<com:scriptfile path="qmm002.c.vm.js" />
+			<com:scriptfile path="qmm002.c.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex = "1" data-bind="click: execute">#{i18n.getText('QMM002_22')}</button>
+				<button tabindex = "2" data-bind="click: close">#{i18n.getText('QMM002_23')}</button>
+			</div>
+			<div class="contents-area dialog-content" style="padding: 10px 25px">
+				<div style="margin-bottom: 10px">
+					<span class="label">#{i18n.getText('QMM002_24')}</span><br/>
+					<span class="label">#{i18n.getText('QMM002_25')}</span><br/>
+					<span class="label">#{i18n.getText('QMM002_26')}</span><br/>
+				</div>
+				<div id="source" style="display: inline-block">
+					<div class="valign-center control-group">
+						<span class="label">#{i18n.getText('QMM002_27')}</span>
+					</div>
+					<div class="valign-center control-group">
+						<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+						<div tabindex="3" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+							targetKey: 'id', mode:'igTree', comId:'treegridbankbranchsource', items: sourceBankBranchList, 
+							selected: selectedSourceBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+					</div>
+					<table id="treegridbankbranchsource" tabindex="4"
+						data-bind="ntsTreeGridView:{
+							width: 400,
+							rows: 15,
+							dataSource: sourceBankBranchList,
+							selectedValues: selectedSourceBranchCodes,
+							headers: headers,
+							primaryKey: 'id',
+							childDataKey: 'children',
+							primaryText: 'nodeText',
+							multiple: true,
+							enable: true,
+							initialExpandDepth: 0,
+							showCheckBox: true}"></table>
+				</div>
+				<div id="midsec" style="display: inline-block; width: 65px">
+					<hr width="1" size="430"/>
+					<span class="caret-right caret-inline"></span>
+				</div>
+				<div id="destination" style="display: inline-block">
+					<div class="valign-center control-group">
+						<span class="label">#{i18n.getText('QMM002_29')}</span>
+					</div>
+					<div class="valign-center control-group">
+						<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+						<div tabindex="5" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+							targetKey: 'id', mode:'igTree', comId:'treegridbankbranchdestination', items: desBankBranchList, 
+							selected: selectedDesBranchCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+					</div>
+					<table id="treegridbankbranchdestination" tabindex="6"
+						data-bind="ntsTreeGridView:{
+							width: 400,
+							rows: 15,
+							dataSource: desBankBranchList,
+							value: selectedDesBranchCode,
+							headers: headers,
+							primaryKey: 'id',
+							childDataKey: 'children',
+							primaryText: 'nodeText',
+							multiple: false,
+							enable: true,
+							initialExpandDepth: 0,
+							showCheckBox: false}"></table>
+				</div>
+			</div>
+			<style>
+				#treegridbankbranchsource_container, #treegridbankbranchdestination_container{clear: both}
+				.caret-right.caret-inline:after {
+				    margin-left: 2.3em;
+				    margin-top: -31.7em;
+				    border-left: 1.7em solid;
+				    border-top: 6.7em solid transparent;
+				    border-bottom: 6.7em solid transparent;
+				}
+			</style>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

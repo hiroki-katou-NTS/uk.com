@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 500, height: 600 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="qmm002.b.service.js" />
+			<com:scriptfile path="qmm002.b.vm.js" />
+			<com:scriptfile path="qmm002.b.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="contents-area dialog-content" style="padding: 20px 25px">
+				<div class="valign-center control-group">
+					<span class="label">#{i18n.getText('QMM002_20')}</span>
+				</div>
+				<div class="valign-center control-group">
+					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+					<div tabindex="1" style="width: 400px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+						targetKey: 'id', mode:'igTree', comId:'B1_4', items: bankBranchList, 
+						selected: selectedBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+				</div>
+				<table id="B1_4" tabindex="2"
+					data-bind="ntsTreeGridView:{
+						width: 450,
+						rows: 15,
+						name: '#[QMM002_10]',
+						dataSource: bankBranchList,
+						selectedValues: selectedBranchCodes,
+						headers: headers,
+						primaryKey: 'id',
+						childDataKey: 'children',
+						primaryText: 'nodeText',
+						multiple: true,
+						enable: true,
+						initialExpandDepth: 0,
+						showCheckBox: true}"></table>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex = "3" class="x-large danger" data-bind="click: deleteList">#{i18n.getText('QMM002_7')}</button>
+				<button tabindex = "4" data-bind="click: cancel">#{i18n.getText('QMM002_21')}</button>
+			</div>
+			<style>
+				#B1_4_container{clear: both}
+			</style>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
