@@ -150,7 +150,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 		List<EmployeeApproverOutput> lstEmployeeInfo = workplace.getLstEmployeeInfo();
 		// set "【職場】"
 		Cell workPlace = cells.get(firstRow, COLUMN_INDEX[1]);
-		workPlace.setValue("【職場】");
+		workPlace.setValue("[職場]");
 
 		// set worplace Name, workplace Code
 		Cell workPlaceCode = cells.get(firstRow, COLUMN_INDEX[2]);
