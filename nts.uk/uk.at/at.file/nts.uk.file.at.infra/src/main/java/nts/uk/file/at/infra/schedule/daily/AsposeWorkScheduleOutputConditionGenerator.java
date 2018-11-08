@@ -1893,7 +1893,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemName());
+            	cell.setValue(outputItem.getItemName() + outputItem.getItemCode());
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
 //            	cell.setValue(outputItem.getItemCode());
@@ -3150,14 +3150,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 
 		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optReason = lstReason.stream()
-					.filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
-			if (!optReason.isPresent()) {
+			String itemId = this.getIdFromAttendanceId(attendanceId);
+			List<CodeName> optReason = lstReason.stream().filter(reason -> reason.getCode().equalsIgnoreCase(code))
+					.filter(item -> item.getId().equalsIgnoreCase(itemId)).collect(Collectors.toList());
+			if (optReason.isEmpty()) {
 				return MASTER_UNREGISTERED;
 			}
-
-			CodeName reason = optReason.get();
-			return reason.getName();
+			return optReason.get(0).getName();
 		}
 		
 		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
@@ -3215,6 +3214,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 
 		return "";
+	}
+
+	//convert from attendanceId to reasonId
+	private String getIdFromAttendanceId(int attendanceId) {
+		int indexNumber = 0;
+		for (int i = 0; i < ATTENDANCE_ID_REASON.length; i++)
+			if (ATTENDANCE_ID_REASON[i] == attendanceId) {
+				indexNumber = i;
+			}
+		//because index start from 0
+		return String.valueOf(indexNumber + 1);
 	}
 	
 }
