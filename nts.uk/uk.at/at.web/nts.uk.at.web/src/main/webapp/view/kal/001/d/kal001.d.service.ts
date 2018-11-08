@@ -115,9 +115,14 @@ module nts.uk.at.view.kal001.d.service {
                             this.endDate = nts.uk.time.parseMoment(p.endDate).momentObject.toISOString() ;
                                                         
                         } else if(p.categoryName=="36協定　年間"){
-                            let sDate =p.year +'/' + p.startDate.slice(5, 7) +"/01";
-                            let eDate =(parseInt(p.year) + 1) +'/' + p.endDate.slice(5,7) ;
-                            
+                            let sMonth = p.startDate.slice(5, 7);
+                            let sDate = p.year +'/' + sMonth +"/01";
+                            let eDate = "" ;
+                            if (sMonth != 1) {
+                                eDate = (parseInt(p.year) + 1) +'/' + p.endDate.slice(5, 7);
+                            } else {
+                                eDate = p.year + '/' + p.endDate.slice(5, 7);
+                            }
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
                             eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());                            
                             
