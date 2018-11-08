@@ -1,14 +1,13 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsetting;
 
 
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompany;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompanyRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateLinkSetCom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateLinkSetComPk;
 
+import javax.ejb.Stateless;
 import java.util.Optional;
 
 @Stateless
@@ -22,6 +21,11 @@ public class JpaStateLinkSettingCompanyRepository extends JpaRepository implemen
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateLinkSetCom.class)
         .setParameter("hisId", hisId)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public Optional<StateLinkSettingCompany> getStateLinkSettingCompanyByCode(String hisId, String departmentCode) {
+        return Optional.empty();
     }
 
     @Override
