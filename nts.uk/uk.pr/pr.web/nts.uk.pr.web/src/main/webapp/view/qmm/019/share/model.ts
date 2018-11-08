@@ -60,13 +60,21 @@ module nts.uk.pr.view.qmm019.share.model {
         OUTSIDE_ACTUAL = 3
     }
 
-    export function getPaymentTotalObjAtr(): Array<ItemModel> {
-        return [
-            new model.ItemModel(PaymentTotalObjAtr.INSIDE, '合計対象内'),
-            new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
-            new model.ItemModel(PaymentTotalObjAtr.INSIDE_ACTUAL, '合計対象内（現物）'),
-            new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）'),
-        ];
+    export function getPaymentTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
+        if(printSet == StatementPrintAtr.PRINT){
+            return [
+                new model.ItemModel(PaymentTotalObjAtr.INSIDE, '合計対象内'),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
+                new model.ItemModel(PaymentTotalObjAtr.INSIDE_ACTUAL, '合計対象内（現物）'),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）')
+            ];
+        }
+        else{
+            return [
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）')
+            ];
+        }
     }
 
     /**
@@ -262,11 +270,14 @@ module nts.uk.pr.view.qmm019.share.model {
         COVERED = 1
     }
 
-    export function getCategoryFixedWageText(e: CategoryFixedWage){
-        switch (e){
-            case CategoryFixedWage.NOT_COVERED: return "対象外";
-            case CategoryFixedWage.COVERED: return "対象";
-            default: return "";
+    export function getCategoryFixedWageText(e: CategoryFixedWage): string {
+        switch (e) {
+            case CategoryFixedWage.NOT_COVERED:
+                return "対象外";
+            case CategoryFixedWage.COVERED:
+                return "対象";
+            default:
+                return "";
         }
     }
 
@@ -280,16 +291,6 @@ module nts.uk.pr.view.qmm019.share.model {
         COVERED = 1
     }
 
-    /**
-     * 既定区分
-     */
-    export enum DefaultAtr {
-        // ユーザ作成
-        USER_CREATE = 0,
-        // システム既定
-        SYSTEM_DEFAULT = 1
-    }
-
     export function getAverageWageAtrText(e: AverageWageAtr){
         switch (e){
             case AverageWageAtr.NOT_COVERED: return "対象外";
@@ -297,6 +298,26 @@ module nts.uk.pr.view.qmm019.share.model {
             default: return "";
         }
     }
+
+    /**
+     * 既定区分
+     */
+    export enum DefaultAtr{
+        // ユーザ作成
+        USER_CREATE = 0,
+        // システム既定
+        SYSTEM_DEFAULT = 1
+    }
+
+    /**
+     * 明細書印字区分
+     */
+    export enum StatementPrintAtr{
+        PRINT = 0,
+        DO_NOT_PRINT = 1
+    }
+
+
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeiod {
         startMonth: string;

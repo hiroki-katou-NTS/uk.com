@@ -45,7 +45,7 @@
                             </div>
                             <div class="cell valign-top">
                                 <!--D1_5-->
-                                <div style="width: 190px" data-bind="ntsSearchBox: {
+                                <div tabindex="1" style="width: 190px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
 									targetKey: 'itemNameCd',
 									comId: 'D1_6',
@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <!--D1_6-->
-                        <table id="D1_6" data-bind="ntsGridList: {
+                        <table id="D1_6" tabindex="2" data-bind="ntsGridList: {
                             rows: 15,
                             name: '#[QMM019_161]',
                             dataSource: itemNames,
@@ -69,7 +69,7 @@
                             multiple: false,
                             value: codeSelected}"/>
                         <!--D1_11-->
-                        <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                        <button id="btn-register" tabindex="3" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
                     </div>
                 </div>
                 <div class="cell valign-top" data-bind="with: dataScreen()">
@@ -98,7 +98,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D2_5-->
-                            <div id="D2_5" data-bind="ntsComboBox: {
+                            <div id="D2_5" tabindex="4" data-bind="ntsComboBox: {
                                 name: '#[QMM019_111]',
                                 options: $vm.totalObjAtrs,
                                 optionsValue: 'code',
@@ -120,7 +120,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D2_8-->
-                            <div id="D2_8" data-bind="ntsComboBox: {
+                            <div id="D2_8" tabindex="5" data-bind="ntsComboBox: {
                                 name: '#[QMM019_112]',
                                 options: $vm.calcMethods,
                                 optionsValue: 'code',
@@ -246,7 +246,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D3_2-->
-                            <div class="cf" data-bind="ntsSwitchButton: {
+                            <div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
                                 name: '#[QMM019_115]',
                                 options: $vm.proportionalDivisionSetAtrs,
                                 optionsValue: 'code',
@@ -260,7 +260,7 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_6-->
-                            <div id="E3_6" data-bind="ntsComboBox: {
+                            <div id="D3_6" tabindex="7" data-bind="ntsComboBox: {
                                 name: '#[QMM019_119]',
                                 options: $vm.proportionalDivisionRatioSetAtrs,
                                 optionsValue: 'code',
@@ -283,12 +283,12 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D3_9-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="8" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableD3_9()}"/>
                             <!--D3_10-->
                             <com:ko-if bind="$vm.screenControl().visibleD3_10()">
-                                <input id="D3_10" data-bind="ntsNumberEditor: {
+                                <input id="D3_10" tabindex="9" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_121]',
                                     value: rangeValue,
                                     option: $vm.option,
@@ -308,12 +308,12 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_12-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="10" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableD3_12()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleD3_13()">
                                 <!--D3_13-->
-                                <input id="D3_13" data-bind="ntsNumberEditor: {
+                                <input id="D3_13" tabindex="11" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_123]',
                                     value: rangeValue,
                                     option: $vm.option,
@@ -336,12 +336,12 @@
                         </div>
                         <div class="cell valign-center">
                             <!--D3_16-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="12" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableD3_16()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleD3_17()">
                                 <!--D3_17-->
-                                <input id="D3_17" data-bind="ntsNumberEditor: {
+                                <input id="D3_17" tabindex="13" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_126]',
                                     value: rangeValue,
                                     option: $vm.option,
@@ -361,12 +361,12 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--D3_19-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="14" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableD3_19()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleD3_20()">
                                 <!--D3_20-->
-                                <input id="D3_20" data-bind="ntsNumberEditor: {
+                                <input id="D3_20" tabindex="15" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_128]',
                                     value: rangeValue,
                                     option: $vm.option,
@@ -590,9 +590,9 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide, enable: $root.errors.isEmpty || $vm.screenControl().enableD4_1()"
+            <button tabindex="16" data-bind="click: decide, enable: $root.errors.isEmpty || $vm.screenControl().enableD4_1()"
                     class="proceed">#{i18n.getText('QMM019_56')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+            <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>
 </ui:composition>
