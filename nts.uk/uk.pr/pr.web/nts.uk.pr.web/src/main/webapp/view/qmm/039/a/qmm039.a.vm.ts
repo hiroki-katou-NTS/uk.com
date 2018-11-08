@@ -130,7 +130,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: SystemType.SALARY,
+                systemType: SystemType.PERSONAL_INFORMATION,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -555,8 +555,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 empName: empName,
                 empId: self.selectedItem(),
                 itemClassification: self.itemClassLabel(),
-                personalValCode: self.individualPriceCode(),
-                personalValName: self.individualPriceCode(),
+                personalValCode: self.individualPriceCode() +'',
                 cateIndicator: self.classificationCategory(),
                 salBonusCate: self.salaryBonusCategory()
             }
