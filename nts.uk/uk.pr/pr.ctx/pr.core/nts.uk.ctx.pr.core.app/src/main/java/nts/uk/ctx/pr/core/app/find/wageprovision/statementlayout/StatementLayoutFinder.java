@@ -4,6 +4,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.Deduc
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
@@ -30,6 +32,9 @@ public class StatementLayoutFinder {
     private PaymentItemSetRepository paymentItemSetRepo;
     @Inject
     private DeductionItemSetRepository deductionItemSetRepo;
+
+    @Inject
+    private TimeItemSetRepository timeItemSetRepository;
 
     public StatementLayoutAndHistDto getStatementLayoutAndLastHist(String code) {
         String cid = AppContexts.user().companyId();
@@ -81,6 +86,12 @@ public class StatementLayoutFinder {
         String cid = AppContexts.user().companyId();
         Optional<DeductionItemSet> deductionItemSetOpt = deductionItemSetRepo.getDeductionItemStById(cid, categoryAtr, itemNameCode);
         return deductionItemSetOpt.map(DeductionItemSetDto::new).orElse(null);
+    }
+
+    public AttendanceItemSetDto getAttendanceItemById(int categoryAtr, String itemNameCode) {
+        String cid = AppContexts.user().companyId();
+        Optional<TimeItemSet> attItem = timeItemSetRepository.getTimeItemStById(cid, categoryAtr, itemNameCode);
+        return attItem.map(AttendanceItemSetDto::new).orElse(null);
     }
 
 }
