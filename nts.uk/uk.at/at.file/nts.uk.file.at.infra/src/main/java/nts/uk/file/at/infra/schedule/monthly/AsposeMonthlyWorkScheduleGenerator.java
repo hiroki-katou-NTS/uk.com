@@ -163,7 +163,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private final String FONT_FAMILY = "ＭＳ ゴシック";
 
 	/** The font size. */
-	private final int FONT_SIZE = 6;
+	private final int FONT_SIZE = 9;
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
