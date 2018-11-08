@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
@@ -46,12 +45,7 @@ public class AgreementTimeOfManagePeriodFinder extends MonthlyFinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth) {
-		List<AgreementTimeOfManagePeriod> data = new ArrayList<>();
-		employeeId.stream().forEach(e -> {
-			yearMonth.stream().forEach(ym -> {
-				repo.find(e, ym).ifPresent(d -> data.add(d));
-			});
-		});
-		return (List<T>) data.stream().map(d -> AgreementTimeOfManagePeriodDto.from(d)).collect(Collectors.toList());
+		return (List<T>) repo.findBySidsAndYearMonths(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
+							.stream().map(d -> AgreementTimeOfManagePeriodDto.from(d)).collect(Collectors.toList());
 	}
 }
