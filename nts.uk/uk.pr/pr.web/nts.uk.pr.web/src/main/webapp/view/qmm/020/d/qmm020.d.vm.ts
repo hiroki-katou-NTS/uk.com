@@ -108,7 +108,10 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
 
         }
         openScreenL(){
-            modal("/view/qmm/020/l/index.xhtml");
+            let self = this;
+            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
+                location.reload();
+            });
         }
 
         openScreenJ(){
@@ -140,7 +143,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                         self.listStateCorrelationHis(self.listStateCorrelationHis());
                     }
 
-                    self.transferMode(params.methodEditing);
+                    self.transferMode(params.transferMethod);
                     self.currentSelectedHis(HISTORY.NEW);
                 }
             });

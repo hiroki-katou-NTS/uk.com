@@ -10,18 +10,17 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
         selectedIndividualUse : KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservableArray<any>;
         selectedUsageMaster: KnockoutObservable<number> = ko.observable();
+        currentSelectedUsageMaster: KnockoutObservable<number> = ko.observable();
         constructor() {
             block.invisible();
             var self = this;
             self.init();
-            self.selectedMasterUse.subscribe((data)=>{
-                console.dir(data);
-            });
             service.getStateUseUnitSettingById().done((data)=>{
                 if(data){
                     self.selectedMasterUse(data.masterUse);
                     self.selectedIndividualUse(data.individualUse);
                     self.selectedUsageMaster(data.usageMaster);
+                    self.currentSelectedUsageMaster(data.usageMaster);
                 }else{
                     self.selectedMasterUse(1);
                     self.selectedIndividualUse(1);
@@ -70,7 +69,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
                 companyID: '',
                 masterUse: self.selectedMasterUse(),
                 individualUse: self.selectedIndividualUse(),
-                usageMaster: self.selectedUsageMaster()
+                usageMaster: self.selectedMasterUse() === 1 ? self.selectedUsageMaster() : self.currentSelectedUsageMaster()
             }
 
             service.update(data).done(()=>{

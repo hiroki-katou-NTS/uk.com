@@ -30,8 +30,10 @@
             <li><a tabindex="-1" href="#tabpanel-1" class="tab-b-sidebar" role="tab-navigator">#{i18n.getText('QMM020_5')}</a></li>
 
             <li><a tabindex="-1" href="#tabpanel-2" class="tab-c-sidebar" role="tab-navigator">#{i18n.getText('QMM020_7')}</a></li>
+            <com:ko-if bind="$vm.viewmodelA.individualUse() === 1">
+                <li><a tabindex="-1" href="#tabpanel-3" class="tab-d-sidebar" role="tab-navigator">#{i18n.getText('QMM020_9')}</a></li>
+            </com:ko-if>
 
-            <li><a tabindex="-1" href="#tabpanel-3" class="tab-d-sidebar" role="tab-navigator">#{i18n.getText('QMM020_9')}</a></li>
         </ul>
         <div class="divider"></div>
         <span>#{i18n.getText('QMM020_12')}</span>

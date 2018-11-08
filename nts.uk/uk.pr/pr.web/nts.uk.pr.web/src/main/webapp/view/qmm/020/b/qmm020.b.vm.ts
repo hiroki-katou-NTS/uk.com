@@ -165,7 +165,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if(params){
                     hisId = HISTORY.NEW;
-                    startYearMonth = params.startYearMonth;
+                    startYearMonth = params.start;
                     self.startYearMonth(startYearMonth);
                     endYearMonth = Number(startYearMonth.toString().slice(4, 6)) == 1 ? (startYearMonth - 89) : (startYearMonth - 1);
 
@@ -182,14 +182,15 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                         self.listStateCorrelationHis(self.listStateCorrelationHis());
                     }
 
-                    self.transferMode(params.methodEditing);
+                    self.transferMode(params.transferMethod);
                     self.currentSelect(HISTORY.NEW);
                 }
             });
         }
         openScreenL(){
+            let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-
+                location.reload();
             });
         }
 
