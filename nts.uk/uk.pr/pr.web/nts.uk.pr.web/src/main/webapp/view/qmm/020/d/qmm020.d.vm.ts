@@ -1,8 +1,12 @@
 module nts.uk.pr.view.qmm020.d.viewmodel {
 
-    import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import model = qmm020.share.model;
 
     export class ScreenModel {
 
@@ -16,7 +20,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         columns: any;
         selectedCodes2: any;
         list: any;
-        button : string = '<button  data-bind = "click: $vm.viewmodelD.openTest"> Test </button>';
+        button : string = '';
         mode: KnockoutObservable<number> = ko.observable(0);
         constructor(){
             block.invisible();
@@ -77,19 +81,23 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
 
             self.selectedCodes2 = ko.observable([]);
             self.index = 0;
-            let template = '<button class="setting" onclick="openDlg()" style="margin-left: 20px;">設定</button>${custom}';
+            let template = '<button class="setting" onclick="openScreenM(\'${departmentID}\')" >設定</button>${salaryCode} ';
+            let template1 = '<button class="setting" onclick="openScreenM1(\'${departmentID}\')" >設定</button>${bonusCode} ';
 
-            self.columns = ko.observableArray([{ headerText: getText('QMM020_33'), width: "450px", key: 'code', dataType: "string" },
+            self.columns = ko.observableArray([{ headerText: getText('QMM020_33'), width: "450px", key: 'departmentID', dataType: "string" },
                 /*{ headerText: getText('QMM020_20'), key: 'nodeText', width: "250px", dataType: "string", ntsControl: 'Button' },
                 { headerText: getText('QMM020_23'), key: 'custom', width: "250px", dataType: "string", ntsControl: 'Button' }]),*/
-                { headerText: getText('QMM020_23'), key: 'custom', width: '100px', template: template},
-                { headerText: getText('QMM020_23'), key: 'custom', width: '100px', template: template}]);
+                { headerText: getText('QMM020_23'), key: 'salaryCode', width: '100px', template: template},
+                { headerText: '', key: 'salaryName', width: '100px'},
+                { headerText: getText('QMM020_23'), key: 'bonusCode', width: '100px', template: template1},
+                { headerText: '', key: 'bonusName', width: '100px'},
+                ]);
 
         }
 
         createList(){
             let self = this;
-            let node = new Node('0000' + 0, self.button + 0, []);
+            let node = new Node('0000' + 0, 'TaiTT', '01','aaaaaaa','02','ffffffff',[]);
             self.createGrisList(self.list,0,node);
             self.items.push(node);
         }
@@ -97,7 +105,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             let self = this;
             _.forEach(data,(o)=>{
                 if(parrent_id === o.CD){
-                    let level = new Node('0000' + o.DEP_ID, self.button + o.DEP_ID, []);
+                    let level = new Node('0000' + o.DEP_ID, 'Tai',o.DEP_ID, null,null,null,[]);
                     node.childs.push(level);
                     self.createGrisList(self.list,o.DEP_ID,level);
                 }
@@ -160,9 +168,9 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         searchByDepID(data:any,depID:string,salaryCode:string,bonusCode:string){
             let self = this;
             _.forEach(data,(o)=>{
-                if(o.code === depID){
-                    o. nodeText = self.button + salaryCode;
-                    o.custom = self.button + bonusCode;
+                if(o.departmentID === depID){
+                    o.salaryCode = salaryCode;
+                    o.bonusCode = bonusCode;
                     return;
                 }
                 self.searchByDepID(o.childs,depID,salaryCode,bonusCode);
@@ -189,18 +197,28 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
     }
 
     class Node {
-        code: string;
-        name: string;
-        nodeText: string;
-        custom: string;
+        departmentID: string;
+        departmentName: string;
+        display: string;
+        salaryCode: string;
+        salaryName: string;
+        bonusCode: string;
+        bonusName: string;
         childs: Array<Node>;
-        constructor(code: string, name: string, childs: Array<Node>) {
-            var self = this;
-            self.code = code;
-            self.name = name;
-            self.nodeText = self.name;
-            self.childs = childs;
-            self.custom = self.name;
+        constructor(departmentID: string,
+                    departmentName: string,
+                    salaryCode:string,
+                    salaryName: string,
+                    bonusCode:string,
+                    bonusName:string,
+                    childs: Array<Node>) {
+            this.departmentID = departmentID;
+            this.departmentName = departmentName;
+            this.salaryCode = salaryCode;
+            this.salaryName = salaryName;
+            this.bonusCode = bonusCode;
+            this.bonusName = bonusName;
+            this.childs = childs;
         }
     }
 
@@ -228,8 +246,36 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
     }
 }
 
-let openDlg = function() {
-    nts.uk.ui.windows.sub.modal("/view/qmm/020/m/index.xhtml").onClosed(() => {
-        alert("OK");
+let openScreenM = function(id: string) {
+    let model = __viewContext.viewModel.viewmodelD;
+    model.setShared(model.PARAMETERS_SCREEN_M.INPUT,{
+        startYearMonth: '',
+    });
+    model.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
+        let params = model.getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
+        if(params){
+            model.searchByDepID(model.items(),id,params.statementCode,params.statementCode);
+            model.items(model.items());
+        }
+    });
+
+
+
+
+};
+
+let openScreenM1 = function(id: string) {
+    let model = __viewContext.viewModel.viewmodelD;
+    let rs = _.find(model.listStateCorrelationHis(),{hisId: model.currentSelect()});
+    model.setShared(model.PARAMETERS_SCREEN_M.INPUT,{
+        startYearMonth: rs.startYearMonth,
+    });
+
+    model.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
+        let params = model.getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
+        if(params){
+            model.searchByDepID(model.items(),id,params.statementCode,params.statementCode);
+            model.items(model.items());
+        }
     });
 };
