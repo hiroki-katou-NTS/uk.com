@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.earthquakeInsurance.EarthquakeInsurance;
+import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.lifeInsurance.LifeInsurance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -47,7 +48,14 @@ public class QetmtEarthQuakeInsu extends UkJpaEntity implements Serializable
         return new EarthquakeInsurance(this.earthQuakeInsuPk.cid, this.earthQuakeInsuPk.earthquakeCode, this.earthquakeName);
     }
     public static QetmtEarthQuakeInsu toEntity(EarthquakeInsurance domain) {
-        return new QetmtEarthQuakeInsu(new QetmtEarthQuakeInsuPk(domain.getCId(), domain.getEarthquakeInsuranceCode().v()),domain.getEarthquakeInsuranceName().v());
+        return new QetmtEarthQuakeInsu(new QetmtEarthQuakeInsuPk(
+                 domain.getCId(),
+                 domain.getEarthquakeInsuranceCode().v()),
+                 domain.getEarthquakeInsuranceName().v());
+    }
+
+    public static QetmtEarthQuakeInsu toEntityInsurance(LifeInsurance domain) {
+        return new QetmtEarthQuakeInsu(new QetmtEarthQuakeInsuPk(domain.getCId(), domain.getLifeInsuranceCode().v()),domain.getLifeInsuranceName().v());
     }
 
 }

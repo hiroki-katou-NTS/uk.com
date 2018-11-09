@@ -7,9 +7,6 @@ import nts.uk.ctx.pr.yearend.app.command.yearendadjustment.insurancecompany.insu
 import nts.uk.ctx.pr.yearend.app.command.yearendadjustment.insurancecompany.insurancetype.UpdateInsuranceTypeCommandHandler;
 import nts.uk.ctx.pr.yearend.app.find.yearendadjustment.insurancecompany.insurancetype.InsuranceTypeDto;
 import nts.uk.ctx.pr.yearend.app.find.yearendadjustment.insurancecompany.insurancetype.InsuranceTypeFinder;
-import nts.uk.ctx.pr.yearend.app.find.yearendadjustment.insurancecompany.lifeinsurance.LifeInsuranceDto;
-import nts.uk.ctx.pr.yearend.app.find.yearendadjustment.insurancecompany.lifeinsurance.LifeInsuranceFinder;
-import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.insuranceType.InsuranceType;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

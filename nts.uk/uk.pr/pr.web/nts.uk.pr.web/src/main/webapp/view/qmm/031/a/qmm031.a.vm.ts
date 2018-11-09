@@ -459,12 +459,15 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
 
         pdf(){};
 
-        correctionLog() {};
+        correctionLog() {
+        };
 
         earthquakeInsurance(){
             let self = this;
-
             nts.uk.ui.errors.clearAll();
+            setShared("QMM031_E", {
+                lstData: self.lstLifeInsurance()
+            });
 
             nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
 

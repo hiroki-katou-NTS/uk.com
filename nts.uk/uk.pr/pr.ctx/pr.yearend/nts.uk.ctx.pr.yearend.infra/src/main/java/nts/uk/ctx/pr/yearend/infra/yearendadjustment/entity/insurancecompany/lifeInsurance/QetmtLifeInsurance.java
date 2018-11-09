@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.earthquakeInsurance.EarthquakeInsurance;
 import nts.uk.ctx.pr.yearend.dom.yearendadjustment.insurancecompany.lifeInsurance.LifeInsurance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -48,6 +49,10 @@ public class QetmtLifeInsurance extends UkJpaEntity implements Serializable
     }
     public static QetmtLifeInsurance toEntity(LifeInsurance domain) {
         return new QetmtLifeInsurance(new QetmtLifeInsurancePk(domain.getCId(), domain.getLifeInsuranceCode().v()),domain.getLifeInsuranceName().v());
+    }
+
+    public static QetmtLifeInsurance toEarthquakeEntity(EarthquakeInsurance domain) {
+        return new QetmtLifeInsurance(new QetmtLifeInsurancePk(domain.getCId(), domain.getEarthquakeInsuranceCode().v()),domain.getEarthquakeInsuranceName().v());
     }
 
 }

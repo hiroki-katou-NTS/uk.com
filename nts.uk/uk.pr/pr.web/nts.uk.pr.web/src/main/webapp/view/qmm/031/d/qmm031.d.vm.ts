@@ -40,6 +40,8 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
             let data = getShared("QMM031_D");
             self.lifeInsuranceCode(data.code);
             self.lifeInsuranceName(data.name);
+            self.viewCode(self.lifeInsuranceCode());
+            self.viewName(self.lifeInsuranceName());
             self.isNewMode(false);
             self.atrOfInsuranceType(getAtrOfInsuranceType());
             self.currentCode.subscribe((item) => {
@@ -47,8 +49,6 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
                     let itemModel = _.find(self.lstInsuranceType(), function (x) {
                         return x.insuranceTypeCode == item
                     });
-                    self.viewCode(self.lifeInsuranceCode());
-                    self.viewName(self.lifeInsuranceName());
                     self.insuranceTypeCode(itemModel.insuranceTypeCode);
                     self.insuranceTypeName(itemModel.insuranceTypeName);
                     self.selectAtrOfInsuranceType(itemModel.atrOfInsuranceType);
