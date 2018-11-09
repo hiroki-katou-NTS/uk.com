@@ -98,7 +98,8 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		};
-		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
+		
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod, counter, reCalcAtr,empCalAndSumExecLogID);
 		/** end 並列処理、PARALLELSTREAM */
 //		
 		// 中断処理　（中断依頼が出されているかチェックする）
@@ -107,10 +108,18 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.INCOMPLETE);
 			return ProcessState.INTERRUPTION;
 		}
-		
-		
+
 		// 完了処理
 		updatelog(empCalAndSumExecLogID,executionContent,ExecutionStatus.DONE);
+		
+		//全員正常終了の場合
+		if(!stateHolder.isInterrupt()) {
+			val count = stateHolder.count();
+			dataSetter.updateData("dailyCalculateCount", count);
+		}
+		
+		
+
 
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();

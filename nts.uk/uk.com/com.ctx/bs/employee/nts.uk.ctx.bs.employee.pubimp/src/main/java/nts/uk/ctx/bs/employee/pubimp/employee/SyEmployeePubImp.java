@@ -463,22 +463,27 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		if (generalLstId.isEmpty()) {
 			return Collections.emptyList();
 		}
-
-		// lây list Sid từ list sid và dateperiod
+		// (Lấy danh sách sid từ  domain 「所属会社履歴（社員別）」)
 		List<String> lstSidFromAffComHist = affComHistRepo.getLstSidByLstSidAndPeriod(generalLstId, dateperiod);
 
 		if (lstSidFromAffComHist.isEmpty()) {
 			return Collections.emptyList();
 		}
-
-		// lây list sid từ list sid và dateperiod
-		List<String> lstTempAbsenceHistory = tempAbsHistRepository.getLstSidByListSidAndDatePeriod(lstSidFromAffComHist,
-				dateperiod);
-
-		// List sid tồn tại ở lstSidFromAffComHist nhưng không tồn tại ở list
-		// lstSidFromTempAbsHis
-		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstTempAbsenceHistory.contains(i))
+		// (Lấy danh sách sid từ domain 「休職休業履歴」) 		
+		List<String> lstSidAbsHist_NoCheckDate = tempAbsHistRepository.getByListSid(lstSidFromAffComHist);
+		
+		//(lưu employeeID  ko lấy được ở domain 「休職休業履歴」 vào list nhân viên đương nhiệm)
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidAbsHist_NoCheckDate.contains(i))
 				.collect(Collectors.toList());
+		
+		// lây list sid từ list sid và dateperiod
+		List<String> lstTempAbsenceHistory = tempAbsHistRepository.getLstSidByListSidAndDatePeriod(lstSidAbsHist_NoCheckDate,
+				dateperiod);
+		
+		if(!lstTempAbsenceHistory.isEmpty()) {
+			result.addAll(lstTempAbsenceHistory);
+		}
+		
 		if (result.isEmpty()) {
 			return Collections.emptyList();
 		}

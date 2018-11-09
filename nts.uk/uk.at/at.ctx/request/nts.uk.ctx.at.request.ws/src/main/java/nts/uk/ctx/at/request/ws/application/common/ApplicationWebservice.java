@@ -35,10 +35,10 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
-import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application")
@@ -226,6 +226,12 @@ public class ApplicationWebservice extends WebService {
 				param.getAppID(),
 				param.getEmployeeID(),
 				overtimeAtr);
+	}
+	
+	@POST
+	@Path("getDetailRealData")
+	public AchievementOutput getDetailRealData(String appID){
+		return finderApp.getDetailRealData(appID);
 	}
 	
 	/**

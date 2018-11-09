@@ -25,6 +25,13 @@ public interface SpecialHolidayRemainDataRepository {
 	 * @return
 	 */
 	List<SpecialHolidayRemainData> getByYmStatus(String sid, YearMonth ym, ClosureStatus status, int speCode);
+	/**
+	 * ドメインモデル「特別休暇月別残数データ」を取得
+	 * @param sid
+	 * @param ym 年月=処理中の年月
+	 * @return
+	 */
+	List<SpecialHolidayRemainData> getByYmCode(String sid, YearMonth ym, int speCode);
 
 	/**
 	 * 検索

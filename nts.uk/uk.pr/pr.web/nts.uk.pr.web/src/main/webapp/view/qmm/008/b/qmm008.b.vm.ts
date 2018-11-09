@@ -294,7 +294,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         }
 
         convertYearMonthToDisplayJpanYearMonth(yearMonth) {
-            return nts.uk.time.yearmonthInJapanEmpire(yearMonth).toString().split(' ').join('');
+            return nts.uk.time.yearmonthInJapanEmpire(yearMonth).toString();
         }
 
         createNewHistory() {

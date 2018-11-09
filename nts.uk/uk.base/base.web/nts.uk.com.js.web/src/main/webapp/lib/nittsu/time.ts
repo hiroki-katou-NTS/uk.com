@@ -48,9 +48,9 @@ module nts.uk.time {
         }
 
         public toString() {
-            return (this.empire === undefined ? "" : this.empire + " ")
-                + (this.year === undefined ? "" : this.year + " 年 ")
-                + (this.month === undefined ? "" : this.month + " 月");
+            return (this.empire === undefined ? "" : this.empire)
+                + (this.year === undefined || this.year === "" ? "" : this.year + "年")
+                + (this.month === undefined || this.month === "" ? "" : this.month + "月");
         }
     }
 
@@ -71,6 +71,10 @@ module nts.uk.time {
         let format = _.filter(defaultInputFormat, function(f){ return (f.match(/\//g) || []).length === seperator}),
             formatted = moment.utc(dateString, defaultInputFormat, true),
             formattedYear = formatted.year();
+        
+        if (onlyYear && dateString.length < 5) {
+            formattedYear = Number(dateString);    
+        }
         
         for(let i of __viewContext.env.japaneseEras){
             let startEraYear = moment(i.start).year(),

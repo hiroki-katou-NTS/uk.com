@@ -130,7 +130,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 				// set layoutID and insert
 				itemList.forEach(item -> {
-					String groupItemDfId = this.transferIdMap.get(item.ppemtPInfoItemGroupDfPk.itemDefId);
+					String groupItemDfId = this.transferIdMap.getOrDefault(item.ppemtPInfoItemGroupDfPk.itemDefId, item.ppemtPInfoItemGroupDfPk.itemDefId);
 					PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(groupItemId,
 							groupItemDfId);
 					PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
@@ -164,7 +164,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 					// set layoutID and insert
 					itemList.forEach(item -> {
-						String groupItemDfId = this.transferIdMap.get(item.ppemtPInfoItemGroupDfPk.itemDefId);
+						String groupItemDfId = this.transferIdMap.getOrDefault(item.ppemtPInfoItemGroupDfPk.itemDefId, item.ppemtPInfoItemGroupDfPk.itemDefId);
 						PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(groupItemId,
 								groupItemDfId);
 						PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk,
@@ -198,7 +198,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 						// set layoutID and insert
 						itemList.forEach(item -> {
-							String groupItemDfId = this.transferIdMap.get(item.ppemtPInfoItemGroupDfPk.itemDefId);
+							String groupItemDfId = this.transferIdMap.getOrDefault(item.ppemtPInfoItemGroupDfPk.itemDefId, item.ppemtPInfoItemGroupDfPk.itemDefId);
 							PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(ItemId,
 									groupItemDfId);
 							PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk,
@@ -229,7 +229,7 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 						itemZeroList.forEach(item -> {
 							if (!defineIdDesList
 									.contains(item.ppemtPInfoItemGroupDfPk.itemDefId.trim())) {
-								String groupItemDfId = this.transferIdMap.get(item.ppemtPInfoItemGroupDfPk.itemDefId);
+								String groupItemDfId = this.transferIdMap.getOrDefault(item.ppemtPInfoItemGroupDfPk.itemDefId, item.ppemtPInfoItemGroupDfPk.itemDefId);
 								PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(
 										desDataItem.ppemtPinfoItemGroupPk.groupItemId,
 										groupItemDfId);

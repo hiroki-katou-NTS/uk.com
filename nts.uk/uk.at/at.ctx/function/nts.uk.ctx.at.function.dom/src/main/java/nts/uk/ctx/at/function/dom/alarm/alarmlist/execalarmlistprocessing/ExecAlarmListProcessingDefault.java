@@ -153,7 +153,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getEndDate(), "yyyy/MM/dd");
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-								endDate);
+								endDate,checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.MONTHLY.value
 							|| checkConditionTime.getCategory() == AlarmCategory.MULTIPLE_MONTH.value) {
@@ -164,7 +164,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 								.addDays(-1);
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-								endDate);
+								endDate,checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.AGREEMENT.value) {
 						if (checkConditionTime.getCategoryName().equals("36協定　1・2・4週間")) {
@@ -174,7 +174,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									"yyyy/MM/dd");
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate);
+									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else if (checkConditionTime.getCategoryName().equals("36協定　年間")) {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getYear() + "/"
@@ -187,7 +187,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									.addYears(1).addMonths(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate);
+									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01",
@@ -197,7 +197,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									.addDays(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate);
+									endDate,checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						}
 					}

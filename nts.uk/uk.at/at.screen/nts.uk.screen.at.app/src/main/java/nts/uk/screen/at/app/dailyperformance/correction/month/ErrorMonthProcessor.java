@@ -47,7 +47,7 @@ public class ErrorMonthProcessor {
 					value.get(0).getClosureId(), value.get(0).getClosureDate()));
 		});
 
-		List<DPItemValue> lstErrorMap = validatorDataDailyRes.getErrorMonthAll(companyId, errors);
+		List<DPItemValue> lstErrorMap = validatorDataDailyRes.getErrorMonthAll(companyId, errors, false);
 		return lstErrorMap;
 	}
 }

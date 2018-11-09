@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -27,10 +26,9 @@ public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoR
 	 */
 	@Override
 	public void personalInfoDefCopy(String companyId, int copyMethod) {
-		Map<String, String> transIdMap = new HashMap<>();
-		transIdMap.putAll(new PersonalInfoDefCopyHandler(this, copyMethod, companyId).doCopy());
-		transIdMap.putAll(new PerInfoSelectionItemCopyHandler(this, copyMethod, companyId).doCopy());
-		transIdMap.putAll(new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy());
-		transIdMap.putAll(new PpemtPInfoItemGroupDataCopyHandler(copyMethod, companyId, getEntityManager(), transIdMap).doCopy());
+		Map<String, String> transIdMap = (new PersonalInfoDefCopyHandler(this, copyMethod, companyId)).doCopy();
+		new PerInfoSelectionItemCopyHandler(this, copyMethod, companyId).doCopy();
+		new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
+		new PpemtPInfoItemGroupDataCopyHandler(copyMethod, companyId, getEntityManager(), transIdMap).doCopy();
 	}
 }

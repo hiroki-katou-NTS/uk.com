@@ -342,7 +342,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
-            self.monthlyCalendar("(" + nts.uk.time.yearmonthInJapanEmpire(emplInsurHis.startYearMonth).toString().split(' ').join('') + ")");
+            self.monthlyCalendar("(" + nts.uk.time.yearmonthInJapanEmpire(emplInsurHis.startYearMonth).toString() + ")");
         }
 
         validate() {

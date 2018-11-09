@@ -504,6 +504,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 isMultiple: true,
                 selectedCodes: self.empLst(),
                 showNoSelection: false,
+                isShowWorkClosure: false
             }, true);
             
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {

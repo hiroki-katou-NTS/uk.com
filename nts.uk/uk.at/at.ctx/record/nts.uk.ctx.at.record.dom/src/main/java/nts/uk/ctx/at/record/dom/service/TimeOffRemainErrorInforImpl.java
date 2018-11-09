@@ -77,7 +77,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		//指定期間の暫定残数管理データを作成する（差分のみ）
 		InterimRemainCreateDataInputPara createInterimDataParam = new InterimRemainCreateDataInputPara(param.getCid(),
 				param.getSid(),
-				param.getAggDate(),
+				param.getObjDate(),
 				recordInfor,
 				Collections.emptyList(),
 				Collections.emptyList(),

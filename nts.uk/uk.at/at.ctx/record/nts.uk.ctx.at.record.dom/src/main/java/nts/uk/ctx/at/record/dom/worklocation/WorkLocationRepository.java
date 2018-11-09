@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.worklocation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 /**
  * 
@@ -22,4 +23,6 @@ public interface WorkLocationRepository {
 	 * @return Optional Work Place
 	 */
 	Optional<WorkLocation> findByCode (String companyID, String workLocationCD); 
+	
+	Map<String, String> getNameByCode(String companyId, List<String> listWorkLocationCd);
 }

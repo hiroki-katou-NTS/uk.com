@@ -38,7 +38,7 @@ private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 			WorkingFile workingFile = generatorContext.getWorkingFiles().get(0);
-			AlarmExportDto alarmExportDto = new AlarmExportDto(workingFile.getTempFile().createInputStream(),fileName);
+			AlarmExportDto alarmExportDto = new AlarmExportDto(workingFile.getTempFile().getPath(),fileName);
 			return alarmExportDto;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

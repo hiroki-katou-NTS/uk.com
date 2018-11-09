@@ -18,15 +18,6 @@ public interface AbsenceReflectService {
 	 */
 	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre);
 	/**
-	 * 	
-	 * @param employeeId
-	 * @param baseDate
-	 * @param workTypeCode
-	 * @param isSche
-	 * @return
-	 */
-	public boolean updateRecordWorktype(CommonReflectParameter absencePara, boolean isSche);
-	/**
 	 * 予定開始終了時刻の反映
 	 * @param employeeId
 	 * @param baseDate
@@ -47,5 +38,6 @@ public interface AbsenceReflectService {
 	 * @return
 	 */
 	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode);
+	
 	
 }

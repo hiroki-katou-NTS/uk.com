@@ -15,7 +15,6 @@ import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -36,7 +35,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleRound;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.helper.ErrorList;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.helper.Helper;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.helper.MasterCache;
@@ -49,7 +47,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.Wo
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -68,12 +65,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
-import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -302,6 +295,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		
 		List<ScTimeImport> results = this.scTimeAdapter.calculation(null, params);
 		
+		if(results.size() == 0) return;
+		
 		for (BasicSchedule scheduleInput : validInputSchedules) {
 			ScTimeImport scTimeImport = results.stream()
 					.filter(r -> r.getEmployeeid().equals(scheduleInput.getEmployeeId()) && r.getYmd().equals(scheduleInput.getDate()))
@@ -312,53 +307,51 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		}
 	}
 	
-	private List<BasicSchedule> filterInvalidSchedules(
-			Integer modeDisplay,
-			List<BasicSchedule> basicScheduleList,
-			ErrorList errList,
-			MasterCache masterCache) {
-		
-		List<BasicSchedule> validSchedules = basicScheduleList.stream().filter(bSchedule -> {
+	private List<BasicSchedule> filterInvalidSchedules(Integer modeDisplay, List<BasicSchedule> basicScheduleList,
+			ErrorList errList, MasterCache masterCache) {
+		List<BasicSchedule> validSchedules = new ArrayList<>();
+		basicScheduleList.forEach(bSchedule -> {
 			// アルゴリズム「登録時エラーチェック処理」を実行する
 			// Input.スケジュール表示形式区分を判定する
-			// modeDisplay == 2 : 
-			if(modeDisplay.intValue() != 2) {
+			// modeDisplay == 2 :
+			if (modeDisplay.intValue() != 2) {
 				String workTypeCode = bSchedule.getWorkTypeCode();
 				String workTimeCode = bSchedule.getWorkTimeCode();
 				// get work type
 				WorkType workType = masterCache.getWorkType(workTypeCode);
 				// get work time
 				WorkTimeSetting workTimeSetting = masterCache.getWorkTimeSetting(workTimeCode);
-				
+
 				// 勤務種類のマスタチェック (Kiểm tra phan loại ngày làm việc)
 				if (!MasterAvailabilityPolicy.checkWorkType(workType, errList)) {
-					return false;
+					return;
 				}
-	
+
 				if (!StringUtil.isNullOrEmpty(workTimeCode, true)) {
 					// 就業時間帯のマスタチェック (Kiểm tra giờ làm việc)
 					if (!MasterAvailabilityPolicy.checkWorkTime(workTimeSetting, errList)) {
-						return false;
+						return;
 					}
 				}
 
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
-				if (!MasterAvailabilityPolicy.checkParing(basicScheduleService, workTypeCode, workTimeCode, masterCache, errList)) {
-					return false;
+				if (!MasterAvailabilityPolicy.checkParing(basicScheduleService, workTypeCode, workTimeCode, masterCache,
+						errList)) {
+					return;
 				}
 			}
 
-
 			// 時刻のチェック
 			// TODO
-			
+
 			if (!CollectionUtil.isEmpty(bSchedule.getWorkScheduleTimeZones())
 					&& !checkTimeZone(errList, bSchedule.getWorkScheduleTimeZones())) {
-				return false;
+				return;
 			}
 
-			return true;
-		}).collect(Collectors.toList());
+			validSchedules.add(bSchedule);
+		});
+
 		return validSchedules;
 	}
 	/**
@@ -913,4 +906,5 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			}
 		}
 	}
+	
 }

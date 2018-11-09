@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<UpdateAppAbsenceCommand, ProcessResult>{
@@ -170,10 +171,19 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			listDate.add(loopDate);
 		}
-		interimRemainDataMngRegisterDateChange.registerDateChange(
-				command.getCompanyID(), 
-				command.getEmployeeID(), 
-				listDate);
+		List<GeneralDate> lstHoliday = insertAppAbsence.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
+			if(!lstHoliday.contains(loopDate)) {
+				listDate.add(loopDate);	
+			}			
+		}
+		if (!listDate.isEmpty()) {
+			interimRemainDataMngRegisterDateChange.registerDateChange(
+					command.getCompanyID(), 
+					command.getEmployeeID(), 
+					listDate);	
+		}
+		
 		// 4-2.詳細画面登録後の処理
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appAbsence.getApplication());
 	}

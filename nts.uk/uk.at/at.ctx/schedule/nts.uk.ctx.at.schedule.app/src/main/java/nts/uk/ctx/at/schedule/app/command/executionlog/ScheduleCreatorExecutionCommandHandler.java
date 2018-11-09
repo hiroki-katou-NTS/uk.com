@@ -7,16 +7,19 @@ package nts.uk.ctx.at.schedule.app.command.executionlog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.infra.data.EntityManagerLoader;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
@@ -27,6 +30,8 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.ScEmployeeGeneralInfoAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistItemImported;
+import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
@@ -47,6 +52,11 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -63,7 +73,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
- */
+ *///
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
@@ -133,6 +143,15 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	
 	@Inject
 	private ScheduleCreatorExecutionTransaction transaction;
+
+	@Inject
+	private ClosureEmploymentRepository closureEmployment;
+
+	@Inject
+	private ClosureRepository closureRepository;
+
+	@Inject
+	private ClosureService closureService;
 
 
 	/** The Constant DEFAULT_CODE. */
@@ -239,8 +258,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param scheduleExecutionLog
 	 * @param context
 	 */
-	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog scheduleExecutionLog, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
+	private void registerPersonalSchedule(
+			ScheduleCreatorExecutionCommand command,
+			ScheduleExecutionLog scheduleExecutionLog,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
 			String companyId) {
 
 		String exeId = command.getExecutionId();
@@ -260,32 +281,65 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// マスタ情報を取得する
 		CreateScheduleMasterCache masterCache = this.acquireData(companyId, employeeIds, period);
 
-		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(employeeIds, scheduleExecutionLog.getPeriod());
+		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
+				employeeIds, scheduleExecutionLog.getPeriod());
 		
 		// get info by context
 		val asyncTask = context.asAsync();
 		
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
-		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
-			this.transaction.execute(
-					command,
-					scheduleExecutionLog,
-					context,
-					companyId,
-					exeId,
-					period,
-					masterCache,
-					listBasicSchedule,
-					asyncTask,
-					companySetting,
-					scheduleCreator);
+		
+		CollectionUtil.split(
+				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
+						100, subCreators -> {
+			this.parallel.forEach(subCreators, scheduleCreator -> {
+				
+				// check is client submit cancel
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+					this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
+					return;
+				}
+	
+				// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+				StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+						command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
+						masterCache.getEmpGeneralInfo());
+	
+				if (stateAndValueDatePeriod.state) {
+					DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+				
+					// process each by 2 months to make transaction small for performance
+					final int unitMonthsOfTransaction = 2;
+					dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
+						this.transaction.execute(
+								command,
+								scheduleExecutionLog,
+								context,
+								companyId,
+								exeId,
+								subPeriod,
+								masterCache,
+								listBasicSchedule,
+								asyncTask,
+								companySetting,
+								scheduleCreator);
+					});
+				} else {
+					scheduleCreator.updateToCreated();
+					this.scheduleCreatorRepository.update(scheduleCreator);
+				}
+			});
 		});
+		
+		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
 		
 		if (asyncTask.hasBeenRequestedToCancel()) {
 			asyncTask.finishedAsCancelled();
 		}
-		
+
+		// EA修正履歴　No2378
 		// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
 		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
 				.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
@@ -485,6 +539,73 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 
-	/////////////////////////////////////////////////////////
+
+	/**
+	 * Update status schedule execution log.
+	 *
+	 * @param domain
+	 *            the domain
+	 */
+	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
+		// check exist data schedule error log
+		domain.setCompletionStatus(completionStatus);
+		domain.updateExecutionTimeEndToNow();
+		this.scheduleExecutionLogRepository.update(domain);
+	}
 	
+
+	/**
+	 * アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+	 * 
+	 * @param companyId
+	 * @param employeeId
+	 * @param dateBeforeCorrection
+	 * @param empGeneralInfo
+	 * @return
+	 */
+	private StateAndValueDatePeriod correctTargetPeriodAfterClosingStartDate(String companyId, String employeeId,
+			DatePeriod dateBeforeCorrection, EmployeeGeneralInfoImported empGeneralInfo) {
+		// EA No1676
+		Map<String, List<ExEmploymentHistItemImported>> mapEmploymentHist = empGeneralInfo.getEmploymentDto().stream()
+				.collect(Collectors.toMap(ExEmploymentHistoryImported::getEmployeeId,
+						ExEmploymentHistoryImported::getEmploymentItems));
+
+		List<ExEmploymentHistItemImported> listEmpHistItem = mapEmploymentHist.get(employeeId);
+		Optional<ExEmploymentHistItemImported> optEmpHistItem = Optional.empty();
+		if (listEmpHistItem != null) {
+			optEmpHistItem = listEmpHistItem.stream()
+					.filter(empHistItem -> empHistItem.getPeriod().contains(dateBeforeCorrection.end())).findFirst();
+		}
+
+		if (!optEmpHistItem.isPresent()) {
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+		}
+
+		// ドメインモデル「雇用に紐づく就業締め」を取得
+		Optional<ClosureEmployment> optionalClosureEmployment = this.closureEmployment.findByEmploymentCD(companyId,
+				optEmpHistItem.get().getEmploymentCode());
+		if (!optionalClosureEmployment.isPresent())
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+		// ドメインモデル「締め」を取得
+		Optional<Closure> optionalClosure = this.closureRepository.findById(companyId,
+				optionalClosureEmployment.get().getClosureId());
+		if (!optionalClosure.isPresent())
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+		// アルゴリズム「当月の期間を算出する」を実行
+		DatePeriod dateP = this.closureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
+				optionalClosure.get().getClosureMonth().getProcessingYm());
+		// Input「対象開始日」と、取得した「開始年月日」を比較
+		DatePeriod dateAfterCorrection = dateBeforeCorrection;
+		if (dateBeforeCorrection.start().before(dateP.start())) {
+			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
+		}
+		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
+		if (dateAfterCorrection.start().beforeOrEquals(dateBeforeCorrection.end())) {
+			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
+			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
+			return new StateAndValueDatePeriod(dateAfterCorrection, true);
+		}
+
+		return new StateAndValueDatePeriod(dateAfterCorrection, false);
+	}
 }

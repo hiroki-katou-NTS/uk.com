@@ -15,4 +15,8 @@
 table tr td {
     white-space: nowrap;
 }
+#exportExcel{
+	margin-left: 90px !important;
+	 width: 85px
+}
 

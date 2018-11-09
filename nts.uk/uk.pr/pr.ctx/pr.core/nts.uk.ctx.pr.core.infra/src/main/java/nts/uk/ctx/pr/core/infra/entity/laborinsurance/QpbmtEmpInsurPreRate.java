@@ -163,8 +163,9 @@ public class QpbmtEmpInsurPreRate extends UkJpaEntity implements Serializable
     			this.busiOwFracClassConstruction);
     	List<EmpInsurBusBurRatio> empInsurBusBurRatio = new ArrayList<EmpInsurBusBurRatio>();
     	empInsurBusBurRatio.add(general);
+        empInsurBusBurRatio.add(agriForesFish);
         empInsurBusBurRatio.add(construction);
-    	empInsurBusBurRatio.add(agriForesFish);
+
     	return empInsurBusBurRatio;
     }
     

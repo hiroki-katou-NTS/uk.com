@@ -306,6 +306,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		for (val specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
 			int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
 
+			
 			// Call RequestList273
 			SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
 					employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
@@ -322,9 +323,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
             // Call RequestList273
 			if (currMonth.isPresent() && currMonth.get().lessThanOrEqualTo(endDate.yearMonth())){
-	            DatePeriod dateRange =  new DatePeriod(closureInforOpt.get().getPeriod().start(),endDate);
 	            SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
-	                    employeeId, dateRange, false, baseDate, sphdCode, false);
+	                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
 	            mapSPVaCrurrentMonth.put(sphdCode, spVaImported);
 			}
 		}

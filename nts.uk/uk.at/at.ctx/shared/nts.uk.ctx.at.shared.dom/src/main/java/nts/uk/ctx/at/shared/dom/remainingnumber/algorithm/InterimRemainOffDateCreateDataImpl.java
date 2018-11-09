@@ -66,9 +66,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		InforFormerRemainData outputData = new InforFormerRemainData(sid, 
 				baseDate, 
 				dayOffTimeIsUse, 
-				Collections.emptyList(), 
+				new ArrayList<>(), 
 				Optional.empty(), 
-				Collections.emptyList(), 
+				new ArrayList<>(), 
 				comHolidaySetting,
 				employmentHolidaySetting);		
 		//最新の勤務種類変更を伴う申請を抽出する
@@ -344,8 +344,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 
 	@Override
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
-		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
+		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), new ArrayList<>(), Optional.empty(), 
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>());
 		if(inforData.getWorkTypeRemain().isEmpty()) {
 			return null;
 		}

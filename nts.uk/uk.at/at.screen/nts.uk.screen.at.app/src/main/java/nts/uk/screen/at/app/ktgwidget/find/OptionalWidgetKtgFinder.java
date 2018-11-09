@@ -61,6 +61,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.WidgetDisplayItemTypeImport;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -181,7 +182,7 @@ public class OptionalWidgetKtgFinder {
 		List<DailyExcessTotalTimeImport> dailyExcessTotalTimeImport = optionalWidgetAdapter.getExcessTotalTime(employeeId,datePeriod);
 		GeneralDate systemDate = GeneralDate.today();
 		for (WidgetDisplayItemImport item : widgetDisplayItem) {
-			if(item.getNotUseAtr()==1) {
+			if(item.getNotUseAtr() == NotUseAtr.USE.value) {
 				if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.OVERTIME_WORK_NO.value) {
 					//sử lý 01
 					dto.setOverTime(overtimeInstructRepo.getAllOverTimeInstructBySId(employeeId, startDate, endDate).size());
@@ -418,7 +419,7 @@ public class OptionalWidgetKtgFinder {
 						//get request list 208 rồi trả về
 						//・上書きフラグ ← falseを渡してください(muto)
 						//・上書き用の暫定管理データ ← 空（null or Empty）で渡してください
-						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, new DatePeriod(datePeriodDto.getStrCurrentMonth(), datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)), false, datePeriodDto.getStrCurrentMonth(), specialHoliday.getSpecialHolidayCode().v(), false, false, new ArrayList<>(), new ArrayList<>());
+						ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(companyId, employeeId, new DatePeriod(datePeriodDto.getStrCurrentMonth(), datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)), false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false, new ArrayList<>(), new ArrayList<>());
 						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();

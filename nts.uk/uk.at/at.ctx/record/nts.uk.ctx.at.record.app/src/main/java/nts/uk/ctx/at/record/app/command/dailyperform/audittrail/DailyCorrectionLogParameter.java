@@ -56,9 +56,21 @@ public class DailyCorrectionLogParameter implements Serializable {
 					after == null ? null : valueTimeMoney(valueType, after));
 		}
 		
+		public ItemInfo toItemInfo(String viewValueBef, String viewValueAft) {
+			return ItemInfo.createWithViewValue(String.valueOf(this.itemNo), this.itemName,
+					DataValueAttribute.of(valueType), valueTimeMoney(valueType, before),
+					valueTimeMoney(valueType, after), valueTimeMoney(valueType, viewValueBef),
+					valueTimeMoney(valueType, viewValueAft));
+		}
+		
 		private Object valueTimeMoney(int valueType, String value) {
 			if (valueType == DataValueAttribute.TIME.value || valueType == DataValueAttribute.CLOCK.value) {
-				return Integer.parseInt(value);
+				// them try catch tam, cho hoshina sua
+				try {
+					return Integer.parseInt(value);
+				} catch (Exception e) {
+					return null;
+				}
 			} else if (valueType == DataValueAttribute.MONEY.value) {
 				return Double.parseDouble(value);
 			} else {
@@ -67,5 +79,7 @@ public class DailyCorrectionLogParameter implements Serializable {
 		}
 		
 	}
+	
+	
 
 }

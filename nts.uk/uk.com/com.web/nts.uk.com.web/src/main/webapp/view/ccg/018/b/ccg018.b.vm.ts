@@ -158,7 +158,8 @@ module ccg018.b.viewmodel {
                 isDialog: false,
                 selectType: 4,
                 isShowSelectAllButton: false,
-                employeeInputList: self.items
+                employeeInputList: self.items,
+                isRemoveFilterWhenReload: false
             };
             $('#sample-component').ntsListComponent(listComponentOption);
         }
@@ -230,10 +231,6 @@ module ccg018.b.viewmodel {
             ccg018.b.service.update(obj).done(function() {
                 self.isSelectedFirst(false);
                 $.when(self.findTopPagePersonSet()).done(function() {
-                    if(keySearch != ""){
-                        $('#sample-component .ntsSearchBox').val(keySearch);
-                        $('#sample-component .search-btn').trigger('click');
-                    }
                     self.currentCode(oldCode);
                     self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
                     self.isEnable(true);
@@ -248,7 +245,6 @@ module ccg018.b.viewmodel {
                 blockUI.clear();
             });
         }
-        
 
         /**
          * remove data in to table TOPPAGE_PERSON_SET

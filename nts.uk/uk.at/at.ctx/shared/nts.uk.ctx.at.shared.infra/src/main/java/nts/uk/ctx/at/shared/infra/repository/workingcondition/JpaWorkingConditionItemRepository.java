@@ -249,8 +249,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
 			stmt.setString(1, employeeId);
-			stmt.setDate(2, Date.valueOf(datePeriod.start().toLocalDate()));
-			stmt.setDate(3, Date.valueOf(datePeriod.end().toLocalDate()));
+			stmt.setDate(2, Date.valueOf(datePeriod.end().toLocalDate()));
+			stmt.setDate(3, Date.valueOf(datePeriod.start().toLocalDate()));
 
 			List<KshmtWorkingCondItem> result = new NtsResultSet(stmt.executeQuery())
 					.getList(rec -> {

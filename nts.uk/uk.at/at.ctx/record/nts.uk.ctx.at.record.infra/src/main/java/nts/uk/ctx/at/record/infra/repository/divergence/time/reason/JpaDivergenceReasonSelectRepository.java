@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.reason;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
@@ -27,6 +30,9 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaDivergenceReasonSelectRepository extends JpaRepository implements DivergenceReasonSelectRepository {
+	
+	private static final String SELECT_CODE_NO_AND_NAME = "SELECT c.id.reasonCd, c.id.no, c.reason FROM KrcstDvgcReason c"
+			+ " WHERE c.id.cid = :companyID AND c.id.reasonCd IN :lstReasonCode";
 
 	/*
 	 * (non-Javadoc)
@@ -170,6 +176,15 @@ public class JpaDivergenceReasonSelectRepository extends JpaRepository implement
 
 		return new DivergenceReasonSelect(memento);
 
+	}
+
+	@Override
+	public Map<Pair<String, String>, String> getNameByCodeNo(String companyId, List<String> lstReasonCode) {
+		return this.queryProxy()
+				.query(SELECT_CODE_NO_AND_NAME, Object[].class)
+				.setParameter("companyID", companyId)
+				.setParameter("lstReasonCode", lstReasonCode)
+				.getList().stream().collect(Collectors.toMap(s -> Pair.of(String.valueOf(s[0]), String.valueOf(s[1])), s-> String.valueOf(s[2])));
 	}
 
 }

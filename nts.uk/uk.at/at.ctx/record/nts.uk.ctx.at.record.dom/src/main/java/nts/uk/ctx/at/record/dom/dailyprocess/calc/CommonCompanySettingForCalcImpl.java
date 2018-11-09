@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
@@ -69,9 +72,15 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	private EmployeeWtSettingRepository employeeWtSettingRepository;
 	
 	@Override
-	public ManagePerCompanySet getCompanySetting() {
-		
+	public ManagePerCompanySet getCompanySetting(CalculateOption calcOption) {
+
 		String companyId = AppContexts.user().companyId();
+		
+		List<ErrorAlarmWorkRecord> errorAlerms = Collections.emptyList();
+		if (!calcOption.isMasterTime()) {
+			errorAlerms = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
+		}
+		
 		val optionalItems = optionalItemRepository.findAll(companyId);
 		val usageSetting = usageUnitSettingRepository.findByCompany(companyId);
 		return new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(companyId),
@@ -79,7 +88,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  specificWorkRuleRepository.findCalcMethodByCid(companyId),
 									  compensLeaveComSetRepository.find(companyId),
 									  divergenceTimeRepository.getAllDivTime(companyId),
-									  errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true),
+									  errorAlerms,
 									  bPUnitUseSettingRepository.getSetting(companyId),
 									  optionalItems,
 									  formulaRepository.find(companyId),

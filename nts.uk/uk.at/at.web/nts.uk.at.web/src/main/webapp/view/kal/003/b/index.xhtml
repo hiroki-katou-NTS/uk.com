@@ -675,6 +675,7 @@
                                                 value: listItemID,
                                                 optionsText: 'specialHolidayName',
                                                 editable: false,
+                                                required: checkVacation() === 6,
                                                 enable: checkVacation() === 6,
                                                 columns: [
                                                 	{ prop: 'specialHolidayCode', length: 3 },

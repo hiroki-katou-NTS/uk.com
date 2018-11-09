@@ -2,11 +2,14 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.ApprovalProcessAdapter;
@@ -51,6 +54,9 @@ public class ExtractAlarmForEmployeeService {
 	@Inject
 	private IdentityConfirmProcessAdapter identityConfirmProcessAdapter;
 	
+	@Inject
+	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
+	
 	public List<ValueExtractAlarm> process(String comId, List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees){
 		
 		List<ValueExtractAlarm> result = new ArrayList<>();
@@ -59,12 +65,17 @@ public class ExtractAlarmForEmployeeService {
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
 		List<WorkplaceImport>  optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
 		//#101960 「本人確認処理の利用設定」取得処理を追加（アルゴリズム移動） and 「承認処理の利用設定」取得処理を追加
-		ApprovalProcessImport appovalProcess = approvalProcessAdapter.getApprovalProcess(comId);
-		IdentityConfirmProcessImport identConfrimProcess= identityConfirmProcessAdapter.getIdentityConfirmProcess(comId);
-		
+		ApprovalProcessImport appovalProcess = null;
+		IdentityConfirmProcessImport identConfrimProcess = null;
+		// #101971, #101141, #101142, #101372 36協定チェック時の事前取得処理追加
+		Optional<AgreementOperationSettingImport> agreementSetObj = null;
 		for (CheckCondition checkCondition : checkConList) {
 			if(checkCondition.isAgrrement()){
-				
+				agreementSetObj = agreementOperationSettingAdapter.find(comId);
+			}
+			else if (checkCondition.isDaily() || checkCondition.isMonthly()) {
+				appovalProcess = approvalProcessAdapter.getApprovalProcess(comId);
+				identConfrimProcess = identityConfirmProcessAdapter.getIdentityConfirmProcess(comId);
 			}
 		}
 		// 次のチェック条件コードで集計する(loop list by category)
@@ -104,7 +115,7 @@ public class ExtractAlarmForEmployeeService {
 				}
 				// カテゴリ：36協定
 				else if(checkCondition.isAgrrement()) {
-					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), datePeriods, employees);
+					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), periodAlarms, employees, agreementSetObj);
 					result.addAll(agreementAlarmList);
 				}
 				// カテゴリ：月次のチェック条件 (monthly)

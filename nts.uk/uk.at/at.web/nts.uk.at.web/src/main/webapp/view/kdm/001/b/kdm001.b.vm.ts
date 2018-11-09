@@ -48,7 +48,7 @@ module nts.uk.at.view.kdm001.b.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,

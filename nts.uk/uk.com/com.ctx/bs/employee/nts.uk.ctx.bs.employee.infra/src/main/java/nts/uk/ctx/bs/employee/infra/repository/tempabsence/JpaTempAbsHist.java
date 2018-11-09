@@ -37,6 +37,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT tah.sid FROM BsymtTempAbsHistory tah" 
 			+ " WHERE tah.sid IN :employeeIds AND tah.startDate <= :endDate AND :startDate <= tah.endDate ";
 	
+	private static final String SELECT_BY_LIST_SID =  "SELECT th.sid FROM BsymtTempAbsHistory th"
+			+ " WHERE th.sid IN :employeeIds ORDER BY th.sid ";
+	
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -197,4 +200,17 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		return listSid;
 	}
 
+	@Override
+	public List<String> getByListSid(List<String> employeeIds) {
+		List<String> listSid = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listSid.addAll(this.queryProxy().query(SELECT_BY_LIST_SID, String.class)
+					.setParameter("employeeIds", subList)
+					.getList());
+		});
+		if(listSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listSid;
+	}
 }

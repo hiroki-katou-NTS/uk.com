@@ -237,12 +237,13 @@ module nts.uk.ui.koExtentions {
             var show: boolean = ko.unwrap(option.show);
             
             let isNotFunctionArea = _.isEmpty($('#functions-area')) && _.isEmpty($('#functions-area-bottom'));
+            let isNotSideBar = _.isEmpty($('#sidebar'));
             let isFrame = nts.uk.util.isInFrame();
-            if(isNotFunctionArea && isFrame){
+            if(isNotFunctionArea && isNotSideBar && isFrame){
                 if(!_.isEmpty(errors)){
                     let mesArr = [], mesCodeArr = _.map(errors, (error) => error.errorCode );
                     _.forEach(errors, (error) => {
-                        mesArr.push(error.message);
+                        mesArr.push(error.messageText);
                         mesCodeArr.push(error.errorCode); 
                     });
                     let totalMes = _.join(_.uniq(mesArr), '\n');

@@ -225,7 +225,7 @@
     z-index: 999;
     position: fixed;
     overflow-x: inherit;
-    margin-top: -16px;
+    margin-top: -8px;
 }
 
 #flex-table .ui-widget-header{

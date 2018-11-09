@@ -215,9 +215,6 @@ public class HolidayShipmentScreenBFinder {
 
 				setRecApp(recAppOpt.get(), screenInfo);
 
-			} else {
-
-				throw new BusinessException("");
 			}
 
 		}

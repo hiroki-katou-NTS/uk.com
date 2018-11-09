@@ -85,5 +85,25 @@ public class WorkTypeIsClosedServiceImpl implements WorkTypeIsClosedService{
 			return data1day.getTimeLeaveWork().value == 0 ? false : true;
 		}
 	}
-
+	@Override
+	public boolean checkHoliday(String workTypeCode) {
+		boolean isHoliday = false;
+		String companyId = AppContexts.user().companyId();
+		//ドメインモデル「日別実績の勤務情報」を取得する
+		Optional<WorkType> optWorkTypeInfor = workTypeRepo.findByPK(companyId, workTypeCode);
+		if(!optWorkTypeInfor.isPresent()) {
+			return isHoliday;
+		}
+		WorkType worktypeInfor = optWorkTypeInfor.get();
+		//勤務区分チェック
+		WorkTypeUnit workTypeUnit = worktypeInfor.getDailyWork().getWorkTypeUnit();
+		if(workTypeUnit == WorkTypeUnit.OneDay) {
+			//1日をチェックする
+			WorkTypeClassification oneDay = worktypeInfor.getDailyWork().getOneDay();
+			if(oneDay == WorkTypeClassification.Holiday) {
+				return true;
+			}
+		}
+		return isHoliday;
+	}
 }

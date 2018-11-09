@@ -30,6 +30,8 @@ import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo
 import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePubImport;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -47,7 +49,17 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 
 	@Override
 	public Object getCompanySettingForCalclationScheduleTimeForMultiPeople() {
-		return this.commonCompanySetting.getCompanySetting();
+		ManagePerCompanySet companySet = this.commonCompanySetting.getCompanySetting();
+		MasterShareContainer<String> shareContainer = MasterShareBus.open();
+		companySet.setShareContainer(shareContainer);
+		return companySet;
+	}
+
+	@Override
+	public void clearCompanySettingShareConainter(Object companySetObj) {
+		ManagePerCompanySet companySet = (ManagePerCompanySet)companySetObj;
+		companySet.getShareContainer().clearAll();
+		companySet.setShareContainer(null);
 	}
 
 	

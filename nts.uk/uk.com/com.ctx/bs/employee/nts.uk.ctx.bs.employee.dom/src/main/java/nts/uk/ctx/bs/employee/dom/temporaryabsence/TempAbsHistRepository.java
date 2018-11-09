@@ -61,6 +61,13 @@ public interface TempAbsHistRepository {
 	 * @return
 	 */
 	List<String> getLstSidByListSidAndDatePeriod(List<String> employeeIds , DatePeriod datePeriod);
+	/**
+	 * Get list sid by lstSid and dateperiod
+	 * @param employeeIds
+	 * @param datePeriod
+	 * @return
+	 */
+	List<String> getByListSid(List<String> employeeIds);
 	// ------------------------------ COMMAND HISTORY---------------------------------
 	/**
 	 * ドメインモデル「休職休業」を新規登録する

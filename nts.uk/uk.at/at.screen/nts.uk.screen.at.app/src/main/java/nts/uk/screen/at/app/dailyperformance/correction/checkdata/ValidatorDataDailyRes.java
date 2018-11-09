@@ -457,11 +457,26 @@ public class ValidatorDataDailyRes {
 		}
 		return resultError;
 	}
+	
+	// check error month(残数系のエラーチェック) update
+	public Map<Integer, List<DPItemValue>> errorMonthNew(List<EmployeeMonthlyPerError> monthErrors) {
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
+		List<DPItemValue> items = new ArrayList<>();
+		items.addAll(getErrorMonthAll(companyId, monthErrors, true));
+		if (!items.isEmpty()) {
+			resultError.put(TypeError.ERROR_MONTH.value, items);
+			return resultError;
+		}
+		return resultError;
+	}
 
-	public List<DPItemValue> getErrorMonthAll(String companyId, List<EmployeeMonthlyPerError> monthErrors){
+	public List<DPItemValue> getErrorMonthAll(String companyId, List<EmployeeMonthlyPerError> monthErrors, boolean flexSup){
 		List<DPItemValue> items = new ArrayList<>();
 		// not flex
-		val lstEmpError = monthErrors.stream()
+		val lstEmpError = flexSup ?  monthErrors.stream()
+				.filter(x -> x.getErrorType().value != ErrorType.FLEX.value && x.getErrorType().value != ErrorType.FLEX_SUPP.value).collect(Collectors.toList()) : 
+				monthErrors.stream()
 				.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
 		val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
 		

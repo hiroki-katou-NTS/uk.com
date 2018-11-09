@@ -351,7 +351,7 @@ public class HolidayShipmentScreenAFinder {
 			basicService.checkWorkDay(wkTypeCode);
 
 		}
-		if (wkType != null) {
+		if (wkType != null && wkTimeCode != null) {
 
 			setWkTimeZones(wkType.getAttendanceHolidayAttr(), companyID, wkTimeCode, result);
 

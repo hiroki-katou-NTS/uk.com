@@ -75,8 +75,14 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 				employmentHolidaySetting = lstEmploymentSetting.get(0);
 			}
 		}
-		for(int i = 0; sStartDate.daysTo(sEndDate) - i >= 0; i++){			
+		for(int i = 0; sStartDate.daysTo(sEndDate) - i >= 0; i++){
 			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
+			if(!inputParam.getAppData().isEmpty()
+					&& inputParam.getAppData().get(0).getLstAppDate() != null
+					&& !inputParam.getAppData().get(0).getLstAppDate().isEmpty()
+					&& inputParam.getAppData().get(0).getLstAppDate().contains(loopDate)) {
+				continue;
+			}
 			if(employmentHolidaySetting.getEmploymentCode() == null) {
 				lstDateEmployment = lstEmployment.stream()
 						.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))

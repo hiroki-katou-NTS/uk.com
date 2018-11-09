@@ -189,15 +189,26 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	@SneakyThrows
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
+		String DELETE_PHASE_APPROVER_FOR_424_V2 = 
+				"DELETE apc FROM WWFDT_APP_ROOT_CONFIRM appRoot  " +
+				" LEFT JOIN WWFDT_APP_PHASE_CONFIRM apc ON apc.ROOT_ID = appRoot.ROOT_ID " +
+				" WHERE appRoot.CID = 'companyID' AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+				" AND appRoot.ROOT_TYPE = rootType AND appRoot.RECORD_DATE = 'recordDate'";
 		
+		String DELETE_FRAME_APPROVER_FOR_424_V2 = 
+				"DELETE afc FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+				" LEFT JOIN WWFDT_APP_FRAME_CONFIRM afc ON afc.ROOT_ID = appRoot.ROOT_ID " +
+				" WHERE appRoot.CID = 'companyID' AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+				" AND appRoot.ROOT_TYPE = rootType AND appRoot.RECORD_DATE = 'recordDate'";
+
 		//delete phase
-		String query1 = DELETE_PHASE_APPROVER_FOR_424.replaceAll("employeeID", employeeID);
+		String query1 = DELETE_PHASE_APPROVER_FOR_424_V2.replaceAll("employeeID", employeeID);
 		query1 = query1.replaceAll("companyID", companyID);
 		query1 = query1.replaceAll("rootType", String.valueOf(rootType));
 		query1 = query1.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
 		
 		//delete frame
-		String query2 = DELETE_FRAME_APPROVER_FOR_424.replaceAll("employeeID", employeeID);
+		String query2 = DELETE_FRAME_APPROVER_FOR_424_V2.replaceAll("employeeID", employeeID);
 		query2 = query2.replaceAll("companyID", companyID);
 		query2 = query2.replaceAll("rootType", String.valueOf(rootType));
 		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));

@@ -316,7 +316,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         		boolean isOOtsukaMode = true;
         		//大塚納品ではこちらを通るようにする(実働と法定労働から振り替えられる時間を算出)
         		if(isOOtsukaMode) {
-					WithinStatutoryTimeOfDaily.calcActualWorkTime(createWithinWorkTimeSheet, 
+        			workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(createWithinWorkTimeSheet, 
 																  vacationClass, 
 																  workType, 
 																  late, 

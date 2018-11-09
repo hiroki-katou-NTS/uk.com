@@ -47,7 +47,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		builderString.append("SELECT a ");
 		builderString.append("FROM KclmtClosureEmployment a ");
 		builderString.append("WHERE a.kclmpClosureEmploymentPK.companyId = :companyId ");
-		builderString.append("WHERE a.kclmpClosureEmploymentPK.employmentCD IN :employmentCDs ");
+		builderString.append("AND a.kclmpClosureEmploymentPK.employmentCD IN :employmentCDs ");
 		FIND = builderString.toString();
 	}
 	

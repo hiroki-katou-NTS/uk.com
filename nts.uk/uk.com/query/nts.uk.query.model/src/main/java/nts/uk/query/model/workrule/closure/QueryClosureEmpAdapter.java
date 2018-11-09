@@ -18,5 +18,5 @@ public interface QueryClosureEmpAdapter {
 	 * @return the list
 	 */
 	// 締めに紐付く雇用コード一覧を取得
-	List<String> findListEmpCdByClosureId(int closureId);
+	List<String> findListEmpCdByClosureId(String cId, int closureId);
 }

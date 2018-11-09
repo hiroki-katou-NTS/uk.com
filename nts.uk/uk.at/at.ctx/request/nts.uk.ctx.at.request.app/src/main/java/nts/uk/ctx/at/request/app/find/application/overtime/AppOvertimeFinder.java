@@ -536,6 +536,45 @@ public class AppOvertimeFinder {
 				}
 			}
 		}
+		
+		List<OvertimeWorkFrame> otFrames = iOvertimePreProcess.getOvertimeHours(appOverTime.getOverTimeAtr().value,companyID);
+		// dùng cho xử lí tính toán
+		List<CaculationTime> overTimeHours = new ArrayList<>(); 
+		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
+			CaculationTime cal = new CaculationTime();
+			cal.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
+			cal.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValueExact());
+			cal.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
+			overTimeHours.add(cal);
+		}
+		for(int i = 11; i<= 12;i++){
+			CaculationTime caculationTime = new CaculationTime();
+			caculationTime.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
+			caculationTime.setFrameNo(i);
+			overTimeHours.add(caculationTime);
+		}
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation
+				.getCalculation(appOverTime.getApplication().getEmployeeID(), 
+						appOverTime.getApplication().getAppDate(),
+						appOverTime.getWorkTypeCode() ==  null ? null : appOverTime.getWorkTypeCode().v(),
+						appOverTime.getSiftCode() ==  null ? null : appOverTime.getSiftCode().v(),
+						appOverTime.getWorkClockFrom1(), appOverTime.getWorkClockTo1(), null, null);
+		Map<Integer, TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
+		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,
+				dailyAttendanceTimeCaculationImport.getFlexTime(),
+				dailyAttendanceTimeCaculationImport.getMidNightTime());
+		// 01-18_実績の内容を表示し直す : chưa xử lí
+		if (approvalFunctionSetting != null) {
+			AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(
+					appOverTime.getApplication().getPrePostAtr().value, 
+					appOverTime.getWorkTypeCode() ==  null ? null : appOverTime.getWorkTypeCode().v(),
+					companyID, appOverTime.getApplication().getEmployeeID(), 
+					appOverTime.getApplication().getAppDate().toString("yyyy/MM/dd"), 
+					approvalFunctionSetting, 
+					overTimeHours, 
+					overtimeInputCaculations);
+			overTimeDto.setAppOvertimeReference(appOvertimeReference);
+		}
 		// display flex
 		if(appOvertimeSettingRepository.getAppOver().isPresent()){
 			if(appOvertimeSettingRepository.getAppOver().get().getFlexJExcessUseSetAtr().equals(FlexExcessUseSetAtr.NOTDISPLAY)){

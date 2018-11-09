@@ -583,6 +583,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 isMultiple: true,
                 selectedCodes: self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(),
                 showNoSelection: false,
+                isShowWorkClosure: false
+
             }, true);
 
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(function() {

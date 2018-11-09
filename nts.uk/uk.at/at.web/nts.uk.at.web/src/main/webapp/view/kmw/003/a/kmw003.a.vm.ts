@@ -322,7 +322,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.closureId(value);
                     self.updateDate(self.yearMonth());
                 });
-                self.initCcg001();
+                self.initCcg001();  
                 self.loadCcg001();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -419,7 +419,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         //nts.uk.request.jumpToTopPage();
                         nts.uk.ui.block.clear();
                     }); 
-                } else {
+                }else {
                     if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                         //Open KDM003C to select format code
                         self.displayItem().done((x) => {
@@ -432,7 +432,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         });
                     } else if (!_.isEmpty(error.errors)) {
                         nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
-                            nts.uk.request.jumpToTopPage();
+                            if(error.errors[0].messageId !="Msg_1403"){
+                                nts.uk.request.jumpToTopPage();
+                            }
+                            dfd.reject();
                         });
                     } else {
                         nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
@@ -1037,11 +1040,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     pageSize: 100,
                     currentPageIndex: 0
                 },
-                {
-                    name: 'ColumnFixing', fixingDirection: 'left',
-                    showFixButtons: false,
-                    columnSettings: self.fixHeaders()
-                },
+//                {
+//                    name: 'ColumnFixing', fixingDirection: 'left',
+//                    showFixButtons: false,
+//                    columnSettings: self.fixHeaders()
+//                },
                 {
                     name: 'Summaries',
                     showSummariesButton: false,

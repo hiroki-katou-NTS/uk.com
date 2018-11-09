@@ -169,7 +169,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private RequestSettingRepository requestSetRepo;
-
+	
 	@Override
 	public List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd) {
@@ -466,16 +466,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 承認状況メールテンプレート.URL日別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlDayEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)) {
+			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.equals(mailType)) {
+				// アルゴリズム「埋込URL情報登録」を実行する
+				String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW004", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
+				listUrl.add(url2);
+			} else if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)){
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "normal"));
-			} else {
-				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "approval"));
+				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
+				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
+				// アルゴリズム「埋込URL情報登録」を実行する
+				String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
+				listUrl.add(url2);
 			}
-			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
-			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
-			// アルゴリズム「埋込URL情報登録」を実行する
-			String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
-			listUrl.add(url2);
 		}
 		// 承認状況メールテンプレート.URL月別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
@@ -702,6 +704,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<String> listWorksp = new ArrayList<>();
 		// EA修正履歴 2125
 		// this.confirmApprovalStatusMailSender();
+		//hoatt - 2018.10.24
+//		2018/10/24　EA2865
+//		#102263
+		// アルゴリズム「承認状況メール本文取得」を実行する
+		//input： ・メール種類　＝　日別未確認(本人)
+		ApprovalStatusMailTemp domain = this.getApprovalStatusMailTemp(ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.value);
+		//対象が存在しない場合
+		if(domain == null){
+			//メッセージ（#Msg_1458）を表示する
+			throw new BusinessException("Msg_1458");
+		}
 		// 職場一覧のメール送信欄のチェックがONの件数
 		if (listAppSttApp.stream().filter(x -> x.isChecked()).count() == 0) {
 			throw new BusinessException("Msg_794");

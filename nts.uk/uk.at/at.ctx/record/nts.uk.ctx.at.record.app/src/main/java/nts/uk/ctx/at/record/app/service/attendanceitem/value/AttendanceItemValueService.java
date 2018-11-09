@@ -22,9 +22,6 @@ public interface AttendanceItemValueService {
 	public List<AttendanceItemValueResult> getValueOf(Collection<String> employeeId, DatePeriod workingDate,
 			Collection<Integer> itemIds);
 
-	public List<MonthlyAttendanceItemValueResult> getMonthlyValueOf(Collection<String> employeeId, YearMonth yearMonth,
-			int closureId, int clouseDate, boolean lastDayOfMonth, Collection<Integer> itemIds);
-
 	public MonthlyAttendanceItemValueResult getMonthlyValueOf(String employeeId, YearMonth yearMonth, int closureId,
 			int clouseDate, boolean lastDayOfMonth, Collection<Integer> itemIds);
 

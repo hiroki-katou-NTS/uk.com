@@ -223,7 +223,7 @@ module nts.uk.at.view.kmk004.b {
                 self.leaveOfAbsence = ko.observable(true); // 休職区分
                 self.closed = ko.observable(true); // 休業区分
                 self.retirement = ko.observable(true); // 退職区分
-                self.systemType = ko.observable(1);
+                self.systemType = ko.observable(2); // 就業
                 self.showClosure = ko.observable(true); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示

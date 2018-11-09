@@ -22,6 +22,7 @@ import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSetting
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
@@ -97,7 +98,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth startMonth = yearMonth;
 		YearMonth endMonth = yearMonth;
 		int year = 0;
-		
+		int checkMonth = 1;
 		for(ExtractionRangeBase extractBase : c.getExtractPeriodList()) {
 			
 			if(extractBase instanceof ExtractionPeriodDaily) {
@@ -107,6 +108,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				endDate = period.getEndDate();
 				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(1), formatter.format(startDate), formatter.format(endDate), null, null);
 				dailyDto.setTabOrder(1);
+				dailyDto.setPeriod36Agreement(Period.One_Week.value);
 				result.add(dailyDto);
 				
 			}else if(extractBase instanceof ExtractionPeriodMonth) {
@@ -127,32 +129,47 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				}
 				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth.toString(), endMonth.toString());
 				monthDto.setTabOrder(extraction.getNumberOfMonth().value +2);
+				if (checkMonth == 1) {
+					monthDto.setPeriod36Agreement(Period.One_Month.value);
+				} else if (checkMonth == 2) {
+					monthDto.setPeriod36Agreement(Period.Two_Month.value);
+				} else if (checkMonth == 3) {
+					monthDto.setPeriod36Agreement(Period.Three_Month.value);
+				}
+				checkMonth++;
 				result.add(monthDto);
 				
 			}else if(extractBase instanceof AYear) {
 				AYear extraction = (AYear) extractBase;
 				Optional<AgreementOperationSettingImport> agreementOperationSettingImport =  agreementOperationSettingAdapter.find(AppContexts.user().companyId());
-				int firstMonth = agreementOperationSettingImport.isPresent() ? agreementOperationSettingImport.get().getStartingMonth().value + 1 : 0;
+				int firstMonth = 0;
+				if (agreementOperationSettingImport.isPresent()){
+					firstMonth = agreementOperationSettingImport.get().getStartingMonth().value + 1;
+				}
+				int yearMonthYear = yearMonth.year();
 				if(extraction.isToBeThisYear()){
 					if(firstMonth <= yearMonth.month()) {
-						startMonth = YearMonth.of( yearMonth.year(),firstMonth);
-						firstMonth = firstMonth-1;
-						endMonth = YearMonth.of( yearMonth.year()+1,firstMonth);
-						year = yearMonth.year();
+						startMonth = YearMonth.of(yearMonthYear, firstMonth);
+						firstMonth = firstMonth - 1;
+						endMonth = yearMonth.addMonths(firstMonth);
+						year = yearMonthYear;
 					}else {
-						startMonth = YearMonth.of( yearMonth.year()-1,firstMonth);
-						firstMonth = firstMonth-1;
-						endMonth = YearMonth.of( yearMonth.year(),firstMonth);
-						year = yearMonth.year()-1;
+						year = yearMonthYear - 1;
+						startMonth = YearMonth.of(yearMonthYear - 1, firstMonth);
+						firstMonth = firstMonth - 1;
+						YearMonth endMonthtemp= YearMonth.of( year,yearMonth.month());
+						endMonth = endMonthtemp.addMonths(firstMonth);
+						
 					}
 				}else {
-					startMonth = YearMonth.of( yearMonth.year(),firstMonth);
-					firstMonth = firstMonth-1;
-					endMonth = YearMonth.of( yearMonth.year()+1,firstMonth);
+					startMonth = YearMonth.of(yearMonthYear, firstMonth);
+					firstMonth = firstMonth - 1;
+					endMonth = YearMonth.of(yearMonthYear + 1, firstMonth);
 					year = extraction.getYear();
 				}
 				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );
 				yearDto.setTabOrder(5);
+				yearDto.setPeriod36Agreement(Period.Yearly.value);
 				result.add(yearDto);
 			}
 		}

@@ -189,11 +189,11 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
-            return nts.uk.time.formatYearMonth(Number(yearMonth));
+            return nts.uk.time.formatYearMonth(Number(yearMonth)).toString();
         }
 
         convertYearMonthToDisplayJpanYearMonth(yearMonth) {
-            return nts.uk.time.yearmonthInJapanEmpire(Number(yearMonth)).toString().split(' ').join('');
+            return nts.uk.time.yearmonthInJapanEmpire(Number(yearMonth)).toString();
         }
 
         register() {

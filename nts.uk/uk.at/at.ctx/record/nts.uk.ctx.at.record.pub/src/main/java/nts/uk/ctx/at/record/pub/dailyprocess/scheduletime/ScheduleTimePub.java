@@ -21,6 +21,8 @@ public interface ScheduleTimePub {
 	
 	Object getCompanySettingForCalclationScheduleTimeForMultiPeople();
 	
+	void clearCompanySettingShareConainter(Object companySet);
+	
 	//RequestList No91
 	//For able Common Company Setting
 	List<ScheduleTimePubExport> calclationScheduleTimePassCompanyCommonSetting(List<ScheduleTimePubImport> impList,Optional<ManagePerCompanySet> companySetting);

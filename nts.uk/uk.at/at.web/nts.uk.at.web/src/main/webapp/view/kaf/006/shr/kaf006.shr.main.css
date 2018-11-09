@@ -151,8 +151,10 @@ div.form-label.broken {
 	width: 145px;
 }
 #numberOfRemaining1{
-	margin-left: 190px;
+/* 	margin-left: 190px; */
 	margin-bottom: -45px;
+	float:right;
+	margin-right: 35px;
 }
 #numberOfRemaining2{
 	margin-left: 90px;

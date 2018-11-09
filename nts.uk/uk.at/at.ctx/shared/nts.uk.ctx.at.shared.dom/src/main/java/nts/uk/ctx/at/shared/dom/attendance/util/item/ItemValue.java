@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.attendance.util.item;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,6 +14,8 @@ import nts.arc.time.GeneralDate;
 @Getter
 @EqualsAndHashCode(of = {"itemId", "valueType", "value"})
 public class ItemValue {
+	
+	private static final String DATE_FORMAT = "yyyyMMdd";
 
 	private String value;
 
@@ -50,7 +55,7 @@ public class ItemValue {
 			return (T) new Boolean(this.value);
 		}
 		if (this.valueType.isDate()) {
-			return (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+			return (T) GeneralDate.fromString(this.value, DATE_FORMAT);
 		}
 		if (this.valueType.isDouble()) {
 			return (T) new Double(this.value);
@@ -94,7 +99,7 @@ public class ItemValue {
 	}
 	
 	private GeneralDate getDateOrDefault() {
-		return isHaveValue() ? GeneralDate.fromString(this.value, "yyyyMMdd") : null;
+		return isHaveValue() ? GeneralDate.fromString(this.value, DATE_FORMAT) : null;
 	}
 	
 	private Double getDoubleOrDefault() {
@@ -117,8 +122,19 @@ public class ItemValue {
 	}
 	
 	public ItemValue value(Object value){
-		this.value = value == null ? null : value.toString();
+		this.value = value == null ? null : toValue(value);
 		return this;
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private String toValue(Object value) {
+		if(value instanceof GeneralDate) {
+			return ((GeneralDate) value).localDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+		}
+		return value.toString();
 	}
 	
 	public ItemValue withPath(String path){

@@ -89,7 +89,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		for(Closure closure : listClosure) {
 			/**締め開始日を取得する*/
 			PresentClosingPeriodFunImport closureData =  funClosureAdapter.getClosureById(procExec.getCompanyId(), closure.getClosureId().value).get();
-			GeneralDate startDate = GeneralDate.today();
+			GeneralDate startDate = GeneralDate.today().addDays(-1);
 			if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE){
 				startDate = closureData.getClosureStartDate();
 			}

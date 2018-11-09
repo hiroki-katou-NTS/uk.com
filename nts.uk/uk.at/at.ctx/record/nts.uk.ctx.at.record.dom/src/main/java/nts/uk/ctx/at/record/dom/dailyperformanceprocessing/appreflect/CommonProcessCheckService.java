@@ -29,5 +29,5 @@ public interface CommonProcessCheckService {
 	 * @param absencePara
 	 * @return
 	 */
-	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre);
+	public boolean checkReflectScheWorkTimeType(CommonReflectParameter commonPara, boolean isPre, WorkInfoOfDailyPerformance dailyInfo);
 }

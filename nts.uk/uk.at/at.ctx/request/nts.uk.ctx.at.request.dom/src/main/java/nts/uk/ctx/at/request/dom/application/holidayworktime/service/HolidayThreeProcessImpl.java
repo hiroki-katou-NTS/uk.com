@@ -346,7 +346,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
 			// 残業休出申請共通設定.事前表示区分＝表示する  
-			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().equals(UseAtr.USE)) {
+			if (overtimeRestAppCommonSet.get().getPreExcessDisplaySetting().equals(UseAtr.USE)) {
 				// 表示する:Trueを返す
 				return true;
 			}
