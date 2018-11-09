@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 500, height:440 };</script>
+        <script>var dialogSize = {width: 500, height:450 };</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm020.j.vm.js"/>
@@ -26,7 +26,7 @@
                     <td>
                         <div id="J1_2" data-bind="ntsFormLabel: {required: true}" style="margin: 0px 10px 0px 10px;">
                             <span class="label">#{i18n.getText('QMM020_54')}</span>
-                            <div id="J1_3" style="margin-left: 75px;" tabindex="1" data-bind="ntsDatePicker: {
+                            <div id="J1_3" style="margin-left: 70px;" tabindex="1" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM020_55')}',
 												value: startYearMonthPeriod,
 												required: true,
@@ -61,60 +61,90 @@
 
             </table>
 
+            <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO">
 
-            <div style="display: inline-flex;margin-top: 10px;">
-                <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
-                    <span class="label">#{i18n.getText('QMM020_58')}</span>
-                </div>
-                <div id="J7_1" tabindex="3" style="margin-top: 10px;">
-                    <div style="" class="cell" tabIndex="-1"
-                         data-bind="ntsRadioButton: {
+                <div style="display: inline-flex;margin-top: 10px;">
+                    <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                        <span class="label">#{i18n.getText('QMM020_58')}</span>
+                    </div>
+                    <div id="J7_1" tabindex="3" style="margin-top: 10px;">
+                        <div style="" class="cell" tabIndex="-1"
+                             data-bind="ntsRadioButton: {
 										checked: transferMethod,
 										option: itemList()[0],
 										optionValue: 'code',
 										enable: isFirst,
 										optionText: 'name',
 										group: 'periodOption'}">
-                    </div>
-                    <br/>
-                    <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO">
+                        </div>
+                        <br/>
+                        <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO">
                         <span style="margin: 10px 10px 10px 20px;" id="J1_10"
                               class="label warning">#{i18n.getText('QMM020_61')}</span>
-                    </div>
+                        </div>
 
-                    <div class="cell" style="margin-top: 10px;" tabIndex="-1"
-                         data-bind="ntsRadioButton: {
+                        <div class="cell" style="margin-top: 10px;" tabIndex="-1"
+                             data-bind="ntsRadioButton: {
 										checked: transferMethod,
 										option: itemList()[1],
 										optionValue: 'code',
 										enable: isFirst,
 										optionText: 'name',
 										group: 'periodOption'}">
+                        </div>
+                    </div>
+
+                </div>
+                <div id="J1_11" data-bind="ntsFormLabel: {required: true}" style="margin: 10px 10px 0px 10px;">
+                    <span class="label">#{i18n.getText('QMM020_62')}</span>
+                    <div id="J1_12" style="margin-left: 25px;" tabindex="4" data-bind="ntsDatePicker: {
+												name: '#{i18n.getText('QMM020_62')}',
+												value: startDateMaster,
+												required: true,
+												enable: true,
+												dateFormat: 'YYYY/MM/DD'}">
                     </div>
                 </div>
 
             </div>
-            <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO">
-                <div id="J1_11" data-bind="ntsFormLabel: {required: true}" style="margin: 10px 10px 0px 10px;">
-                <span class="label">#{i18n.getText('QMM020_62')}</span>
-                <div id="J1_12" style="margin-left: 27px;" tabindex="4" data-bind="ntsDatePicker: {
-												name: '#{i18n.getText('QMM020_62')}',
-												value: startYearMonthMasterDate,
-												required: true,
-												enable: true,
-												valueFormat: 'YYYYMM',
-												dateFormat: 'yearmonth'}">
+
+            <div data-bind="if: modeScreen() != nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO">
+                <div class=" table table-col-2">
+                    <div class="cell valign-top" style="display: inline-flex;margin-top: 10px;">
+                        <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                            <span class="label">#{i18n.getText('QMM020_58')}</span>
+                        </div>
+                    </div>
+                    <div class ="cell valign-top">
+                        <div id="J7_1" class="cell" tabIndex="1" style= "display: inline-block;text-align: left;margin: 15px 0px 0px 30px"
+                             data-bind="ntsRadioBoxGroup: {
+										value: transferMethod,
+										options: itemList(),
+										optionsValue: 'code',
+										optionsText: 'name'}">
+                        </div>
+                        <br/>
+                        <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO" class ="cell valign-top">
+                        <span style="margin: 10px 10px 10px 55px;" id="J1_10"
+                              class="label warning">#{i18n.getText('QMM020_61')}</span>
+                        </div>
+                    </div>
                 </div>
+
             </div>
-            </div>
+
         </div>
         <div id="functions-area-bottom" style="z-index: auto">
-            <!-- C2_1 登録 -->
-            <button id="J2_1" tabindex="5" class="proceed large"
-                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
-            <!-- C2_2 削除 -->
-            <button id="J2_2" tabindex="6"
-                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+            <div id="center">
+                <!-- C2_1 登録 -->
+                <button id="J2_1" tabindex="5" class="proceed large"
+                        data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+                <!-- C2_2 削除 -->
+                <button id="J2_2" tabindex="6"
+                        data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+
+            </div>
+
         </div>
     </ui:define>
 </ui:composition>

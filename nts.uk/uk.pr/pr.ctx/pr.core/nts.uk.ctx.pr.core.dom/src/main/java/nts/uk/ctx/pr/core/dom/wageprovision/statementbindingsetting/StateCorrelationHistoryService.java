@@ -26,8 +26,9 @@ public class StateCorrelationHistoryService {
     /*個人*/
     private static final int INDIVIDUAL = 6 ;
 
-    private static final int MODE_UPDATE = 0 ;
-    private static final int MODE_DELETE = 1 ;
+    private static final int MODE_DELETE = 0 ;
+
+    private static final int MODE_UPDATE = 1 ;
 
     @Inject
     private StateLinkSettingCompanyRepository mStateLinkSettingCompanyRepository;

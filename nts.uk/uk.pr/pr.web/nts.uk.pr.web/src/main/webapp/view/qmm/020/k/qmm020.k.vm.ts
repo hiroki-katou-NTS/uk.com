@@ -3,15 +3,14 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
     import getText = nts.uk.resource.getText;
     import model = qmm020.share.model;
     import dialog = nts.uk.ui.dialog;
-    import service = nts.uk.pr.view.qmm020.k.service;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         isFirst:              KnockoutObservable<boolean> = ko.observable(null);
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         startYearMonthPeriod:         KnockoutObservable<number> = ko.observable();
-        startYearMonthMasterDate:         KnockoutObservable<number> = ko.observable();
+        startDateMaster: KnockoutObservable<string> = ko.observable();
+        startYearMonthBefore : KnockoutObservable<number> = ko.observable();
         endYearMonthPeriod:           KnockoutObservable<number> = ko.observable(999912);
         modeScreen : KnockoutObservable<number> = ko.observable(null);
         isUpdate : KnockoutObservable<boolean> = ko.observable(null);
@@ -28,13 +27,13 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             let self = this;
             let data : any = {
                 cid: '',
-                historyID : self.params.historyID,
-                startYearMonth : self.startYearMonthPeriod,
-                endYearMonth : self.endYearMonthPeriod,
-                modeEditHistory : self.methodEditing,
-                type : self.params.modeScreen,
-                masterCode : self.params.masterCode,
-                isUpdate : self.isUpdate()
+                historyID: self.params().hisId,
+                startYearMonth: self.startYearMonthPeriod(),
+                endYearMonth: self.endYearMonthPeriod(),
+                modeEditHistory: self.methodEditing(),
+                type: self.params().modeScreen,
+                masterCode: self.params().masterCode,
+                isUpdate : (self.startYearMonthPeriod() > self.startYearMonthBefore() && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) ? true : false
             };
             service.deleteStateCorrelationHis(data).done(()=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -49,19 +48,15 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             let self = this;
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
-            self.startYearMonthMasterDate( self.params().startYearMonthMasterDate);
-            self.isUpdate((self.startYearMonthPeriod() > self.startYearMonthMasterDate())?true :false);
+            self.startDateMaster(self.params().baseDate);
+            self.startYearMonthBefore(self.params().startYearMonthBefore);
             self.isFirst(self.params().isFirst);
         }
         cancel(){
             close();
         }
         isCanPickDate(){
-            let self = this;
-            if(self.methodEditing() == EDIT_METHOD.DELETE){
-                return false;
-            }
-            return true;
+            return !(this.methodEditing() != EDIT_METHOD.UPDATE)
         }
         getMode(modeScreen : number ){
             switch (modeScreen) {
@@ -77,6 +72,7 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 default : return 1;
             }
         }
+
     }
     export function getHistoryEditMethod(): Array<model.ItemModel> {
         return [

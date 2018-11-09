@@ -6,3 +6,10 @@
 .sidebar-content{
     overflow:inherit !important;
 }
+.ntsRadioBox {
+    margin-bottom: 10px;
+}
+#center {
+    margin: auto;
+    padding: 10px;
+}
