@@ -18,13 +18,16 @@
         <com:scriptfile path="qmm042.a.service.js"/>
         <com:scriptfile path="qmm042.a.vm.js"/>
         <com:stylefile path="qmm042.a.style.css"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.SalaryUnitPrice
+        </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM042_2')}</button>
+            <button tabindex="1" style="margin-left: 50px" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM042_2')}</button>
 
-            <a tabindex="11" class="goout" style="margin-left: 700px"
-               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM042_14')}</a>
+            <a tabindex="11" class="goout" style="margin-left: 820px"
+               data-bind="ntsLinkButton: { jump: '../../041/a/index.xhtml' }">#{i18n.getText('QMM042_14')}</a>
         </div>
 
         <div class="contents-area fixed-flex-layout" style="width: 1200px; height: 500px;">
@@ -45,6 +48,7 @@
                         <table tabindex="4" id="treegrid"
                                data-bind="ntsGridList:{
                                    name: '#[QMM042_3]',
+                                   rows:17,
                                 width: 280,
                                 height: 420,
                                 dataSource: salaryPerUnitPriceNames,
@@ -89,7 +93,7 @@
                     <div id="A4_5" tabindex="5" class="margin-left-item"
                          data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"></div>
                     <!--A4_6 抽出-->
-                    <button tabindex="6" class="caret-bottom" data-bind="click: filterData"
+                    <button tabindex="6" class="caret-bottom" data-bind="click: filterData,enable: $root.errors.isEmpty"
                             style="margin-left: 13px">#{i18n.getText('QMM042_8')}</button>
 
                 </div>
@@ -104,10 +108,10 @@
                     </colgroup>
                     <thead>
                     <tr>
-                        <th class="ui-widget-header">#{i18n.getText('qmm042_10')}</th>
-                        <th class="ui-widget-header">#{i18n.getText('qmm042_11')}</th>
-                        <th class="ui-widget-header">#{i18n.getText('qmm042_12')}</th>
-                        <th class="ui-widget-header">#{i18n.getText('qmm042_13')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('QMM042_10')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('QMM042_11')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('QMM042_12')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('QMM042_13')}</th>
 
                     </tr>
                     </thead>
@@ -117,12 +121,14 @@
                         <td data-bind="text: businessName()"></td>
                         <td data-bind="text: period"></td>
                         <td>
-                            <input tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
+                            <input id="A4_15" class="A4_15_input" tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
+                                        constraint:'SalaryUnitPrice',
                                         value: amountOfMoney,
-                                        name:'#[qmm042_13]',
+                                        name:'#[QMM042_13]',
                                         required:true,
                                         option: {
                                             grouplength: 3,
+                                            decimallength:2,
                                             currencyformat: 'JPY'}}"/>
                         </td>
 

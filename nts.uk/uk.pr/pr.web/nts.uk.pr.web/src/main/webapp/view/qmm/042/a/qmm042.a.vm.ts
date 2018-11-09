@@ -19,8 +19,16 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         employeeInfoImports:any;
         constructor() {
             var self = this;
-            $("#A4_7").ntsFixedTable({height: 350, width: 720});
-
+            //$("#A4_7").ntsFixedTable({height: 343, width: 720});
+            if(/Edge/.test(navigator.userAgent)){
+                $("#A4_7").ntsFixedTable({height: 339.6, width: 720});
+            }
+             else if (/Chrome/.test(navigator.userAgent)) {
+                $("#A4_7").ntsFixedTable({height: 343, width: 720});
+            }
+            else {
+                $("#A4_7").ntsFixedTable({height: 339.6, width: 720});
+            }
 
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
 
@@ -59,19 +67,14 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             let self=this;
 
             let temp = new Array();
-
+            //nts.uk.ui.errors.clearAll();
             for(let i=0;i<self.workIndividualPrices().length;i++){
                 if(self.workIndividualPrices()[i].startYaerMonth <= this.yearMonthFilter() && self.workIndividualPrices()[i].endYearMonth >= this.yearMonthFilter()){
                     temp.push(self.workIndividualPrices()[i])
                 }
             }
-
-            self.workIndividualPricesDisplay(temp);
-
-
-
-
-
+            self.workIndividualPricesDisplay(_.sortBy(temp, ['employeeCode', 'startYaerMonth']));
+            //$('#A4_7 .nts-input').trigger("validate");
 
 
             if (self.workIndividualPricesDisplay().length > 10) {
