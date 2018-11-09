@@ -1,4 +1,11 @@
 #B1_1 {
-    margin-top: 20px;
+    margin: 20px 0px;
     font-size: 1.5rem;
+}
+#B1_2, #B1_6 {
+    width: 150px;
+}
+
+#B1_4 {
+    margin-right: 5px;
 }

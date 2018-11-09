@@ -1,6 +1,13 @@
 module nts.uk.pr.view.qmm041.a.viewmodel {
 
     import MODE = nts.uk.pr.view.qmm041.share.model.MODE;
+    import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
+    import format = nts.uk.text.format;
+    import getShared = nts.uk.ui.windows.getShared;
+    import MODIFY_METHOD = nts.uk.pr.view.qmm041.share.model.MODIFY_METHOD;
+    import hasError = nts.uk.ui.errors.hasError;
 
     export class ScreenModel {
         // VM
@@ -8,13 +15,16 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         selectedCode: KnockoutObservable<any>;
         isAddableHis: KnockoutObservable<boolean>;
         isEditableHis: KnockoutObservable<boolean>;
-        isRegisterable: KnockoutObservable<boolean>;
+        isRegistrable: KnockoutObservable<boolean>;
         historyList: KnockoutObservableArray<any>;
         selectedHistoryCode: KnockoutObservable<any>;
         columns: any;
         currencyValue: KnockoutObservable<any>;
         currencyEnable: KnockoutObservable<boolean>;
         mode: KnockoutObservable<number>;
+        periodStartYM: KnockoutObservable<string>;
+        periodEndYM: KnockoutObservable<string> = ko.observable('');
+
 
         // CCG001
         ccgComponent: GroupOption;
@@ -37,7 +47,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             self.selectedCode = ko.observable(null);
             self.isAddableHis = ko.observable(false);
             self.isEditableHis = ko.observable(false);
-            self.isRegisterable = ko.observable(false);
+            self.isRegistrable = ko.observable(false);
             self.historyList = ko.observableArray([]);
             self.selectedHistoryCode = ko.observable(null);
             self.columns = [
@@ -49,30 +59,32 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             self.currencyEnable = ko.observable(false);
             self.mode.subscribe((mode) => {
                 if (mode === MODE.NORMAL) {
-                    self.isRegisterable(true);
+                    self.isRegistrable(true);
                     self.isEditableHis(true);
                     self.isAddableHis(true);
                     self.currencyEnable(true);
                 }
-                if (mode === MODE.HISTORY_UNREGISTERD) {
-                    self.isRegisterable(false);
+                if (mode === MODE.HISTORY_UNREGISTERED) {
+                    self.isRegistrable(false);
                     self.isEditableHis(false);
                     self.isAddableHis(true);
                     self.currencyEnable(false);
                 }
                 if (mode === MODE.ADD_HISTORY) {
-                    self.isRegisterable(true);
+                    self.isRegistrable(true);
                     self.isEditableHis(false);
                     self.isAddableHis(false);
                     self.currencyEnable(true);
                 }
             });
+            self.periodStartYM = ko.observable('');
+            self.periodEndYM = ko.observable('');
 
             //CCG001
             self.selectedEmployee = ko.observableArray([]);
             self.ccgComponent = {
                 /** Common properties */
-                systemType: 3,
+                systemType: 2,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -179,8 +191,141 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 return obj.employeeId === selectedItem;
             })
         }
-    }
 
+        public toScreenB(): void {
+            let self = this;
+            let params = {};
+            if (self.mode() === MODE.NORMAL) {
+                params = {
+                    historyID: self.historyList()[0].historyID,
+                    period: {
+                        periodStartYm: self.historyList()[0].periodStartYm,
+                        periodEndYm: self.historyList()[0].periodEndYm
+                    }
+                }
+                self.openModalB(params);
+            } else {
+                service.processYearFromEmp(self.individualPriceCode()).done((data) => {
+                    if (data) {
+                        params = {
+                            period: {
+                                periodStartYm: data,
+                                periodEndYm: 999912
+                            }
+                        }
+                    }
+                    else {
+                        params = {
+                            period: {
+                                periodStartYm: null,
+                                periodEndYm: 999912
+                            }
+                        }
+                    }
+                    self.openModalB(params);
+                });
+            }
+        }
+
+        openModalB(params) {
+            let self = this;
+            setShared("QMM041_A_PARAMS", params);
+            modal('/view/qmm/041/b/index.xhtml', {title: '',}).onClosed((): any => {
+                let params = getShared("QMM041_B_RES_PARAMS");
+                if (params) {
+                    self.selectedHistoryCode(0);
+                    self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
+                    self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
+
+                    if (params.takeoverMethod == 1) {
+                        self.currencyValue(0);
+                    } else {
+                        self.currencyValue(parseInt(self.historyList()[0].amount));
+                    }
+                    let array = self.historyList();
+                    self.historyList([]);
+                    array.unshift(new ItemModel(
+                        0,
+                        null,
+                        params.period.periodStartYm,
+                        params.period.periodEndYm,
+                        format(getText("#QMM041_13"), nts.uk.time.parseYearMonth(params.period.periodStartYm).format(), nts.uk.time.parseYearMonth(params.period.periodEndYm).format()),
+                        self.currencyValue() + "¥"
+                    ));
+                    if (array.length > 1) {
+                        array[1].periodEndYm = (params.periodStartYm - 1) % 100 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
+                        array[1].period = format(getText("#QMM041_13"), nts.uk.time.parseYearMonth(array[1].periodStartYm).format(), nts.uk.time.parseYearMonth(array[1].periodEndYm).format());
+                    }
+                    for (let i = 0; i < array.length; i++) {
+                        array[i].index = i;
+                    }
+                    self.historyList(array);
+                    self.mode(MODE.ADD_HISTORY);
+                }
+            });
+        }
+
+        public toScreenC(): void {
+            let self = this;
+            let self = this;
+            let params = {
+                employeeInfo: {
+                    empId: self.selectedItem(),
+                    personalValode: self.individualPriceCode(),
+                    itemClass: self.itemClas()
+                },
+                period: {
+                    historyId: self.selectedHis().historyID,
+                    periodStartYm: self.selectedHis().periodStartYm,
+                    periodEndYm: self.selectedHis().periodEndYm
+                },
+
+                lastHistoryId: self.historyList().length == (self.historyList()[self.selectedHistoryCode()].index + 1) ? null : self.historyList()[parseInt(self.selectedHistoryCode()) + 1].historyID,
+                lastPeriodEndYm: self.historyList().length == (self.historyList()[self.selectedHistoryCode()].index + 1) ? null : self.historyList()[parseInt(self.selectedHistoryCode()) + 1].periodEndYm,
+                lastPeriodStartYm: self.historyList().length == (self.historyList()[self.selectedHistoryCode()].index + 1) ? null : self.historyList()[parseInt(self.selectedHistoryCode()) + 1].periodStartYm
+
+            }
+            setShared("QMM041_C_PARAMS", params);
+            modal('/view/qmm/041/c/index.xhtml', {title: '',}).onClosed(function (): any {
+                let params = getShared('QMM041_C_RES_PARAMS');
+                if (params) {
+                    if (params.modifyMethod == MODIFY_METHOD.DELETE) {
+                        self.historyProcess(self.individualPriceCode(), 0);
+                    } else {
+                        self.historyProcess(self.individualPriceCode(), self.selectedHis().index);
+                    }
+                }
+                self.mode(MODE.NORMAL);
+            });
+        }
+
+        public toScreenD(): void {
+            let self = this;
+            let empName;
+            let empId;
+            _.forEach(self.employeeInputList(), function (data) {
+                _.forEach(data, function (value, key) {
+                    if (key == 'id' && value == self.selectedItem()) {
+                        empName = data.businessName;
+                        empId = data.code;
+                    }
+                });
+            });
+            let params = {
+                empCode: empId,
+                empName: empName,
+                empId: self.selectedItem(),
+                personalValCode: self.individualPriceCode(),
+                personalValName: self.individualPriceCode(),
+                cateIndicator: self.classificationCategory(),
+                salBonusCate: self.salaryBonusCategory()
+            }
+            setShared("QMM041_D_PARAMS", params);
+            modal('/view/qmm/041/d/index.xhtml', {title: '',}).onClosed(function (): any {
+
+            });
+        }
+    }
 
     export interface GroupOption {
         /** Common properties */
@@ -223,6 +368,24 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
 
+    class ItemModel {
+        index: number;
+        historyID: string;
+        periodStartYm: number;
+        periodEndYm: number;
+        period: string;
+        amount: string;
+
+        constructor(index: number, historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: string) {
+            this.index = index;
+            this.historyID = historyID;
+            this.periodStartYm = periodStartYm;
+            this.periodEndYm = periodEndYm;
+            this.period = period;
+            this.amount = amount;
+        }
+    }
+
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -236,7 +399,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         closureId?: number; // 締めID
         periodStart: string; // 対象期間（開始)
         periodEnd: string; // 対象期間（終了）
-        listEmployee: EmployeeSearchDto[]; // 検索結果
+        listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 
     export interface ComponentOption {

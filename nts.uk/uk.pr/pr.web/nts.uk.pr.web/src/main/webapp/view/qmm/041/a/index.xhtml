@@ -28,9 +28,9 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1 登録-->
-            <button class="proceed" tabindex="1" data-bind="enable: isRegisterable &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM041_5')}</button>
+            <button class="proceed" tabindex="1" data-bind="enable: isRegistrable &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM041_5')}</button>
             <!--A1_2 社員給与単価（項目別）-->
-            <a id="A1_2" class="goout" data-bind="ntsLinkButton: { }, enable: false"
+            <a id="A1_2" class="goout" data-bind="ntsLinkButton: {jump: '../../042/a/index.xhtml'}"
                tabindex="11">#{i18n.getText('QMM041_41')}</a>
         </div>
         <div id="com-ccg001"/>
@@ -39,7 +39,7 @@
                 <!--A2_1 対象者-->
                 <div tabindex="2" id="emp-component"/>
                 <!--A2_2 単価の一覧を表示する-->
-                <button id="A2_2" class="small" tabindex="3" data-bind="click: ,
+                <button id="A2_2" class="small" tabindex="3" data-bind="click: toScreenD,
                     enable: $root.errors.isEmpty ">#{i18n.getText('QMM041_7')}</button>
             </div>
             <!--A2_3 社員検索-->
@@ -79,12 +79,12 @@
                              data-bind="ntsPanel:{width: '270px', direction: 'none'}">
                             <!--A4_2 履歴追加-->
                             <button id="A4_2" tabindex="7" class="pull-left"
-                                    data-bind="click: , enable: isAddableHis &amp;&amp; $root.errors.isEmpty">
+                                    data-bind="click: toScreenB, enable: isAddableHis &amp;&amp; $root.errors.isEmpty">
                                 #{i18n.getText('QMM041_10')}
                             </button>
                             <!--A4_3 履歴編集-->
                             <button id="A4_3" tabindex="8" class="pull-right"
-                                    data-bind="click: , enable: isEditableHis &amp;&amp; $root.errors.isEmpty">
+                                    data-bind="click: toScreenC, enable: isEditableHis &amp;&amp; $root.errors.isEmpty">
                                 #{i18n.getText('QMM041_11')}
                             </button>
                             <!--A4_4 履歴リスト-->
@@ -129,18 +129,21 @@
                         <!--A5_8 金額-->
                         <div id="A5_8" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM041_18')}</div>
                         <!--A5_9 金額-->
-                        <input id="A5_9" tabindex="10" data-bind="ntsNumberEditor: {
-                                            value: currencyValue,
-                                            constraint: 'SalaryUnitPrice',
-                                            required: true,
-                                            name: '#[QMM041_18]',
-                                            enable: currencyEnable,
-                                            option: {
-                                                grouplength: 3,
-                                                decimallength: 2,
-                                                currencyformat: 'JPY'
-                                                }
-                                            }"/>
+                        <input id="A5_9"
+                               tabindex="10"
+                               data-bind="ntsNumberEditor: {
+                                    value: currencyValue,
+                                    constraint: 'SalaryUnitPrice',
+                                    required: true,
+                                    name: '#[QMM041_18]',
+                                    enable: currencyEnable,
+                                    option: {
+                                        grouplength: 3,
+                                        decimallength: 2,
+                                        currencyformat: 'JPY'
+                                        }
+                                    }"
+                        />
                     </div>
                 </div>
             </div>
