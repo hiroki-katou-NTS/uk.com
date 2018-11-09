@@ -1,8 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsetting;
 
 
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividual;
@@ -12,6 +10,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.Qpb
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +30,11 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
                 .setParameter("hisId", hisId)
                 .getList();
         return this.toDomain(listStateCorHisIndi);
+    }
+
+    @Override
+    public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId) {
+        return Optional.empty();
     }
 
     @Override

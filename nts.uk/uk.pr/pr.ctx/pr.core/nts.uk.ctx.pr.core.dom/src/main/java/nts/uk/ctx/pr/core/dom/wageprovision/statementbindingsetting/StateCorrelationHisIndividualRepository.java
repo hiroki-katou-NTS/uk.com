@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
-import java.util.Optional;
-
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+
+import java.util.Optional;
 
 /**
 * 明細書紐付け履歴（個人）
@@ -10,6 +10,8 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 public interface StateCorrelationHisIndividualRepository {
 
     Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId, String hisId);
+
+    Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId);
 
     void add(String empId, YearMonthHistoryItem history);
 
