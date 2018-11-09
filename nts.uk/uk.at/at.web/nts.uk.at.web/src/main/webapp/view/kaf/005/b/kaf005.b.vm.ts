@@ -150,7 +150,12 @@ module nts.uk.at.view.kaf005.b {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
-                service.findByAppID(appID).done((data) => { 
+                service.findByAppID(appID).done((data) => {
+                    //write log
+                    let paramLog = {programId: 'KAF000',
+                                    screenId: 'B', 
+                                    queryString: 'apptype=0_'+data.overtimeAtr};
+                    nts.uk.at.view.kaf000.b.service.writeLog(paramLog);
                     self.initData(data);
                     self.checkRequiredOvertimeHours();
                     //Check work content Changed

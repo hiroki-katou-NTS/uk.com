@@ -176,7 +176,11 @@ module cmm045.a.viewmodel {
                 if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
                 }
-
+                //write log
+                let paramLog = {programId: 'CMM045',
+                                screenId: 'A', 
+                                queryString: 'a='+self.mode()};
+                service.writeLog(paramLog);
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
