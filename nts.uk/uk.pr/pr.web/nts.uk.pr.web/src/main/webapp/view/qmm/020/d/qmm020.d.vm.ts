@@ -70,19 +70,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 },
 
             ]
-            service.getStateCorrelationHisDeparmentById().done((data)=>{
-                if(data.length > 0){
-                    _.forEach(data,(o)=>{
-                        self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', o.startYearMonth , o.endYearMonth,self.to()));
-                    });
-                    firstHistory = _.head(self.listStateCorrelationHis());
-                    self.currentSelectedHis(firstHistory.hisId);
-                }
-            }).fail((err)=>{
-                if(err) dialog.alertError(err);
-            }).always(()=>{
-                block.clear();
-            });
+
 
 
             self.items = ko.observableArray([]);
@@ -107,6 +95,33 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 ]);
 
         }
+
+        startPage(): JQueryPromise<any>{
+            block.invisible();
+            let self = this;
+            let firstHistory, dfd = $.Deferred();
+            let listStateCorrelationHis = [];
+
+            service.getStateCorrelationHisDeparmentById().done((data)=>{
+                if(data.length > 0){
+                    _.forEach(data,(o)=>{
+                        listStateCorrelationHis.push(new ItemModel(o.historyID, '', o.startYearMonth , o.endYearMonth,self.to()));
+                    });
+                    self.listStateCorrelationHis(listStateCorrelationHis);
+                    firstHistory = _.head(self.listStateCorrelationHis());
+                    self.currentSelectedHis(firstHistory.hisId);
+                }
+                dfd.resolve();
+            }).fail((err)=>{
+                dfd.reject();
+                if(err) dialog.alertError(err);
+            }).always(()=>{
+                block.clear();
+            });
+
+            return dfd.promise();
+
+        }
         openScreenL(){
             let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
@@ -119,7 +134,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             let hisId,startYearMonth, endYearMonth,temp;
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
-                startYearMonth : rs.startYearMonth,
+                startYearMonth : rs ? rs.startYearMonth : 0,
                 isPerson: false,
                 modeScreen: model.MODE_SCREEN.EMPLOYEE,
             });

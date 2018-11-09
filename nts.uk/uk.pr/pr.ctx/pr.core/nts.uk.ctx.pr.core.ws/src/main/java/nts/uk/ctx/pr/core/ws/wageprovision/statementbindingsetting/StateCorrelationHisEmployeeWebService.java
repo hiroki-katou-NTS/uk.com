@@ -38,10 +38,10 @@ public class StateCorrelationHisEmployeeWebService extends WebService {
     }
 
     @POST
-    @Path("getStateLinkSettingMasterByHisId/{hisId}")
-    public List<StateCorrelationHisEmployeeSettingDto> getStateLinkSettingMasterByHisId(@PathParam("hisId") String hisId){
+    @Path("getStateLinkSettingMasterByHisId/{hisId}/{startYearMonth}")
+    public List<StateCorrelationHisEmployeeSettingDto> getStateLinkSettingMasterByHisId(@PathParam("hisId") String hisId, @PathParam("startYearMonth") int startYearMonth){
         String cid = AppContexts.user().companyId();
-        return stateCorrelationHisEmployeeFinder.getStateLinkSettingMasterByHisId(cid,hisId);
+        return stateCorrelationHisEmployeeFinder.getStateLinkSettingMasterByHisId(cid,hisId,startYearMonth);
     }
 
     @POST
