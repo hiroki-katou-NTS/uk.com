@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
         selectedIndividualUse : KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservableArray<any>;
         selectedUsageMaster: KnockoutObservable<number> = ko.observable();
+        currentSelectedUsageMaster: KnockoutObservable<number> = ko.observable();
         constructor() {
             block.invisible();
             var self = this;
@@ -19,6 +20,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
                     self.selectedMasterUse(data.masterUse);
                     self.selectedIndividualUse(data.individualUse);
                     self.selectedUsageMaster(data.usageMaster);
+                    self.currentSelectedUsageMaster(data.usageMaster);
                 }else{
                     self.selectedMasterUse(1);
                     self.selectedIndividualUse(1);
@@ -38,13 +40,13 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
         init(){
             let self = this;
             self.masterUse = ko.observableArray([
-                { code: '1', name: getText('QMM020_74') },
-                { code: '0', name: getText('QMM020_77') }
+                { code: 1, name: getText('QMM020_74') },
+                { code: 0, name: getText('QMM020_77') }
             ]);
 
             self.individualUse = ko.observableArray([
-                { code: '1', name: getText('QMM020_74') },
-                { code: '0', name: getText('QMM020_77') }
+                { code: 1, name: getText('QMM020_74') },
+                { code: 0, name: getText('QMM020_77') }
             ]);
 
             self.usageMaster = ko.observableArray([
@@ -67,7 +69,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
                 companyID: '',
                 masterUse: self.selectedMasterUse(),
                 individualUse: self.selectedIndividualUse(),
-                usageMaster: self.selectedUsageMaster()
+                usageMaster: self.selectedMasterUse() === 1 ? self.selectedUsageMaster() : self.currentSelectedUsageMaster()
             }
 
             service.update(data).done(()=>{

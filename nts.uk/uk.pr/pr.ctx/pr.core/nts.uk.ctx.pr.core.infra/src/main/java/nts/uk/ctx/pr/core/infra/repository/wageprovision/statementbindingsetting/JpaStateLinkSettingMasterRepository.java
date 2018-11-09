@@ -18,6 +18,7 @@ public class JpaStateLinkSettingMasterRepository extends JpaRepository implement
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateLinkSetMas f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateLinkSetMasPk.hisId =:hisId AND  f.stateLinkSetMasPk.masterCode =:masterCode ";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateLinkSetMasPk.hisId =:hisId ";
+    private static final String REMOVE_BY_HISID = " DELETE FROM QpbmtStateLinkSetMas f WHERE  f.stateLinkSetMasPk.hisId =:hisId ";
 
     @Override
     public List<StateLinkSettingMaster> getStateLinkSettingMasterByHisId(String hisId){
@@ -57,5 +58,12 @@ public class JpaStateLinkSettingMasterRepository extends JpaRepository implement
     @Override
     public void remove(String hisId, String masterCode){
         this.commandProxy().remove(QpbmtStateLinkSetMas.class, new QpbmtStateLinkSetMasPk(hisId, masterCode));
+    }
+
+    @Override
+    public void removeAll(String hisId) {
+        this.getEntityManager().createQuery(REMOVE_BY_HISID)
+                .setParameter("hisId",hisId)
+                .executeUpdate();
     }
 }

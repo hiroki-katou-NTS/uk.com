@@ -22,4 +22,6 @@ public interface StateLinkSettingMasterRepository {
 
     void remove(String hisId, String masterCode);
 
+    void removeAll(String hisId);
+
 }

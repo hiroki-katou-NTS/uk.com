@@ -20,12 +20,25 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         columns: any;
         selectedCodes2: any;
         list: any;
-        button : string = '';
+        startYearMonth: KnockoutObservable<string> = ko.observable();
         mode: KnockoutObservable<number> = ko.observable(0);
+        shared: KnockoutObservable<any> = ko.observable();
+        setShared: KnockoutObservable<any> = ko.observable();
+        getShared: KnockoutObservable<any> = ko.observable();
+        modal: KnockoutObservable<any> = ko.observable();
+
+        transferMode: KnockoutObservable<number> = ko.observable();
+        enableAddHisButton:  KnockoutObservable<boolean> = ko.observable(true);
+        enableEditHisButton:  KnockoutObservable<boolean> = ko.observable(true);
+        isModeAddHistory: KnockoutObservable<boolean> = ko.observable();
         constructor(){
             block.invisible();
             let self = this;
             let firstHistory;
+            self.shared(model);
+            self.setShared(setShared);
+            self.getShared(getShared);
+            self.modal(modal);
             self.list = [
                 {
                     CID: '000000000000-0001',
@@ -57,26 +70,14 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 },
 
             ]
-            service.getStateCorrelationHisDeparmentById().done((data)=>{
-                if(data.length > 0){
-                    _.forEach(data,(o)=>{
-                        self.listStateCorrelationHis.push(new ItemModel(o.historyID, '', self.convertYearMonthToDisplayYearMonth(o.startYearMonth) + self.to() + self.convertYearMonthToDisplayYearMonth(o.endYearMonth)));
-                    });
-                    firstHistory = _.head(self.listStateCorrelationHis());
-                    self.currentSelectedHis(firstHistory.code);
-                }
-            }).fail((err)=>{
-                if(err) dialog.alertError(err);
-            }).always(()=>{
-                block.clear();
-            });
+
 
 
             self.items = ko.observableArray([]);
             self.createList();
             self.currentSelectedDep = ko.observableArray([]);
-            self.currentSelectedDep.subscribe((depID)=>{
-               console.dir(depID);
+            self.currentSelectedHis.subscribe((hisId)=>{
+               console.dir(hisId);
             });
 
             self.selectedCodes2 = ko.observable([]);
@@ -95,6 +96,77 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
 
         }
 
+        startPage(): JQueryPromise<any>{
+            block.invisible();
+            let self = this;
+            let firstHistory, dfd = $.Deferred();
+            let listStateCorrelationHis = [];
+
+            service.getStateCorrelationHisDeparmentById().done((data)=>{
+                if(data.length > 0){
+                    _.forEach(data,(o)=>{
+                        listStateCorrelationHis.push(new ItemModel(o.historyID, '', o.startYearMonth , o.endYearMonth,self.to()));
+                    });
+                    self.listStateCorrelationHis(listStateCorrelationHis);
+                    firstHistory = _.head(self.listStateCorrelationHis());
+                    self.currentSelectedHis(firstHistory.hisId);
+                }
+                dfd.resolve();
+            }).fail((err)=>{
+                dfd.reject();
+                if(err) dialog.alertError(err);
+            }).always(()=>{
+                block.clear();
+            });
+
+            return dfd.promise();
+
+        }
+        openScreenL(){
+            let self = this;
+            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
+                location.reload();
+            });
+        }
+
+        openScreenJ(){
+            let self = this;
+            let hisId,startYearMonth, endYearMonth,temp;
+            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+            setShared(model.PARAMETERS_SCREEN_J.INPUT, {
+                startYearMonth : rs ? rs.startYearMonth : 0,
+                isPerson: false,
+                modeScreen: model.MODE_SCREEN.EMPLOYEE,
+            });
+            modal("/view/qmm/020/j/index.xhtml").onClosed(()=>{
+                let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
+                if(params){
+                    hisId = HISTORY.NEW;
+                    startYearMonth = params.start;
+                    self.startYearMonth(startYearMonth);
+                    endYearMonth = Number(startYearMonth.toString().slice(4, 6)) == 1 ? (startYearMonth - 89) : (startYearMonth - 1);
+                    if(self.listStateCorrelationHis().length > 0){
+                        temp = _.head(self.listStateCorrelationHis());
+                        temp.endYearMonth = endYearMonth;
+                        temp.changeDisplay();
+                        self.listStateCorrelationHis.unshift(new ItemModel(hisId, '', startYearMonth , 999912,self.to()));
+                        self.isModeAddHistory(true);
+                        self.listStateCorrelationHis(self.listStateCorrelationHis());
+                    }else{
+                        self.listStateCorrelationHis.push(new ItemModel(hisId, '', startYearMonth, 999912,self.to()));
+                        self.isModeAddHistory(true);
+                        self.listStateCorrelationHis(self.listStateCorrelationHis());
+                    }
+
+                    self.transferMode(params.transferMethod);
+                    self.currentSelectedHis(HISTORY.NEW);
+                }
+            });
+        }
+
+        openScreenK(){
+            modal("/view/qmm/020/k/index.xhtml");
+        }
         createList(){
             let self = this;
             let node = new Node('0000' + 0, 'TaiTT', '01','aaaaaaa','02','ffffffff',[]);
@@ -112,7 +184,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             });
         }
 
-        callconvertToCommand(){
+        registerStateCorrelationHisDeparment(){
             block.invisible();
             let self = this;
             let historyID;
@@ -133,7 +205,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 stateCorrelationHisDeparmentCommand :{
                     cid: '',
                     historyID: historyID,
-                    startYearMonth: 201803,
+                    startYearMonth: self.startYearMonth(),
                     endYearMonth: 999912                },
                 mode: self.mode()
             };
@@ -153,8 +225,8 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             _.forEach(data,(o) =>{
 
                let i = {
-                   historyID: hisID,
-                    masterCode: o.code,
+                   hisId: hisID,
+                    masterCode: o.departmentID,
                     salaryCode: '01',
                     bonusCode: '02',
                };
@@ -186,13 +258,26 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
     }
 
     export class ItemModel {
-        code: string;
+        hisId: string;
         name: string;
         display: string;
-        constructor(code: string, name: string, display: string) {
-            this.code = code;
+        startYearMonth: number;
+        endYearMonth: number;
+        to: string;
+        constructor(hisId: string, name: string, startYearMonth: number,endYearMonth: number, to: string) {
+            this.hisId = hisId;
             this.name = name;
-            this.display = display;
+            this.startYearMonth = startYearMonth;
+            this.endYearMonth = endYearMonth;
+            this.to = to;
+            this.display = this.convertYearMonthToDisplayYearMonth(startYearMonth)+ this.to + this.convertYearMonthToDisplayYearMonth(endYearMonth);
+        }
+        changeDisplay(){
+            this.display = this.convertYearMonthToDisplayYearMonth(this.startYearMonth)+ this.to + this.convertYearMonthToDisplayYearMonth(this.endYearMonth);
+        }
+
+        convertYearMonthToDisplayYearMonth(yearMonth) {
+            return nts.uk.time.formatYearMonth(yearMonth);
         }
     }
 
@@ -223,18 +308,18 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
     }
 
     export interface IStateLinkSettingMaster {
-        historyID: string;
+        hisId: string;
         masterCode: string;
         salaryCode: number;
         bonusCode: number;
     }
     export class StateLinkSettingMaster {
-        historyID: string;
+        hisId: string;
         masterCode: string;
         salaryCode: number;
         bonusCode: number;
         constructor(params: IStateLinkSettingMaster) {
-            this.historyID = params ? params.historyID : null;
+            this.hisId = params ? params.hisId : null;
             this.masterCode = params ? params.masterCode : null;
             this.salaryCode = params ? params.salaryCode : null;
             this.bonusCode = params ? params.bonusCode : null;
@@ -244,35 +329,40 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         NEW = 0,
         UPDATE = 1,
     }
+
+    export enum HISTORY{
+        NEW = '0'
+    }
 }
 
+
+
 let openScreenM = function(id: string) {
+
     let model = __viewContext.viewModel.viewmodelD;
-    model.setShared(model.PARAMETERS_SCREEN_M.INPUT,{
-        startYearMonth: '',
+    let rs = _.find(model.listStateCorrelationHis(),{hisId: model.currentSelectedHis()});
+
+    nts.uk.ui.windows.setShared('PARAM_INPUT_SCREEN_M',{
+        startYearMonth: rs.startYearMonth,
     });
-    model.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
-        let params = model.getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
+    nts.uk.ui.windows.sub.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
+        let params = nts.uk.ui.windows.getShared('PARAM_OUTPUT_SCREEN_M');
         if(params){
             model.searchByDepID(model.items(),id,params.statementCode,params.statementCode);
             model.items(model.items());
         }
     });
 
-
-
-
 };
 
 let openScreenM1 = function(id: string) {
     let model = __viewContext.viewModel.viewmodelD;
-    let rs = _.find(model.listStateCorrelationHis(),{hisId: model.currentSelect()});
-    model.setShared(model.PARAMETERS_SCREEN_M.INPUT,{
+    let rs = _.find(model.listStateCorrelationHis(),{hisId: model.currentSelectedHis()});
+    model.setShared('PARAM_INPUT_SCREEN_M',{
         startYearMonth: rs.startYearMonth,
     });
-
     model.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
-        let params = model.getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
+        let params = model.getShared('PARAM_OUTPUT_SCREEN_M');
         if(params){
             model.searchByDepID(model.items(),id,params.statementCode,params.statementCode);
             model.items(model.items());
