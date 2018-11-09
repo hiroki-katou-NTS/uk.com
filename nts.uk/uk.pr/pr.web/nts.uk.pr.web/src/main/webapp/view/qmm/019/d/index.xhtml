@@ -248,7 +248,7 @@
                             <!--D3_2-->
                             <div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
                                 name: '#[QMM019_115]',
-                                options: $vm.proportionalDivisionSetAtrs,
+                                options: $vm.paymentProportionalAtrs,
                                 optionsValue: 'code',
                                 optionsText: 'name',
                                 value: proportionalAtr,
@@ -262,7 +262,7 @@
                             <!--D3_6-->
                             <div id="D3_6" tabindex="7" data-bind="ntsComboBox: {
                                 name: '#[QMM019_119]',
-                                options: $vm.proportionalDivisionRatioSetAtrs,
+                                options: $vm.proportionalMethodAtrs,
                                 optionsValue: 'code',
                                 visibleItemsCount: 3,
                                 value: proportionalMethod,
@@ -286,8 +286,8 @@
                             <div tabindex="8" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableD3_9()}"/>
-                            <!--D3_10-->
                             <com:ko-if bind="$vm.screenControl().visibleD3_10()">
+                                <!--D3_10-->
                                 <input id="D3_10" tabindex="9" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_121]',
                                     value: rangeValue,

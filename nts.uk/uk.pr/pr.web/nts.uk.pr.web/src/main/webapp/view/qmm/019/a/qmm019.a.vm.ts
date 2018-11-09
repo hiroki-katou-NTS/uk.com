@@ -112,7 +112,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public modifyLog(): void {
-
+            modal("/view/qmm/019/e/index.xhtml");
         }
     }
 }

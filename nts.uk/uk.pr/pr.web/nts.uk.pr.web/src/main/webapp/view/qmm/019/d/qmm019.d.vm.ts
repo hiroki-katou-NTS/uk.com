@@ -19,10 +19,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         totalObjAtrs: KnockoutObservableArray<shareModel.ItemModel>;
         calcMethods: KnockoutObservableArray<shareModel.ItemModel>;
         workingAtrs: KnockoutObservableArray<shareModel.ItemModel>;
-        proportionalDivisionSetAtrs: KnockoutObservableArray<shareModel.ItemModel>;
-        proportionalDivisionSetAtrSelected: KnockoutObservable<shareModel.ItemModel>;
-        proportionalDivisionRatioSetAtrs: KnockoutObservableArray<shareModel.ItemModel>;
-        proportionalDivisionRatioSetAtrSelected: KnockoutObservable<shareModel.ItemModel>;
+        paymentProportionalAtrs: KnockoutObservableArray<shareModel.ItemModel>;
+        proportionalMethodAtrs: KnockoutObservableArray<shareModel.ItemModel>;
 
         params: IParams;
         yearMonth: number;
@@ -48,10 +46,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.totalObjAtrs = ko.observableArray([]);
             self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr());
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
-            self.proportionalDivisionSetAtrs = ko.observableArray(shareModel.getProportionalDivisionSetAtr());
-            self.proportionalDivisionSetAtrSelected = ko.observable(null);
-            self.proportionalDivisionRatioSetAtrs = ko.observableArray(shareModel.getProportionalDivisionRatioSetAtr());
-            self.proportionalDivisionRatioSetAtrSelected = ko.observable(null);
+            self.paymentProportionalAtrs = ko.observableArray(shareModel.getPaymentProportionalAtr());
+            self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr());
 
             self.dataScreen = ko.observable(new Params());
             self.categoryAtrText = ko.observable(null);
@@ -150,8 +146,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen();
+                dfd.resolve();
             });
-            dfd.resolve();
             return dfd.promise();
         }
 
@@ -458,7 +454,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         condition43(calcMethod: any, taxAtr: any) {
             let self = this;
             if (taxAtr == shareModel.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER) {
-                // self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF.toString());
+                self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF.toString());
             }
             self.screenControl().enableD2_8(calcMethod != shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM && taxAtr != shareModel.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER);
         }
@@ -541,7 +537,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     }
 
     class ScreenControl {
-        // screenMode: ScreenMode = ScreenMode.UNSELECTED;
         visibleD2_2: KnockoutObservable<boolean> = ko.observable(false);
         visibleD2_3: KnockoutObservable<boolean> = ko.observable(false);
         enableD2_5: KnockoutObservable<boolean> = ko.observable(false);

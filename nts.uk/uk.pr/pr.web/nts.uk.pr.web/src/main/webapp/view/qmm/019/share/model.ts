@@ -47,7 +47,7 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     /**
-     * 控除合計対象区分
+     * 支給合計対象区分
      */
     export enum PaymentTotalObjAtr {
         // 合計対象内
@@ -73,6 +73,30 @@ module nts.uk.pr.view.qmm019.share.model {
             return [
                 new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
                 new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）')
+            ];
+        }
+    }
+
+    /**
+     * 控除合計対象区分
+     */
+    export enum DeductionTotalObjAtr {
+        // 合計対象外
+        OUTSIDE = 0,
+        // 合計対象内
+        INSIDE = 1
+    }
+
+    export function getDeductionTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
+        if (printSet == StatementPrintAtr.PRINT) {
+            return [
+                new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, '合計対象外'),
+                new model.ItemModel(DeductionTotalObjAtr.INSIDE, '合計対象内')
+            ];
+        }
+        else {
+            return [
+                new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, '合計対象外')
             ];
         }
     }
@@ -107,41 +131,74 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     /**
-     * 按分設定区分
+     * 控除計算方法区分
      */
-    export enum ProportionalDivisionSetAtr {
-        // 按分しない
-        DO_NOT = 0,
-        //按分する
-        DO = 1,
+    export enum DeductionCaclMethodAtr {
+        // 手入力
+        MANUAL_INPUT = 0,
+        //個人情報参照
+        PERSON_INFO_REF = 1,
         //計算式
-        ONCE_MONTH = 2
+        CACL_FOMULA = 2,
+        //賃金テーブル
+        WAGE_TABLE = 3,
+        //共通金額
+        COMMON_AMOUNT = 4,
+        //支給相殺
+        SUPPLY_OFFSET = 5,
+        //内訳項目
+        BREAKDOWN_ITEM = 6
     }
 
-    export function getProportionalDivisionSetAtr(): Array<ItemModel> {
+    export function getDeductionCaclMethodAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(ProportionalDivisionSetAtr.DO_NOT, getText('QMM019_116')),
-            new model.ItemModel(ProportionalDivisionSetAtr.DO, getText('QMM019_117')),
-            new model.ItemModel(ProportionalDivisionSetAtr.ONCE_MONTH, getText('QMM019_162'))
+            new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, '手入力'),
+            new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
+            new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, '計算式'),
+            new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
+            new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
+            new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, '支給相殺'),
+            new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
         ];
     }
 
     /**
-     * 按分割合設定区分
+     * 支給按分区分
      */
-    export enum ProportionalDivisionRatioSetAtr {
-        ENUM_1 = 0,
-        ENUM_2 = 1,
-        ENUM_3 = 2,
-        ENUM_4 = 3
+    export enum PaymentProportionalAtr {
+        // 按分しない
+        PROPORTIONAL = 0,
+        //按分する
+        NOT_PROPORTIONAL = 1,
+        //月１回支給
+        PAYMENT_ONE_A_MONTH = 2
     }
 
-    export function getProportionalDivisionRatioSetAtr(): Array<ItemModel> {
+    export function getPaymentProportionalAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(ProportionalDivisionRatioSetAtr.ENUM_1, getText('ENUM_1')),
-            new model.ItemModel(ProportionalDivisionRatioSetAtr.ENUM_2, getText('ENUM_2')),
-            new model.ItemModel(ProportionalDivisionRatioSetAtr.ENUM_3, getText('ENUM_3')),
-            new model.ItemModel(ProportionalDivisionRatioSetAtr.ENUM_4, getText('ENUM_4'))
+            new model.ItemModel(PaymentProportionalAtr.PROPORTIONAL, getText('QMM019_116')),
+            new model.ItemModel(PaymentProportionalAtr.NOT_PROPORTIONAL, getText('QMM019_117')),
+            new model.ItemModel(PaymentProportionalAtr.PAYMENT_ONE_A_MONTH, getText('QMM019_118'))
+        ];
+    }
+
+    /**
+     * 控除按分区分
+     */
+    export enum DeductionProportionalAtr {
+        // 按分しない
+        PROPORTIONAL = 0,
+        //按分する
+        NOT_PROPORTIONAL = 1,
+        //月１回控除
+        DEDUCTION_ONCE_A_MONTH = 2
+    }
+
+    export function getDeductionProportionalAtr(): Array<ItemModel> {
+        return [
+            new model.ItemModel(DeductionProportionalAtr.PROPORTIONAL, getText('QMM019_116')),
+            new model.ItemModel(DeductionProportionalAtr.NOT_PROPORTIONAL, getText('QMM019_117')),
+            new model.ItemModel(DeductionProportionalAtr.DEDUCTION_ONCE_A_MONTH, getText('QMM019_162'))
         ];
     }
 
@@ -189,6 +246,13 @@ module nts.uk.pr.view.qmm019.share.model {
         BY_PROPORTION = 0,
         // 日数控除
         DAYS_DEDUCTION = 1
+    }
+
+    export function getProportionalMethodAtr(): Array<ItemModel> {
+        return [
+            new model.ItemModel(ProportionalMethodAtr.BY_PROPORTION, getText('割合で計算')),
+            new model.ItemModel(ProportionalMethodAtr.DAYS_DEDUCTION, getText('日数控除'))
+        ];
     }
 
     /**
