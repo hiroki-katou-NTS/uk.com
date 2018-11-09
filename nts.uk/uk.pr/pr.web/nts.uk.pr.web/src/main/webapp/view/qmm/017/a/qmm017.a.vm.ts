@@ -28,6 +28,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         selectedFormula: KnockoutObservable<model.Formula> = ko.observable(new model.Formula(null));
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
         basicFormulaSetting: KnockoutObservable<model.BasicFormulaSetting> = ko.observable(new model.BasicFormulaSetting(null));
+        detailFormulaSetting: KnockoutObservable<model.DetailFormulaSetting> = ko.observable(new model.DetailFormulaSetting(null));
+        basicCalculationFormulaList: KnockoutObservableArray<model.BasicCalculationFormula> = ko.observableArray([]);
+
+        // tab 2, screen D
+        screenDViewModel = new nts.uk.pr.view.qmm017.d.viewmodel.ScreenModel();
+
         constructor() {
             var self = this;
             self.initTabPanel();
@@ -78,7 +84,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let formulaData = [{
                 formulaCode: '001',
                 formulaName: 'Formula 1',
-                settingMethod: 0,
+                settingMethod: 1,
                 nestedAtr: 0,
                 history: [
                     {startMonth: '201711', endMonth: '999912', historyID: nts.uk.util.randomId()},
@@ -121,6 +127,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             ];
             self.convertToTreeList(formulaData);
+            self.initBasicCalculationFormula();
         }
 
         convertToTreeList(formulaData) {
@@ -147,6 +154,91 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.selectedFormulaIdentifier(identifier);
                 self.selectedFormulaIdentifier.valueHasMutated();
             }
+        }
+
+        initBasicCalculationFormula (){
+            let self = this;
+            let fixedData: any = {masterUseCode: '0000000000'}, fixedElement:any = new model.BasicCalculationFormula(fixedData);
+            self.basicCalculationFormulaList.push(fixedElement);
+            let data = [
+                {
+                    calculationFormulaClassification: 1,
+                    masterUseCode: '0000000001',
+                    historyID: nts.uk.util.randomId(),
+                    basicCalculationFormula: 500,
+                    standardAmountClassification: 0,
+                    standardFixedValue: 600,
+                    targetItemCodeList: ['0001', '0002'],
+                    attendanceItem: '0001',
+                    coefficientClassification: 0,
+                    coefficientFixedValue: 700,
+                    formulaType: 0,
+                    roundingResult: 800,
+                    adjustmentClassification: 0,
+                    baseItemClassification: 9,
+                    baseItemFixedValue: 900,
+                    premiumRate: 910,
+                    roundingMethod: 3
+                },
+                {
+                    calculationFormulaClassification: 2,
+                    masterUseCode: '0000000002',
+                    historyID: nts.uk.util.randomId(),
+                    basicCalculationFormula: 1500,
+                    standardAmountClassification: 1,
+                    standardFixedValue: 1600,
+                    targetItemCodeList: ['0003', '0004'],
+                    attendanceItem: '0002',
+                    coefficientClassification: 1,
+                    coefficientFixedValue: 1700,
+                    formulaType: 1,
+                    roundingResult: 1800,
+                    adjustmentClassification: 1,
+                    baseItemClassification: 8,
+                    baseItemFixedValue: 1900,
+                    premiumRate: 1910,
+                    roundingMethod: 2
+                },
+                {
+                    calculationFormulaClassification: 0,
+                    masterUseCode: '0000000003',
+                    historyID: nts.uk.util.randomId(),
+                    basicCalculationFormula: 2500,
+                    standardAmountClassification: 1,
+                    standardFixedValue: 2600,
+                    targetItemCodeList: ['0005', '0006'],
+                    attendanceItem: '0003',
+                    coefficientClassification: 2,
+                    coefficientFixedValue: 2700,
+                    formulaType: 2,
+                    roundingResult: 2800,
+                    adjustmentClassification: 1,
+                    baseItemClassification: 7,
+                    baseItemFixedValue: 2900,
+                    premiumRate: 2910,
+                    roundingMethod: 1
+                },
+                {
+                    calculationFormulaClassification: 0,
+                    masterUseCode: '0000000004',
+                    historyID: nts.uk.util.randomId(),
+                    basicCalculationFormula: 3500,
+                    standardAmountClassification: 1,
+                    standardFixedValue: 3600,
+                    targetItemCodeList: ['0007', '0008'],
+                    attendanceItem: '0004',
+                    coefficientClassification: 2,
+                    coefficientFixedValue: 3700,
+                    formulaType: 2,
+                    roundingResult: 3800,
+                    adjustmentClassification: 1,
+                    baseItemClassification: 6,
+                    baseItemFixedValue: 3900,
+                    premiumRate: 3910,
+                    roundingMethod: 0
+                }
+            ]
+            self.basicCalculationFormulaList.push.apply(self.basicCalculationFormulaList, data.map(item => new model.BasicCalculationFormula(item)));
         }
 
         changeToNewMode() {
@@ -259,6 +351,20 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         doConfiguration () {
             let self = this;
         };
+        setAllCalculationFormula () {
+            let self = this;
+            let basicCalculationFormulaList = self.basicCalculationFormulaList();
+            basicCalculationFormulaList = basicCalculationFormulaList.map(item => item['calculationFormulaClassification'](model.CALCULATION_FORMULA_CLS.FORMULA));
+            self.basicCalculationFormulaList(basicCalculationFormulaList);
+        }
+
+        setAllFixedValue () {
+            let self = this;
+            let basicCalculationFormulaList = self.basicCalculationFormulaList();
+            basicCalculationFormulaList = basicCalculationFormulaList.map(item => item['calculationFormulaClassification'](model.CALCULATION_FORMULA_CLS.FIXED_VALUE));
+            self.basicCalculationFormulaList(basicCalculationFormulaList);
+
+        }
     }
 
 }

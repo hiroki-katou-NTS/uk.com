@@ -1,33 +1,145 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<!--<div style="padding: 5px">-->
-		<!--<div id="tab-panel-screen-d"-->
-			<!--data-bind="ntsTabPanel: { dataSource: screenDtabs, active: screenDselectedTab}">-->
-			<!--<div class="tab-content-1">-->
-				<!---->
-			<!--</div>-->
-			<!--<div class="tab-content-2">-->
-				<!---->
-			<!--</div>-->
-			<!--<div class="tab-content-3">-->
-				<!---->
-			<!--</div>-->
-			<!--<div class="tab-content-4">-->
-				<!---->
-			<!--</div>-->
-			<!--<div class="tab-content-5">-->
-				<!---->
-			<!--</div>-->
-			<!--<div class="tab-content-6">-->
-				<!---->
-			<!--</div>-->
-			<!--<div class="tab-content-7">-->
-				<!---->
-			<!--</div>-->
-		<!--</div>-->
-	<!--</div>-->
-	Screen D
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <div>
+        <div class = "tab-row" data-bind="with: $vm.selectedFormula">
+            <div style="width: 130px; display: inline-block;"
+                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
+            <div style="display: inline-block;"
+                 data-bind="text: formulaCode"></div>
+            <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
+                  data-bind="text: formulaName"></span>
+        </div>
+        <div id="tab-panel-screen-d" class = "tab-row"
+             data-bind="ntsTabPanel: { dataSource: screenDTabs, active: screenDSelectedTab}">
+            <div class="tab-content-1">
+                <div class = "tab-panel-row">
+                    <div class="tab-panel-col-1" id="D2_1" data-bind="ntsListBox: {
+                        options: lineItemCategoryItem,
+                        optionsValue: 'value',
+                        optionsText: 'name',
+                        multiple: false,
+                        value: selectedCategoryValue,
+                        enable: true,
+                        rows: 8,
+                        columns: [
+                            { key: 'name', length: 13 }
+                        ]}">
+                    </div>
+                    <div class = "large-right-caret-container" style="display: inline-block">
+                        <span class="caret-right outline large-right-caret"></span>
+                    </div>
+                    <div class = "tab-panel-col-2">
+                        <div style="display: inline-block; ">
+                            <i class = "search-icon"></i>
+                            <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                            searchMode: 'highlight',
+                            targetKey: 'itemNameCd',
+                            comId: 'D2_3',
+                            items: statementItemList,
+                            selectedKey: 'code',
+                            fields: ['itemNameCd', 'name'],
+                            mode: 'listbox'}"></div>
+                        </div>
+                        <div id="D2_3" data-bind="ntsListBox: {
+                            options: statementItemList,
+                            optionsValue: 'itemNameCd',
+                            optionsText: 'name',
+                            multiple: false,
+                            value: selectedStatementItemCode,
+                            enable: true,
+                            rows: 8,
+                            columns: [
+                                { key: 'itemNameCd', length: 4 },
+                                { key: 'name', length: 8 }
+                            ]}">
+                        </div>
+                        <div>
+                            <button style = "width: 220px;" class = "caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                        </div>
+                    </div>
+                    <div class="panel panel-gray-bg tab-panel-col-3">
+                        <div style = "margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
+                        <hr style = "margin-top:15px;"></hr>
+                        <div data-bind = "text: displayItemNote"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content-2">
+                <div class = "tab-panel-row">
+                    <div class="tab-panel-col-1" id="D5_1" data-bind="ntsListBox: {
+                        options: unitPriceItemCategoryItem,
+                        optionsValue: 'value',
+                        optionsText: 'name',
+                        multiple: false,
+                        value: selectedPriceItemCategoryValue,
+                        enable: true,
+                        rows: 8,
+                        columns: [
+                            { key: 'name', length: 13 }
+                        ]}">
+                    </div>
+                    <div class = "large-right-caret-container" style="display: inline-block">
+                        <span class="caret-right outline large-right-caret"></span>
+                    </div>
+                    <div class = "tab-panel-col-2">
+                        <div style="display: inline-block; ">
+                            <i class = "search-icon"></i>
+                            <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                            searchMode: 'highlight',
+                            targetKey: 'code',
+                            comId: 'D5_3',
+                            items: unitPriceItemList,
+                            selectedKey: 'code',
+                            fields: ['code', 'name'],
+                            mode: 'listbox'}"></div>
+                        </div>
+                        <div id="D5_3" data-bind="ntsListBox: {
+                            options: unitPriceItemList,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            multiple: false,
+                            value: selectedUnitPriceItemCode,
+                            enable: true,
+                            rows: 8,
+                            columns: [
+                                { key: 'code', length: 4 },
+                                { key: 'name', length: 8 }
+                            ]}">
+                        </div>
+                        <div>
+                            <button style = "width: 220px;" class = "caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                        </div>
+                    </div>
+                    <div class="panel panel-gray-bg tab-panel-col-3">
+                        <div style = "margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
+                        <hr style = "margin-top:15px;"></hr>
+                        <div data-bind = "text: displayItemNote"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content-3">
+                TAB 3
+            </div>
+            <div class="tab-content-4">
+                TAB 4
+            </div>
+            <div class="tab-content-5">
+                TAB 5
+            </div>
+            <div class="tab-content-6">
+                TAB 6
+            </div>
+            <div class="tab-content-7">
+                TAB 7
+            </div>
+        </div>
+        <div class = "tab-row">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 </ui:composition>

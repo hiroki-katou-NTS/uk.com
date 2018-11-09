@@ -4,6 +4,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceName;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -32,6 +33,12 @@ public class UnitPriceNameWebService extends WebService {
     @Path("getUnitPriceData/{cid}/{code}")
     public SalaryPerUnitPriceDataDto getStatementItemData(@PathParam("cid") String cid, @PathParam("code") String code) {
         return this.unitPriceFinder.getSalaryPerUnitPriceById(cid, code).orElse(null);
+    }
+
+    @POST
+    @Path("getUnitPriceDataByCode/{code}")
+    public SalaryPerUnitPriceDataDto getStatementItemDataByCode(@PathParam("code") String code) {
+        return this.unitPriceFinder.getSalaryPerUnitPriceById(AppContexts.user().companyId(), code).orElse(null);
     }
 
     @POST

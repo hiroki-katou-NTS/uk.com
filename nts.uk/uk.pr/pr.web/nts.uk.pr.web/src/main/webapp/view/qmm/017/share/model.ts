@@ -2,16 +2,6 @@ module nts.uk.pr.view.qmm017.share.model {
 
     import getText = nts.uk.resource.getText;
 
-    export enum FORMULA_SETTING_METHOD {
-        SIMPLE_SETTING = 0,
-        DETAIL_SETTING = 1
-    }
-
-    export enum NESTED_USE_CLS {
-        NOT_USE = 0,
-        USE = 1
-    }
-
     export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1,
@@ -26,55 +16,38 @@ module nts.uk.pr.view.qmm017.share.model {
         DELETE = 0,
         UPDATE = 1
     }
-    // 要素設定
-    export enum ELEMENT_SETTING {
-        ONE_DIMENSION = 0,
-        TWO_DIMENSION = 1,
-        THREE_DIMENSION = 2,
-        QUALIFICATION = 3,
-        FINE_WORK = 4
-    }
-    // マスタ数値区分
-    export enum MASTER_NUMERIC_INFORMATION {
-        MASTER_FIELD = 0,
-        NUMERIC_ITEM = 1
-    }
-    // 要素種類
+
     export enum ELEMENT_TYPE {
-        M001 = '雇用',
-        M002 = '部門',
-        M003 = '分類',
-        M004 = '職位',
-        M005 = '給与分類',
-        M006 = '資格',
-        M007 = '精皆勤レベル',
-        N001 = '年齢',
-        N002 = '勤続年数',
-        N003 = '家族人数',
+        EMPLOYMENT = 'M001',
+        DEPARTMENT = 'M002',
+        CLASSIFICATION = 'M003',
+        JOB_TITLE = 'M004',
+        SALARY_CLASSIFICATION = 'M005',
+        QUALIFICATION = 'M006',
+        FINE_WORK = 'M007',
+        AGE = 'N001',
+        SERVICE_YEAR = 'N002',
+        FAMILY_MEMBER = 'N003'
     }
 
-    export enum MASTER_BRANCH_USE {
-        NOT_USE = 0,
-        USE = 1
-    }
-
-    export enum MASTER_USE {
-        EMPLOYMENT = 0,
-        DEPARTMENT = 1,
-        CLASSIFICATION = 2,
-        JOB_TITLE = 3,
-        SALARY_CLASSIFICATION = 4,
-        SALARY_FROM = 5
-    }
-
-    export function getElementEnumModel () {
+    export function getElementTypeItemModel () {
         return [
-            new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, '一次元'),
-            new EnumModel(ELEMENT_SETTING.TWO_DIMENSION, '二次元'),
-            new EnumModel(ELEMENT_SETTING.THREE_DIMENSION, '三次元'),
-            new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
-            new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+            new ItemModel(ELEMENT_TYPE.EMPLOYMENT, '雇用'),
+            new ItemModel(ELEMENT_TYPE.DEPARTMENT, '部門'),
+            new ItemModel(ELEMENT_TYPE.CLASSIFICATION, '分類'),
+            new ItemModel(ELEMENT_TYPE.JOB_TITLE, '職位'),
+            new ItemModel(ELEMENT_TYPE.SALARY_CLASSIFICATION, '給与分類'),
+            new ItemModel(ELEMENT_TYPE.QUALIFICATION, '資格'),
+            new ItemModel(ELEMENT_TYPE.FINE_WORK, '精皆勤レベル'),
+            new ItemModel(ELEMENT_TYPE.AGE, '年齢'),
+            new ItemModel(ELEMENT_TYPE.SERVICE_YEAR, '勤続年数'),
+            new ItemModel(ELEMENT_TYPE.FAMILY_MEMBER, '家族人数'),
         ];
+    }
+
+    export enum FORMULA_SETTING_METHOD {
+        SIMPLE_SETTING = 0,
+        DETAIL_SETTING = 1
     }
 
     export function getFormulaSettingMethodEnumModel () {
@@ -84,11 +57,67 @@ module nts.uk.pr.view.qmm017.share.model {
         ];
     }
 
+    export enum NESTED_USE_CLS {
+        NOT_USE = 0,
+        USE = 1
+    }
+
     export function getNestedUseClsEnumModel () {
         return [
             new EnumModel(NESTED_USE_CLS.USE, '利用可能'),
             new EnumModel(NESTED_USE_CLS.NOT_USE, '利用不可')
         ];
+    }
+
+    // 要素設定
+    export enum ELEMENT_SETTING {
+        ONE_DIMENSION = 0,
+        TWO_DIMENSION = 1,
+        THREE_DIMENSION = 2,
+        QUALIFICATION = 3,
+        FINE_WORK = 4
+    }
+    export function getElementSettingEnumModel () {
+        return [
+            new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, '一次元'),
+            new EnumModel(ELEMENT_SETTING.TWO_DIMENSION, '二次元'),
+            new EnumModel(ELEMENT_SETTING.THREE_DIMENSION, '三次元'),
+            new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
+            new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+        ];
+    }
+    // マスタ数値区分
+    export enum MASTER_NUMERIC_INFORMATION {
+        MASTER_FIELD = 0,
+        NUMERIC_ITEM = 1
+    }
+
+    export function getMasterNumericInfoEnumModel () {
+        return [
+            new EnumModel(MASTER_NUMERIC_INFORMATION.MASTER_FIELD, 'マスタ項目'),
+            new EnumModel(MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM, '数値項目')
+        ];
+    }
+
+    export enum MASTER_BRANCH_USE {
+        NOT_USE = 0,
+        USE = 1
+    }
+
+    export function getMasterBranchUseEnumModel () {
+        return [
+            new EnumModel(MASTER_BRANCH_USE.NOT_USE, '利用しない'),
+            new EnumModel(MASTER_BRANCH_USE.USE, '利用する')
+        ];
+    }
+
+    export enum MASTER_USE {
+        EMPLOYMENT = 0,
+        DEPARTMENT = 1,
+        CLASSIFICATION = 2,
+        JOB_TITLE = 3,
+        SALARY_CLASSIFICATION = 4,
+        SALARY_FROM = 5
     }
 
     export function getMasterUseEnumModel () {
@@ -102,12 +131,276 @@ module nts.uk.pr.view.qmm017.share.model {
         ];
     }
 
+    export enum CALCULATION_FORMULA_CLS {
+        FIXED_VALUE = 0,
+        FORMULA = 1,
+        DEFINITION_FORMULA = 2,
+    }
 
-    export function getMasterBranchUseEnumModel () {
+    export function getCalculationFormulaClsEnumModel () {
         return [
-            new EnumModel(MASTER_BRANCH_USE.NOT_USE, '利用しない'),
-            new EnumModel(MASTER_BRANCH_USE.USE, '利用する')
+            new EnumModel(CALCULATION_FORMULA_CLS.FIXED_VALUE, '固定値'),
+            new EnumModel(CALCULATION_FORMULA_CLS.FORMULA, '計算式'),
+            new EnumModel(CALCULATION_FORMULA_CLS.DEFINITION_FORMULA, '既定計算式')
         ];
+    }
+
+    export enum FORMULA_TYPE {
+        CALCULATION_FORMULA_TYPE_1 = 0,
+        CALCULATION_FORMULA_TYPE_2 = 1,
+        CALCULATION_FORMULA_TYPE_3 = 2
+    }
+
+    export function getFormulaTypeEnumModel () {
+        return [
+            new EnumModel(FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1, '計算式タイプ１'),
+            new EnumModel(FORMULA_TYPE.CALCULATION_FORMULA_TYPE_2, '計算式タイプ２'),
+            new EnumModel(FORMULA_TYPE.CALCULATION_FORMULA_TYPE_3, '計算式タイプ３')
+        ];
+    }
+
+    export enum ROUNDING_METHOD {
+        ROUND_OFF = 0,
+        ROUND_UP = 1,
+        TRUNCATION = 2,
+        DO_NOTHING = 3
+    }
+
+    export function getRoundingMethodEnumModel () {
+        return [
+            new EnumModel(ROUNDING_METHOD.ROUND_OFF, '切り上げ'),
+            new EnumModel(ROUNDING_METHOD.ROUND_UP, 'プラス調整'),
+            new EnumModel(ROUNDING_METHOD.TRUNCATION, 'マイナス調整'),
+            new EnumModel(ROUNDING_METHOD.DO_NOTHING, 'プラスマイナス反転')
+        ];
+    }
+
+    export enum ADJUSTMENT_CLASSIFICATION {
+        NOT_ADJUST = 0,
+        PLUS_ADJUST = 1,
+        MINUS_ADJUST = 2,
+        PLUS_MINUS_ADJUST = 3,
+    }
+
+    export function getAdjustmentClsEnumModel () {
+        return [
+            new EnumModel(ADJUSTMENT_CLASSIFICATION.NOT_ADJUST, '調整しない'),
+            new EnumModel(ADJUSTMENT_CLASSIFICATION.PLUS_ADJUST, 'プラス調整'),
+            new EnumModel(ADJUSTMENT_CLASSIFICATION.MINUS_ADJUST, 'マイナス調整'),
+            new EnumModel(ADJUSTMENT_CLASSIFICATION.PLUS_MINUS_ADJUST, 'プラスマイナス反転')
+        ];
+    }
+
+    export enum ROUNDING_RESULT {
+        ROUND_OFF = 0,
+        ROUND_UP = 1,
+        TRUNCATION = 2
+    }
+
+    export function getRoundingResultEnumModel () {
+        return [
+            new EnumModel(ROUNDING_RESULT.ROUND_OFF, '四捨五入'),
+            new EnumModel(ROUNDING_RESULT.ROUND_UP, '切り上げ'),
+            new EnumModel(ROUNDING_RESULT.TRUNCATION, '切り捨て')
+        ];
+    }
+
+    export enum STANDARD_AMOUNT_CLS {
+        FIXED_AMOUNT = 0,
+        PAYMENT_ITEM = 1,
+        DEDUCTION_ITEM = 2,
+        COMPANY_UNIT_PRICE_ITEM = 3,
+        INDIVIDUAL_UNIT_PRICE_ITEM = 4
+    }
+
+    export function getStandardAmountClsEnumModel () {
+        return [
+            new EnumModel(STANDARD_AMOUNT_CLS.FIXED_AMOUNT, '固定金額'),
+            new EnumModel(STANDARD_AMOUNT_CLS.PAYMENT_ITEM, '支給項目'),
+            new EnumModel(STANDARD_AMOUNT_CLS.DEDUCTION_ITEM, '控除項目'),
+            new EnumModel(STANDARD_AMOUNT_CLS.COMPANY_UNIT_PRICE_ITEM, '会社単価項目'),
+            new EnumModel(STANDARD_AMOUNT_CLS.INDIVIDUAL_UNIT_PRICE_ITEM, '個人単価項目')
+        ];
+    }
+
+    export enum COEFFICIENT_CLASSIFICATION {
+        FIXED_VALUE = 0,
+        WORKDAY = 1,
+        WORKDAY_AND_HOLIDAY = 2
+    }
+
+    export function getCoefficientClassificationEnumModel () {
+        return [
+            new EnumModel(COEFFICIENT_CLASSIFICATION.FIXED_VALUE, '固定値'),
+            new EnumModel(COEFFICIENT_CLASSIFICATION.WORKDAY, '出勤日数'),
+            new EnumModel(COEFFICIENT_CLASSIFICATION.WORKDAY_AND_HOLIDAY, '出勤日数＋年休使用数')
+        ];
+    }
+
+    export enum BASE_ITEM_CLASSIFICATION {
+        FIXED_VALUE = 0,
+        STANDARD_DAY = 1,
+        WORKDAY = 2,
+        ATTENDANCE_DAY = 3,
+        ATTENDANCE_DAY_AND_HOLIDAY = 4,
+        REFERENCE_DATE_TIME = 5,
+        SERVICE_DAY_MUL_REFER_TIME = 6,
+        WORKDAY_MUL_REFER_TIME = 7,
+        WORKDAY_AND_HOLIDAY_MUL_REFER_TIME = 8,
+        ATTENDANCE_TIME = 9
+    }
+
+    export function getBaseItemClsEnumModel () {
+        return [
+            new EnumModel(BASE_ITEM_CLASSIFICATION.FIXED_VALUE, '固定値'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.STANDARD_DAY, '基準日数'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.WORKDAY, '要勤務日数'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.ATTENDANCE_DAY, '出勤日数'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.ATTENDANCE_DAY_AND_HOLIDAY, '出勤日数＋年休使用数'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.REFERENCE_DATE_TIME, '基準日数×基準時間'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.SERVICE_DAY_MUL_REFER_TIME, '要勤務日数×基準時間'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.WORKDAY_MUL_REFER_TIME, '出勤日数×基準時間'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.WORKDAY_AND_HOLIDAY_MUL_REFER_TIME, '（出勤日数＋年休使用数）×基準時間'),
+            new EnumModel(BASE_ITEM_CLASSIFICATION.ATTENDANCE_TIME, '出勤時間'),
+        ];
+    }
+
+    export enum LINE_ITEM_CATEGORY {
+        PAYMENT_ITEM = 0,
+        DEDUCTION_ITEM = 1,
+        ATTENDANCE_ITEM = 2
+    }
+
+    export function getLineItemCategoryEnumModel () {
+        return [
+            new EnumModel(LINE_ITEM_CATEGORY.PAYMENT_ITEM, '支給項目'),
+            new EnumModel(LINE_ITEM_CATEGORY.DEDUCTION_ITEM, '控除項目'),
+            new EnumModel(LINE_ITEM_CATEGORY.ATTENDANCE_ITEM, '勤怠項目')
+        ];
+    }
+
+    export function getLineItemCategoryItem () {
+        return ko.observableArray(getLineItemCategoryEnumModel());
+    }
+
+    export enum UNIT_PRICE_ITEM_CATEGORY {
+        COMPANY_UNIT_PRICE_ITEM = 0,
+        INDIVIDUAL_UNIT_PRICE_ITEM = 1
+    }
+
+    export function getUnitPriceItemCategoryEnumModel () {
+        return [
+            new EnumModel(UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM, '会社単価項目'),
+            new EnumModel(UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM, '個人単価項目')
+        ];
+    }
+
+    export function getUnitPriceItemCategoryItem () {
+        return ko.observableArray(getUnitPriceItemCategoryEnumModel());
+    }
+
+    export enum FUNCTION_CLASSIFICATION {
+        ALL = 0,
+        TIME_FUNCTION = 1,
+        PAYROLL_SYSTEM = 2,
+        LOGIC = 3,
+        STRING_OPERATION = 4,
+        DATETIME = 5,
+        MATHEMATICS = 6
+    }
+
+    export function getFunctionClassificationEnumModel () {
+        return [
+            new EnumModel(FUNCTION_CLASSIFICATION.ALL, '全て'),
+            new EnumModel(FUNCTION_CLASSIFICATION.TIME_FUNCTION, '勤怠系の関数'),
+            new EnumModel(FUNCTION_CLASSIFICATION.PAYROLL_SYSTEM, '給与系の関数'),
+            new EnumModel(FUNCTION_CLASSIFICATION.LOGIC, '論理'),
+            new EnumModel(FUNCTION_CLASSIFICATION.STRING_OPERATION, '文字列操作'),
+            new EnumModel(FUNCTION_CLASSIFICATION.DATETIME, '日付/時刻'),
+            new EnumModel(FUNCTION_CLASSIFICATION.MATHEMATICS, '数学')
+        ];
+    }
+
+    export function getFunctionClassificationItem () {
+        return ko.observableArray(getFunctionClassificationEnumModel());
+    }
+
+    export enum SYSTEM_VARIABLE_CLASSIFICATION {
+        ALL = 0
+    }
+
+    export function getSystemVariableClassificationEnumModel () {
+        return [
+            new EnumModel(FUNCTION_CLASSIFICATION.ALL, '全て')
+        ];
+    }
+
+    export function getSystemVariableClassificationItem () {
+        return ko.observableArray(getSystemVariableClassificationEnumModel());
+    }
+
+    export enum FUNCTION_LIST {
+        CONDITIONAL_EXPRESSION = 0,
+        AND = 1,
+        OR = 2,
+        ROUND_OFF = 3,
+        TRUNCATION = 4,
+        ROUND_UP = 5,
+        MAX_VALUE = 6,
+        MIN_VALUE = 7,
+        NUMBER_OF_FAMILY_MEMBER = 8,
+        ADDITIONAL_YEARMONTH = 9,
+        YEAR_EXTRACTION = 10,
+        MONTH_EXTRACTION = 11
+    }
+
+    export function getFunctionListEnumModel () {
+        return [
+            new EnumModel(FUNCTION_LIST.CONDITIONAL_EXPRESSION, '条件式'),
+            new EnumModel(FUNCTION_LIST.AND, 'かつ'),
+            new EnumModel(FUNCTION_LIST.OR, 'または'),
+            new EnumModel(FUNCTION_LIST.ROUND_OFF, '四捨五入'),
+            new EnumModel(FUNCTION_LIST.TRUNCATION, '切り捨て'),
+            new EnumModel(FUNCTION_LIST.ROUND_UP, '切り上げ'),
+            new EnumModel(FUNCTION_LIST.MAX_VALUE, '最大値'),
+            new EnumModel(FUNCTION_LIST.MIN_VALUE, '最小値'),
+            new EnumModel(FUNCTION_LIST.NUMBER_OF_FAMILY_MEMBER, '家族人数'),
+            new EnumModel(FUNCTION_LIST.ADDITIONAL_YEARMONTH, '年月加算'),
+            new EnumModel(FUNCTION_LIST.YEAR_EXTRACTION, '年抽出'),
+            new EnumModel(FUNCTION_LIST.MONTH_EXTRACTION, '月抽出')
+        ];
+    }
+
+    export function getFunctionListItem () {
+        return ko.observableArray(getFunctionListEnumModel());
+    }
+
+    export enum SYSTEM_VARIABLE_LIST {
+        SYSTEM_YMD_DATE = 0,
+        SYSTEM_YM_DATE = 1,
+        SYSTEM_Y_DATE = 2,
+        PROCESSING_DATE = 3,
+        PROCESSING_YEAR = 4,
+        REFERENCE_TIME = 5,
+        STANDARD_DAY = 6,
+        WORKDAY = 7
+    }
+
+    export function getSystemVariableListEnumModel () {
+        return [
+            new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE, 'システム日付（年月日）'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YM_DATE, 'システム日付（年月）'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_Y_DATE, 'システム日付（年）'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_DATE, '処理年月'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR, '処理年'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.REFERENCE_TIME, '基準時間'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.STANDARD_DAY, '基準日数'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.WORKDAY, '要勤務日数')
+        ];
+    }
+
+    export function getSystemVariableListItem () {
+        return ko.observableArray(getSystemVariableListEnumModel());
     }
 
     export class EnumModel {
@@ -153,7 +446,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
             this.historyID(params ? params.historyID : null);
             this.displayMasterUse = ko.computed(function() {
-                return this.masterUseItem()[this.masterUse()].name;
+                return this.masterUse() != null ? this.masterUseItem()[this.masterUse()].name : null;
             }, this);
             this.displayMasterBranchUse = ko.computed(function() {
                 return this.masterBranchUseItem()[this.masterBranchUse()].name;
@@ -189,7 +482,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.nestedAtr(params ? params.nestedAtr : NESTED_USE_CLS.NOT_USE);
             this.history(params? params.history : []);
             this.displayNestedAtr = ko.computed(function() {
-                return this.nestedAtrItem()[this.nestedAtr()].name;
+                return this.nestedAtrItem() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
             }, this);
             this.displaySettingMethod = ko.computed(function() {
                 return this.formulaSettingMethodItem()[this.settingMethod()].name;
@@ -255,6 +548,7 @@ module nts.uk.pr.view.qmm017.share.model {
 
     }
     export class BasicCalculationFormula {
+        // item
         calculationFormulaClassification: KnockoutObservable<number> = ko.observable(null);
         masterUseCode: KnockoutObservable<string> = ko.observable(null);
         historyID: KnockoutObservable<string> = ko.observable(null);
@@ -272,15 +566,22 @@ module nts.uk.pr.view.qmm017.share.model {
         baseItemFixedValue: KnockoutObservable<number> = ko.observable(null);
         premiumRate: KnockoutObservable<number> = ko.observable(null);
         roundingMethod: KnockoutObservable<number> = ko.observable(null);
+
+        // control item
+        calculationFormulaClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getCalculationFormulaClsEnumModel());
+        calculationFormulaFixedFormulaItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getCalculationFormulaClsEnumModel().slice(0, 2));
+        formulaTypeItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getFormulaTypeEnumModel());
+        // display item
+        displayFormulaType: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IBasicCalculationFormula) {
             this.masterUseCode(params ? params.masterUseCode : null);
-            this.calculationFormulaClassification(params ? params.calculationFormulaClassification : null);
+            this.calculationFormulaClassification(params ? params.calculationFormulaClassification : CALCULATION_FORMULA_CLS.FIXED_VALUE);
             this.basicCalculationFormula(params ? params.basicCalculationFormula : null);
             this.premiumRate(params ? params.premiumRate : null);
             this.roundingMethod(params ? params.roundingMethod : null);
             this.roundingResult(params ? params.roundingResult : null);
             this.adjustmentClassification(params ? params.adjustmentClassification : null);
-            this.formulaType(params ? params.formulaType : null);
+            this.formulaType(params ? params.formulaType : FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1);
             this.standardAmountClassification(params ? params.standardAmountClassification : null);
             this.standardFixedValue(params ? params.standardFixedValue : null);
             this.targetItemCodeList(params ? params.targetItemCodeList : []);
@@ -290,6 +591,9 @@ module nts.uk.pr.view.qmm017.share.model {
             this.coefficientClassification(params ? params.coefficientClassification : null);
             this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
             this.historyID(params ? params.historyID : null);
+            this.displayFormulaType = ko.computed(function() {
+                return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
+            }, this);
         }
     }
 
@@ -405,8 +709,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.masterNumericClassification(params ? params.masterNumericClassification : null);
             this.fixedElement(params ? params.fixedElement : null);
             this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
-            let fixedElementValue = this.fixedElement();
-            this.elementName(ELEMENT_TYPE[fixedElementValue]);
+            this.elementName(getElementTypeItemModel[this.fixedElement()].name);
         }
     }
 

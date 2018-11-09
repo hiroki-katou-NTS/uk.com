@@ -9,11 +9,21 @@
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="../d/qmm017.d.vm.js"/>
+        <com:scriptfile path="../d/qmm017.d.service.js"/>
         <com:scriptfile path="qmm017.a.vm.js"/>
         <com:stylefile path="qmm017.a.style.css"/>
         <com:ValidatorScript>
             nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaCode
             nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaName
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaElement
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.MasterUseCode
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.FixedAmount
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.PremiumRate
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.BasePriceFixedAmount
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.TargetItemCode
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.CoefficientFixedValue
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.BaseItemFixedValue
         </com:ValidatorScript>
         <com:scriptfile path="qmm017.a.start.js"/>
 
@@ -185,7 +195,9 @@
                             </com:ko-if>
                         </com:ko-if>
                         <com:ko-if bind="selectedFormula().settingMethod() == 1">
-                            <ui:include src="../d/index.xhtml"/>
+                            <div data-bind = "with: screenDViewModel">
+                                <ui:include src="../d/index.xhtml"/>
+                            </div>
                         </com:ko-if>
                     </div>
                 </div>
