@@ -135,7 +135,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	@SneakyThrows
 	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code) {
 		List<KfnmtAttendanceDisplay> lstKfnmtAttendanceDisplay = new ArrayList<>();
-		String sqlJDBC1 = "select * from KFNMT_ATTENDANCE_DISPLAY where CD = ? and ITEM_CD = ? ORDER BY ORDER_NO";
+		String sqlJDBC1 = "select * from KFNMT_ATTENDANCE_DISPLAY where CID = ? and ITEM_CD = ? ORDER BY ORDER_NO";
 		try (PreparedStatement statement1 = this.connection().prepareStatement(sqlJDBC1)) {
 			statement1.setString(1, companyId);
 			statement1.setString(2, code);
@@ -153,7 +153,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		}
 
 		List<KfnmtPrintRemarkCont> lstKfnmtPrintRemarkCont = new ArrayList<>();
-		String sqlJDBC2 = "select * from KFNMT_PRINT_REMARK_CONT where CD = ? and ITEM_CD = ?";
+		String sqlJDBC2 = "select * from KFNMT_PRINT_REMARK_CONT where CID = ? and ITEM_CD = ?";
 		try (PreparedStatement statement2 = this.connection().prepareStatement(sqlJDBC2)) {
 			statement2.setString(1, companyId);
 			statement2.setString(2, code);
@@ -174,7 +174,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 				.stream().collect(Collectors.groupingBy(item -> item.getId().getItemCode()));
 		Map<String, List<KfnmtPrintRemarkCont>> mapKfnmtPrintRemarkCont = lstKfnmtPrintRemarkCont
 				.stream().collect(Collectors.groupingBy(item -> item.getId().getItemCode()));
-		String sqlJDBC3 = "select * from KFNMT_ITEM_WORK_SCHEDULE where CD = ? and ITEM_CD = ?";
+		String sqlJDBC3 = "select * from KFNMT_ITEM_WORK_SCHEDULE where CID = ? and ITEM_CD = ?";
 		try (PreparedStatement statement3 = this.connection().prepareStatement(sqlJDBC3)) {
 			statement3.setString(1, companyId);
 			statement3.setString(2, code);
