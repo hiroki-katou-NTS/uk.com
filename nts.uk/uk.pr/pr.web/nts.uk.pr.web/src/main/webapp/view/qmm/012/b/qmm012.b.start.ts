@@ -9,7 +9,9 @@ module nts.uk.pr.view.qmm012.b {
 
             __viewContext.bind(screenModel);
 
-            $("#B3_3").focus();
+			setTimeout(function(){
+                $("#B3_3").focus();
+            }, 200);
         });
     });
 }
