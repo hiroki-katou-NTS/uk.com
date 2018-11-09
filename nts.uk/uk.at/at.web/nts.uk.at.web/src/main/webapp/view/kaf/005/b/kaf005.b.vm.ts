@@ -156,6 +156,13 @@ module nts.uk.at.view.kaf005.b {
                                     screenId: 'B', 
                                     queryString: 'apptype=0_'+data.overtimeAtr};
                     nts.uk.at.view.kaf000.b.service.writeLog(paramLog);
+                    //get pg-name
+                    let namePath = nts.uk.text.format("sys/portal/standardmenu/findPgName/{0}/{1}/{2}", 'KAF005', 'B', 'overworkatr='+data.overtimeAtr);
+                    nts.uk.request.ajax("com", namePath).done((value) => {
+                        if(!nts.uk.util.isNullOrEmpty(value)){
+                            $("#pg-name").text(value);
+                        }   
+                    });
                     self.initData(data);
                     self.checkRequiredOvertimeHours();
                     //Check work content Changed
