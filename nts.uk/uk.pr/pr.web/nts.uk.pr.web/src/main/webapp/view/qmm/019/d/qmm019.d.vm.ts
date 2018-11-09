@@ -110,10 +110,11 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            $("#fixed-table").ntsFixedTable({height: 139, width: 272});
+            $("#fixed-table").ntsFixedTable({height: 139});
             // let params: IParams = windows.getShared("QMM019D_PARAMS");
             let params: IParams = <IParams>{};
             params.itemNameCode = "0003";
+            params.itemNameCdExcludeList = ["0003", "0031"];
             params.printSet = shareModel.StatementPrintAtr.DO_NOT_PRINT;
             params.yearMonth = 201802;
             params.workingAtr = null;
@@ -142,7 +143,12 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             params.commonAmount = null;
             self.params = params;
             self.condition42();
-            service.getStatementItem(self.categoryAtr).done((data: Array<IStatementItem>) => {
+            let dto = {
+                categoryAtr: self.categoryAtr,
+                itemNameCdSelected: self.params.itemNameCode,
+                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+            };
+            service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen();
             });
@@ -461,7 +467,12 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         register() {
             let self = this;
             block.invisible();
-            service.getStatementItem(self.categoryAtr).done((data: Array<IStatementItem>) => {
+            let dto = {
+                categoryAtr: self.categoryAtr,
+                itemNameCdSelected: self.params.itemNameCode,
+                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+            };
+            service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
             }).fail(err => {
                 alertError(err);
@@ -619,6 +630,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         printSet: number;
         yearMonth: number;
         itemNameCode: string;
+        itemNameCdExcludeList: Array<string>;
         workingAtr: number;
         totalObject: number;
         calcMethod: number;

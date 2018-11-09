@@ -52,11 +52,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 					+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_CUSTOM_BY_CTG = SELECT_CUSTOM
 					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
-					+ ORDER_BY_ITEM_NAME_CD_ASC;
-	private static final String SELECT_CUSTOM_BY_CTG_AND_EX_CODE = SELECT_CUSTOM
-					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
-					+ " AND f.statementItemPk.itemNameCd NOT IN :itemNameCdExs "
-					+ ORDER_BY_ITEM_NAME_CD_ASC;
+                    + " AND f.deprecatedAtr = :deprecatedAtr ";
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {
@@ -112,19 +108,33 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	}
 
 	@Override
-	public List<StatementItemCustom> getItemCustomByCtgAndExcludeCodes(String cid, int categoryAtr, List<String> itemNameCdExs) {
-		TypedQueryWrapper<Object[]> typeQuery = null;
-		if (itemNameCdExs == null || itemNameCdExs.isEmpty()) {
-			typeQuery = this.queryProxy().query(SELECT_CUSTOM_BY_CTG, Object[].class)
-					.setParameter("cid", cid)
-					.setParameter("categoryAtr", categoryAtr);
-		} else {
-			typeQuery = this.queryProxy().query(SELECT_CUSTOM_BY_CTG_AND_EX_CODE, Object[].class)
-					.setParameter("cid", cid)
-					.setParameter("categoryAtr", categoryAtr)
-					.setParameter("itemNameCdExs", itemNameCdExs);
+	public List<StatementItemCustom> getItemCustomByCtgAndExcludeCodes(String cid, int categoryAtr, int deprecatedAtr,
+                                                                       List<String> itemNameCdFixedList,
+																	   String itemNameCdSelected,
+																	   List<String> itemNameCdExList) {
+	    boolean hasItemNameCdFixedList = itemNameCdFixedList != null && !itemNameCdFixedList.isEmpty();
+        boolean hasItemNameCdExList = itemNameCdExList != null && !itemNameCdExList.isEmpty();
+		TypedQueryWrapper<Object[]> typeQuery;
+        StringBuilder builder = new StringBuilder();
+        builder.append(SELECT_CUSTOM_BY_CTG);
+		if(hasItemNameCdFixedList){
+            builder.append(" AND f.statementItemPk.itemNameCd NOT IN :itemNameCdFixedList ");
+        }
+        if(hasItemNameCdExList){
+            builder.append(" AND (f.statementItemPk.itemNameCd NOT IN :itemNameCdExList OR f.statementItemPk.itemNameCd = :itemNameCdSelected) ");
+        }
+        builder.append(ORDER_BY_ITEM_NAME_CD_ASC);
+        typeQuery = this.queryProxy().query(builder.toString(), Object[].class)
+                .setParameter("cid", cid)
+                .setParameter("categoryAtr", categoryAtr)
+				.setParameter("deprecatedAtr", deprecatedAtr);
+		if (hasItemNameCdFixedList) {
+			typeQuery.setParameter("itemNameCdFixedList", itemNameCdFixedList);
 		}
-
+		if (hasItemNameCdExList) {
+			typeQuery.setParameter("itemNameCdExList", itemNameCdExList)
+					.setParameter("itemNameCdSelected", itemNameCdSelected);
+		}
 		List<StatementItemCustom> result = typeQuery
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
 						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "",
