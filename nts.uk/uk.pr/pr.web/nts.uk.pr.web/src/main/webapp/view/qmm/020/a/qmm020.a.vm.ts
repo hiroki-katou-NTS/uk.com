@@ -31,7 +31,5 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
             return dfd.promise();
         }
 
-
-
     }
 }

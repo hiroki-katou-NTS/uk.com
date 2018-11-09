@@ -46,32 +46,18 @@ module nts.uk.pr.view.qmm020.a {
                         viewmodelD.enableEditHisButton(true);
                         viewmodelD.enableAddHisButton(true);
                     });
+                }else if(data.masterUse === 1 && data.usageMaster === 2){
+                    viewmodelE.initScreen(null);
+                }else if(data.masterUse === 1 && data.usageMaster === 3){
+                    viewmodelF.initScreen(null);
+                }else if(data.masterUse === 1 && data.usageMaster === 4){
+                    viewmodelG.initScreen(null);
                 }
+            });
+            $(".tab-h-sidebar").click(function() {
 
             });
-            /*$(".tab-b-sidebar").click(function() {
-                viewmodelB.startPage().done(function() {
-                    nts.uk.ui.errors.clearAll();
-                    viewmodelB.enableEditHisButton(true);
-                    viewmodelB.enableAddHisButton(true);
-                });
-            });
-
-            $(".tab-c-sidebar").click(function() {
-                viewmodelC.startPage().done(function() {
-                    nts.uk.ui.errors.clearAll();
-                    viewmodelC.enableEditHisButton(true);
-                    viewmodelC.enableAddHisButton(true);
-                });
-            });
-
-            $(".tab-d-sidebar").click(function() {
-                viewmodelD.startPage().done(function() {
-                    nts.uk.ui.errors.clearAll();
-                    viewmodelD.enableEditHisButton(true);
-                    viewmodelD.enableAddHisButton(true);
-                });
-            });*/
+            
 
         });
 

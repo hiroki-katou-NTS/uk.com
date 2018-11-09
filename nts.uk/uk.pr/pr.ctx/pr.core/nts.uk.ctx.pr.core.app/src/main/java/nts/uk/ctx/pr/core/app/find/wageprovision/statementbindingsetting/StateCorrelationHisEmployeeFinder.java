@@ -66,12 +66,12 @@ public class StateCorrelationHisEmployeeFinder {
                 EmpCdNameImportDto employee = listEmployee.stream().filter(o ->o.getCode().equals(item.getMasterCode().v())).findFirst().get();
 
                 List<StatementLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
-                Optional<StatementLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(item.getSalaryCode())).findFirst();
+                Optional<StatementLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(item.getSalaryCode().get().v())).findFirst();
                 if(salaryLayout.isPresent()){
                     salaryCode = salaryLayout.get().getStatementCode();
                     salaryLayoutName = salaryLayout.get().getStatementName();
                 }
-                Optional<StatementLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(item.getBonusCode())).findFirst();
+                Optional<StatementLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(item.getBonusCode().get().v())).findFirst();
                 if(bonusLayout.isPresent()){
                     bonusCode = bonusLayout.get().getStatementCode();
                     bonusLayoutName = bonusLayout.get().getStatementName();
