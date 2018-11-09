@@ -6,7 +6,6 @@ import nts.uk.shr.com.enumcommon.Abolition;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
