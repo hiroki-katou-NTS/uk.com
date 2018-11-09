@@ -25,6 +25,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         proportionalDivisionRatioSetAtrSelected: KnockoutObservable<shareModel.ItemModel>;
 
         params: IParams;
+        yearMonth: number;
         dataScreen: KnockoutObservable<Params>;
         categoryAtrText: KnockoutObservable<string>;
         paymentItemSet: KnockoutObservable<PaymentItemSet>;
@@ -79,6 +80,11 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             });
 
             self.dataScreen().calcMethod.subscribe(value => {
+                self.condition12(self.paymentItemSet().taxAtr(), value);
+                self.condition13(self.paymentItemSet().taxAtr(), value);
+                self.condition14(value);
+                self.condition15(value);
+                self.condition16(value);
                 self.condition43(value, self.paymentItemSet().taxAtr());
             });
 
@@ -97,14 +103,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
                 self.condition11(value);
             });
-
-            self.dataScreen().calcMethod.subscribe(value => {
-                self.condition12(self.paymentItemSet().taxAtr(), value);
-                self.condition13(self.paymentItemSet().taxAtr(), value);
-                self.condition14(value);
-                self.condition15(value);
-                self.condition16(value);
-            })
         }
 
         startPage(): JQueryPromise<any> {
@@ -118,8 +116,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             params.printSet = shareModel.StatementPrintAtr.DO_NOT_PRINT;
             params.yearMonth = 201802;
             params.workingAtr = null;
-            params.totalObject = shareModel.PaymentTotalObjAtr.INSIDE;
-            params.calcMethod = shareModel.PaymentCaclMethodAtr.COMMON_AMOUNT;
+            params.totalObject = null;
+            params.calcMethod = null;
             params.proportionalAtr = null;
             params.proportionalMethod = null;
             params.rangeValAttribute = null;
@@ -142,6 +140,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             params.wageTableCode = null;
             params.commonAmount = null;
             self.params = params;
+            self.yearMonth = params.yearMonth;
             self.condition42();
             let dto = {
                 categoryAtr: self.categoryAtr,
@@ -459,7 +458,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         condition43(calcMethod: any, taxAtr: any) {
             let self = this;
             if (taxAtr == shareModel.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER) {
-                self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF.toString());
+                // self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF.toString());
             }
             self.screenControl().enableD2_8(calcMethod != shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM && taxAtr != shareModel.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER);
         }
@@ -499,7 +498,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         openM() {
             let self = this;
             windows.setShared("QMM019M_PARAMS", {
-                yearMonth: self.dataScreen().yearMonth,
+                yearMonth: self.yearMonth,
                 formulaCode: self.dataScreen().formulaCode()
             });
             modal("/view/qmm/019/m/index.xhtml").onClosed(() => {
@@ -514,7 +513,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         openN() {
             let self = this;
             windows.setShared("QMM019N_PARAMS", {
-                yearMonth: self.dataScreen().yearMonth,
+                yearMonth: self.yearMonth,
                 wageTableCode: self.dataScreen().wageTableCode()
             });
             modal("/view/qmm/019/n/index.xhtml").onClosed(() => {
@@ -646,7 +645,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     }
 
     class Params {
-        yearMonth: number = null;
         /**
          * 項目名コード
          */
@@ -770,20 +768,19 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
         setData(data: IParams) {
             let self = this;
-            self.yearMonth = data.yearMonth;
-            self.itemNameCode = ko.observable(data.itemNameCode);
-            self.workingAtr = ko.observable(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
-            self.totalObject = ko.observable(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
-            self.calcMethod = ko.observable(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
-            self.proportionalAtr = ko.observable(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
-            self.proportionalMethod = ko.observable(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
-            self.rangeValAttribute = ko.observable(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            self.itemNameCode(data.itemNameCode);
+            self.workingAtr(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
+            self.totalObject(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
+            self.calcMethod(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
+            self.proportionalAtr(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
+            self.proportionalMethod(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
+            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
             self.errorRangeSetting.setData(data.errorRangeSetting);
             self.alarmRangeSetting.setData(data.alarmRangeSetting);
-            self.perValCode = ko.observable(data.perValCode);
-            self.formulaCode = ko.observable(data.formulaCode);
-            self.wageTableCode = ko.observable(data.wageTableCode);
-            self.commonAmount = ko.observable(data.commonAmount);
+            self.perValCode(data.perValCode);
+            self.formulaCode(data.formulaCode);
+            self.wageTableCode(data.wageTableCode);
+            self.commonAmount(data.commonAmount);
         }
 
         /**
@@ -1035,7 +1032,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             this.laborInsuranceCategory(data.laborInsuranceCategory);
             this.laborInsuranceCategoryText(shareModel.getLaborInsuranceCategoryText(data.laborInsuranceCategory));
             this.everyoneEqualSet(data.everyoneEqualSet);
-            this.everyoneEqualSetText(shareModel.getCategoryFixedWageText(data.averageWageAtr));
+            this.everyoneEqualSetText(shareModel.getCategoryFixedWageText(data.everyoneEqualSet));
             this.averageWageAtr(data.averageWageAtr);
             this.averageWageAtrText(shareModel.getAverageWageAtrText(data.averageWageAtr));
             this.errorRangeSetting.setData(data.errorRangeSetting);
