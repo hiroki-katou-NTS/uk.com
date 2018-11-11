@@ -82,16 +82,16 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
 
             self.selectedCodes2 = ko.observable([]);
             self.index = 0;
-            let template = '<button class="setting" onclick="openScreenM(\'${departmentID}\')" >設定</button>${salaryCode} ';
-            let template1 = '<button class="setting" onclick="openScreenM1(\'${departmentID}\')" >設定</button>${bonusCode} ';
+            let template = '<button class="setting" onclick="openScreenM(\'${departmentID}\')" >設定</button>${salaryCode} ${salaryName} ';
+            let template1 = '<button class="setting" onclick="openScreenM1(\'${departmentID}\')" >設定</button>${bonusCode} ${bonusName} ';
 
             self.columns = ko.observableArray([{ headerText: getText('QMM020_33'), width: "450px", key: 'departmentID', dataType: "string" },
                 /*{ headerText: getText('QMM020_20'), key: 'nodeText', width: "250px", dataType: "string", ntsControl: 'Button' },
                 { headerText: getText('QMM020_23'), key: 'custom', width: "250px", dataType: "string", ntsControl: 'Button' }]),*/
-                { headerText: getText('QMM020_23'), key: 'salaryCode', width: '100px', template: template},
-                { headerText: '', key: 'salaryName', width: '100px'},
-                { headerText: getText('QMM020_23'), key: 'bonusCode', width: '100px', template: template1},
-                { headerText: '', key: 'bonusName', width: '100px'},
+                { headerText: getText('QMM020_23'), key: 'salaryCode', fields: ['salaryCode', 'salaryName'],  width: '150px', template: template},
+                { headerText: '', key: 'salaryName', width: '100px', hidden: true},
+                { headerText: getText('QMM020_23'), key: 'bonusCode', fields: ['bonusCode', 'bonusName'], width: '150px', template: template1},
+                { headerText: '', key: 'bonusName', width: '100px', hidden: true},
                 ]);
 
         }
@@ -237,15 +237,20 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             });
         }
 
-        searchByDepID(data:any,depID:string,salaryCode:string,bonusCode:string){
+        searchByDepID(data:any,depID:string,code:string,name:string, isSalaryCd){
             let self = this;
             _.forEach(data,(o)=>{
                 if(o.departmentID === depID){
-                    o.salaryCode = salaryCode;
-                    o.bonusCode = bonusCode;
+                    if (isSalaryCd) {
+                        o.salaryCode = code;
+                        o.salaryName = name;
+                    } else {
+                        o.bonusCode = code;
+                        o.bonusName = name;
+                    }
                     return;
                 }
-                self.searchByDepID(o.childs,depID,salaryCode,bonusCode);
+                self.searchByDepID(o.childs,depID,code,name,isSalaryCd);
             });
         }
 
@@ -348,7 +353,7 @@ let openScreenM = function(id: string) {
     nts.uk.ui.windows.sub.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
         let params = nts.uk.ui.windows.getShared('PARAM_OUTPUT_SCREEN_M');
         if(params){
-            model.searchByDepID(model.items(),id,params.statementCode,params.statementCode);
+            model.searchByDepID(model.items(),id,params.statementCode,params.statementName,true);
             model.items(model.items());
         }
     });
@@ -358,13 +363,13 @@ let openScreenM = function(id: string) {
 let openScreenM1 = function(id: string) {
     let model = __viewContext.viewModel.viewmodelD;
     let rs = _.find(model.listStateCorrelationHis(),{hisId: model.currentSelectedHis()});
-    model.setShared('PARAM_INPUT_SCREEN_M',{
+    nts.uk.ui.windows.setShared('PARAM_INPUT_SCREEN_M',{
         startYearMonth: rs.startYearMonth,
     });
-    model.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
-        let params = model.getShared('PARAM_OUTPUT_SCREEN_M');
+    nts.uk.ui.windows.sub.modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
+        let params = nts.uk.ui.windows.getShared('PARAM_OUTPUT_SCREEN_M');
         if(params){
-            model.searchByDepID(model.items(),id,params.statementCode,params.statementCode);
+            model.searchByDepID(model.items(),id,params.statementCode,params.statementName,false);
             model.items(model.items());
         }
     });
