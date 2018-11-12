@@ -160,9 +160,9 @@
 				<span class="label fix-margin-left-kaf010" data-bind="text: appDate"></span>
 			</div>
 		</div>
-		<div data-bind="if: displayCaculationTime">
+		<div>
 			<!--Work Change-->
-			<div class="table" data-bind="visible : typeSiftVisible()">
+			<div class="table" >
 				<div class="cell valign-center" style="width: 105px;">
 					<!--A4_1 勤務種類ラベル-->
 					<div class="valign-center control-group"
@@ -192,7 +192,7 @@
 			</div>
 		</div>
 		<!--勤務時間 1-->
-		<div class="valign-center control-group" data-bind="if: displayCaculationTime">
+		<div class="valign-center control-group">
 			<div class="table">
 				<div class="cell valign-top cm-column2">
 					<!--A4_8 勤務時間ラベル-->
@@ -230,7 +230,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="valign-center control-group" data-bind ="if: screenModeNew() &amp;&amp; displayCaculationTime()">
+		<div class="valign-center control-group" data-bind ="if: screenModeNew()">
 			<div class="table">
 				<div class="cell valign-top cm-column2">
 				<div class="lblTitle"></div>
@@ -258,8 +258,9 @@
 				</div>
 			</div>
 		</div>
+		<!-- Man chi tiet -->
 		<div class="valign-center control-group"
-			data-bind="if: !screenModeNew() &amp;&amp; displayCaculationTime()">
+			data-bind="if: !screenModeNew()">
 			<div class="table" style = "margin-bottom: 9px;">
 				<div class="cell valign-top cm-column2">
 					<div class="lblTitle"></div>

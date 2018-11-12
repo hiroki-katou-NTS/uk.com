@@ -1835,13 +1835,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell dateCell = cells.get(currentRow, 1);
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
 			
-			// A2_3
-			Cell dayMonCell = cells.get(currentRow + 1, 1);
-			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
-			
-			// A2_4
-			Cell dayCell = cells.get(currentRow + 1, 2);
-			dayCell.setValue(headerData.getFixedHeaderData().get(3));
+//			// A2_3
+//			Cell dayMonCell = cells.get(currentRow + 1, 1);
+//			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
+//			
+//			// A2_4
+//			Cell dayCell = cells.get(currentRow + 1, 2);
+//			dayCell.setValue(headerData.getFixedHeaderData().get(3));
 			
 			// A2_6
 			Cell remarkCell = cells.get(currentRow, 35);
@@ -1893,10 +1893,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemName());
+            	cell.setValue(outputItem.getItemName() + outputItem.getItemCode());
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemCode());
+//            	cell.setValue(outputItem.getItemCode());
             }
         }
 	}
@@ -2363,7 +2363,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private void writeDetailValue(ActualValue actualValue, Cell cell) {
 		Style style = cell.getStyle();
 		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-		if (valueTypeEnum.isTime() || valueTypeEnum.isDouble()) {
+		if (valueTypeEnum.isTime()) {
 			String value = actualValue.getValue();
 			if (value != null) {
 				if (valueTypeEnum == ValueType.TIME) {
@@ -2372,6 +2372,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					cell.setValue(getTimeAttr(value, true));
 				}
 			}
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		} else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+			cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		}
 		else {
@@ -3150,14 +3153,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 
 		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optReason = lstReason.stream()
-					.filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
-			if (!optReason.isPresent()) {
+			String itemId = this.getIdFromAttendanceId(attendanceId);
+			List<CodeName> optReason = lstReason.stream().filter(reason -> reason.getCode().equalsIgnoreCase(code))
+					.filter(item -> item.getId().equalsIgnoreCase(itemId)).collect(Collectors.toList());
+			if (optReason.isEmpty()) {
 				return MASTER_UNREGISTERED;
 			}
-
-			CodeName reason = optReason.get();
-			return reason.getName();
+			return optReason.get(0).getName();
 		}
 		
 		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
@@ -3215,6 +3217,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 
 		return "";
+	}
+
+	//convert from attendanceId to reasonId
+	private String getIdFromAttendanceId(int attendanceId) {
+		int indexNumber = 0;
+		for (int i = 0; i < ATTENDANCE_ID_REASON.length; i++)
+			if (ATTENDANCE_ID_REASON[i] == attendanceId) {
+				indexNumber = i;
+			}
+		//because index start from 0
+		return String.valueOf(indexNumber + 1);
 	}
 	
 }
