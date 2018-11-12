@@ -80,5 +80,10 @@ public class StandardMenuWebService extends WebService {
 	public JavaTypeResult<String> getProgramName(@PathParam("programID") String programID, @PathParam("screenID") String screenID) {
 		return new JavaTypeResult<String>(finder.getProgramName(programID, screenID));
 	}
-	
+	@POST
+	@Path("findPgName/{programID}/{screenID}/{queryString}")
+	public JavaTypeResult<String> getPgNameByQrystr(@PathParam("programID") String programID, @PathParam("screenID") String screenID, 
+			@PathParam("queryString") String queryString) {
+		return new JavaTypeResult<String>(finder.getPgNameByQry(programID, screenID, queryString));
+	}
 }
