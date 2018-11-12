@@ -1,4 +1,5 @@
 module nts.uk.pr.view.qmm020.a {
+    import model = qmm020.share.model;
     __viewContext.ready(function() {
         var viewmodelA = new nts.uk.pr.view.qmm020.a.viewmodel.ScreenModel();
         var viewmodelB = new nts.uk.pr.view.qmm020.b.viewmodel.ScreenModel();
@@ -24,12 +25,30 @@ module nts.uk.pr.view.qmm020.a {
         viewmodelA.startPage().done((data)=>{
             viewmodelB.startPage().done(function() {
                 nts.uk.ui.errors.clearAll();
+                if(viewmodelB.mode()  === model.MODE.NO_REGIS){
+                    viewmodelB.enableEditHisButton(false);
+                    viewmodelB.enableAddHisButton(true);
+                    viewmodelB.enableRegisterButton(false);
+                }else{
+                    viewmodelB.enableEditHisButton(true);
+                    viewmodelB.enableAddHisButton(true);
+                    viewmodelB.enableRegisterButton(true);
+                }
+                viewmodelB.newHistoryId(null);
             });
             $(".tab-b-sidebar").click(function() {
                 viewmodelB.startPage().done(function() {
                     nts.uk.ui.errors.clearAll();
-                    viewmodelB.enableEditHisButton(true);
-                    viewmodelB.enableAddHisButton(true);
+                    if(viewmodelB.mode()  === model.MODE.NO_REGIS){
+                        viewmodelB.enableEditHisButton(false);
+                        viewmodelB.enableAddHisButton(true);
+                        viewmodelB.enableRegisterButton(false);
+                    }else{
+                        viewmodelB.enableEditHisButton(true);
+                        viewmodelB.enableAddHisButton(true);
+                        viewmodelB.enableRegisterButton(true);
+                    }
+
                 });
             });
 
@@ -37,6 +56,7 @@ module nts.uk.pr.view.qmm020.a {
                 if(data.masterUse === 1 && data.usageMaster === 0){
                     viewmodelC.startPage().done(function() {
                         nts.uk.ui.errors.clearAll();
+
                         viewmodelC.enableEditHisButton(true);
                         viewmodelC.enableAddHisButton(true);
                     });
@@ -57,7 +77,7 @@ module nts.uk.pr.view.qmm020.a {
             $(".tab-h-sidebar").click(function() {
 
             });
-            
+
 
         });
 
