@@ -39,6 +39,16 @@ module nts.uk.pr.view.qmm019.share.model {
         COPY = 1
     }
 
+    export enum StatementLayoutPattern {
+        LASER_PRINT_A4_PORTRAIT_ONE_PERSON = 0,
+        LASER_PRINT_A4_PORTRAIT_TWO_PERSON = 1,
+        LASER_PRINT_A4_PORTRAIT_THREE_PERSON = 2,
+        LASER_PRINT_A4_LANDSCAPE_TWO_PERSON = 3,
+        LASER_CRIMP_PORTRAIT_ONE_PERSON = 4,
+        LASER_CRIMP_LANDSCAPE_ONE_PERSON = 5,
+        DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON = 6
+    }
+
     export function getSpecCreateAtr(): Array<BoxModel> {
         return [
             new model.BoxModel(SpecCreateAtr.NEW, getText('QMM019_178')),
@@ -419,23 +429,25 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     // 年月期間の汎用履歴項目
-    export interface IGenericHistoryYearMonthPeiod {
-        startMonth: string;
-        endMonth: string;
+    export interface IYearMonthHistory {
+        startMonth: number;
+        endMonth: number;
         historyId: string;
     }
 
     // 年月期間の汎用履歴項目
-    export class GenericHistoryYearMonthPeiod {
-        startMonth: string;
-        endMonth: string;
+    export class YearMonthHistory {
+        startMonth: number;
+        endMonth: number;
         historyId: string;
 
         // for tree grid
+        code: string;
         nodeText: string;
-        history: Array<GenericHistoryYearMonthPeiod>;
+        history: Array<YearMonthHistory>;
 
-        constructor(params: IGenericHistoryYearMonthPeiod) {
+        constructor(code: String, params: IYearMonthHistory) {
+            this.code = code;
             this.startMonth = params.startMonth;
             this.endMonth = params.endMonth;
             this.historyId = params.historyId;
@@ -444,31 +456,190 @@ module nts.uk.pr.view.qmm019.share.model {
         }
     }
 
-    export interface ISpecificationLayoutHist {
-        specCode: string;
-        name: string;
-        history: Array<IGenericHistoryYearMonthPeiod>;
+    export interface IStatementLayout {
+        statementCode: string;
+        statementName: string;
+        history: Array<IYearMonthHistory>;
     }
 
-    export class SpecificationLayoutHist {
-        specCode: string;
-        name: string;
-        history: Array<GenericHistoryYearMonthPeiod>;
+    export class StatementLayout {
+        statementCode: string;
+        statementName: string;
+        history: Array<YearMonthHistory>;
 
         // for tree grid
         nodeText: string;
         historyId: string;
 
-        constructor(params: ISpecificationLayoutHist) {
-            this.specCode = params ? params.specCode : null;
-            this.name = params ? params.name : null;
+        constructor(params: IStatementLayout) {
+            this.statementCode = params ? params.statementCode : null;
+            this.statementName = params ? params.statementName : null;
             this.history = params ? params.history.map(function (item) {
-                return new GenericHistoryYearMonthPeiod(item);
+                return new YearMonthHistory(params.statementCode, item);
             }) : [];
 
-            this.historyId = params ? params.specCode : null;
-            this.nodeText = params ? params.specCode + " " + params.name : null;
+            this.historyId = params ? params.statementCode : null;
+            this.nodeText = params ? params.statementCode + " " + params.statementName : null;
         }
+    }
+
+    export interface IStatementLayoutHistData {
+        statementCode: string;
+        statementName: string;
+        historyId: string;
+        startMonth: number;
+        endMonth: number;
+        statementLayoutSet: IStatementLayoutSet;
+    }
+
+    export interface IStatementLayoutSet {
+        histId: string;
+        layoutPattern: number;
+        listSettingByCtg: Array<ISettingByCtg> ;
+    }
+
+    export interface ISettingByCtg {
+        ctgAtr: number;
+        listLineByLineSet: Array<ILineByLineSetting>;
+    }
+
+    export interface ILineByLineSetting {
+        printSet: number;
+        lineNumber: number;
+        listSetByItem: Array<ISettingByItem>;
+    }
+
+    export interface ISettingByItem {
+        itemPosition: number;
+        itemId: string;
+        shortName: string;
+        paymentItemDetailSet: IPaymentItemDetail;
+        deductionItemDetailSet: IDeductionItemDetail;
+    }
+
+    export interface IPaymentItemDetail {
+        histId: string;
+        salaryItemId: string;
+        totalObj: number;
+        proportionalAtr: number;
+        proportionalMethod: number;
+        calcMethod: number;
+        calcFomulaCd: string;
+        personAmountCd: string;
+        commonAmount: number;
+        wageTblCode: string;
+        workingAtr: number;
+    }
+
+    export interface IDeductionItemDetail {
+        histId: string;
+        salaryItemId: string;
+        totalObj: number;
+        proportionalAtr: number;
+        proportionalMethod: number;
+        calcMethod: number;
+        calcFormulaCd: string;
+        personAmountCd: string;
+        commonAmount: number;
+        wageTblCd: string;
+        supplyOffset: string;
+    }
+
+    export class LayoutPattern {
+        id: number;
+        printerType: string;
+        paper: string;
+        direction: string;
+        numberPersonInPage: string;
+        numberOfDisplayItem: string;
+        remarks: string;
+
+        constructor(id: number, printerType: string, paper: string, direction: string,
+                    numberPersonInPage: string, numberOfDisplayItem: string, remarks: string) {
+            this.id = id;
+            this.printerType = printerType;
+            this.paper = paper;
+            this.direction =  direction;
+            this.numberPersonInPage = numberPersonInPage;
+            this.numberOfDisplayItem = numberOfDisplayItem;
+            this.remarks = remarks;
+        }
+    }
+
+    export function getLayoutPatternData(): Array<LayoutPattern> {
+        let data: Array<LayoutPattern> = [];
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON,
+            getText('QMM019_58'),
+            getText('QMM019_59'),
+            getText('QMM019_60'),
+            getText('QMM019_61'),
+            getText('QMM019_62'),
+            getText('QMM019_63')
+        ));
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON,
+            getText('QMM019_64'),
+            getText('QMM019_65'),
+            getText('QMM019_66'),
+            getText('QMM019_67'),
+            getText('QMM019_68'),
+            getText('QMM019_69')
+        ));
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON,
+            getText('QMM019_70'),
+            getText('QMM019_71'),
+            getText('QMM019_72'),
+            getText('QMM019_73'),
+            getText('QMM019_74'),
+            getText('QMM019_75')
+        ));
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON,
+            getText('QMM019_76'),
+            getText('QMM019_77'),
+            getText('QMM019_78'),
+            getText('QMM019_79'),
+            getText('QMM019_80'),
+            getText('QMM019_81')
+        ));
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON,
+            getText('QMM019_82'),
+            getText('QMM019_83'),
+            getText('QMM019_84'),
+            getText('QMM019_85'),
+            getText('QMM019_86'),
+            getText('QMM019_87')
+        ));
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON,
+            getText('QMM019_88'),
+            getText('QMM019_89'),
+            getText('QMM019_90'),
+            getText('QMM019_91'),
+            getText('QMM019_92'),
+            getText('QMM019_93')
+        ));
+
+        data.push(new LayoutPattern(
+            StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON,
+            getText('QMM019_94'),
+            getText('QMM019_95'),
+            getText('QMM019_96'),
+            getText('QMM019_97'),
+            getText('QMM019_98'),
+            getText('QMM019_99')
+        ));
+
+        return data;
     }
 
     export class BoxModel {
@@ -476,7 +647,7 @@ module nts.uk.pr.view.qmm019.share.model {
         name: string;
 
         constructor(id, name) {
-            var self = this;
+            let self = this;
             self.id = id;
             self.name = name;
         }

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtStatementLayoutSetPk implements Serializable
+public class QpbmtSettingByCtgPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
 

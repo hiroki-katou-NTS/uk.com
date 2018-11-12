@@ -13,6 +13,7 @@ public class StatementLayoutHistCommand {
     public String historyId;
     public Integer startMonth;
     public Integer endMonth;
+    public int layoutPattern;
 
     public YearMonthHistoryItem toYearMonthDomain() {
         return new YearMonthHistoryItem(historyId, new YearMonthPeriod(new YearMonth(startMonth), new YearMonth(endMonth)));

@@ -29,8 +29,10 @@
             <!-- マスタ修正ログ -->
             <button id="A1_4" tabindex="4" class=""
                     data-bind="click: modifyLog, enable: true">#{i18n.getText('QMM012_4')}</button>
-            <a id="A1_6" class="goout" tabindex="6" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM012_6')}</a>
-            <a id="A1_5" class="goout" tabindex="5" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM012_5')}</a>
+            <a id="A1_6" class="goout" tabindex="6"
+               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM012_6')}</a>
+            <a id="A1_5" class="goout" tabindex="5"
+               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM012_5')}</a>
         </div>
         <div id="contents-area">
             <div class="table">
@@ -45,27 +47,27 @@
                                         targetKey: 'historyId',
                                         mode:'igTree',
                                         comId:'treegrid1',
-                                        items: dataSource,
+                                        items: statementLayoutList,
                                         searchText: '検索',
-                                        selected: currentHistory,
+                                        selected: currentHistoryId,
                                         selectedKey: 'historyId',
                                         childField: 'history',
-                                        fields: ['name', 'specCode']}" />
+                                        fields: ['name', 'specCode']}"/>
                         <div class="valign-center control-group">
                             <!-- 履歴追加 -->
                             <button id="A2_5" tabindex="9" class=""
-                                    data-bind="click: create, enable: true">#{i18n.getText('QMM019_11')}</button>
+                                    data-bind="click: addHistory, enable: true">#{i18n.getText('QMM019_11')}</button>
                             <!-- 履歴編集 -->
                             <button id="A2_6" tabindex="10" class=""
-                                    data-bind="click: create, enable: true">#{i18n.getText('QMM019_12')}</button>
+                                    data-bind="click: editHistory, enable: true">#{i18n.getText('QMM019_12')}</button>
                         </div>
                         <!-- 明細書レイアウト一覧 -->
                         <table id="treegrid1" tabindex="11"
                                data-bind="ntsTreeGridView:{
                                         width: 270,
                                         height: 350,
-                                        options: dataSource,
-                                        value: currentHistory,
+                                        options: statementLayoutList,
+                                        value: currentHistoryId,
                                         optionsValue: 'historyId',
                                         optionsChild: 'history',
                                         optionsText: 'nodeText',
@@ -86,7 +88,7 @@
                             <input id="A3_4" class="check-validate" tabindex="12"
                                    data-bind="ntsTextEditor :{
 											name: '#[QMM019_16]',
-											value: currentHistory,
+											value: currentHistoryId,
 											constraint: '',
 											option: {width: '40px'},
 											required: true,
@@ -115,12 +117,62 @@
                         </div>
                         <div class="valign-center control-group">
                             <!-- 明細書レイアウト -->
-                            <div id="A3_13" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
+                            <div id="A3_13"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
                             <!-- 印刷プレビュー -->
                             <button id="A3_14" tabindex="13" class=""
                                     data-bind="click: create, enable: true">#{i18n.getText('QMM019_22')}</button>
                         </div>
                         <hr/>
+                        <!-- 支給 -->
+                        <div id="A4_1" class="panel panel-frame">
+                            <!-- 開始年月日 -->
+                            <label id="A4_2">#{i18n.getText('QMM019_23')}</label>
+                            <table id="payment-table">
+
+                            </table>
+                            <div class="valign-center control-group">
+                                <!-- 支給行追加 -->
+                                <button id="A4_8" tabindex="17" class=""
+                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_24')}</button>
+                            </div>
+                        </div>
+                        <!-- 控除設定パネル -->
+                        <div id="A5_1" class="panel panel-frame">
+                            <!-- 控除 -->
+                            <label id="A5_2">#{i18n.getText('QMM019_25')}</label>
+                            <div class="valign-center control-group">
+                                <!-- 控除行追加 -->
+                                <button id="A5_8" tabindex="17" class=""
+                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_24')}</button>
+                            </div>
+                        </div>
+                        <!-- 勤怠設定パネル -->
+                        <div id="A7_1" class="panel panel-frame">
+                            <!-- 勤怠設定 -->
+                            <button id="A7_2" tabindex="18" class=""
+                                    data-bind="click: create, enable: true"></button>
+                            <!-- 勤怠 -->
+                            <label id="A7_3">#{i18n.getText('QMM019_29')}</label>
+                            <div class="valign-center control-group">
+                                <!-- 勤怠行追加 -->
+                                <button id="A7_9" tabindex="22" class=""
+                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_30')}</button>
+                            </div>
+                        </div>
+                        <!-- 記事設定パネル -->
+                        <div id="A8_1" class="panel panel-frame">
+                            <!-- 記事設定 -->
+                            <button id="A8_2" tabindex="23" class=""
+                                    data-bind="click: create, enable: true"></button>
+                            <!-- 記事 -->
+                            <label id="A8_3">#{i18n.getText('QMM019_31')}</label>
+                            <div class="valign-center control-group">
+                                <!-- 記事行追加 -->
+                                <button id="A8_9" tabindex="27" class=""
+                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_32')}</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

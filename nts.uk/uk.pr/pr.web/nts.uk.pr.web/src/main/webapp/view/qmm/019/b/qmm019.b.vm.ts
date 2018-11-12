@@ -1,27 +1,36 @@
 module nts.uk.pr.view.qmm019.b.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
     import shareModel = nts.uk.pr.view.qmm019.share.model;
+    import getShared = nts.uk.ui.windows.getShared;
+    import IStatementLayout = nts.uk.pr.view.qmm019.share.model.IStatementLayout;
+    import YearMonthHistory = nts.uk.pr.view.qmm019.share.model.YearMonthHistory;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
-        yearMonth: KnockoutObservable<number>;
+        statementCode: KnockoutObservable<string> = ko.observable(null);
+        statementName: KnockoutObservable<string> = ko.observable(null);
+        startMonth: KnockoutObservable<number>;
         yearMonthJapan: KnockoutObservable<string>;
 
         // ItemHistoryDivision  switch button
         itemHistoryDivisionList: KnockoutObservableArray<shareModel.BoxModel>;
         itemHistoryDivision: KnockoutObservable<number>;
 
-        gridValue: Array<GridItem>;
+        layoutPatternData: Array<any>;
+        layoutPatternIdSelected: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
+            let params = getShared("QMM019_A_TO_B_PARAMS");
 
-            self.yearMonth = ko.observable(200001);
+            if(params) {
+                self.statementCode(params.code);
+            }
+
+            self.startMonth = ko.observable(null);
             self.yearMonthJapan = ko.observable("yearMonthJapan");
-            self.yearMonth.subscribe(x => {
+            self.startMonth.subscribe(x => {
                 // convert yearMonthJapan from yearMonth
             });
 
@@ -31,62 +40,90 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
             ]);
             self.itemHistoryDivision = ko.observable(0);
 
-            let list = [];
-            for (let i = 0; i < 500; i++) {
-                list.push(new GridItem(i));
-            }
-            self.gridValue = list;
+            self.layoutPatternData = shareModel.getLayoutPatternData();
+            self.layoutPatternIdSelected = ko.observable(0);
 
             $("#grid").ntsGrid({
-                width: '600px',
+                width: '830px',
                 height: '235px',
-                dataSource: self.gridValue,
+                dataSource: self.layoutPatternData,
+                value: self.layoutPatternIdSelected,
                 primaryKey: 'id',
-                virtualization: false,
+                virtualization: true,
                 columns: [
-                    {headerText: 'column1', key: 'id', dataType: 'string', width: '50px'},
-                    {headerText: 'column2', key: 'column2', dataType: 'string', width: '100px'},
-                    {headerText: 'column3',key: 'column3',dataType: 'string',width: '100px'},
-                    {headerText: 'column4', key: 'column4', dataType: 'string', width: '100px'},
-                    {headerText: 'column5',key: 'column5',dataType: 'string',width: '100px'},
-                    {headerText: 'column6',key: 'column6',dataType: 'string',width: '100px'}
+                    {headerText: '', key: 'id', dataType: 'string', width: '50px', hidden: true},
+                    {headerText: getText('QMM019_50'), key: 'printerType', dataType: 'string', width: '130px'},
+                    {headerText: getText('QMM019_51'), key: 'paper', dataType: 'string', width: '70px'},
+                    {headerText: getText('QMM019_52'), key: 'direction', dataType: 'string', width: '70px'},
+                    {headerText: getText('QMM019_53'), key: 'numberPersonInPage', dataType: 'string', width: '120px'},
+                    {headerText: getText('QMM019_54'), key: 'numberOfDisplayItem', dataType: 'string', width: '300px'},
+                    {headerText: getText('QMM019_55'), key: 'remarks', dataType: 'string', width: '100px'}
                 ],
-                features: [{name: 'Sorting', type: 'local'}]
+                features: [
+                    {
+                        name: 'Sorting', type: 'local'
+                    },
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: false
+                    }
+                ]
             })
         }
-
 
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
 
-            dfd.resolve();
+            service.getStatementLayoutAndLastHist(self.statementCode()).done(function(data: IStatementLayout) {
+                if(data) {
+                    self.statementName(data.statementName);
+
+                    if (data.history.length > 0) {
+                        self.startMonth(data.history[0].startMonth);
+                        self.itemHistoryDivision(0);
+                    } else {
+                        self.itemHistoryDivision(1);
+                    }
+                }
+
+                block.clear();
+                dfd.resolve();
+            }).fail(() => {
+                block.clear();
+                dfd.resolve();
+            });
+
             return dfd.promise();
         }
 
         decide(){
+            let self = this;
+            $("#B1_6").trigger("validate");
+
+            if(!nts.uk.ui.errors.hasError()) {
+                service.getHistByCidAndCodeAndAfterDate(self.statementCode(), self.startMonth()).done(function (yearMonthHistory: YearMonthHistory) {
+                    if(yearMonthHistory != null) {
+                        $('#B1_6').ntsError('set', {messageId: "Msg_79"});
+                    } else {
+                        setShared("QMM019_B_TO_A_PARAMS", { isRegistered: true,
+                                                            startMonth: self.startMonth(),
+                                                            itemHistoryDivision: self.itemHistoryDivision(),
+                                                            layoutPattern: self.layoutPatternIdSelected()
+                                                          });
+                    }
+                });
+            }
+
             nts.uk.ui.windows.close();
         }
 
         cancel(){
+            setShared("QMM019_B_TO_A_PARAMS", { isRegistered: false});
             nts.uk.ui.windows.close();
         }
     }
 
-    class GridItem {
-        id: string;
-        column2: string;
-        column3: string;
-        column4: string;
-        column5: string;
-        column6: string;
-        constructor(index: number) {
-            this.id = index.toString();
-            this.column2 = index.toString();
-            this.column3 = index.toString();
-            this.column4 = index.toString();
-            this.column5 = index.toString();
-            this.column6 = index.toString();
-        }
-    }
 }

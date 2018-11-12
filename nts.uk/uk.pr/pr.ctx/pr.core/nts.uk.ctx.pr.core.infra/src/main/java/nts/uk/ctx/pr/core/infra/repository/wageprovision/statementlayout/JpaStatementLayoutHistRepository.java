@@ -74,13 +74,18 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
     @Override
-    public void add(String cid, String code, YearMonthHistoryItem domain) {
-        this.commandProxy().insert(yearMonthToEntity(cid, code, domain));
+    public void add(String cid, String code, YearMonthHistoryItem domain, int layoutPattern) {
+        this.commandProxy().insert(yearMonthToEntity(cid, code, domain, layoutPattern));
     }
 
     @Override
     public void update(String cid, String code, YearMonthHistoryItem domain) {
-        this.commandProxy().update(yearMonthToEntity(cid, code, domain));
+        Optional<QpbmtStatementLayoutHist> statementLayoutHistEntity = this.queryProxy().query(SELECT_BY_ID, QpbmtStatementLayoutHist.class)
+                .setParameter("histId", domain.identifier())
+                .getSingle();
+        if(statementLayoutHistEntity.isPresent()) {
+            this.commandProxy().update(yearMonthToEntity(cid, code, domain, statementLayoutHistEntity.get().layoutPattern));
+        }
     }
 
     @Override
@@ -108,7 +113,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
                 new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
     }
 
-    private QpbmtStatementLayoutHist yearMonthToEntity(String cid, String code, YearMonthHistoryItem domain) {
-        return new QpbmtStatementLayoutHist(new QpbmtStatementLayoutHistPk(cid, code, domain.identifier()), domain.start().v(), domain.end().v());
+    private QpbmtStatementLayoutHist yearMonthToEntity(String cid, String code, YearMonthHistoryItem domain, int layoutPattern) {
+        return new QpbmtStatementLayoutHist(new QpbmtStatementLayoutHistPk(cid, code, domain.identifier()), domain.start().v(), domain.end().v(), layoutPattern);
     }
 }

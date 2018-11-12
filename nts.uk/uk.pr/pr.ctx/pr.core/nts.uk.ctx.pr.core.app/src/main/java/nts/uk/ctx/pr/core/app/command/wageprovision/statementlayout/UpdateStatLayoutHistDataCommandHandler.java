@@ -38,7 +38,7 @@ public class UpdateStatLayoutHistDataCommandHandler extends CommandHandler<State
 
         statementLayoutRepo.update(statementLayout);
         if(command.isCheckCreate()) {
-            statementLayoutHistRepo.add(cid, command.getStatementCode(), yearMonthHist);
+            statementLayoutHistRepo.add(cid, command.getStatementCode(), yearMonthHist, statementLayoutSet.getLayoutPattern().value);
             statementLayoutSetService.addStatementLayoutSet(statementLayoutSet);
         } else {
             statementLayoutHistRepo.update(cid, command.getStatementCode(), yearMonthHist);

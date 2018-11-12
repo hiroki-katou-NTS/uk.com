@@ -28,7 +28,6 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             ]);
             self.existingSpecCode = ko.observable(null);
 
-
             self.isEnable = ko.observable(false);
             self.specInfo = ko.observable("");
             self.specCode = ko.observable(null);
@@ -38,13 +37,16 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
 
             self.selectedId.subscribe(value => {
                 self.isEnable(value == shareModel.SpecCreateAtr.COPY);
-            })
+            });
+
             self.existingSpecCode.subscribe(value => {
                 let spec: ExistingSpec = _.find(self.existingSpecs(), (item: ExistingSpec) => {
                     return item.code == value;
-                })
+                });
+
                 self.specInfo(spec.histId);
-            })
+            });
+
             self.startDate.subscribe(value => {
                 let dateJp = nts.uk.time.yearmonthInJapanEmpire(value);
                 if(dateJp == null){
@@ -52,7 +54,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
                 }else{
                     self.startDateJp(dateJp.toString());
                 }
-            })
+            });
         }
 
         startPage(): JQueryPromise<any> {

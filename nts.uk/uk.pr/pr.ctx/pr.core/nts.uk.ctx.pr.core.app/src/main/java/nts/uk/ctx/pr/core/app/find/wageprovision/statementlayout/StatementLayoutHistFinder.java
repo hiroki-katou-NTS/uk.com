@@ -7,6 +7,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,16 +20,23 @@ public class StatementLayoutHistFinder {
     private StatementLayoutHistRepository statementLayoutHistRepo;
     @Inject
     private StatementLayoutSetRepository statementLayoutSetRepo;
-    @Inject
-    private PaymentItemDetailSetRepository paymentItemDetailSetRepo;
-    @Inject
-    private DeductionItemDetailSetRepository deductionItemDetailSetRepo;
 
     public List<YearMonthHistoryItemDto> getHistByCidAndCodeAndAfterDate(String code, int startYearMonth) {
         String cid = AppContexts.user().companyId();
 
         return statementLayoutHistRepo.getHistByCidAndCodeAndAfterDate(cid, code, startYearMonth).stream().
                 map(i -> YearMonthHistoryItemDto.fromDomainToDto(i)).collect(Collectors.toList());
+    }
+
+    public StatementLayoutAndHistDto getStatementLayoutAndHistById(String code, String histId) {
+        String cid = AppContexts.user().companyId();
+
+        Optional<StatementLayout> statementLayout = statementLayoutRepo.getStatementLayoutById(cid, code);
+        Optional<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getStatementLayoutHistById(histId);
+        List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<>();
+        yearMonthHistoryItem.ifPresent(i -> yearMonthHistoryItemList.add(i));
+
+        return statementLayout.map(x -> StatementLayoutAndHistDto.fromDomain(x, yearMonthHistoryItemList)).orElse(null);
     }
 
     public Optional<StatementLayoutHistDataDto> getStatementLayoutHistData(String code, String histId) {
