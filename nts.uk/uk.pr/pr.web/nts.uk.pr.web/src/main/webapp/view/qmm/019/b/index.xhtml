@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 550,
-                height: 400
+                width: 1050,
+                height: 620
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -23,7 +23,7 @@
 
     <ui:define name="content">
         <div id="contents-area">
-            <div class="valign-center control-group">
+            <div class="valign-center control-group" style="margin-bottom: 25px">
                 <!-- 新たに作成する履歴の作成情報を入力してください。 -->
                 <label id="B1_1">#{i18n.getText('QMM019_40')}</label>
             </div>
@@ -31,9 +31,9 @@
                 <!-- コード/名称 -->
                 <div id="B1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
                 <!-- 明細書コード -->
-                <label id="B1_3">#{i18n.getText('QMM019_15')} </label>
+                <label id="B1_3" data-bind="text: statementCode"> </label>
                 <!-- 明細書名 -->
-                <label id="B1_4">#{i18n.getText('QMM019_41')}</label>
+                <label id="B1_4" data-bind="text: statementName"></label>
             </div>
             <div class="valign-center control-group">
                 <!-- 期間 -->
@@ -41,7 +41,7 @@
                 <!-- 開始年月 -->
                 <div id="B1_6" tabindex="1" data-bind="ntsDatePicker: {
                                                             name: '#[QMM019_43]',
-                                                            value: yearMonth,
+                                                            value: startMonth,
                                                             required: true,
                                                             dateFormat: 'yearmonth'}"></div>
                 <!-- 開始年月和暦 -->
@@ -68,12 +68,14 @@
             </div>
             <div class="valign-center control-group">
                 <div class="space"></div>
-                <!-- レイアウト一覧 -->
-                <table id="grid"></table>
+                <div class="grid-area">
+                    <!-- レイアウト一覧 -->
+                    <table id="grid"></table>
+                </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex="3" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="3" data-bind="click: decide, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>

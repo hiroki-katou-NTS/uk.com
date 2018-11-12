@@ -25,7 +25,7 @@ public interface StatementLayoutHistRepository
 
     void add(StatementLayoutHist domain);
 
-    void add(String cid, String code, YearMonthHistoryItem domain);
+    void add(String cid, String code, YearMonthHistoryItem domain, int layoutPattern);
 
     void update(String cid, String code, YearMonthHistoryItem domain);
 

@@ -7,8 +7,9 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByCtg;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtLineByLineSet;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutSet;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutSetPk;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtSettingByCtg;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtSettingByCtgPk;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutHist;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -21,8 +22,10 @@ import java.util.stream.Collectors;
 public class JpaStatementLayoutSetRepository extends JpaRepository implements StatementLayoutSetRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayoutSet f";
-    private static final String SELECT_BY_HISTORY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutSetPk.histId =:histId ";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSettingByCtg f";
+    private static final String SELECT_BY_HISTORY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.settingByCtgPk.histId =:histId ";
+    private static final String SELECT_HIST_BY_ID = "SELECT f FROM QpbmtStatementLayoutHist f " +
+            " WHERE f.statementLayoutHistPk.histId = :histId ";
 
     @Override
     public List<StatementLayoutSet> getAllStatementLayoutSet(){
@@ -31,12 +34,20 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
 
     @Override
     public Optional<StatementLayoutSet> getStatementLayoutSetById(String histId){
-        List<QpbmtStatementLayoutSet> statementLayoutSetEntityList = this.queryProxy().query(SELECT_BY_HISTORY_ID, QpbmtStatementLayoutSet.class)
+        Optional<QpbmtStatementLayoutHist> statementLayoutHistEntity = this.queryProxy().query(SELECT_HIST_BY_ID, QpbmtStatementLayoutHist.class)
+                .setParameter("histId", histId).getSingle();
+
+        List<QpbmtSettingByCtg> statementLayoutSetEntityList = this.queryProxy().query(SELECT_BY_HISTORY_ID, QpbmtSettingByCtg.class)
                 .setParameter("histId", histId)
                 .getList();
         List<SettingByCtg> settingByCtgList = statementLayoutSetEntityList.stream().map(x -> x.toDomain()).collect(Collectors.toList());
-        return  statementLayoutSetEntityList.isEmpty() ? Optional.empty() : Optional.of(new StatementLayoutSet(histId,
-                statementLayoutSetEntityList.get(0).layoutPattern, settingByCtgList));
+
+        if(statementLayoutHistEntity.isPresent()) {
+            return statementLayoutSetEntityList.isEmpty() ? Optional.empty() : Optional.of(new StatementLayoutSet(histId,
+                    statementLayoutHistEntity.get().layoutPattern, settingByCtgList));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -49,8 +60,8 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
                         settingByCtg.getCtgAtr().value, line.getPrintSet().value, line.getLineNumber(),i)).collect(Collectors.toList()));
             }
 
-            QpbmtStatementLayoutSet statementLayoutSet = new QpbmtStatementLayoutSet(new QpbmtStatementLayoutSetPk(domain.getHistId(),
-                    settingByCtg.getCtgAtr().value), domain.getLayoutPattern().value, listLineByLineSet);
+            QpbmtSettingByCtg statementLayoutSet = new QpbmtSettingByCtg(new QpbmtSettingByCtgPk(domain.getHistId(),
+                    settingByCtg.getCtgAtr().value), listLineByLineSet);
 
             this.commandProxy().insert(statementLayoutSet);
         }
@@ -63,7 +74,7 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
     @Override
     public void remove(String histId){
         for(CategoryAtr category : CategoryAtr.values()) {
-            this.commandProxy().remove(QpbmtStatementLayoutSet.class, new QpbmtStatementLayoutSetPk(histId, category.value));
+            this.commandProxy().remove(QpbmtSettingByCtg.class, new QpbmtSettingByCtgPk(histId, category.value));
         }
     }
 

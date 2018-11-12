@@ -10,6 +10,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Stateless
 @Transactional

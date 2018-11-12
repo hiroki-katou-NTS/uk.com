@@ -1,5 +1,17 @@
-#B1_2, #B1_5, #B1_9, .space {
+#contents-area {
+    padding: 20px !important;
+}
+
+#B1_2, #B1_5, #B1_9 {
     width: 120px;
+}
+
+.space {
+    width: 150px;
+}
+
+.space, #B2_1, .grid-area {
+    display: inline-block;
 }
 
 #B1_9 {

@@ -43,18 +43,7 @@ public class StatementLayoutFinder {
         return statementLayout.map(x -> StatementLayoutAndHistDto.fromDomain(x, yearMonthHistoryItemList)).orElse(null);
     }
 
-    public StatementLayoutAndHistDto getStatementLayoutAndHistById(String code, String histId) {
-        String cid = AppContexts.user().companyId();
-
-        Optional<StatementLayout> statementLayout = statementLayoutRepo.getStatementLayoutById(cid, code);
-        Optional<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getStatementLayoutHistById(histId);
-        List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<>();
-        yearMonthHistoryItem.ifPresent(i -> yearMonthHistoryItemList.add(i));
-
-        return statementLayout.map(x -> StatementLayoutAndHistDto.fromDomain(x, yearMonthHistoryItemList)).orElse(null);
-    }
-
-    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndHist() {
         List<StatementLayoutAndHistDto> result = new ArrayList<>();
         String cid = AppContexts.user().companyId();
 

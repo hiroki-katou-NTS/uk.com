@@ -34,6 +34,13 @@ public class QpbmtStatementLayoutHist extends UkJpaEntity implements Serializabl
     @Column(name = "END_YEAR_MONTH")
     public int endYearMonth;
 
+    /**
+     * 明細書レイアウトパターン
+     */
+    @Basic(optional = false)
+    @Column(name = "LAYOUT_PATTERN")
+    public int layoutPattern;
+
     @Override
     protected Object getKey() {
         return statementLayoutHistPk;

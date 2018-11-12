@@ -104,9 +104,9 @@ public class StatementLayoutWebService {
     }
 
     @POST
-    @Path("getAllStatementLayoutAndLastHist")
-    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
-        return this.statementLayoutFinder.getAllStatementLayoutAndLastHist();
+    @Path("getAllStatementLayoutAndHist")
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndHist() {
+        return this.statementLayoutFinder.getAllStatementLayoutAndHist();
     }
 
     @POST
@@ -119,6 +119,12 @@ public class StatementLayoutWebService {
     @Path("getHistByCidAndCodeAndAfterDate/{code}/{startYearMonth}")
     public List<YearMonthHistoryItemDto> getHistByCidAndCodeAndAfterDate(@PathParam("code") String code, @PathParam("startYearMonth") Integer startYearMonth) {
         return this.statementLayoutHistFinder.getHistByCidAndCodeAndAfterDate(code, startYearMonth);
+    }
+
+    @POST
+    @Path("getStatementLayoutAndHistById/{code}/{histId}")
+    public StatementLayoutAndHistDto getStatementLayoutAndHistById(@PathParam("code") String code, @PathParam("histId") String histId) {
+        return this.statementLayoutHistFinder.getStatementLayoutAndHistById(code, histId);
     }
 
     @POST

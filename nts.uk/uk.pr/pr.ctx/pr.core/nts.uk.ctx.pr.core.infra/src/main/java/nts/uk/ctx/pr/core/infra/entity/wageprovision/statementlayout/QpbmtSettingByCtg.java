@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_STATE_LAYOUT_SET")
-public class QpbmtStatementLayoutSet extends UkJpaEntity implements Serializable
+@Table(name = "QPBMT_SETTING_BY_CTG")
+public class QpbmtSettingByCtg extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -31,14 +31,7 @@ public class QpbmtStatementLayoutSet extends UkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public QpbmtStatementLayoutSetPk statementLayoutSetPk;
-
-    /**
-    * 明細書レイアウトパターン
-    */
-    @Basic(optional = false)
-    @Column(name = "LAYOUT_PATTERN")
-    public int layoutPattern;
+    public QpbmtSettingByCtgPk settingByCtgPk;
 
     @JoinColumns({
             @JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true),
@@ -49,7 +42,7 @@ public class QpbmtStatementLayoutSet extends UkJpaEntity implements Serializable
     @Override
     protected Object getKey()
     {
-        return statementLayoutSetPk;
+        return settingByCtgPk;
     }
 
     public SettingByCtg toDomain() {
