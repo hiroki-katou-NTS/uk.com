@@ -125,8 +125,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				new SpecialHolidayRemainInfor(0, 0, 0);
 			//付与後の残数情報をまとめる
 			getOffsetDay = this.grantDetailAfter(grantDetailAfter, getOffsetDay);
-			
-			getOffsetDay.setUseOutPeriod(useInfor.getUseDaysOutPeriod());
+			getOffsetDay.getUseOutPeriod().addAll(useInfor.getUseDaysOutPeriod());			
 		}
 		if(param.isMngAtr()) {
 			//社員の特別休暇情報を取得する
