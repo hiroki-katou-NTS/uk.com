@@ -51,4 +51,20 @@ public class JpaResidentTaxPayeeRepository extends JpaRepository implements Resi
     public void remove(String cid, String code) {
         this.commandProxy().remove(QxxmtRsdtTaxPayee.class, new QxxmtRsdtTaxPayeePk(cid, code));
     }
+
+	@Override
+	public List<ResidentTaxPayee> getAllResidentTaxPayee(String companyId) {
+		String query = SELECT_ALL_QUERY_STRING + " WHERE  f.rsdtTaxPayeePk.cid =:cid ORDER BY f.rsdtTaxPayeePk.code";
+		return this.queryProxy().query(query, QxxmtRsdtTaxPayee.class).setParameter("cid", companyId)
+				.getList(item -> item.toDomain());
+	}
+
+	@Override
+	public List<ResidentTaxPayee> getResidentTaxPayeeWithReportCd(String cid, String reportCode) {
+		String query = SELECT_ALL_QUERY_STRING
+				+ " WHERE  f.rsdtTaxPayeePk.cid =:cid AND f.reportCd = :reportCode ORDER BY f.rsdtTaxPayeePk.code";
+		return this.queryProxy().query(query, QxxmtRsdtTaxPayee.class).setParameter("cid", cid)
+				.setParameter("reportCode", reportCode).getList(item -> item.toDomain());
+	}
+	
 }

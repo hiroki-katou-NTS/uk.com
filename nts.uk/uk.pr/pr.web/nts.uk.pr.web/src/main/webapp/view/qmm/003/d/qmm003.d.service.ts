@@ -1,27 +1,22 @@
 module nts.uk.pr.view.qmm003.d.service {
     import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
 
     let paths = {
-        findDisplayRegister: "ctx.pr.core.ws.wageprovision.processdatecls/findDisplayRegister",
-        registerProcessing :"ctx.pr.core.ws.wageprovision.processdatecls/registerProcessing",
-        removeEmpTied :"ctx.pr.core.ws.wageprovision.processdatecls/removeEmpTied/{0}"
+        checkBeforeDelete: "cts/pr/transfer/rsdttaxpayee/check-before-delete",
+        removeList: "cts/pr/transfer/rsdttaxpayee/delete-list",
+        getAllResidentTaxPayee: "cts/pr/transfer/rsdttaxpayee/get-all-resident-tax-payee"
     };
 
-    export function findDisplayRegister(): JQueryPromise<any> {
-        return ajax('pr', paths.findDisplayRegister);
+    export function getAllResidentTaxPayee(): JQueryPromise<any> {
+        return ajax('pr', paths.getAllResidentTaxPayee);
     }
     
-    export function registerProcessing(command): JQueryPromise<any> {
-        return ajax('pr', paths.registerProcessing, command);
+    export function checkBeforeDelete(codes: Array<string>) {
+        return ajax('pr', paths.checkBeforeDelete, codes);
     }
-
-    export function removeEmpTied(processCateNo) {
-        return ajax(format(paths.removeEmpTied, processCateNo));
-
+    
+    export function removeList(codes: Array<string>) {
+        return ajax('pr', paths.removeList, codes);
     }
-
-
-
-
+    
 }

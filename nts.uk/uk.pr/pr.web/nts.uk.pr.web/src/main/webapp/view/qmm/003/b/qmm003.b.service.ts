@@ -1,27 +1,13 @@
 module nts.uk.pr.view.qmm003.b.service {
+    
     import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
 
     let paths = {
-        findDisplayRegister: "ctx.pr.core.ws.wageprovision.processdatecls/findDisplayRegister",
-        registerProcessing :"ctx.pr.core.ws.wageprovision.processdatecls/registerProcessing",
-        removeEmpTied :"ctx.pr.core.ws.wageprovision.processdatecls/removeEmpTied/{0}"
+        getAllResidentTaxPayee: "cts/pr/transfer/rsdttaxpayee/get-all-resident-tax-payee"
     };
 
-    export function findDisplayRegister(): JQueryPromise<any> {
-        return ajax('pr', paths.findDisplayRegister);
+    export function getAllResidentTaxPayee(): JQueryPromise<any> {
+        return ajax('pr', paths.getAllResidentTaxPayee);
     }
     
-    export function registerProcessing(command): JQueryPromise<any> {
-        return ajax('pr', paths.registerProcessing, command);
-    }
-
-    export function removeEmpTied(processCateNo) {
-        return ajax(format(paths.removeEmpTied, processCateNo));
-
-    }
-
-
-
-
 }

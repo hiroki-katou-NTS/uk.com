@@ -1,32 +1,201 @@
 module nts.uk.pr.view.qmm003.a.viewmodel {
+    
+    import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import modal = nts.uk.ui.windows.sub.modal;
+    import constants = qmm003.share.constants;
 
     export class ScreenModel {
         
-        items2: any;
-        singleSelectedCode: any;
+        items2: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<string>;
         headers: any;
+        listRegions: Array<any> = constants.listRegions;
+        listPrefectures: Array<any>;
+        selectedResidentTaxPayee: KnockoutObservable<ResidentTaxPayee>;
+        updateMode: KnockoutObservable<boolean> = ko.observable(false);
+        totalRtp: KnockoutObservable<number> = ko.observable(0);
+        dispTotalRtp: KnockoutObservable<string> = ko.computed(() => {
+            return getText("QMM003_10", [this.totalRtp()]);
+        });
+        listRsdTaxPayees: Array<Node> = [];
 
         constructor() {
             let self = this;
-            self.items2 = ko.observableArray([
-                new Node('0001', 'サービス部', [
-                    new Node('0001-1', 'サービス部1', []),
-                    new Node('0001-2', 'サービス部2', []),
-                    new Node('0001-3', 'サービス部3', [])
-                ]), 
-                new Node('0002', '開発部', [])
-            ]);
-            self.singleSelectedCode = ko.observable(null);
-            self.headers = ko.observableArray(["Item Value Header","Item Text Header"]); 
+            self.items2 = ko.observableArray([]);
+            self.selectedCode = ko.observable("");
+            self.headers = ko.observableArray([getText("QMM003_9")]);
+            self.listPrefectures = constants.listPrefectures;
+            self.selectedResidentTaxPayee = ko.observable(new ResidentTaxPayee(null));
+            self.selectedCode.subscribe(val => {
+                nts.uk.ui.errors.clearAll();
+                if (val.length < 3) { //select parent node
+                    self.setData(null);
+                    self.updateMode(false);
+                    $("#A3_2").focus();
+                } else {
+                    block.invisible();
+                    service.getResidentTaxPayee(val).done(data => {
+                        self.setData(data);
+                        self.updateMode(true);
+                        $("#A3_3").focus();
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            });
         }
         
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            dfd.resolve();
+            block.invisible();
+            self.selectedCode("");
+            self.listRsdTaxPayees = [];
+            service.getAllResidentTaxPayee().done((data: Array<any>) => {
+                self.totalRtp(data.length);
+                let listNodes = [];
+                self.listRegions.forEach(r => {
+                    let regionNode = new Node(r.code, r.name, [], 0);
+                    let prefectures = self.listPrefectures.filter(pr => {return pr.region == r.code});
+                    let prefectureNodes = [];
+                    prefectures.forEach(pr => {
+                        let prefectureNode = new Node(pr.code < 10 ? "0" + pr.code : "" + pr.code, pr.name, [], 1);
+                        if (data.length > 0) {
+                            let residentTaxPayees = data.filter(d => {return d.prefectures == pr.code});
+                            let residentNodes = _.map(residentTaxPayees, rs => {
+                                let node = new Node(rs.code, rs.name, [], 2);
+                                self.listRsdTaxPayees.push(node);
+                                return node;
+                            });
+                            prefectureNode.children = residentNodes;
+                        }
+                        prefectureNodes.push(prefectureNode);
+                    });
+                    regionNode.children = prefectureNodes;
+                    listNodes.push(regionNode);
+                });
+                self.items2(listNodes);
+                self.selectedCode(self.listRsdTaxPayees.length > 0 ? self.listRsdTaxPayees[0].code : "");
+                dfd.resolve();
+            }).fail(error => {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
             return dfd.promise();
+        }
+
+        createNew() {
+            let self = this;
+            self.selectedCode("");
+        }
+
+        register() {
+            let self = this;
+            $(".nts-input").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                let command = ko.toJS(self.selectedResidentTaxPayee());
+                ko.utils.extend(command, {
+                    updateMode: self.updateMode()
+                });
+                service.register(command).done(() => {
+                    self.startPage().done(() => {
+                        info({ messageId: "Msg_15" }).then(() => {
+                            if (self.selectedCode() == command.code)
+                                self.selectedCode.valueHasMutated();
+                            else
+                                self.selectedCode(command.code);
+                        });
+                    });
+                }).fail(error => {
+                    alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
+            }
+        }
+
+        remove() {
+            let self = this;
+            block.invisible();
+            service.checkBeforeDelete(self.selectedCode()).done(() => {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    let deletedIndex = _.findIndex(self.listRsdTaxPayees, r => {return r.code == self.selectedCode()});
+                    let nextSelectCode = "";
+                    if (self.listRsdTaxPayees.length > 1) {
+                        if (deletedIndex == self.listRsdTaxPayees.length - 1) {
+                            nextSelectCode = self.listRsdTaxPayees[deletedIndex - 1].code;
+                        } else {
+                            nextSelectCode = self.listRsdTaxPayees[deletedIndex + 1].code;
+                        }
+                    }
+                    service.remove(self.selectedCode()).done(() => {
+                        self.startPage().done(() => {
+                            info({ messageId: "Msg_16" }).then(() => {
+                                if (self.selectedCode() == nextSelectCode)
+                                    self.selectedCode.valueHasMutated();
+                                else
+                                    self.selectedCode(nextSelectCode);
+                            });
+                        });
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }).ifNo(() => {
+                });
+            }).fail(error => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+        }
+        
+        openDialogQmm003b() {
+            let self = this;
+            modal("/view/qmm/003/b/index.xhtml").onClosed(() => {
+                
+            });
+        }
+        
+        openDialogQmm003d() {
+            let self = this;
+            modal("/view/qmm/003/d/index.xhtml").onClosed(() => {
+                let cancel = getShared("QMM003DCancel");
+                if (!cancel) {
+                    self.startPage();
+                }
+            });
+        }
+        
+        openDialogQmm003e() {
+            modal("/view/qmm/003/e/index.xhtml");
+        }
+        
+        setData(data: any) {
+            let self = this;
+            self.selectedResidentTaxPayee().code(data == null ? null : data.code);
+            self.selectedResidentTaxPayee().name(data == null ? null : data.name);
+            self.selectedResidentTaxPayee().kanaName(data == null ? null : data.kanaName);
+            self.selectedResidentTaxPayee().prefectures(data == null ? null : data.prefectures);
+            self.selectedResidentTaxPayee().reportCd(data == null ? null : data.reportCd);
+            self.selectedResidentTaxPayee().accountNumber(data == null ? null : data.accountNumber);
+            self.selectedResidentTaxPayee().subscriberName(data == null ? null : data.subscriberName);
+            self.selectedResidentTaxPayee().designationNum(data == null ? null : data.designationNum);
+            self.selectedResidentTaxPayee().postCode(data == null ? null : data.postCode);
+            self.selectedResidentTaxPayee().compileStationName(data == null ? null : data.compileStationName);
+            self.selectedResidentTaxPayee().memo(data == null ? null : data.memo);
+            self.selectedResidentTaxPayee().reportName(data == null ? null : data.reportName);
         }
 
     }
@@ -35,16 +204,60 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
         code: string;
         name: string;
         nodeText: string;
-        custom: string;
-        childs: any;
-        constructor(code: string, name: string, childs: Array<Node>) {
-            var self = this;
+        children: any;
+        level: number; //0: region, 1: prefecture, 2: resident
+        
+        constructor(code: string, name: string, children: Array<Node>, level?: number) {
+            let self = this;
             self.code = code;
             self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.childs = childs;
-            self.custom = 'Random' + new Date().getTime();
+            self.nodeText = level == 2 ? self.code + ' ' + self.name : self.name;
+            self.children = children;
+            if (level != null) self.level = level;
         }
+    }
+    
+    class ResidentTaxPayee {
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        kanaName: KnockoutObservable<string>;
+        compileStationName: KnockoutObservable<string>;
+        memo: KnockoutObservable<string>;
+        subscriberName: KnockoutObservable<string>;
+        accountNumber: KnockoutObservable<string>;
+        reportCd: KnockoutObservable<string>;
+        reportName: KnockoutObservable<string>;
+        designationNum: KnockoutObservable<string>;
+        prefectures: KnockoutObservable<number>;
+        postCode: KnockoutObservable<string>;
+        
+        constructor(data: {code: string, name: string, kana: string, prefectures: number, reportCd: string, reportName: string, accountNumber: string, subscriberName: string, designationNum: string, postCode: string, compileStationName: string, memo: string}) {
+            this.code = ko.observable(data == null ? null : data.code);
+            this.name = ko.observable(data == null ? null : data.name);
+            this.kanaName = ko.observable(data == null ? null : data.kana);
+            this.compileStationName = ko.observable(data == null ? null : data.compileStationName);
+            this.memo = ko.observable(data == null ? null : data.memo);
+            this.subscriberName = ko.observable(data == null ? null : data.subscriberName);
+            this.accountNumber = ko.observable(data == null ? null : data.accountNumber);
+            this.reportCd = ko.observable(data == null ? null : data.reportCd); 
+            this.designationNum = ko.observable(data == null ? null : data.designationNum);
+            this.prefectures = ko.observable(data == null ? null : data.prefectures);
+            this.postCode = ko.observable(data == null ? null : data.postCode);
+            this.reportName = ko.observable(data == null ? null : data.reportName);
+        }
+        
+        openDialogQmm003c() {
+            let self = this;
+            setShared("QMM003CParam", self.reportCd());
+            modal("/view/qmm/003/c/index.xhtml").onClosed(() => {
+                let selected = getShared("QMM003CResult");
+                if (selected) {
+                    self.reportCd(selected.code);
+                    self.reportName(selected.name);
+                }
+            });
+        }
+        
     }
     
 }
