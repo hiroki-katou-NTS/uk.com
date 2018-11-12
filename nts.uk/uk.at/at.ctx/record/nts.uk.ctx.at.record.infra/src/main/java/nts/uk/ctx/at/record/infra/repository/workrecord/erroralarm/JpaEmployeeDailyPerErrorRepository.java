@@ -195,7 +195,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				val entity = new KrcdtSyainDpErList();
 				entity.errorCode = rec.getString("ERROR_CODE");
 				entity.employeeId = rec.getString("SID");
-				entity.processingDate = rec.getGeneralDate("YMD");
+				entity.processingDate = rec.getGeneralDate("PROCESSING_DATE");
 				entity.companyID = rec.getString("CID");
 				entity.errorCancelable = rec.getInt("ERROR_CANCELABLE");
 				entity.errorAlarmMessage = rec.getString("ERROR_MESSAGE");
