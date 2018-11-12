@@ -107,7 +107,7 @@
 					<label>#{i18n.getText('QMM001_14')}</label>
 				</div>
 
-				<span id="A3_2" style="margin-left: 25px;" data-bind="text: salGenParaIdent().paraNo"/>
+				<span id="A3_2" style="margin-left: 19px;" data-bind="text: salGenParaIdent().paraNo"/>
 				<span id="A3_3" style="margin-left: 10px;" data-bind="text: salGenParaIdent().name"/>
 				<br></br>
 				<div class="form-lable"
@@ -168,7 +168,7 @@
 					<label>#{i18n.getText('QMM001_19')}</label>
 
 				</div>
-				<div id="A4_2" tabindex="9" style="margin-left: 17px" class="cf" data-bind="ntsSwitchButton: {
+				<div id="A4_2" tabindex="9" style="margin-left: 20px" class="cf" data-bind="ntsSwitchButton: {
 							name:'#{i18n.getText('QMM001_19')}',
 							options: itemsSwitchParaAvailable(),
 							optionsValue: 'code',
@@ -187,7 +187,7 @@
 						 required: true } ">
 						<label id="A4_5">#{i18n.getText('QMM001_22')}</label>
 					</div>
-					<input id="A4_6" tabindex="10" style="margin-left: 3px"
+					<input id="A4_6" tabindex="10" style="margin-left: 5px"
 						   data-bind="ntsNumberEditor: {
 																option : {width: '70px'},
 																name: '#{i18n.getText('QMM001_22')}',
@@ -206,7 +206,7 @@
 
 					</div>
 
-					<input id="A4_8" style="margin-left: 3px" tabindex="11" class="B3_7"
+					<input id="A4_8" style="margin-left: 5px" tabindex="11" class="B3_7"
 						   data-bind="ntsNumberEditor: {
 																option : {width: '70px'},
 																name: '#{i18n.getText('QMM001_23')}',
@@ -224,7 +224,7 @@
 						<label id="A4_9">#{i18n.getText('QMM001_24')}</label>
 
 					</div>
-					<input id="A4_10" style="margin-left: 3px" tabindex="12" class="B3_7"
+					<input id="A4_10" style="margin-left: 5px" tabindex="12" class="B3_7"
 						   data-bind="ntsTextEditor: {
 																option : {width: '170'},
 																name: '#{i18n.getText('QMM001_24')}',
@@ -250,7 +250,7 @@
 							required: true,
 							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE }"/>
 					<br></br>
-					<span id="A4_15" style="margin-left: 100px;" data-bind="text: salGenParaIdent().explanation"/>
+					<span id="A4_15" style="margin-left: 105px;" data-bind="text: salGenParaIdent().explanation"/>
 				</div>
 				<!--case 5-->
 					<div data-bind="if:salGenParaIdent().attributeType == nts.uk.pr.view.qmm001.a.viewmodel.PARAATTRITYPE.SELECTION">
@@ -259,7 +259,7 @@
 								 data-bind="ntsFormLabel: { required: true } ">
 								<label id="A4_16">#{i18n.getText('QMM001_44')}</label>
 							</div>
-							<div  id="A4_17" tabindex="14" class="B3_7" style="margin-top: 2px;"
+							<div  id="A4_17" tabindex="14" class="B3_7" style="margin-top: 2px;margin-left: 39px;"
 								  data-bind="ntsComboBox: {
 							   name :'#{i18n.getText('QMM001_44')}',
 							enable: selectedSwitchParaAvai() == nts.uk.pr.view.qmm001.a.viewmodel.SWITCH_EFF_CATEGORY.AVAILABLE,
