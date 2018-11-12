@@ -3,11 +3,11 @@ module nts.uk.pr.view.qmm042.a.service {
     import format = nts.uk.text.format;
 
     var paths: any = {
-
-        employeeSalaryUnitPriceHistory :"ctx/pr/core/wageprovision/empsalunitprice/getEmployeeSalaryUnitPriceHistory",
+        updateUnitPrice :"ctx/pr/core/wageprovision/empsalunitprice/updateUnitPrice",
         salaryPerUnitPriceName :"ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
-
         employeeReferenceDate :"ctx.pr.core.ws.wageprovision.individualwagecontract/employeeReferenceDate",
+        employeeSalaryUnitPriceHistory :"ctx/pr/core/wageprovision/empsalunitprice/getEmployeeSalaryUnitPriceHistory",
+
     }
 
     export function salaryPerUnitPriceName(): JQueryPromise<any> {
@@ -20,6 +20,10 @@ module nts.uk.pr.view.qmm042.a.service {
 
     export function employeeReferenceDate(): JQueryPromise<any> {
         return ajax('pr', paths.employeeReferenceDate);
+    }
+
+    export function empSalUnitUpdateAll(command):JQueryPromise<any>{
+        return ajax('pr', paths.updateUnitPrice,command);
     }
 
 
