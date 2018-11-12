@@ -61,10 +61,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             __viewContext.transferred.ifPresent(data => {
                 if(!nts.uk.util.isNullOrUndefined(data.appDate)){
                     self.targetDate = moment(data.appDate).format("YYYY/MM/DD");
-                    self.datePeriod({
-                        startDate: self.targetDate,
-                        endDate: self.targetDate    
-                    });
+                    self.dateSingle(self.targetDate);
                 }
                 if(!nts.uk.util.isNullOrEmpty(data.employeeIds)){
                     self.employeeID = data.employeeIds[0];
