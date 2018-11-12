@@ -87,7 +87,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }
             });
 
-            $("#A5_7").focus();
+
+
 
 
         }
@@ -100,6 +101,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.reloadCcg001(data.empExtraRefeDate);
                 else
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
+
+                $('#A5_7').focus();
             })
 
             dfd.resolve(self);
@@ -201,7 +204,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }
             }
 
-            self.personalDisplay(temp);
+            //self.workIndividualPricesDisplay(_.sortBy(temp, ['employeeCode', 'startYaerMonth']));
+
+            self.personalDisplay(_.sortBy(temp, ['employeeCode', 'startYearMonth']));
             if(self.personalDisplay().length<=10){
                 if (/Edge/.test(navigator.userAgent)) {
                     $('.scroll-header').removeClass('edge_scroll_header');
