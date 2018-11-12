@@ -129,15 +129,20 @@ module nts.uk.pr.view.qmm019.share.model {
         BREAKDOWN_ITEM = 5
     }
 
-    export function getPaymentCaclMethodAtr(): Array<ItemModel> {
-        return [
-            new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, '手入力'),
-            new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
-            new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, '計算式'),
-            new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
-            new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
-            new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
-        ];
+    export function getPaymentCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
+        if (e == BreakdownItemUseAtr.USE) {
+            return [
+                new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
+            ];
+        }else{
+            return [
+                new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, '手入力'),
+                new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
+                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, '計算式'),
+                new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
+                new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, '共通金額')
+            ];
+        }
     }
 
     /**
@@ -160,16 +165,21 @@ module nts.uk.pr.view.qmm019.share.model {
         BREAKDOWN_ITEM = 6
     }
 
-    export function getDeductionCaclMethodAtr(): Array<ItemModel> {
-        return [
-            new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, '手入力'),
-            new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
-            new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, '計算式'),
-            new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
-            new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
-            new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, '支給相殺'),
-            new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
-        ];
+    export function getDeductionCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
+        if (e == BreakdownItemUseAtr.USE) {
+            return [
+                new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
+            ];
+        } else {
+            return [
+                new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, '手入力'),
+                new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
+                new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, '計算式'),
+                new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
+                new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
+                new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, '支給相殺'),
+            ];
+        }
     }
 
     /**

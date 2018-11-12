@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
             self.categoryAtr = shareModel.CategoryAtr.DEDUCTION_ITEM;
             self.totalObjAtrs = ko.observableArray([]);
-            self.calcMethods = ko.observableArray(shareModel.getDeductionCaclMethodAtr());
+            self.calcMethods = ko.observableArray([]);
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
             self.deductionProportionalAtrs = ko.observableArray(shareModel.getDeductionProportionalAtr())
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr())
@@ -214,10 +214,11 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         loadControlE2_9() {
             let self = this;
             // ※補足資料8参照
+            self.calcMethods(shareModel.getDeductionCaclMethodAtr(self.deductionItemSet().breakdownItemUseAtr()));
             if (self.deductionItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.BREAKDOWN_ITEM.toString());
             } else {
-                self.dataScreen().calcMethod(null);
+                self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.MANUAL_INPUT.toString());
             }
         }
 
@@ -263,7 +264,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            if (defaultAtr != share.model.DefaultAtr.SYSTEM_DEFAULT) {
+            if (defaultAtr != shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.screenControl().visibleE2_2(true);
                 self.screenControl().visibleE2_3(true);
                 self.screenControl().enableE2_5(true);

@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
             self.categoryAtr = shareModel.CategoryAtr.PAYMENT_ITEM;
             self.totalObjAtrs = ko.observableArray([]);
-            self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr());
+            self.calcMethods = ko.observableArray([]);
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
             self.paymentProportionalAtrs = ko.observableArray(shareModel.getPaymentProportionalAtr());
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr());
@@ -215,10 +215,11 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         loadControlD2_9() {
             let self = this;
             // ※補足資料8参照
+            self.calcMethods(shareModel.getPaymentCaclMethodAtr(self.paymentItemSet().breakdownItemUseAtr()));
             if (self.paymentItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM.toString());
             } else {
-                self.dataScreen().calcMethod(null);
+                self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.MANUAL_INPUT.toString());
             }
         }
 
@@ -264,7 +265,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
         selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            if (defaultAtr != share.model.DefaultAtr.SYSTEM_DEFAULT) {
+            if (defaultAtr != shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.screenControl().visibleD2_2(true);
                 self.screenControl().visibleD2_3(true);
                 self.screenControl().enableD2_5(true);

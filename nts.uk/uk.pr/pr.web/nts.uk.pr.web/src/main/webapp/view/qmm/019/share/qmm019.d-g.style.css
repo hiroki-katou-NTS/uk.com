@@ -5,15 +5,15 @@
 }
 
 .table-origin > .cell:nth-child(1) {
-    width: 370px;
+    width: 350px;
 }
 
 .table-origin > .cell:nth-child(2) {
-    width: 535px;
+    width: 545px;
 }
 
 .table-origin > .cell:nth-child(3) {
-    width: 305px;
+    width: 315px;
     padding-left: 5px;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .table-col-3, .table-error-alarm, .table-col-2, .table-col-4 {
-    width: 535px;
+    width: 545px;
     margin-bottom: 5px;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .table-origin .acc-content .acc-table {
-    width: 288px;
+    width: 298px;
 }
 
 .table-origin .acc-content .acc-table > tbody > tr:not(.last-row) > td:first-child {
@@ -133,11 +133,11 @@
 }
 
 .table-origin .acc-content .acc-table .limited-label {
-    width: 190px;
+    width: 200px;
 }
 
 #fixed-table{
-    width: 255px;
+    width: 265px;
 }
 
 .label.range-setting{
@@ -145,6 +145,6 @@
 }
 
 .label.range-setting .label:last-child{
-    width: 92px;
+    width: 95px;
     text-align: left;
 }
