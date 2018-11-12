@@ -1,6 +1,8 @@
 package nts.uk.shr.infra.web.request;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
@@ -18,6 +20,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
+import nts.uk.shr.com.program.Program;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
@@ -25,6 +28,8 @@ import nts.uk.shr.infra.web.util.StartPageLogService;
 
 public class StartPageLogWriter implements Filter {
 
+	private static final List<Program> DEFAULT_NOT_LOG = Arrays.asList(ProgramsManager.KAF000B, ProgramsManager.CMM045A);
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -65,8 +70,8 @@ public class StartPageLogWriter implements Filter {
 				AppContextsConfig.setBeforeRequestedWebAPI(new RequestInfo(before, webApi, ip, pcName));
 			}
 		}
-		
-		if (ProgramsManager.KAF000B.getPId().equals(target.getProgramId() + target.getScreenId())) {
+		String targetPg = target.getProgramId() + target.getScreenId();
+		if (DEFAULT_NOT_LOG.stream().filter(c -> c.getPId().equals(targetPg)).findFirst().isPresent()) {
 			return;
 		}
 
