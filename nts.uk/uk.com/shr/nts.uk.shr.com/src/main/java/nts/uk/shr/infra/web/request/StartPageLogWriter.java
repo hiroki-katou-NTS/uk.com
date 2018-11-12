@@ -1,8 +1,6 @@
 package nts.uk.shr.infra.web.request;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
@@ -12,24 +10,16 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import nts.gul.text.StringUtil;
-import nts.uk.shr.com.context.AppContextsConfig;
-import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
-import nts.uk.shr.com.program.Program;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.infra.web.util.FilterConst;
-import nts.uk.shr.infra.web.util.FilterHelper;
 import nts.uk.shr.infra.web.util.StartPageLogService;
 
 public class StartPageLogWriter implements Filter {
 
-	private static final List<Program> DEFAULT_NOT_LOG = Arrays.asList(ProgramsManager.KAF000B, ProgramsManager.CMM045A);
-	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -39,10 +29,6 @@ public class StartPageLogWriter implements Filter {
 			throws IOException, ServletException {
 
 		writeLog(request);
-		
-		Cookie cookie = new Cookie(FilterConst.JUMP_FROM_MENU, "");
-        cookie.setMaxAge(0);
-        ((HttpServletResponse) response).addCookie(cookie);
 
 		chain.doFilter(request, response);
 	}
@@ -56,32 +42,18 @@ public class StartPageLogWriter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String requestPagePath = httpRequest.getRequestURL().toString();
 
-		ScreenIdentifier target = ScreenIdentifier.create(requestPagePath, httpRequest.getQueryString());
-
 		boolean isStartFromMenu = isStartFromMenu(httpRequest);
-		if (!isStartFromMenu) {
-			
-			String before = getReferered(httpRequest);
-			if(before != null){
-				String ip = FilterHelper.getClientIp(httpRequest);
-				String pcName = FilterHelper.getPcName(ip);
-				String webApi = FilterHelper.detectWebapi(before);
-
-				AppContextsConfig.setBeforeRequestedWebAPI(new RequestInfo(before, webApi, ip, pcName));
-			}
-		}
-		String targetPg = target.getProgramId() + target.getScreenId();
-		if (DEFAULT_NOT_LOG.stream().filter(c -> c.getPId().equals(targetPg)).findFirst().isPresent()) {
+		
+		ScreenIdentifier target = ScreenIdentifier.create(requestPagePath);
+		
+		if(ProgramsManager.KAF000B.getPId().equals(target.getProgramId() + target.getScreenId())){
 			return;
 		}
 
 		StartPageLogService logService = CDI.current().select(StartPageLogService.class).get();
 
-		logService.writeLog(target);
-
+		logService.writeLog(isStartFromMenu ? null : getReferered(httpRequest), target);
 	}
-	
-
 
 	private boolean isStartFromMenu(HttpServletRequest httpRequest) {
 		if (httpRequest.getCookies() == null) {
