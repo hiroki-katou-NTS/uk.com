@@ -25,6 +25,7 @@ module nts.uk.pr.view.qmm020.a {
         viewmodelA.startPage().done((data)=>{
             viewmodelB.startPage().done(function() {
                 nts.uk.ui.errors.clearAll();
+
                 if(viewmodelB.mode()  === model.MODE.NO_REGIS){
                     viewmodelB.enableEditHisButton(false);
                     viewmodelB.enableAddHisButton(true);
@@ -35,6 +36,7 @@ module nts.uk.pr.view.qmm020.a {
                     viewmodelB.enableRegisterButton(true);
                 }
                 viewmodelB.newHistoryId(null);
+                $("#B1_5").focus();
             });
             $(".tab-b-sidebar").click(function() {
                 viewmodelB.startPage().done(function() {
@@ -48,7 +50,8 @@ module nts.uk.pr.view.qmm020.a {
                         viewmodelB.enableAddHisButton(true);
                         viewmodelB.enableRegisterButton(true);
                     }
-
+                    viewmodelB.newHistoryId(null);
+                    $("#B1_5").focus();
                 });
             });
 
