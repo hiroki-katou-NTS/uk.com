@@ -8,20 +8,44 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         salaryPerUnitPriceNames: KnockoutObservableArray<IndividualPriceName> = ko.observableArray([]);
         salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable('');
 
-        workIndividualPrices:KnockoutObservableArray<WorkIndividualPrice>=ko.observableArray([]);
+        workIndividualPrices: KnockoutObservableArray<WorkIndividualPrice> = ko.observableArray([]);
+        workIndividualPricesDisplay: KnockoutObservableArray<WorkIndividualPrice> = ko.observableArray([]);
 
         perUnitPriceName: KnockoutObservable<string> = ko.observable('');
         perUnitPriceCode: KnockoutObservable<string> = ko.observable('');
 
         yearMonthFilter = ko.observable(201802);
 
-
+        employeeInfoImports:any;
         constructor() {
             var self = this;
-            $("#A4_7").ntsFixedTable({height: 350, width: 720});
-
+            //$("#A4_7").ntsFixedTable({height: 343, width: 720});
+            if(/Edge/.test(navigator.userAgent)){
+                $("#A4_7").ntsFixedTable({height: 339.6, width: 720});
+            }
+             else if (/Chrome/.test(navigator.userAgent)) {
+                $("#A4_7").ntsFixedTable({height: 343, width: 720});
+            }
+            else {
+                $("#A4_7").ntsFixedTable({height: 339.6, width: 720});
+            }
 
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
+
+
+                self.workIndividualPrices.removeAll();
+                self.workIndividualPricesDisplay.removeAll();
+                nts.uk.ui.errors.clearAll();
+                $('#A4_5').ntsError('check');
+
+                if(self.workIndividualPrices().length<=10){
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').removeClass('edge_scroll_header');
+                    } else {
+                        $('.scroll-header').removeClass('ci_scroll_header');
+                    }
+                }
+
                 if (!selectcode)
                     return;
                 let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
@@ -32,42 +56,81 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.perUnitPriceName(temp.name);
 
                 }
+
+
             })
 
-
-
-
+            $('A4_5').focus();
         }
 
         filterData(): void {
+            let self=this;
 
+            let temp = new Array();
+            //nts.uk.ui.errors.clearAll();
+            for(let i=0;i<self.workIndividualPrices().length;i++){
+                if(self.workIndividualPrices()[i].startYaerMonth <= this.yearMonthFilter() && self.workIndividualPrices()[i].endYearMonth >= this.yearMonthFilter()){
+                    temp.push(self.workIndividualPrices()[i])
+                }
+            }
+            self.workIndividualPricesDisplay(_.sortBy(temp, ['employeeCode', 'startYaerMonth']));
+            //$('#A4_7 .nts-input').trigger("validate");
+
+
+            if (self.workIndividualPricesDisplay().length > 10) {
+                if (/Edge/.test(navigator.userAgent)) {
+                    $('.scroll-header').addClass('edge_scroll_header');
+                    $('.nts-fixed-body-container').addClass('edge_scroll_body');
+                } else {
+                    $('.scroll-header').addClass('ci_scroll_header');
+                    $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                }
+
+            }
+            if(self.workIndividualPricesDisplay().length<=10){
+                if (/Edge/.test(navigator.userAgent)) {
+                    $('.scroll-header').removeClass('edge_scroll_header');
+                    $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+                } else {
+                    $('.scroll-header').removeClass('ci_scroll_header');
+                    $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+                }
+            }
         }
 
 
         registerAmount(): void {
+            let self = this;
 
+
+
+            service.empSalUnitUpdateAll({
+                payrollInformationCommands: ko.toJS(self.workIndividualPricesDisplay)}).done(function () {
+                dialog.info({messageId: "Msg_15"});
+            })
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             service.employeeReferenceDate().done(function (data) {
-                self.reloadCcg001(data.empExtraRefeDate);
+                self.reloadCcg001(data.paymentDate);
             });
 
             service.salaryPerUnitPriceName().done(function (individualPriceName) {
-
+                if (!individualPriceName) {
+                    nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
+                    return;
+                }
                 self.salaryPerUnitPriceNames(individualPriceName);
                 self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
-
-
             });
 
             dfd.resolve(self);
             return dfd.promise();
         }
 
-        reloadCcg001(empExtraRefeDate: string): void {
+        reloadCcg001(paymentDate: string): void {
             let self = this;
 
             self.ccgcomponent = {
@@ -83,7 +146,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 periodFormatYM: false,
 
                 /** Required parameter */
-                baseDate: moment(new Date(empExtraRefeDate)).format("YYYY-MM-DD"), // 基準日
+                baseDate: moment(new Date(paymentDate)).format("YYYY-MM-DD"), // 基準日
                 periodStartDate: moment(new Date('06/05/1990')).format("YYYY-MM-DD"), // 対象期間開始日
                 periodEndDate: moment(new Date('06/05/2018')).format("YYYY-MM-DD"), // 対象期間終了日
                 inService: true,
@@ -106,7 +169,31 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 isMutipleCheck: true,
 
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-
+                    console.log(data.listEmployee);
+                    let command = {
+                        personalUnitPriceCode: self.salaryPerUnitPriceNamesSelectedCode(),
+                        employeeIds: data.listEmployee.map(v => v.employeeId)
+                    }
+                    service.employeeSalaryUnitPriceHistory(command).done(function (dataNameAndAmount) {
+                        self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
+                        let personalAmountData: Array<any> = new Array();
+                        personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
+                        personalAmountData = _.sortBy(personalAmountData, function (o) {
+                            return o.startYaerMonth;
+                        })
+                        console.log(dataNameAndAmount);
+                        self.workIndividualPrices(personalAmountData);
+                        //self.workIndividualPricesDisplay(personalAmountData);
+                        for (let i = 0; i < self.workIndividualPrices().length; i++) {
+                            let index = _.findIndex(self.employeeInfoImports, function (o) {
+                                return o.sid == self.workIndividualPrices()[i].employeeID
+                            });
+                            if (index != -1) {
+                                self.workIndividualPrices()[i].employeeCode(self.employeeInfoImports[index].scd);
+                                self.workIndividualPrices()[i].businessName(self.employeeInfoImports[index].businessName);
+                            }
+                        }
+                    })
                 }
             }
 
@@ -203,63 +290,66 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             }
         }
     }
-    
-    
-    export interface IWorkIndividualPrice{
-         employeeID:string,
-         historyID:string,
-         employeeCode:string,
-         businessName:string,
-         startYaerMonth:number,
-         endYearMonth:number,
-         amountOfMoney:number,
+
+
+    export interface IWorkIndividualPrice {
+        employeeID: string,
+        historyID: string,
+        employeeCode: string,
+        businessName: string,
+        startYaerMonth: number,
+        endYearMonth: number,
+        amountOfMoney: number,
     }
-    
-    export class WorkIndividualPrice{
-        employeeID:string;
-        historyID:string;
-        employeeCode:KnockoutObservable<string>=ko.observable('');
-        businessName:KnockoutObservable<string>=ko.observable('');
 
-        startYaerMonth:number;
-        endYearMonth:number;
+    export class WorkIndividualPrice {
+        employeeID: string;
+        historyID: string;
+        employeeCode: KnockoutObservable<string> = ko.observable('');
+        businessName: KnockoutObservable<string> = ko.observable('');
 
-        period:string;
+        startYaerMonth: number;
+        endYearMonth: number;
 
-        amountOfMoney:KnockoutObservable<number>=ko.observable(0);
+        period: string;
 
-        constructor(param:IWorkIndividualPrice){
-            this.employeeID=param.employeeID;
-            this.historyID=param.historyID;
-            this.employeeCode(param.employeeCode);
-            this.businessName(param.businessName);
-            this.startYaerMonth=param.startYaerMonth;
-            this.endYearMonth=param.endYearMonth;
-            this.amountOfMoney(param.amountOfMoney);
-            nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ~ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+        amountOfMoney: KnockoutObservable<number> = ko.observable(0);
+
+        constructor(param: IWorkIndividualPrice) {
+            if(param){
+                this.employeeID = param.employeeID;
+                this.historyID = param.historyID;
+                this.employeeCode(param.employeeCode);
+                this.businessName(param.businessName);
+                this.startYaerMonth = param.startYaerMonth;
+                this.endYearMonth = param.endYearMonth;
+                this.amountOfMoney(param.amountOfMoney);
+                this.period=nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ~ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+            }
+
         }
-        
+
     }
 
-    export interface IEmployeeInfoImport{
-        sid:string,
-        scd:string,
-        businessName:string,
+    export interface IEmployeeInfoImport {
+        sid: string,
+        scd: string,
+        businessName: string,
     }
-    
-    
-    export class EmployeeInfoImport{
-          sid:string;
-          scd:string;
-          businessName:string;
 
-          constructor(param:IEmployeeInfoImport){
-              this.sid=param.sid;
-              this.scd=param.scd;
-              this.businessName=param.businessName;
-          }
+
+    export class EmployeeInfoImport {
+        sid: string;
+        scd: string;
+        businessName: string;
+
+        constructor(param: IEmployeeInfoImport) {
+            this.sid = param.sid;
+            this.scd = param.scd;
+            this.businessName = param.businessName;
+        }
     }
-    
+
 }
 
 
