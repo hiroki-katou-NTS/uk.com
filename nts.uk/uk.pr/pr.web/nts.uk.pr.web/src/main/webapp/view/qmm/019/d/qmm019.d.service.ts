@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm019.d {
 
     export module service {
         var paths = {
-            getStatementItem: "core/wageprovision/statementlayout/getStatementItem/{0}",
+            getStatementItem: "core/wageprovision/statementlayout/getStatementItem",
             getPaymentItemStById: "core/wageprovision/statementlayout/getPaymentItemStById/{0}/{1}",
             getAllBreakdownItemSetById: "ctx/pr/core/breakdownItem/getAllBreakdownItemSetById/{0}/{1}",
             getSalIndAmountNameById: "core/wageprovision/statementlayout/getSalIndAmountNameById/{0}/{1}",
@@ -12,9 +12,8 @@ module nts.uk.pr.view.qmm019.d {
             getWageTableById: "core/wageprovision/statementlayout/getWageTableById/{0}",
         }
 
-        export function getStatementItem(categoryAtr: number): JQueryPromise<any> {
-            let _path = format(paths.getStatementItem, categoryAtr);
-            return ajax('pr', _path);
+        export function getStatementItem(dataDto: any): JQueryPromise<any> {
+            return ajax('pr', paths.getStatementItem, dataDto);
         }
 
         export function getPaymentItemStById(categoryAtr: number, itemNameCode: string): JQueryPromise<any> {

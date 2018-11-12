@@ -1,10 +1,11 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout;
 
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemCustomDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
@@ -32,6 +33,9 @@ public class StatementLayoutFinder {
     @Inject
     private DeductionItemSetRepository deductionItemSetRepo;
 
+    @Inject
+    private TimeItemSetRepository timeItemSetRepository;
+
     public StatementLayoutAndHistDto getStatementLayoutAndLastHist(String code) {
         String cid = AppContexts.user().companyId();
 
@@ -57,8 +61,9 @@ public class StatementLayoutFinder {
         return result;
     }
 
-    public List<StatementItemCustomDto> getStatementItem(int categoryAtr) {
-        return statementLayoutService.getStatementItem(categoryAtr).stream().map(StatementItemCustomDto::new).collect(Collectors.toList());
+    public List<StatementItemCustomDto> getStatementItem(StatementItemCustomDataDto dataDto) {
+        return statementLayoutService.getStatementItem(dataDto.getCategoryAtr(), dataDto.getItemNameCdSelected(), dataDto.getItemNameCdExcludeList())
+                .stream().map(StatementItemCustomDto::new).collect(Collectors.toList());
     }
 
     public PaymentItemSetDto getPaymentItemStById(int categoryAtr, String itemNameCode) {
@@ -71,6 +76,12 @@ public class StatementLayoutFinder {
         String cid = AppContexts.user().companyId();
         Optional<DeductionItemSet> deductionItemSetOpt = deductionItemSetRepo.getDeductionItemStById(cid, categoryAtr, itemNameCode);
         return deductionItemSetOpt.map(DeductionItemSetDto::new).orElse(null);
+    }
+
+    public AttendanceItemSetDto getAttendanceItemById(int categoryAtr, String itemNameCode) {
+        String cid = AppContexts.user().companyId();
+        Optional<TimeItemSet> attItem = timeItemSetRepository.getTimeItemStById(cid, categoryAtr, itemNameCode);
+        return attItem.map(AttendanceItemSetDto::new).orElse(null);
     }
 
 }

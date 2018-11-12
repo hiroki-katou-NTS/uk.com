@@ -68,11 +68,11 @@
 }
 
 .table-error-alarm > .cell:nth-child(2) {
-    width: 235px;
+    width: 240px;
 }
 
 .table-error-alarm > .cell:nth-child(3) {
-    width: 170px;
+    width: 165px;
 }
 
 .table-col-2 > .cell:nth-child(1) {
@@ -116,6 +116,10 @@
     background-color: #CFF1A5;
 }
 
+.table-origin .acc-content .acc-table > tbody > tr.last-row > td:first-child {
+    padding: 0px;
+}
+
 .table-origin .acc-content .acc-table > tbody > tr > th {
     white-space: normal;
 }
@@ -126,6 +130,10 @@
 
 .table-origin .acc-content .acc-table .nts-fixed-table .fixed-table tr{
     height: 23px;
+}
+
+#fixed-table{
+    width: 255px;
 }
 
 .label.range-setting{

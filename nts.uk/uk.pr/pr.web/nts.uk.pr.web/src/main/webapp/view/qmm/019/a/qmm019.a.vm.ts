@@ -198,7 +198,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public outputExcel(): void {
-
+            modal("/view/qmm/019/d/index.xhtml");
         }
 
         public addHistory(): void {
@@ -232,7 +232,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public modifyLog(): void {
-
+            modal("/view/qmm/019/e/index.xhtml");
         }
     }
 

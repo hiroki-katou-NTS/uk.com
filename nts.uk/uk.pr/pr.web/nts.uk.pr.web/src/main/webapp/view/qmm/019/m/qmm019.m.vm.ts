@@ -7,14 +7,12 @@ module nts.uk.pr.view.qmm019.m.viewmodel {
 
         columns: KnockoutObservableArray<any>;
         formulas: KnockoutObservableArray<IFormula>;
-        formulaSelected: KnockoutObservable<IFormula>;
         formulaCodeSelected: KnockoutObservable<string>;
 
         constructor() {
             let self = this;
 
             self.formulas = ko.observableArray([]);
-            self.formulaSelected = ko.observable(null);
             self.formulaCodeSelected = ko.observable(null);
 
             this.columns = ko.observableArray([
@@ -55,14 +53,12 @@ module nts.uk.pr.view.qmm019.m.viewmodel {
                 if (!isNullOrUndefined(formula)) {
                     // パラメータ.計算式コードの項目を選択状態にする
                     self.formulaCodeSelected(formulaCode);
-                    self.formulaSelected(formula);
                     return;
                 }
             }
 
             // 一覧の先頭を選択状態に宇する
             let firstItem: IFormula = _.head(self.formulas());
-            self.formulaSelected(firstItem);
             if (isNullOrUndefined(firstItem)) {
                 self.formulaCodeSelected(null);
             } else {
@@ -72,7 +68,10 @@ module nts.uk.pr.view.qmm019.m.viewmodel {
 
         decide() {
             let self = this;
-            windows.setShared("QMM019M_RESULTS", self.formulaSelected());
+            let formula = _.find(self.formulas(), (item: IFormula) => {
+                return item.formulaCode == self.formulaCodeSelected();
+            })
+            windows.setShared("QMM019M_RESULTS", formula);
             windows.close();
         }
 
