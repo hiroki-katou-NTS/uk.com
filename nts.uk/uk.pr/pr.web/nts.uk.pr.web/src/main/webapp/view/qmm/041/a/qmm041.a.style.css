@@ -13,21 +13,20 @@
 }
 
 #panels-group {
-    margin-left: 40px;
+    margin-left: 45px;
     margin-right: 0;
 }
 
 .right-content {
-    padding: 10px 0px 0px 10px;
-
+    padding: 10px 0 0 10px;
 }
 
 .left-content {
-    padding: 10px 0px 0px 10px;
+    padding: 10px 0 0 10px;
 }
 
 #kcp {
-    margin: 0 0 10px 60px;
+    margin: 0 0 10px 70px;
     width: 920px;
 }
 
@@ -36,9 +35,8 @@
 }
 
 #A3_1 {
-    margin-left: 20px;
+    margin-left: 25px;
     margin-bottom: 40px;
-
 }
 
 #A5_1, #A5_4, #A5_8 {
@@ -64,5 +62,5 @@
 }
 
 #A1_2 {
-    margin-left: 900px;
+    margin-left: 1000px;
 }
