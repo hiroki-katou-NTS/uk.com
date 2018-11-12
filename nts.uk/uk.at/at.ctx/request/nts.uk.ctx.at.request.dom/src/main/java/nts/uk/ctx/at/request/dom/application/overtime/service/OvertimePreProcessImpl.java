@@ -207,13 +207,13 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
 	@Override
 	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
+			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, boolean isOverTime) {
 		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
 		Integer startTime1 = null;
 		Integer endTime1 = null;
 		Integer startTime2 = null;
 		Integer endTime2 = null;
-		if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.NOTUSE)) {
+		if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.NOTUSE) && isOverTime) {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}
 		recordWorkDisplay = UseAtr.USE;
