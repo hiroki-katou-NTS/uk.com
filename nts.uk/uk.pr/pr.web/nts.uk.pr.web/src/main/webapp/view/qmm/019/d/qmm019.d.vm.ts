@@ -176,6 +176,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
+            self.dataScreen().initSubscribe();
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -199,6 +200,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(pay)) {
                     self.paymentItemSet().setData(pay);
+                    self.loadControlD2_9();
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
@@ -208,6 +210,16 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             });
 
             return dfd.promise();
+        }
+
+        loadControlD2_9() {
+            let self = this;
+            // ※補足資料8参照
+            if (self.paymentItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
+                self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM.toString());
+            } else {
+                self.dataScreen().calcMethod(null);
+            }
         }
 
         unselectedMode() {
@@ -710,6 +722,26 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         commonAmount: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
+        }
+
+        setData(data: IParams) {
+            let self = this;
+            self.itemNameCode(data.itemNameCode);
+            self.workingAtr(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
+            self.totalObject(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
+            self.calcMethod(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
+            self.proportionalAtr(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
+            self.proportionalMethod(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
+            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            self.errorRangeSetting.setData(data.errorRangeSetting);
+            self.alarmRangeSetting.setData(data.alarmRangeSetting);
+            self.perValCode(data.perValCode);
+            self.formulaCode(data.formulaCode);
+            self.wageTableCode(data.wageTableCode);
+            self.commonAmount(data.commonAmount);
+        }
+
+        initSubscribe(){
             let self = this;
             self.calcMethod.subscribe(() => {
                 self.perValCode(null);
@@ -759,23 +791,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.clearError("#D3_20");
                 self.checkError("#D3_20");
             });
-        }
-
-        setData(data: IParams) {
-            let self = this;
-            self.itemNameCode(data.itemNameCode);
-            self.workingAtr(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
-            self.totalObject(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
-            self.calcMethod(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
-            self.proportionalAtr(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
-            self.proportionalMethod(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
-            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
-            self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);
-            self.perValCode(data.perValCode);
-            self.formulaCode(data.formulaCode);
-            self.wageTableCode(data.wageTableCode);
-            self.commonAmount(data.commonAmount);
         }
 
         /**
@@ -977,6 +992,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         laborInsuranceCategory: number;
         everyoneEqualSet: number;
         averageWageAtr: number;
+        breakdownItemUseAtr: number;
         errorRangeSetting: IErrorAlarmRangeSetting;
         alarmRangeSetting: IErrorAlarmRangeSetting;
     }
@@ -1011,7 +1027,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
          */
         averageWageAtr: KnockoutObservable<number> = ko.observable(null);
         averageWageAtrText: KnockoutObservable<string> = ko.observable(null);
-
+        /**
+         * 内訳項目利用区分
+         */
+        breakdownItemUseAtr: KnockoutObservable<number> = ko.observable(null);
         errorRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
         alarmRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
 
@@ -1030,6 +1049,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             this.everyoneEqualSetText(shareModel.getCategoryFixedWageText(data.everyoneEqualSet));
             this.averageWageAtr(data.averageWageAtr);
             this.averageWageAtrText(shareModel.getAverageWageAtrText(data.averageWageAtr));
+            this.breakdownItemUseAtr(data.breakdownItemUseAtr);
             this.errorRangeSetting.setData(data.errorRangeSetting);
             this.alarmRangeSetting.setData(data.alarmRangeSetting);
         }

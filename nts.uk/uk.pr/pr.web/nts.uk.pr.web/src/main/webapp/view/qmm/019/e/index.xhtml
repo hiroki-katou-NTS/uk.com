@@ -112,7 +112,7 @@
                                 optionsText: 'name',
                                 required: true,
                                 enable: $vm.screenControl().enableE2_5(),
-                                selectFirstIfNull: false,
+                                selectFirstIfNull: true,
                                 columns: [
                                     { prop: 'name', length: 10 },
                                 ]}"/>
@@ -134,7 +134,7 @@
                                 optionsText: 'name',
                                 required: true,
                                 enable: $vm.screenControl().enableE2_8(),
-                                selectFirstIfNull: false,
+                                selectFirstIfNull: true,
                                 columns: [
                                     { prop: 'name', length: 10 },
                                 ]}"/>
@@ -170,7 +170,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!--E6_2-->
-                                <button id="D7_2"
+                                <button id="E6_2"
                                         data-bind="click: function(){$vm.openM()} ">#{i18n.getText('QMM019_134')}</button>
                             </div>
                             <div class="cell valign-center">
@@ -191,7 +191,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!--E7_2-->
-                                <button id="D8_2"
+                                <button id="E7_2"
                                         data-bind="click: function(){$vm.openN()} ">#{i18n.getText('QMM019_134')}</button>
                             </div>
                             <div class="cell valign-center">
@@ -409,7 +409,7 @@
                                         </th>
                                         <td>
                                             <!--E10_11-->
-                                            <div class="label" data-bind="text: $vm.dataScreen().name"/>
+                                            <div class="label limited-label" data-bind="text: $vm.dataScreen().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -425,11 +425,11 @@
                                     <tr>
                                         <th class="ui-widget-header">
                                             <!--E10_5-->
-                                            <div class="label">#{i18n.getText('QMM019_172')}</div>
+                                            <div class="label">#{i18n.getText('QMM019_167')}</div>
                                         </th>
                                         <td>
                                             <!--E10_15-->
-                                            <div class="label" data-bind="text: taxAtrText"/>
+                                            <div class="label" data-bind="text: deductionItemAtrText"/>
                                         </td>
                                     </tr>
                                     <tr>

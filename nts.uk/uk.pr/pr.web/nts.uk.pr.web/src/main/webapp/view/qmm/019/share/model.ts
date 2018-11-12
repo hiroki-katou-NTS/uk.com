@@ -289,6 +289,35 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     /**
+     * 控除項目区分
+     */
+    export enum DeductionItemAtr{
+        // 任意控除項目
+        OPTIONAL_DEDUCTION_ITEM = 0,
+        // 社会保険項目
+        SOCIAL_INSURANCE_ITEM = 1,
+        // 所得税項目
+        INCOME_TAX_ITEM = 2,
+        // 住民税項目
+        INHABITANT_TAX_ITEM = 3
+    }
+
+    export function getDeductionItemAtrText(e: DeductionItemAtr) {
+        switch (e) {
+            case DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM:
+                return "任意控除項目";
+            case DeductionItemAtr.SOCIAL_INSURANCE_ITEM:
+                return "社会保険項目";
+            case DeductionItemAtr.INCOME_TAX_ITEM:
+                return "所得税項目";
+            case DeductionItemAtr.INHABITANT_TAX_ITEM:
+                return "住民税項目";
+            default:
+                return "";
+        }
+    }
+
+    /**
      * 固定的賃金の設定区分
      */
     export enum SocialInsuranceCategory{
@@ -381,6 +410,13 @@ module nts.uk.pr.view.qmm019.share.model {
         DO_NOT_PRINT = 1
     }
 
+    /**
+     * 内訳項目利用区分
+     */
+    export enum BreakdownItemUseAtr{
+        NOT_USE = 0,
+        USE = 1
+    }
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeiod {

@@ -132,6 +132,10 @@
     height: 23px;
 }
 
+.table-origin .acc-content .acc-table .limited-label {
+    width: 190px;
+}
+
 #fixed-table{
     width: 255px;
 }
