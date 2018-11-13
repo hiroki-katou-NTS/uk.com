@@ -1590,6 +1590,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 			            		cell.putValue(value, true);
 			            	}
+			            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
+			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+			            	}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
 			            }
@@ -1662,6 +1665,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 	            }
@@ -1788,6 +1794,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
+				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								}
 				            	setFontStyle(style);
 				            	cell.setStyle(style);
 				            }
@@ -2244,6 +2253,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+					if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
@@ -2307,6 +2319,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+		        	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
