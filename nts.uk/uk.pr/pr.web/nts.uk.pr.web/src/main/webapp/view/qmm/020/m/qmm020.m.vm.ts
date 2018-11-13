@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
             }
             this.params(params);
             nts.uk.pr.view.qmm020.m.service.getDataStatement(this.params().startYearMonth).done((data)=>{
-                if(data){
+                if(data && data.length > 0){
                     this.items(StatementDto.fromApp(data));
                     self.currentCodeList(self.items()[0].statementCode);
                     $('#multi-list_container').focus();

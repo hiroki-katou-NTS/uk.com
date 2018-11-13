@@ -4,6 +4,7 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
     import model = qmm020.share.model;
     import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         isFirst:              KnockoutObservable<boolean> = ko.observable(null);
@@ -37,6 +38,10 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             };
             service.deleteStateCorrelationHis(data).done(()=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    let data : any ={
+                        modeEditHistory: self.methodEditing()
+                    };
+                    setShared(model.PARAMETERS_SCREEN_K.OUTPUT, data);
                     close();
                 });
             }).fail((err) =>{
@@ -48,7 +53,9 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             let self = this;
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
+            self.startYearMonthPeriod(self.params().startYearMonth);
             self.startDateMaster(self.params().baseDate);
+            self.endYearMonthPeriod(self.params().endYearMonth);
             self.startYearMonthBefore(self.params().startYearMonthBefore);
             self.isFirst(self.params().isFirst);
         }

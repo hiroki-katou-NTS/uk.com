@@ -69,7 +69,9 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             if(self.isFirst()){
                 self.itemList(getHistoryEditMethod(true));
             }
-            self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', [self.convertMonthYearToString(self.startYearMonthPeriod())]));
+            if(self.startYearMonthPeriod()!=0){
+                self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', [self.convertMonthYearToString(self.startYearMonthPeriod())]));
+            }
         }
         cancel(){
             close();

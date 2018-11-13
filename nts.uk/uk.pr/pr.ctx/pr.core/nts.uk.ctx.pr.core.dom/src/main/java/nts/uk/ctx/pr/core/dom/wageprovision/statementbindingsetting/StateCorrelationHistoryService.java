@@ -2,12 +2,16 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.YearMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Optional;
 
+@SuppressWarnings("Duplicates")
 @Stateless
 public class StateCorrelationHistoryService {
 
@@ -60,141 +64,450 @@ public class StateCorrelationHistoryService {
             case COMPANY : {
                 if(modeEdit == MODE_DELETE){
                     mStateLinkSettingCompanyRepository.remove(hisId);
-                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid).get().items().size() == 1) {
-                        mStateCorrelationHisCompanyRepository.remove(cid, hisId);
-                        return;
-                    }
-                    mStateCorrelationHisCompanyRepository.update(cid, history);
-                    break;
+//                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid).get().items().size() == 1) {
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
+
                 } else {
                     if (isUpdate) {
-                        mStateCorrelationHisCompanyRepository.update(cid, history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
-
                 }
-
+                break;
             }
             case EMPLOYEE : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
-                    if(mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid).get().items().size() == 1){
-                        mStateCorrelationHisEmployeeRepository.remove(cid,hisId);
-                        return;
-                    }
-                    mStateCorrelationHisEmployeeRepository.update(cid,history);
-                    break;
+//                    if(mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid).get().items().size() == 1){
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
+
                 }
                 else{
                     if (isUpdate) {
-                        mStateCorrelationHisEmployeeRepository.update(cid,history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
                 }
-
+                break;
             }
             case DEPARMENT : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
                     mStateLinkSettingDateRepository.remove(hisId);
-                    if(mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cid).get().items().size() == 1){
-                        mStateCorrelationHisDeparmentRepository.remove(cid,hisId);
-                        return;
-                    }
-                    mStateCorrelationHisDeparmentRepository.update(cid,history);
-                    break;
+//                    if(mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cid).get().items().size() == 1){
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
                 }
                 else{
                     if (isUpdate) {
-                        mStateCorrelationHisDeparmentRepository.update(cid,history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
                 }
-
+                break;
             }
             case CLASSIFICATION : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
-                    if(mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cid).get().items().size() == 1){
-                        mStateCorrelationHisClassificationRepository.remove(cid,hisId);
-                        return;
-                    }
-                    mStateCorrelationHisClassificationRepository.update(cid,history);
-                    break;
+//                    if(mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cid).get().items().size() == 1){
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
                 }
                 else{
                     if (isUpdate) {
-                        mStateCorrelationHisClassificationRepository.update(cid,history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
                 }
-
+                break;
             }
             case POSITION : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
                     mStateLinkSettingDateRepository.remove(hisId);
-                    if(mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cid).get().items().size() == 1){
-                        mStateCorrelationHisPositionRepository.remove(cid,hisId);
-                        return;
-                    }
-                    mStateCorrelationHisPositionRepository.update(cid,history);
-                    break;
+//                    if(mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cid).get().items().size() == 1){
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
+
                 }
                 else{
                     if (isUpdate) {
-                        mStateCorrelationHisPositionRepository.update(cid,history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
                 }
+                break;
 
             }
             case SALARY : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
-                    if(mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cid).get().items().size() == 1){
-                        mStateCorrelationHisSalaryRepository.remove(cid,hisId);
-                        return;
-                    }
-                    mStateCorrelationHisSalaryRepository.update(cid,history);
-                    break;
+//                    if(mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cid).get().items().size() == 1){
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
                 }
                 else{
                     if (isUpdate) {
-                        mStateCorrelationHisSalaryRepository.update(cid,history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
                 }
+                break;
 
             }
             case INDIVIDUAL : {
                 if(modeEdit == MODE_DELETE){
                     mStateLinkSettingIndividualRepository.remove(hisId);
-                    if(mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(cid).get().items().size() == 1){
-                        mStateCorrelationHisIndividualRepository.remove(cid,hisId);
-                        return;
-                    }
-                    mStateCorrelationHisIndividualRepository.update(cid,history);
-                    break;
+//                    if(mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(cid).get().items().size() == 1){
+//                        historyDeletionProcessing(type, cid, hisId);
+//                        return;
+//                    }
+//                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                    historyDeletionProcessing(type,hisId,cid);
                 }
                 else{
                     if (isUpdate) {
-                        mStateCorrelationHisIndividualRepository.update(cid,history);
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
                         return;
                     }
                     throw new BusinessException("Msg_107");
                 }
-
+                break;
             }
 
         }
     }
+
+    private void historyDeletionProcessing(int type, String hisId, String cId) {
+        switch (type) {
+            case COMPANY: {
+                Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
+                if (!accInsurHis.isPresent()) {
+                    throw new RuntimeException("invalid employmentHistory");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()) {
+                    return;
+                }
+                if (accInsurHis.get().getHistory().size() == 1) {
+                    mStateCorrelationHisCompanyRepository.remove(cId, hisId);
+                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                    return;
+                }
+                accInsurHis.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisCompanyRepository.remove(cId, hisId);
+                if (accInsurHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                    mStateCorrelationHisCompanyRepository.update(cId, lastestItem);
+                }
+                break;
+            }
+            case EMPLOYEE: {
+                Optional<StateCorrelationHisEmployee> accInsurHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
+                if (!accInsurHis.isPresent()) {
+                    throw new RuntimeException("invalid employmentHistory");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()) {
+                    return;
+                }
+                if (accInsurHis.get().getHistory().size() == 1) {
+                    mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
+                    mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
+                    return;
+                }
+                accInsurHis.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
+                if (accInsurHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                    mStateCorrelationHisEmployeeRepository.update(cId, lastestItem);
+                }
+                break;
+
+            }
+            case DEPARMENT: {
+                Optional<StateCorrelationHisDeparment> accInsurHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
+                if (!accInsurHis.isPresent()) {
+                    throw new RuntimeException("invalid employmentHistory");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()) {
+                    return;
+                }
+                if (accInsurHis.get().getHistory().size() == 1) {
+                    mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
+                    mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
+                    return;
+                }
+                accInsurHis.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
+                if (accInsurHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                    mStateCorrelationHisDeparmentRepository.update(cId, lastestItem);
+                }
+                break;
+            }
+            case CLASSIFICATION: {
+                Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
+                if (!accInsurHis.isPresent()) {
+                    throw new RuntimeException("invalid employmentHistory");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()) {
+                    return;
+                }
+                if (accInsurHis.get().getHistory().size() == 1) {
+                    mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                    mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                    return;
+                }
+                accInsurHis.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                if (accInsurHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                    mStateCorrelationHisClassificationRepository.update(cId, lastestItem);
+                }
+                break;
+
+            }
+            case POSITION: {
+                Optional<StateCorrelationHisPosition> accInsurHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
+                if (!accInsurHis.isPresent()) {
+                    throw new RuntimeException("invalid employmentHistory");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()) {
+                    return;
+                }
+                if (accInsurHis.get().getHistory().size() == 1) {
+                    mStateCorrelationHisPositionRepository.remove(cId, hisId);
+                    mStateCorrelationHisPositionRepository.remove(cId, hisId);
+                    return;
+                }
+                accInsurHis.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisPositionRepository.remove(cId, hisId);
+                if (accInsurHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                    mStateCorrelationHisPositionRepository.update(cId, lastestItem);
+                }
+                break;
+            }
+            case SALARY: {
+
+                Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
+                if (!accInsurHis.isPresent()) {
+                    throw new RuntimeException("invalid employmentHistory");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()) {
+                    return;
+                }
+                if (accInsurHis.get().getHistory().size() == 1) {
+                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                    return;
+                }
+                accInsurHis.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                if (accInsurHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                    mStateCorrelationHisSalaryRepository.update(cId, lastestItem);
+                }
+                break;
+            }
+
+
+        }
+
+
+    }
+
+    private void historyCorrectionProcecessing(int type, String cId, String hisId, YearMonth start, YearMonth end) {
+        switch (type) {
+            case COMPANY: {
+                // // //
+                Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
+                if (!accInsurHis.isPresent()) {
+                    return;
+                }
+                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId)).findFirst();
+                if (!itemToBeUpdate.isPresent()) {
+                    return;
+                }
+                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                //update history
+                mStateCorrelationHisCompanyRepository.update(cId, itemToBeUpdate.get());
+                // update item before
+                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                if (!itemToBeUpdated.isPresent()) {
+                    return;
+                }
+                mStateCorrelationHisCompanyRepository.update(cId, itemToBeUpdated.get());
+                break;
+            }
+            case EMPLOYEE: {
+                // // //
+                Optional<StateCorrelationHisEmployee> accInsurHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
+
+                if (!accInsurHis.isPresent()) {
+                    return;
+                }
+                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId)).findFirst();
+                if (!itemToBeUpdate.isPresent()) {
+                    return;
+                }
+                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                mStateCorrelationHisEmployeeRepository.update(cId, itemToBeUpdate.get());
+                // update item before
+                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                if (!itemToBeUpdated.isPresent()) {
+                    return;
+                }
+                mStateCorrelationHisEmployeeRepository.update(cId, itemToBeUpdated.get());
+                break;
+
+            }
+            case DEPARMENT: {
+                // // //
+                Optional<StateCorrelationHisDeparment> accInsurHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
+
+                if (!accInsurHis.isPresent()) {
+                    return;
+                }
+                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId)).findFirst();
+                if (!itemToBeUpdate.isPresent()) {
+                    return;
+                }
+                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                mStateCorrelationHisDeparmentRepository.update(cId, itemToBeUpdate.get());
+                // update item before
+                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                if (!itemToBeUpdated.isPresent()) {
+                    return;
+                }
+                mStateCorrelationHisDeparmentRepository.update(cId, itemToBeUpdated.get());
+                break;
+            }
+            case CLASSIFICATION: {
+                // // //
+                Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
+                if (!accInsurHis.isPresent()) {
+                    return;
+                }
+                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId)).findFirst();
+                if (!itemToBeUpdate.isPresent()) {
+                    return;
+                }
+                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                mStateCorrelationHisClassificationRepository.update(cId, itemToBeUpdate.get());
+                // update item before
+                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                if (!itemToBeUpdated.isPresent()) {
+                    return;
+                }
+                mStateCorrelationHisClassificationRepository.update(cId, itemToBeUpdated.get());
+                break;
+
+            }
+            case POSITION: {
+                // // //
+                Optional<StateCorrelationHisPosition> accInsurHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
+                if (!accInsurHis.isPresent()) {
+                    return;
+                }
+                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId)).findFirst();
+                if (!itemToBeUpdate.isPresent()) {
+                    return;
+                }
+                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                mStateCorrelationHisPositionRepository.update(cId, itemToBeUpdate.get());
+                // update item before
+                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                if (!itemToBeUpdated.isPresent()) {
+                    return;
+                }
+                mStateCorrelationHisPositionRepository.update(cId, itemToBeUpdated.get());
+                break;
+            }
+            case SALARY: {
+
+                // // //
+                Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
+                if (!accInsurHis.isPresent()) {
+                    return;
+                }
+                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId)).findFirst();
+                if (!itemToBeUpdate.isPresent()) {
+                    return;
+                }
+                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                mStateCorrelationHisSalaryRepository.update(cId, itemToBeUpdate.get());
+                // update item before
+                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                if (!itemToBeUpdated.isPresent()) {
+                    return;
+                }
+                mStateCorrelationHisSalaryRepository.update(cId, itemToBeUpdated.get());
+                break;
+            }
+
+
+        }
+
+
+    }
+
+
 
 
 }
