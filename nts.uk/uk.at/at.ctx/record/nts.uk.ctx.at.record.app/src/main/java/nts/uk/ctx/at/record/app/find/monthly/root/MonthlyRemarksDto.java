@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.MONTHLY_REMARKS_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class MonthlyRemarksDto extends MonthlyItemCommon {
 	

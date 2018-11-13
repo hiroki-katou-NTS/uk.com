@@ -155,10 +155,9 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 	public List<MonthlyAttendanceItemDto> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
 		List<MonthlyAttendanceItemDto> data = new ArrayList<>();
 		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT * from KRCMT_MON_ATTENDANCE_ITEM h"
-						+ " WHERE h.CID = ? AND h.M_ATD_ITEM_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.CID = ? AND h.M_ATD_ITEM_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setString(1, companyId);
 				for (int i = 0; i < subList.size(); i++) {
 					statement.setInt(i + 2, subList.get(i));

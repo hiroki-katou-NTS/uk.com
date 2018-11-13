@@ -18,7 +18,7 @@ public class DivergenceTimePubImpl implements DivergenceTimePub{
 
 	@Override
 	public List<DivergenceTimePubDto> getDivergenceTimeName(String companyId, List<Integer> divTimeIds) {
-		List<DivergenceTimePubDto> divergenceTimes = this.divergenceTimeRepository.getUsedDivTimeListByNoV2(companyId, divTimeIds).stream().map(f -> {
+		List<DivergenceTimePubDto> divergenceTimes = this.divergenceTimeRepository.getUsedDivTimeListByNoV3(companyId, divTimeIds).stream().map(f -> {
 			return new DivergenceTimePubDto(f.getCompanyId(), f.getDivergenceTimeNo(), f.getDivTimeName().v());
 		}).collect(Collectors.toList());
 		return divergenceTimes;

@@ -313,9 +313,9 @@ module nts.uk.pr.view.kmf001.l {
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
                 }, self);
-                self.monthDay = ko.observable(null);
-                self.nursingNumberLeaveDay = ko.observable(null);
-                self.nursingNumberPerson = ko.observable(null);
+                self.monthDay = ko.observable(101);
+                self.nursingNumberLeaveDay = ko.observable(0);
+                self.nursingNumberPerson = ko.observable(0);
                 self.nursingLeaveSpecialHoliday = ko.observable(0);
                 self.nursingLeaveWorkAbsence = ko.observable(0);
             }

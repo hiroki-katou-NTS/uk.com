@@ -1381,16 +1381,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         clickButtonCS0017() {
             let self = this;
-            setShared('inputCDL008', {
-                selectedCodes: [self.selectedCode()],
-                baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
-                isMultiple: false,
-                selectedSystemType: 1,// 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                isrestrictionOfReferenceRange: false,
-                isShowBaseDate: false
-            }, true);
+            service.checkFunctionNo().done(data =>{
+                setShared('inputCDL008', {
+                    selectedCodes: [self.selectedCode()],
+                    baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
+                    isMultiple: false,
+                    selectedSystemType: 1,// 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                    isrestrictionOfReferenceRange: data.available,
+                    isShowBaseDate: false
+                }, true);
+            });
             
             if($("#date1").ntsError('hasError')) return;
+            
             modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                 // Check is cancel.
                 if (getShared('CDL008Cancel')) {

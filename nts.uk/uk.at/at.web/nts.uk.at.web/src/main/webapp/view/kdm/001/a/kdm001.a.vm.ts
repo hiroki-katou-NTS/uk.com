@@ -104,7 +104,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
 
             self.selectedItem.subscribe(x => {
-                self.updateDataList(true);
+                self.updateDataList(false);
             });
 
             self.selectedPeriodItem.subscribe(x => {
@@ -210,10 +210,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         clickGetDataList() {
             let self = this;
 
-            self.updateDataList(false);
+            self.updateDataList(true);
+            
+            $('#compositePayOutSubMngDataGrid').focus();
         }
 
-        updateDataList(isSelectEmp) {
+        updateDataList(isShowMsg) {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
@@ -240,7 +242,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         self.closureID = res.closureID;
                         self.newDataDisable(false);
 
-                        if (arrayResponse.length == 0) {
+                        if (isShowMsg && arrayResponse.length == 0) {
                             dialog.alertError({ messageId: "Msg_725" });
                         }
 

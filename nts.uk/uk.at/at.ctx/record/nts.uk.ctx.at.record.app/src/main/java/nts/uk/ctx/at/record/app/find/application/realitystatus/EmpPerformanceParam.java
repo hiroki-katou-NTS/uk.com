@@ -15,4 +15,5 @@ public class EmpPerformanceParam {
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	private List<String> listEmpCd;
+	private Integer closureID;
 }

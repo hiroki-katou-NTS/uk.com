@@ -1,15 +1,15 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.file.at.infra.schedule.daily;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,9 +47,9 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringLength;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
-import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
@@ -79,7 +79,6 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -140,7 +139,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
  * The Class AsposeWorkScheduleOutputConditionGenerator.
- * @author HoangNDH
  */
 @Stateless
 public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsReportGenerator implements WorkScheduleOutputGenerator{
@@ -165,7 +163,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private TotalDayCountWs totalDayCountWs;
 	
-	/** The error alarm work record adapter. */
+	/** The error alarm work record repo. */
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
 	
@@ -177,7 +175,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
 	
-	/**  The employment adapter. */
+	/** The employment adapter. */
 	@Inject
 	private ScEmploymentAdapter employmentAdapter;
 	
@@ -189,13 +187,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private SCEmployeeAdapter employeeAdapter;
 	
-	/** The finder. */
+	/** The employment repository. */
 	@Inject
 	private EmploymentRepository employmentRepository;
 	
-	/** The attendance name service. */
-	@Inject
-	private DailyAttendanceItemNameDomainService attendanceNameService;
+	/** The job title adapter. */
+//	@Inject
+//	private DailyAttendanceItemNameDomainService attendanceNameService;
 	
 	/** The job title adapter. */
 	@Inject
@@ -209,25 +207,30 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private WorkTypeRepository worktypeRepo;
 	
+	/** The work time repo. */
 	@Inject
 	private WorkTimeSettingRepository workTimeRepo;
 	
+	/** The daily performance repo. */
 	@Inject
 	private DailyPerformanceScreenRepo dailyPerformanceRepo;
 	
+	/** The data processor. */
 	@Inject
 	private DataDialogWithTypeProcessor dataProcessor;
 	
-	@Inject
-	private DailyAttdItemAuthRepository daiAttItemAuthRepo;
+//	@Inject
+//	private DailyAttdItemAuthRepository daiAttItemAuthRepo;
 	
+	/** The company daily item service. */
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
 	
+	/** The optional item repo. */
 	@Inject
 	private OptionalItemRepository optionalItemRepo;
 	
-	/** The filename. */
+	/** The Constant filename. */
 	private static final String filename = "report/KWR001.xlsx";
 	
 	/** The Constant DATA_PREFIX. */
@@ -242,35 +245,65 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant LIMIT_DATA_PACK. */
 	private static final int LIMIT_DATA_PACK = 5;
 	
+	/** The Constant LIMIT_REMARK_INPUT. */
+	private static final int LIMIT_REMARK_INPUT = 20;
+	
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
 	
+	/** The Constant MASTER_UNREGISTERED. */
 	private static final String MASTER_UNREGISTERED = "マスタ未登録";
 	
+	/** The Constant ATTENDANCE_ID_WORK_TYPE. */
 	// All attendance ID which has value type = CODE
 	private static final int[] ATTENDANCE_ID_WORK_TYPE = {1, 28};
+	
+	/** The Constant ATTENDANCE_ID_WORK_TIME. */
 	private static final int[] ATTENDANCE_ID_WORK_TIME = {2, 29};
+	
+	/** The Constant ATTENDANCE_ID_WORK_LOCATION. */
 	private static final int[] ATTENDANCE_ID_WORK_LOCATION = {30, 33, 36, 38, 40, 43, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 87, 90, 94, 97, 
 			101, 104, 108, 111, 115, 118, 122, 125, 129, 132, 136, 139, 143, 146, 150, 153, 156, 158, 162, 164, 168, 170, 174, 176, 180, 182, 186, 188, 192, 194, 198, 200, 204, 206, 210, 212};
+	
+	/** The Constant ATTENDANCE_ID_REASON. */
 	private static final int[] ATTENDANCE_ID_REASON = {438, 443, 448, 453, 458, 801, 806, 811, 816, 821};
+	
+	/** The Constant ATTENDANCE_ID_WORKPLACE. */
 	private static final int ATTENDANCE_ID_WORKPLACE = 623;
+	
+	/** The Constant ATTENDANCE_ID_CLASSIFICATION. */
 	private static final int ATTENDANCE_ID_CLASSIFICATION = 624;
+	
+	/** The Constant ATTENDANCE_ID_POSITION. */
 	private static final int ATTENDANCE_ID_POSITION = 625;
+	
+	/** The Constant ATTENDANCE_ID_EMPLOYMENT. */
 	private static final int ATTENDANCE_ID_EMPLOYMENT = 626;
+	
+	/** The Constant ATTENDANCE_ID_USE_MAP. */
 	// All attendance ID which has value type = ATTR
 	private static final int[] ATTENDANCE_ID_USE_MAP = {};
+	
+	/** The Constant ATTENDANCE_ID_CALCULATION_MAP. */
 	private static final int[] ATTENDANCE_ID_CALCULATION_MAP = {627, 628, 629, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640};
+	
+	/** The Constant ATTENDANCE_ID_OVERTIME_MAP. */
 	private static final int[] ATTENDANCE_ID_OVERTIME_MAP = {824, 825, 826, 827, 828, 829, 830, 831, 832};
+	
+	/** The Constant ATTENDANCE_ID_OUTSIDE_MAP. */
 	private static final int[] ATTENDANCE_ID_OUTSIDE_MAP = {86, 93, 100, 107, 114, 121, 128, 135, 142, 149};
 	
+	/** The Constant ATTENDANCE_ID_OPTIONAL_START. */
 	// Attendance id with optional item from KMK002, for workaround
 	private static final int ATTENDANCE_ID_OPTIONAL_START = 641;
+	
+	/** The Constant ATTENDANCE_ID_OPTIONAL_END. */
 	private static final int ATTENDANCE_ID_OPTIONAL_END = 740;
 	
-	/** The font family. */
+	/** The Constant FONT_FAMILY. */
 	private static final String FONT_FAMILY = "ＭＳ ゴシック";
 	
-	/** The font size. */
+	/** The Constant FONT_SIZE. */
 	private static final int FONT_SIZE = 9;
 	
 	/* (non-Javadoc)
@@ -443,6 +476,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param query the query
 	 * @param condition the condition
 	 * @param outputItem the output item
+	 * @param dataRowCount the data row count
+	 * @param setter the setter
 	 */
 	private void collectData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query, WorkScheduleOutputCondition condition, OutputItemDailyWorkSchedule outputItem, int dataRowCount, TaskDataSetter setter) {
 		String companyId = AppContexts.user().companyId();
@@ -715,9 +750,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Get lowest workplace hierarchy level.
+	 * Check lowest workplace level.
 	 *
-	 * @param lstWorkplace the lst workplace
+	 * @param lstWorkplaceId the lst workplace id
 	 * @return the int
 	 */
 	private int checkLowestWorkplaceLevel(Set<String> lstWorkplaceId) {
@@ -737,11 +772,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * Collect employee performance data by date.
 	 *
 	 * @param reportData the report data
-	 * @param query the query
-	 * @param lstAttendanceResultImport the lst attendance result import
-	 * @param datePeriod the date period
-	 * @param lstWorkType the lst work type
-	 * @param lstDisplayItem the lst display item
+	 * @param queryData the query data
+	 * @param dataRowCount the data row count
 	 */
 	private void collectEmployeePerformanceDataByDate(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData, int dataRowCount) {
 		String companyId = AppContexts.user().companyId();
@@ -805,7 +837,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 									if (optRemarkInput.isPresent()) {
 										String value = optRemarkInput.get().getValue();
-										value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
+//										value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
+										if(value != null) {
+											value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
+										}
 										personalPerformanceDate.detailedErrorData += (value == null? "" : value + "　");
 									}
 								}
@@ -939,11 +974,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * Collect employee performance data by employee.
 	 *
 	 * @param reportData the report data
-	 * @param query the query
-	 * @param lstAttendanceResultImport the lst attendance result import
-	 * @param employeeId the employee id
-	 * @param lstWorkType the lst work type
-	 * @param lstDisplayItem the lst display item
+	 * @param queryData the query data
+	 * @param employeeDto the employee dto
+	 * @param dataRowCount the data row count
 	 * @return the employee report data
 	 */
 	private EmployeeReportData collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData, EmployeeDto employeeDto, int dataRowCount) {
@@ -1019,8 +1052,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
-							value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
-							detailedDate.errorDetail += (value == null? "" : value + "　");
+//							value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
+							if(value != null) {
+								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
+							}
+							detailedDate.errorDetail += (value == null ? "" : value + "　");
 						}
 					}
 					// Append マスタ未登録
@@ -1136,7 +1172,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Calculate total (export by employee).
+	 * Calculate total export by employee.
 	 *
 	 * @param workplaceData the workplace data
 	 * @param lstAttendanceId the lst attendance id
@@ -1275,7 +1311,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Calculate total (export by date).
+	 * Calculate total export by date.
 	 *
 	 * @param workplaceData the workplace data
 	 */
@@ -1454,11 +1490,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Find workplace (export by employee).
+	 * Find workplace.
 	 *
 	 * @param employeeId the employee id
 	 * @param rootWorkplace the root workplace
 	 * @param baseDate the base date
+	 * @param lstWorkplaceHistImport the lst workplace hist import
+	 * @param lstWorkplaceConfigInfo the lst workplace config info
 	 * @return the workplace report data
 	 */
 	private WorkplaceReportData findWorkplace(String employeeId, WorkplaceReportData rootWorkplace, GeneralDate baseDate,
@@ -1484,12 +1522,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Find workplace (export by date).
+	 * Find workplace.
 	 *
 	 * @param employeeId the employee id
 	 * @param rootWorkplace the root workplace
 	 * @param baseDate the base date
-	 * @return the workplace report data
+	 * @param lstWkpHistImport the lst wkp hist import
+	 * @param lstWorkplaceConfigInfo the lst workplace config info
+	 * @return the daily workplace data
 	 */
 	private DailyWorkplaceData findWorkplace(String employeeId, DailyWorkplaceData rootWorkplace, GeneralDate baseDate, 
 			List<WkpHistImport> lstWkpHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
@@ -1519,6 +1559,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 *
 	 * @param workplaceId the workplace id
 	 * @param baseDate the base date
+	 * @param lstWorkplaceConfigInfo the lst workplace config info
 	 * @return the map
 	 */
 	private Map<String, WorkplaceInfo> collectWorkplaceHierarchy(String workplaceId, GeneralDate baseDate, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
@@ -1540,11 +1581,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Analyze info (export by employee).
+	 * Analyze info export by employee.
 	 *
 	 * @param lstWorkplace the lst workplace
 	 * @param parent the parent
-	 * @param lstAddedWorkplace the lst added workplace
 	 */
 	private void analyzeInfoExportByEmployee(Map<String, WorkplaceInfo> lstWorkplace, WorkplaceReportData parent) {
 		boolean isFoundParent;
@@ -1590,7 +1630,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Find workplace by hierarchy code.
+	 * Find workplace by hierarchy code export employee.
 	 *
 	 * @param rootWorkplace the root workplace
 	 * @param hierarchyCode the hierarchy code
@@ -1617,7 +1657,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	
 	/**
-	 * Analyze info (export by date).
+	 * Analyze info export by date.
 	 *
 	 * @param lstWorkplace the lst workplace
 	 * @param parent the parent
@@ -1667,6 +1707,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 	}
 	
+	/**
+	 * Find workplace by hierarchy code export date.
+	 *
+	 * @param rootWorkplace the root workplace
+	 * @param hierarchyCode the hierarchy code
+	 * @return the daily workplace data
+	 */
 	private DailyWorkplaceData findWorkplaceByHierarchyCodeExportDate(DailyWorkplaceData rootWorkplace, String hierarchyCode) {
 		DailyWorkplaceData workplaceReportData = null;
 		
@@ -1715,6 +1762,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 *
 	 * @param headerData the header data
 	 * @param condition the condition
+	 * @param companyId the company id
+	 * @param roleId the role id
 	 */
 	private void collectDisplayMap(DailyPerformanceHeaderData headerData, OutputItemDailyWorkSchedule condition, String companyId, String roleId) {
 		List<AttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
@@ -1739,6 +1788,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * Write header data.
 	 *
 	 * @param query the query
+	 * @param outputItem the output item
 	 * @param sheet the sheet
 	 * @param reportData the report data
 	 * @param dateRow the date row
@@ -1764,20 +1814,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Copy footer.
-	 *
-	 * @param sheet the sheet
-	 * @param templateSheet the template sheet
-	 */
-	private void copyFooter(Worksheet sheet, Worksheet templateSheet) {
-		PageSetup sheetPageSetup = sheet.getPageSetup();
-		PageSetup templateSheetSetup = templateSheet.getPageSetup();
-		String footer = templateSheetSetup.getFooter(0);
-		sheetPageSetup.setFooter(0, footer);
-	}
-	
-	/**
-	 * Set all fixed text (header, footer..., all fixed resource text).
+	 * Sets the fixed data.
 	 *
 	 * @param condition the condition
 	 * @param sheet the sheet
@@ -1827,9 +1864,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Write display map (48 cells max).
+	 * Write display map.
 	 *
-	 * @param cells cell map
+	 * @param cells the cells
 	 * @param reportData the report data
 	 * @param currentRow the current row
 	 * @param nSize the n size
@@ -1865,7 +1902,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Write detail work schedule.+
+	 * Write detailed work schedule.
 	 *
 	 * @param currentRow the current row
 	 * @param templateSheetCollection the template sheet collection
@@ -1873,6 +1910,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param workplaceReportData the workplace report data
 	 * @param dataRowCount the data row count
 	 * @param condition the condition
+	 * @param rowPageTracker the row page tracker
 	 * @return the int
 	 * @throws Exception the exception
 	 */
@@ -2238,7 +2276,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
 				
 				List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(workplaceReportData, totalHierarchyOption);
-				Iterator levelIterator = null;
+				Iterator<Integer> levelIterator = null;
 				if (!lstBetweenLevel.isEmpty()) {
 					levelIterator = lstBetweenLevel.iterator();
 				}
@@ -2353,6 +2391,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param dailyReport the daily report
 	 * @param dataRowCount the data row count
 	 * @param condition the condition
+	 * @param rowPageTracker the row page tracker
 	 * @return the int
 	 * @throws Exception the exception
 	 */
@@ -2429,6 +2468,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param rootWorkplace the root workplace
 	 * @param dataRowCount the data row count
 	 * @param condition the condition
+	 * @param rowPageTracker the row page tracker
 	 * @return the int
 	 * @throws Exception the exception
 	 */
@@ -2628,7 +2668,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		TotalWorkplaceHierachy settingTotalHierarchy = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
 		
 		List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(rootWorkplace, settingTotalHierarchy);
-		Iterator levelIterator = null;
+		Iterator<Integer> levelIterator = null;
 		if (!lstBetweenLevel.isEmpty()) {
 			levelIterator = lstBetweenLevel.iterator();
 		}
@@ -2668,11 +2708,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 
 	/**
-	 * Write workplace total for export type by date.
+	 * Write workplace total.
 	 *
 	 * @param currentRow the current row
 	 * @param rootWorkplace the root workplace
-	 * @param cells the cells
+	 * @param sheet the sheet
+	 * @param dataRowCount the data row count
+	 * @param totalType the total type
 	 * @return the int
 	 */
 	private int writeWorkplaceTotal(int currentRow, DailyWorkplaceData rootWorkplace, Worksheet sheet, int dataRowCount, boolean totalType) {
@@ -2714,6 +2756,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		return currentRow;
 	}
 
+	/**
+	 * Write total value.
+	 *
+	 * @param totalValue the total value
+	 * @param cell the cell
+	 */
 	private void writeTotalValue(TotalValue totalValue, Cell cell) {
 		Style style = cell.getStyle();
 		String value = totalValue.getValue();
@@ -2742,7 +2790,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 *
 	 * @param currentRow the current row
 	 * @param lstGrossTotal the lst gross total
-	 * @param cells the cells
+	 * @param sheet the sheet
+	 * @param dataRowCount the data row count
+	 * @param rowPageTracker the row page tracker
 	 * @return the int
 	 */
 	private int writeGrossTotal(int currentRow, List<TotalValue> lstGrossTotal, Worksheet sheet, int dataRowCount, RowPageTracker rowPageTracker) {
@@ -2767,7 +2817,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    
 			    for (int j = 0; j < length; j++) {
 			    	totalValue =lstItemRow.get(j);
-			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 		        	writeTotalValue(totalValue, cell);
 			    }
@@ -2791,7 +2840,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Create print area of the entire report, important for exporting to PDF.
+	 * Creates the print area.
 	 *
 	 * @param currentRow the current row
 	 * @param sheet the sheet
@@ -2810,6 +2859,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * Gets the time attr.
 	 *
 	 * @param rawValue the raw value
+	 * @param isConvertAttr the is convert attr
 	 * @return the time attr
 	 */
 	private String getTimeAttr(String rawValue, boolean isConvertAttr) {
@@ -2847,10 +2897,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * Get all enabled level between child and its parent workplace
-	 * @param workplaceReportData
-	 * @param hierarchy
-	 * @return
+	 * Find enabled level between workplaces.
+	 *
+	 * @param workplaceReportData the workplace report data
+	 * @param hierarchy the hierarchy
+	 * @return the list
 	 */
 	private List<Integer> findEnabledLevelBetweenWorkplaces(WorkplaceReportData workplaceReportData, TotalWorkplaceHierachy hierarchy) {
 		List<Integer> lstEnabledLevel = new ArrayList<>();
@@ -2866,6 +2917,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		return lstEnabledLevel;
 	}
 	
+	/**
+	 * Find enabled level between workplaces.
+	 *
+	 * @param workplaceReportData the workplace report data
+	 * @param hierarchy the hierarchy
+	 * @return the list
+	 */
 	private List<Integer> findEnabledLevelBetweenWorkplaces(DailyWorkplaceData workplaceReportData, TotalWorkplaceHierachy hierarchy) {
 		List<Integer> lstEnabledLevel = new ArrayList<>();
 		
@@ -2881,6 +2939,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	
+	/**
+	 * Align top cotent.
+	 *
+	 * @param sheet the sheet
+	 */
 	private void alignTopCotent(Worksheet sheet) {
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setCenterHorizontally(true);
@@ -2892,9 +2955,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 *
 	 * @param employeeId the employee id
 	 * @param currentDate the current date
-	 * @param errorList the error list
 	 * @param choice the choice
 	 * @param lstOutputErrorCode the lst output error code
+	 * @param remarkDataContainer the remark data container
 	 * @return the remark content
 	 */
 	public Optional<PrintRemarksContent> getRemarkContent(String employeeId, GeneralDate currentDate,
@@ -3006,6 +3069,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		return Optional.ofNullable(printRemarksContent);
 	}
 	
+	/**
+	 * Gets the name from code.
+	 *
+	 * @param attendanceId the attendance id
+	 * @param code the code
+	 * @param queryData the query data
+	 * @param outSche the out sche
+	 * @return the name from code
+	 */
 	private String getNameFromCode(int attendanceId, String code, WorkScheduleQueryData queryData, OutputItemDailyWorkSchedule outSche) {
 		// Get all data
 		List<WorkType> lstWorkType = queryData.getLstWorkType();
@@ -3144,4 +3216,5 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		return "";
 	}
+	
 }

@@ -37,7 +37,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         closureInfoItems: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedClosure: KnockoutObservable<any> = ko.observable(0);
 
-
         displayWhenZero: KnockoutObservable<boolean> = ko.observable(false);
 
         showProfileIcon: KnockoutObservable<boolean> = ko.observable(false);
@@ -105,6 +104,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         isStartScreen: KnockoutObservable<any> = ko.observable(true);
+        noCheckColumn: KnockoutObservable<any> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -212,6 +212,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.displayWhenZero.subscribe(val => {
                 // $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
                 self.displayNumberZero1();
+            });
+            
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 230) + 'px !IMPORTANT');
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 230) + 'px !IMPORTANT');
             });
 
         }
@@ -353,6 +359,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
                 self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
             }
+            self.noCheckColumn(false);
             service.startScreen(self.monthlyParam()).done((data) => {
                 if (data.selectedClosure) {
                     let closureInfoArray = []
@@ -401,6 +408,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
                 //画面項目の非活制御をする
                 self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
+                if(self.initMode() == 2 && self.showButton().available_A4_7() == false) {
+                    self.showButton().available_A4_7(true);
+                    self.showButton().available_A1_11(false);
+                    //A4_2
+                    self.showButton().available_A4_2(false);
+                }
                 self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
 //                if (data.showRegisterButton == false) {
 //                    self.showButton().enable_A1_1(data.showRegisterButton);
@@ -914,7 +927,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
-                ntsControls: self.getNtsControls()
+                ntsControls: self.getNtsControls(self.initMode())
             }).create();
             self.showHeaderNumber.valueHasMutated();
             self.displayNumberZero1();
@@ -1026,7 +1039,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             ];} else {
                 let messId = self.dataAll().mess; 
                 nts.uk.ui.dialog.info({ messageId: messId });
-                $("#cbClosureInfo").hide();
+                self.noCheckColumn(true);
+                if(self.initMode() != 2) {
+                    $("#cbClosureInfo").hide();
+                }
                 features = [
                 {
                     name: 'Resizing',
@@ -1234,7 +1250,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         /**
          * Create NtsControls
          */
-        getNtsControls(): Array<any> {
+        getNtsControls(initMode: number): Array<any> {
             let self = this;
             let ntsControls: Array<any> = [
                 { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
@@ -1245,7 +1261,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         let rowSelect = _.find(source, (value: any) => {
                             return value.id == data.id;
                         })
-                        let initParam = new DPCorrectionInitParam(ScreenMode.NORMAL, [rowSelect.employeeId], false, false, null, '/view/kmw/003/a/index.xhtml');
+                        let initParam = new DPCorrectionInitParam(ScreenMode.NORMAL, [rowSelect.employeeId], false, false, null, '/view/kmw/003/a/index.xhtml?initmode='+ initMode);
                         let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, rowSelect.startDate, rowSelect.endDate, [rowSelect.employeeId], rowSelect.employeeId);
                         nts.uk.request.jump("/view/kdw/003/a/index.xhtml", { initParam: initParam, extractionParam: extractionParam });
                     }
@@ -1333,8 +1349,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
-                                header.constraint["min"] = "0";
-                                header.constraint["max"] = "99999999"
+                                header.constraint["min"] = header.constraint.min;
+                                header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
                                 header.constraint["min"] = "0:00";
@@ -1360,6 +1376,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 //                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes") {
 //                                        header["columnCssClass"] = "halign-right";
 //                                    }
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" || "AnyItemTimes" || "AnyTimesMonth") {
+                                        header["columnCssClass"] = "halign-right";
+                                        header.constraint["decimallength"] = 2;
+                                    }
                                 } else {
                                     delete header.group[0].constraint.cDisplayType;
                                     delete header.constraint;
@@ -1480,6 +1500,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         signAll() {
             let self = this;
+            if(self.noCheckColumn()) return;
             $("#dpGrid").mGrid("checkAll", "identify", true);
             $("#dpGrid").mGrid("checkAll", "approval", true);
         }
@@ -1488,6 +1509,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         releaseAll() {
             let self = this;
+            if(self.noCheckColumn()) return;
             $("#dpGrid").mGrid("uncheckAll", "identify", true);
             $("#dpGrid").mGrid("uncheckAll", "approval", true);
         }
@@ -1736,6 +1758,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.enable_A1_2(true);
                 //A5_4
                 self.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
+                if (formatPerformance == 0) { //権限
+                    self.enable_A1_5(true);
+                } else if (formatPerformance == 1) { //勤務種別
+                    self.enable_A1_5(false);
+                }
             }
             self.prevData = data;
             self.prevInitMode = initMode;

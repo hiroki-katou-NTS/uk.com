@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
@@ -19,9 +21,11 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /** 振休月別残数データ */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class AbsenceLeaveRemainDataDto extends MonthlyItemCommon {
 	

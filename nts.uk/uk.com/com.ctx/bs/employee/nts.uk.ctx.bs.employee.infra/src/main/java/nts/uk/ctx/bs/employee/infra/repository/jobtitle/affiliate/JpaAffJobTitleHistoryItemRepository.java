@@ -175,11 +175,10 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
 		List<AffJobTitleHistoryItem> data = new ArrayList<>();
 		CollectionUtil.split(lstSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT hi.HIST_ID, hi.SID, hi.JOB_TITLE_ID, hi.NOTE from BSYMT_AFF_JOB_HIST_ITEM hi"
 						+ " INNER JOIN BSYMT_AFF_JOB_HIST h ON hi.HIST_ID = h.HIST_ID"
-						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.START_DATE <= ? and h.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setDate(1, Date.valueOf(referDate.localDate()));
 				statement.setDate(2, Date.valueOf(referDate.localDate()));
 				for (int i = 0; i < subList.size(); i++) {

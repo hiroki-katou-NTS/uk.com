@@ -77,7 +77,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user != null ? user.getUserID() : "",
 				user != null ? user.getEmpID() : "", 
-				user != null ?user.getUserName(): "",
+				user != null ?user.getEmpName(): "",
 			    PersonInfoProcessAttr.UPDATE,
 			    null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);

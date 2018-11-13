@@ -78,6 +78,10 @@ public class SendMailInfoFormGCommandHandler
 				}
 				return new SendMailReturnDto(null);
 			}
+			//fixbug #101548 EA修正履歴 No.2891 
+			else {
+				throw new BusinessException("Msg_176");
+			}
 		}
 		return new SendMailReturnDto(null);
 	}

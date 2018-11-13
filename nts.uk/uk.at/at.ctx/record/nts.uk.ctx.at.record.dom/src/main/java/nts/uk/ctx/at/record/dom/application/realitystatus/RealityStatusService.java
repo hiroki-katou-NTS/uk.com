@@ -3,9 +3,12 @@ package nts.uk.ctx.at.record.dom.application.realitystatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,8 +23,10 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.dto.EmployeeUnconfir
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.RealityStatusEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
@@ -45,6 +50,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessU
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -74,7 +80,7 @@ public class RealityStatusService {
 	 * 承認状況職場実績起動
 	 */
 	public List<StatusWkpActivityOutput> getStatusWkpActivity(List<String> listWorkplaceId, GeneralDate startDate,
-			GeneralDate endDate, List<String> listEmpCd, boolean isConfirmData) {
+			GeneralDate endDate, List<String> listEmpCd, boolean isConfirmData, Integer closureID) {
 		String cId = AppContexts.user().companyId();
 		List<StatusWkpActivityOutput> listStatusActivity = new ArrayList<StatusWkpActivityOutput>();
 		// アルゴリズム「承認状況取得実績使用設定」を実行する
@@ -85,7 +91,7 @@ public class RealityStatusService {
 			List<RealityStatusEmployeeImport> listStatusEmp = approvalStatusRequestAdapter
 					.getApprovalStatusEmployee(wkpId, startDate, endDate, listEmpCd);
 			// アルゴリズム「承認状況取得職場実績確認」を実行する
-			SumCountOutput count = this.getApprovalSttConfirmWkpResults(listStatusEmp, wkpId, useSeting);
+			SumCountOutput count = this.getApprovalSttConfirmWkpResults(listStatusEmp, wkpId, useSeting, endDate, closureID);
 			// 保持内容．未確認データ確認
 			if (isConfirmData) {
 				// 職場本人未確認件数及び職場上司未確認件数、月別未確認件数がすべて「０件」の場合
@@ -142,23 +148,19 @@ public class RealityStatusService {
 	 * @return
 	 */
 	private SumCountOutput getApprovalSttConfirmWkpResults(List<RealityStatusEmployeeImport> listEmp, String wkpId,
-			UseSetingOutput useSeting) {
+			UseSetingOutput useSeting, GeneralDate endDate, Integer closureID) {
 		SumCountOutput sumCount = new SumCountOutput();
-		// 会社ID
-		String cid = AppContexts.user().companyId();
-
 		// 社員ID(リスト)
+		List<String> litEmp = listEmp.stream().map(c -> c.getSId()).collect(Collectors.toList());
+		//imported(申請承認）「上司確認の状況」を取得する - RequestList533
+		Map<String, AppRootSttMonthEmpImport> mapApprByMonth = this.mapApprByMonth(litEmp, endDate, closureID);
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// 月別確認を利用する
 			if (useSeting.isMonthlyConfirm()) {
-				// Request list 532
-				// imported(申請承認）「上司確認の状況」を取得する
-				List<ApproveRootStatusForEmpImport> listApproval = approvalStatusAdapter
-						.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cid, 2);
-				Optional<ApproveRootStatusForEmpImport> approval = listApproval.stream().findFirst();
+				//imported(申請承認）「上司確認の状況」を取得する - RequestList533
+				AppRootSttMonthEmpImport approval = mapApprByMonth.get(emp.getSId());
 				// 承認状況＝「承認済」の場合(trạng thái approval = 「承認済」)
-				if (approval.isPresent()
-						&& ApprovalStatusForEmployee.APPROVED.equals(approval.get().getApprovalStatus())) {
+				if (approval != null && ApprovalStatusForEmployee.APPROVED.equals(approval.getApprovalStatus())) {
 					// 月別確認件数 ＝ ＋１
 					sumCount.monthConfirm++;
 				}
@@ -180,7 +182,30 @@ public class RealityStatusService {
 		}
 		return sumCount;
 	}
-
+	private Map<String, AppRootSttMonthEmpImport> mapApprByMonth(List<String> lstEmp, GeneralDate baseDate, 
+			Integer closureID){
+		Map<String, AppRootSttMonthEmpImport> result = new HashMap<>();
+		//imported(申請承認）「上司確認の状況」を取得する - RequestList533
+//		・社員ID（LIST)＝社員ID(申請者）
+//		・締めID＝A画面で指定した締めID
+//		・締め日＝A画面で指定した締めIDの締め日
+//		・基準日＝期間終了日（起動時パラメータ）
+		List<EmpPerformMonthParamImport> lstParam = new ArrayList<>();
+		GeneralDate tmpDate = baseDate.addDays(1);
+		int monthTmp = tmpDate.month();
+		int month = baseDate.month();
+		int day = baseDate.day();
+		Boolean lastDayOfMonth = monthTmp - 1 == month ? true : false;
+		ClosureDate closureDate = new ClosureDate(lastDayOfMonth ? 1 : day, lastDayOfMonth);
+		for (String emp : lstEmp) {
+			lstParam.add(new EmpPerformMonthParamImport(baseDate.yearMonth(), closureID, closureDate, baseDate, emp));
+		}
+		List<AppRootSttMonthEmpImport> listApproval = approvalStatusAdapter.getAppRootStatusByEmpsMonth(lstParam);
+		for (AppRootSttMonthEmpImport appRootStt : listApproval) {
+			result.put(appRootStt.getEmployeeID(), appRootStt);
+		}
+		return result;
+	}
 	/**
 	 * 承認状況取得日別確認状況
 	 * 
@@ -553,7 +578,7 @@ public class RealityStatusService {
 	 * 承認状況取得職場社員実績一覧
 	 */
 	public List<EmpPerformanceOutput> getAcquisitionWkpEmpPerformance(String wkpId, GeneralDate startDate,
-			GeneralDate endDate, List<String> listEmpCd) {
+			GeneralDate endDate, List<String> listEmpCd, Integer closureID) {
 		String cId = AppContexts.user().companyId();
 		List<EmpPerformanceOutput> listEmpPerformance = new ArrayList<>();
 
@@ -563,6 +588,9 @@ public class RealityStatusService {
 		List<RealityStatusEmployeeImport> listStatusEmp = approvalStatusRequestAdapter.getApprovalStatusEmployee(wkpId,
 				startDate, endDate, listEmpCd);
 		// 社員ID(リスト)
+		List<String> litEmp = listStatusEmp.stream().map(c -> c.getSId()).collect(Collectors.toList());
+		//imported(申請承認）「上司確認の状況」を取得する - RequestList533
+		Map<String, AppRootSttMonthEmpImport> mapApprByMonth = this.mapApprByMonth(litEmp, endDate, closureID);
 		for (RealityStatusEmployeeImport emp : listStatusEmp) {
 			ApproveRootStatusForEmpImport routeStatus = null;
 
@@ -572,12 +600,10 @@ public class RealityStatusService {
 			String empName = Objects.isNull(empInfo) ? "" : empInfo.getEmployeeCode() + "　 " +empInfo.getPname();
 
 			if (useSetting.isMonthlyConfirm()) {
-				// Request list 532
-				// imported（ワークフロー）「承認ルート状況」を取得する
-				Optional<ApproveRootStatusForEmpImport> appRootStatus = approvalStatusAdapter
-						.getApprovalByEmplAndDate(startDate, endDate, emp.getSId(), cId, 2).stream().findFirst();
-				if (appRootStatus.isPresent()) {
-					routeStatus = appRootStatus.get();
+				//imported（ワークフロー）「承認ルート状況」を取得する - RequestList533
+				AppRootSttMonthEmpImport approval = mapApprByMonth.get(emp.getSId());
+				if (approval != null) {
+					routeStatus =  new ApproveRootStatusForEmpImport(approval.getEmployeeID(), endDate, approval.getApprovalStatus());
 				}
 			}
 			// アルゴリズム「承認状況取得日別確認状況」を実行する

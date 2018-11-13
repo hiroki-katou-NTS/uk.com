@@ -16,7 +16,10 @@ public enum ApprovalBehaviorAtr {
 	DENIAL(2,"否認 "),
 	
 	/** 3:差し戻し */
-	REMAND(3,"差し戻し");
+	REMAND(3,"差し戻し"),
+	
+	/** 4:本人差し戻し */
+	ORIGINAL_REMAND(4,"本人差し戻し");
 
 	public final int value;
 	

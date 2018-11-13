@@ -99,7 +99,11 @@ public class DPHeaderDto {
 			Map<Integer, DPAttendanceItem> mapDP, Map<Integer, DPAttendanceItemControl> mapColor) {
 		val keyId = getCode(key);
 		val colorHeader = mapColor.get(Integer.parseInt(keyId));
-		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, colorHeader == null ? "" : colorHeader.getHeaderBackgroundColor(), false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)));
+		DPHeaderDto dto = new DPHeaderDto("", key, "String", width,
+				colorHeader == null ? "#CFF1A5"
+						: colorHeader.getHeaderBackgroundColor() == null ? "#CFF1A5"
+								: colorHeader.getHeaderBackgroundColor(),
+				false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)));
 		// optionalRepo.findByListNos(companyId, optionalitemNos)
 		DPAttendanceItem item = mapDP.get(Integer.parseInt(keyId));
 		int attendanceAtr = item.getAttendanceAtr();
@@ -149,6 +153,7 @@ public class DPHeaderDto {
 				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 			}
 			groups.get(0).setColor(dto.getColor());
+			groups.get(1).setColor(dto.getColor());
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {

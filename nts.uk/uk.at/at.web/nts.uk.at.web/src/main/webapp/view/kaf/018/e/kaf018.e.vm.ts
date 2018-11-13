@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     export class ScreenModel {
         listWkpStatusConfirm: Array<ApprovalStatusActivity>;
         useSetting: shareModel.UseSetting;
-        closureId: string;
+        closureID: string;
         closureName: string;
         processingYm: string;
         startDateFormat: string;
@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             block.invisible();
             let params = getShared("KAF018E_PARAMS");
             if (params) {
-                self.closureId = params.closureId;
+                self.closureID = params.closureID;
                 self.closureName = params.closureName;
                 self.processingYm = params.processingYm;
                 self.startDateFormat = formatDate(new Date(params.startDate), 'yyyy/MM/dd');
@@ -69,7 +69,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                     endDate: self.endDate,
                     isConfirmData: self.isConfirmData,
                     listWorkplaceId: listWorkplaceId,
-                    listEmpCd: self.listEmpCd
+                    listEmpCd: self.listEmpCd,
+                    closureID: params.closureID
                 };
 
                 service.getUseSetting().done(function(setting) {
@@ -174,7 +175,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
             var self = this;
 
             let params = {
-                closureId: self.closureId,
+                closureID: self.closureID,
                 closureName: self.closureName,
                 processingYm: self.processingYm,
                 startDate: self.startDate,
@@ -184,6 +185,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 selectedWplIndex: index(),
                 listEmployeeCode: self.listEmpCd,
                 inputContent: self.inputContent
+                
             };
             nts.uk.request.jump('/view/kaf/018/f/index.xhtml', params);
         }
