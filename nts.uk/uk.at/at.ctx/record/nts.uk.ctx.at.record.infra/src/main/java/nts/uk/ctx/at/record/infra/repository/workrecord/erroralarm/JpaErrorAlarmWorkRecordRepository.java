@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	private static final String FIND_BY_COMPANY_AND_USEATR = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ";
 	private static final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId";
 	
+	private static final String SELECT_ERAL_BY_LIST_CODE_REMARK = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId AND s.remarkCancelErrorInput = 1";
+
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
 		Optional<KwrmtErAlWorkRecord> entity = this.queryProxy()
@@ -513,6 +516,21 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			record.setErrorAlarmCondition(KwrmtErAlWorkRecord.toConditionDomain(entity));
 			return record;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ErrorAlarmWorkRecord> getListErAlByListCodeRemark(String companyId, Collection<String> listCode) {
+		// TODO Auto-generated method stub
+		List<ErrorAlarmWorkRecord> datas = new ArrayList<>();
+		if (listCode.isEmpty())
+			return new ArrayList<ErrorAlarmWorkRecord>();
+		
+		CollectionUtil.split(listCode.stream().collect(Collectors.toList()), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			datas.addAll(this.queryProxy().query(SELECT_ERAL_BY_LIST_CODE_REMARK, KwrmtErAlWorkRecord.class)
+					.setParameter("listCode", subIdList).setParameter("companyId", companyId)
+					.getList(c -> KwrmtErAlWorkRecord.toDomain(c)));
+		});
+		return datas;
 	}
 
 }
