@@ -37,6 +37,9 @@ public class StatementLayoutWebService {
     private StatementLayoutHistFinder statementLayoutHistFinder;
 
     @Inject
+    private AddStatementLayoutCommandHandler addStatementLayoutCommandHandler;
+
+    @Inject
     private UpdateStatementLayoutHistCommandHandler updateStatementLayoutHistCommandHandler;
 
     @Inject
@@ -142,6 +145,12 @@ public class StatementLayoutWebService {
     @Path("getLastStatementLayoutHistData/{code}")
     public StatementLayoutHistDataDto getLastStatementLayoutHistData(@PathParam("code") String code) {
         return this.statementLayoutHistFinder.getLastStatementLayoutHistData(code).orElse(null);
+    }
+
+    @POST
+    @Path("addStatementLayout")
+    public void addStatementLayout(StatementLayoutCommand command) {
+        this.addStatementLayoutCommandHandler.handle(command);
     }
 
     @POST
