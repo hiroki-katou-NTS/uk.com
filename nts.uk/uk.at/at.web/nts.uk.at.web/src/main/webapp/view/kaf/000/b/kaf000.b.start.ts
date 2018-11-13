@@ -13,7 +13,7 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
         getProgramName("KAF009", "B");
         screenModel = new nts.uk.at.view.kaf009.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     } else if (currentApp.appType == 0) {
-        getProgramName("KAF005", "B");
+//        getProgramName("KAF005", "B");
         screenModel = new nts.uk.at.view.kaf005.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     } else if (currentApp.appType == 2) {
         getProgramName("KAF007", "B");
