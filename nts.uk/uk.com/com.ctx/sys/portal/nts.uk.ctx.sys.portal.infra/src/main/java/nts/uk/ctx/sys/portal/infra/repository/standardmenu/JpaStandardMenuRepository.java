@@ -46,6 +46,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	
 	private static final String GET_PG = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
 			+ " AND a.programId = :programId AND a.screenID = :screenId";
+	private static final String GET_PG_BYQRY = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
+			+ " AND a.programId = :programId AND a.screenID = :screenId"
+			+ " AND a.queryString = :queryString";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -305,5 +308,15 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("programID", programId)
 				.setParameter("queryString", queryString)
 				.getList().isEmpty();
+	}
+
+	@Override
+	public Optional<StandardMenu> getPgName(String companyId, String programId, String screenId, String queryString) {
+		return this.queryProxy().query(GET_PG_BYQRY, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("programId", programId)
+				.setParameter("screenId", screenId)
+				.setParameter("queryString", queryString)
+				.getSingle(c -> toDomain(c));
 	}
 }

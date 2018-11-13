@@ -251,9 +251,15 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		
 		// パラメータのループ中のフェーズ番号をチェックする
 		if(approvalRootState.getListApprovalPhaseState().size()==1) {
+			if(approvalRootState.getListApprovalPhaseState().get(0).getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
+				return false;
+			}
 			return true;
 		}
 		if(currentPhase.getPhaseOrder()==1){
+			if(currentPhase.getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
+				return false;
+			}
 			return true;
 		}
 		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()

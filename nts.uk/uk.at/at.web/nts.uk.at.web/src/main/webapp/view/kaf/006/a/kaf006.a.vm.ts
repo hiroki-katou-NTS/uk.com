@@ -351,6 +351,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         $('.ntsStartDatePicker').focus();
                         self.dateValue({ startDate: self.appDate(), endDate: "" });
                         self.dateValue.subscribe(function() {
+                            if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
+                                return;
+                            }
                             if(self.dateValue().startDate != '' && self.dateValue().endDate != ''){
                                 self.findChangeAppDate(self.dateValue().startDate);
                             }
@@ -658,8 +661,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
             if (self.displayEndDateFlg()) {
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
+               $('#daterangepicker').find(".nts-input").trigger('validate');
             } else {
                 $("#inputdate").trigger("validate");
             }

@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * @author hungnm
@@ -51,6 +53,7 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	 *             0: AND 1: OR
 	 * @return itself
 	 */
+	@Override
 	public PlanActualWorkTime chooseOperator(int operator) {
 		this.operatorBetweenPlanActual = EnumAdaptor.valueOf(operator, LogicalOperator.class);
 		return this;
@@ -78,6 +81,33 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	public PlanActualWorkTime setworkTimeActual(boolean filterAtr, List<String> lstWorkType) {
 		this.workTimeActual = TargetWorkTime.createFromJavaType(filterAtr, lstWorkType);
 		return this;
+	}
+
+	@Override
+	public void clearDuplicate() {
+		if(this.workTimePlan != null){
+			this.workTimePlan.clearDuplicate();
+		}
+		if(this.workTimeActual != null){
+			this.workTimeActual.clearDuplicate();
+		}
+	}
+	
+	@Override
+	public void addWorkTime(WorkTimeCode plan, WorkTimeCode actual) {
+		if(this.workTimePlan != null && plan != null){
+			this.workTimePlan.getLstWorkTime().add(plan);
+		}
+		
+		if(this.workTimeActual != null && actual != null){
+			this.workTimeActual.getLstWorkTime().add(actual);
+		}
+	}
+	
+	@Override
+	public void setupWorkTime(boolean usePlan, boolean useActual) { 
+		this.workTimePlan = TargetWorkTime.createFromJavaType(usePlan, new ArrayList<>());
+		this.workTimeActual = TargetWorkTime.createFromJavaType(useActual, new ArrayList<>());
 	}
 	
 	@Override

@@ -25,7 +25,6 @@ import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -518,32 +517,39 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			condition.createAlCheckTargetCondition(alCon.filterByBusinessType == 1,
 					alCon.filterByJobTitle == 1, alCon.filterByEmployment == 1,
 							alCon.filterByClassification == 1,
-					Optional.ofNullable(alCons.get(0).businessType != null ? alCons : null).orElse(Collections.emptyList())
-							.stream().map(businessType -> businessType.businessType.krcstErAlBusinessTypePK.businessTypeCd)
+					Optional.ofNullable(alCons.get(0).businessType != null ? alCons : null).orElse(Collections.emptyList()).stream()
+							.filter(businessType -> businessType.businessType.krcstErAlBusinessTypePK.businessTypeCd != null)
+							.map(businessType -> businessType.businessType.krcstErAlBusinessTypePK.businessTypeCd)
 							.collect(Collectors.toList()),	
-					Optional.ofNullable(alCons.get(0).lstJobTitle != null ? alCons : null).orElse(Collections.emptyList()).stream()
+					Optional.ofNullable(alCons.get(0).jobTitle != null ? alCons : null).orElse(Collections.emptyList()).stream()
+							.filter(jobTitle -> jobTitle.jobTitle.krcstErAlJobTitlePK.jobId != null)
 							.map(jobTitle -> jobTitle.jobTitle.krcstErAlJobTitlePK.jobId).collect(Collectors.toList()),	
-					Optional.ofNullable(alCons.get(0).lstEmployment != null ? alCons : null).orElse(Collections.emptyList())
-							.stream().map(empt -> empt.employment.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),			
-					Optional.ofNullable(alCons.get(0).lstClassification != null ? alCons : null).orElse(Collections.emptyList())
-							.stream().map(clss -> clss.classification.krcstErAlClassPK.clscd).collect(Collectors.toList()));
+					Optional.ofNullable(alCons.get(0).employment != null ? alCons : null).orElse(Collections.emptyList()).stream()
+							.filter(empt -> empt.employment.krcstErAlEmploymentPK.emptcd != null)
+							.map(empt -> empt.employment.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),			
+					Optional.ofNullable(alCons.get(0).classification != null ? alCons : null).orElse(Collections.emptyList()).stream()
+							.filter(clss -> clss.classification.krcstErAlClassPK.clscd != null)
+							.map(clss -> clss.classification.krcstErAlClassPK.clscd).collect(Collectors.toList()));
 			// Set WorkTypeCondition
 			condition.createWorkTypeCondition(alCon.workTypeUseAtr == 1,
 					alCon.wtCompareAtr);
 			if (alCon.wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
 				condition.setWorkTypePlan(alCon.wtPlanFilterAtr == 1,
-						Optional.ofNullable(alCons.get(0).lstWtPlan != null ? alCons : null).orElse(Collections.emptyList())
-								.stream().map(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode)
+						Optional.ofNullable(alCons.get(0).wtPlan != null ? alCons : null).orElse(Collections.emptyList()).stream()
+								.filter(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode != null)
+								.map(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode)
 								.collect(Collectors.toList()));
 				condition.setWorkTypeActual(alCon.wtActualFilterAtr == 1,
-						Optional.ofNullable(alCons.get(0).lstWtActual != null ? alCons : null).orElse(Collections.emptyList())
-								.stream().map(wtype -> wtype.wtActual.krcstErAlWtPlanActualPK.workTypeCode)
+						Optional.ofNullable(alCons.get(0).wtActual != null ? alCons : null).orElse(Collections.emptyList()).stream()
+								.filter(wtype -> wtype.wtActual.krcstErAlWtPlanActualPK.workTypeCode != null)
+								.map(wtype -> wtype.wtActual.krcstErAlWtPlanActualPK.workTypeCode)
 								.collect(Collectors.toList()));
 				condition.chooseWorkTypeOperator(alCon.wtPlanActualOperator);
 			} else {
 				condition.setWorkTypeSingle(alCon.wtPlanFilterAtr == 1,
-						Optional.ofNullable(alCons.get(0).lstWtPlan != null ? alCons : null).orElse(Collections.emptyList())
-								.stream().map(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode)
+						Optional.ofNullable(alCons.get(0).wtPlan != null ? alCons : null).orElse(Collections.emptyList()).stream()
+								.filter(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode != null)
+								.map(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode)
 								.collect(Collectors.toList()));
 			}
 			// Set WorkTimeCondtion
@@ -551,18 +557,21 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					alCon.whCompareAtr);
 			if (alCon.whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
 				condition.setWorkTimePlan(alCon.whPlanFilterAtr == 1,
-						Optional.ofNullable(alCons.get(0).lstWhPlan != null ? alCons : null).orElse(Collections.emptyList())
-								.stream().map(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode)
+						Optional.ofNullable(alCons.get(0).whPlan != null ? alCons : null).orElse(Collections.emptyList()).stream()
+								.filter(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode != null)
+								.map(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
 				condition.setWorkTimeActual(alCon.whActualFilterAtr == 1,
-						Optional.ofNullable(alCons.get(0).lstWhActual != null ? alCons : null).orElse(Collections.emptyList())
-								.stream().map(wtime -> wtime.whActual.krcstErAlWhPlanActualPK.workTimeCode)
+						Optional.ofNullable(alCons.get(0).whActual != null ? alCons : null).orElse(Collections.emptyList()).stream()
+								.filter(wtime -> wtime.whActual.krcstErAlWhPlanActualPK.workTimeCode != null)
+								.map(wtime -> wtime.whActual.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
 				condition.chooseWorkTimeOperator(alCon.whPlanActualOperator);
 			} else {
 				condition.setWorkTimeSingle(alCon.whPlanFilterAtr == 1,
-						Optional.ofNullable(alCons.get(0).lstWhPlan != null ? alCons : null).orElse(Collections.emptyList())
-								.stream().map(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode)
+						Optional.ofNullable(alCons.get(0).whPlan != null ? alCons : null).orElse(Collections.emptyList()).stream()
+								.filter(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode != null)
+								.map(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
 			}
 			
@@ -581,18 +590,12 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				});
 				conditionsGroup1.addAll(conditionsGroup1s);
 			}
-			
-//			List<ErAlAttendanceItemCondition<?>> conditionsGroup11 = Optional
-//					.ofNullable(alCon.krcstErAlConGroup1)
-//					.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream()
-//							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(comId, eralCode, atdItemCon))
-//							.collect(Collectors.toList());
 
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = new ArrayList<>();
-			if(alCon.atdItemConditionGroup1 != null) {
+			if(alCon.atdItemConditionGroup2 != null) {
 				List<ErAlAttendanceItemCondition<?>> conditionsGroup2s = new ArrayList<>();
 
-				Map<Integer, List<KrcmtErAlAtdItemCon>> itemCon1 = conditionGroup1.values().stream().collect(Collectors.toList()).get(0)
+				Map<Integer, List<KrcmtErAlAtdItemCon>> itemCon1 = conditionGroup2.values().stream().collect(Collectors.toList()).get(0)
 						.stream().filter(item -> item.krcmtErAlAtdItemConPK.conditionGroupId.equals(alCon.atdItemConditionGroup2))
 						.collect(Collectors.groupingBy(x->x.krcmtErAlAtdItemConPK.atdItemConNo));
 				itemCon1.forEach((key,value) -> {
@@ -601,12 +604,6 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				});
 				conditionsGroup2.addAll(conditionsGroup2s);
 			}
-			
-//			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional
-//					.ofNullable(alCon.krcstErAlConGroup2)
-//					.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream()
-//							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(comId, eralCode, atdItemCon))
-//							.collect(Collectors.toList());
 
 			List<KrcstErAlConGroup> conGroup1 = conditionGroup1.keySet().stream().collect(Collectors.toList()).get(0)
 					.stream().filter(item -> item.conditionGroupId.equals(alCon.atdItemConditionGroup1))

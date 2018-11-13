@@ -12,7 +12,6 @@ import nts.gul.mail.send.exceptions.FailedConnectAuthServerException;
 import nts.gul.mail.send.exceptions.FailedConnectSmtpServerException;
 import nts.gul.mail.send.setting.SendMailSetting;
 import nts.gul.mail.send.strategy.MailerFactory;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.EmailAddressForSender;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
@@ -26,23 +25,22 @@ public class DefaultMailSender implements MailSender {
 	private SendMailSettingAdaptor settingAdaptor;
 	
 	@Override
-	public void send(MailOriginator from, MailRecipient to, MailContents contents)
+	public void send(MailOriginator from, MailRecipient to, MailContents contents, String companyId)
 			throws SendMailFailedException {
 		
-		val setting = this.loadSetting();
+		val setting = this.loadSetting(companyId);
 		sendInternal(from, to, contents, setting.getBasics());
 	}
 
 	@Override
-	public void sendFromAdmin(MailRecipient to, MailContents contents) throws SendMailFailedException {
+	public void sendFromAdmin(MailRecipient to, MailContents contents, String companyId) throws SendMailFailedException {
 		
-		val setting = this.loadSetting();
+		val setting = this.loadSetting(companyId);
 		val from = new EmailAddressForSender(setting.getMailAddressAdmin());
 		sendInternal(from, to, contents, setting.getBasics());
 	}
 
-	private UkSendMailSetting loadSetting() {
-		String companyId = AppContexts.user().companyId();
+	private UkSendMailSetting loadSetting(String companyId) {
 		val setting = this.settingAdaptor.getSetting(companyId);
 		
 		if (setting == null) {

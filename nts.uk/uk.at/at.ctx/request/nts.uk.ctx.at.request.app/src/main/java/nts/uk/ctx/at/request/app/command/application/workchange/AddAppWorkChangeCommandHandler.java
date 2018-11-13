@@ -142,7 +142,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 			}
 
 			curentDate = curentDate.addDays(1);
-		} while (!curentDate.afterOrEquals(endDate));
+		} while (!curentDate.after(endDate));
 		
 		return dateClears;
 	}

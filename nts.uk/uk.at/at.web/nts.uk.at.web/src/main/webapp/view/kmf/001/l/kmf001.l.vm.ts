@@ -200,6 +200,23 @@ module nts.uk.pr.view.kmf001.l {
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;
                 }
+                
+                if (self.nursingSetting().selectedManageNursing() == 1) {
+                    if (self.nursingSetting().monthDay() == 0) {
+                        $('#nursing-month').ntsEditor('validate');
+                        $('#nursing-day').ntsEditor('validate');
+                        return false;
+                    }
+                }
+
+                if (self.childNursingSetting().selectedManageNursing() == 1) {
+                    if (self.childNursingSetting().monthDay() == 0) {
+                        $('#child-nursing-month').ntsEditor('validate');
+                        $('#child-nursing-day').ntsEditor('validate');
+                        return false;
+                    }
+                }
+
                 if ((self.nursingSetting().selectedManageNursing() == 1 && self.nursingSetting().nursingLeaveSpecialHoliday() == 0 && self.nursingSetting().nursingLeaveWorkAbsence() == 0)
                     || (self.childNursingSetting().selectedManageNursing() == 1 && self.childNursingSetting().nursingLeaveSpecialHoliday() == 0 && self.childNursingSetting().nursingLeaveWorkAbsence() == 0)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1368", message: message("Msg_1368")});
@@ -236,6 +253,8 @@ module nts.uk.pr.view.kmf001.l {
                         return false;
                     }
                 }
+                
+    
                 return true;
             }
             
