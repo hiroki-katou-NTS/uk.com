@@ -129,15 +129,20 @@ module nts.uk.pr.view.qmm019.share.model {
         BREAKDOWN_ITEM = 5
     }
 
-    export function getPaymentCaclMethodAtr(): Array<ItemModel> {
-        return [
-            new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, '手入力'),
-            new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
-            new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, '計算式'),
-            new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
-            new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
-            new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
-        ];
+    export function getPaymentCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
+        if (e == BreakdownItemUseAtr.USE) {
+            return [
+                new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
+            ];
+        }else{
+            return [
+                new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, '手入力'),
+                new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
+                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, '計算式'),
+                new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
+                new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, '共通金額')
+            ];
+        }
     }
 
     /**
@@ -160,16 +165,21 @@ module nts.uk.pr.view.qmm019.share.model {
         BREAKDOWN_ITEM = 6
     }
 
-    export function getDeductionCaclMethodAtr(): Array<ItemModel> {
-        return [
-            new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, '手入力'),
-            new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
-            new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, '計算式'),
-            new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
-            new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
-            new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, '支給相殺'),
-            new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
-        ];
+    export function getDeductionCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
+        if (e == BreakdownItemUseAtr.USE) {
+            return [
+                new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
+            ];
+        } else {
+            return [
+                new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, '手入力'),
+                new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
+                new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, '計算式'),
+                new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
+                new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
+                new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, '支給相殺'),
+            ];
+        }
     }
 
     /**
@@ -299,6 +309,35 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     /**
+     * 控除項目区分
+     */
+    export enum DeductionItemAtr{
+        // 任意控除項目
+        OPTIONAL_DEDUCTION_ITEM = 0,
+        // 社会保険項目
+        SOCIAL_INSURANCE_ITEM = 1,
+        // 所得税項目
+        INCOME_TAX_ITEM = 2,
+        // 住民税項目
+        INHABITANT_TAX_ITEM = 3
+    }
+
+    export function getDeductionItemAtrText(e: DeductionItemAtr) {
+        switch (e) {
+            case DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM:
+                return "任意控除項目";
+            case DeductionItemAtr.SOCIAL_INSURANCE_ITEM:
+                return "社会保険項目";
+            case DeductionItemAtr.INCOME_TAX_ITEM:
+                return "所得税項目";
+            case DeductionItemAtr.INHABITANT_TAX_ITEM:
+                return "住民税項目";
+            default:
+                return "";
+        }
+    }
+
+    /**
      * 固定的賃金の設定区分
      */
     export enum SocialInsuranceCategory{
@@ -391,6 +430,13 @@ module nts.uk.pr.view.qmm019.share.model {
         DO_NOT_PRINT = 1
     }
 
+    /**
+     * 内訳項目利用区分
+     */
+    export enum BreakdownItemUseAtr{
+        NOT_USE = 0,
+        USE = 1
+    }
 
     // 年月期間の汎用履歴項目
     export interface IYearMonthHistory {

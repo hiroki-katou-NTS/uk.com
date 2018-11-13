@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
             self.categoryAtr = shareModel.CategoryAtr.DEDUCTION_ITEM;
             self.totalObjAtrs = ko.observableArray([]);
-            self.calcMethods = ko.observableArray(shareModel.getDeductionCaclMethodAtr());
+            self.calcMethods = ko.observableArray([]);
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
             self.deductionProportionalAtrs = ko.observableArray(shareModel.getDeductionProportionalAtr())
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr())
@@ -144,7 +144,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
-                //self.initScreen();
+                self.initScreen();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -175,6 +175,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
+            self.dataScreen().initSubscribe();
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -198,6 +199,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(dedu)) {
                     self.deductionItemSet().setData(dedu);
+                    self.loadControlE2_9();
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
@@ -207,6 +209,17 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             });
 
             return dfd.promise();
+        }
+
+        loadControlE2_9() {
+            let self = this;
+            // ※補足資料8参照
+            self.calcMethods(shareModel.getDeductionCaclMethodAtr(self.deductionItemSet().breakdownItemUseAtr()));
+            if (self.deductionItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
+                self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.BREAKDOWN_ITEM.toString());
+            } else {
+                self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.MANUAL_INPUT.toString());
+            }
         }
 
         unselectedMode() {
@@ -251,7 +264,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            if (defaultAtr != share.model.DefaultAtr.SYSTEM_DEFAULT) {
+            if (defaultAtr != shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.screenControl().visibleE2_2(true);
                 self.screenControl().visibleE2_3(true);
                 self.screenControl().enableE2_5(true);
@@ -702,27 +715,54 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         commonAmount: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
+        }
+
+        setData(data: IParams) {
+            let self = this;
+            self.itemNameCode(data.itemNameCode);
+            self.workingAtr(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
+            self.totalObject(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
+            self.calcMethod(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
+            self.proportionalAtr(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
+            self.proportionalMethod(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
+            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            self.errorRangeSetting.setData(data.errorRangeSetting);
+            self.alarmRangeSetting.setData(data.alarmRangeSetting);
+            self.perValCode(data.perValCode);
+            self.formulaCode(data.formulaCode);
+            self.wageTableCode(data.wageTableCode);
+            self.statementItemCode(data.statementItemCode);
+            self.commonAmount(data.commonAmount);
+        }
+
+        initSubscribe() {
             let self = this;
             self.calcMethod.subscribe(() => {
                 self.perValCode(null);
                 self.perValName(null);
-                self.clearError("#E6_2");
+                self.clearError("#E5_2");
                 self.formulaCode(null);
                 self.formulaName(null);
-                self.clearError("#E7_2");
+                self.clearError("#E6_2");
                 self.wageTableCode(null);
                 self.wageTableName(null);
-                self.clearError("#E8_2");
+                self.clearError("#E7_2");
                 self.commonAmount(null);
+                self.clearError("#E8_2");
+                self.statementItemCode(null);
+                self.statementItemName(null);
                 self.clearError("#E9_2");
             });
             self.perValCode.subscribe(() => {
-                self.clearError("#E6_2");
+                self.clearError("#E5_2");
             });
             self.formulaCode.subscribe(() => {
-                self.clearError("#E7_2");
+                self.clearError("#E6_2");
             });
             self.wageTableCode.subscribe(() => {
+                self.clearError("#E7_2");
+            });
+            self.statementItemCode.subscribe(() => {
                 self.clearError("#E8_2");
             });
 
@@ -753,24 +793,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             });
         }
 
-        setData(data: IParams) {
-            let self = this;
-            self.itemNameCode(data.itemNameCode);
-            self.workingAtr(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
-            self.totalObject(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
-            self.calcMethod(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
-            self.proportionalAtr(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
-            self.proportionalMethod(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
-            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
-            self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);
-            self.perValCode(data.perValCode);
-            self.formulaCode(data.formulaCode);
-            self.wageTableCode(data.wageTableCode);
-            self.statementItemCode(data.statementItemCode);
-            self.commonAmount(data.commonAmount);
-        }
-
         /**
          * 決定時チェック処理
          */
@@ -786,7 +808,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             let self = this;
             self.checkError("#E2_5");
             self.checkError("#E2_8");
-            self.checkError("#E9_2");
+            self.checkError("#E8_2");
         }
 
         checkCalcMethod(taxAtr: number) {
@@ -800,27 +822,33 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             }
             // 設定された計算方法を確認する
             switch (parseInt(self.calcMethod())) {
-                case shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF:
+                case shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF:
                     // 個人金額コードが設定されているか確認する
                     if (isNullOrEmpty(self.perValCode())) {
                         // alertError({messageId: "MsgQ_11"});
-                        self.setError("#E6_2", "MsgQ_11");
+                        self.setError("#E5_2", "MsgQ_11");
                     }
                     break;
-                case shareModel.PaymentCaclMethodAtr.CACL_FOMULA:
+                case shareModel.DeductionCaclMethodAtr.CACL_FOMULA:
                     // 計算式コードが設定されているか確認する
                     if (isNullOrEmpty(self.formulaCode())) {
                         // alertError({messageId: "MsgQ_12"});
-                        self.setError("#E7_2", "MsgQ_12");
+                        self.setError("#E6_2", "MsgQ_12");
                     }
                     break;
-                case shareModel.PaymentCaclMethodAtr.WAGE_TABLE:
+                case shareModel.DeductionCaclMethodAtr.WAGE_TABLE:
                     // 賃金テーブルコードが設定されているか確認する
                     if (isNullOrEmpty(self.wageTableCode())) {
                         // alertError({messageId: "MsgQ_13"});
-                        self.setError("#E8_2", "MsgQ_13");
+                        self.setError("#E7_2", "MsgQ_13");
                     }
                     break;
+                case shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET:
+                    // 相殺対象項目コードが設定されているか確認する
+                    if (isNullOrEmpty(self.wageTableCode())) {
+                        // alertError({messageId: "MsgQ_32"});
+                        self.setError("#E9_2", "MsgQ_32");
+                    }
                 default:
                     break;
             }
@@ -964,46 +992,22 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
     }
 
     interface IDeductionItemSet {
-        taxAtr: number;
-        limitAmount: number;
-        socialInsuranceCategory: number;
-        laborInsuranceCategory: number;
-        everyoneEqualSet: number;
-        averageWageAtr: number;
+        deductionItemAtr: number;
+        breakdownItemUseAtr: number;
         errorRangeSetting: IErrorAlarmRangeSetting;
         alarmRangeSetting: IErrorAlarmRangeSetting;
     }
 
     class DeductionItemSet {
         /**
-         * 課税区分
+         * 控除項目区分
          */
-        taxAtr: KnockoutObservable<number> = ko.observable(null);
-        taxAtrText: KnockoutObservable<string> = ko.observable(null);
+        deductionItemAtr: KnockoutObservable<number> = ko.observable(null);
+        deductionItemAtrText: KnockoutObservable<string> = ko.observable(null);
         /**
-         * 限度金額設定.限度金額
+         * 内訳項目利用区分
          */
-        limitAmount: KnockoutObservable<number> = ko.observable(null);
-        /**
-         * 社会保険区分
-         */
-        socialInsuranceCategory: KnockoutObservable<number> = ko.observable(null);
-        socialInsuranceCategoryText: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * 労働保険区分
-         */
-        laborInsuranceCategory: KnockoutObservable<number> = ko.observable(null);
-        laborInsuranceCategoryText: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * 固定的賃金
-         */
-        everyoneEqualSet: KnockoutObservable<number> = ko.observable(null);
-        everyoneEqualSetText: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * 平均賃金区分
-         */
-        averageWageAtr: KnockoutObservable<number> = ko.observable(null);
-        averageWageAtrText: KnockoutObservable<string> = ko.observable(null);
+        breakdownItemUseAtr: KnockoutObservable<number> = ko.observable(null);
 
         errorRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
         alarmRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
@@ -1012,17 +1016,9 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         setData(data: IDeductionItemSet) {
-            this.taxAtr(data.taxAtr);
-            this.taxAtrText(shareModel.getTaxAtrText(data.taxAtr));
-            this.limitAmount(data.limitAmount);
-            this.socialInsuranceCategory(data.socialInsuranceCategory);
-            this.socialInsuranceCategoryText(shareModel.getSocialInsuranceCategoryText(data.socialInsuranceCategory));
-            this.laborInsuranceCategory(data.laborInsuranceCategory);
-            this.laborInsuranceCategoryText(shareModel.getLaborInsuranceCategoryText(data.laborInsuranceCategory));
-            this.everyoneEqualSet(data.everyoneEqualSet);
-            this.everyoneEqualSetText(shareModel.getCategoryFixedWageText(data.everyoneEqualSet));
-            this.averageWageAtr(data.averageWageAtr);
-            this.averageWageAtrText(shareModel.getAverageWageAtrText(data.averageWageAtr));
+            this.deductionItemAtr(data.deductionItemAtr);
+            this.deductionItemAtrText(shareModel.getDeductionItemAtrText(data.deductionItemAtr));
+            this.breakdownItemUseAtr(data.breakdownItemUseAtr);
             this.errorRangeSetting.setData(data.errorRangeSetting);
             this.alarmRangeSetting.setData(data.alarmRangeSetting);
         }

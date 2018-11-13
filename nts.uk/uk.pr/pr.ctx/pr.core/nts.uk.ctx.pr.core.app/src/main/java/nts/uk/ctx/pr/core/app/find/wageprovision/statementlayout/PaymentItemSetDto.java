@@ -29,6 +29,10 @@ public class PaymentItemSetDto {
      * 平均賃金区分
      */
     private int averageWageAtr;
+    /**
+     * 内訳項目利用区分
+     */
+    private int breakdownItemUseAtr;
 
     private DetailAmountErrorAlarmRangeSettingDto errorRangeSetting;
 
@@ -41,6 +45,7 @@ public class PaymentItemSetDto {
         this.laborInsuranceCategory = domain.getLaborInsuranceCategory().value;
         this.everyoneEqualSet = domain.getFixedWage().getEveryoneEqualSet().map(x -> x.value).orElse(null);
         this.averageWageAtr = domain.getAverageWageAtr().value;
+        this.breakdownItemUseAtr = domain.getBreakdownItemUseAtr().value;
         this.errorRangeSetting = new DetailAmountErrorAlarmRangeSettingDto(domain.getErrorRangeSetting());
         this.alarmRangeSetting = new DetailAmountErrorAlarmRangeSettingDto(domain.getAlarmRangeSetting());
     }

@@ -27,7 +27,7 @@
             <div class="table table-origin">
                 <div class="cell valign-top">
                     <!--D1_1-->
-                    <div data-bind="ntsPanel:{width: '280px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                    <div data-bind="ntsPanel:{width: '260px', height: '490px', direction: 'right', showIcon: true, visible: true}">
                         <div class="table table-search">
                             <div class="cell valign-center">
                                 <!--D1_2-->
@@ -45,7 +45,7 @@
                             </div>
                             <div class="cell valign-top">
                                 <!--D1_5-->
-                                <div tabindex="1" style="width: 190px" data-bind="ntsSearchBox: {
+                                <div tabindex="1" style="width: 170px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
 									targetKey: 'itemNameCd',
 									comId: 'D1_6',
@@ -64,7 +64,7 @@
                             primaryKey: 'itemNameCd',
                             columns: [
                                 { headerText: '#{i18n.getText('QMM019_108')}', key: 'itemNameCd', width: 50, formatter: _.escape},
-                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 213, formatter: _.escape}
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 193, formatter: _.escape}
                             ],
                             multiple: false,
                             value: codeSelected}"/>
@@ -107,7 +107,7 @@
                                 optionsText: 'name',
                                 required: true,
                                 enable: $vm.screenControl().enableD2_5(),
-                                selectFirstIfNull: false,
+                                selectFirstIfNull: true,
                                 columns: [
                                     { prop: 'name', length: 10 },
                                 ]}"/>
@@ -400,7 +400,7 @@
                                 <table class="acc-table" data-bind="with: paymentItemSet">
                                     <colgroup>
                                         <col width="90px"/>
-                                        <col width="197px"/>
+                                        <col width="207px"/>
                                     </colgroup>
                                     <tr>
                                         <th class="ui-widget-header">
@@ -409,7 +409,7 @@
                                         </th>
                                         <td>
                                             <!--D11_16-->
-                                            <div class="label" data-bind="text: $vm.dataScreen().name"/>
+                                            <div class="label limited-label" data-bind="text: $vm.dataScreen().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -538,7 +538,7 @@
                                             <table id="fixed-table">
                                                 <colgroup>
                                                     <col width="70px"/>
-                                                    <col width="185px"/>
+                                                    <col width="195px"/>
                                                 </colgroup>
                                                 <thead>
                                                 <tr>
