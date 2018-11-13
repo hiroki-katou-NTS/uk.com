@@ -1035,6 +1035,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items) || self.flagCalculation) {
                 service.addAndUpdate(dataParent).done((dataAfter) => {
                     // alert("done");
+                    let errorNoReload: boolean  = false;
                     dataChange = {};
                     let errorFlex = false;
                     if (!_.isEmpty(dataAfter.flexShortage)) {
@@ -1045,6 +1046,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                             $("#next-month").attr('style', 'background-color: red !important');
                             errorFlex = true;
+                            errorNoReload = true;
                             self.flexShortage().binDataChangeError(dataAfter.flexShortage.dataCalc);
                         } else {
                             $("#next-month").attr('style', 'background-color: white !important');
@@ -1084,6 +1086,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.clear();
                     } else {
                         let errorAll = false;
+                        errorNoReload = true;
                         if (dataAfter.errorMap[0] != undefined) {
                             self.listCareError(dataAfter.errorMap[0])
                             // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
@@ -1104,6 +1107,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.showTextStyle = false;
                             self.loadRowScreen(false, self.flagCalculation);
                             errorAll = true;
+                            errorNoReload = false;
                         }
 
                         if (dataAfter.errorMap[3] != undefined) {
@@ -1123,11 +1127,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.clear();
                         if (errorAll) self.showErrorDialog();
                     }
-                    dfd.resolve();
+                    dfd.resolve(errorNoReload);
                 }).fail((data) => {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.alert(data.message);
-                    dfd.resolve();
+                    dfd.resolve(true);
                 });
             } else {
                 nts.uk.ui.block.clear();
@@ -1135,7 +1139,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
                     self.showErrorDialog();
                 }
-                dfd.resolve();
+                dfd.resolve(false);
             }
             return dfd.promise();
             //    }
@@ -2336,7 +2340,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             let dataRowEnd = dataSource[dataSource.length - 1];
             if (self.showFlex()) {
-                self.insertUpdate().done(() => {
+                self.insertUpdate().done((loadContinue: boolean) => {
+                    if(!loadContinue){
                     service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() }).done((data) => {
                         self.processLockButton(self.showLock());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -2344,6 +2349,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                         nts.uk.ui.block.clear();
                     });
+                    }else{
+                        nts.uk.ui.block.clear();
+                    }
                 });
             } else {
                 service.addClosure({ employeeId: dataRowEnd.employeeId, date: dataRowEnd.dateDetail, showFlex: self.showFlex() }).done((data) => {
