@@ -19,6 +19,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -104,6 +106,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  * The Class AsposeMonthlyWorkScheduleGenerator.
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerator
 		implements MonthlyWorkScheduleGenerator {
 
