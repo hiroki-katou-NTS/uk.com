@@ -246,7 +246,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int LIMIT_DATA_PACK = 5;
 	
 	/** The Constant LIMIT_REMARK_INPUT. */
-	private static final int LIMIT_REMARK_INPUT = 20;
+	private static final int LIMIT_REMARK_INPUT = 19;
 	
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
@@ -841,7 +841,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 										if(value != null) {
 											value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 										}
-										personalPerformanceDate.detailedErrorData += (value == null? "" : value + "　");
+										personalPerformanceDate.detailedErrorData += (value == null? "" : value + " ");
 									}
 								}
 								// Append マスタ未登録
@@ -1056,7 +1056,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							if(value != null) {
 								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 							}
-							detailedDate.errorDetail += (value == null ? "" : value + "　");
+							detailedDate.errorDetail += (value == null ? "" : value + " ");
 						}
 					}
 					// Append マスタ未登録
@@ -1835,13 +1835,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell dateCell = cells.get(currentRow, 1);
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
 			
-			// A2_3
-			Cell dayMonCell = cells.get(currentRow + 1, 1);
-			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
-			
-			// A2_4
-			Cell dayCell = cells.get(currentRow + 1, 2);
-			dayCell.setValue(headerData.getFixedHeaderData().get(3));
+//			// A2_3
+//			Cell dayMonCell = cells.get(currentRow + 1, 1);
+//			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
+//			
+//			// A2_4
+//			Cell dayCell = cells.get(currentRow + 1, 2);
+//			dayCell.setValue(headerData.getFixedHeaderData().get(3));
 			
 			// A2_6
 			Cell remarkCell = cells.get(currentRow, 35);
@@ -1896,7 +1896,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	cell.setValue(outputItem.getItemName());
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemCode());
+//            	cell.setValue(outputItem.getItemCode());
             }
         }
 	}
@@ -2363,7 +2363,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private void writeDetailValue(ActualValue actualValue, Cell cell) {
 		Style style = cell.getStyle();
 		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-		if (valueTypeEnum.isTime()) {
+		if (valueTypeEnum.isTime() || valueTypeEnum.isDouble()) {
 			String value = actualValue.getValue();
 			if (value != null) {
 				if (valueTypeEnum == ValueType.TIME) {

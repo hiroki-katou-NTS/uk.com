@@ -145,7 +145,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         listWkp: listWkp,
                         startDate: self.startDate,
                         endDate: self.endDate,
-                        listEmpCd: self.listEmpCd
+                        listEmpCd: self.listEmpCd,
+                        closureID: self.closureID
                     };
                     service.exeSendUnconfirmedMail(obj).done(function(result: any) {
                         shareModel.showMsgSendEmail(result);

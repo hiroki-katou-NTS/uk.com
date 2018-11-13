@@ -46,11 +46,8 @@ module nts.uk.com.view.cdl008.a {
                         self.selectedSelWorkplace(inputCDL008.selectedCodes);
                     }
                     self.selectedSystemType = inputCDL008.selectedSystemType;
-                    if (!inputCDL008.isrestrictionOfReferenceRange) {
-                        self.restrictionOfReferenceRange = true;
-                    } else {
-                        self.restrictionOfReferenceRange = inputCDL008.isrestrictionOfReferenceRange;
-                    }
+                    self.restrictionOfReferenceRange = _.isNil(inputCDL008.isrestrictionOfReferenceRange) ?
+                        true : inputCDL008.isrestrictionOfReferenceRange;
 
                     // If Selection Mode is Multiple Then not show Unselected Row
                     self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);

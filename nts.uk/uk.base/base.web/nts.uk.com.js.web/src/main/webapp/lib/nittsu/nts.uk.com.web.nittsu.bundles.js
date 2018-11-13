@@ -29767,7 +29767,7 @@ var nts;
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
                         if (action === ui.DATA_HAS_ERROR) {
-                            return _.some($control, function (c) { return hasError($(c)); });
+                            return _.some($control, function (c) { return hasError($(c)); }) || _.some($control.find("*"), function (c) { return hasError($(c)); });
                         }
                         else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
@@ -38117,11 +38117,11 @@ var nts;
                         }
                         var $startDateArea = self.$datePickerArea.find(".ntsStartDate");
                         var $endDateArea = self.$datePickerArea.find(".ntsEndDate");
-                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
-                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
+                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
                         self.$start = $startDateArea.find(".ntsStartDatePicker");
                         self.$end = $endDateArea.find(".ntsEndDatePicker");
-                        var $input = self.$container.find(".input");
+                        var $input = self.$container.find(".nts-input");
                         // Init Datepicker
                         //            $input.datepicker({
                         //                language: 'ja-JP',
@@ -38144,9 +38144,12 @@ var nts;
                             var $target = $(e.target);
                             var newText = $target.val();
                             var oldValue = self.value();
-                            $target.ntsError('clear');
-                            self.$ntsDateRange.ntsError("clear");
-                            self.validateProcess(newText, oldValue);
+                            //                $target.ntsError('clear');
+                            //                self.$ntsDateRange.ntsError("clear");
+                            if (!$target.ntsError('hasError')) {
+                                self.$ntsDateRange.ntsError("clear");
+                                self.validateProcess(newText, oldValue);
+                            }
                         }));
                         self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };

@@ -26,6 +26,11 @@ public interface IWorkChangeRegisterService {
 	 */
 	void checkBreakTime1(AppWorkChange workChange);
 	
+	/**
+	 * 就業時間帯の必須チェック
+	 * @param workTypeCD
+	 * @return
+	 */
 	boolean isTimeRequired(String workTypeCD);
 	
 }
