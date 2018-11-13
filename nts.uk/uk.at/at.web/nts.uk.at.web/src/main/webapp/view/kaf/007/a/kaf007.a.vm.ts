@@ -68,20 +68,6 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 }
                 return null;
             });
-            //KAF000_A
-            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 2, self.targetDate).done(function() {
-                    nts.uk.ui.block.clear();
-                });
-            }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
-                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
-                });
-                nts.uk.ui.block.clear();
-            });
-            
-            
 
             // 申請日を変更する          
             //Start Date
