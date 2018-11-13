@@ -146,4 +146,6 @@ public interface StandardMenuRepository {
 	 * @param standardMenu
 	 */
 	void deleteStandardMenu(String companyId, String code, int system, int classification);
+	
+	Optional<StandardMenu> getPgName(String companyId, String programId, String screenId, String queryString);
 }

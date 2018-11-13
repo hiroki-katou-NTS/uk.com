@@ -79,6 +79,12 @@ public interface AttendanceTimeOfWeeklyRepository {
 	void persistAndUpdate(AttendanceTimeOfWeekly attendanceTimeOfWeekly);
 	
 	/**
+	 * 登録（INSERTのみ）
+	 * @param domain 週別実績の勤怠時間
+	 */
+	void persist(AttendanceTimeOfWeekly domain);
+	
+	/**
 	 * 削除
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月

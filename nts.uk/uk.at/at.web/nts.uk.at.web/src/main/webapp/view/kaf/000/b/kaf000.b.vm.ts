@@ -123,6 +123,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 isStartup: true,
                 appID: self.appID()
             }).done((data) => {
+                //write log
+                let appType = data.applicationDto.applicationType;
+                if(appType != 0){
+                    let paramLog = {programId: 'KAF000',
+                                    screenId: 'B', 
+                                    queryString: 'apptype='+appType};
+                    service.writeLog(paramLog);
+                }
                 self.inputCommandEvent().version = data.applicationDto.version;
                 self.version = data.applicationDto.version;
                 self.dataApplication(data.applicationDto);
