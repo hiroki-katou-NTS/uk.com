@@ -23,4 +23,6 @@ public interface CurrProcessDateRepository
 
     void remove(String cid, int processCateNo);
 
+    Optional<CurrProcessDate> getByIds(String cid, int processCateNo);
+
 }

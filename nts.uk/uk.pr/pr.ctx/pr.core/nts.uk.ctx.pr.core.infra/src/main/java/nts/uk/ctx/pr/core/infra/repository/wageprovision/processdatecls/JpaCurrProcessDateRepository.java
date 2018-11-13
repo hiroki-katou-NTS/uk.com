@@ -62,4 +62,10 @@ public class JpaCurrProcessDateRepository extends JpaRepository implements CurrP
 		else
 			return Optional.empty();
 	}
+
+	@Override
+	public Optional<CurrProcessDate> getByIds(String cid, int processCateNo) {
+		return Optional.ofNullable(this.getEntityManager().find(QpbmtCurrProcessDate.class,new QpbmtCurrProcessDatePk(cid,processCateNo)).toDomain());
+	}
+
 }

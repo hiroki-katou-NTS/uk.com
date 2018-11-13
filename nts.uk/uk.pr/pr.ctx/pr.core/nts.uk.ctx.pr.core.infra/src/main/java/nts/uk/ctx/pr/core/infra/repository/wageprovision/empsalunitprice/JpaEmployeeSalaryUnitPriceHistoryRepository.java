@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.empsalunitprice;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -21,7 +22,15 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpSalPriHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId IN :employeeId";
+    private static final String UPDATE_ALL_BY_KEY_HIS = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice =:indvidualUnitPrice WHERE f.empSalPriHisPk.historyId =:historyId";
 
+    @Override
+    public void updateAllHistory(String historyId, BigDecimal UnitPrice) {
+        this.getEntityManager().createQuery(UPDATE_ALL_BY_KEY_HIS,QpbmtEmpSalPriHis.class)
+                .setParameter("historyId",historyId)
+                .setParameter("indvidualUnitPrice",UnitPrice)
+                .executeUpdate();
+    }
 
     @Override
     public List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode, List<String> employeeId) {

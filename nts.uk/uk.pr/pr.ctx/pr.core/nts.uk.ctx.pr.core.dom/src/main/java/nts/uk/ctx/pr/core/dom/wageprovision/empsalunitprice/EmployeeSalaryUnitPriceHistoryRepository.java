@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import java.util.List;
 */
 public interface EmployeeSalaryUnitPriceHistoryRepository
 {
+
+    void updateAllHistory(String historyId, BigDecimal UnitPrice);
 
     List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode,List<String> employeeId);
 

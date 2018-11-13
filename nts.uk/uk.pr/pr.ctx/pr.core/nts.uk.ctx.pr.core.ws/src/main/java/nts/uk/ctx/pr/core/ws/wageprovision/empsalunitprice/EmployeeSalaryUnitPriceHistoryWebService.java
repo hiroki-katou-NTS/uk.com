@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 public class EmployeeSalaryUnitPriceHistoryWebService  extends WebService{
 
     @Inject
-    EmployeeSalaryUnitPriceHistoryFinder employeeSalaryUnitPriceHistoryFinder;
+    private EmployeeSalaryUnitPriceHistoryFinder employeeSalaryUnitPriceHistoryFinder;
 
     @POST
     @Path("/getEmployeeSalaryUnitPriceHistory")
