@@ -25,7 +25,8 @@ public class StateCorrelationHisEmployeeService {
             stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
             this.addStateCorrelationHisEmployee(cid,hisId,start,end);
         }else if(mode == RegisterMode.UPDATE.value){
-            stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
+            stateLinkSettingMasterRepository.removeAll(hisId);
+            stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
         }
     }
 

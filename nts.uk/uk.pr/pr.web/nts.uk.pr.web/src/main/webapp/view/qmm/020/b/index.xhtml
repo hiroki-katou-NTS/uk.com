@@ -4,7 +4,7 @@
                 <div id="A">
                         <span>#{i18n.getText('QMM020_5')}</span>
                         <button id="A1_1" tabindex="1" class="proceed"
-                                data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+                                data-bind="click: register, enable: $root.errors.isEmpty &amp;&amp; enableRegisterButton()">#{i18n.getText('QMM020_1')}</button>
 
                         <button id="A1_2" tabindex="2"
                                 data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
@@ -21,14 +21,15 @@
                 <div class="fixed-flex-layout-left" style="margin-left: 25px">
                         <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                                 <div>
-                                        <button id="B1_3" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">履歴追加</button>
+                                        <button id="B1_3" tabindex="1" data-bind="click: openScreenJ, enable: $root.errors.isEmpty() &amp;&amp; enableAddHisButton()">#{i18n.getText('QMM020_13')}</button>
 
-                                        <button id="B1_4" data-bind="enable: $root.errors.isEmpty() &amp;&amp; enableEditHisButton()" style="float: right">履歴編集</button>
+                                        <button id="B1_4" tabindex="2" data-bind="click: openScreenK, enable: $root.errors.isEmpty() &amp;&amp; enableEditHisButton()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                                 </div>
 
                                 <div style="margin-top: 10px">
-                                        <table  id="A1_5"  data-bind="ntsGridList: {
+                                        <table  id="B1_5"  tabindex="3" data-bind="ntsGridList: {
                                             height: 250,
+                                            name: '#{i18n.getText('QMM020_14')}',
                                             dataSource: listStateCorrelationHis,
                                             primaryKey: 'hisId',
                                             columns: [
@@ -37,28 +38,28 @@
                                                         { headerText: '', key: 'display', width: 180,formatter: _.escape},
                                                     ],
                                             multiple: false,
-                                            value: currentSelect
+                                            value: currentSelectedHis
                                         }"></table>
                                 </div>
                         </div>
                 </div>
-                <div class="fixed-flex-layout-right">
-                        <span style="margin-bottom: 15px;">全社に対して設定できる明細書は、</span>
+                <div class="fixed-flex-layout-right" style="margin-top: 20px;">
+                        <span id="B2_1" style="margin-bottom: 15px;">#{i18n.getText('QMM020_17')}</span>
                         <div class="control-group flex valign-center" style="min-width: 500px;padding-top: 15px;margin-left: 20px">
-                                <span id="B2_2">#{i18n.getText('QMM020_18')} <br> </br>#{i18n.getText('QMM020_18')}</span>
-                                <span id="B2_3" style="padding-left: 30px">それぞれ、一種類です。</span>
+                                <pre id="B2_2" tabindex="-1" style="line-height: 1.8;">#{i18n.getText('QMM020_18')}</pre>
+                                <span id="B2_3" style="padding-left: 30px">#{i18n.getText('QMM020_19')} </span>
                         </div>
 
                         <div class="control-group" style="margin-top: 40px;">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
+                                <button id="B2_5" tabindex="4" style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
                                 <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
                                 <span style="margin-left: 10px;" data-bind="text: salaryLayoutName"></span>
                         </div>
 
                         <div class="control-group" style="margin-top: 15px;">
-                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_20')}</div>
-                                <button style="margin-left: 15px;" data-bind="click: openScreenM">#{i18n.getText('QMM020_21')}</button>
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_22')}</div>
+                                <button id="B2_9" tabindex="5" style="margin-left: 15px;" data-bind="click: openScreenM1">#{i18n.getText('QMM020_21')}</button>
                                 <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
                                 <span style="margin-left: 10px;" data-bind="text: bonusLayoutName"></span>
                         </div>

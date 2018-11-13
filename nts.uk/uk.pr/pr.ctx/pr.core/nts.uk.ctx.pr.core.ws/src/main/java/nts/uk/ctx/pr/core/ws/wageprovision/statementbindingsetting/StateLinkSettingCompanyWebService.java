@@ -31,10 +31,10 @@ public class StateLinkSettingCompanyWebService extends WebService {
     private UpdateStateLinkSettingCompanyCommandHandler updateStateLinkSettingCompanyCommandHandler;
 
     @POST
-    @Path("getStateLinkSettingCompanyById/{hisId}")
-    public StatementLayoutDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId){
+    @Path("getStateLinkSettingCompanyById/{hisId}/{startYearMonth}")
+    public StatementLayoutDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId, @PathParam("startYearMonth") int startYearMonth){
         String cid = AppContexts.user().companyId();
-        Optional<StatementLayoutDto> statementLayoutDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(cid,hisId);
+        Optional<StatementLayoutDto> statementLayoutDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(cid,hisId,startYearMonth);
         if(statementLayoutDto.isPresent()){
             return statementLayoutDto.get();
         }

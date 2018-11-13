@@ -29,8 +29,8 @@ public class StateCorrelationHisDeparmentService {
             stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
             this.addStateCorrelationHisDeparment(cid,hisId,start,end);
         }else if(mode == RegisterMode.UPDATE.value){
-            stateLinkSettingDateRepository.update(stateLinkSettingDate);
-            stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
+            stateLinkSettingMasterRepository.removeAll(hisId);
+            stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
         }
     }
 

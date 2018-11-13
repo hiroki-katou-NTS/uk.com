@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 500, height: 300};</script>
+        <script>var dialogSize = {width: 500, height: 340};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm020.k.vm.js"/>
@@ -22,24 +22,20 @@
             </div>
             <!-- K1_2 名称 -->
             <div class=" table table-col-2">
-
-                <div id="K1_2" class ="cell valign-top" style="display: inline-flex;margin-top: 10px;">
-                    <div  data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                <div class="cell valign-top">
+                    <div id="K1_2" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
                         <span class="label">#{i18n.getText('QMM020_67')}</span>
                     </div>
-                    <div class ="cell valign-top" id="K1_3" style="margin-top: 10px;">
-                        <div style="" class="cell" tabIndex="-1"
-                             data-bind="ntsRadioBoxGroup: {
+                </div>
+                <div class ="cell valign-top" >
+                    <div id="K1_3" class="cell" tabIndex="1" style="display: grid;margin: 10px 0px 0px 10px"
+                         data-bind="ntsRadioBoxGroup: {
 										value: methodEditing,
-										option: itemList(),
-										optionValue: 'code',
+										options: itemList(),
+										optionsValue: 'code',
 										enable: isFirst,
-										optionText: 'name',
-										}">
-                        </div>
-
+										optionsText: 'name'}">
                     </div>
-
                 </div>
             </div>
             <table style="margin-top: 10px;">
@@ -54,15 +50,15 @@
 												name: '#{i18n.getText('QMM020_62')}',
 												value: startYearMonthPeriod,
 												required: true,
-												enable: isCanPickDate,
+												enable: isCanPickDate(),
 												valueFormat: 'YYYYMM',
 												dateFormat: 'yearmonth'}">
                         </div>
-                        <span style="margin-left: 5px;" class="label">#{i18n.getText('QMM020_56')}</span>
+                        <span id="K1_8" style="margin-left: 5px;" class="label">#{i18n.getText('QMM020_56')}</span>
                     </td>
                     <td>
                         <div data-bind="if: modeScreen() != nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_THREE">
-                            <span class="label" style="margin: 5px 0px 0px 5px;" data-bind="text : endYearMonthPeriod"></span>
+                            <span id="K1_9" class="label" style="margin: 5px 0px 0px 5px;" data-bind="text :  nts.uk.time.formatYearMonth(endYearMonthPeriod())"></span>
                         </div>
                         <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_THREE">
                             <div id="K1_12" style="margin: 5px 0px 0px 5px;" tabindex="3" data-bind="ntsDatePicker: {
@@ -70,8 +66,7 @@
 												value: endYearMonthPeriod,
 												required: true,
 												enable: isCanPickDate,
-												valueFormat: 'YYYYMM',
-												dateFormat: 'yearmonth'}">
+												dateFormat: 'YYYY/MM/DD'}">
                             </div>
                         </div>
 
@@ -81,17 +76,20 @@
             <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.k.viewmodel.MODE_SCREEN.MODE_TWO ">
                 <div id="K1_10" data-bind="ntsFormLabel: {}" style="margin: 10px 10px 0px 10px;">
                     <span class="label">#{i18n.getText('QMM020_62')}</span>
-                    <span id="K1_11" style="margin-left: 27px;" data-bind="text: startYearMonthMasterDate"></span>
+                    <span id="K1_11" style="margin-left: 27px;" data-bind="text: startDateMaster"></span>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom" style="z-index: auto">
-            <!-- K2_1 登録 -->
-            <button id="K2_1" tabindex="3" class="proceed large"
-                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
-            <!-- K2_2 削除 -->
-            <button id="K2_2" tabindex="4"
-                    data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+            <div id="center">
+                <!-- K2_1 登録 -->
+                <button id="K2_1" tabindex="3" class="proceed large"
+                        data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
+                <!-- K2_2 削除 -->
+                <button id="K2_2" tabindex="4"
+                        data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
+            </div>
+
         </div>
     </ui:define>
 </ui:composition>

@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm020.k {
 
         };
         export function deleteStateCorrelationHis(data: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.deleteStateCorrelationHis,data);
+            return nts.uk.request.ajax(path.getStateLinkSettingCompanyById,data);
         }
 
     }

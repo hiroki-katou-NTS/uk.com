@@ -26,8 +26,9 @@ public class StateCorrelationHistoryService {
     /*個人*/
     private static final int INDIVIDUAL = 6 ;
 
-    private static final int MODE_UPDATE = 0 ;
-    private static final int MODE_DELETE = 1 ;
+    private static final int MODE_DELETE = 0 ;
+
+    private static final int MODE_UPDATE = 1 ;
 
     @Inject
     private StateLinkSettingCompanyRepository mStateLinkSettingCompanyRepository;
@@ -59,7 +60,7 @@ public class StateCorrelationHistoryService {
             case COMPANY : {
                 if(modeEdit == MODE_DELETE){
                     mStateLinkSettingCompanyRepository.remove(hisId);
-                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid, hisId).get().items().size() == 1) {
+                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid).get().items().size() == 1) {
                         mStateCorrelationHisCompanyRepository.remove(cid, hisId);
                         return;
                     }
@@ -78,7 +79,7 @@ public class StateCorrelationHistoryService {
             case EMPLOYEE : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
-                    if(modeEdit == MODE_DELETE){
+                    if(mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid).get().items().size() == 1){
                         mStateCorrelationHisEmployeeRepository.remove(cid,hisId);
                         return;
                     }
@@ -98,7 +99,7 @@ public class StateCorrelationHistoryService {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
                     mStateLinkSettingDateRepository.remove(hisId);
-                    if(modeEdit == MODE_DELETE){
+                    if(mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cid).get().items().size() == 1){
                         mStateCorrelationHisDeparmentRepository.remove(cid,hisId);
                         return;
                     }
@@ -117,7 +118,7 @@ public class StateCorrelationHistoryService {
             case CLASSIFICATION : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
-                    if(modeEdit == MODE_DELETE){
+                    if(mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cid).get().items().size() == 1){
                         mStateCorrelationHisClassificationRepository.remove(cid,hisId);
                         return;
                     }
@@ -137,7 +138,7 @@ public class StateCorrelationHistoryService {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
                     mStateLinkSettingDateRepository.remove(hisId);
-                    if(modeEdit == MODE_DELETE){
+                    if(mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cid).get().items().size() == 1){
                         mStateCorrelationHisPositionRepository.remove(cid,hisId);
                         return;
                     }
@@ -156,7 +157,7 @@ public class StateCorrelationHistoryService {
             case SALARY : {
                 if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
-                    if(modeEdit == MODE_DELETE){
+                    if(mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cid).get().items().size() == 1){
                         mStateCorrelationHisSalaryRepository.remove(cid,hisId);
                         return;
                     }
@@ -175,7 +176,7 @@ public class StateCorrelationHistoryService {
             case INDIVIDUAL : {
                 if(modeEdit == MODE_DELETE){
                     mStateLinkSettingIndividualRepository.remove(hisId);
-                    if(modeEdit == MODE_DELETE){
+                    if(mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(cid).get().items().size() == 1){
                         mStateCorrelationHisIndividualRepository.remove(cid,hisId);
                         return;
                     }

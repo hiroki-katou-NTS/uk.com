@@ -14,42 +14,131 @@
         <com:scriptfile path="qmm020.a.service.js" />
         <com:stylefile path="qmm020.a.style.css" />
 
+        <com:scriptfile path="../b/qmm020.b.vm.js" />
+        <com:scriptfile path="../b/qmm020.b.start.js" />
+        <com:scriptfile path="../b/qmm020.b.service.js" />
+
+        <com:scriptfile path="../c/qmm020.c.vm.js" />
+        <com:scriptfile path="../c/qmm020.c.service.js" />
+        <com:stylefile path="../c/qmm020.c.style.css" />
+
+        <com:scriptfile path="../d/qmm020.d.vm.js" />
+        <com:scriptfile path="../d/qmm020.d.service.js" />
+
         <com:scriptfile path="../e/qmm020.e.vm.js" />
         <com:scriptfile path="../e/qmm020.e.service.js" />
 
-     <!--   <com:scriptfile path="../f/qmm020.f.vm.js" />
-        <com:scriptfile path="../f/qmm020.f.service.js" />-->
+        <com:scriptfile path="../f/qmm020.f.vm.js" />
+        <com:scriptfile path="../f/qmm020.f.service.js" />
 
         <com:scriptfile path="../g/qmm020.g.vm.js" />
         <com:scriptfile path="../g/qmm020.g.service.js" />
 
         <com:scriptfile path="../h/qmm020.h.vm.js" />
         <com:scriptfile path="../h/qmm020.h.service.js" />
-
     </ui:define>
     <ui:define name="sidebar">
         <ul class="navigator">
 
             <li><a tabindex="-1" href="#tabpanel-1" class="tab-b-sidebar" role="tab-navigator">#{i18n.getText('QMM020_5')}</a></li>
 
-            <li><a tabindex="-1" href="#tabpanel-2" class="tab-c-sidebar" role="tab-navigator">#{i18n.getText('QMM020_7')}</a></li>
+            <!-- <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 0">
+                <li><a tabindex="-1" href="#tabpanel-2" class="tab-c-sidebar" role="tab-navigator">#{i18n.getText('QMM020_6')}</a></li>
+            </com:ko-if>
 
-            <li><a tabindex="-1" href="#tabpanel-3" class="tab-d-sidebar" role="tab-navigator">#{i18n.getText('QMM020_9')}</a></li>
+            <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 1">
+                <li><a tabindex="-1" href="#tabpanel-2" class="tab-d-sidebar" role="tab-navigator">#{i18n.getText('QMM020_7')}</a></li>
+            </com:ko-if>
+
+            <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 2">
+                <li><a tabindex="-1" href="#tabpanel-2" class="tab-e-sidebar" role="tab-navigator">#{i18n.getText('QMM020_8')}</a></li>
+            </com:ko-if>
+
+            <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 3">
+                <li><a tabindex="-1" href="#tabpanel-2" class="tab-f-sidebar" role="tab-navigator">#{i18n.getText('QMM020_9')}</a></li>
+            </com:ko-if>
+
+            <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 4">
+                <li><a tabindex="-1" href="#tabpanel-2" class="tab-g-sidebar" role="tab-navigator">#{i18n.getText('QMM020_10')}</a></li>
+            </com:ko-if> -->
+
+
+                <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">
+                    <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 0">
+                        #{i18n.getText('QMM020_6')}
+                    </com:ko-if>
+
+                    <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 1">
+                        #{i18n.getText('QMM020_7')}
+                    </com:ko-if>
+
+                    <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 2">
+                        #{i18n.getText('QMM020_8')}
+                    </com:ko-if>
+
+                    <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 3">
+                        #{i18n.getText('QMM020_9')}
+                    </com:ko-if>
+
+                    <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 4">
+                        #{i18n.getText('QMM020_10')}
+                    </com:ko-if>
+
+                </a></li>
+
+
+            <com:ko-if bind="$vm.viewmodelA.individualUse() === 1">
+                <li><a tabindex="-1" href="#tabpanel-3" class="tab-h-sidebar" role="tab-navigator">#{i18n.getText('QMM020_11')}</a></li>
+            </com:ko-if>
+
         </ul>
         <div class="divider"></div>
         <span>#{i18n.getText('QMM020_12')}</span>
         <button>?</button>
     </ui:define>
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel" data-bind = "with: viewmodelE">
-            <ui:include src="../e/index.xhtml" />
+        <div id="tabpanel-1" role="tabpanel" data-bind = "with: viewmodelB">
+            <ui:include src="../b/index.xhtml" />
         </div>
-        <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelF">
-            <ui:include src="../f/index.xhtml" />
-        </div>
-        <div id="tabpanel-3" role="tabpanel" data-bind = "with: viewmodelG">
-            <ui:include src="../g/index.xhtml" />
-        </div>
+
+        <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() == 0">
+            <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelC">
+                <ui:include src="../c/index.xhtml" />
+            </div>
+        </com:ko-if>
+
+        <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() == 1">
+            <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelD">
+                <ui:include src="../d/index.xhtml" />
+            </div>
+        </com:ko-if>
+
+        <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() == 2">
+            <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelE">
+                <ui:include src="../e/index.xhtml" />
+            </div>
+        </com:ko-if>
+
+        <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() == 3">
+            <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelF">
+                <ui:include src="../f/index.xhtml" />
+            </div>
+        </com:ko-if>
+
+        <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() == 4">
+            <div id="tabpanel-2" role="tabpanel" data-bind = "with: viewmodelG">
+                <ui:include src="../g/index.xhtml" />
+            </div>
+        </com:ko-if>
+
+        <com:ko-if bind="$vm.viewmodelA.individualUse() === 1">
+            <div id="tabpanel-3" role="tabpanel" data-bind = "with: viewmodelH">
+                <ui:include src="../h/index.xhtml" />
+            </div>
+        </com:ko-if>
+
+
+
     </ui:define>
 </ui:composition>
 </body>
