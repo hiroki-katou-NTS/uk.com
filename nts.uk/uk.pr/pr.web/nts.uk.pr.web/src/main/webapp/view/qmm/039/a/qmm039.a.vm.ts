@@ -18,19 +18,19 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         classificationCategory: KnockoutObservable<number> = ko.observable(PERVALUECATECLS.SUPPLY);
         salaryBonusCategory: KnockoutObservable<number> = ko.observable(SALBONUSCATE.SALARY);
         itemList: KnockoutObservableArray<ItemModel>;
-        individualPriceCode: KnockoutObservable<any> = ko.observable('');
-        individualPriceName: KnockoutObservable<any> = ko.observable('');
+        individualPriceCode: KnockoutObservable<any> = ko.observable(null);
+        individualPriceName: KnockoutObservable<any> = ko.observable(null);
         periodStartYM: KnockoutObservable<string> = ko.observable('');
         periodEndYM: KnockoutObservable<string> = ko.observable('');
         individualPriceName: KnockoutObservable<any> = ko.observable('');
         onTab: KnockoutObservable<number> = ko.observable(ITEM_CLASS.SALARY_SUPLY);
         itemClas: KnockoutObservable<number> = ko.observable(0);
-        titleTab: KnockoutObservable<string> = ko.observable('');
+        titleTab: KnockoutObservable<string> = ko.observable(null);
         isRegistrationable: KnockoutObservable<boolean> = ko.observable(false);
         isAddableHis: KnockoutObservable<boolean> = ko.observable(false);
         isEditableHis: KnockoutObservable<boolean> = ko.observable(false);
         focusStartPage: boolean;
-        itemClassLabel: KnockoutObservable<string> = ko.observable('');
+        itemClassLabel: KnockoutObservable<string> = ko.observable(null);
         selectedTab: KnockoutObservable<string>;
         dataSource: any = ko.observableArray([]);
         selectedHis: KnockoutObservable<ItemModel>;
@@ -72,6 +72,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.isEditableHis(true);
                 } else {
                     self.isEditableHis(false);
+                    self.itemClassLabel(null);
+                    self.individualPriceCode(null);
+                    self.individualPriceName(null);
+                    self.periodStartYM(null);
+                    self.periodEndYM(null);
+                    self.currencyeditor.value(null);
                 }
             });
             self.focusStartPage = true;
@@ -114,7 +120,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
             });
             self.currencyeditor = {
-                value: ko.observable(null),
+                value: ko.observable(0),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
@@ -125,6 +131,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.dataSource.subscribe((data) => {
+                if(data.length = 0) {
+                    self.mode(MODE.HISTORY_UNREGISTERED);
+                    self.isAddableHis(false);
+                }
+            });
 
             // _____CCG001________
             self.selectedEmployee = ko.observableArray([]);
@@ -162,6 +174,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 showJobTitle: false,
                 showWorktype: false,
                 isMutipleCheck: false,
+                showOnStart: true,
                 tabindex: 4,
 
                 /**
@@ -190,6 +203,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.SALARY_SUPLY);
                     self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
+                    $('#emp-component').focus();
+                    $('')
                     break;
                 case ITEM_CLASS.SALARY_DEDUCTION:
                     self.classificationCategory(PERVALUECATECLS.DEDUCTION);
@@ -200,6 +215,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.changeItemClass(PERVALUECATECLS.DEDUCTION);
                     self.itemClas(ITEM_CLASS.SALARY_DEDUCTION);
                     self.itemClassLabel(format(getText('QMM039_21'), '給与控除'));
+                    $('#emp-component').focus();
                     break;
                 case ITEM_CLASS.BONUS_SUPLY:
                     self.classificationCategory(PERVALUECATECLS.SUPPLY);
@@ -210,6 +226,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.BONUS_SUPLY);
                     self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
+                    $('#emp-component').focus();
                     break;
                 case ITEM_CLASS.BONUS_DEDUCTION:
                     self.classificationCategory(PERVALUECATECLS.DEDUCTION);
@@ -220,6 +237,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.changeItemClass(PERVALUECATECLS.DEDUCTION);
                     self.itemClas(ITEM_CLASS.BONUS_DEDUCTION);
                     self.itemClassLabel(format(getText('QMM039_21'), '賞与控除'));
+                    $('#emp-component').focus();
                     break;
                 default:
                     self.classificationCategory(PERVALUECATECLS.SUPPLY);
@@ -230,6 +248,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.SALARY_SUPLY);
                     self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
+                    $('#emp-component').focus();
                     break;
             }
         }
@@ -247,10 +266,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         index++;
                     });
                     self.dataSource(array);
-                    self.singleSelectedCode(data[0].individualPriceCode);
-                    self.individualPriceName(data[0].individualPriceName);
-                    self.individualPriceCode(data[0].individualPriceCode);
-                    self.historyProcess(data[0].individualPriceCode, 0);
+                    self.singleSelectedCode(array[0].individualPriceCode);
+                    self.individualPriceName(array[0].individualPriceName);
+                    self.individualPriceCode(array[0].individualPriceCode);
+                    self.historyProcess(array[0].individualPriceCode, 0);
                 } else {
                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
                     self.itemList([]);
@@ -260,8 +279,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceName('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value(null);
-
+                    self.currencyeditor.value(0);
+                    self.mode(MODE.HISTORY_UNREGISTERED);
+                    self.isAddableHis(false);
                 }
             });
         }
@@ -306,7 +326,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodStartYM(null);
                     self.periodEndYM(null);
                     self.isRegistrationable(false);
-                    self.currencyeditor.value(null);
+                    self.currencyeditor.value(0);
                     self.currencyeditor.enable(false);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                 }
@@ -421,7 +441,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         //TODO TO SCREEN B
         public toScreenB(): void {
             let self = this;
-            let params = {};
+            let params;
             if (self.mode() == MODE.NORMAL) {
                 params = {
                     historyID: self.itemList()[0].historyID,
@@ -441,8 +461,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                                 periodEndYm: 999912
                             }
                         }
-                    }
-                    else {
+                    } else {
                         params = {
                             period: {
                                 periodStartYm: null,
@@ -453,7 +472,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.openModalB(params);
                 });
             }
-
         }
 
         openModalB(params) {
@@ -554,8 +572,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 empCode: empId,
                 empName: empName,
                 empId: self.selectedItem(),
-                itemClassification: self.itemClassLabel(),
-                personalValCode: self.individualPriceCode() +'',
+                itemClassification: self.itemClas(),
+                personalValCode: self.individualPriceCode(),
                 cateIndicator: self.classificationCategory(),
                 salBonusCate: self.salaryBonusCategory()
             }
@@ -576,7 +594,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                    let tempSelected=self.selectedHisCode();
+                    let tempSelected = self.selectedHisCode();
                     self.historyProcess(self.individualPriceCode(), tempSelected);
 
                     self.selectedHisCode(tempSelected);

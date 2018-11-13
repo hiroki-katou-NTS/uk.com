@@ -14,12 +14,20 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
         referenceYear: KnockoutObservable<number>;
         items: KnockoutObservableArray<ItemModel>;
         currentCode: KnockoutObservable<any>;
+        columns: any;
 
         constructor() {
             var self = this;
             self.referenceYear = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.items = ko.observableArray();
-            this.currentCode = ko.observable();
+            self.currentCode = ko.observable();
+            self.columns = [
+                {key:'empId', length: 0, hidden: true},
+                {headerText: getText('QMM039_13'), key: 'code', width: 70, formatter: _.escape },
+                {headerText: getText('QMM039_14'), key: 'name', width: 180, formatter: _.escape},
+                {headerText: getText('QMM039_23'), key: 'period', width: 150, formatter: _.escape},
+                {headerText: getText('QMM039_25'), key: 'amount', width: 120, formatter: _.escape, template: "<div style='text-align: right'>${amount}</div>"}
+            ];
 
         }
 
@@ -40,14 +48,16 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
             self.getSalIndAmountHis(dto);
         }
 
-        startPage(params): JQueryPromise<any> {
+        startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.params = getShared('QMM039_D_PARAMS');
             self.itemClassification(self.params.itemClassification);
             self.empCode(self.params.empCode);
             self.empName(self.params.empName);
-            self.startupScreen();
+            if(self.params.personalValCode) {
+                self.startupScreen();
+            }
             dfd.resolve();
             return dfd.promise();
         }

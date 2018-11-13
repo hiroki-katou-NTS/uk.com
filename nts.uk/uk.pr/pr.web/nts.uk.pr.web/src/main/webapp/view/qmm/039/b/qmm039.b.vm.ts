@@ -48,13 +48,6 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                     self.yearMonthStart(startYM);
                 }
 
-
-
-
-
-
-
-
                 if (params.historyID) {
                     self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.WITH_HISTORY, getText('QMM039_29', [displayLastestStartHistory])));
                     self.takeoverMethod(0);
