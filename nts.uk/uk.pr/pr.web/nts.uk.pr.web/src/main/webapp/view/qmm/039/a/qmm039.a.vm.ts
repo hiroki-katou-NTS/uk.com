@@ -72,12 +72,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.isEditableHis(true);
                 } else {
                     self.isEditableHis(false);
-                    self.itemClassLabel(null);
-                    self.individualPriceCode(null);
-                    self.individualPriceName(null);
-                    self.periodStartYM(null);
-                    self.periodEndYM(null);
-                    self.currencyeditor.value(null);
+                    self.itemClassLabel('');
+                    self.individualPriceCode('');
+                    self.individualPriceName('');
+                    self.periodStartYM('');
+                    self.periodEndYM('');
+                    self.currencyeditor.value(0);
                 }
             });
             self.focusStartPage = true;
@@ -131,12 +131,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            self.dataSource.subscribe((data) => {
-                if(data.length = 0) {
-                    self.mode(MODE.HISTORY_UNREGISTERED);
-                    self.isAddableHis(false);
-                }
-            });
 
             // _____CCG001________
             self.selectedEmployee = ko.observableArray([]);
@@ -225,7 +219,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.BONUS_SUPLY);
-                    self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
+                    if(self.mode() != MODE.HISTORY_UNREGISTERED) {
+                        self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
+                    } else {
+                        self.itemClassLabel('');
+                    }
+
                     $('#emp-component').focus();
                     break;
                 case ITEM_CLASS.BONUS_DEDUCTION:
@@ -266,10 +265,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         index++;
                     });
                     self.dataSource(array);
-                    self.singleSelectedCode(array[0].individualPriceCode);
-                    self.individualPriceName(array[0].individualPriceName);
-                    self.individualPriceCode(array[0].individualPriceCode);
-                    self.historyProcess(array[0].individualPriceCode, 0);
+                    self.singleSelectedCode(data[0].individualPriceCode);
+                    self.individualPriceName(data[0].individualPriceName);
+                    self.individualPriceCode(data[0].individualPriceCode);
+                    self.historyProcess(data[0].individualPriceCode, 0);
                 } else {
                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
                     self.itemList([]);
