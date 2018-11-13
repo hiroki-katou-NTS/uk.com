@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.service;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.Abolition;
 
@@ -18,6 +20,9 @@ public class StatementLayoutService {
     @Inject
     private StatementItemRepository statementItemRepo;
 
+    @Inject
+    private StatementLayoutRepository statementLayoutRepo;
+
     /**
      * 支給項目一覧を更新する
      */
@@ -33,4 +38,5 @@ public class StatementLayoutService {
         return statementItemRepo.getItemCustomByCtgAndExcludeCodes(cid, categoryAtr, Abolition.NOT_ABOLISH.value,
                 itemNameCdFixedList, itemNameCdSelected, itemNameCdExcludeList);
     }
+
 }

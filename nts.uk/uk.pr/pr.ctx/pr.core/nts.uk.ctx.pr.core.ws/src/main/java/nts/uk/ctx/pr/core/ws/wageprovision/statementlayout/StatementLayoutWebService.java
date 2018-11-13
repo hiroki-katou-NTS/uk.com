@@ -109,6 +109,12 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getAllStatementLayoutAndLastHist")
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
+        return this.statementLayoutFinder.getAllStatementLayoutAndLastHist();
+    }
+
+    @POST
     @Path("getStatementLayoutAndLastHist/{code}")
     public StatementLayoutAndHistDto getStatementLayoutAndLastHist(@PathParam("code") String code) {
         return this.statementLayoutFinder.getStatementLayoutAndLastHist(code);

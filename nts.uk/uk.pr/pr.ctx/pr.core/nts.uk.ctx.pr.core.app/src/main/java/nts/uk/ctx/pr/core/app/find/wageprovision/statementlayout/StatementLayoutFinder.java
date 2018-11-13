@@ -61,6 +61,25 @@ public class StatementLayoutFinder {
         return result;
     }
 
+    public List<StatementLayoutAndHistDto> getAllStatementLayoutAndLastHist() {
+        List<StatementLayoutAndHistDto> result = new ArrayList<>();
+        String cid = AppContexts.user().companyId();
+
+        List<StatementLayout> statementLayoutList = statementLayoutRepo.getAllStatementLayoutByCid(cid);
+
+        for(StatementLayout statementLayout : statementLayoutList) {
+            Optional<YearMonthHistoryItem> yearMonthHistoryItemOptional = statementLayoutHistRepo.getLatestHistByCidAndCode(cid, statementLayout.getStatementCode().v());
+
+            if(yearMonthHistoryItemOptional.isPresent()) {
+                List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<>();
+                yearMonthHistoryItemList.add(yearMonthHistoryItemOptional.get());
+                result.add(StatementLayoutAndHistDto.fromDomain(statementLayout,yearMonthHistoryItemList));
+            }
+        }
+
+        return result;
+    }
+
     public List<StatementItemCustomDto> getStatementItem(StatementItemCustomDataDto dataDto) {
         return statementLayoutService.getStatementItem(dataDto.getCategoryAtr(), dataDto.getItemNameCdSelected(), dataDto.getItemNameCdExcludeList())
                 .stream().map(StatementItemCustomDto::new).collect(Collectors.toList());

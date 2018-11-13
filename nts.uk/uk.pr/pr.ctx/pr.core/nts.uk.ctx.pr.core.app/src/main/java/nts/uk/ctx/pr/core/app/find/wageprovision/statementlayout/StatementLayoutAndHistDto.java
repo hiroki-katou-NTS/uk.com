@@ -7,7 +7,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -28,12 +27,12 @@ public class StatementLayoutAndHistDto
     /**
      * 履歴
      */
-    private List<YearMonthHistoryItemDto> history;
+    private List<StatementLayoutHistDto> history;
 
     public static StatementLayoutAndHistDto fromDomain(StatementLayout statementLayout, List<YearMonthHistoryItem> history)
     {
-        List<YearMonthHistoryItemDto> yearMonthHistoryItemDto = history.stream().map(item -> YearMonthHistoryItemDto.fromDomainToDto(item)).collect(Collectors.toList());
-        return new StatementLayoutAndHistDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(), yearMonthHistoryItemDto);
+        List<StatementLayoutHistDto> statementLayoutHistDto = history.stream().map(item -> StatementLayoutHistDto.fromDomainToDto(item)).collect(Collectors.toList());
+        return new StatementLayoutAndHistDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(), statementLayoutHistDto);
     }
 
 }
