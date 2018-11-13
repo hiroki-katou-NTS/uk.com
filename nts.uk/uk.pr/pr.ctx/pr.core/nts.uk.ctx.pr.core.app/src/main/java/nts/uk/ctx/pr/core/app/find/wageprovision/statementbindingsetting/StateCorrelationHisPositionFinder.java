@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
@@ -50,13 +51,9 @@ public class StateCorrelationHisPositionFinder {
         return null;
     }
 
-    public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){
+    public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth, GeneralDate date){
         String cId = AppContexts.user().companyId();
-        Optional<StateLinkSettingDate> stateLinkSettingDate = stateLinkSettingDateFinder.getStateLinkSettingDateById(hisId);
-        if(!stateLinkSettingDate.isPresent()) {
-            return null;
-        }
-        List<JobTitle> listJobTitle = syJobTitleAdapter.findAll(cId, stateLinkSettingDate.get().getDate());
+        List<JobTitle> listJobTitle = syJobTitleAdapter.findAll(cId, date);
         if(listJobTitle == null || listJobTitle.isEmpty()){
             return null;
         }

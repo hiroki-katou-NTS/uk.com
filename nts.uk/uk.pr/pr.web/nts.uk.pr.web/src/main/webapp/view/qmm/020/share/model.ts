@@ -17,6 +17,50 @@ module nts.uk.pr.view.qmm020.share.model {
         return year + "/" + month;
     }
 
+    export class StateLinkSettingMaster {
+        hisId: string;
+        masterCode: string;
+        categoryName: string;
+        salaryCode: string;
+        bonusCode: string;
+        bonusName:string;
+        salaryName: string;
+        displayE3_4: string;
+        displayE3_5: string;
+        constructor() {
+
+        }
+
+    }
+
+    export function displayCodeAndName(code: string, name: string){
+        let display : string;
+        display = code == null ? " " : code.toString();
+        if(name != null) {
+            display = display + "      " + name;
+        }
+        return display;
+    }
+
+    export function convertToDisplay(item){
+        let listStateLinkSettingMaster = [];
+        _.each(item, (item,key) => {
+            let dto: StateLinkSettingMaster = new StateLinkSettingMaster();
+            dto.hisId = item.hisId;
+            dto.id = key;
+            dto.masterCode = item.masterCode;
+            dto.categoryName = item.categoryName;
+            dto.salaryCode = item.salaryCode;
+            dto.bonusCode = item.bonusCode;
+            dto.bonusName = item.bonusName;
+            dto.salaryName = item.salaryName;
+            dto.displayE3_4 = displayCodeAndName(item.salaryCode, item.salaryName);
+            dto.displayE3_5 = displayCodeAndName(item.bonusCode, item.bonusName);
+            listStateLinkSettingMaster.push(dto);
+        });
+        return _.orderBy(listStateLinkSettingMaster, ['masterCode'],['asc']);
+    }
+
     export enum MODE {
         NEW = 0,
         UPDATE = 1,

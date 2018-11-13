@@ -14,7 +14,7 @@ module nts.uk.pr.view.qmm020.e {
         }
 
         export function registerClassification(data :any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getStateCorrelationHisClassification, data);
+            return nts.uk.request.ajax(path.registerClassification, data);
         }
 
         export function getStateLinkMasterClassification(hisId :string, start :number): JQueryPromise<any> {
