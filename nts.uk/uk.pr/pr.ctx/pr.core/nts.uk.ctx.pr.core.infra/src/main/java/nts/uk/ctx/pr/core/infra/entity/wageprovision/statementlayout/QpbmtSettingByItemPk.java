@@ -9,15 +9,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
-/**
- * 行別設定: 主キー情報
- */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtLineByLineSetPk implements Serializable {
-
+public class QpbmtSettingByItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -41,4 +37,10 @@ public class QpbmtLineByLineSetPk implements Serializable {
     @Column(name="LINE_NUM")
     public int lineNumber;
 
+    /**
+     * 終了日
+     */
+    @Basic(optional = false)
+    @Column(name = "ITEM_POSITION")
+    public int itemPosition;
 }
