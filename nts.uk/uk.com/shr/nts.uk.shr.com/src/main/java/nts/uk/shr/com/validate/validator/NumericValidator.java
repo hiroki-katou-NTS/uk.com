@@ -9,7 +9,7 @@ public class NumericValidator {
 	
 	public static Optional<String> validate(NumericConstraint constraint, BigDecimal value) {
 		
-		if(!constraint.isMinus() && !validateMinus(value)) {
+		if(!constraint.isMinusAvailable() && !validateMinus(value)) {
 			return Optional.of(ErrorIdFactory.getMinusErrorId());
 		}
 		

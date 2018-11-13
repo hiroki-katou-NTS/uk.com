@@ -8,9 +8,11 @@ import nts.uk.shr.com.validate.constraint.implement.DateConstraint;
 import nts.uk.shr.com.validate.constraint.implement.NumericConstraint;
 import nts.uk.shr.com.validate.constraint.implement.StringConstraint;
 import nts.uk.shr.com.validate.constraint.implement.TimeConstraint;
+import nts.uk.shr.com.validate.constraint.implement.TimePointConstraint;
 import nts.uk.shr.com.validate.validator.DateValidator;
 import nts.uk.shr.com.validate.validator.NumericValidator;
 import nts.uk.shr.com.validate.validator.StringValidator;
+import nts.uk.shr.com.validate.validator.TimePointValidator;
 import nts.uk.shr.com.validate.validator.TimeValidator;
 
 public class CellValidateService {
@@ -23,9 +25,11 @@ public class CellValidateService {
 		case NUMERIC:
 			return NumericValidator.validate((NumericConstraint) constraint, new BigDecimal(value.toString()));
 		case DATE:
-			return DateValidator.validate((DateConstraint) constraint, (String) value);
+			return DateValidator.validate((DateConstraint) constraint, value);
 		case TIME:
 			return TimeValidator.validate((TimeConstraint) constraint, (String) value);
+		case TIMEPOINT:
+			return TimePointValidator.validate((TimePointConstraint) constraint, (String) value);
 		}
 		return Optional.empty();
 	}

@@ -28,7 +28,7 @@ public class StringValidator {
 			return Optional.of(ErrorIdFactory.getMaxLengthErrorId());
 		}
 		
-		if (constraint.getRegExpression() != null && !validateRegEx(constraint.getRegExpression(), value)) {
+		if (!validateRegEx(constraint.getRegExpression(), value)) {
 			return Optional.of(ErrorIdFactory.getRegExpErrorId());
 		}
 		

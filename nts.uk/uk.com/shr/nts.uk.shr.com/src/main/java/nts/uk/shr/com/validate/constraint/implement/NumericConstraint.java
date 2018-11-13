@@ -9,7 +9,7 @@ import nts.uk.shr.com.validate.constraint.ValidatorType;
 @Getter
 public class NumericConstraint extends DataConstraint {
 
-	private boolean minus;
+	private boolean minusAvailable;
 
 	private boolean money;
 
@@ -21,10 +21,10 @@ public class NumericConstraint extends DataConstraint {
 
 	private int decimalPart;
 
-	public NumericConstraint(int column, boolean minus, boolean money, BigDecimal min, BigDecimal max, int integerPart,
+	public NumericConstraint(int column, boolean minusAvailable, boolean money, BigDecimal min, BigDecimal max, int integerPart,
 			int decimalPart) {
 		super(column, ValidatorType.NUMERIC);
-		this.minus = minus;
+		this.minusAvailable = minusAvailable;
 		this.money = money;
 		this.min = min;
 		this.max = max;
@@ -32,10 +32,10 @@ public class NumericConstraint extends DataConstraint {
 		this.decimalPart = decimalPart;
 	}
 
-	public NumericConstraint(int column, boolean minus, BigDecimal min, BigDecimal max, int integerPart,
+	public NumericConstraint(int column, boolean minusAvailable, BigDecimal min, BigDecimal max, int integerPart,
 			int decimalPart) {
 		super(column, ValidatorType.NUMERIC);
-		this.minus = minus;
+		this.minusAvailable = minusAvailable;
 		this.min = min;
 		this.max = max;
 		this.integerPart = integerPart;

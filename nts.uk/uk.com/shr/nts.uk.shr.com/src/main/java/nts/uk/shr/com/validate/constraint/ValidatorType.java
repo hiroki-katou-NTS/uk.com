@@ -8,5 +8,7 @@ public enum ValidatorType {
 	
 	DATE,
 	
-	TIME
+	TIME,
+	
+	TIMEPOINT
 }
