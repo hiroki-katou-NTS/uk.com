@@ -7,22 +7,83 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 325, height: 545 };</script>
-        <com:scriptfile set="IGNITE" />
-        <com:scriptfile path="../share/model.js" />
-        <com:scriptfile path="qmm017.e.service.js" />
-        <com:scriptfile path="qmm017.e.vm.js" />
-        <com:stylefile path="qmm017.e.style.css" />
-        <com:scriptfile path="qmm017.e.start.js" />
+        <script>var dialogSize = {width: 600, height: 600};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm017.e.service.js"/>
+        <com:scriptfile path="qmm017.e.vm.js"/>
+        <com:stylefile path="qmm017.e.style.css"/>
+        <com:scriptfile path="qmm017.e.start.js"/>
     </ui:define>
     <ui:define name="content">
-        <div class="contents-area">
-
+        <div class="contents-area" style="margin-left: 20px;">
+            <div data-bind="with: basicCalulcationFormula">
+                <div class="dialog-first-element">
+                    <div>#{i18n.getText('QMM017_166')}</div>
+                    <div style="margin-left: 30px;">#{i18n.getText('QMM017_167')}</div>
+                    <div>UNDEFINED</div>
+                    <hr></hr>
+                </div>
+                <div style="margin-top: 20px; min-width: 450px">
+                    <div style="width: 130px; display: inline-block;"
+                         data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_101')}</div>
+                    <div style="display: inline-block; vertical-align: middle">
+                        <div data-bind="ntsComboBox: {
+                            name: '#[QMM017_102]',
+                            options: formulaTypeItem,
+                            optionsValue: 'value',
+                            visibleItemsCount: 5,
+                            value: formulaType,
+                            optionsText: 'name',
+                            columns: [
+                                { prop: 'name', length: 10 }
+                            ]}"></div>
+                    </div>
+                </div>
+                <div style="min-width: 450px;">
+                    <div style="margin-left: 120px; ">
+                        <div>
+                            <div>
+                                <img src='/' data-bind="attr: {src: displayFormulaImagePath}"></img>
+                            </div>
+                            <div style="margin-top: 20px; ">
+                                <div style="width: 130px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_105')}</div>
+                                <div style="display: inline-block; vertical-align: middle">
+                                    <div data-bind="ntsComboBox: {
+                            name: '#[QMM017_106]',
+                            options: standardAmountClassificationItem,
+                            optionsValue: 'value',
+                            visibleItemsCount: 5,
+                            value: standardAmountClassification,
+                            optionsText: 'name',
+                            columns: [
+                                { prop: 'name', length: 10 }
+                            ]}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button>#{i18n.getText('QMM017_107')}</button>
+                        </div>
+                        <input tabindex="2" data-bind="ntsNumberEditor: {
+                                value: basicCalculationFormula,
+                                constraint: 'FixedAmount',
+                                name: '#[QMM017_32]',
+                                option: {
+                                    decimallength: 3
+                                },
+                                required: true}" />
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="functions-area-bottom">
+            <button tabindex="3" class="x-large proceed "
+                    data-bind="click: saveConfiguration, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_153')}</button>
+            <button tabindex="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
         </div>
     </ui:define>
-
 </ui:composition>
 </body>
 </html>

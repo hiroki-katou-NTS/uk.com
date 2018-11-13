@@ -7,19 +7,76 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 325, height: 545 };</script>
-        <com:scriptfile set="IGNITE" />
-        <com:scriptfile path="../share/model.js" />
-        <com:scriptfile path="qmm017.g.service.js" />
-        <com:scriptfile path="qmm017.g.vm.js" />
-        <com:stylefile path="qmm017.g.style.css" />
-        <com:scriptfile path="qmm017.g.start.js" />
+        <script>var dialogSize = {width: 670, height: 545};</script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm017.g.service.js"/>
+        <com:scriptfile path="qmm017.g.vm.js"/>
+        <com:stylefile path="qmm017.g.style.css"/>
+        <com:scriptfile path="qmm017.g.start.js"/>
     </ui:define>
     <ui:define name="content">
         <div class="contents-area">
+            <div style="margin-left: 20px">
+                <div style="min-width: 550px">
+                    <div style="width: 130px; margin-top: 20px; display: inline-block;"
+                         data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_142')}</div>
+                </div>
+                <div style="min-width: 550px; margin-top: 10px;">
+                    <div style = "display: inline-block; vertical-align: middle">
+                        <div tabindex = "0">
+                            <table id="G1_2">
+                                <colgroup>
+                                    <col width="120px"/>
+                                    <col width="100px"/>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th class="ui-widget-header"
+                                        rowspan="4" id="E3_2">#{i18n.getText('QMM008_145')}</th>
+                                    <th class="ui-widget-header">#{i18n.getText('QMM008_146')}</th>
+                                </tr>
 
+                                </thead>
+                                <tbody data-bind="foreach: calculationFormulaList">
+                                <tr>
+                                    <td data-bind="text: formulaItem"></td>
+                                    <td data-bind="text: trialCalculationValue"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div style = "display:inline-block; vertical-align: middle; margin-left: 25px;">
+                        <button style = "height: 80px; width: 80px;">#{i18n.getText('QMM017_53')}</button>
+                    </div>
+                    <div class="large-right-caret-container" style="display: inline-block; margin-left: 10px;">
+                        <span class="caret-right outline large-right-caret"></span>
+                    </div>
+                    <div style = "display:inline-block; width: 180px; height: 80px; margin-left: 25px; vertical-align: middle" class="panel panel-frame tab-panel-col-3">
+                        <div style="margin-top:5px;">#{i18n.getText('QMM017_144')}</div>
+                        <hr style="margin-top:15px;"></hr>
+                        <div data-bind="text: trialCalculationResult"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; min-width: 550px;">
+                    <div style="width: 130px; display: inline-block;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_45')}
+                    </div>
+                </div>
+                    <hr style = "margin-right: 32px;"></hr>
+                <div style="margin-top: 10px; min-width: 550px;">
+                    <div style="margin-top: 10px; min-width: 550px">
+                        <div>
+                        <textarea style = "height: 100px; width: 595px;" data-bind="ntsMultilineEditor: {
+                        value: formulaContent}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="functions-area-bottom">
+            <button
+                    data-bind="click: closeDialog, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_146')}</button>
         </div>
     </ui:define>
 

@@ -37,6 +37,8 @@ module nts.uk.pr.view.qmm017.d.service {
     }
 
     export function getPayrollUnitPriceById(code: string) : JQueryPromise<any> {
+        // TODO
+        // unknown algorithm, service is temporary fixed
         let _path = nts.uk.text.format(paths.getPayrollUnitPriceById, code);
         return nts.uk.request.ajax("pr", _path);
     }

@@ -69,6 +69,84 @@ module nts.uk.pr.view.qmm017.share.model {
         ];
     }
 
+    export enum ROUNDING_POSITION {
+        ONE_YEN = 0,
+        TEN_YEN = 1,
+        ONE_HUNDRED_YEN = 2,
+        ONE_THOUSAND_YEN = 3
+    }
+
+    export function getRoudingPositionEnumModel () {
+        return [
+            new EnumModel(ROUNDING_POSITION.ONE_YEN, '1円'),
+            new EnumModel(ROUNDING_POSITION.TEN_YEN, '10円'),
+            new EnumModel(ROUNDING_POSITION.ONE_HUNDRED_YEN, '100円'),
+            new EnumModel(ROUNDING_POSITION.ONE_THOUSAND_YEN, '1000円')
+        ];
+    }
+
+    export enum ROUNDING {
+        ROUND_UP = 0,
+        TRUNCATION = 1,
+        DOWN_1_UP_2 = 2,
+        DOWN_2_UP_3 = 3,
+        DOWN_3_UP_4 = 4,
+        DOWN_4_UP_5 = 5,
+        DOWN_5_UP_6 = 6,
+        DOWN_6_UP_7 = 7,
+        DOWN_7_UP_8 = 8,
+        DOWN_8_UP_9 = 9
+    }
+
+    export function getRoudingEnumModel () {
+        return [
+            new EnumModel(ROUNDING.ROUND_UP, '切り上げ '),
+            new EnumModel(ROUNDING.TRUNCATION, '切り捨て'),
+            new EnumModel(ROUNDING.DOWN_1_UP_2, '一捨二入'),
+            new EnumModel(ROUNDING.DOWN_2_UP_3, '二捨三入'),
+            new EnumModel(ROUNDING.DOWN_3_UP_4, '三捨四入'),
+            new EnumModel(ROUNDING.DOWN_4_UP_5, '四捨五入'),
+            new EnumModel(ROUNDING.DOWN_5_UP_6, '五捨六入'),
+            new EnumModel(ROUNDING.DOWN_6_UP_7, '六捨七入'),
+            new EnumModel(ROUNDING.DOWN_7_UP_8, '七捨八入'),
+            new EnumModel(ROUNDING.DOWN_8_UP_9, '八捨九入')
+        ];
+    }
+
+    export enum REFERENCE_MONTH {
+        CURRENT_MONTH = 0,
+        ONE_MONTH_AGO = 1,
+        TWO_MONTH_AGO = 2,
+        THREE_MONTH_AGO = 3,
+        FOUR_MONTH_AGO = 4,
+        FIVE_MONTH_AGO = 5,
+        SIX_MONTH_AGO = 6,
+        SEVEN_MONTH_AGO = 7,
+        EIGHT_MONTH_AGO = 8,
+        NINE_MONTH_AGO = 9,
+        TEN_MONTH_AGO = 10,
+        ELEVEN_MONTH_AGO = 11,
+        TWELVE_MONTH_AGO = 12
+    }
+
+    export function getReferenceMonthEnumModel () {
+        return [
+            new EnumModel(REFERENCE_MONTH.CURRENT_MONTH, '当月 '),
+            new EnumModel(REFERENCE_MONTH.ONE_MONTH_AGO, '１ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.TWO_MONTH_AGO, '２ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.THREE_MONTH_AGO, '３ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.FOUR_MONTH_AGO, '４ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.FIVE_MONTH_AGO, '５ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.SIX_MONTH_AGO, '６ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.SEVEN_MONTH_AGO, '７ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.EIGHT_MONTH_AGO, '８ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.NINE_MONTH_AGO, '９ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.TEN_MONTH_AGO, '１０ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.ELEVEN_MONTH_AGO, '１１ヶ月前'),
+            new EnumModel(REFERENCE_MONTH.TWELVE_MONTH_AGO, '１２ヶ月前')
+        ];
+    }
+
     // 要素設定
     export enum ELEMENT_SETTING {
         ONE_DIMENSION = 0,
@@ -443,7 +521,7 @@ module nts.uk.pr.view.qmm017.share.model {
 
         constructor(params: IBasicFormulaSetting) {
             this.masterUse(params ? params.masterUse : MASTER_USE.EMPLOYMENT);
-            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
+            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.USE);
             this.historyID(params ? params.historyID : null);
             this.displayMasterUse = ko.computed(function() {
                 return this.masterUse() != null ? this.masterUseItem()[this.masterUse()].name : null;
@@ -472,6 +550,7 @@ module nts.uk.pr.view.qmm017.share.model {
         // control item
         formulaSettingMethodItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getFormulaSettingMethodEnumModel());
         nestedAtrItem : KnockoutObservableArray<model.EnumModel> = ko.observableArray(getNestedUseClsEnumModel());
+        isNotUseNestedAtr: KnockoutObservable<boolean> ;
         // display item
         displaySettingMethod: KnockoutObservable<string> = ko.observable(null);
         displayNestedAtr: KnockoutObservable<string> = ko.observable(null);
@@ -483,6 +562,9 @@ module nts.uk.pr.view.qmm017.share.model {
             this.history(params? params.history : []);
             this.displayNestedAtr = ko.computed(function() {
                 return this.nestedAtrItem() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
+            }, this);
+            this.isNotUseNestedAtr = ko.computed(function() {
+                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE;
             }, this);
             this.displaySettingMethod = ko.computed(function() {
                 return this.formulaSettingMethodItem()[this.settingMethod()].name;
@@ -503,6 +585,10 @@ module nts.uk.pr.view.qmm017.share.model {
         referenceMonth: KnockoutObservable<number> = ko.observable(null);
         detailCalculationFormula: KnockoutObservableArray<IDetailCalculationFormula> = ko.observableArray([]);
         historyId: KnockoutObservable<string> = ko.observable(null);
+        // control item
+        roundingPositionItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoudingPositionEnumModel());
+        roundingItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoudingEnumModel());
+        referenceMonthItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getReferenceMonthEnumModel());
         constructor(params: IDetailFormulaSetting) {
             this.roundingMethod(params ? params.roundingMethod : null);
             this.roundingPosition(params ? params.roundingPosition : null);
@@ -571,8 +657,10 @@ module nts.uk.pr.view.qmm017.share.model {
         calculationFormulaClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getCalculationFormulaClsEnumModel());
         calculationFormulaFixedFormulaItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getCalculationFormulaClsEnumModel().slice(0, 2));
         formulaTypeItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getFormulaTypeEnumModel());
+        standardAmountClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getStandardAmountClsEnumModel());
         // display item
         displayFormulaType: KnockoutObservable<string> = ko.observable(null);
+        displayFormulaImagePath: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IBasicCalculationFormula) {
             this.masterUseCode(params ? params.masterUseCode : null);
             this.calculationFormulaClassification(params ? params.calculationFormulaClassification : CALCULATION_FORMULA_CLS.FIXED_VALUE);
@@ -593,6 +681,11 @@ module nts.uk.pr.view.qmm017.share.model {
             this.historyID(params ? params.historyID : null);
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
+            }, this);
+            this.displayFormulaImagePath = ko.computed(function() {
+                if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1) return "../resource/QMM017_1.png";
+                if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_2) return "../resource/QMM017_2.png";
+                return "../resource/QMM017_3.png";
             }, this);
         }
     }
@@ -709,7 +802,6 @@ module nts.uk.pr.view.qmm017.share.model {
             this.masterNumericClassification(params ? params.masterNumericClassification : null);
             this.fixedElement(params ? params.fixedElement : null);
             this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
-            this.elementName(getElementTypeItemModel[this.fixedElement()].name);
         }
     }
 

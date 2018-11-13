@@ -6,9 +6,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
     import model = nts.uk.pr.view.qmm017.share.model;
 
     export class ScreenModel {
-        statementItemNameList: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedStatementItemName: KnockoutObservable<string> = ko.observable(null);
-        fixedElement: Array<any>;
+        basicCalulcationFormula: KnockoutObservable<model.BasicCalculationFormula> = ko.observable(new model.BasicCalculationFormula(null));
 
         constructor() {
         }
@@ -17,6 +15,14 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             let self = this, dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
+        }
+        saveConfiguration () {
+            let self = this;
+            nts.uk.ui.windows.close();
+        }
+        cancel () {
+            let self = this;
+            nts.uk.ui.windows.close();
         }
     }
 }

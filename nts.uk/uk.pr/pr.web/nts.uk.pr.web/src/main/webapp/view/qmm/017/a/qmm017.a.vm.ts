@@ -1,9 +1,7 @@
 module nts.uk.pr.view.qmm017.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
+    import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -33,7 +31,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         // tab 2, screen D
         screenDViewModel = new nts.uk.pr.view.qmm017.d.viewmodel.ScreenModel();
-
+        // tabs variables
+        screenDTabs: KnockoutObservableArray<any>;
+        screenDSelectedTab: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.initTabPanel();
@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
                 if (newValue) {
-                    self.showWageTableInfoByValue(newValue);
+                    self.showFormulaInfoByValue(newValue);
                 } else {
                     self.changeToNewMode();
                 }
@@ -77,6 +77,17 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             ]);
             self.selectedTab = ko.observable('tab-1');
+            let self = this;
+            self.screenDTabs = ko.observableArray([
+                {id: 'tab-1', title: getText('QMM017_40'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-2', title: getText('QMM017_41'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-3', title: getText('QMM017_42'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-4', title: getText('QMM017_43'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-5', title: getText('QMM017_44'), content: '.tab-content-5', enable: ko.observable(false), visible: ko.observable(true)},
+                {id: 'tab-6', title: getText('QMM017_45'), content: '.tab-content-6', enable: self.selectedFormula().isNotUseNestedAtr, visible: ko.observable(true)},
+                {id: 'tab-7', title: getText('QMM017_46'), content: '.tab-content-7', enable: ko.observable(true), visible: ko.observable(true)}
+            ]);
+            self.screenDSelectedTab = ko.observable('tab-1');
         }
 
         initFormulaData() {
@@ -84,7 +95,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let formulaData = [{
                 formulaCode: '001',
                 formulaName: 'Formula 1',
-                settingMethod: 1,
+                settingMethod: 0,
                 nestedAtr: 0,
                 history: [
                     {startMonth: '201711', endMonth: '999912', historyID: nts.uk.util.randomId()},
@@ -149,7 +160,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             if (formulaData.length == 0)
                 self.changeToNewMode();
             else {
-                // selected first wage table and history
+                // selected first formula and history
                 var identifier = formulaData[0].history.length > 0 ? formulaData[0].history[0].identifier : formulaData[0].identifier;
                 self.selectedFormulaIdentifier(identifier);
                 self.selectedFormulaIdentifier.valueHasMutated();
@@ -265,7 +276,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             nts.uk.ui.errors.clearAll();
         }
 
-        showWageTableInfoByValue(identifier) {
+        showFormulaInfoByValue(identifier) {
             let self = this;
             let currentFormulaList = ko.toJS(self.formulaList), selectedFormulaCode, selectedHistoryID, selectedFormula,
                 selectedHistory;
@@ -315,9 +326,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                             formula = new model.Formula(formula);
                         }
                     });
-                    // update wage table and tree grid
+                    // update formula and tree grid
                     self.convertToTreeList(formulaList);
-                    self.selectedFormula(selectedFormula.wageTableCode + historyID);
+                    self.selectedFormula(selectedFormula.formulaCode + historyID);
                     // clone data
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
                     }
@@ -339,10 +350,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     // change selected value
                     if (params.modifyMethod == model.MODIFY_METHOD.DELETE) {
                         if (history.length <= 1) {
-                            self.selectedFormulaIdentifier(selectedFormula.wageTableCode);
+                            self.selectedFormulaIdentifier(selectedFormula.formulaCode);
                         }
                         else {
-                            self.selectedFormulaIdentifier(selectedFormula.wageTableCode + history[1].historyID);
+                            self.selectedFormulaIdentifier(selectedFormula.formulaCode + history[1].historyID);
                         }
                     }
                 }
@@ -350,6 +361,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         };
         doConfiguration () {
             let self = this;
+            let self = this;
+            setShared("QMM017_E_PARAMS", {});
+            modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
+
+            });
+
         };
         setAllCalculationFormula () {
             let self = this;
