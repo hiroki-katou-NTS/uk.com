@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
-public class EmployeeInfoAdapterImpl2 implements EmployeeInformationAdapter {
+public class EmployeeInfoAcFinder implements EmployeeInformationAdapter {
 
     @Inject
     EmployeeInformationPub employeeInformationPub;

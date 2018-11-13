@@ -40,17 +40,17 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel1">
-            <div class="sidebar-content-header flex valign-center">
+            <div class="sidebar-content-header" style="width: 1100px">
 
                 <div class="title" data-bind="text : titleTab"></div>
                 <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
-                <a tabindex="9" class="goout" style="margin-left: 700px"
+                <a tabindex="9" class="goout" style="margin-left: 600px"
                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
             </div>
             <div class="contents-area fixed-flex-layout">
                 <div  id="com-ccg001"></div>
-                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
+                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px;min-width: 385px;">
                     <div style="float: left;width: 335px;">
 
                         <div tabindex="-1" class="panel" style=" margin-top: 15px"
@@ -98,7 +98,7 @@
 
                         <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
                         <!--A5_2 項目区分-->
-                        <div style="margin-left: 40px" data-bind="text: itemClassification()"></div>
+                        <div style="margin-left: 40px;min-width:60px;" data-bind="text: itemClassification()"></div>
                     </div>
 
                     <div class="flex valign-center margin-top-item">

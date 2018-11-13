@@ -44,6 +44,15 @@ public class ProgramsManager {
             "/view/qmm/007/b/index.xhtml");
     public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM007_47",
             "/view/qmm/007/c/index.xhtml");
+	/**
+	 * QMM001
+	 */
+	public static final Program QMM001A = new Program(WebAppId.PR, ProgramIdConsts.QMM001A, "QMM001_1",
+			"/view/qmm/001/a/index.xhtml");
+	public static final Program QMM001B = new Program(WebAppId.PR, ProgramIdConsts.QMM001B, "QMM001_2",
+			"/view/qmm/001/b/index.xhtml");
+	public static final Program QMM001C = new Program(WebAppId.PR, ProgramIdConsts.QMM001C, "QMM001_3",
+			"/view/qmm/001/c/index.xhtml");
 	
 	/**
 	 * CCG008A
@@ -1739,6 +1748,9 @@ public class ProgramsManager {
 	/** KSC001K */
 	public static final Program KSC001K = new Program(WebAppId.AT, ProgramIdConsts.KSC001K, "KSC001_80",
 			"/view/ksc/001/k/index.xhtml");
+	/** KAF000 */
+	public static final Program KAF000B = new Program(WebAppId.AT, ProgramIdConsts.KAF000B, "",
+			"/view/kaf/000/b/index.xhtml");
 	/** KAF001 */
 	public static final Program KAF001A = new Program(WebAppId.AT, ProgramIdConsts.KAF001A, "KAF001_1",
 			"/view/kaf/001/a/index.xhtml");

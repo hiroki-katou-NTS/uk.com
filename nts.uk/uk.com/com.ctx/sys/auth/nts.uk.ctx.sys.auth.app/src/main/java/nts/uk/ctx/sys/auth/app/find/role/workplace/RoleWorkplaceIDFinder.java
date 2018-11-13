@@ -49,6 +49,14 @@ public class RoleWorkplaceIDFinder {
 	 */
 	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate) {
 
+		if (systemType == SystemType.ADMINISTRATOR.value) {
+			WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
+			List<String> listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
+			workplaceIdDto.setListWorkplaceIds(listWkpId);
+			workplaceIdDto.setIsAllEmp(true);
+			return workplaceIdDto;
+		}
+
 		String roleId = this.findRoleIdBySystemType(systemType);
 
 		Optional<Role> opRole = roleRepository.findByRoleId(roleId);

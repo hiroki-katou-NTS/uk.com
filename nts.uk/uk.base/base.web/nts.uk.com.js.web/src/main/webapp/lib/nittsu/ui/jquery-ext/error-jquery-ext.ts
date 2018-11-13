@@ -33,7 +33,7 @@ module nts.uk.ui.jqueryExtentions {
         $.fn.ntsError = function(action: string, message: any, errorCode?: string, businessError?: boolean): any {
             var $control = $(this);
             if (action === DATA_HAS_ERROR) {
-                return _.some($control, c => hasError($(c)));
+                return _.some($control, c => hasError($(c))) || _.some($control.find("*"), c => hasError($(c)));
             } else if (action === DATA_GET_ERROR) {
                 return getErrorByElement($control.first());        
             } else {

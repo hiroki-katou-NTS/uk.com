@@ -163,7 +163,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					//「特別休暇の残数」．付与後明細．付与数 += 「特別休暇の利用情報」．付与数
 					afterData.setGrantDays(afterData.getGrantDays() + numberInfor.getGrantDays());
 					//「特別休暇の残数」．付与後明細．残数 += 「特別休暇の利用情報」．残数
-					afterData.setGrantDays(afterData.getRemainDays() + numberInfor.getRemainDays());
+					afterData.setRemainDays(afterData.getRemainDays() + numberInfor.getRemainDays());
 					getOffsetDay.getRemainDays().setGrantDetailAfter(Optional.of(afterData));
 					
 				}
