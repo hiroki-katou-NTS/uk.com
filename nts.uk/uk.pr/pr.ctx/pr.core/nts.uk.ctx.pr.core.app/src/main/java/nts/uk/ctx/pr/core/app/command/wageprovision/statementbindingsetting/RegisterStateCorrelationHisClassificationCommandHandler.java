@@ -11,6 +11,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -25,16 +26,22 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
         StateCorrelationHisClassificationCommand command = context.getCommand();
         YearMonth start = new YearMonth(command.getStartYearMonth());
         YearMonth end = new YearMonth(command.getEndYearMonth());
-
+        List<StateLinkSettingMaster> listStateLinkSettingMaster = new ArrayList<StateLinkSettingMaster>();
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
-            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()) );}).collect(Collectors.toList());
+            if(command.getStateLinkSettingMaster() != null) {
+                listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
+                    return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()));
+                }).collect(Collectors.toList());
+            }
             stateCorrelationHisClassificationService.addHistoryClassification(hisId, start, end, listStateLinkSettingMaster);
         } else {
             String hisId = command.getHisId();
-            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()) );}).collect(Collectors.toList());
+            if(command.getStateLinkSettingMaster() != null) {
+                listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
+                    return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()));
+                }).collect(Collectors.toList());
+            }
             stateCorrelationHisClassificationService.updateHistoryClassification(listStateLinkSettingMaster);
         }
     }

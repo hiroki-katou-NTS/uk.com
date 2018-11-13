@@ -13,4 +13,5 @@ public class AffDepartHisAdapterImple implements AffDepartHistoryAdapter {
     public Optional<AffDepartHistory> getDepartmentByBaseDate(String employeeId, GeneralDate baseDate) {
         return Optional.empty();
     }
+
 }

@@ -4,6 +4,7 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.RegisterStateCorrelationHisPositionCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisPositionCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateLinkMasterParam;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisPositionDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisPositionFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingDateDto;
@@ -46,9 +47,9 @@ public class StateCorrelationHisPositionWebService extends WebService {
     }
 
     @POST
-    @Path("getStateLinkMasterPosition/{hisId}/{start}")
-    public List<StateLinkSettingMasterDto> getStateLinkMaster(@PathParam("hisId") String hisId, @PathParam("start") int start) {
-        return stateCorrelationHisPositionFinder.getStateLinkSettingMaster(hisId, start);
+    @Path("getStateLinkMasterPosition")
+    public List<StateLinkSettingMasterDto> getStateLinkMaster(StateLinkMasterParam params) {
+        return stateCorrelationHisPositionFinder.getStateLinkSettingMaster(params.getHisId(), params.getStartYearMonth(), params.getDate());
     }
 
 

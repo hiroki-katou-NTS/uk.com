@@ -8,6 +8,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Stateless
@@ -22,7 +23,12 @@ public class StateCorrelationHisSalaryService {
     public void addHistorySalary(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
         String cId = AppContexts.user().companyId();
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+        StateCorrelationHisSalary hisSalary = new StateCorrelationHisSalary(cId, new ArrayList<YearMonthHistoryItem>());
         Optional<StateCorrelationHisSalary> itemtoBeAdded = stateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
+        if(itemtoBeAdded.isPresent()) {
+            hisSalary = itemtoBeAdded.get();
+        }
+        hisSalary.add(yearMonthItem);
         itemtoBeAdded.get().add(yearMonthItem);
         stateCorrelationHisSalaryRepository.add(cId, yearMonthItem);
         this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);

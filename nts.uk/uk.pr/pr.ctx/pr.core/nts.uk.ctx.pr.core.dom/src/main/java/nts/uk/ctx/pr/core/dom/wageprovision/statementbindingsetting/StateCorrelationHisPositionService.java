@@ -7,6 +7,8 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +27,12 @@ public class StateCorrelationHisPositionService {
     public void addHistoryPosition(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster, StateLinkSettingDate baseDate){
         String cId = AppContexts.user().companyId();
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+        StateCorrelationHisPosition hisPosition = new StateCorrelationHisPosition(cId, new ArrayList<YearMonthHistoryItem>());
         Optional<StateCorrelationHisPosition> itemtoBeAdded = stateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
-        itemtoBeAdded.get().add(yearMonthItem);
+        if(itemtoBeAdded.isPresent()) {
+            hisPosition = itemtoBeAdded.get();
+        }
+        hisPosition.add(yearMonthItem);
         stateCorrelationHisPositionRepository.add(cId, yearMonthItem);
         this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
         stateLinkSettingDateRepository.add(baseDate);

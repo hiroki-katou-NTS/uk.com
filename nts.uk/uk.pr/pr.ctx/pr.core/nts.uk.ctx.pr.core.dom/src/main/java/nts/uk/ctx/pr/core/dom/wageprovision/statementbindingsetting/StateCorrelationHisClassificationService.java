@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
@@ -23,8 +24,12 @@ public class StateCorrelationHisClassificationService {
     public void addHistoryClassification(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
         String cId = AppContexts.user().companyId();
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+        StateCorrelationHisClassification hisClassification = new StateCorrelationHisClassification(cId, new ArrayList<YearMonthHistoryItem>());
         Optional<StateCorrelationHisClassification> itemtoBeAdded = stateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
-        itemtoBeAdded.get().add(yearMonthItem);
+        if(itemtoBeAdded.isPresent()){
+            hisClassification = itemtoBeAdded.get();
+        }
+        hisClassification.add(yearMonthItem);
         stateCorrelationHisClassificationRepository.add(cId, yearMonthItem);
         this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
