@@ -205,6 +205,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
         registerAlarmCheckCondition() {
             let self = this,
                 data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
+            // validate selected scopes check
+            $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
+            
+            if ($('[data-bind="with: tabScopeCheck"] .nts-input').ntsError("hasError")) {
+                return;
+            }
+            
             if(data.category() == model.CATEGORY.DAILY){
                 $(".nameAlarmDailyM").trigger("validate");
                 $("#A3_2").trigger("validate");
