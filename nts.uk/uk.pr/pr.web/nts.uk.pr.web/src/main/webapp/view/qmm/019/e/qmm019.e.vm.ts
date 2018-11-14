@@ -102,9 +102,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
             $("#fixed-table").ntsFixedTable({height: 139});
             let params: IParams = <IParams>{};
-            params.itemNameCode = "0001";
+            params.itemNameCode = "000s1";
             params.itemNameCdExcludeList = ["0003", "0031"];
             params.printSet = shareModel.StatementPrintAtr.DO_NOT_PRINT;
             params.yearMonth = 201802;
@@ -143,8 +144,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen();
-                dfd.resolve();
+            }).always(() => {
+                block.clear();
             });
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -532,7 +535,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         cancel() {
-            nts.uk.ui.windows.close();
+            windows.close();
         }
     }
 

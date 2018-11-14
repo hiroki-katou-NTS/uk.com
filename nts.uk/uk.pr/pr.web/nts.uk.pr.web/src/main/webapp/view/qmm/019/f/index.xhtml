@@ -49,7 +49,7 @@
                             </div>
                             <div class="cell valign-top">
                                 <!--F1_5-->
-                                <div style="width: 170px" data-bind="ntsSearchBox: {
+                                <div tabindex="1" style="width: 170px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
 									targetKey: 'itemNameCd',
 									comId: 'F1_6',
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <!--F1_6-->
-                        <table id="F1_6" data-bind="ntsGridList: {
+                        <table id="F1_6" tabindex="2" data-bind="ntsGridList: {
                             rows: 15,
                             name: '#[QMM019_169]',
                             dataSource: itemNames,
@@ -73,7 +73,7 @@
                             multiple: false,
                             value: codeSelected}"/>
                         <!--F1_11-->
-                        <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                        <button id="btn-register" tabindex="3" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
                     </div>
                 </div>
                 <div class="cell valign-top" data-bind="with: dataScreen">
@@ -104,12 +104,12 @@
                         </div>
                         <div class="cell valign-center">
                             <!--F3_2-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="8" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableF3_2() }"/>
                             <com:ko-if bind="$vm.screenControl().visibleF3_3()">
                                 <!--F3_3-->
-                                <input id="F3_3" data-bind="ntsTimeEditor: {
+                                <input id="F3_3" tabindex="9" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_121]',
                                     value: time10Value,
                                     enable: $vm.screenControl().enableF3_3(),
@@ -119,7 +119,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_20()">
                                 <!--F3_20-->
-                                <input id="F3_20" data-bind="ntsTimeEditor: {
+                                <input id="F3_20" tabindex="9" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_121]',
                                     value: time60Value,
                                     enable: $vm.screenControl().enableF3_20(),
@@ -129,7 +129,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_24()">
                                 <!--F3_24-->
-                                <input id="F3_24" data-bind="ntsNumberEditor: {
+                                <input id="F3_24" tabindex="9" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_121]',
                                     value: timesValue,
                                     enable: $vm.screenControl().enableF3_24(),
@@ -146,12 +146,12 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--F3_5-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="10" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableF3_5() }"/>
                             <com:ko-if bind="$vm.screenControl().visibleF3_6()">
                                 <!--F3_6-->
-                                <input id="F3_6" data-bind="ntsTimeEditor: {
+                                <input id="F3_6" tabindex="11" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_123]',
                                     value: time10Value,
                                     enable: $vm.screenControl().enableF3_6(),
@@ -161,7 +161,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_21()">
                                 <!--F3_21-->
-                                <input id="F3_21" data-bind="ntsTimeEditor: {
+                                <input id="F3_21" tabindex="11" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_123]',
                                     value: time60Value,
                                     enable: $vm.screenControl().enableF3_21(),
@@ -171,7 +171,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_25()">
                                 <!--F3_25-->
-                                <input id="F3_25" data-bind="ntsNumberEditor: {
+                                <input id="F3_25" tabindex="11" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_123]',
                                     value: timesValue,
                                     enable: $vm.screenControl().enableF3_25(),
@@ -191,12 +191,12 @@
                         </div>
                         <div class="cell valign-center">
                             <!--F3_9-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="12" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableF3_9() }"/>
                             <com:ko-if bind="$vm.screenControl().visibleF3_10()">
                                 <!--F3_10-->
-                                <input id="F3_10" data-bind="ntsTimeEditor: {
+                                <input id="F3_10" tabindex="13" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_126]',
                                     value: time10Value,
                                     enable: $vm.screenControl().enableF3_10(),
@@ -206,7 +206,7 @@
                             </com:ko-if>
                             <com:ko-if id="F3_22" bind="$vm.screenControl().visibleF3_22()">
                                 <!--F3_22-->
-                                <input data-bind="ntsTimeEditor: {
+                                <input id="F3_22" tabindex="13" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_126]',
                                     value: time60Value,
                                     enable: $vm.screenControl().enableF3_22(),
@@ -216,7 +216,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_26()">
                                 <!--F3_26-->
-                                <input id="F3_26" data-bind="ntsNumberEditor: {
+                                <input id="F3_26" tabindex="13" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_126]',
                                     value: timesValue,
                                     enable: $vm.screenControl().enableF3_26(),
@@ -233,12 +233,12 @@
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--F3_12-->
-                            <div data-bind="ntsCheckBox: {
+                            <div tabindex="14" data-bind="ntsCheckBox: {
                                 checked: valueSettingAtr,
                                 enable: $vm.screenControl().enableF3_12() }"/>
                             <com:ko-if bind="$vm.screenControl().visibleF3_13()">
                                 <!--F3_13-->
-                                <input id="F3_13" data-bind="ntsTimeEditor: {
+                                <input id="F3_13" tabindex="15" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_128]',
                                     value: time10Value,
                                     enable: $vm.screenControl().enableF3_13(),
@@ -248,7 +248,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_23()">
                                 <!--F3_23-->
-                                <input id="F3_23" data-bind="ntsTimeEditor: {
+                                <input id="F3_23" tabindex="15" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_128]',
                                     value: time60Value,
                                     enable: $vm.screenControl().enableF3_23(),
@@ -258,7 +258,7 @@
                             </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_27()">
                                 <!--F3_27-->
-                                <input id="F3_27" data-bind="ntsNumberEditor: {
+                                <input id="F3_27" tabindex="15" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_128]',
                                     value: timesValue,
                                     enable: $vm.screenControl().enableF3_27(),
@@ -406,9 +406,9 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide, enable: $root.errors.isEmpty || $vm.screenControl().enableF4_1()"
+            <button tabindex="16" data-bind="click: decide, enable: $root.errors.isEmpty || $vm.screenControl().enableF4_1()"
                     class="proceed">#{i18n.getText('QMM019_56')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+            <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>
 </ui:composition>

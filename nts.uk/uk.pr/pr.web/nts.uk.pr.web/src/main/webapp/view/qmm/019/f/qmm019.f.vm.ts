@@ -77,9 +77,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
             let params: IParams = <IParams>{};
-            params.itemNameCode = "0003";
-            params.itemNameCdExcludeList = [];
+            params.itemNameCode = "000s3";
+            params.itemNameCdExcludeList = ["0001", "0002"];
             params.rangeValAttribute = null;
             params.errorRangeSetting = <IErrorAlarmRangeSetting>{};
             params.errorRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
@@ -112,8 +113,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen();
-                dfd.resolve();
+            }).always(() => {
+                block.clear();
             });
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -164,6 +167,8 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         unselectedMode() {
             let self = this;
             self.codeSelected(null);
+            self.condition6(self.itemNames(), self.codeSelected());
+            self.condition7(self.itemNames());
             self.screenControl().visibleF2_2(false);
             self.screenControl().visibleF2_3(false);
             self.screenControl().enableF2_4(false);
@@ -201,6 +206,8 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             self.screenControl().visibleF3_27(false);
             self.screenControl().enableF3_27(false);
             self.screenControl().enableF4_1(false);
+            nts.uk.ui.errors.clearAll();
+            $("#btn-register").focus();
         }
 
         selectedMode() {
@@ -222,6 +229,30 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             self.condition45(self.dataType);
             self.condition46(self.dataType);
             self.condition47(self.dataType);
+            nts.uk.ui.errors.clearAll();
+            $("#F1_6_container").focus();
+        }
+
+        /**
+         * ※6
+         */
+        condition6(list: Array, code: string) {
+            if (!_.isEmpty(list) && isNullOrEmpty(code)) {
+                // E10_1
+                $(".userguide-register").ntsUserGuide("show");
+                // E10_2
+                $(".userguide-exist").ntsUserGuide("show");
+            }
+        }
+
+        /**
+         * ※7
+         */
+        condition7(list: Array) {
+            if (_.isEmpty(list)) {
+                // E10_3
+                $(".userguide-not-register").ntsUserGuide("show");
+            }
         }
 
         /**
