@@ -82,7 +82,7 @@ public class StateUseUnitSettingService {
         switch (type) {
             case DEPARMENT: {
                 AffDepartHistory mAffDepartHistory = mAffDepartHistoryAdapter.getDepartmentByBaseDate(employeeId, baseDate).get();
-                mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentByDate(cid, baseHistory);
+               // mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentByDate(cid, baseHistory);
                 Optional<StateLinkSettingMaster> mStateLinkSettingMaster = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mAffDepartHistory.getDepartmentCode());
                 if (!mStateLinkSettingMaster.isPresent()) {
                     return;

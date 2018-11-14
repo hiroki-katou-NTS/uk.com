@@ -204,8 +204,8 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             block.invisible();
             let self = this;
             let start = self.startLastYearMonth();
-            if(self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
-                start = self.listStateCorrelationHisPosition()[FIRST].startYearMonth;
+            if(self.listStateCorrelationHisSalary() && self.listStateCorrelationHisSalary().length > 0) {
+                start = self.listStateCorrelationHisSalary()[FIRST].startYearMonth;
             }
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth: start,
