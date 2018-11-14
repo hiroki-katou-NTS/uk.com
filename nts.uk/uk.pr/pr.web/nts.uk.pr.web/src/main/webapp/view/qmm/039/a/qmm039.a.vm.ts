@@ -72,6 +72,25 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.itemList.subscribe(function (newValue) {
                 if (newValue.length > 0) {
                     self.isEditableHis(true);
+                    switch (self.itemClas()) {
+                        case ITEM_CLASS.SALARY_SUPLY:
+                            self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
+                            break;
+                        case ITEM_CLASS.SALARY_DEDUCTION:
+                            self.itemClassLabel(format(getText('QMM039_21'), '給与控除'));
+                            break;
+                        case ITEM_CLASS.BONUS_SUPLY:
+                            self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
+                            break;
+                        case ITEM_CLASS.BONUS_DEDUCTION:
+                            self.itemClassLabel(format(getText('QMM039_21'), '賞与控除'));
+                            break;
+                        default:
+                            self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
+                            break;
+                    }
+                    self.individualPriceCodeLabel(self.individualPriceCode());
+                    self.individualPriceNameLabel(self.individualPriceName());
                 } else {
                     self.isEditableHis(false);
                     self.itemClassLabel('');
@@ -79,7 +98,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value(0);
+                    self.currencyeditor.value('');
                 }
             });
             self.focusStartPage = true;
@@ -122,7 +141,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
             });
             self.currencyeditor = {
-                value: ko.observable(0),
+                value: ko.observable(''),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
@@ -198,9 +217,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.SALARY_SUPLY);
-                    self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
                     $('#emp-component').focus();
-                    $('')
                     break;
                 case ITEM_CLASS.SALARY_DEDUCTION:
                     self.classificationCategory(PERVALUECATECLS.DEDUCTION);
@@ -210,7 +227,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.DEDUCTION);
                     self.itemClas(ITEM_CLASS.SALARY_DEDUCTION);
-                    self.itemClassLabel(format(getText('QMM039_21'), '給与控除'));
                     $('#emp-component').focus();
                     break;
                 case ITEM_CLASS.BONUS_SUPLY:
@@ -221,12 +237,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.BONUS_SUPLY);
-                    if(self.mode() != MODE.HISTORY_UNREGISTERED) {
-                        self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
-                    } else {
-                        self.itemClassLabel('');
-                    }
-
                     $('#emp-component').focus();
                     break;
                 case ITEM_CLASS.BONUS_DEDUCTION:
@@ -237,7 +247,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.DEDUCTION);
                     self.itemClas(ITEM_CLASS.BONUS_DEDUCTION);
-                    self.itemClassLabel(format(getText('QMM039_21'), '賞与控除'));
                     $('#emp-component').focus();
                     break;
                 default:
@@ -248,7 +257,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", 1);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.SALARY_SUPLY);
-                    self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
                     $('#emp-component').focus();
                     break;
             }
@@ -270,6 +278,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.singleSelectedCode(data[0].individualPriceCode);
                     self.individualPriceName(data[0].individualPriceName);
                     self.individualPriceCode(data[0].individualPriceCode);
+                    if (self.itemList.length > 0) {
+                        self.individualPriceNameLabel(data[0].individualPriceName);
+                        self.individualPriceCodeLabel(data[0].individualPriceCode);
+                    }
                     self.historyProcess(data[0].individualPriceCode, 0);
                 } else {
                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
@@ -278,9 +290,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.singleSelectedCode(null);
                     self.individualPriceCode('');
                     self.individualPriceName('');
+                    self.individualPriceCodeLabel('');
+                    self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value(0);
+                    self.currencyeditor.value('');
                     self.mode(MODE.HISTORY_UNREGISTERED);
                     self.isAddableHis(false);
                 }
@@ -327,7 +341,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodStartYM(null);
                     self.periodEndYM(null);
                     self.isRegistrationable(false);
-                    self.currencyeditor.value(0);
+                    self.currencyeditor.value('');
                     self.currencyeditor.enable(false);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                 }
@@ -486,7 +500,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodEndYM(params.periodEndYm);
 
                     if (params.takeoverMethod == 1) {
-                        self.currencyeditor.value(0);
+                        self.currencyeditor.value('');
                     } else {
                         self.currencyeditor.value(parseInt(self.itemList()[0].amount));
                     }
@@ -578,7 +592,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 salBonusCate: self.salaryBonusCategory()
             }
             setShared("QMM039_D_PARAMS", params);
-            modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {
+            modal('/view/qmm/039/d/index.xhtml').onClosed(() => {
 
             });
         }
@@ -590,7 +604,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             if (self.mode() == MODE.NORMAL) {
                 let command = {
                     historyId: self.selectedHis().historyID,
-                    amountOfMoney: parseInt(self.currencyeditor.value())
+                    amountOfMoney: self.currencyeditor.value() == '' ? 0 : parseInt(self.currencyeditor.value())
                 }
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
@@ -616,7 +630,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     },
                     salIndAmountCommand: {
                         historyId: historyId,
-                        amountOfMoney: parseInt(self.currencyeditor.value())
+                        amountOfMoney: self.currencyeditor.value() == '' ? 0 : parseInt(self.currencyeditor.value())
                     },
                     oldHistoryId: null,
                     newEndMonthOfOldHistory: null

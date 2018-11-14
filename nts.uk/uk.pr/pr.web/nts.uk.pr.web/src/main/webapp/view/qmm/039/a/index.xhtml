@@ -44,14 +44,14 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1">
-            <div class="sidebar-content-header" style="width: 1280px">
+            <div class="sidebar-content-header" style="width: 1228px">
                 <span class="title" data-bind="text : titleTab"/>
                 <!--A1_1 登録-->
                 <button tabindex="1" data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
                         class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
                 <a tabindex="11" class="goout" style="margin-left: 700px;"
-                   data-bind="ntsLinkButton: {jump: '../../040/a/index.xhtml' }, enable: false">#{i18n.getText('QMM039_45')}</a>
+                   data-bind="ntsLinkButton: {jump: '../../040/a/index.xhtml' }">#{i18n.getText('QMM039_45')}</a>
             </div>
             <div id="com-ccg001"/>
             <div class="contents-area">
@@ -79,7 +79,7 @@
                             <!--A4_8 名称-->
                             <table tabindex="6" id="treegrid"
                                    data-bind="ntsGridList:{
-                                   name: '#[QMM039_12]',
+                                name: '#[QMM039_12]',
                                 width: 220,
                                 height: 210,
                                 dataSource: dataSource,

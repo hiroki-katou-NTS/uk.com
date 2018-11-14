@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
         endDateString: KnockoutObservable<string>;
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
-        yearMonthStart:KnockoutObservable<number>=ko.observable(0);
+        yearMonthStart:KnockoutObservable<number>=ko.observable('');
 
 
         constructor() {
@@ -37,7 +37,6 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
 
             let params = getShared("QMM039_A_PARAMS");
             if (params) {
-
                 let period = params.period, displayLastestStartHistory = "";
                 if (period && Object.keys(period).length > 0) {
                     let startYM = period.periodStartYm;
