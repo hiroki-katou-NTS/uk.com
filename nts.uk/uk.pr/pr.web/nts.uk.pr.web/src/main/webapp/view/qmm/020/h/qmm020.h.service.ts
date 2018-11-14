@@ -7,7 +7,9 @@ module nts.uk.pr.view.qmm020.h {
          */
         var path: any = {
             getEmployee: "workflow/approvermanagement/workroot/getInforPsLogin",
-            getWpName: "screen/com/kcp010/getLoginWorkPlace"
+            getStateCorrelationHisIndividual: "core/wageprovision/statementbindingsetting/getStateCorrelationHisIndividual",
+            getWpName: "screen/com/kcp010/getLoginWorkPlace",
+            getStateLinkSettingMasterIndividual: "core/wageprovision/statementbindingsetting/getStateLinkSettingMasterIndividual/{0}/{1}"
         };
 
         export function getEmployee(): JQueryPromise<any> {
@@ -15,7 +17,16 @@ module nts.uk.pr.view.qmm020.h {
         }
 
         export function getWpName(): JQueryPromise<any> {
-            return ajax("com", paths.getWpName);
+            return ajax("com", path.getWpName);
+        }
+
+        export function getStateLinkSettingMasterIndividual(hisId: string, start: number): JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getStateLinkSettingMasterIndividual, hisId, start);
+            return nts.uk.request.ajax("pr", _path);
+        }
+
+        export function getStateCorrelationHisIndividual(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getStateCorrelationHisIndividual);
         }
 
     }

@@ -8,7 +8,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
     import error = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
-    import init = nts.uk.pr.view.qmm008.f.service.init;
 
     export class ScreenModel {
 
@@ -18,9 +17,15 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         salaryName: KnockoutObservable<string> = ko.observable();
         columns: KnockoutObservableArray<string>;
         hisIdSelected: KnockoutObservable<string> = ko.observable();
-        listStateCorrelationHis: KnockoutObservableArray<any> = ko.observableArray([]);
+        listStateCorrelationHis: KnockoutObservableArray<StateCorrelationHisInvidual> = ko.observableArray([]);
+        stateLinkIndividual: KnockoutObservable<StateCorrelationHisInvidual> = ko.observable();
         mode: KnockoutObservable<number> = ko.observable();
+        transferMethod: KnockoutObservable<number> = ko.observable();
         selectedEmployeeObject: any;
+        index: KnockoutObservable<number> = ko.observable(0);
+        startYearMonth: KnockoutObservable<number> = ko.observable();
+        endYearMonth: KnockoutObservable<number> = ko.observable(999912);
+        startLastYearMonth: KnockoutObservable<number> = ko.observable(0);
 
         //--- KCP009 ----->
         employeeInputList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
@@ -39,12 +44,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         constructor() {
             let self = this;
-            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
-            self.targetBtnText = getText("KCP009_3");
-            self.selectedItem = ko.observable(null);
-            self.tabindex = 1;
-            self.initScreen();
+            self.initScreen(null).done(()  =>{
+                self.loadCCG001();
+            });
         }
 
         /* CCG001 */
@@ -101,6 +103,11 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         loadKCP009(){
             let self = this;
+            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
+            self.isDisplayOrganizationName = ko.observable(true);
+            self.targetBtnText = getText("KCP009_3");
+            self.selectedItem = ko.observable(null);
+            self.tabindex = 1;
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
@@ -112,7 +119,36 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
-        initScreen(): JQueryPromise<any> {
+        getHisIndividual(hisId: string){
+            let self = this;
+            service.getStateCorrelationHisIndividual().done((listStateCorrelationHis: Array<StateCorrelationHisInvidual>) => {
+                if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
+                    self.listStateCorrelationHis(StateCorrelationHisInvidual.convertToDisplay(listStateCorrelationHis));
+                    if (hisId == null) {
+                        self.index(FIRST);
+                        self.hisIdSelected(self.listStateCorrelationHis()[FIRST].hisId);
+                    }
+                    self.hisIdSelected(self.listStateCorrelationHis()[self.getIndex(hisId)].hisId);
+                } else {
+                    self.mode(model.MODE.NO_REGIS);
+                }
+            }).always(() => {
+                block.clear();
+            });
+        }
+
+        getIndex(hisId: string) {
+            let self = this;
+            let temp = _.findIndex(self.listStateCorrelationHis(), function(x) {
+                return x.hisId == hisId;
+            });
+            if (temp && temp != -1) {
+                return temp;
+            }
+            return 0;
+        }
+
+        initScreen(hisId: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
@@ -131,6 +167,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                         self.employeeInputList.push(new Employee(emp.sid,
                             emp.employeeCode, emp.employeeName, wp.name, wp.name));
                         self.loadKCP009();
+                        self.getHisIndividual(null);
                         dfd.resolve();
                     }
                 }).fail(function(result) {
@@ -145,9 +182,80 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             return dfd.promise();
         }
 
+        openJScreen() {
+            block.invisible();
+            let self = this;
+            let start = self.startLastYearMonth();
+            if(self.listStateCorrelationHis() && self.listStateCorrelationHis().length > 0) {
+                start = self.listStateCorrelationHis()[FIRST].startYearMonth;
+            }
+            setShared(model.PARAMETERS_SCREEN_J.INPUT, {
+                startYearMonth: start,
+                isPerson: false,
+                modeScreen: model.MODE_SCREEN.SALARY
+            });
+            modal("/view/qmm/020/j/index.xhtml").onClosed(() =>{
+                let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
+                if (params) {
+                    self.transferMethod(params.transferMethod);
+                    self.listStateCorrelationHis.unshift(self.createStateCorrelationHis(params.start, params.end));
+                    self.hisIdSelected(HIS_ID_TEMP);
+                }
+            });
+            block.clear();
+        }
+
+        createStateCorrelationHis(start: number, end: number){
+            let self = this;
+            if (self.listStateCorrelationHis() && self.listStateCorrelationHis().length > 0) {
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
+                self.listStateCorrelationHis()[FIRST].display = getText('QMM020_16',
+                    [model.convertMonthYearToString(self.listStateCorrelationHis()[FIRST].startYearMonth), model.convertMonthYearToString(end)]);
+            }
+            let stateCorrelationHisSalary: StateCorrelationHisInvidual = new StateCorrelationHisInvidual();
+            stateCorrelationHisSalary.hisId = HIS_ID_TEMP;
+            stateCorrelationHisSalary.startYearMonth = start;
+            stateCorrelationHisSalary.endYearMonth = end;
+            stateCorrelationHisSalary.display = getText('QMM020_16', [model.convertMonthYearToString(start),model.convertMonthYearToString(end)]);
+            return stateCorrelationHisSalary;
+        }
+
+        openKScreen(){
+            let self = this;
+            self.index(self.getIndex(self.hisIdSelected()));
+            let laststartYearMonth: number = 0;
+            if (self.listStateCorrelationHis() && self.listStateCorrelationHis().length != self.index() + 1) {
+                laststartYearMonth = self.listStateCorrelationHis().length > 1 ? self.listStateCorrelationHis()[self.index() + 1].startYearMonth : 0;
+            }
+            let canDelete: boolean = false;
+            if (self.listStateCorrelationHis().length > 1 && self.hisIdSelected() == self.listStateCorrelationHis()[FIRST].hisId) {
+                canDelete = true;
+            }
+
+            setShared(model.PARAMETERS_SCREEN_K.INPUT, {
+                startYearMonth: self.startYearMonth(),
+                endYearMonth: self.endYearMonth(),
+                hisId: self.hisIdSelected(),
+                startLastYearMonth: laststartYearMonth,
+                canDelete: canDelete
+            });
+            modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
+                let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
+                if(params && params.methodEditing == 1) {
+                    self.initScreen(self.hisIdSelected());
+                }
+                if(params && params.methodEditing == 0) {
+                    self.initScreen(null);
+                }
+                $('#G2_1').focus();
+
+            });
+            block.clear();
+        }
 
 
-       /* enableRegis() {
+
+        enableRegis() {
             return this.mode() == model.MODE.NO_REGIS;
         }
 
@@ -157,8 +265,35 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         enableEdit() {
             return this.mode() == model.MODE.UPDATE;
-        }*/
+        }
     }
+
+    export class StateCorrelationHisInvidual {
+        hisId: string;
+        startYearMonth: number;
+        endYearMonth: number;
+        display: string;
+        constructor() {
+
+        }
+        static convertToDisplay(item){
+            let listSalary = [];
+            _.each(item, (item) => {
+                let dto: StateCorrelationHisInvidual = new StateCorrelationHisInvidual();
+                dto.hisId = item.hisId;
+                dto.startYearMonth = item.startYearMonth;
+                dto.endYearMonth = item.endYearMonth;
+                dto.display = getText('QMM020_16', [model.convertMonthYearToString(item.startYearMonth),model.convertMonthYearToString(item.endYearMonth)]);
+                listSalary.push(dto);
+            });
+            return listSalary;
+        }
+
+    }
+
+    export const FIRST = 0;
+
+    export const HIS_ID_TEMP = "00000";
 
     /*KCP009 */
     export interface ComponentOption {
