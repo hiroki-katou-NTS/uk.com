@@ -8,11 +8,14 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSe
 @Value
 public class AttendanceItemSetDto {
 
+    private int timeCountAtr;
+
     private DetailTimeErrorAlarmRangeSetDto errorRangeSetting;
 
     private DetailTimeErrorAlarmRangeSetDto alarmRangeSetting;
 
     public AttendanceItemSetDto(TimeItemSet domain) {
+        this.timeCountAtr = domain.getTimeCountAtr().value;
         this.errorRangeSetting = new DetailTimeErrorAlarmRangeSetDto(domain.getErrorRangeSetting());
         this.alarmRangeSetting = new DetailTimeErrorAlarmRangeSetDto(domain.getAlarmRangeSetting());
     }
