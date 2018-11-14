@@ -112,32 +112,48 @@ module nts.uk.at.view.kal003.share.model {
             this.targetEmployment.subscribe((data) => {
                 kal003.a.service.getEmpNameByCodes(data).done((result: Array<string>) => {
                     this.displayTargetEmployment(result.join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 }).fail(() => {
                     this.displayTargetEmployment(this.targetClassification().join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 });
             });
 
             this.targetClassification.subscribe((data) => {
                 kal003.a.service.getClsNameByCodes(data).done((result: Array<string>) => {
                     this.displayTargetClassification(result.join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 }).fail(() => {
                     this.displayTargetClassification(this.targetClassification().join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 });
             });
 
             this.targetJobTitle.subscribe((data) => {
                 kal003.a.service.getJobNamesByIds(data).done((result: Array<string>) => {
                     this.displayTargetJobTitle(result.join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 }).fail(() => {
                     this.displayTargetJobTitle(this.targetClassification().join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 });
             });
 
             this.targetBusinessType.subscribe((data) => {
                 kal003.a.service.getBusTypeNamesByCodes(data).done((result: Array<string>) => {
                     this.displayTargetBusinessType(result.join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 }).fail(() => {
                     this.displayTargetBusinessType(this.targetClassification().join(", "));
+                    // validate selected scopes check
+                    $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
                 });
             });
         }

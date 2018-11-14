@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -46,6 +49,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
@@ -104,6 +109,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  * The Class AsposeMonthlyWorkScheduleGenerator.
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerator
 		implements MonthlyWorkScheduleGenerator {
 
@@ -149,6 +155,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The company monthly item service. */
 	@Inject
 	private CompanyMonthlyItemService companyMonthlyItemService;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "report/KWR006.xlsx";
@@ -172,6 +181,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
 	
 	private static final int CHUNK_SIZE_ERROR = 5;
+	
+	private static final int REMARK_CELL_WIDTH = 4;
 
 	/*
 	 * (non-Javadoc)
@@ -646,9 +657,20 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (outputItem.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
 			listAttendanceId.add(outputItem.getRemarkInputNo().value + 1283);
 		}
-
-		List<MonthlyAttendanceItemValueResult> itemValues = attendanceItemValueService.getMonthlyValueOf(
-				query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
+		
+		List<MonthlyAttendanceItemValueResult> itemValues;
+		{
+			List<MonthlyAttendanceItemValueResult> itemValuesSync = Collections.synchronizedList(new ArrayList<>());
+			this.parallel.forEach(query.getEmployeeId(), subEmployeeIds -> {
+				List<MonthlyAttendanceItemValueResult> subValues = attendanceItemValueService.getMonthlyValueOf(
+						subEmployeeIds, new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
+				itemValuesSync.addAll(subValues);
+			});
+			
+			// synchronizedListはこの並列部分でしか必要ないので、ここで普通のArrayListに変える。
+			itemValues = new ArrayList<>(itemValuesSync);
+		}
+		
 		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = itemValues.stream()
 				.map(item -> new MonthlyRecordValuesExport(item.getYearMonth(), item.getClosureId(),
 						new ClosureDate(item.getClouseDate(), item.isLastDayOfMonth()), item.getAttendanceItems(),
@@ -1494,7 +1516,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        }
 				        
 				        // A5_5
-				        Cell remarkCell = cells.get(currentRow,29);
+				        Cell remarkCell = cells.get(currentRow, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH);
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
 				        
 				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
@@ -1511,7 +1533,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
-				            	remarkCell = cells.get(curRowRemark, 29); 
+				            	remarkCell = cells.get(curRowRemark, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH); 
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -1537,7 +1559,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 					
 					Range personalTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
+					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH);
 					personalTotalRange.copy(personalTotalRangeTemp);
 					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1587,6 +1609,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							}
 			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 			            		cell.putValue(value, true);
+			            	}
+			            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
+			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
@@ -1660,6 +1685,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 	            }
@@ -1786,6 +1814,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
+				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								}
 				            	setFontStyle(style);
 				            	cell.setStyle(style);
 				            }
@@ -2045,7 +2076,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			        }
 			        
 			        // B5_4
-			        Cell remarkCell = cells.get(currentRow,29);
+			        Cell remarkCell = cells.get(currentRow, DATA_COLUMN_INDEX[5]);
 			        String errorDetail = employee.getDetailedErrorData();
 			        
 			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
@@ -2062,7 +2093,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            
 			            for (int j = 0; j < length; j++) {
 			            	// Column 4, 6, 8,...
-			            	remarkCell = cells.get(curRowRemark, 29); 
+			            	remarkCell = cells.get(curRowRemark, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH); 
 			            	Style style = remarkCell.getStyle();
 			            	remarkCell.setValue(remarkContentRow);
 							style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -2242,6 +2273,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+					if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
@@ -2305,6 +2339,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+		        	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +47,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringLength;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
@@ -225,6 +227,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The company daily item service. */
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 	
 	/** The optional item repo. */
 	@Inject
@@ -573,8 +578,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}).collect(Collectors.toList());
 		if (lstRemarkEnable.contains(RemarksContentChoice.REMARKS_INPUT))
 			itemsId.add(outputItem.getRemarkInputNo().value + 833); // Remark no (0~4) -> attendanceId (833~837)
-		// Request list #332
-		List<AttendanceResultImport> lstAttendanceResultImport = attendaceAdapter.getValueOf(query.getEmployeeId(), new DatePeriod(query.getStartDate(), query.getEndDate()), itemsId);
+		
+		List<AttendanceResultImport> lstAttendanceResultImport;
+		{
+			List<AttendanceResultImport> resultsSync = Collections.synchronizedList(new ArrayList<>());
+			this.parallel.forEach(query.getEmployeeId(), employeeId -> {
+				// Request list #332
+				List<AttendanceResultImport> result = attendaceAdapter.getValueOf(Arrays.asList(employeeId), new DatePeriod(query.getStartDate(), query.getEndDate()), itemsId);
+				resultsSync.addAll(result);
+			});
+			lstAttendanceResultImport = new ArrayList<>();
+			lstAttendanceResultImport.addAll(resultsSync);
+		}
+		
 		queryData.setLstAttendanceResultImport(lstAttendanceResultImport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
@@ -1776,11 +1792,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		//condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
-			AttItemName attendanceItem = lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
-			OutputItemSetting setting = new OutputItemSetting();
-			setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
-			setting.setItemName(attendanceItem.getAttendanceItemName());
-			headerData.lstOutputItemSettingCode.add(setting);
+			lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().ifPresent(attendanceItem -> {
+				OutputItemSetting setting = new OutputItemSetting();
+				setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
+				setting.setItemName(attendanceItem.getAttendanceItemName());
+				headerData.lstOutputItemSettingCode.add(setting);
+			});
 		});
 	}
 	
@@ -1893,7 +1910,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemName() + outputItem.getItemCode());
+            	cell.setValue(outputItem.getItemName());
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
 //            	cell.setValue(outputItem.getItemCode());
