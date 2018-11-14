@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmpCdNameImport;
 
 import java.util.ArrayList;
 import java.util.List;

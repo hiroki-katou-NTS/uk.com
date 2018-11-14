@@ -10,7 +10,6 @@ module nts.uk.pr.view.qmm020.a {
         var viewmodelG = new nts.uk.pr.view.qmm020.g.viewmodel.ScreenModel();
         var viewmodelH = new nts.uk.pr.view.qmm020.h.viewmodel.ScreenModel();
 
-
         __viewContext.viewModel = {
             viewmodelA: viewmodelA,
             viewmodelB: viewmodelB,
@@ -61,9 +60,17 @@ module nts.uk.pr.view.qmm020.a {
                 if(data.masterUse === 1 && data.usageMaster === 0){
                     viewmodelC.startPage().done(function() {
                         nts.uk.ui.errors.clearAll();
-
-                        viewmodelC.enableEditHisButton(true);
-                        viewmodelC.enableAddHisButton(true);
+                        if(viewmodelC.mode()  === model.MODE.NO_REGIS){
+                            viewmodelC.enableEditHisButton(false);
+                            viewmodelC.enableAddHisButton(true);
+                            viewmodelC.enableRegisterButton(false);
+                        }else{
+                            viewmodelC.enableEditHisButton(true);
+                            viewmodelC.enableAddHisButton(true);
+                            viewmodelC.enableRegisterButton(true);
+                        }
+                        viewmodelC.newHistoryId(null);
+                        $("#C1_5").focus();
                     });
                 }else if(data.masterUse === 1 && data.usageMaster === 1){
                     viewmodelD.startPage().done(function() {

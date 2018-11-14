@@ -53,7 +53,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                     self.salaryLayoutName('');
                     self.bonusCode('');
                     self.bonusLayoutName('');
-                    self.mode(model.MODE.NO_REGIS)
+                    self.mode(model.MODE.NO_REGIS);
                 }
                 dfd.resolve();
             }).fail((err)=>{
@@ -176,7 +176,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         openScreenJ(){
             let self = this;
             let hisId,startYearMonth, endYearMonth,temp;
-            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+            let rs = _.head(self.listStateCorrelationHis());
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth : rs ? rs.startYearMonth : 0,
                 isPerson: false,
@@ -310,6 +310,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         }
 
     }
+
     export class ItemModel {
         hisId: string;
         name: string;
