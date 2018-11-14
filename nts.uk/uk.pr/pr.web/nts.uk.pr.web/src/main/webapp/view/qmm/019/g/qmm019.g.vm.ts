@@ -106,7 +106,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             self.screenControl().visibleG2_2(false);
             self.screenControl().visibleG2_3(false);
             self.screenControl().enableG2_4(false);
-            self.screenControl().enableG4_1(false);
+            self.screenControl().enableG3_1(false);
 
             nts.uk.ui.errors.clearAll();
             $("#btn-register").focus();
@@ -117,7 +117,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             self.screenControl().visibleG2_2(true);
             self.screenControl().visibleG2_3(true);
             self.screenControl().enableG2_4(true);
-            self.screenControl().enableG4_1(true);
+            self.screenControl().enableG3_1(true);
 
             nts.uk.ui.errors.clearAll();
             $("#G1_6_container").focus();
@@ -175,7 +175,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
         visibleG2_2: KnockoutObservable<boolean> = ko.observable(false);
         visibleG2_3: KnockoutObservable<boolean> = ko.observable(false);
         enableG2_4: KnockoutObservable<boolean> = ko.observable(false);
-        enableG4_1: KnockoutObservable<boolean> = ko.observable(false);
+        enableG3_1: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
         }
