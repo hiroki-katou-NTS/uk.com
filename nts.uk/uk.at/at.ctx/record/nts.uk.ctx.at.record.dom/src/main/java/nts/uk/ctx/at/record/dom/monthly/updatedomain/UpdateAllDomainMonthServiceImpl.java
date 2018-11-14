@@ -118,7 +118,8 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 					this.empErrorRepo.removeAll(employeeId, yearMonth, closureId, closureDate);
 				}
 				
-				d.getAttendanceTimeOfWeekList().stream().forEach(atw -> this.timeWeekRepo.persistAndUpdate(atw));
+				// 上で全削除しているので、INSERTのみ
+				d.getAttendanceTimeOfWeekList().stream().forEach(atw -> this.timeWeekRepo.persist(atw));
 				
 				this.storedProcedureProcess.monthlyProcessing(
 						companyId, employeeId, yearMonth, closureId, closureDate,
