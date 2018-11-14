@@ -3,6 +3,8 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -21,7 +23,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
-import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 
@@ -43,6 +44,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	private ProcessExecutionLogHistRepository processExecutionLogHistRepo;
 
 	//終了ボタン押下時処理
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public void handle(CommandHandlerContext<TerminateProcessExecutionCommand> context) {
 		val asyncContext = context.asAsync();
