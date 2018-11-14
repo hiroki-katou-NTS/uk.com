@@ -51,7 +51,7 @@
                         class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
                 <a tabindex="11" class="goout" style="margin-left: 700px;"
-                   data-bind="ntsLinkButton: { }, enable: false">#{i18n.getText('QMM039_45')}</a>
+                   data-bind="ntsLinkButton: {jump: '../../040/a/index.xhtml' }, enable: false">#{i18n.getText('QMM039_45')}</a>
             </div>
             <div id="com-ccg001"/>
             <div class="contents-area">
@@ -151,9 +151,9 @@
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_22')}</div>
                             </div>
                             <div class="cell cell-space" >
-                                <span class="label" data-bind="text: individualPriceCode"/>
+                                <span class="label" data-bind="text: individualPriceCodeLabel"/>
                                 <!--A7_4 コード-->
-                                <span class="label" data-bind="text: individualPriceName"/>
+                                <span class="label" data-bind="text: individualPriceNameLabel"/>
                                 <!--A7_5 名称-->
                             </div>
                         </div>

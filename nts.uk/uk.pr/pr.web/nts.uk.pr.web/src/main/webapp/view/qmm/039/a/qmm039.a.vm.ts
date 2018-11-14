@@ -18,19 +18,21 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         classificationCategory: KnockoutObservable<number> = ko.observable(PERVALUECATECLS.SUPPLY);
         salaryBonusCategory: KnockoutObservable<number> = ko.observable(SALBONUSCATE.SALARY);
         itemList: KnockoutObservableArray<ItemModel>;
-        individualPriceCode: KnockoutObservable<any> = ko.observable(null);
-        individualPriceName: KnockoutObservable<any> = ko.observable(null);
+        individualPriceCode: KnockoutObservable<any> = ko.observable('');
+        individualPriceName: KnockoutObservable<any> = ko.observable('');
+        individualPriceCodeLabel: KnockoutObservable<string> = ko.observable('');
+        individualPriceNameLabel: KnockoutObservable<string> = ko.observable('');
         periodStartYM: KnockoutObservable<string> = ko.observable('');
         periodEndYM: KnockoutObservable<string> = ko.observable('');
         individualPriceName: KnockoutObservable<any> = ko.observable('');
         onTab: KnockoutObservable<number> = ko.observable(ITEM_CLASS.SALARY_SUPLY);
         itemClas: KnockoutObservable<number> = ko.observable(0);
-        titleTab: KnockoutObservable<string> = ko.observable(null);
+        titleTab: KnockoutObservable<string> = ko.observable('');
         isRegistrationable: KnockoutObservable<boolean> = ko.observable(false);
         isAddableHis: KnockoutObservable<boolean> = ko.observable(false);
         isEditableHis: KnockoutObservable<boolean> = ko.observable(false);
         focusStartPage: boolean;
-        itemClassLabel: KnockoutObservable<string> = ko.observable(null);
+        itemClassLabel: KnockoutObservable<string> = ko.observable('');
         selectedTab: KnockoutObservable<string>;
         dataSource: any = ko.observableArray([]);
         selectedHis: KnockoutObservable<ItemModel>;
@@ -73,8 +75,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 } else {
                     self.isEditableHis(false);
                     self.itemClassLabel('');
-                    self.individualPriceCode('');
-                    self.individualPriceName('');
+                    self.individualPriceCodeLabel('');
+                    self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
                     self.currencyeditor.value(0);
@@ -440,7 +442,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         //TODO TO SCREEN B
         public toScreenB(): void {
             let self = this;
-            let params;
+            let params = {};
             if (self.mode() == MODE.NORMAL) {
                 params = {
                     historyID: self.itemList()[0].historyID,
@@ -476,12 +478,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         openModalB(params) {
             let self = this;
             setShared("QMM039_A_PARAMS", params);
-            modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
+            modal('/view/qmm/039/b/index.xhtml').onClosed(function () {
                 let params = getShared("QMM039_B_RES_PARAMS");
                 if (params) {
                     self.selectedHisCode(0);
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
-                    self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
+                    self.periodEndYM(params.periodEndYm);
 
                     if (params.takeoverMethod == 1) {
                         self.currencyeditor.value(0);
@@ -489,7 +491,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.currencyeditor.value(parseInt(self.itemList()[0].amount));
                     }
                     let array = self.itemList();
-                    self.itemList([]);
                     array.unshift(new ItemModel(
                         0,
                         null,
@@ -609,7 +610,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         yearMonthHistoryItem: [{
                             historyId: historyId,
                             startMonth: self.formatYMToInt(self.periodStartYM()),
-                            endMonth: self.formatYMToInt(self.periodEndYM()),
+                            endMonth: self.periodEndYM(),
                         }],
                         salBonusCate: self.salaryBonusCategory()
                     },

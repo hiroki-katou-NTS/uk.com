@@ -121,8 +121,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.SALARY);
-
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 case 1:
                     //TODO
@@ -132,7 +134,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.SALARY);
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 case 2:
                     //TODO
@@ -142,7 +147,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.salBonusCate(SalBonusCate.BONUSES);
                     self.titleTab(getText('QMM040_5'));
                     self.itemClassification(getText('QMM040_5'));
-                    $("#sidebar").ntsSideBar("active", param)
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 case 3:
                     //TODO
@@ -152,7 +162,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.BONUSES);
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 default:
                     //TODO
@@ -160,7 +173,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.titleTab(getText('QMM040_3'));
                     self.itemClassification(getText('QMM040_3'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
-                    $("#sidebar").ntsSideBar("active", 0)
+                    $("#sidebar").ntsSideBar("active", 0);
                     break;
             }
         }
