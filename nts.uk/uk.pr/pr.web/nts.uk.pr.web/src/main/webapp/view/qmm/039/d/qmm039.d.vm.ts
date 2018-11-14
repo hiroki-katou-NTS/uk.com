@@ -52,7 +52,23 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             self.params = getShared('QMM039_D_PARAMS');
-            self.itemClassification(self.params.itemClassification);
+            switch(self.params.itemClassification) {
+                case 0:
+                    self.itemClassification(format(getText('QMM039_21'), '給与支給'));
+                    break;
+                case 1:
+                    self.itemClassification(format(getText('QMM039_21'), '給与控除'));
+                    break;
+                case 2:
+                    self.itemClassification(format(getText('QMM039_21'), '賞与支給'));
+                    break;
+                case 3:
+                    self.itemClassification(format(getText('QMM039_21'), '賞与控除'));
+                    break;
+                default:
+                    break;
+            }
+
             self.empCode(self.params.empCode);
             self.empName(self.params.empName);
             if(self.params.personalValCode) {
