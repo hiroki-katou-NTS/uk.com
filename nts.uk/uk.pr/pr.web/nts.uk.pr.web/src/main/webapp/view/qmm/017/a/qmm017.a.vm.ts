@@ -37,6 +37,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         constructor() {
             var self = this;
             self.initTabPanel();
+            self.initComponents();
+            self.doFirstFocus();
             self.screenMode.subscribe(newValue => {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
@@ -49,7 +51,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.changeToNewMode();
                 }
             });
-            self.initComponents();
             self.initFormulaData();
         }
 
@@ -61,20 +62,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         initTabPanel() {
             let self = this;
             self.tabs = ko.observableArray([
-                {
-                    id: 'tab-1',
-                    title: getText('QMM017_6'),
-                    content: '.tab-content-1',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                },
-                {
-                    id: 'tab-2',
-                    title: getText('QMM017_7'),
-                    content: '.tab-content-2',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                }
+                {id: 'tab-1', title: getText('QMM017_6'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-2', title: getText('QMM017_7'), content: '.tab-content-2',enable: ko.observable(true), visible: ko.observable(true)}
             ]);
             self.selectedTab = ko.observable('tab-1');
             let self = this;
@@ -88,6 +77,21 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 {id: 'tab-7', title: getText('QMM017_46'), content: '.tab-content-7', enable: ko.observable(true), visible: ko.observable(true)}
             ]);
             self.screenDSelectedTab = ko.observable('tab-1');
+        }
+
+        doFirstFocus () {
+            let self = this;
+            self.selectedTab.subscribe(newTab => {
+                if (newTab == 'tab-2') {
+                    if (self.selectedFormula().settingMethod() == 0) {
+                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) $('#B1_4').focus();
+                        else $('#C2_7').focus();
+                    }
+                    if (self.selectedFormula().settingMethod() == 1) {
+                        // NO FOCUS
+                    }
+                }
+            })
         }
 
         initFormulaData() {

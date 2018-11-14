@@ -19,6 +19,7 @@
                  data-bind="text: basicFormulaSetting().displayMasterUse"></div>
         </div>
         <hr></hr>
+        <!--C2_1-->
         <table id = "C2_1">
             <colgroup>
                 <col width="250px" />
@@ -31,7 +32,8 @@
                         <span style="white-space: pre-line">#{i18n.getText('QMM017_30')}</span>
                         </th>
                     <th>
-                        <div class="cf" tabindex="1" data-bind="ntsSwitchButton: {
+                        <!--C2_3-->
+                        <div id  = "C2_7" class="cf" tabindex="1" data-bind="ntsSwitchButton: {
 									name: '#[QMM017_36]',
 									options: calculationFormulaFixedFormulaItem,
 									optionsValue: 'value',
@@ -40,6 +42,7 @@
 									required: true }"></div>
                     </th>
                     <th>
+                        <!--C2_6-->
                         <div data-bind = "visible: calculationFormulaClassification() == 0">
                             <input tabindex="2" data-bind="ntsNumberEditor: {
                                 value: basicCalculationFormula,
@@ -51,6 +54,7 @@
                                 required: true}" />
                         </div>
                         <div data-bind = "visible: calculationFormulaClassification() == 1">
+                            <!--C2_7; C2_8-->
                             <button tabindex="3">#{i18n.getText('QMM017_34')}</button>
                             <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
                         </div>
@@ -59,6 +63,7 @@
             </thead>
             <tbody></tbody>
         </table>
+        <!--C3_1-->
         <div style = "margin-top: 30px;" >
             <table id = "C3_1">
                 <colgroup>
@@ -81,6 +86,7 @@
                 <tr data-bind = "visible: $index() > 0">
                     <td data-bind="text: masterUseCode"></td>
                     <td>
+                        <!--C3_6-->
                         <div class="cf" tabindex="6" data-bind="ntsSwitchButton: {
 									name: '#[QMM017_36]',
 									options: calculationFormulaClassificationItem,
@@ -90,6 +96,7 @@
 									required: true }"></div>
                     </td>
                     <td>
+                        <!--C3_10-->
                         <div data-bind = "visible: calculationFormulaClassification() == 0">
                             <input tabindex="7" data-bind="ntsNumberEditor: {
                                 value: basicCalculationFormula,
@@ -101,7 +108,9 @@
                                 required: true}" />
                         </div>
                         <div data-bind = "visible: calculationFormulaClassification() == 1">
+                            <!--C3_11-->
                             <button tabindex="8">#{i18n.getText('QMM017_34')}</button>
+                            <!--C3_12-->
                             <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
                         </div>
                     </td>

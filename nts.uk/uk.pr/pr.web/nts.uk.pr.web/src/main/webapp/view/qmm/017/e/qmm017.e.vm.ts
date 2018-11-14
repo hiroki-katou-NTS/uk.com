@@ -7,8 +7,9 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
 
     export class ScreenModel {
         basicCalulcationFormula: KnockoutObservable<model.BasicCalculationFormula> = ko.observable(new model.BasicCalculationFormula(null));
-
+        baseAmountTargetItem: KnockoutObservable<string> = ko.observable('TEMPORARY CAN NOT DEFINED');
         constructor() {
+            nts.uk.ui.windows.getSelf().$dialog.height(510);
         }
 
         startPage(): JQueryPromise<any> {

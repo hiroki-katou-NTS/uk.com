@@ -7,7 +7,12 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 600, height: 600};</script>
+        <script>var dialogSize = {width: 700, height: 600};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.BasePriceFixedAmount
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.BaseItemFixedValue
+            nts.uk.ctx.pr.core.dom.wageprovision.formula.PremiumRate
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm017.e.service.js"/>
@@ -16,19 +21,19 @@
         <com:scriptfile path="qmm017.e.start.js"/>
     </ui:define>
     <ui:define name="content">
-        <div class="contents-area" style="margin-left: 20px;">
-            <div data-bind="with: basicCalulcationFormula">
+        <div id="contents-area" style="padding-top: 0px;">
+            <div style="margin-left: 20px;" data-bind="with: basicCalulcationFormula">
                 <div class="dialog-first-element">
                     <div>#{i18n.getText('QMM017_166')}</div>
                     <div style="margin-left: 30px;">#{i18n.getText('QMM017_167')}</div>
                     <div>UNDEFINED</div>
                     <hr></hr>
                 </div>
-                <div style="margin-top: 20px; min-width: 450px">
+                <div style="margin-top: 20px; min-width: 550px">
                     <div style="width: 130px; display: inline-block;"
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_101')}</div>
                     <div style="display: inline-block; vertical-align: middle">
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex = "2" data-bind="ntsComboBox: {
                             name: '#[QMM017_102]',
                             options: formulaTypeItem,
                             optionsValue: 'value',
@@ -40,48 +45,167 @@
                             ]}"></div>
                     </div>
                 </div>
-                <div style="min-width: 450px;">
+                <div style="min-width: 550px;">
                     <div style="margin-left: 120px; ">
                         <div>
-                            <div>
+                            <div style = "margin-left: 15px;">
                                 <img src='/' data-bind="attr: {src: displayFormulaImagePath}"></img>
                             </div>
-                            <div style="margin-top: 20px; ">
-                                <div style="width: 130px; display: inline-block;"
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_105')}</div>
                                 <div style="display: inline-block; vertical-align: middle">
-                                    <div data-bind="ntsComboBox: {
-                            name: '#[QMM017_106]',
-                            options: standardAmountClassificationItem,
-                            optionsValue: 'value',
-                            visibleItemsCount: 5,
-                            value: standardAmountClassification,
-                            optionsText: 'name',
-                            columns: [
-                                { prop: 'name', length: 10 }
-                            ]}"></div>
+                                    <div tabindex = "3" data-bind="ntsComboBox: {
+                                        name: '#[QMM017_106]',
+                                        options: standardAmountClassificationItem,
+                                        optionsValue: 'value',
+                                        visibleItemsCount: 5,
+                                        value: standardAmountClassification,
+                                        optionsText: 'name',
+                                        columns: [
+                                            { prop: 'name', length: 10 }
+                                        ]}">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <button>#{i18n.getText('QMM017_107')}</button>
-                        </div>
-                        <input tabindex="2" data-bind="ntsNumberEditor: {
-                                value: basicCalculationFormula,
-                                constraint: 'FixedAmount',
-                                name: '#[QMM017_32]',
-                                option: {
-                                    decimallength: 3
-                                },
+                            <div style = "margin-left: 115px;">
+                                <div data-bind = "visible: standardAmountClassification() != 0">
+                                    <button tabindex = "4">#{i18n.getText('QMM017_107')}</button>
+                                    <input data-bind="ntsNumberEditor: {
+                                value: $vm.baseAmountTargetItem,
+                                enable: false}" />
+                                </div>
+                                <div data-bind = "visible: standardAmountClassification() == 0">
+                                    <input tabindex="5" data-bind="ntsNumberEditor: {
+                                value: standardFixedValue,
+                                constraint: 'BasePriceFixedAmount',
+                                name: '#[QMM017_108]',
                                 required: true}" />
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_110')}</div>
+                                <div style="display: inline-block; vertical-align: middle">
+                                    <div tabindex="6" data-bind="ntsComboBox: {
+                                        name: '#[QMM017_111]',
+                                        options: baseItemClassificationItem,
+                                        optionsValue: 'value',
+                                        visibleItemsCount: 5,
+                                        value: baseItemClassification,
+                                        optionsText: 'name',
+                                        columns: [
+                                            { prop: 'name', length: 10 }
+                                        ]}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style = "margin-left: 115px;">
+                                <div >
+                                    <input tabindex="7" data-bind="ntsNumberEditor: {
+                                        value: baseItemFixedValue,
+                                        constraint: 'BaseItemFixedValue',
+                                        name: '#[QMM017_111]',
+                                        required: true}" />
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true, constraint: 'PremiumRate'}">#{i18n.getText('QMM017_113')}</div>
+                                <div style="display: inline-block; vertical-align: text-bottom">
+                                    <input tabindex="8" data-bind="ntsNumberEditor: {
+                                        value: premiumRate,
+                                        option: {
+                                            unitID: 'PERCENT'
+                                        },
+                                        constraint: 'PremiumRate',
+                                        name: '#[QMM017_113]',
+                                        required: true}" />
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_115')}</div>
+                                <div style="display: inline-block; vertical-align: middle">
+                                    <div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
+                                        name: '#[QMM017_17]',
+                                        options: roundingMethodItem,
+                                        optionsValue: 'value',
+                                        optionsText: 'name',
+                                        value: roundingMethod,
+                                        required: true,
+                                        enable: true }">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_117')}</div>
+                                <div style="display: inline-block; vertical-align: middle">
+                                    <div tabindex="10" data-bind="ntsComboBox: {
+                                        name: '#[QMM017_118]',
+                                        options: coefficientClassificationItem,
+                                        optionsValue: 'value',
+                                        visibleItemsCount: 5,
+                                        value: coefficientClassification,
+                                        optionsText: 'name',
+                                        columns: [
+                                            { prop: 'name', length: 10 }
+                                        ]}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style = "margin-left: 115px;">
+                                <div >
+                                    <input tabindex="11" data-bind="ntsNumberEditor: {
+                                        value: coefficientFixedValue,
+                                        constraint: 'CoefficientFixedValue',
+                                        name: '#[QMM017_111]',
+                                        required: true}" />
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_120')}</div>
+                                <div style="display: inline-block; vertical-align: middle">
+                                    <div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+                                        name: '#[QMM017_120]',
+                                        options: roundingResultItem,
+                                        optionsValue: 'value',
+                                        optionsText: 'name',
+                                        value: roundingResult,
+                                        required: true,
+                                        enable: true }">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; ">
+                                <div style="width: 110px; display: inline-block;"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_122')}</div>
+                                <div style="display: inline-block; vertical-align: middle">
+                                    <div tabindex="14" data-bind="ntsComboBox: {
+                                        name: '#[QMM017_123]',
+                                        options: adjustmentClassificationItem,
+                                        optionsValue: 'value',
+                                        visibleItemsCount: 5,
+                                        value: adjustmentClassification,
+                                        optionsText: 'name',
+                                        columns: [
+                                            { prop: 'name', length: 10 }
+                                        ]}">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex="3" class="x-large proceed "
+            <button tabindex="99" class="x-large proceed "
                     data-bind="click: saveConfiguration, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_153')}</button>
-            <button tabindex="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
+            <button tabindex="99" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
         </div>
     </ui:define>
 </ui:composition>

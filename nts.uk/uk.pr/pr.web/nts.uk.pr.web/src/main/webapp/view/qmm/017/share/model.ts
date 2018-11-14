@@ -243,6 +243,14 @@ module nts.uk.pr.view.qmm017.share.model {
         TRUNCATION = 2,
         DO_NOTHING = 3
     }
+    export function getRoundingMethodEnumModel () {
+        return [
+            new EnumModel(ROUNDING_METHOD.ROUND_OFF, '四捨五入'),
+            new EnumModel(ROUNDING_METHOD.ROUND_UP, '切り上げ'),
+            new EnumModel(ROUNDING_METHOD.TRUNCATION, '切り捨て'),
+            new EnumModel(ROUNDING_METHOD.DO_NOTHING, '何もしない')
+        ];
+    }
 
     export function getRoundingMethodEnumModel () {
         return [
@@ -658,6 +666,11 @@ module nts.uk.pr.view.qmm017.share.model {
         calculationFormulaFixedFormulaItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getCalculationFormulaClsEnumModel().slice(0, 2));
         formulaTypeItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getFormulaTypeEnumModel());
         standardAmountClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getStandardAmountClsEnumModel());
+        baseItemClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getBaseItemClsEnumModel());
+        roundingMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoundingMethodEnumModel());
+        coefficientClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getCoefficientClassificationEnumModel());
+        roundingResultItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoundingResultEnumModel());
+        adjustmentClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getAdjustmentClsEnumModel());
         // display item
         displayFormulaType: KnockoutObservable<string> = ko.observable(null);
         displayFormulaImagePath: KnockoutObservable<string> = ko.observable(null);
@@ -666,8 +679,8 @@ module nts.uk.pr.view.qmm017.share.model {
             this.calculationFormulaClassification(params ? params.calculationFormulaClassification : CALCULATION_FORMULA_CLS.FIXED_VALUE);
             this.basicCalculationFormula(params ? params.basicCalculationFormula : null);
             this.premiumRate(params ? params.premiumRate : null);
-            this.roundingMethod(params ? params.roundingMethod : null);
-            this.roundingResult(params ? params.roundingResult : null);
+            this.roundingMethod(params ? params.roundingMethod : ROUNDING_METHOD.ROUND_OFF);
+            this.roundingResult(params ? params.roundingResult : ROUNDING_RESULT.ROUND_OFF);
             this.adjustmentClassification(params ? params.adjustmentClassification : null);
             this.formulaType(params ? params.formulaType : FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1);
             this.standardAmountClassification(params ? params.standardAmountClassification : null);

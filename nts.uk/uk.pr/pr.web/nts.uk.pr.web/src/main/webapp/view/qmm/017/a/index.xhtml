@@ -31,6 +31,7 @@
 
     <ui:define name="content">
         <div id="functions-area">
+            <!--A1_1; A1_,2; A1_3; A1_4; A1_5-->
             <button tabindex="1">#{i18n.getText('QMM017_1')}</button>
             <button tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
             <button tabindex="3">#{i18n.getText('QMM017_3')}</button>
@@ -42,6 +43,7 @@
                 <div style="margin-bottom: 20px;"
                      data-bind="ntsPanel:{width: '270px', height: '480px', direction: 'right', showIcon: true, visible: true}">
                     <div>
+                        <!--A2_3-->
                         <div tabindex="6" style="width: 270px" data-bind="ntsSearchBox: {
 								label: '#{i18n.getText('QMM017_8')}',
 								targetKey: 'identifier',
@@ -62,6 +64,7 @@
                                 data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM017_10')}</button>
                     </div>
                     <div style="margin-top: 10px;">
+                        <!--A2_6-->
                         <table id="formula-tree" tabindex="9"
                                data-bind="ntsTreeGridView:{
 							name: '#[QMM017_13]',
@@ -85,13 +88,17 @@
                      style="width: 850px; margin-bottom: 20px;">
                     <div class="tab-content-1" tabindex="10" data-bind="with: selectedFormula">
                         <div class="tab-row">
+                            <!--A3_1-->
                             <div class="label warning">#{i18n.getText('QMM017_11')}</div>
                         </div>
                         <div class="tab-row">
+                            <!--A3_2-->
                             <div class="column-1"
                                  data-bind="ntsFormLabel: { required: true, constraint: ['FormulaCode', 'FormulaName'] }">#{i18n.getText('QMM017_8')}</div>
+                            <!--A3_3-->
                             <input tabindex="11"
                                    data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 1}"/>
+                            <!--A3_4-->
                             <input tabindex="12"
                                    data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName'}"/>
                         </div>
@@ -109,6 +116,7 @@
                                     required: true,
                                     enable: !$vm.isUpdateMode()}"
                             />
+                            <!--A3_7-->
                             <div style="margin-left: 10px; display: inline-block"
                                  data-bind="text: displayJapanStartYearMonth, visible: startMonth"/>
                         </div>
@@ -178,6 +186,7 @@
                                     <div class="tab-row-medium">
                                         <div style="display: block"
                                              data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_26')}</div>
+                                        <!--A3_24-->
                                         <div style="margin-left: 25px;" tabindex="17" class="cf" data-bind="ntsSwitchButton: {
                                                 name: '#[QMM017_28]',
                                                 options: nestedAtrItem,
