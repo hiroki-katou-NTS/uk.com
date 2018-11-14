@@ -181,6 +181,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
 	
 	private static final int CHUNK_SIZE_ERROR = 5;
+	
+	private static final int REMARK_CELL_WIDTH = 4;
 
 	/*
 	 * (non-Javadoc)
@@ -1514,7 +1516,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        }
 				        
 				        // A5_5
-				        Cell remarkCell = cells.get(currentRow,29);
+				        Cell remarkCell = cells.get(currentRow, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH);
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
 				        
 				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
@@ -1531,7 +1533,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
-				            	remarkCell = cells.get(curRowRemark, 29); 
+				            	remarkCell = cells.get(curRowRemark, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH); 
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -1557,7 +1559,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 					
 					Range personalTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
+					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH);
 					personalTotalRange.copy(personalTotalRangeTemp);
 					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1607,6 +1609,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							}
 			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 			            		cell.putValue(value, true);
+			            	}
+			            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
+			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
@@ -1680,6 +1685,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 	            }
@@ -1806,6 +1814,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
+				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								}
 				            	setFontStyle(style);
 				            	cell.setStyle(style);
 				            }
@@ -2065,7 +2076,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			        }
 			        
 			        // B5_4
-			        Cell remarkCell = cells.get(currentRow,29);
+			        Cell remarkCell = cells.get(currentRow, DATA_COLUMN_INDEX[5]);
 			        String errorDetail = employee.getDetailedErrorData();
 			        
 			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
@@ -2082,7 +2093,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            
 			            for (int j = 0; j < length; j++) {
 			            	// Column 4, 6, 8,...
-			            	remarkCell = cells.get(curRowRemark, 29); 
+			            	remarkCell = cells.get(curRowRemark, DATA_COLUMN_INDEX[5]-REMARK_CELL_WIDTH); 
 			            	Style style = remarkCell.getStyle();
 			            	remarkCell.setValue(remarkContentRow);
 							style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -2262,6 +2273,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+					if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
@@ -2325,6 +2339,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
+		        	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+					}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
