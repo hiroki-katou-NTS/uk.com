@@ -139,7 +139,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 mode: self.mode()
 
             }
-            service.register(data).done((data)=>{
+            service.register(data).done(()=>{
                 dialog.info({ messageId: "Msg_15" }).then(() => {
                     service.getStateCorrelationHisCompanyById().done((data)=>{
                         self.listStateCorrelationHis(self.convertToList(data));
@@ -206,33 +206,39 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
                     self.transferMode(params.transferMethod);
                     self.currentSelectedHis(self.newHistoryId());
+                } else if(params && self.listStateCorrelationHis().length === 0){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
             });
         }
 
         openScreenK(){
             let self = this;
-            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
-            let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.currentSelectedHis()});
-            setShared(model.PARAMETERS_SCREEN_K.INPUT, {
-                startYearMonthBefore : rs ? rs.startYearMonth : 0,
-                endYearMonth: rs ? rs.startYearMonth : 0,
-                hisId: self.currentSelectedHis(),
-                modeScreen: model.MODE_SCREEN.COMPANY,
-                masterCode: null,
-                isFirst: index === 0 ? true : false,
+            let listStateCorrelationHis = [];
+            service.getStateCorrelationHisCompanyById().done((data)=>{
+                listStateCorrelationHis = self.convertToList(data);
+                let rs = _.find(listStateCorrelationHis,{hisId: self.currentSelectedHis()});
+                let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.currentSelectedHis()});
+                setShared(model.PARAMETERS_SCREEN_K.INPUT, {
+                    startYearMonthBefore : index != self.listStateCorrelationHis().length-1 ? self.listStateCorrelationHis()[index+1].startYearMonth : 0,
+                    startYearMonth : rs ? rs.startYearMonth : 0,
+                    endYearMonth:  rs ? rs.endYearMonth : 999912,
+                    hisId: self.currentSelectedHis(),
+                    modeScreen: model.MODE_SCREEN.COMPANY,
+                    masterCode: null,
+                    isFirst: index === 0 && self.listStateCorrelationHis().length > 1 ? true : false,
+                });
             });
+
             modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{
-                let params = {
-                    methodEditing: 1,
-                };
+                let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params){
                     service.getStateCorrelationHisCompanyById().done((data)=>{
 
-                        if(params.methodEditing === 0){
+                        if(params.modeEditHistory === EDIT_METHOD.DELETE){
                             //case delete history => focus first history
                             self.listStateCorrelationHis(self.convertToList(data));
-                            self.currentSelectedHis(self.currentSelectedHis());
+                            self.currentSelectedHis(_.head(self.listStateCorrelationHis()).hisId);
                         }else{
                             //case update history => focus current history
                             self.listStateCorrelationHis(self.convertToList(data));
@@ -250,6 +256,8 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
                             });
                         }
+                        self.enableAddHisButton(true);
+                        self.enableEditHisButton(true);
 
                     });
                 }
@@ -321,6 +329,11 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return nts.uk.time.formatYearMonth(yearMonth);
         }
+    }
+
+    export enum EDIT_METHOD {
+        DELETE = 0,
+        UPDATE = 1
     }
 
 }

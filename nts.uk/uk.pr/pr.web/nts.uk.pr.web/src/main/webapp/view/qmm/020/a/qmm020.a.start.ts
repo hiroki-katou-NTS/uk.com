@@ -25,11 +25,12 @@ module nts.uk.pr.view.qmm020.a {
         viewmodelA.startPage().done((data)=>{
             viewmodelB.startPage().done(function() {
                 nts.uk.ui.errors.clearAll();
-
                 if(viewmodelB.mode()  === model.MODE.NO_REGIS){
                     viewmodelB.enableEditHisButton(false);
                     viewmodelB.enableAddHisButton(true);
                     viewmodelB.enableRegisterButton(false);
+                    viewmodelB.openScreenJ();
+
                 }else{
                     viewmodelB.enableEditHisButton(true);
                     viewmodelB.enableAddHisButton(true);
@@ -45,6 +46,7 @@ module nts.uk.pr.view.qmm020.a {
                         viewmodelB.enableEditHisButton(false);
                         viewmodelB.enableAddHisButton(true);
                         viewmodelB.enableRegisterButton(false);
+                        viewmodelB.openScreenJ();
                     }else{
                         viewmodelB.enableEditHisButton(true);
                         viewmodelB.enableAddHisButton(true);
