@@ -36,7 +36,7 @@
                 <div style="float: left;width: 335px;">
 
                     <div tabindex="-1" class="panel" style=" margin-top: 15px"
-                         data-bind="ntsPanel:{width: '280px', height: '470px',showIcon: true, direction: 'bottom', visible: true}">
+                         data-bind="ntsPanel:{width: '280px', height: '490px',showIcon: true, direction: 'bottom', visible: true}">
                         <!--A4_3 検索-->
                         <div tabindex="3" style="width: 280px"
                              data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',items: salaryPerUnitPriceNames, searchText: '検索', selected: salaryPerUnitPriceNamesSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
@@ -50,7 +50,7 @@
                                    name: '#[QMM042_3]',
                                    rows:17,
                                 width: 280,
-                                height: 420,
+                                rows: 18,
                                 dataSource: salaryPerUnitPriceNames,
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
@@ -90,9 +90,11 @@
                     <!--A4_4 基準年月-->
                     <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM042_7')}</div>
                     <!--A4_5 基準年月-->
-                    <div id="A4_5" tabindex="5" class="margin-left-item"
+                    <div style = "margin-left: 30px;">
+                    <div id="A4_5" tabindex="5"
                          data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"></div>
-                    <!--A4_6 抽出-->
+                    </div>
+                        <!--A4_6 抽出-->
                     <button tabindex="6" class="caret-bottom" data-bind="click: filterData,enable: $root.errors.isEmpty"
                             style="margin-left: 13px">#{i18n.getText('QMM042_8')}</button>
 

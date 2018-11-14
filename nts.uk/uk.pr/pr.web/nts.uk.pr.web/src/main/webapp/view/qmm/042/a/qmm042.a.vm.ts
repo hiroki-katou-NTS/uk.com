@@ -114,6 +114,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.employeeReferenceDate().done(function (data) {
+                self.yearMonthFilter(data.processDate);
                 self.reloadCcg001(data.paymentDate);
             });
 
