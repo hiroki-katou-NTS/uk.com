@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler<TerminateProcessExecutionCommand> {
 
@@ -44,7 +45,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	private ProcessExecutionLogHistRepository processExecutionLogHistRepo;
 
 	//終了ボタン押下時処理
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public void handle(CommandHandlerContext<TerminateProcessExecutionCommand> context) {
 		val asyncContext = context.asAsync();
