@@ -2,17 +2,14 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.LineByLineSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByCtg;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSetRepository;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtLineByLineSet;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtSettingByCtg;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtSettingByCtgPk;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutHist;
 
 import javax.ejb.Stateless;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,16 +51,9 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
     public void add(StatementLayoutSet domain){
         List<SettingByCtg> settingByCtgList = domain.getListSettingByCtg();
         for(SettingByCtg settingByCtg: settingByCtgList) {
-            List<QpbmtLineByLineSet> listLineByLineSet = new ArrayList<>();
-            for(LineByLineSetting line : settingByCtg.getListLineByLineSet()) {
-                listLineByLineSet.addAll(line.getListSetByItem().stream().map(i -> QpbmtLineByLineSet.toEntity(domain.getHistId(),
-                        settingByCtg.getCtgAtr().value, line.getPrintSet().value, line.getLineNumber(),i)).collect(Collectors.toList()));
-            }
+            QpbmtSettingByCtg settingByCtgEntity = QpbmtSettingByCtg.toEntity(domain.getHistId(), settingByCtg);
 
-            QpbmtSettingByCtg statementLayoutSet = new QpbmtSettingByCtg(new QpbmtSettingByCtgPk(domain.getHistId(),
-                    settingByCtg.getCtgAtr().value), listLineByLineSet);
-
-            this.commandProxy().insert(statementLayoutSet);
+            this.commandProxy().insert(settingByCtgEntity);
         }
     }
 

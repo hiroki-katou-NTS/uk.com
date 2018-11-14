@@ -3,14 +3,13 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.LineByLineSetting;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByCtg;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItem;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItemCustom;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 行別設定
@@ -33,34 +32,6 @@ public class QpbmtLineByLineSet extends UkJpaEntity implements Serializable {
     @Column(name = "PRINT_SET")
     public int printSet;
 
-    /**
-     * 終了日
-     */
-    @Basic(optional = false)
-    @Column(name = "ITEM_POSITION")
-    public int itemPosition;
-
-    // ????????????????????????????????????????????????????????????????
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumns({
-        @JoinColumn(name="ITEM_ID", referencedColumnName="ITEM_NAME_CD")
-    })
-    public QpbmtStatementItemName statementItemName;
-
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID"),
-            @JoinColumn(name="ITEM_ID", referencedColumnName="SALARY_ITEM_ID")
-    })
-    public QpbmtPayItemDetailSet payItemDetailSet;
-
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID"),
-            @JoinColumn(name="ITEM_ID", referencedColumnName="SALARY_ITEM_ID")
-    })
-    public QpbmtDdtItemDetailSet ddtItemDetailSet;
-
     @Override
     protected Object getKey() {
         return lineByLineSetPk;
@@ -70,23 +41,23 @@ public class QpbmtLineByLineSet extends UkJpaEntity implements Serializable {
         return lineByLineSetPk.lineNumber;
     }
 
-    public SettingByItemCustom toDomain() {
-        return new SettingByItemCustom(this.itemPosition, this.lineByLineSetPk.itemID, this.statementItemName.shortName,
-                this.ddtItemDetailSet == null ? null : this.ddtItemDetailSet.toDomain(),
-                this.payItemDetailSet == null ? null : this.payItemDetailSet.toDomain());
+    @JoinColumns({
+            @JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true),
+            @JoinColumn(name="CTG_ATR",referencedColumnName = "CTG_ATR", insertable = true, updatable = true),
+            @JoinColumn(name="CTG_ATR",referencedColumnName = "CTG_ATR", insertable = true, updatable = true)})
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    public List<QpbmtSettingByItem> settingByItems;
+
+    public LineByLineSetting toDomain() {
+        return new LineByLineSetting(this.printSet, this.lineByLineSetPk.lineNumber,
+                settingByItems.stream().map(entity -> entity.toDomain()).collect(Collectors.toList()));
     }
 
-    public static QpbmtLineByLineSet toEntity(String histId, int categoryAtr, int printSet, int lineNumber, SettingByItem settingByItem) {
-        QpbmtLineByLineSetPk lineByLineSetPk = new QpbmtLineByLineSetPk(histId, categoryAtr, lineNumber, settingByItem.getItemId());
-        QpbmtPayItemDetailSet payItemDetailSet = null;
-        QpbmtDdtItemDetailSet ddtItemDetailSet = null;
+    public static QpbmtLineByLineSet toEntity(String histId, int categoryAtr, LineByLineSetting lineByLineSetting) {
+        QpbmtLineByLineSetPk lineByLineSetPk = new QpbmtLineByLineSetPk(histId, categoryAtr, lineByLineSetting.getLineNumber());
 
-        if(settingByItem instanceof SettingByItemCustom) {
-            SettingByItemCustom settingByItemCustom = (SettingByItemCustom) settingByItem;
-            payItemDetailSet = settingByItemCustom.getPaymentItemDetailSet().map(i -> QpbmtPayItemDetailSet.toEntity(i)).orElse(null);
-            ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i)).orElse(null);
-        }
-
-        return new QpbmtLineByLineSet(lineByLineSetPk, printSet, settingByItem.getItemPosition(), null, payItemDetailSet, ddtItemDetailSet);
+        return new QpbmtLineByLineSet(lineByLineSetPk, lineByLineSetting.getPrintSet().value,
+                lineByLineSetting.getListSetByItem().stream().map(domain -> QpbmtSettingByItem.
+                        toEntity(histId, categoryAtr, lineByLineSetting.getLineNumber(), domain)).collect(Collectors.toList()));
     }
 }

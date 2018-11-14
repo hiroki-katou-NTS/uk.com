@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.LineByLineSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByCtg;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,8 +30,8 @@ public class QpbmtSettingByCtg extends UkJpaEntity implements Serializable
     public QpbmtSettingByCtgPk settingByCtgPk;
 
     @JoinColumns({
-            @JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true),
-            @JoinColumn(name="CTG_ATR",referencedColumnName = "CTG_ATR", insertable = true, updatable = true)})
+            @JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID"),
+            @JoinColumn(name="CTG_ATR",referencedColumnName = "CTG_ATR")})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<QpbmtLineByLineSet> listLineByLineSet;
 
@@ -47,20 +43,13 @@ public class QpbmtSettingByCtg extends UkJpaEntity implements Serializable
 
     public SettingByCtg toDomain() {
         CategoryAtr category = listLineByLineSet.isEmpty() ? null : EnumAdaptor.valueOf(listLineByLineSet.get(0).lineByLineSetPk.categoryAtr, CategoryAtr.class);
-        List<LineByLineSetting> listLineByLineSetDomain = new ArrayList<>();
-        Map<Integer, List<QpbmtLineByLineSet>> listItemGroupByLine = this.listLineByLineSet.stream().collect(Collectors.groupingBy(QpbmtLineByLineSet::getLine));
+        return new SettingByCtg(category, listLineByLineSet.stream().map(entity -> entity.toDomain()).collect(Collectors.toList()));
+    }
 
-        if(!listItemGroupByLine.isEmpty()) {
-            for (Map.Entry<Integer, List<QpbmtLineByLineSet>> entry : listItemGroupByLine.entrySet()) {
-                int line = entry.getKey();
-                List<QpbmtLineByLineSet> itemsInLine = entry.getValue();
-                int printSet = itemsInLine.get(0).printSet;
-                List<SettingByItem> listSetByItem = itemsInLine.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+    public static QpbmtSettingByCtg toEntity(String histId, SettingByCtg settingByCtg) {
+        QpbmtSettingByCtgPk pk = new QpbmtSettingByCtgPk(histId, settingByCtg.getCtgAtr().value);
 
-                listLineByLineSetDomain.add(new LineByLineSetting(printSet, line, listSetByItem));
-            }
-        }
-
-        return new SettingByCtg(category, listLineByLineSetDomain);
+        return new QpbmtSettingByCtg(pk, settingByCtg.getListLineByLineSet().stream().map(domain ->
+                QpbmtLineByLineSet.toEntity(histId, settingByCtg.getCtgAtr().value, domain)).collect(Collectors.toList()));
     }
 }

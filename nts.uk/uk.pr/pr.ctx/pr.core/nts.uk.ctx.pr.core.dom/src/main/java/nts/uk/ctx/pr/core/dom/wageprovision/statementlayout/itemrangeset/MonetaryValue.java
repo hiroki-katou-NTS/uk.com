@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.LongMinValue;
 /**
  * 金額値
  */
-@LongMinValue(0L)
+@LongMinValue(-9999999999L)
 @LongMaxValue(9999999999L)
 public class MonetaryValue extends LongPrimitiveValue<MonetaryValue>{
 

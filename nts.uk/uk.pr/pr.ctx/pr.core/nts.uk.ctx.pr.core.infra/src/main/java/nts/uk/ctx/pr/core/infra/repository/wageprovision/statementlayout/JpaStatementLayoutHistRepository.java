@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.YearMonthHistoryItemCustom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutHist;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutHistPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -102,15 +103,15 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
         String cid = entityList.get(0).statementLayoutHistPk.cid;
         String code = entityList.get(0).statementLayoutHistPk.statementCd;
         List<YearMonthHistoryItem> yearMonthHistoryItemList = entityList.stream().map(
-                i -> new YearMonthHistoryItem(i.statementLayoutHistPk.histId,
-                new YearMonthPeriod(new YearMonth(i.startYearMonth), new YearMonth(i.endYearMonth))))
+                i -> new YearMonthHistoryItemCustom(i.statementLayoutHistPk.histId,
+                new YearMonthPeriod(new YearMonth(i.startYearMonth), new YearMonth(i.endYearMonth)), i.layoutPattern))
                 .collect(Collectors.toList());
         return new StatementLayoutHist(cid, code, yearMonthHistoryItemList);
     }
 
     private YearMonthHistoryItem toYearMonthDomain(QpbmtStatementLayoutHist entity) {
-        return new YearMonthHistoryItem(entity.statementLayoutHistPk.histId,
-                new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)));
+        return new YearMonthHistoryItemCustom(entity.statementLayoutHistPk.histId,
+                new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth)), entity.layoutPattern);
     }
 
     private QpbmtStatementLayoutHist yearMonthToEntity(String cid, String code, YearMonthHistoryItem domain, int layoutPattern) {

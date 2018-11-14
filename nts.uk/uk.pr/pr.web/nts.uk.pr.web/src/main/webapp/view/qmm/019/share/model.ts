@@ -464,6 +464,7 @@ module nts.uk.pr.view.qmm019.share.model {
         startMonth: number;
         endMonth: number;
         historyId: string;
+        layoutPattern: number;
     }
 
     // 年月期間の汎用履歴項目
@@ -671,6 +672,27 @@ module nts.uk.pr.view.qmm019.share.model {
         ));
 
         return data;
+    }
+
+    export function getLayoutPatternText(e: StatementLayoutPattern): string {
+        switch (e) {
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
+                return getText('QMM019_33');
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
+                return getText('QMM019_34');
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
+                return getText('QMM019_35');
+            case StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
+                return getText('QMM019_36');
+            case StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON:
+                return getText('QMM019_37');
+            case StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                return getText('QMM019_38');
+            case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
+                return getText('QMM019_39');
+            default:
+                return "";
+        }
     }
 
     export class BoxModel {
