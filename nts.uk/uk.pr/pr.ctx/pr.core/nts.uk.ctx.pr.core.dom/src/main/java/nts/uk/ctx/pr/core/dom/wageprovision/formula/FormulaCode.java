@@ -7,7 +7,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 @StringCharType(CharType.NUMERIC)
-@StringMaxLength(4)
+@StringMaxLength(3)
 @ZeroPaddedCode
 public class FormulaCode extends CodePrimitiveValue<FormulaCode> {
 
