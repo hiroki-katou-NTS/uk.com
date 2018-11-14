@@ -9,6 +9,7 @@ public class StatementLayoutCommand {
     int isClone;
     String histIdNew;
     String histIdClone;
+    int layoutPatternClone;
     String statementCode;
     String statementName;
     int startDate;

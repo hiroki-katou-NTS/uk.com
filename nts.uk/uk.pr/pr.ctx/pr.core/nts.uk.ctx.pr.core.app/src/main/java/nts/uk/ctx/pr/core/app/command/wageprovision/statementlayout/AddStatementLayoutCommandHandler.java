@@ -18,7 +18,7 @@ public class AddStatementLayoutCommandHandler extends CommandHandler<StatementLa
     @Override
     protected void handle(CommandHandlerContext<StatementLayoutCommand> commandHandlerContext) {
         StatementLayoutCommand command = commandHandlerContext.getCommand();
-        statementLayoutService.addStatementLayout(command.getIsClone(), command.getHistIdNew(), command.getHistIdClone(),
+        statementLayoutService.addStatementLayout(command.getIsClone(), command.getHistIdNew(), command.getHistIdClone(), command.getLayoutPatternClone(),
                 command.getStatementCode(), command.getStatementName(), command.getStartDate(), command.getLayoutPattern());
     }
 }

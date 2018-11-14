@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.service;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.*;
@@ -67,9 +68,10 @@ public class StatementLayoutService {
                 itemNameCdFixedList, itemNameCdSelected, itemNameCdExcludeList);
     }
 
-    public void addStatementLayout(int isClone, String histIdNew, String histIdClone,
+    //新規作成実行処理
+    public void addStatementLayout(int isClone, String histIdNew, String histIdClone, int layoutPatternClone,
                                    String statementCode, String statementName, int startDate, int layoutPattern) {
-        validate(isClone, histIdNew, histIdClone, statementCode, statementName, startDate, layoutPattern);
+        validate(isClone, statementCode, layoutPatternClone, layoutPattern);
 
         String cid = AppContexts.user().companyId();
         StatementLayout statementLayout = new StatementLayout(cid, statementCode, statementName);
@@ -85,6 +87,7 @@ public class StatementLayoutService {
         }
     }
 
+    //新規に作成の場合
     private void addNewStatementLayoutSet(String histIdNew, int layoutPattern) {
         List<SettingByCtg> listSettingByCtg = new ArrayList<>();
 
@@ -140,6 +143,7 @@ public class StatementLayoutService {
         statementLayoutSetRepo.add(statementLayoutSet);
     }
 
+    //既存のレイアウトをコピーする場合
     private void cloneStatementLayoutSet(String histIdNew, String histIdClone) {
         Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(histIdClone);
 
@@ -173,8 +177,49 @@ public class StatementLayoutService {
         return new LineByLineSetting(StatementPrintAtr.PRINT.value, lineNumber, listSetByItem);
     }
 
-    private void validate(int isClone, String histIdNew, String histIdClone,
-                          String statementCode, String statementName, int startDate, int layoutPattern) {
+    //新規作成時チェック処理
+    private void validate(int isClone, String statementCode, int layoutPatternClone, int layoutPattern) {
+        String cid = AppContexts.user().companyId();
+        Optional<StatementLayout> statementLayoutOptional = statementLayoutRepo.getStatementLayoutById(cid, statementCode);
 
+        if(statementLayoutOptional.isPresent()) {
+            throw new BusinessException("Msg_3");
+        }
+
+        if((isClone == 0) || (layoutPatternClone == layoutPattern)) {
+            return;
+        }
+
+        if((layoutPatternClone == StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON.value) ||
+                (layoutPatternClone == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value)) {
+            throw new BusinessException("MsgQ_33");
+        }
+
+        int maxLineOfLayoutClone = getMaxLineOfLayoutPattern(layoutPatternClone);
+        int maxLineOfLayoutNew = getMaxLineOfLayoutPattern(layoutPattern);
+
+        if(maxLineOfLayoutClone > maxLineOfLayoutNew) throw new BusinessException("MsgQ_33");
+    }
+
+    private int getMaxLineOfLayoutPattern(int layoutPattern) {
+        StatementLayoutPattern layoutPatternEnum = EnumAdaptor.valueOf(layoutPattern, StatementLayoutPattern.class);
+        switch (layoutPatternEnum) {
+            case LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
+                return 30;
+            case LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
+                return 17;
+            case LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
+                return 10;
+            case LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
+                return 10;
+            case LASER_CRIMP_PORTRAIT_ONE_PERSON:
+                return 11111111;
+            case LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                return 17;
+            case DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
+                return 11111111;
+            default:
+                return 0;
+        }
     }
 }

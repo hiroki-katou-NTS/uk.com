@@ -90,9 +90,8 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             block.invisible();
 
             let histIdNew = nts.uk.util.randomId();
-            let layoutPattern = self.isClone() == 0 ? self.layoutPatternSelected() : self.layoutPatternClone();
-            let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew,
-                    self.histIdClone(), self.statementCode(), self.statementName(), self.startDate(), layoutPattern);
+            let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
+                    self.layoutPatternClone(), self.statementCode(), self.statementName(), self.startDate(), self.layoutPatternSelected());
 
             $("#B1_6").trigger("validate");
             if(!nts.uk.ui.errors.hasError()) {
@@ -115,16 +114,18 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
         isClone: number;
         histIdNew: string;
         histIdClone: string;
+        layoutPatternClone: number;
         statementCode: string;
         statementName: string;
         startDate: number;
         layoutPattern: number;
 
-        constructor(isClone: number, histIdNew: string, histIdClone: string,
+        constructor(isClone: number, histIdNew: string, histIdClone: string, layoutPatternClone: number,
                     statementCode: string, statementName: string, startDate: number, layoutPattern: number) {
             this.isClone = isClone;
             this.histIdNew = histIdNew;
             this.histIdClone = histIdClone;
+            this.layoutPatternClone = layoutPatternClone;
             this.statementCode = statementCode;
             this.statementName = statementName;
             this.startDate = startDate;
