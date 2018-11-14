@@ -72,6 +72,23 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.itemList.subscribe(function (newValue) {
                 if (newValue.length > 0) {
                     self.isEditableHis(true);
+                    switch (self.itemClas()) {
+                        case ITEM_CLASS.SALARY_SUPLY:
+                            self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
+                            break;
+                        case ITEM_CLASS.SALARY_DEDUCTION:
+                            self.itemClassLabel(format(getText('QMM039_21'), '給与控除'));
+                            break;
+                        case ITEM_CLASS.BONUS_SUPLY:
+                            self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
+                            break;
+                        case ITEM_CLASS.BONUS_DEDUCTION:
+                            self.itemClassLabel(format(getText('QMM039_21'), '賞与控除'));
+                            break;
+                        default:
+                            self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
+                            break;
+                    }
                 } else {
                     self.isEditableHis(false);
                     self.itemClassLabel('');
@@ -92,6 +109,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 if (index != -1) {
                     self.individualPriceCode(self.dataSource()[index].code);
                     self.individualPriceName(self.dataSource()[index].name);
+                    self.individualPriceCodeLabel(self.dataSource()[index].code);
+                    self.individualPriceNameLabel(self.dataSource()[index].name);
                     self.historyProcess(self.dataSource()[index].code, 0);
                 }
                 self.selectedHisCode(0);
@@ -200,7 +219,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.itemClas(ITEM_CLASS.SALARY_SUPLY);
                     self.itemClassLabel(format(getText('QMM039_21'), '給与支給'));
                     $('#emp-component').focus();
-                    $('')
                     break;
                 case ITEM_CLASS.SALARY_DEDUCTION:
                     self.classificationCategory(PERVALUECATECLS.DEDUCTION);
@@ -221,7 +239,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.changeItemClass(PERVALUECATECLS.SUPPLY);
                     self.itemClas(ITEM_CLASS.BONUS_SUPLY);
-                    if(self.mode() != MODE.HISTORY_UNREGISTERED) {
+                    if (self.mode() != MODE.HISTORY_UNREGISTERED) {
                         self.itemClassLabel(format(getText('QMM039_21'), '賞与支給'));
                     } else {
                         self.itemClassLabel('');
@@ -270,6 +288,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.singleSelectedCode(data[0].individualPriceCode);
                     self.individualPriceName(data[0].individualPriceName);
                     self.individualPriceCode(data[0].individualPriceCode);
+                    self.individualPriceNameLabel(data[0].individualPriceName);
+                    self.individualPriceCodeLabel(data[0].individualPriceCode);
                     self.historyProcess(data[0].individualPriceCode, 0);
                 } else {
                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
@@ -278,6 +298,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.singleSelectedCode(null);
                     self.individualPriceCode('');
                     self.individualPriceName('');
+                    self.individualPriceCodeLabel('');
+                    self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
                     self.currencyeditor.value(0);
