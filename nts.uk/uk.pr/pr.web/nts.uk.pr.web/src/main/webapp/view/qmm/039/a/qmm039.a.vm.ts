@@ -98,7 +98,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value(0);
+                    self.currencyeditor.value('');
                 }
             });
             self.focusStartPage = true;
@@ -141,7 +141,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
             });
             self.currencyeditor = {
-                value: ko.observable(0),
+                value: ko.observable(''),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
@@ -294,7 +294,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value(0);
+                    self.currencyeditor.value('');
                     self.mode(MODE.HISTORY_UNREGISTERED);
                     self.isAddableHis(false);
                 }
@@ -341,7 +341,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodStartYM(null);
                     self.periodEndYM(null);
                     self.isRegistrationable(false);
-                    self.currencyeditor.value(0);
+                    self.currencyeditor.value('');
                     self.currencyeditor.enable(false);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                 }
@@ -500,7 +500,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodEndYM(params.periodEndYm);
 
                     if (params.takeoverMethod == 1) {
-                        self.currencyeditor.value(0);
+                        self.currencyeditor.value('');
                     } else {
                         self.currencyeditor.value(parseInt(self.itemList()[0].amount));
                     }
@@ -592,7 +592,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 salBonusCate: self.salaryBonusCategory()
             }
             setShared("QMM039_D_PARAMS", params);
-            modal('/view/qmm/039/d/index.xhtml', {title: '',}).onClosed(function (): any {
+            modal('/view/qmm/039/d/index.xhtml').onClosed(() => {
 
             });
         }
@@ -604,7 +604,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             if (self.mode() == MODE.NORMAL) {
                 let command = {
                     historyId: self.selectedHis().historyID,
-                    amountOfMoney: parseInt(self.currencyeditor.value())
+                    amountOfMoney: self.currencyeditor.value() == '' ? 0 : parseInt(self.currencyeditor.value())
                 }
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
@@ -630,7 +630,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     },
                     salIndAmountCommand: {
                         historyId: historyId,
-                        amountOfMoney: parseInt(self.currencyeditor.value())
+                        amountOfMoney: self.currencyeditor.value() == '' ? 0 : parseInt(self.currencyeditor.value())
                     },
                     oldHistoryId: null,
                     newEndMonthOfOldHistory: null
