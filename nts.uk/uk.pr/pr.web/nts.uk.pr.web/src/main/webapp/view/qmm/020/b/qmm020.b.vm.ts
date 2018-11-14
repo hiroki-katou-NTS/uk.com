@@ -149,6 +149,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                             self.currentSelectedHis(self.currentSelectedHis());
                         }
                     });
+                    self.mode(model.MODE.UPDATE);
                     self.newHistoryId(null);
                     self.enableEditHisButton(true);
                     self.enableAddHisButton(true);
