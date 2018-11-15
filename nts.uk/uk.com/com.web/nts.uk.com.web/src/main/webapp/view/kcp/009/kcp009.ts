@@ -304,7 +304,7 @@ module kcp009.viewmodel {
                         existItem.workplaceName : existItem.depName);
                 } else {
                     let newEmpList: Array<EmployeeModel> = [];
-                    newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName });
+                    newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName, workplaceName: employee.wkpDisplayName, depName: employee.deptDisplayName });
                     self.empList(newEmpList);
                     // Set Selected Item
                     self.selectedItem(employee.employeeId);
@@ -397,6 +397,7 @@ module kcp009.viewmodel {
                 employeeCode: string;
                 businessName: string;
                 wkpDisplayName: string;
+                deptDisplayName: string;
             }
         }
     }
