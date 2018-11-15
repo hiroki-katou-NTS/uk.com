@@ -56,7 +56,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         date: KnockoutObservable<string>;
         value: KnockoutObservable<number>;
         currencyeditor: any;
-
         columns: any;
 
         constructor() {
@@ -114,7 +113,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.historyProcess(self.dataSource()[index].code, 0);
                 }
                 self.selectedHisCode(0);
-
+            });
+            self.selectedItem.subscribe((newValue) => {
+                // nts.uk.ui.block.invisible();
+                self.historyProcess(self.individualPriceCode(), 0);
+                if (self.itemList().length > 0) {
+                    self.selectedHisCode(0);
+                }
+                // nts.uk.ui.block.clear();
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
@@ -137,8 +143,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
                     self.mode(MODE.NORMAL);
                 }
-
-
             });
             self.currencyeditor = {
                 value: ko.observable(''),
@@ -202,7 +206,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
 
             }
-            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
+
 
         }
 
@@ -372,14 +376,24 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             let dfd = $.Deferred();
             service.getInfoEmLogin().done(function (emp) {
                 service.getWpName().done(function (wp) {
-                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
-                    } else {
-                        self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
-                        self.initKCP009();
-                        dfd.resolve();
-                    }
-                    self.onSelectTab(ITEM_CLASS.SALARY_SUPLY);
+                    service.getBaseDate().done((baseDate) => {
+                        if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
+                        } else {
+
+                            self.employeeInputList.push(new EmployeeKcp009(emp.sid,
+                                emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                            self.initKCP009();
+                            if (baseDate) {
+                                self.ccgcomponent.baseDate = baseDate;
+                            }
+                            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
+                            dfd.resolve();
+
+                        }
+                        self.onSelectTab(ITEM_CLASS.SALARY_SUPLY);
+                    }).fail((res) => {
+                        dfd.reject();
+                    });
                 }).fail(function (result) {
                     dfd.reject();
                 });
