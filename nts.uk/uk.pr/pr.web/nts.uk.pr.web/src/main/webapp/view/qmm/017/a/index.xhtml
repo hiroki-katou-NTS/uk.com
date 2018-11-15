@@ -86,7 +86,7 @@
                 <div id="tab-panel"
                      data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
                      style="width: 850px; margin-bottom: 20px;">
-                    <div class="tab-content-1" tabindex="10" data-bind="with: selectedFormula">
+                    <div class="tab-content-1" data-bind="with: selectedFormula">
                         <div class="tab-row">
                             <!--A3_1-->
                             <div class="label warning">#{i18n.getText('QMM017_11')}</div>
@@ -99,7 +99,7 @@
                             <input tabindex="11"
                                    data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 1}"/>
                             <!--A3_4-->
-                            <input tabindex="12"
+                            <input tabindex="12" id ="A3_4"
                                    data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName'}"/>
                         </div>
                         <div class="tab-row" data-bind="with: $vm.selectedHistory">
@@ -201,7 +201,7 @@
                             </div>
                         </div>
                     </div>
-                    <div tabindex="10" class="tab-content-2">
+                    <div  class="tab-content-2">
                         <div data-bind="visible: selectedFormula().settingMethod() == 0">
                             <div data-bind="visible: basicFormulaSetting().masterBranchUse() == 1">
                                 <ui:include src="../b/index.xhtml"/>

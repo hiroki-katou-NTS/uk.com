@@ -39,6 +39,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.initTabPanel();
             self.initComponents();
             self.doFirstFocus();
+            self.doScreenDFocus();
             self.screenMode.subscribe(newValue => {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
@@ -82,15 +83,44 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         doFirstFocus () {
             let self = this;
             self.selectedTab.subscribe(newTab => {
+                let itemToBeFocus = "";
                 if (newTab == 'tab-2') {
                     if (self.selectedFormula().settingMethod() == 0) {
-                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) $('#B1_4').focus();
-                        else $('#C2_7').focus();
+                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE){
+                            itemToBeFocus = '#B1_4';
+                        } else {
+                            itemToBeFocus = '#C2_7';
+                        }
                     }
                     if (self.selectedFormula().settingMethod() == 1) {
-                        // NO FOCUS
+                        itemToBeFocus = '#D1_4';
                     }
+                } else {
+                    itemToBeFocus = '#A3_4';
                 }
+
+                setTimeout(function(){
+                    $(itemToBeFocus).focus();
+                }, 100)
+            })
+        }
+
+        doScreenDFocus () {
+            let self = this;
+            self.screenDSelectedTab.subscribe(newTab => {
+                let itemToBeFocus = "";
+                switch (newTab) {
+                    case 'tab-1': {itemToBeFocus = '#D2_5'; break}
+                    case 'tab-2': {itemToBeFocus = '#D5_5'; break}
+                    case 'tab-3': {itemToBeFocus = '#D6_5'; break}
+                    case 'tab-4': {itemToBeFocus = '#D7_5'; break}
+                    case 'tab-5': {itemToBeFocus = '#D8_5'; break}
+                    case 'tab-6': {itemToBeFocus = '#D9_5'; break}
+                    case 'tab-7': {itemToBeFocus = '#D10_5'; break}
+                }
+                setTimeout(function(){
+                    $(itemToBeFocus).focus();
+                }, 100)
             })
         }
 
@@ -363,10 +393,21 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             });
         };
+        doMasterConfiguration () {
+            let self = this;
+            let self = this;
+            // unknown which item to be affect. temporary not link b to e
+            setShared("QMM017_E_PARAMS", {originalScreen: 'B'});
+            modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
+
+            });
+
+        };
         doConfiguration () {
             let self = this;
             let self = this;
-            setShared("QMM017_E_PARAMS", {});
+            // unknown which item to be affect. temporary not link b to e
+            setShared("QMM017_E_PARAMS", {originalScreen: 'C', basicCalculationFormula: this});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
 
             });

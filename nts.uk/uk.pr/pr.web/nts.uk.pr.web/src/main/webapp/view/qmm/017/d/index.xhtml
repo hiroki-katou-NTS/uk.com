@@ -15,7 +15,7 @@
         </div>
         <div data-bind = "with: screenDViewModel">
             <!--D1_4-->
-            <div id="tab-panel-screen-d" class="tab-row" data-bind="ntsTabPanel: {dataSource:  $vm.screenDTabs, active: $vm.screenDSelectedTab}">
+            <div id="D1_4" class="tab-row" data-bind="ntsTabPanel: {dataSource:  $vm.screenDTabs, active: $vm.screenDSelectedTab}">
                 <div class="tab-content-1">
                     <div class="tab-panel-row">
                         <div class="tab-panel-col-1" id="D2_1" data-bind="ntsListBox: {
@@ -39,13 +39,13 @@
                                 <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'itemNameCd',
-                            comId: 'D2_3',
+                            comId: 'D2_5',
                             items: statementItemList,
                             selectedKey: 'code',
                             fields: ['itemNameCd', 'name'],
                             mode: 'listbox'}"></div>
                             </div>
-                            <div id="D2_3" data-bind="ntsListBox: {
+                            <div id="D2_5" data-bind="ntsListBox: {
                             options: statementItemList,
                             optionsValue: 'itemNameCd',
                             optionsText: 'name',
@@ -93,13 +93,13 @@
                                 <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'code',
-                            comId: 'D5_3',
+                            comId: 'D5_5',
                             items: unitPriceItemList,
                             selectedKey: 'code',
                             fields: ['code', 'name'],
                             mode: 'listbox'}"></div>
                             </div>
-                            <div id="D5_3" data-bind="ntsListBox: {
+                            <div id="D5_5" data-bind="ntsListBox: {
                             options: unitPriceItemList,
                             optionsValue: 'code',
                             optionsText: 'name',
@@ -147,13 +147,13 @@
                                 <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'value',
-                            comId: 'D6_3',
+                            comId: 'D6_5',
                             items: functionListItem,
                             selectedKey: 'value',
                             fields: ['name'],
                             mode: 'listbox'}"></div>
                             </div>
-                            <div id="D6_3" data-bind="ntsListBox: {
+                            <div id="D6_5" data-bind="ntsListBox: {
                             options: functionListItem,
                             optionsValue: 'value',
                             optionsText: 'name',
@@ -201,13 +201,13 @@
                                 <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'value',
-                            comId: 'D7_3',
+                            comId: 'D7_5',
                             items: systemVariableListItem,
                             selectedKey: 'value',
                             fields: ['name'],
                             mode: 'listbox'}"></div>
                             </div>
-                            <div id="D7_3" data-bind="ntsListBox: {
+                            <div id="D7_5" data-bind="ntsListBox: {
                             options: systemVariableListItem,
                             optionsValue: 'value',
                             optionsText: 'name',
@@ -258,13 +258,13 @@
                                 <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'formulaCode',
-                            comId: 'D9_3',
+                            comId: 'D9_5',
                             items: formulaList,
                             selectedKey: 'formulaCode',
                             fields: ['formulaCode', 'formulaName'],
                             mode: 'listbox'}"></div>
                             </div>
-                            <div id="D9_3" data-bind="ntsListBox: {
+                            <div id="D9_5" data-bind="ntsListBox: {
                             options: formulaList,
                             optionsValue: 'formulaCode',
                             optionsText: 'formulaName',
@@ -308,15 +308,16 @@
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
                                 <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'wageTableCode',
-                            comId: 'D10_3',
-                            items: wageTableList,
-                            selectedKey: 'wageTableCode',
-                            fields: ['wageTableCode', 'wageTableName'],
-                            mode: 'listbox'}"></div>
+                                    searchMode: 'highlight',
+                                    targetKey: 'wageTableCode',
+                                    comId: 'D10_5',
+                                    items: wageTableList,
+                                    selectedKey: 'wageTableCode',
+                                    fields: ['wageTableCode', 'wageTableName'],
+                                    mode: 'listbox'}">
+                                </div>
                             </div>
-                            <div id="D10_3" data-bind="ntsListBox: {
+                            <div id="D10_5" data-bind="ntsListBox: {
                             options: wageTableList,
                             optionsValue: 'wageTableCode',
                             optionsText: 'wageTableName',

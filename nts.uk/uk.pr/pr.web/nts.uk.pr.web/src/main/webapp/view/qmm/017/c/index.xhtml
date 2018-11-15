@@ -109,7 +109,7 @@
                         </div>
                         <div data-bind = "visible: calculationFormulaClassification() == 1">
                             <!--C3_11-->
-                            <button tabindex="8">#{i18n.getText('QMM017_34')}</button>
+                            <button data-bind = "click: $vm.doConfiguration" tabindex="8">#{i18n.getText('QMM017_34')}</button>
                             <!--C3_12-->
                             <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
                         </div>

@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 325, height: 545 };</script>
+        <script>var dialogSize = { width: 400, height: 600 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm017.f.service.js" />
@@ -17,10 +17,33 @@
     </ui:define>
     <ui:define name="content">
         <div class="contents-area">
-
+            <div style="margin-left: 20px;">
+                <!--E1-1; E1_2; E1_13-->
+                <div class="dialog-first-element">
+                    <div style = "width: 350px;">#{i18n.getText('QMM017_126')}</div>
+                </div>
+                <div style = "margin-top: 10px;">
+                    <!--mix of 3 case-->
+                    <table tabindex="1" id ="item"
+                           data-bind="ntsGridList: {
+                            rows: 15,
+                            name: '#[QMM017_135]',
+                            options: targetItemCodeListItem,
+                            optionsValue: 'code',
+                            columns: [
+								{ headerText: '#{i18n.getText('QMM017_128')}', key: 'code', width: 60, formatter: _.escape},
+								{ headerText: '#{i18n.getText('QMM017_99')}', key: 'name', width: 230, formatter: _.escape }
+							],
+                            multiple: true,
+                            value: targetItemCodeList
+                        }"></table>
+                </div>
+            </div>
         </div>
         <div id="functions-area-bottom">
-
+            <button tabindex ="2" class="x-large proceed "
+                    data-bind="click: decideChangeItemList, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_107')}</button>
+            <button tabindex ="3" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
         </div>
     </ui:define>
 

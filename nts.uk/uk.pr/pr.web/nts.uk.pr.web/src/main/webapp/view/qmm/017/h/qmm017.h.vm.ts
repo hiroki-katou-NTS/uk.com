@@ -38,6 +38,7 @@ module nts.uk.pr.view.qmm017.h.viewmodel {
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
             }
             block.clear();
+            setTimeout(function(){$('#H1_6').focus()}, 100);
         }
         addNewHistory() {
             let self = this;

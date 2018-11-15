@@ -22,21 +22,21 @@
     </ui:define>
     <ui:define name="content">
         <div id="contents-area" style="padding-top: 0px;">
-            <div style="margin-left: 20px;" data-bind="with: basicCalulcationFormula">
+            <div style="margin-left: 20px;" data-bind="with: basicCalculationFormula">
                 <!--E1-1; E1_2; E1_13-->
                 <div class="dialog-first-element">
                     <div>#{i18n.getText('QMM017_166')}</div>
-                    <div style="margin-left: 30px;">#{i18n.getText('QMM017_167')}</div>
-                    <div>UNDEFINED</div>
+                    <div data-bind = "visible: $vm.isShowConditionItem" style="margin-left: 30px;">#{i18n.getText('QMM017_167')}</div>
+                    <div data-bind = "text: $vm.conditionItemName, visible: $vm.isShowConditionItem"></div>
                     <hr></hr>
                 </div>
-                <div style="margin-top: 20px; min-width: 550px">
+                <div style="margin-top: 10px; min-width: 550px">
                     <!--E1_4-->
                     <div style="width: 130px; display: inline-block;"
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_101')}</div>
                     <!--E1_5-->
-                    <div id ="E5_1" style="display: inline-block; vertical-align: middle">
-                        <div tabindex = "2" data-bind="ntsComboBox: {
+                    <div style="display: inline-block; vertical-align: middle">
+                        <div id ="E5_1"  tabindex = "2" data-bind="ntsComboBox: {
                             name: '#[QMM017_102]',
                             options: formulaTypeItem,
                             optionsValue: 'value',
@@ -77,21 +77,21 @@
                             <div style = "margin-left: 115px;">
                                 <!--E3_4; E2_5-->
                                 <div data-bind = "visible: standardAmountClassification() != 0">
-                                    <button tabindex = "4">#{i18n.getText('QMM017_107')}</button>
+                                    <button data-bind = "click: function(){$vm.selectTargetItem()}" tabindex = "4">#{i18n.getText('QMM017_107')}</button>
                                     <input data-bind="ntsNumberEditor: {
                                 value: $vm.baseAmountTargetItem,
                                 enable: false}" />
                                 </div>
                                 <!--E2_5-->
-                                <div data-bind = "visible: standardAmountClassification() == 0">
+                                <div style = "height: 33px;"  data-bind = "visible: standardAmountClassification() == 0">
                                     <input tabindex="5" data-bind="ntsNumberEditor: {
-                                value: standardFixedValue,
-                                constraint: 'BasePriceFixedAmount',
-                                name: '#[QMM017_108]',
-                                required: true}" />
+                                        value: standardFixedValue,
+                                        constraint: 'BasePriceFixedAmount',
+                                        name: '#[QMM017_108]',
+                                        required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; " data-bind = "visible: formulaType() == 2">
+                            <div style="margin-top: 10px;" data-bind = "visible: formulaType() == 2">
                                 <!--E3_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_110')}</div>

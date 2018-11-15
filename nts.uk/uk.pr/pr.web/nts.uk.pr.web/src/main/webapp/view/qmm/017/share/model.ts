@@ -649,7 +649,7 @@ module nts.uk.pr.view.qmm017.share.model {
         basicCalculationFormula: KnockoutObservable<number> = ko.observable(null);
         standardAmountClassification: KnockoutObservable<number> = ko.observable(null);
         standardFixedValue: KnockoutObservable<number> = ko.observable(null);
-        targetItemCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
+        targetItemCodeList: Array<string> = [];
         attendanceItem: KnockoutObservable<string> = ko.observable(null);
         coefficientClassification: KnockoutObservable<number> = ko.observable(null);
         coefficientFixedValue: KnockoutObservable<number> = ko.observable(null);
@@ -685,13 +685,13 @@ module nts.uk.pr.view.qmm017.share.model {
             this.formulaType(params ? params.formulaType : FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1);
             this.standardAmountClassification(params ? params.standardAmountClassification : null);
             this.standardFixedValue(params ? params.standardFixedValue : null);
-            this.targetItemCodeList(params ? params.targetItemCodeList : []);
             this.baseItemClassification(params ? params.baseItemClassification : null);
             this.baseItemFixedValue(params ? params.baseItemFixedValue : null);
             this.attendanceItem(params ? params.attendanceItem : null);
             this.coefficientClassification(params ? params.coefficientClassification : null);
             this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
             this.historyID(params ? params.historyID : null);
+            this.targetItemCodeList = params ? params.targetItemCodeList : [];
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
             }, this);
