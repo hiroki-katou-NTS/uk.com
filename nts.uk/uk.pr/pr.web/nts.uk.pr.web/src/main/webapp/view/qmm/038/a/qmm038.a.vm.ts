@@ -72,7 +72,11 @@ module nts.uk.pr.view.qmm038.a {
                             self.statementItems = [];
                             self.statementItems = _.sortBy(response, ["employeeCode"]);
                             $("#gridStatement").ntsGrid("destroy");
-                            self.loadGrid();
+                            if(self.statementItems.length == 1) {
+                                self.loadGridLimit();
+                            } else {
+                                self.loadGrid();
+                            }
                             block.clear();
                         });
 
@@ -83,6 +87,45 @@ module nts.uk.pr.view.qmm038.a {
                 $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
                 self.loadGrid();
             }
+
+            loadGridLimit(){
+                let self = this;
+                $("#gridStatement").ntsGrid({
+                    width: '807px',
+                    height: '141px',
+                    dataSource: self.statementItems,
+                    primaryKey: 'employeeCode',
+                    virtualization: true,
+                    virtualizationMode: 'continuous',
+                    columns: [
+                        {headerText: getText("QMM038_7"), key: 'employeeCode', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_8"), key: 'businessName', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_9"), key: 'departmentName', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_10"), key: 'employmentName', dataType: 'string', width: '150px'},
+                        {
+                            headerText: getText("QMM038_11"), key: 'averageWage', dataType: 'string', width: '207px',
+                            ntsControl: 'TextEditor'
+                        }
+                    ],
+                    features: [
+                        {
+                            name: 'Selection',
+                            mode: 'row',
+                            multipleSelection: false
+                        },
+                        {
+                            name: 'Paging',
+                            pageSize: 20,
+                            currentPageIndex: 0
+                        }
+
+                    ],
+                    ntsControls: [
+                        {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}}
+                    ]
+                });
+            }
+
 
             loadGrid(){
                 let self = this;
