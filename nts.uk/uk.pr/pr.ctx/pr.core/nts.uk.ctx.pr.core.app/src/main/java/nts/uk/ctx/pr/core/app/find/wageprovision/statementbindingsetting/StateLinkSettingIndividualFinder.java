@@ -25,11 +25,6 @@ public class StateLinkSettingIndividualFinder {
     @Inject
     private StatementLayoutRepository statementLayout;
 
-    public List<StateLinkSettingIndividualDto> getAllStateLinkSettingIndividual(){
-        return stateLinkSettingIndividual.getAllStateLinkSettingIndividual().stream().map(item -> StateLinkSettingIndividualDto.fromDomain(item))
-                .collect(Collectors.toList());
-    }
-
     public StateLinkSettingIndividualDto  getStatementLinkingSetting(String empId, int start){
         Optional<StateLinkSettingIndividual> statementLinkingSetting = stateLinkSettingIndividual.getStateLinkSettingIndividualById(empId);
         if(!statementLinkingSetting.isPresent()) {
@@ -39,7 +34,5 @@ public class StateLinkSettingIndividualFinder {
         List<StatementLayout> listStatementLayout = statementLayout.getStatement(cId, start);
         return StateLinkSettingIndividualDto.fromDomain(statementLinkingSetting.get(), listStatementLayout);
     }
-
-
 
 }

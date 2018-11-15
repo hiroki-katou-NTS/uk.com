@@ -16,12 +16,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class JpaStateCorrelationHisIndividualRepository extends JpaRepository implements StateCorrelationHisIndividualRepository
-{
+public class JpaStateCorrelationHisIndividualRepository extends JpaRepository implements StateCorrelationHisIndividualRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisIndi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId AND  f.stateCorHisIndiPk.hisId =:hisId ";
-
+    private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId ";
 
     @Override
     public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId, String hisId){
@@ -33,8 +32,11 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     }
 
     @Override
-    public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId) {
-        return Optional.empty();
+    public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualByEmpId(String empId) {
+        List<QpbmtStateCorHisIndi> listStateCorHisIndi = this.queryProxy().query(SELECT_BY_EMP_ID, QpbmtStateCorHisIndi.class)
+                .setParameter("empId", empId)
+                .getList();
+        return this.toDomain(listStateCorHisIndi);
     }
 
     @Override

@@ -25,12 +25,7 @@ public class StateLinkSettingIndividualDto {
     private String bonusName;
 
     private String bonusCode;
-    
-    
-    public static StateLinkSettingIndividualDto fromDomain(StateLinkSettingIndividual domain) {
-      // return new StateLinkSettingIndividualDto(domain.get(), domain.get(), domain.get());
-        return null;
-    }
+
 
     public static StateLinkSettingIndividualDto fromDomain(StateLinkSettingIndividual domain, List<StatementLayout> listStatementLayout) {
         Optional<StatementLayout> tempSalary = listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getSalaryCode().get().v())).findFirst();

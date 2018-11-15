@@ -28,7 +28,7 @@ public class StateCorrelationHisIndividualFinder {
     private StateLinkSettingIndividualRepository stateLinkSettingIndividual;
 
     public List<StateCorrelationHisIndividualDto> getLinkingHistoryIndividual(String emplId){
-        Optional<StateCorrelationHisIndividual>  stateCorrelationHisIndividual = finderHisIndividual.getStateCorrelationHisIndividualById(emplId);
+        Optional<StateCorrelationHisIndividual>  stateCorrelationHisIndividual = finderHisIndividual.getStateCorrelationHisIndividualByEmpId(emplId);
         if(!stateCorrelationHisIndividual.isPresent()) {
             return null;
         }

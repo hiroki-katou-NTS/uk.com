@@ -7,11 +7,19 @@ import nts.arc.time.GeneralDateTime;
 @Value
 public class StateLinkSettingIndividualCommand {
 
+    private String empId;
+
     private String hisId;
 
-    private Integer startYearMonth;
+    private String salary;
 
-    private Integer endYearMonth;
+    private String bonus;
+
+    private Integer start;
+
+    private Integer end;
+
+    private int mode;
     
 
 }

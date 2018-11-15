@@ -3,7 +3,7 @@
 
             <span class = "title">#{i18n.getText('QMM020_5')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
+                    data-bind="click: registerHisIndividual, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_1')}</button>
 
             <button id="A1_2" tabindex="2"
                     data-bind=" enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
@@ -55,7 +55,7 @@
             <div class="control-group" style="margin-top: 20px;">
                 <div data-bind="ntsFormLabel: {}">
                     <span class="label">#{i18n.getText('QMM020_20')}</span>
-                    <button style="margin-left: 15px;" data-bind=" ">#{i18n.getText('QMM020_21')}</button>
+                    <button style="margin-left: 15px;" data-bind="click: selectSalary ">#{i18n.getText('QMM020_21')}</button>
                     <span style="margin-left: 20px;" data-bind="text: salaryCode"></span>
                     <span style="margin-left: 10px;" data-bind="text: salaryName"></span>
                 </div>
@@ -64,7 +64,7 @@
             <div class="control-group" style="margin-top: 15px;">
                 <div data-bind="ntsFormLabel: {}">
                     <span class="label">#{i18n.getText('QMM020_20')}</span>
-                    <button style="margin-left: 15px;" data-bind=" ">#{i18n.getText('QMM020_21')}</button>
+                    <button style="margin-left: 15px;" data-bind=" click: selectBonus">#{i18n.getText('QMM020_21')}</button>
                     <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
                     <span style="margin-left: 10px;" data-bind="text: bonusName"></span>
                 </div>
