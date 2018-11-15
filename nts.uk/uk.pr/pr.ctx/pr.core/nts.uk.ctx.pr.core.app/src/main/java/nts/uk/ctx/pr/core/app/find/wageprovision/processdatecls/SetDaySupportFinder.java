@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.*;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,13 +42,13 @@ public class SetDaySupportFinder {
         return SetDaySupportDto.fromDomain(setDaySupportRepository.getSetDaySupportByIdAndProcessDate(cid,processCateNo,processDate).orElse(null));
     }
 
-    public SetDaySupportDto getEmployeeExtractionReferenceDateByCidAndUid() {
+    public SetDaySupportDto getEmployeeExtractionReferenceDateByUIdAndCId() {
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
-        Optional<PerProcessClsSet> perProcessClsSet = perProcessClsSetRepository.getPerProcessClsSetByUIDAndCID(cid, uid);
+        Optional<PerProcessClsSet> perProcessClsSet = perProcessClsSetRepository.getPerProcessClsSetByUIDAndCID(uid, cid);
         int processCateNo = perProcessClsSet.map(PerProcessClsSet::getProcessCateNo).orElse(1);
         Optional<CurrProcessDate> currProcessDate = currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(cid, processCateNo);
-        int processDate = currProcessDate.isPresent() ? currProcessDate.get().getGiveCurrTreatYear().v() : 0;
+        int processDate = currProcessDate.map(currProcessDate1 -> currProcessDate1.getGiveCurrTreatYear().v()).orElseGet(() -> GeneralDate.today().yearMonth().v());
         Optional<SetDaySupport> setDaySupport = setDaySupportRepository.getSetDaySupportByIdAndProcessDate(cid, processCateNo, processDate);
         return setDaySupport.map(SetDaySupportDto::fromDomain).orElse(null);
     }

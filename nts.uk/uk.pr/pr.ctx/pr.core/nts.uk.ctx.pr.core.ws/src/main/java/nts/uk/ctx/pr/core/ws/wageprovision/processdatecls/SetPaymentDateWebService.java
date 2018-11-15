@@ -82,6 +82,6 @@ public class SetPaymentDateWebService extends WebService {
     @POST
     @Path("getBaseDate")
     public GeneralDate getBaseDate() {
-        return setDaySupportFinder.getEmployeeExtractionReferenceDateByCidAndUid().getEmpExtraRefeDate();
+        return setDaySupportFinder.getEmployeeExtractionReferenceDateByUIdAndCId().getEmpExtraRefeDate();
     }
 }
