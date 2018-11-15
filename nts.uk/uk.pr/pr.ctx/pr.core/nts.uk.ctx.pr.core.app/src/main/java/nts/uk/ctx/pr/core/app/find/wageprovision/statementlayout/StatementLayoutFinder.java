@@ -97,7 +97,7 @@ public class StatementLayoutFinder {
         return deductionItemSetOpt.map(DeductionItemSetDto::new).orElse(null);
     }
 
-    public AttendanceItemSetDto getAttendanceItemById(int categoryAtr, String itemNameCode) {
+    public AttendanceItemSetDto getAttendanceItemStById(int categoryAtr, String itemNameCode) {
         String cid = AppContexts.user().companyId();
         Optional<TimeItemSet> attItem = timeItemSetRepository.getTimeItemStById(cid, categoryAtr, itemNameCode);
         return attItem.map(AttendanceItemSetDto::new).orElse(null);

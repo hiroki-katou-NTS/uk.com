@@ -45,7 +45,7 @@
                         <div class="table table-search">
                             <div class="cell valign-top">
                                 <!--E1_4-->
-                                <div data-bind="ntsFormLabel: {}">E1_4</div>
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
                             </div>
                             <div class="cell valign-top">
                                 <!--E1_5-->
@@ -541,7 +541,7 @@
         </div>
         <div id="functions-area-bottom">
             <button tabindex="16"
-                    data-bind="click: decide, enable: $root.errors.isEmpty || $vm.screenControl().enableD4_1()"
+                    data-bind="click: decide, enable: $root.errors.isEmpty &amp;&amp; screenControl().enableE4_1()"
                     class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>

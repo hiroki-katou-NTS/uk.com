@@ -12,13 +12,12 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         option: any;
 
         selectedSearchIitemName: KnockoutObservable<any>;
-        itemNames: KnockoutObservableArray<shareModel.ItemModel>;
+        itemNames: KnockoutObservableArray<StatementItem>;
         codeSelected: KnockoutObservable<any>;
 
         categoryAtr: number;
         totalObjAtrs: KnockoutObservableArray<shareModel.ItemModel>;
         calcMethods: KnockoutObservableArray<shareModel.ItemModel>;
-        workingAtrs: KnockoutObservableArray<shareModel.ItemModel>;
         deductionProportionalAtrs: KnockoutObservableArray<shareModel.ItemModel>;
         proportionalMethodAtrs: KnockoutObservableArray<shareModel.ItemModel>;
 
@@ -45,7 +44,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.categoryAtr = shareModel.CategoryAtr.DEDUCTION_ITEM;
             self.totalObjAtrs = ko.observableArray([]);
             self.calcMethods = ko.observableArray([]);
-            self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
             self.deductionProportionalAtrs = ko.observableArray(shareModel.getDeductionProportionalAtr())
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr())
 
@@ -104,9 +102,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
             $("#fixed-table").ntsFixedTable({height: 139});
             let params: IParams = <IParams>{};
-            params.itemNameCode = "0001";
+            params.itemNameCode = "000s1";
             params.itemNameCdExcludeList = ["0003", "0031"];
             params.printSet = shareModel.StatementPrintAtr.DO_NOT_PRINT;
             params.yearMonth = 201802;
@@ -145,8 +144,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen();
-                dfd.resolve();
+            }).always(() => {
+                block.clear();
             });
+            dfd.resolve();
             return dfd.promise();
         }
 
@@ -526,7 +527,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         decide() {
             let self = this;
             // アルゴリズム「決定時チェック処理」を実施
-            self.dataScreen().checkDecide(self.deductionItemSet().taxAtr());
+            self.dataScreen().checkDecide();
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -534,7 +535,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         }
 
         cancel() {
-            nts.uk.ui.windows.close();
+            windows.close();
         }
     }
 
@@ -796,10 +797,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         /**
          * 決定時チェック処理
          */
-        checkDecide(taxAtr: number) {
+        checkDecide() {
             let self = this;
             self.validate();
-            self.checkCalcMethod(taxAtr);
+            self.checkCalcMethod();
             self.checkErrorRange();
             self.checkAlarmRange();
         }
@@ -811,15 +812,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.checkError("#E8_2");
         }
 
-        checkCalcMethod(taxAtr: number) {
+        checkCalcMethod() {
             let self = this;
-            // ※43
-            // ※補足資料9を参照
-            if (taxAtr == shareModel.TaxAtr.COMMUTING_EXPENSES_MANUAL
-                && self.calcMethod() == shareModel.PaymentCaclMethodAtr.PERSON_INFO_REF.toString()) {
-                // alertError({messageId: "MsgQ_181"});
-                self.setError("#E2_8", "MsgQ_181");
-            }
             // 設定された計算方法を確認する
             switch (parseInt(self.calcMethod())) {
                 case shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF:

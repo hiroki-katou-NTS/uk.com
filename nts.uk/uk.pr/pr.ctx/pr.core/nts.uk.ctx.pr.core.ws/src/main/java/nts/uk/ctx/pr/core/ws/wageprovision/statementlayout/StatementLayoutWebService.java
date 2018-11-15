@@ -106,6 +106,13 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getAttendanceItemStById/{categoryAtr}/{itemNameCode}")
+    public AttendanceItemSetDto getAttendanceItemStById(@PathParam("categoryAtr") int categoryAtr,
+                                                      @PathParam("itemNameCode") String itemNameCode) {
+        return statementLayoutFinder.getAttendanceItemStById(categoryAtr, itemNameCode);
+    }
+
+    @POST
     @Path("getAllStatementLayoutAndHist")
     public List<StatementLayoutAndHistDto> getAllStatementLayoutAndHist() {
         return this.statementLayoutFinder.getAllStatementLayoutAndHist();

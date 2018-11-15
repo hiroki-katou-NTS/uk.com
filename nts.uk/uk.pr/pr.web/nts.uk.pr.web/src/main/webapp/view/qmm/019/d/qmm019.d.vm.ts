@@ -104,10 +104,11 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
             $("#fixed-table").ntsFixedTable({height: 139});
             // let params: IParams = windows.getShared("QMM019D_PARAMS");
             let params: IParams = <IParams>{};
-            params.itemNameCode = "0003";
+            params.itemNameCode = "0003s";
             params.itemNameCdExcludeList = ["0003", "0031"];
             params.printSet = shareModel.StatementPrintAtr.DO_NOT_PRINT;
             params.yearMonth = 201802;
@@ -146,8 +147,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
                 self.initScreen();
-                dfd.resolve();
+            }).always(() => {
+                block.clear();
             });
+            dfd.resolve();
             return dfd.promise();
         }
 

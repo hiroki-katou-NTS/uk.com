@@ -338,6 +338,27 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     /**
+     * 平均賃金区分
+     */
+    export enum TimeCountAtr{
+        // 時間
+        TIME = 0,
+        // 回数
+        TIMES = 1
+    }
+
+    export function getTimeCountAtrText(e: TimeCountAtr) {
+        switch (e) {
+            case TimeCountAtr.TIME:
+                return "時間";
+            case TimeCountAtr.TIMES:
+                return "回数";
+            default:
+                return "";
+        }
+    }
+
+    /**
      * 固定的賃金の設定区分
      */
     export enum SocialInsuranceCategory{

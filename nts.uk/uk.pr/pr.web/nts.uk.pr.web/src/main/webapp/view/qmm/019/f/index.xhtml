@@ -31,7 +31,7 @@
             <div class="table table-origin">
                 <div class="cell valign-top">
                     <!--F1_1-->
-                    <div data-bind="ntsPanel:{width: '280px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                    <div data-bind="ntsPanel:{width: '260px', height: '490px', direction: 'right', showIcon: true, visible: true}">
                         <div class="table table-search">
                             <div class="cell valign-center">
                                 <!--F1_2-->
@@ -45,193 +45,263 @@
                         <div class="table table-search">
                             <div class="cell valign-top">
                                 <!--F1_4-->
-                                <div data-bind="ntsFormLabel: {}">F1_4</div>
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
                             </div>
                             <div class="cell valign-top">
                                 <!--F1_5-->
-                                <div style="width: 190px" data-bind="ntsSearchBox: {
+                                <div tabindex="1" style="width: 170px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
-									targetKey: 'code',
+									targetKey: 'itemNameCd',
 									comId: 'F1_6',
 									items: itemNames,
 									selected: selectedSearchIitemName,
-									selectedKey: 'code',
-									fields: ['code', 'name'],
+									selectedKey: 'itemNameCd',
+									fields: ['itemNameCd', 'name'],
 									mode: 'igGrid'}"/>
                             </div>
                         </div>
                         <!--F1_6-->
-                        <table id="F1_6" data-bind="ntsGridList: {
+                        <table id="F1_6" tabindex="2" data-bind="ntsGridList: {
                             rows: 15,
                             name: '#[QMM019_169]',
                             dataSource: itemNames,
-                            primaryKey: 'code',
+                            primaryKey: 'itemNameCd',
                             columns: [
-                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 50, formatter: _.escape},
-                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 213, formatter: _.escape}
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'itemNameCd', width: 50, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 193, formatter: _.escape}
                             ],
                             multiple: false,
                             value: codeSelected}"/>
                         <!--F1_11-->
-                        <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                        <button id="btn-register" tabindex="3" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
                     </div>
                 </div>
-                <div class="cell valign-top">
+                <div class="cell valign-top" data-bind="with: dataScreen">
                     <div class="table table-col-3">
                         <div class="cell valign-center">
                             <!--F2_1-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
                         </div>
                         <div class="cell valign-center">
-                            <!--F2_2-->
-                            <div class="label" data-bind="text: itemNameSelected().code"/>
+                            <com:ko-if bind="$vm.screenControl().visibleF2_2()">
+                                <!--F2_2-->
+                                <div class="label" data-bind="text: itemNameCode"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--F2_3-->
-                            <div class="label" data-bind="text: itemNameSelected().name"/>
+                            <com:ko-if bind="$vm.screenControl().visibleF2_3()">
+                                <!--F2_3-->
+                                <div class="label" data-bind="text: name"/>
+                            </com:ko-if>
                         </div>
                     </div>
                     <hr/>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: errorRangeSetting.upperLimitSetting">
                         <div class="cell valign-center">
                             <!--F3_1-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
                         </div>
                         <div class="cell valign-center">
                             <!--F3_2-->
-                            <div data-bind="ntsCheckBox: { }"/>
-                            <!--F3_3-->
-                            <input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_121]',
-                                value: value,
-                                constraint: 'TimeValue',
-                                inputFormat: 'time',
-                                mode: 'time'}"/>
-                            <!--F3_20-->
-                            <!--<input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_121]',
-                                value: value,
-                                constraint: 'TimeValue'}"/>-->
-                            <!--F3_24-->
-                            <!--<input data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_121]',
-                                value: value,
-                                constraint: 'TimesValue'}"/>-->
+                            <div tabindex="8" data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableF3_2() }"/>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_3()">
+                                <!--F3_3-->
+                                <input id="F3_3" tabindex="9" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_121]',
+                                    value: time10Value,
+                                    enable: $vm.screenControl().enableF3_3(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_20()">
+                                <!--F3_20-->
+                                <input id="F3_20" tabindex="9" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_121]',
+                                    value: time60Value,
+                                    enable: $vm.screenControl().enableF3_20(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_24()">
+                                <!--F3_24-->
+                                <input id="F3_24" tabindex="9" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_121]',
+                                    value: timesValue,
+                                    enable: $vm.screenControl().enableF3_24(),
+                                    constraint: 'TimesValue'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
                             <!--F3_4-->
                             <div class="label">#{i18n.getText('QMM019_122')}</div>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: errorRangeSetting.lowerLimitSetting">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--F3_5-->
-                            <div data-bind="ntsCheckBox: { }"/>
-                            <!--F3_6-->
-                            <input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_123]',
-                                value: value,
-                                constraint: 'TimeValue',
-                                inputFormat: 'time',
-                                mode: 'time'}"/>
-                            <!--F3_21-->
-                            <!--<input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_123]',
-                                value: value,
-                                constraint: 'TimeValue'}"/>-->
-                            <!--F3_25-->
-                            <!--<input data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_123]',
-                                value: value,
-                                constraint: 'TimesValue'}"/>-->
+                            <div tabindex="10" data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableF3_5() }"/>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_6()">
+                                <!--F3_6-->
+                                <input id="F3_6" tabindex="11" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_123]',
+                                    value: time10Value,
+                                    enable: $vm.screenControl().enableF3_6(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_21()">
+                                <!--F3_21-->
+                                <input id="F3_21" tabindex="11" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_123]',
+                                    value: time60Value,
+                                    enable: $vm.screenControl().enableF3_21(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_25()">
+                                <!--F3_25-->
+                                <input id="F3_25" tabindex="11" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_123]',
+                                    value: timesValue,
+                                    enable: $vm.screenControl().enableF3_25(),
+                                    constraint: 'TimesValue'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
                             <!--F3_7-->
                             <div class="label">#{i18n.getText('QMM019_124')}</div>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: alarmRangeSetting.upperLimitSetting">
                         <div class="cell valign-center">
                             <!--F3_8-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
                         </div>
                         <div class="cell valign-center">
                             <!--F3_9-->
-                            <div data-bind="ntsCheckBox: { }"/>
-                            <!--F3_10-->
-                            <input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_126]',
-                                value: value,
-                                constraint: 'TimeValue',
-                                inputFormat: 'time',
-                                mode: 'time'}"/>
-                            <!--F3_22-->
-                            <!--<input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_126]',
-                                value: value,
-                                constraint: 'TimeValue'}"/>-->
-                            <!--F3_26-->
-                            <!--<input data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_126]',
-                                value: value,
-                                constraint: 'TimesValue'}"/>-->
+                            <div tabindex="12" data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableF3_9() }"/>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_10()">
+                                <!--F3_10-->
+                                <input id="F3_10" tabindex="13" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_126]',
+                                    value: time10Value,
+                                    enable: $vm.screenControl().enableF3_10(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if id="F3_22" bind="$vm.screenControl().visibleF3_22()">
+                                <!--F3_22-->
+                                <input id="F3_22" tabindex="13" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_126]',
+                                    value: time60Value,
+                                    enable: $vm.screenControl().enableF3_22(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_26()">
+                                <!--F3_26-->
+                                <input id="F3_26" tabindex="13" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_126]',
+                                    value: timesValue,
+                                    enable: $vm.screenControl().enableF3_26(),
+                                    constraint: 'TimesValue'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
                             <!--F3_11-->
                             <div class="label">#{i18n.getText('QMM019_127')}</div>
                         </div>
                     </div>
-                    <div class="table table-error-alarm">
+                    <div class="table table-error-alarm"
+                         data-bind="with: alarmRangeSetting.lowerLimitSetting">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--F3_12-->
-                            <div data-bind="ntsCheckBox: { }"/>
-                            <!--F3_13-->
-                            <input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_128]',
-                                value: value,
-                                constraint: 'TimeValue',
-                                inputFormat: 'time',
-                                mode: 'time'}"/>
-                            <!--F3_23-->
-                            <!--<input data-bind="ntsTimeEditor: {
-                                name: '#[QMM019_128]',
-                                value: value,
-                                constraint: 'TimeValue'}"/>-->
-                            <!--F3_27-->
-                            <!--<input data-bind="ntsNumberEditor: {
-                                name: '#[QMM019_128]',
-                                value: value,
-                                constraint: 'TimesValue'}"/>-->
+                            <div tabindex="14" data-bind="ntsCheckBox: {
+                                checked: valueSettingAtr,
+                                enable: $vm.screenControl().enableF3_12() }"/>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_13()">
+                                <!--F3_13-->
+                                <input id="F3_13" tabindex="15" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_128]',
+                                    value: time10Value,
+                                    enable: $vm.screenControl().enableF3_13(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_23()">
+                                <!--F3_23-->
+                                <input id="F3_23" tabindex="15" data-bind="ntsTimeEditor: {
+                                    name: '#[QMM019_128]',
+                                    value: time60Value,
+                                    enable: $vm.screenControl().enableF3_23(),
+                                    constraint: 'TimeValue',
+                                    inputFormat: 'time',
+                                    mode: 'time'}"/>
+                            </com:ko-if>
+                            <com:ko-if bind="$vm.screenControl().visibleF3_27()">
+                                <!--F3_27-->
+                                <input id="F3_27" tabindex="15" data-bind="ntsNumberEditor: {
+                                    name: '#[QMM019_128]',
+                                    value: timesValue,
+                                    enable: $vm.screenControl().enableF3_27(),
+                                    constraint: 'TimesValue'}"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
                             <!--F3_14-->
                             <div class="label">#{i18n.getText('QMM019_129')}</div>
                         </div>
                     </div>
-                    <!--F3_15-->
-                    <div class="label label-annotate-first">#{i18n.getText('QMM019_130')}</div>
-                    <!--F3_16-->
-                    <div class="label label-annotate">#{i18n.getText('QMM019_131')}</div>
-                    <!--F3_17-->
-                    <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
-                    <!--F3_18-->
-                    <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
-                    <!--F3_19-->
-                    <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                    <com:ko-if bind="$vm.screenControl().visibleF3_15()">
+                        <!--F3_15-->
+                        <div class="label label-annotate-first">#{i18n.getText('QMM019_130')}</div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleF3_16()">
+                        <!--F3_16-->
+                        <div class="label label-annotate">#{i18n.getText('QMM019_131')}</div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleF3_17()">
+                        <!--F3_17-->
+                        <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleF3_18()">
+                        <!--F3_18-->
+                        <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                    </com:ko-if>
+                    <com:ko-if bind="$vm.screenControl().visibleF3_19()">
+                        <!--F3_19-->
+                        <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                    </com:ko-if>
                 </div>
                 <div class="cell valign-top">
                     <!--F2_4-->
-                    <div data-bind="ntsAccordion: { }">
+                    <div data-bind="ntsAccordion: { enable: $vm.screenControl().enableF2_4() }">
                         <h3>#{i18n.getText('QMM019_113')}</h3>
                         <div class="acc-content">
                             <!--F4_1-->
                             <div class="ui-iggrid">
-                                <table class="acc-table">
+                                <table class="acc-table" data-bind="with: attendanceItemSet">
                                     <colgroup>
                                         <col width="90px"/>
-                                        <col width="188px"/>
+                                        <col width="207px"/>
                                     </colgroup>
                                     <tr>
                                         <th class="ui-widget-header">
@@ -240,6 +310,7 @@
                                         </th>
                                         <td>
                                             <!--F5_11-->
+                                            <div class="label limited-label" data-bind="text: $vm.dataScreen().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -249,6 +320,7 @@
                                         </th>
                                         <td>
                                             <!--F5_12-->
+                                            <div class="label" data-bind="text: $vm.categoryAtrText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -258,6 +330,7 @@
                                         </th>
                                         <td>
                                             <!--F5_15-->
+                                            <div class="label" data-bind="text: timeCountAtrText"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -267,11 +340,19 @@
                                             <!--F5_8-->
                                             <div class="label">#{i18n.getText('QMM019_157')}</div>
                                         </th>
-                                        <td>
-                                            <!--F5_17-->
-                                            <!--F5_18-->
-                                            <!--F5_19-->
-                                            <!--F5_20-->
+                                        <td data-bind="with: errorRangeSetting">
+                                            <div class="label range-setting">
+                                                <!--F5_17-->
+                                                <span class="label" data-bind="text: upperLimitSetting.time10Value()"/>
+                                                <!--F5_18-->
+                                                <span class="label">#{i18n.getText('QMM019_63')}</span>
+                                            </div>
+                                            <div class="label range-setting">
+                                                <!--F5_19-->
+                                                <span class="label" data-bind="text: lowerLimitSetting.time10Value()"/>
+                                                <!--F5_20-->
+                                                <span class="label">#{i18n.getText('QMM019_69')}</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -281,11 +362,19 @@
                                             <!--F5_10-->
                                             <div class="label">#{i18n.getText('QMM019_157')}</div>
                                         </th>
-                                        <td>
-                                            <!--F5_21-->
-                                            <!--F5_22-->
-                                            <!--F5_23-->
-                                            <!--F5_24-->
+                                        <td data-bind="with: alarmRangeSetting">
+                                            <div class="label range-setting">
+                                                <!--F5_21-->
+                                                <span class="label" data-bind="text: upperLimitSetting.time10Value()"/>
+                                                <!--F5_22-->
+                                                <span class="label">#{i18n.getText('QMM019_63')}</span>
+                                            </div>
+                                            <div class="label range-setting">
+                                                <!--F5_23-->
+                                                <span class="label" data-bind="text: lowerLimitSetting.time10Value()"/>
+                                                <!--F5_24-->
+                                                <span class="label">#{i18n.getText('QMM019_69')}</span>
+                                            </div>
                                         </td>
                                     </tr>
                                 </table>
@@ -317,8 +406,9 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+            <button tabindex="16" data-bind="click: decide, enable: $root.errors.isEmpty &amp;&amp; screenControl().enableF4_1()"
+                    class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>
 </ui:composition>
