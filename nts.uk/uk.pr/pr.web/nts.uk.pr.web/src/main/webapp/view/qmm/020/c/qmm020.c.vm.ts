@@ -217,10 +217,14 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         }
 
         openScreenL(){
+            block.invisible();
             let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                location.reload();
+                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
+                if(params && params.isSubmit) location.reload();
+
             });
+            block.clear();
         }
 
         openScreenM(item){
@@ -287,7 +291,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     self.enableRegisterButton(true);
                     self.transferMode(params.transferMethod);
                     self.currentSelectedHis(self.newHistoryId());
-                }else if(params && self.listStateCorrelationHis().length === 0){
+                }else if(!params && self.listStateCorrelationHis().length === 0){
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
             });

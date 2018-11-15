@@ -101,4 +101,11 @@ module nts.uk.pr.view.qmm020.share.model {
         /* When screen D, F open */
         OUTPUT = "PARAM_OUTPUT_SCREEN_M"
     }
+
+    export enum PARAMETERS_SCREEN_L {
+
+        INPUT = "PARAM_INPUT_SCREEN_L",
+
+        OUTPUT = "PARAM_OUTPUT_SCREEN_L"
+    }
 }
