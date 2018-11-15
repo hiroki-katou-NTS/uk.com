@@ -5,6 +5,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     export class ScreenModel {
 
         //SalIndAmountName
+        // change logic, get data after click button
+        ccg001ReturnData: any;
+
 
 
         salIndAmountNames: KnockoutObservableArray<SalIndAmountName>;
@@ -35,7 +38,11 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         constructor() {
             var self = this;
-            $("#A5_9").ntsFixedTable({height: 350, width: 720});
+            if (/Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent)) {
+                $("#A5_9").ntsFixedTable({height: 344, width: 720});
+            } else {
+                $("#A5_9").ntsFixedTable({height: 340, width: 720});
+            }
             self.tilteTable = ko.observableArray([
                 {headerText: getText('QMM040_8'), key: 'individualPriceCode', width: 100},
                 {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
@@ -66,7 +73,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.personalAmount.removeAll();
                 self.personalDisplay.removeAll();
                 nts.uk.ui.errors.clearAll();
-                $('#A5_7').ntsError('check');
                 if(self.personalDisplay().length<=10){
                     if (/Edge/.test(navigator.userAgent)) {
                         $('.scroll-header').removeClass('edge_scroll_header');
@@ -87,7 +93,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }
             });
 
-            $("#A5_7").focus();
+
+
 
 
         }
@@ -100,6 +107,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.reloadCcg001(data.empExtraRefeDate);
                 else
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
+
+                $('#A5_7').focus();
             })
 
             dfd.resolve(self);
@@ -109,6 +118,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         onSelectTab(param) {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             switch (param) {
                 case 0:
                     //TODO
@@ -118,8 +128,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.SALARY);
-
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 case 1:
                     //TODO
@@ -129,7 +141,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.SALARY);
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 case 2:
                     //TODO
@@ -139,7 +154,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.salBonusCate(SalBonusCate.BONUSES);
                     self.titleTab(getText('QMM040_5'));
                     self.itemClassification(getText('QMM040_5'));
-                    $("#sidebar").ntsSideBar("active", param)
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 case 3:
                     //TODO
@@ -149,7 +169,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.loadSalIndAmountName(PerValueCateCls.DEDUCTION);
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.BONUSES);
-                    $("#sidebar").ntsSideBar("active", param)
+                    $("#sidebar").ntsSideBar("active", param);
+                    nts.uk.ui.errors.clearAll();
+                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    $('#A5_7').focus();
                     break;
                 default:
                     //TODO
@@ -157,7 +180,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.titleTab(getText('QMM040_3'));
                     self.itemClassification(getText('QMM040_3'));
                     self.loadSalIndAmountName(PerValueCateCls.SUPPLY);
-                    $("#sidebar").ntsSideBar("active", 0)
+                    $("#sidebar").ntsSideBar("active", 0);
                     break;
             }
         }
@@ -193,22 +216,70 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         filterData(): void {
             let self = this;
             self.yearMonthFilter();
+            $('#A5_7').ntsError('check');
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            if (!self.employeeList) return;
             let temp = new Array();
+            service.salIndAmountHisByPeValCode({
+                //     self.cateIndicator = ko.observable(0);
+                // self.salBonusCate = ko.observable(0);
+                perValCode: self.individualPriceCode(),
+                cateIndicator: self.cateIndicator(),
+                salBonusCate: self.salBonusCate(),
+                employeeIds: self.employeeList.map(x => x.employeeId)
 
-            for(let i=0;i<self.personalAmount().length;i++){
-                if(self.personalAmount()[i].startYearMonth <= this.yearMonthFilter() && self.personalAmount()[i].endYearMonth >= this.yearMonthFilter()){
-                    temp.push(self.personalAmount()[i])
-                }
-            }
+            }).done(function (dataNameAndAmount) {
+                self.employeeInfoImports=dataNameAndAmount.employeeInfoImports;
+                let personalAmountData:Array<any>=new Array();
+                personalAmountData=dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
 
-            self.personalDisplay(temp);
-            if(self.personalDisplay().length<=10){
-                if (/Edge/.test(navigator.userAgent)) {
-                    $('.scroll-header').removeClass('edge_scroll_header');
-                } else {
-                    $('.scroll-header').removeClass('ci_scroll_header');
+                console.log(dataNameAndAmount);
+                self.personalAmount(personalAmountData);
+                for(let i=0;i<self.personalAmount().length;i++){
+                    let index=_.findIndex(self.employeeInfoImports,function (o) {
+                        return o.sid==self.personalAmount()[i].empId
+                    });
+                    if(index != -1){
+                        self.personalAmount()[i].employeeCode(self.employeeInfoImports[index].scd);
+                        self.personalAmount()[i].businessName(self.employeeInfoImports[index].businessName);
+                    }
                 }
-            }
+                personalAmountData= personalAmountData.sort(function(a, b){
+                    return a.employeeCode() > b.employeeCode();
+                })
+                self.personalDisplay(personalAmountData);
+                setTimeout(function () {
+                    if( self.personalDisplay().length > 10) {
+                        if (/Edge/.test(navigator.userAgent)) {
+                            $('.scroll-header').addClass('edge_scroll_header');
+                            $('.nts-fixed-body-container').addClass('edge_scroll_body');
+                        } else {
+                            $('.scroll-header').addClass('ci_scroll_header');
+                            $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                        }
+
+                    }
+                }, 100);
+
+            })
+            // for(let i=0;i<self.personalAmount().length;i++){
+            //     if(self.personalAmount()[i].startYearMonth <= this.yearMonthFilter() && self.personalAmount()[i].endYearMonth >= this.yearMonthFilter()){
+            //         temp.push(self.personalAmount()[i])
+            //     }
+            // }
+            //
+            // //self.workIndividualPricesDisplay(_.sortBy(temp, ['employeeCode', 'startYaerMonth']));
+            //
+            // self.personalDisplay(_.sortBy(temp, ['employeeCode', 'startYearMonth']));
+            // if(self.personalDisplay().length<=10){
+            //     if (/Edge/.test(navigator.userAgent)) {
+            //         $('.scroll-header').removeClass('edge_scroll_header');
+            //     } else {
+            //         $('.scroll-header').removeClass('ci_scroll_header');
+            //     }
+            // }
 
 
         }
@@ -269,51 +340,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     if (data && data.listEmployee.length>0) {
                         self.employeeList=data.listEmployee;
                         console.log(data.listEmployee);
-                        service.salIndAmountHisByPeValCode({
-                            //     self.cateIndicator = ko.observable(0);
-                            // self.salBonusCate = ko.observable(0);
-                            perValCode: self.individualPriceCode(),
-                            cateIndicator: self.cateIndicator(),
-                            salBonusCate: self.salBonusCate(),
-                            employeeIds: data.listEmployee.map(x => x.employeeId)
-
-                        }).done(function (dataNameAndAmount) {
-                            self.employeeInfoImports=dataNameAndAmount.employeeInfoImports;
-                            let personalAmountData:Array<any>=new Array();
-                            personalAmountData=dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
-                            personalAmountData=_.sortBy(personalAmountData,function (o) {
-                                return o.startYearMonth;
-                            })
-                            console.log(dataNameAndAmount);
-                            self.personalAmount(personalAmountData);
-                            self.personalDisplay(personalAmountData);
-                            for(let i=0;i<self.personalAmount().length;i++){
-                                let index=_.findIndex(self.employeeInfoImports,function (o) {
-                                    return o.sid==self.personalAmount()[i].empId
-                                });
-                                if(index != -1){
-                                    self.personalAmount()[i].employeeCode(self.employeeInfoImports[index].scd);
-                                    self.personalAmount()[i].businessName(self.employeeInfoImports[index].businessName);
-                                }
-                            }
-
-
-
-
-                            setTimeout(function () {
-                                if( self.personalDisplay().length > 10) {
-                                    if (/Edge/.test(navigator.userAgent)) {
-                                        $('.scroll-header').addClass('edge_scroll_header');
-                                        $('.nts-fixed-body-container').addClass('edge_scroll_body');
-                                    } else {
-                                        $('.scroll-header').addClass('ci_scroll_header');
-                                        $('.nts-fixed-body-container').addClass('ci_scroll_body');
-                                    }
-
-                                }
-                            }, 100);
-
-                        })
                     }
                 }
             }

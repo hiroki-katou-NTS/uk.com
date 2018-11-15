@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script type='text/javascript'>
+            var dialogSize = {
+                width: 340,
+                height: 650
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="qmm019.i.style.css"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:scriptfile path="qmm019.i.service.js"/>
+        <com:scriptfile path="qmm019.i.vm.js"/>
+        <com:scriptfile path="qmm019.i.start.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <!--I1_1-->
+            <div id="I1_1" class="label">#{i18n.getText('QMM019_184')}</div>
+            <!--I1_2-->
+            <table id="I1_2" data-bind="ntsGridList: {
+                name: '#[QMM019_185]',
+                rows: 20,
+                dataSource: amounts,
+                primaryKey: 'code',
+                columns: columns,
+                multiple: false,
+                value: amountSelected
+            }"></table>
+        </div>
+        <div id="functions-area-bottom">
+            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

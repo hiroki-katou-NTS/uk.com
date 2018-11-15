@@ -44,26 +44,26 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1">
-            <div class="sidebar-content-header" style="width: 1140px">
-                <span class="title" data-bind="text : titleTab"></span>
+            <div class="sidebar-content-header" style="width: 1228px">
+                <span class="title" data-bind="text : titleTab"/>
                 <!--A1_1 登録-->
                 <button tabindex="1" data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
                         class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
-                <a tabindex="11" class="goout" style="margin-left: 720px;"
-                   data-bind="ntsLinkButton: { },enable: false">#{i18n.getText('QMM039_45')}</a>
+                <a tabindex="11" class="goout" style="margin-left: 700px;"
+                   data-bind="ntsLinkButton: {jump: '../../040/a/index.xhtml' }">#{i18n.getText('QMM039_45')}</a>
             </div>
+            <div id="com-ccg001"/>
             <div class="contents-area">
                 <!--A3_3 社員検索-->
-                <div style="display: table; margin: 15px 0px 15px 65px; width: 915px;">
+                <div style="display: table; margin: 15px 0px 15px 65px; width: 900px;">
                     <!--A3_1 対象者-->
-                    <div tabindex="2" id="emp-component" style="display: table-cell;"></div>
+                    <div tabindex="2" id="emp-component" style="display: table-cell;"/>
                     <!--A3_2 金額の一覧を表示する-->
                     <div style="display: table-cell; vertical-align: middle;">
-                        <button tabindex="3" data-bind="click: toScreenD">#{i18n.getText('QMM039_11')}</button>
+                        <button class="small" tabindex="3" data-bind="click: toScreenD">#{i18n.getText('QMM039_11')}</button>
                     </div>
                 </div>
-                <div id="com-ccg001"></div>
                 <div class="row">
                     <div class="cell group-master">
                         <!--A4_1 項目選択パネル-->
@@ -79,7 +79,7 @@
                             <!--A4_8 名称-->
                             <table tabindex="6" id="treegrid"
                                    data-bind="ntsGridList:{
-                                   name: '#[QMM039_12]',
+                                name: '#[QMM039_12]',
                                 width: 220,
                                 height: 210,
                                 dataSource: dataSource,
@@ -98,8 +98,8 @@
                             </table>
                         </div>
                         <!--A5_1 履歴選択パネル-->
-                        <div class="panel"
-                             data-bind="ntsPanel:{width: '270px', height: '185px', direction: 'none', visible: true}">
+                        <div class="panel cf"
+                             data-bind="ntsPanel:{width: '270px', height: '215px', direction: 'none', visible: true}">
                             <div class="row margin-bottom-12">
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
@@ -122,14 +122,14 @@
                                     multiple: false,
                                     value: selectedHisCode,
                                     enable: true,
-                                    rows: 5,
+                                    rows: 6,
                                     columns: columns
-                                    }"></div>
+                                    }"/>
                         </div>
                     </div>
                     <div class="cell group-center" style="width: 50px; min-width: 50px">
                         <!--A6_1 キャレット-->
-                        <span class="caret-right"></span>
+                        <span class="caret-right"/>
                     </div>
                     <div class="cell">
 
@@ -140,7 +140,7 @@
                             </div>
                             <div class="cell cell-space">
                                 <!--A7_2 項目区分-->
-                                <div class="label" data-bind="text: itemClassLabel"></div>
+                                <div class="label" data-bind="text: itemClassLabel"/>
                             </div>
                         </div>
 
@@ -151,9 +151,9 @@
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_22')}</div>
                             </div>
                             <div class="cell cell-space" >
-                                <span class="label" data-bind="text: individualPriceCode"></span>
+                                <span class="label" data-bind="text: individualPriceCodeLabel"/>
                                 <!--A7_4 コード-->
-                                <span class="label" data-bind="text: individualPriceName"></span>
+                                <span class="label" data-bind="text: individualPriceNameLabel"/>
                                 <!--A7_5 名称-->
                             </div>
                         </div>
@@ -162,13 +162,13 @@
                                 <!--A7_6 期間-->
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM039_23')}</div>
                             </div>
-                            <div class="cell cell-space" style="width: 143px;">
+                            <div class="cell cell-space" style="width: 200px; min-width: 200px;">
                                 <!--A7_7 履歴開始年月-->
-                                <span class="label" data-bind="text: periodStartYM"></span>
+                                <span class="label" data-bind="text: periodStartYM"/>
                                 <!--A7_8 ～-->
                                 <span class="label">#{i18n.getText('QMM039_24')}</span>
                                 <!--A7_9 履歴開始年月-->
-                                <span class="label" data-bind="text: periodEndYM"></span>
+                                <span class="label" data-bind="text: periodEndYM"/>
                             </div>
                         </div>
                         <div class="row" style="width: 300px;min-width: 300px;">

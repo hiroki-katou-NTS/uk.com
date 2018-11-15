@@ -40,21 +40,21 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel1">
-            <div class="sidebar-content-header flex valign-center">
+            <div class="sidebar-content-header" style="width: 1100px">
 
-                <div class="title" data-bind="text : titleTab"></div>
+                <div class="title" data-bind="text : titleTab"/>
                 <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
-                <a tabindex="9" class="goout" style="margin-left: 700px"
-                   data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
+                <a tabindex="9" class="goout" style="margin-left: 600px"
+                   data-bind="ntsLinkButton: { jump: '../../039/a/index.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
             </div>
             <div class="contents-area fixed-flex-layout">
-                <div  id="com-ccg001"></div>
-                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px">
+                <div  id="com-ccg001"/>
+                <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px;min-width: 385px;">
                     <div style="float: left;width: 335px;">
 
                         <div tabindex="-1" class="panel" style=" margin-top: 15px"
-                             data-bind="ntsPanel:{width: '280px', height: '470px',showIcon: true, direction: 'bottom', visible: true}">
+                             data-bind="ntsPanel:{width: '280px', height: '490px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
                             <div tabindex="3" style="width: 280px"
                                  data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'individualPriceCode', comId: 'treegrid',items: salIndAmountNames, searchText: '検索', selected: salIndAmountNamesSelectedCode, selectedKey: 'individualPriceCode', fields: ['individualPriceName', 'individualPriceCode'], mode: 'igGrid'}"/>
@@ -67,7 +67,7 @@
                                    data-bind="ntsGridList:{
                                    name: '#[QMM039_12]',
                                 width: 280,
-                                height: 420,
+                                rows: 18,
                                 dataSource: salIndAmountNames,
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
@@ -86,7 +86,7 @@
 
                     </div>
                     <div style="float: left;height: 400px;width: 50px;margin-top: 130px;">
-                        <span id="custom-caret" class="caret-right"></span>
+                        <span id="custom-caret" class="caret-right"/>
                     </div>
 
 
@@ -98,30 +98,33 @@
 
                         <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
                         <!--A5_2 項目区分-->
-                        <div style="margin-left: 40px" data-bind="text: itemClassification()"></div>
+                        <div style="margin-left: 40px;min-width:60px;" data-bind="text: itemClassification()"/>
                     </div>
 
                     <div class="flex valign-center margin-top-item">
                         <!--A5_3 コード・名称-->
                         <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM040_12')}</div>
                         <!--A5_4 コード-->
-                        <span class="label margin-left-item" data-bind="text: individualPriceCode()"></span>
+                        <span class="label margin-left-item" data-bind="text: individualPriceCode()"/>
                         <!--A5_5 名称-->
-                        <span style="margin-left: 5px" class="label" data-bind="text: individualPriceName()"></span>
+                        <span style="margin-left: 5px" class="label" data-bind="text: individualPriceName()"/>
                     </div>
 
                     <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">
                         <!--A5_6 基準年月-->
                         <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
                         <!--A5_7 基準年月-->
-                        <div id="A5_7" tabindex="5" class="margin-left-item"
-                             data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM040_13]',required: true}"></div>
+                        <div style = "margin-left: 30px;">
+                            <div id="A5_7" tabindex="5"
+                                 data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM040_13]',required: true}"/>
+                        </div>
+
                         <!--A5_8 抽出-->
                         <button tabindex="6" class="caret-bottom" data-bind="click: filterData ,enable: $root.errors.isEmpty"
                                 style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
 
                     </div>
-
+                    <div style = "min-width: 600px;">
                     <table tabindex="7" id="A5_9">
                         <colgroup>
                             <col width="130px"/>
@@ -141,9 +144,9 @@
                         </thead>
                         <tbody data-bind="foreach: personalDisplay">
                         <tr>
-                            <td data-bind="text: employeeCode()"></td>
-                            <td data-bind="text: businessName()"></td>
-                            <td data-bind="text: period"></td>
+                            <td data-bind="text: employeeCode()"/>
+                            <td data-bind="text: businessName()"/>
+                            <td data-bind="text: period"/>
                             <td>
                                 <input tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
                                         value: amount,
@@ -158,6 +161,7 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
 
 

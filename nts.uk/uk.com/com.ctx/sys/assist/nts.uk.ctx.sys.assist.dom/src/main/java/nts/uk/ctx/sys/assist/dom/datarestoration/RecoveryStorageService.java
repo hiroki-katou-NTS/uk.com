@@ -85,6 +85,9 @@ public class RecoveryStorageService {
 	public static final String GET_CLS_KEY_QUERY = "getClsKeyQuery";
 
 	public static final String GET_FILED_KEY_UPDATE = "getFiledKeyUpdate";
+	
+	// fix bug #125405
+	public static final String GET_FILED_KEY_QUERY = "getFieldKeyQuery";
 
 	public static final String INDEX_HEADER = "indexUpdate";
 
@@ -250,7 +253,7 @@ public class RecoveryStorageService {
 		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
 		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, h_Date_Csv = null, dateSub = "";
 
-		HashMap<Integer, String> indexAndFiled = new HashMap<>();
+		HashMap<Integer, String> indexAndFiled = new HashMap<>();	
 		// search data by employee
 
 		if (tableList.isPresent()) {
@@ -388,7 +391,7 @@ public class RecoveryStorageService {
 			for (int i = 1; i < 11; i++) {
 				Method m1 = TableList.class.getMethod(GET_CLS_KEY_QUERY + i);
 				keyQuery = (Optional<Object>) m1.invoke(tableList.get());
-				Method m2 = TableList.class.getMethod(GET_FILED_KEY_UPDATE + i);
+				Method m2 = TableList.class.getMethod(GET_FILED_KEY_QUERY + i);
 				filedKey = (Optional<Object>) m2.invoke(tableList.get());
 				if (keyQuery.isPresent()) {
 					if (keyQuery.get().equals(INDEX_CID_CSV)) {
@@ -419,7 +422,7 @@ public class RecoveryStorageService {
 		for (int i = 1; i < 11; i++) {
 			Method m1 = TableList.class.getMethod(GET_CLS_KEY_QUERY + i);
 			keyQuery = (Optional<Object>) m1.invoke(tableList.get());
-			Method m2 = TableList.class.getMethod(GET_FILED_KEY_UPDATE + i);
+			Method m2 = TableList.class.getMethod(GET_FILED_KEY_QUERY + i);
 			filedKey = (Optional<Object>) m2.invoke(tableList.get());
 			if (keyQuery.isPresent()) {
 				if (keyQuery.get().equals(INDEX_CID_CSV)) {

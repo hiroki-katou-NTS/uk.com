@@ -52,4 +52,10 @@ public class JpaCurrProcessDateRepository extends JpaRepository implements CurrP
 	public void remove(String cid, int processCateNo) {
 		this.commandProxy().remove(QpbmtCurrProcessDate.class, new QpbmtCurrProcessDatePk(cid, processCateNo));
 	}
+
+	@Override
+	public Optional<CurrProcessDate> getByIds(String cid, int processCateNo) {
+		return Optional.ofNullable(this.getEntityManager().find(QpbmtCurrProcessDate.class,new QpbmtCurrProcessDatePk(cid,processCateNo)).toDomain());
+	}
+
 }
