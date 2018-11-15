@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
-* 社員給与分類履歴
+* 社員給与分類項目
 */
 @Getter
 public class EmploySalaryCategory extends AggregateRoot {

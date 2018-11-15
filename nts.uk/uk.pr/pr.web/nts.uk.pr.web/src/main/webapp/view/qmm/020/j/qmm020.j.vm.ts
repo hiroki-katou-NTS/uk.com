@@ -8,12 +8,13 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod(false));
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
         transferMethod:          KnockoutObservable<number> = ko.observable(1);
-        startYearMonthPeriod: KnockoutObservable<number> = ko.observable();
+        startYearMonthPeriod: KnockoutObservable<number> = ko.observable(null);
         startDateMaster: KnockoutObservable<string> = ko.observable();
         endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
         modeScreen : KnockoutObservable<number> = ko.observable(null);
         height: KnockoutObservable<number> = ko.observable(null);
         params: KnockoutObservable<any> = ko.observable(null);
+
         constructor(){
             let self = this;
             let params = getShared(model.PARAMETERS_SCREEN_J.INPUT);
@@ -65,12 +66,15 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 self.startDateMaster(self.params().startDateMaster);
             }
             self.isFirst(self.params().isFirst);
-            self.startYearMonthPeriod(self.params().startYearMonth);
+            self.startYearMonthPeriod(self.params().startYearMonth == 0 ? null : self.params().startYearMonth);
             if(self.isFirst()){
                 self.itemList(getHistoryEditMethod(true));
             }
-            if(self.startYearMonthPeriod()!=0){
+            if(self.startYearMonthPeriod()!= null){
                 self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', [self.convertMonthYearToString(self.startYearMonthPeriod())]));
+            }
+            else{
+                self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59'));
             }
         }
         cancel(){

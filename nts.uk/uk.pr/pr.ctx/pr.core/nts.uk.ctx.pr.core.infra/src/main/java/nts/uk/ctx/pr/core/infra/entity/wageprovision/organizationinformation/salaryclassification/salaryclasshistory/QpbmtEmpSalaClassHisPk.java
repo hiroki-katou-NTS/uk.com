@@ -10,7 +10,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
-* 社員給与分類履歴: 主キー情報
+* 社員給与分類項目: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor

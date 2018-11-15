@@ -20,12 +20,17 @@
                 <!-- M1_1 -->
                 <span id="M1_1" class="label">#{i18n.getText('QMM020_79')}</span>
             </div>
-            <!-- F1_2 名称 -->
+            <!-- M1_2 名称 -->
         <div id="side-menu" class="cf"></div>
         <div id="content" class="cf">          
             <div class="cf" style="margin: 15px 0px 0px 30px;">
-                    <div tabindex="1" style="height: 30px;width: 200px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list',
-									items: items,  selectedKey: 'code', fields: ['statementCode', 'statementName'], mode: 'igGrid'}" />
+                <div tabindex="1" style="height: 30px;width: 200px" data-bind="ntsSearchBox: {searchMode: 'highlight',
+                    targetKey: 'statementCode',
+                     comId: 'multi-list',
+									items: items,
+									  selectedKey: 'statementCode',
+									   fields: ['statementCode', 'statementName'],
+									    mode: 'igGrid'}"/>
                     <table tabindex="2" id="multi-list" data-bind="ntsGridList: {
 										height: 205,
 										options: items,

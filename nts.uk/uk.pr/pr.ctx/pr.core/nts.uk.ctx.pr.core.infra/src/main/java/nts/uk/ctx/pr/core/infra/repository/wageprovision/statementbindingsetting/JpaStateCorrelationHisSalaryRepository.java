@@ -1,8 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsetting;
 
 
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisSalary;
@@ -12,6 +10,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.Qpb
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +20,7 @@ public class JpaStateCorrelationHisSalaryRepository extends JpaRepository implem
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisSal f";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid ORDER BY f.startYearMonth DESC";
+    private static final String SELECT_BY_KEY = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
 
 
     @Override
@@ -30,6 +30,16 @@ public class JpaStateCorrelationHisSalaryRepository extends JpaRepository implem
                 .getList();
         return this.toDomain(listStateCorHisSal);
     }
+
+    @Override
+    public Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryByKey(String cid, String hisId) {
+        List<QpbmtStateCorHisSal> listStateCorHisSal = this.queryProxy().query(SELECT_BY_KEY, QpbmtStateCorHisSal.class)
+                .setParameter("cid", cid)
+                .setParameter("hisId", hisId)
+                .getList();
+        return this.toDomain(listStateCorHisSal);
+    }
+
 
     @Override
     public void add(String cid, YearMonthHistoryItem history){
