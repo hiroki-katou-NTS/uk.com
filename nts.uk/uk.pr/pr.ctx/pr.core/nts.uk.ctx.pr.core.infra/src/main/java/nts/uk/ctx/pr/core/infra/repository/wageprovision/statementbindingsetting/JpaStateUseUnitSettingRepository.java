@@ -12,8 +12,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.Qpb
 import java.util.Optional;
 
 @Stateless
-public class JpaStateUseUnitSettingRepository extends JpaRepository implements StateUseUnitSettingRepository
-{
+public class JpaStateUseUnitSettingRepository extends JpaRepository implements StateUseUnitSettingRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateUseUnitSet f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateUseUnitSetPk.cid =:cid ";
