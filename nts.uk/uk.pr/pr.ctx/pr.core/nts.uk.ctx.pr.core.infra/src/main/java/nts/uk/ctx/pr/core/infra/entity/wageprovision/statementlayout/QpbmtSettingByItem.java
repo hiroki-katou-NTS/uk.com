@@ -27,30 +27,31 @@ public class QpbmtSettingByItem {
     public String itemID;
 
     // ????????????????????????????????????????????????????????????????
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name="ITEM_ID", referencedColumnName="ITEM_NAME_CD")
-    })
-    public QpbmtStatementItemName statementItemName;
-
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID"),
-            @JoinColumn(name="ITEM_ID", referencedColumnName="SALARY_ITEM_ID")
-    })
-    public QpbmtPayItemDetailSet payItemDetailSet;
-
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID"),
-            @JoinColumn(name="ITEM_ID", referencedColumnName="SALARY_ITEM_ID")
-    })
-    public QpbmtDdtItemDetailSet ddtItemDetailSet;
+//    @ManyToOne(fetch=FetchType.LAZY)
+//    @JoinColumns({
+//            @JoinColumn(name="ITEM_ID", referencedColumnName="ITEM_NAME_CD")
+//    })
+//    public QpbmtStatementItemName statementItemName;
+//
+//    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumns({
+//            @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID"),
+//            @JoinColumn(name="ITEM_ID", referencedColumnName="SALARY_ITEM_ID")
+//    })
+//    public QpbmtPayItemDetailSet payItemDetailSet;
+//
+//    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumns({
+//            @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID"),
+//            @JoinColumn(name="ITEM_ID", referencedColumnName="SALARY_ITEM_ID")
+//    })
+//    public QpbmtDdtItemDetailSet ddtItemDetailSet;
 
     public SettingByItemCustom toDomain() {
-        return new SettingByItemCustom(this.settingByItemPk.itemPosition, this.itemID, this.statementItemName.shortName,
-                this.ddtItemDetailSet == null ? null : this.ddtItemDetailSet.toDomain(),
-                this.payItemDetailSet == null ? null : this.payItemDetailSet.toDomain());
+//        return new SettingByItemCustom(this.settingByItemPk.itemPosition, this.itemID, this.statementItemName.shortName,
+//                this.ddtItemDetailSet == null ? null : this.ddtItemDetailSet.toDomain(),
+//                this.payItemDetailSet == null ?
+        return null;
     }
 
     public static QpbmtSettingByItem toEntity(String histId, int categoryAtr, int lineNumber, SettingByItem settingByItem) {
@@ -64,6 +65,7 @@ public class QpbmtSettingByItem {
             ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i)).orElse(null);
         }
 
-        return new QpbmtSettingByItem(settingByItemPk, settingByItem.getItemId(), null, payItemDetailSet, ddtItemDetailSet);
+        //return new QpbmtSettingByItem(settingByItemPk, settingByItem.getItemId(), null, payItemDetailSet, ddtItemDetailSet);
+        return null;
     }
 }

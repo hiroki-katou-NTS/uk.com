@@ -93,7 +93,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
                     self.layoutPatternClone(), self.statementCode(), self.statementName(), self.startDate(), self.layoutPatternSelected());
 
-            $("#B1_6").trigger("validate");
+            //TODO $("#B1_6").trigger("validate");
             if(!nts.uk.ui.errors.hasError()) {
                 service.addStatementLayout(command).done(() => {
                     setShared("QMM019_H_TO_A_PARAMS", { isRegistered: false, histID: histIdNew});

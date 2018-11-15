@@ -209,6 +209,9 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 let params = getShared("QMM019_B_TO_A_PARAMS");
 
                 if(params && params.isRegistered) {
+                    let histID = params.histID;
+                    self.loadListData();
+                    self.currentHistoryId(histID);
                     //TODO init create mode
                 }
 

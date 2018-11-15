@@ -73,7 +73,7 @@
             <div class="table table3">
                 <div class="cell valign-center">
                     <!--H1_9-->
-                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_7')}</div>
+                    <div data-bind="ntsFormLabel: { required: true, constraint: ['StatementCode', 'StatementName']}">#{i18n.getText('QMM019_7')}</div>
                 </div>
                 <div class="cell valign-center">
                     <!--H1_10-->
