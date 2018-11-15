@@ -9,7 +9,7 @@ import java.io.Serializable;
 ;
 
 /**
- * 社員給与分類履歴
+ * 社員給与分類項目
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -16,6 +16,7 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
         modeScreen : KnockoutObservable<number> = ko.observable(null);
         isUpdate : KnockoutObservable<boolean> = ko.observable(null);
         params : KnockoutObservable<any> = ko.observable(null);
+        startYearMonthFirst :  KnockoutObservable<number> = ko.observable();
         constructor(){
             let self = this;
             let params = getShared(model.PARAMETERS_SCREEN_K.INPUT);
@@ -36,8 +37,8 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 masterCode: self.params().masterCode,
                 isUpdate : (self.startYearMonthPeriod() > self.startYearMonthBefore() && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) ? true : false
             };
-            service.deleteStateCorrelationHis(data).done(()=>{
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+            nts.uk.pr.view.qmm020.k.service.deleteStateCorrelationHis(data).done(()=>{
+                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                     let data : any ={
                         modeEditHistory: self.methodEditing()
                     };
@@ -53,11 +54,16 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             let self = this;
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
+            if( self.params().modeScreen == model.MODE_SCREEN.INDIVIDUAL){
+                let windowSize = nts.uk.ui.windows.getSelf();
+                windowSize.$dialog.height(385);
+            }
             self.startYearMonthPeriod(self.params().startYearMonth);
             self.startDateMaster(self.params().baseDate);
             self.endYearMonthPeriod(self.params().endYearMonth);
             self.startYearMonthBefore(self.params().startYearMonthBefore);
             self.isFirst(self.params().isFirst);
+            self.startYearMonthFirst(self.params().startYearMonthFirst);
         }
         cancel(){
             close();

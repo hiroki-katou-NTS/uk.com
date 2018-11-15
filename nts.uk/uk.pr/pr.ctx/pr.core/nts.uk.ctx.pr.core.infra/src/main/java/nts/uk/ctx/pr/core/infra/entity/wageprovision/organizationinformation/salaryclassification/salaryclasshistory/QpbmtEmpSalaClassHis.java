@@ -7,7 +7,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 /**
- * 社員給与分類履歴
+ * 社員給与分類項目
  */
 @AllArgsConstructor
 @NoArgsConstructor

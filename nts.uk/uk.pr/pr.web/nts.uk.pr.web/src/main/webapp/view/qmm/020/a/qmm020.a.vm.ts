@@ -6,8 +6,7 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         individualUse: KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservable<number> = ko.observable();
         constructor(){
-            block.invisible();
-            let self = this;
+
         }
 
         startPage (): JQueryPromise<any>{

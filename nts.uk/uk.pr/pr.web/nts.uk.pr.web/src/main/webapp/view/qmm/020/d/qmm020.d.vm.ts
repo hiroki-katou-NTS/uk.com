@@ -122,11 +122,16 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             return dfd.promise();
 
         }
+
         openScreenL(){
+            block.invisible();
             let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                location.reload();
+                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
+                if(params && params.isSubmit) location.reload();
+
             });
+            block.clear();
         }
 
         openScreenJ(){
