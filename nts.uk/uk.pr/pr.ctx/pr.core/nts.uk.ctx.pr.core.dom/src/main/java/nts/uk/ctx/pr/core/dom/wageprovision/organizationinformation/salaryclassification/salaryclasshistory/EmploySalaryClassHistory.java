@@ -10,7 +10,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import java.util.List;
 
 /**
-* 社員給与分類履歴
+* 社員給与分類項目
 */
 @Getter
 public class EmploySalaryClassHistory extends AggregateRoot implements ContinuousResidentHistory<YearMonthHistoryItem, YearMonthPeriod,YearMonth> {

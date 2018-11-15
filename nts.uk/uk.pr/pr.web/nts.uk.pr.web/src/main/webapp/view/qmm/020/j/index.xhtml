@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 500, height:450 };</script>
+        <script>var dialogSize = {width: 500, height:460 };</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm020.j.vm.js"/>
@@ -111,12 +111,12 @@
             <div data-bind="if: modeScreen() != nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO">
                 <div class=" table table-col-2">
                     <div class="cell valign-top" style="display: inline-flex;margin-top: 10px;">
-                        <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                        <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin-left: 10px;">
                             <span class="label">#{i18n.getText('QMM020_58')}</span>
                         </div>
                     </div>
                     <div class ="cell valign-top">
-                        <div id="J7_1" class="cell" tabIndex="1" style= "display: inline-block;text-align: left;margin: 15px 0px 0px 30px"
+                        <div id="J7_1" class="cell" tabIndex="1" style= "display: inline-block;text-align: left;margin-top: 15px; width: 300px"
                              data-bind="ntsRadioBoxGroup: {
 										value: transferMethod,
 										options: itemList(),
