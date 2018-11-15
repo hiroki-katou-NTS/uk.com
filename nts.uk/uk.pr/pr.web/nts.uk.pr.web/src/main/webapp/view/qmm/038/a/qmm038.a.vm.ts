@@ -13,7 +13,6 @@ module nts.uk.pr.view.qmm038.a {
             numberValidator = new validation.NumberValidator(getText("QMM038_11"), "AverageWage", { required: true });
             dataUpdate: Array<UpdateEmployee> = [];
 
-
             constructor() {
                 let self = this;
                 nts.uk.pr.view.qmm038.a.service.defaultData().done(function(response) {
@@ -166,14 +165,18 @@ module nts.uk.pr.view.qmm038.a {
             }
 
             findByEmployee() {
-                nts.uk.ui.errors.clearAll();
                 let self = this;
+                nts.uk.ui.errors.clearAll();
                 let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
                 nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
                     self.statementItems = [];
                     self.statementItems = _.sortBy(response, ["employeeCode"]);
                     $("#gridStatement").ntsGrid("destroy");
-                    self.loadGrid();
+                    if(self.statementItems.length == 1) {
+                        self.loadGridLimit();
+                    } else {
+                        self.loadGrid();
+                    }
                 });
                 $("#A3_1").focus();
             }
