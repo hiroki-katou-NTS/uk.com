@@ -38,4 +38,7 @@ public class MonthlyWorkplaceData {
 	
 	/** The workplace hierarchy total. */
 	public WorkplaceTotal workplaceHierarchyTotal;
+	
+	// Employee data & child workplaces' employee data presentation
+	boolean hasData = false;
 }
