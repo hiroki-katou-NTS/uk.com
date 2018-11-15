@@ -219,10 +219,9 @@ module nts.uk.pr.view.qmm038.a {
                 nts.uk.ui.errors.clearAll();
                 _.each(statementItems, (item: IDataScreen) => {
                     if(item.averageWage == null) {
-                        check = false;
-                    } else {
-                        check = self.numberValidator.validate(item.averageWage.toString());
+                        item.averageWage = "";
                     }
+                    check = self.numberValidator.validate(item.averageWage.toString());
                     if(!check.isValid) {
                         self.setErrorAverageWage(item.employeeCode, check.errorCode, check.errorMessage)
                     }
