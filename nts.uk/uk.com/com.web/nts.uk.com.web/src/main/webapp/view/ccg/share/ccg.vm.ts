@@ -1709,7 +1709,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 // Data not found
                 if (nts.uk.util.isNullOrEmpty(data)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
-                    return;
                 }
 
                 // sort by code
@@ -1723,6 +1722,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set data to kcp005
                 self.employeeListTab3(self.toUnitModelList(sortedList));
+                return;
             }
             
             /**
