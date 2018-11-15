@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -19,6 +20,8 @@ public class SetDaySupportFinder {
     @Inject
     private SetDaySupportRepository finder;
 
+
+
     public List<SetDaySupportDto> getAllSetDaySupport() {
         return finder.getAllSetDaySupport().stream().map(item -> SetDaySupportDto.fromDomain(item))
                 .collect(Collectors.toList());
@@ -28,4 +31,10 @@ public class SetDaySupportFinder {
         String cid = AppContexts.user().companyId();
         return finder.getSetDaySupportById(cid, processCateNo).stream().map(item -> SetDaySupportDto.fromDomain(item)).collect(Collectors.toList());
     }
+
+    public SetDaySupportDto getEmployeeExtractionReferenceDateByIdAndProcessDate(int processCateNo, int processDate){
+        String cid = AppContexts.user().companyId();
+        return SetDaySupportDto.fromDomain(finder.getSetDaySupportByIdAndProcessDate(cid,processCateNo,processDate).orElse(null));
+    }
+
 }
