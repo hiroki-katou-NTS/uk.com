@@ -11,10 +11,10 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
     export class ScreenModel {
 
-        listStateCorrelationHisPosition: KnockoutObservableArray<StateCorrelationHisPosition> =  ko.observableArray([]);
+        listStateCorrelationHisPosition: KnockoutObservableArray<StateCorrelationHisPosition> = ko.observableArray([]);
         hisIdSelected: KnockoutObservable<string> = ko.observable();
         mode: KnockoutObservable<number> = ko.observable(2);
-        listStateLinkSettingMaster: KnockoutObservableArray<model.StateLinkSettingMaster> =  ko.observableArray([]);
+        listStateLinkSettingMaster: KnockoutObservableArray<model.StateLinkSettingMaster> = ko.observableArray([]);
         transferMethod: KnockoutObservable<number> = ko.observable();
         startYearMonth: KnockoutObservable<number> = ko.observable();
         endYearMonth: KnockoutObservable<number> = ko.observable(999912);
@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         baseDate: KnockoutObservable<any> = ko.observable();
         baseDateValue: KnockoutObservable<any> = ko.observable();
 
-        constructor(){
+        constructor() {
             let self = this;
             self.initScreen(null);
             self.hisIdSelected.subscribe((data) => {
@@ -32,14 +32,14 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 let self = this;
                 self.index(self.getIndex(data));
                 if (data != '') {
-                    if(self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
+                    if (self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
                         self.getStateLinkSettingMasterPosition(self.listStateCorrelationHisPosition()[FIRST + 1].hisId, self.listStateCorrelationHisPosition()[FIRST + 1].startYearMonth, self.baseDate());
                         self.baseDate(getText('QMM020_39', [model.convertMonthYearToString(self.baseDateNew())]));
-                    } else if(self.transferMethod() == model.TRANSFER_MOTHOD.CREATE_NEW && self.hisIdSelected() == HIS_ID_TEMP) {
+                    } else if (self.transferMethod() == model.TRANSFER_MOTHOD.CREATE_NEW && self.hisIdSelected() == HIS_ID_TEMP) {
                         self.getStateLinkSettingMasterPosition(data, self.listStateCorrelationHisPosition()[self.index()].startYearMonth, self.baseDateValue());
                         self.baseDate(getText('QMM020_39', [model.convertMonthYearToString(self.baseDateNew())]));
                     } else {
-                        self.getDateBase(data).done(()=> {
+                        self.getDateBase(data).done(() => {
                             self.getStateLinkSettingMasterPosition(data, self.listStateCorrelationHisPosition()[self.index()].startYearMonth, self.baseDateValue());
                         });
                         self.startYearMonth(self.listStateCorrelationHisPosition()[self.index()].startYearMonth);
@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         }
 
-        loadGird(){
+        loadGird() {
             let self = this;
             $("#F3_1").ntsGrid({
                 height: '320px',
@@ -60,32 +60,55 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100' , hidden: true},
-                    { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100' },
-                    { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '200' },
-                    { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Salary' },
-                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '170'},
-                    { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Bonus' },
-                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '170' },
+                    {headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100', hidden: true},
+                    {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100'},
+                    {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '200'},
+                    {
+                        headerText: getText('QMM020_20'),
+                        key: 'salary',
+                        dataType: 'string',
+                        width: '80px',
+                        unbound: true,
+                        ntsControl: 'Salary'
+                    },
+                    {headerText: '', key: 'displayE3_4', dataType: 'string', width: '170'},
+                    {
+                        headerText: getText('QMM020_22'),
+                        key: 'bonus',
+                        dataType: 'string',
+                        width: '80px',
+                        unbound: true,
+                        ntsControl: 'Bonus'
+                    },
+                    {headerText: '', key: 'displayE3_5', dataType: 'string', width: '170'},
 
                 ],
                 features: [
-                    { name: 'Sorting',
+                    {
+                        name: 'Sorting',
                         type: 'local'
                     },
                     {
-                    name: 'Selection',
-                    mode: 'row',
-                    multipleSelection: true
-                }],
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: true
+                    }],
                 ntsControls: [
-                    { name: 'Salary', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 1) }, controlType: 'Button' },
-                    { name: 'Bonus', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 2) }, controlType: 'Button' }]
+                    {
+                        name: 'Salary', text: getText("QMM020_21"), click: function (item) {
+                            self.openMScreen(item, 1)
+                        }, controlType: 'Button'
+                    },
+                    {
+                        name: 'Bonus', text: getText("QMM020_21"), click: function (item) {
+                            self.openMScreen(item, 2)
+                        }, controlType: 'Button'
+                    }]
             });
             $("#F3_1").setupSearchScroll("igGrid", true);
         }
 
-        initScreen(hisId: string){
+        initScreen(hisId: string) {
             let self = this;
             block.invisible();
             service.getStateCorrelationHisPosition().done((listStateCorrelationHisPosition: Array<StateCorrelationHisPosition>) => {
@@ -98,6 +121,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     self.hisIdSelected(self.listStateCorrelationHisPosition()[self.getIndex(hisId)].hisId);
                 } else {
                     self.mode(model.MODE.NO_REGIS);
+                    self.loadGird();
                 }
             }).always(() => {
                 block.clear();
@@ -106,7 +130,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         }
 
-        registerPosition(){
+        registerPosition() {
             let self = this;
             if (self.mode() == model.MODE.NO_REGIS) {
                 return;
@@ -117,16 +141,16 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 mode: self.mode(),
                 hisId: self.hisIdSelected(),
                 startYearMonth: self.startYearMonth(),
-                endYearMonth:  self.endYearMonth(),
+                endYearMonth: self.endYearMonth(),
                 baseDate: self.baseDateValue
             }
             block.invisible();
             service.registerCorrelationHisPosition(data).done(() => {
-                dialog.info({ messageId: "Msg_15" }).then(() => {
+                dialog.info({messageId: "Msg_15"}).then(() => {
                     self.transferMethod(null);
                     self.initScreen(self.hisIdSelected());
                 });
-            }).fail(function(res: any) {
+            }).fail(function (res: any) {
                 if (res)
                     dialog.alertError(res);
             }).always(() => {
@@ -140,15 +164,15 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             return this.mode() == model.MODE.NO_REGIS;
         }
 
-        enableNew(){
-            return this.mode() == model.MODE.NEW ;
+        enableNew() {
+            return this.mode() == model.MODE.NEW;
         }
 
-        enableEdit(){
+        enableEdit() {
             return this.mode() == model.MODE.UPDATE;
         }
 
-        getStateLinkSettingMasterPosition(hisId: string, startYeaMonth: number, date: any){
+        getStateLinkSettingMasterPosition(hisId: string, startYeaMonth: number, date: any) {
             block.invisible();
             let self = this;
             let data = {
@@ -160,7 +184,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
-                    if(hisId == HIS_ID_TEMP) {
+                    if (hisId == HIS_ID_TEMP) {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
@@ -172,7 +196,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             });
         }
 
-        getDateBase(hisId: string): JQueryPromise<any>{
+        getDateBase(hisId: string): JQueryPromise<any> {
             dfd = $.Deferred();
             let self = this;
             service.getDateBase(hisId).done((item: any) => {
@@ -181,16 +205,16 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     self.baseDate(getText('QMM020_39', [item.date]));
                 }
                 dfd.resolve();
-                }).fail(function (err) {
-                    dfd.reject();
-                    dialog.alertError(err);
-                });
+            }).fail(function (err) {
+                dfd.reject();
+                dialog.alertError(err);
+            });
             return dfd.promise();
         }
 
-        findItem(masterCode){
+        findItem(masterCode) {
             let self = this;
-            let temp = _.findIndex(self.listStateLinkSettingMaster(), function(x) {
+            let temp = _.findIndex(self.listStateLinkSettingMaster(), function (x) {
                 return x.masterCode == masterCode;
             });
             if (temp && temp != -1) {
@@ -199,9 +223,9 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             return 0;
         }
 
-        updateLinkSettingMaster(statementCode :string, statementName: string, position: number, code: number ){
+        updateLinkSettingMaster(statementCode: string, statementName: string, position: number, code: number) {
             let self = this;
-            if(code == 1) {
+            if (code == 1) {
                 self.listStateLinkSettingMaster()[position].salaryCode = statementCode;
                 self.listStateLinkSettingMaster()[position].salaryName = statementName;
                 self.listStateLinkSettingMaster()[position].displayE3_4 = model.displayCodeAndName(statementCode, statementName);
@@ -220,7 +244,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 startYearMonth: self.startYearMonth(),
                 modeScreen: model.MODE_SCREEN.POSITION
             });
-            modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
+            modal("/view/qmm/020/m/index.xhtml").onClosed(() => {
                 let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
                 if (params) {
                     let index: number;
@@ -236,7 +260,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             block.invisible();
             let self = this;
             let start = self.startLastYearMonth();
-            if(self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
+            if (self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
                 start = self.listStateCorrelationHisPosition()[FIRST].startYearMonth;
             }
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
@@ -244,7 +268,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 isPerson: false,
                 modeScreen: model.MODE_SCREEN.POSITION
             });
-            modal("/view/qmm/020/j/index.xhtml").onClosed(() =>{
+            modal("/view/qmm/020/j/index.xhtml").onClosed(() => {
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if (params) {
                     self.transferMethod(params.transferMethod);
@@ -258,7 +282,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             block.clear();
         }
 
-        openKScreen(){
+        openKScreen() {
             let self = this;
             self.index(self.getIndex(self.hisIdSelected()));
             let laststartYearMonth: number = 0;
@@ -277,12 +301,12 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete
             });
-            modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
+            modal("/view/qmm/011/k/index.xhtml").onClosed(function () {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
-                if(params && params.methodEditing == 1) {
+                if (params && params.methodEditing == 1) {
                     self.initScreen(self.hisIdSelected());
                 }
-                if(params && params.methodEditing == 0) {
+                if (params && params.methodEditing == 0) {
                     self.initScreen(null);
                 }
                 $('#F2_1').focus();
@@ -293,7 +317,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         getIndex(hisId: string) {
             let self = this;
-            let temp = _.findIndex(self.listStateCorrelationHisPosition(), function(x) {
+            let temp = _.findIndex(self.listStateCorrelationHisPosition(), function (x) {
                 return x.hisId == hisId;
             });
             if (temp && temp != -1) {
@@ -302,7 +326,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             return 0;
         }
 
-        createStateCorrelationHisPosition(start: number, end: number){
+        createStateCorrelationHisPosition(start: number, end: number) {
             let self = this;
             if (self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
                 let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
@@ -313,7 +337,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             stateCorrelationHisPosition.hisId = HIS_ID_TEMP;
             stateCorrelationHisPosition.startYearMonth = start;
             stateCorrelationHisPosition.endYearMonth = end;
-            stateCorrelationHisPosition.display = getText('QMM020_16', [model.convertMonthYearToString(start),model.convertMonthYearToString(end)]);
+            stateCorrelationHisPosition.display = getText('QMM020_16', [model.convertMonthYearToString(start), model.convertMonthYearToString(end)]);
 
             return stateCorrelationHisPosition;
         }
@@ -325,23 +349,24 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         startYearMonth: number;
         endYearMonth: number;
         display: string;
+
         constructor() {
 
         }
-        static convertToDisplay(item){
+
+        static convertToDisplay(item) {
             let listPosition = [];
             _.each(item, (item) => {
                 let dto: StateCorrelationHisPosition = new StateCorrelationHisPosition();
                 dto.hisId = item.hisId;
                 dto.startYearMonth = item.startYearMonth;
                 dto.endYearMonth = item.endYearMonth;
-                dto.display = getText('QMM020_16', [model.convertMonthYearToString(item.startYearMonth),model.convertMonthYearToString(item.endYearMonth)]);
+                dto.display = getText('QMM020_16', [model.convertMonthYearToString(item.startYearMonth), model.convertMonthYearToString(item.endYearMonth)]);
                 listPosition.push(dto);
             });
             return listPosition;
         }
     }
-
     export const FIRST = 0;
 
     export const HIS_ID_TEMP = "00000";

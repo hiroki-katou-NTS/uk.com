@@ -190,7 +190,7 @@ public class ConfirmOfIndividualSetSttFinder {
                 Optional<EmploySalaryClassHistory> mEmploySalaryClassHistory = mEmploySalaryClassHistoryRepository.getEmploySalaryClassHistoryById(employeeId, hisId);
                 Optional<EmploySalaryCategory> mEmploySalaryCategory = mEmploySalaryCategoryRepository.getEmploySalaryClassHistoryById(mEmploySalaryClassHistory.get().getHistory().get(0).identifier());
                 /*ドメインモデル「明細書紐付け履歴（給与分類）」を取得する*/
-                Optional<StateCorrelationHisSalary> mStateCorrelationHisSalary = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
+                 Optional<StateCorrelationHisSalary> mStateCorrelationHisSalary = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
                 Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mEmploySalaryCategory.get().getSalaryClassCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){

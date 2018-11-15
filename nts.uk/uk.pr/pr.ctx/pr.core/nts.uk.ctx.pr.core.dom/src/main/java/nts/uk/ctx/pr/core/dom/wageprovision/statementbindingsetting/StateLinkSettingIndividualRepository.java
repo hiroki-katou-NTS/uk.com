@@ -6,8 +6,7 @@ import java.util.List;
 /**
 * 明細書紐付け設定（個人）
 */
-public interface StateLinkSettingIndividualRepository
-{
+public interface StateLinkSettingIndividualRepository {
 
     List<StateLinkSettingIndividual> getAllStateLinkSettingIndividual();
 

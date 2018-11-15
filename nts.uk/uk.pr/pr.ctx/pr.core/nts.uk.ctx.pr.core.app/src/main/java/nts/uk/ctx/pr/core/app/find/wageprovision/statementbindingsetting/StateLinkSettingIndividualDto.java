@@ -1,0 +1,46 @@
+package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
+
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividual;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingIndividual;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+* 明細書紐付け設定（個人）: DTO
+*/
+@AllArgsConstructor
+@Value
+public class StateLinkSettingIndividualDto {
+
+    private String hisId;
+
+    private String salaryCode;
+
+    private String salaryName;
+
+    private String bonusName;
+
+    private String bonusCode;
+    
+    
+    public static StateLinkSettingIndividualDto fromDomain(StateLinkSettingIndividual domain) {
+      // return new StateLinkSettingIndividualDto(domain.get(), domain.get(), domain.get());
+        return null;
+    }
+
+    public static StateLinkSettingIndividualDto fromDomain(StateLinkSettingIndividual domain, List<StatementLayout> listStatementLayout) {
+        Optional<StatementLayout> tempSalary = listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getSalaryCode().get().v())).findFirst();
+        Optional<StatementLayout> tempBonus = listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getBonusCode().get().v())).findFirst();
+        return new StateLinkSettingIndividualDto (
+                domain.getHistoryID(),
+                domain.getSalaryCode().isPresent() ? domain.getSalaryCode().get().v() : null,
+                domain.getBonusCode().isPresent() ? domain.getBonusCode().get().v() : null,
+                tempBonus.isPresent() ? tempBonus.get().getStatementName().v() : null,
+                tempSalary.isPresent() ? tempSalary.get().getStatementName().v() : null);
+    }
+    
+}
