@@ -23,6 +23,7 @@
     <ui:define name="content">
         <div id="contents-area" style="padding-top: 0px;">
             <div style="margin-left: 20px;" data-bind="with: basicCalulcationFormula">
+                <!--E1-1; E1_2; E1_13-->
                 <div class="dialog-first-element">
                     <div>#{i18n.getText('QMM017_166')}</div>
                     <div style="margin-left: 30px;">#{i18n.getText('QMM017_167')}</div>
@@ -30,9 +31,11 @@
                     <hr></hr>
                 </div>
                 <div style="margin-top: 20px; min-width: 550px">
+                    <!--E1_4-->
                     <div style="width: 130px; display: inline-block;"
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_101')}</div>
-                    <div style="display: inline-block; vertical-align: middle">
+                    <!--E1_5-->
+                    <div id ="E5_1" style="display: inline-block; vertical-align: middle">
                         <div tabindex = "2" data-bind="ntsComboBox: {
                             name: '#[QMM017_102]',
                             options: formulaTypeItem,
@@ -49,11 +52,14 @@
                     <div style="margin-left: 120px; ">
                         <div>
                             <div style = "margin-left: 15px;">
+                                <!--E1_7; E1_8; E1_9-->
                                 <img src='/' data-bind="attr: {src: displayFormulaImagePath}"></img>
                             </div>
                             <div style="margin-top: 10px; ">
+                                <!--E2_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_105')}</div>
+                                <!--E2_2-->
                                 <div style="display: inline-block; vertical-align: middle">
                                     <div tabindex = "3" data-bind="ntsComboBox: {
                                         name: '#[QMM017_106]',
@@ -69,12 +75,14 @@
                                 </div>
                             </div>
                             <div style = "margin-left: 115px;">
+                                <!--E3_4; E2_5-->
                                 <div data-bind = "visible: standardAmountClassification() != 0">
                                     <button tabindex = "4">#{i18n.getText('QMM017_107')}</button>
                                     <input data-bind="ntsNumberEditor: {
                                 value: $vm.baseAmountTargetItem,
                                 enable: false}" />
                                 </div>
+                                <!--E2_5-->
                                 <div data-bind = "visible: standardAmountClassification() == 0">
                                     <input tabindex="5" data-bind="ntsNumberEditor: {
                                 value: standardFixedValue,
@@ -83,9 +91,11 @@
                                 required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; ">
+                            <div style="margin-top: 10px; " data-bind = "visible: formulaType() == 2">
+                                <!--E3_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_110')}</div>
+                               <!--E3_2-->
                                 <div style="display: inline-block; vertical-align: middle">
                                     <div tabindex="6" data-bind="ntsComboBox: {
                                         name: '#[QMM017_111]',
@@ -99,19 +109,21 @@
                                         ]}">
                                     </div>
                                 </div>
-                            </div>
-                            <div style = "margin-left: 115px;">
-                                <div >
+                                <!--E3_4-->
+                                <div style = "margin-left: 115px;" >
                                     <input tabindex="7" data-bind="ntsNumberEditor: {
                                         value: baseItemFixedValue,
                                         constraint: 'BaseItemFixedValue',
                                         name: '#[QMM017_111]',
+                                        enable: baseItemClassification() == 0,
                                         required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; ">
+                            <div style="margin-top: 10px; " data-bind = "visible: formulaType() == 1">
+                                <!--E4_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true, constraint: 'PremiumRate'}">#{i18n.getText('QMM017_113')}</div>
+                                <!--E4_2-->
                                 <div style="display: inline-block; vertical-align: text-bottom">
                                     <input tabindex="8" data-bind="ntsNumberEditor: {
                                         value: premiumRate,
@@ -123,9 +135,11 @@
                                         required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; ">
+                            <div style="margin-top: 10px;" data-bind = "visible: formulaType() == 1">
+                                <!--E5_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_115')}</div>
+                                <!--E5_2-->
                                 <div style="display: inline-block; vertical-align: middle">
                                     <div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
                                         name: '#[QMM017_17]',
@@ -139,8 +153,10 @@
                                 </div>
                             </div>
                             <div style="margin-top: 10px; ">
+                                <!--E6_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_117')}</div>
+                                <!--E6_2-->
                                 <div style="display: inline-block; vertical-align: middle">
                                     <div tabindex="10" data-bind="ntsComboBox: {
                                         name: '#[QMM017_118]',
@@ -157,16 +173,20 @@
                             </div>
                             <div style = "margin-left: 115px;">
                                 <div >
+                                    <!--E6_4-->
                                     <input tabindex="11" data-bind="ntsNumberEditor: {
                                         value: coefficientFixedValue,
                                         constraint: 'CoefficientFixedValue',
                                         name: '#[QMM017_111]',
+                                        enable: coefficientClassification() == 0,
                                         required: true}" />
                                 </div>
                             </div>
                             <div style="margin-top: 10px; ">
+                                <!--E7_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_120')}</div>
+                                <!--E7_2-->
                                 <div style="display: inline-block; vertical-align: middle">
                                     <div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
                                         name: '#[QMM017_120]',
@@ -180,8 +200,10 @@
                                 </div>
                             </div>
                             <div style="margin-top: 10px; ">
+                                <!--E8_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_122')}</div>
+                                <!--E8_2-->
                                 <div style="display: inline-block; vertical-align: middle">
                                     <div tabindex="14" data-bind="ntsComboBox: {
                                         name: '#[QMM017_123]',

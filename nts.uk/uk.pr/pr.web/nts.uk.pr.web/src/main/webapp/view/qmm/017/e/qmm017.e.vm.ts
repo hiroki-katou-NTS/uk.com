@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            $('#E5_1').focus();
             dfd.resolve();
             return dfd.promise();
         }
