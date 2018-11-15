@@ -80,13 +80,6 @@ public class WorkplaceConfigInfoFinder {
 			return Collections.emptyList();
 		}
 		
-		// Check if is restrictionOfReferenceRange.
-		List<String> workplaceIdsCanReference = new ArrayList<>();
-		if (object.getRestrictionOfReferenceRange()) {
-			workplaceIdsCanReference = this.syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType(), object.getBaseDate())
-					.getListWorkplaceIds();
-		}
-		
 		// Find Workplace Config.
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepository.findByBaseDate(companyId, object.getBaseDate());
@@ -98,8 +91,18 @@ public class WorkplaceConfigInfoFinder {
 		// Find workplace config info.
 		List<String> configHisIds = optionalWkpConfig.get().items().stream().map(item -> item.identifier())
 				.collect(Collectors.toList());
-		List<WorkplaceConfigInfo> workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId,
-				configHisIds, workplaceIdsCanReference);
+
+		List<WorkplaceConfigInfo> workplaceConfigInfos;
+
+		// Check if is restrictionOfReferenceRange.
+		if (object.getRestrictionOfReferenceRange()) {
+			List<String> workplaceIdsCanReference = this.syRoleWorkplaceAdapter
+					.findListWkpIdByRoleId(object.getSystemType(), object.getBaseDate()).getListWorkplaceIds();
+			workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, configHisIds,
+					workplaceIdsCanReference);
+		} else {
+			workplaceConfigInfos = this.wkpConfigInfoRepo.findByHistoryIds(companyId, configHisIds);
+		}
 
 		if (CollectionUtil.isEmpty(workplaceConfigInfos)) {
 			return Collections.emptyList();

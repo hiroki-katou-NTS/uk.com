@@ -191,7 +191,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		// 超過時間 : 時間外超過設定 11
 		List<OvertimeDto> overtimesSetting;
 		List<OutsideOTBRDItemDto> outsideOTBRDItem;
-		Optional<OutsideOTSetting> outsideOTSetting = outsideOTSettingRepository.findById(companyId);
+		Optional<OutsideOTSetting> outsideOTSetting = outsideOTSettingRepository.findByIdV2(companyId);
 		if (outsideOTSetting.isPresent()) {
 			overtimesSetting = outsideOTSetting.get().getOvertimes().stream().map(c -> convertFromOvertime(c))
 					.collect(Collectors.toList());

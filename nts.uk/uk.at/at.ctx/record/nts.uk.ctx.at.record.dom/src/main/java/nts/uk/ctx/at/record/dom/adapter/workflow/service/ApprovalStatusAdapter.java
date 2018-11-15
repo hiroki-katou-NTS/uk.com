@@ -174,4 +174,9 @@ public interface ApprovalStatusAdapter {
 	 * RequestList 115
 	 */
 	public List<ApproverApproveImport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst, Integer rootType); 
+	
+	/**
+	 * RequestList 538
+	 */
+	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date);
 }

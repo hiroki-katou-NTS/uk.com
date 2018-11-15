@@ -70,7 +70,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		Optional<NursingLeaveSetting> _nursingLeaveSetting = this.findNursingLeaveSetting(companyId,
 				NursingCategory.Nursing);
-		if (!_nursingLeaveSetting.isPresent()  || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged())) {
+		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged()) || (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged() && _nursingLeaveSetting.get().getStartMonthDay() == 0)) {
 			childNursingRemainExport.setIsManage(false);
 			return childNursingRemainExport;
 		} else {
@@ -140,7 +140,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		Optional<NursingLeaveSetting> _nursingLeaveSetting = this.findNursingLeaveSetting(companyId,
 				NursingCategory.Nursing);
-		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged()) ) {
+		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged())  || (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged() && _nursingLeaveSetting.get().getStartMonthDay() == 0)) {
 			childNursingRemainExport.setIsManage(false);
 			return childNursingRemainExport;
 		} else {

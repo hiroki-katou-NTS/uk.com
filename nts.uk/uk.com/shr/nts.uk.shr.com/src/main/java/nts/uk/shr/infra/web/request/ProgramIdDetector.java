@@ -41,24 +41,22 @@ public class ProgramIdDetector implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		request.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY, FilterConst.DEFAULT_CHARSET_PROPERTY);
-		String requestPagePath = ((HttpServletRequest) request).getHeader(FilterConst.PG_PATH);
-		if (requestPagePath == null) {
-			chain.doFilter(request, response);
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		httpRequest.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY, FilterConst.DEFAULT_CHARSET_PROPERTY);
+		String target = httpRequest.getHeader(FilterConst.PG_PATH);
+		if (target == null) {
+			chain.doFilter(httpRequest, response);
 			return;
 		}
-		
-		String ip = FilterHelper.getClientIp((HttpServletRequest) request);
-		String pcName = FilterHelper.getPcName(ip);
-		
-		AppContextsConfig.setRequestedWebAPI(new RequestInfo(
-													requestPagePath, 
-													FilterHelper.detectWebapi(requestPagePath), 
-													ip, pcName));
-		
-		FilterHelper.detectProgram(requestPagePath).ifPresent(id -> AppContextsConfig.setProgramId(id));
 
-		chain.doFilter(request, response);
+		String ip = FilterHelper.getClientIp(httpRequest);
+		String pcName = FilterHelper.getPcName(ip);
+
+		AppContextsConfig.setRequestedWebAPI(new RequestInfo(target, FilterHelper.detectWebapi(target), ip, pcName));
+		
+		FilterHelper.detectProgram(target).ifPresent(id -> AppContextsConfig.setProgramId(id));
+
+		chain.doFilter(httpRequest, response);
 	}
 
 	/*

@@ -202,6 +202,10 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	public void setUseAtr(boolean useAtr) {
 		this.useAtr = useAtr;
 	}
+	
+	public void updateCode(ErrorAlarmWorkRecordCode errorAlarmCode){
+		this.errorAlarmCode = errorAlarmCode;
+	}
 
 	// @SuppressWarnings("unchecked")
 	// private V toCheckValue(Integer target) {

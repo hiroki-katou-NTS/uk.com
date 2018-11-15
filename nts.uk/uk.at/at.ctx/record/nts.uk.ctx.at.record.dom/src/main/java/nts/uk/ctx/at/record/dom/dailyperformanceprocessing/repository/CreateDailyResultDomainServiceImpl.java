@@ -104,43 +104,43 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
-	
+
 	@Inject
 	private AffWorkplaceAdapter affWorkplaceAdapter;
-	
+
 	@Inject
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
-	
+
 	@Inject
 	private WorkingConditionService workingConditionService;
-	
+
 	@Inject
 	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
-	
+
 	@Inject
 	private CPBonusPaySettingRepository cPBonusPaySettingRepository;
-	
+
 	@Inject
 	private AutoCalculationSetService autoCalculationSetService;
-	
+
 	@Inject
 	private BPSettingRepository bPSettingRepository;
-	
+
 	@Inject
 	private RecSpecificDateSettingAdapter recSpecificDateSettingAdapter;
-	
+
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	
+
 	@Inject
 	private EmployeeRecordAdapter employeeRecordAdapter;
-	
+
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
-	
+
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
 	
@@ -214,135 +214,160 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 				/** 並列処理、AsyncTask */
 				// Create thread pool.
-//				ExecutorService executorService = Executors.newFixedThreadPool(20);
-//				CountDownLatch countDownLatch = new CountDownLatch(emloyeeIds.size());
+				// ExecutorService executorService =
+				// Executors.newFixedThreadPool(20);
+				// CountDownLatch countDownLatch = new
+				// CountDownLatch(emloyeeIds.size());
 
 				this.managedParallelWithContext.forEach(
 						ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 						emloyeeIds,
 						employeeId -> {
 					if (asyncContext.hasBeenRequestedToCancel()) {
-//						asyncContext.finishedAsCancelled();
+						// asyncContext.finishedAsCancelled();
 						stateHolder.add(ProcessState.INTERRUPTION);
 						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 						return;
-						//return ProcessState.INTERRUPTION;
+						// return ProcessState.INTERRUPTION;
 					}
-					//AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).setDataSetter(dataSetter)
-							//.threadName(this.getClass().getName()).build(() -> {
-								// 社員の日別実績を計算
-								if (stateHolder.isInterrupt()) {
-									// Count down latch.
-									//countDownLatch.countDown();
-									return;
-								}
-								
-								// 日別実績の作成入社前、退職後を期間から除く
-								DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime, empCalAndSumExecLogID);
-								
-								// 対象期間 = periodTime
-								// 職場構成期間 = workPlaceHistory
-								// 社員の履歴情報 = employeeGeneralInfoImport
-								// 労働条件 = workingConditionItems ( Map<String, List<DateHistoryItem>> mapLstDateHistoryItem )
-								// 特定日、加給、計算区分情報を取得する
-								// 履歴が区切られている年月日を判断する
-								List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod, workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
-								
-								PeriodInMasterList periodInMasterList = new PeriodInMasterList();
-								List<MasterList> masterLists = new ArrayList<>();
-								 
-								if (historySeparatedList.size() > 0) {
-									for (int i = 0; i < historySeparatedList.size(); i++) {
-										GeneralDate strDate = historySeparatedList.get(i);
-										GeneralDate endDate = (i == historySeparatedList.size() -1) ? newPeriod.end() : historySeparatedList.get(i + 1).addDays(-1);
-										
-										// get 職場履歴一覧
-										List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoImport.getExWorkPlaceHistoryImports();
-										// get 職位履歴一覧
-										List<ExJobTitleHistoryImport> exJobTitleHistoryImports = employeeGeneralInfoImport.getExJobTitleHistoryImports();
-										// filter follow employeeId
-										Optional<ExWorkPlaceHistoryImport> optional = exWorkPlaceHistoryImports.stream().filter(item -> item.getEmployeeId().equals(employeeId)).findFirst();
-										Optional<ExJobTitleHistoryImport> jobTitleOptional = exJobTitleHistoryImports.stream().filter(item -> item.getEmployeeId().equals(employeeId)).findFirst();
-										// get workPlaceItem
-										List<ExWorkplaceHistItemImport> workplaceItems = optional.isPresent() ? optional.get().getWorkplaceItems() : new ArrayList<>();
-										// get jobTitleHistItem
-										List<ExJobTitleHistItemImport> jobTitleItems = jobTitleOptional.isPresent() ? jobTitleOptional.get().getJobTitleItems() : new ArrayList<>();
-										// filter : DatePeriod of workplaceItems has contains start date 
-										Optional<ExWorkplaceHistItemImport> itemImport = workplaceItems.stream().filter(item -> item.getPeriod().contains(strDate)).findFirst();
-										// filter : DatePeriod of jobTitleItems has contains start date 
-										Optional<ExJobTitleHistItemImport> jobTitleItemImport = jobTitleItems.stream().filter(item -> item.getPeriod().contains(strDate)).findFirst();
-										// get workPlaceId
-										String workPlaceId = itemImport.isPresent() ? itemImport.get().getWorkplaceId() : null;
-										// get jobTitleId
-										String jobTitleId = jobTitleItemImport.isPresent() ? jobTitleItemImport.get().getJobTitleId() : null;
-										
-										if (workPlaceId != null && jobTitleId != null) {
-											// 職場IDと基準日から上位職場を取得する
-											// reqList 496
-											List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
-											// 特定日設定を取得する
-											// Reqlist 490
-											RecSpecificDateSettingImport specificDateSettingImport = this.recSpecificDateSettingAdapter.specificDateSettingServiceByListWpl(companyId, workPlaceIdList, strDate);
-											
-											// 会社職場個人の加給設定を取得する
-											Optional<BonusPaySetting> bonusPaySettingOpt = this.reflectBonusSetting(companyId, employeeId, strDate, workPlaceIdList);
-											
-											// 自動計算設定の取得
-											BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(companyId,
-													employeeId, strDate, workPlaceId, jobTitleId, Optional.of(workPlaceIdList));
-											
-											// set data in PeriodInMasterList
-											DatePeriod datePeriod = new DatePeriod(strDate, endDate);
-											
-											MasterList masterList = new MasterList();
-											masterList.setBaseAutoCalSetting(baseAutoCalSetting);
-											masterList.setBonusPaySettingOpt(bonusPaySettingOpt);
-											masterList.setDatePeriod(datePeriod);
-											masterList.setSpecificDateSettingImport(Optional.ofNullable(specificDateSettingImport));
-											
-											masterLists.add(masterList);
-										}
-									}
-									periodInMasterList.setEmployeeId(employeeId);
-									periodInMasterList.setMasterLists(masterLists);
-								}								
-								
-								ProcessState cStatus = createData(asyncContext, newPeriod, executionAttr, companyId,
-										empCalAndSumExecLogID, executionLog, dataSetter, employeeGeneralInfoImport,
-										stateHolder, employeeId, stampReflectionManagement, mapWorkingConditionItem,
-										mapDateHistoryItem, periodInMasterList);
-								if (cStatus == ProcessState.INTERRUPTION) {
-									stateHolder.add(cStatus);
-									dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
-									// Count down latch.
-									//countDownLatch.countDown();
-									return;
-								} 
-								
-								stateHolder.add(cStatus);
-//								// Count down latch.
-//								//countDownLatch.countDown();
-//								return;
-							//});
-					if(stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0) {
-						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+					// AsyncTask task =
+					// AsyncTask.builder().withContexts().keepsTrack(false).setDataSetter(dataSetter)
+					// .threadName(this.getClass().getName()).build(() -> {
+					// 社員の日別実績を計算
+					if (stateHolder.isInterrupt()) {
 						// Count down latch.
-						//countDownLatch.countDown();
-						stateHolder.add(ProcessState.INTERRUPTION);
+						// countDownLatch.countDown();
 						return;
-						//return ProcessState.INTERRUPTION;
 					}
-					//executorService.submit(task);
+
+					// 日別実績の作成入社前、退職後を期間から除く
+					DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime, empCalAndSumExecLogID);
+
+					if (newPeriod != null) {
+
+						// 対象期間 = periodTime
+						// 職場構成期間 = workPlaceHistory
+						// 社員の履歴情報 = employeeGeneralInfoImport
+						// 労働条件 = workingConditionItems ( Map<String,
+						// List<DateHistoryItem>> mapLstDateHistoryItem )
+						// 特定日、加給、計算区分情報を取得する
+						// 履歴が区切られている年月日を判断する
+						List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod, workPlaceHistory,
+								employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
+
+						PeriodInMasterList periodInMasterList = new PeriodInMasterList();
+						List<MasterList> masterLists = new ArrayList<>();
+
+						if (historySeparatedList.size() > 0) {
+							for (int i = 0; i < historySeparatedList.size(); i++) {
+								GeneralDate strDate = historySeparatedList.get(i);
+								GeneralDate endDate = (i == historySeparatedList.size() - 1) ? newPeriod.end()
+										: historySeparatedList.get(i + 1).addDays(-1);
+
+								// get 職場履歴一覧
+								List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoImport
+										.getExWorkPlaceHistoryImports();
+								// get 職位履歴一覧
+								List<ExJobTitleHistoryImport> exJobTitleHistoryImports = employeeGeneralInfoImport
+										.getExJobTitleHistoryImports();
+								// filter follow employeeId
+								Optional<ExWorkPlaceHistoryImport> optional = exWorkPlaceHistoryImports.stream()
+										.filter(item -> item.getEmployeeId().equals(employeeId)).findFirst();
+								Optional<ExJobTitleHistoryImport> jobTitleOptional = exJobTitleHistoryImports.stream()
+										.filter(item -> item.getEmployeeId().equals(employeeId)).findFirst();
+								// get workPlaceItem
+								List<ExWorkplaceHistItemImport> workplaceItems = optional.isPresent()
+										? optional.get().getWorkplaceItems() : new ArrayList<>();
+								// get jobTitleHistItem
+								List<ExJobTitleHistItemImport> jobTitleItems = jobTitleOptional.isPresent()
+										? jobTitleOptional.get().getJobTitleItems() : new ArrayList<>();
+								// filter : DatePeriod of workplaceItems has
+								// contains start date
+								Optional<ExWorkplaceHistItemImport> itemImport = workplaceItems.stream()
+										.filter(item -> item.getPeriod().contains(strDate)).findFirst();
+								// filter : DatePeriod of jobTitleItems has
+								// contains start date
+								Optional<ExJobTitleHistItemImport> jobTitleItemImport = jobTitleItems.stream()
+										.filter(item -> item.getPeriod().contains(strDate)).findFirst();
+								// get workPlaceId
+								String workPlaceId = itemImport.isPresent() ? itemImport.get().getWorkplaceId() : null;
+								// get jobTitleId
+								String jobTitleId = jobTitleItemImport.isPresent()
+										? jobTitleItemImport.get().getJobTitleId() : null;
+
+								if (workPlaceId != null && jobTitleId != null) {
+									// 職場IDと基準日から上位職場を取得する
+									// reqList 496
+									List<String> workPlaceIdList = this.affWorkplaceAdapter
+											.findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
+									// 特定日設定を取得する
+									// Reqlist 490
+									RecSpecificDateSettingImport specificDateSettingImport = this.recSpecificDateSettingAdapter
+											.specificDateSettingServiceByListWpl(companyId, workPlaceIdList, strDate);
+
+									// 会社職場個人の加給設定を取得する
+									Optional<BonusPaySetting> bonusPaySettingOpt = this.reflectBonusSetting(companyId,
+											employeeId, strDate, workPlaceIdList);
+
+									// 自動計算設定の取得
+									BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService
+											.getAutoCalculationSetting(companyId, employeeId, strDate, workPlaceId,
+													jobTitleId, Optional.of(workPlaceIdList));
+
+									// set data in PeriodInMasterList
+									DatePeriod datePeriod = new DatePeriod(strDate, endDate);
+
+									MasterList masterList = new MasterList();
+									masterList.setBaseAutoCalSetting(baseAutoCalSetting);
+									masterList.setBonusPaySettingOpt(bonusPaySettingOpt);
+									masterList.setDatePeriod(datePeriod);
+									masterList.setSpecificDateSettingImport(
+											Optional.ofNullable(specificDateSettingImport));
+
+									masterLists.add(masterList);
+								}
+							}
+							periodInMasterList.setEmployeeId(employeeId);
+							periodInMasterList.setMasterLists(masterLists);
+						}
+
+						ProcessState cStatus = createData(asyncContext, newPeriod, executionAttr, companyId,
+								empCalAndSumExecLogID, executionLog, dataSetter, employeeGeneralInfoImport, stateHolder,
+								employeeId, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
+								periodInMasterList);
+						if (cStatus == ProcessState.INTERRUPTION) {
+							stateHolder.add(cStatus);
+							dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+							// Count down latch.
+							// countDownLatch.countDown();
+							return;
+						}
+
+						stateHolder.add(cStatus);
+						// // Count down latch.
+						// //countDownLatch.countDown();
+						// return;
+						// });
+						if (stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0) {
+							dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+							// Count down latch.
+							// countDownLatch.countDown();
+							stateHolder.add(ProcessState.INTERRUPTION);
+							return;
+							// return ProcessState.INTERRUPTION;
+						}
+					}
+					// executorService.submit(task);
 				});
 				// Wait for latch until finish.
-//				try {
-//					countDownLatch.await();
-//				} catch (InterruptedException ie) {
-//					throw new RuntimeException(ie);
-//				} finally {
-//					// Force shut down executor services.
-//					executorService.shutdown();
-//				}
+				// try {
+				// countDownLatch.await();
+				// } catch (InterruptedException ie) {
+				// throw new RuntimeException(ie);
+				// } finally {
+				// // Force shut down executor services.
+				// executorService.shutdown();
+				// }
 				status = stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).findFirst()
 						.orElse(ProcessState.SUCCESS);
 				if (status == ProcessState.SUCCESS) {
@@ -360,7 +385,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 		return status;
 	}
-	
+
 	private DatePeriod checkPeriod(String companyId, String employeeId, DatePeriod periodTime,
 			String empCalAndSumExecLogID) {
 
@@ -401,19 +426,21 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 		return datePeriodOutput;
 	}
-	
+
 	// 会社職場個人の加給設定を取得する
-	private Optional<BonusPaySetting> reflectBonusSetting(String companyId, String employeeId, GeneralDate date, List<String> workPlaceIdList){
+	private Optional<BonusPaySetting> reflectBonusSetting(String companyId, String employeeId, GeneralDate date,
+			List<String> workPlaceIdList) {
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-		
+
 		// ドメインモデル「加給利用単位」を取得する
 		Optional<BPUnitUseSetting> bPUnitUseSetting = this.bPUnitUseSettingRepository.getSetting(companyId);
-		
+
 		// 加給利用単位．個人使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getPersonalUseAtr() == UseAtr.USE) {
 			// 社員の労働条件を取得する
-			Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(employeeId, date);
-			
+			Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService
+					.findWorkConditionByEmployee(employeeId, date);
+
 			if (workingConditionItem.isPresent() && workingConditionItem.get().getTimeApply().isPresent()) {
 				// ドメインモデル「加給設定」を取得する
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
@@ -421,13 +448,13 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				return bonusPaySetting;
 			}
 		}
-		
+
 		// 加給利用単位．職場使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getWorkplaceUseAtr() == UseAtr.USE) {
 			Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
-			for(String wPId : workPlaceIdList){
-				workplaceBonusPaySetting = this.wPBonusPaySettingRepository
-						.getWPBPSetting(companyId, new WorkplaceId(wPId));
+			for (String wPId : workPlaceIdList) {
+				workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(companyId,
+						new WorkplaceId(wPId));
 				if (workplaceBonusPaySetting.isPresent()) {
 					break;
 				}
@@ -438,37 +465,40 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				return bonusPaySetting;
 			}
 		}
-		
+
 		// ドメインモデル「会社加給設定」を取得する
 		Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
 				.getSetting(companyId);
-		
+
 		if (companyBonusPaySetting.isPresent()) {
 			bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
 					companyBonusPaySetting.get().getBonusPaySettingCode());
 			return bonusPaySetting;
 		}
-		
+
 		return bonusPaySetting;
 	}
 
 	// 履歴が区切られている年月日を判断する
 	private List<GeneralDate> historyIsSeparated(DatePeriod periodTime, List<DatePeriod> workPlaceHistory,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport, Map<String, List<DateHistoryItem>> mapLstDateHistoryItem, String employeeID) {
-		//履歴開始日一覧
+			EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Map<String, List<DateHistoryItem>> mapLstDateHistoryItem, String employeeID) {
+		// 履歴開始日一覧
 		List<GeneralDate> historyStartDateList = new ArrayList<>();
 		historyStartDateList.add(periodTime.start());
 		// add all startDate
 		if (workPlaceHistory.size() > 1) {
-			for(DatePeriod workPlaceDate : workPlaceHistory){
+			for (DatePeriod workPlaceDate : workPlaceHistory) {
 				historyStartDateList.add(workPlaceDate.start());
 			}
 		}
 
 		// get 所属職場の履歴
-		List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoImport.getExWorkPlaceHistoryImports();
+		List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoImport
+				.getExWorkPlaceHistoryImports();
 		// filter 所属職場の履歴 follow employeeID
-		List<ExWorkPlaceHistoryImport> newExWorkPlaceHistoryImports = exWorkPlaceHistoryImports.stream().filter(item -> item.getEmployeeId().equals(employeeID)).collect(Collectors.toList());
+		List<ExWorkPlaceHistoryImport> newExWorkPlaceHistoryImports = exWorkPlaceHistoryImports.stream()
+				.filter(item -> item.getEmployeeId().equals(employeeID)).collect(Collectors.toList());
 		// get all workPlaceHistory
 		List<ExWorkplaceHistItemImport> workplaceItems = new ArrayList<>();
 		newExWorkPlaceHistoryImports.stream().forEach(item -> {
@@ -476,17 +506,19 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		});
 		// add all startDate
 		if (workplaceItems.size() > 1) {
-			for (ExWorkplaceHistItemImport itemImport : workplaceItems){
+			for (ExWorkplaceHistItemImport itemImport : workplaceItems) {
 				if (!historyStartDateList.stream().anyMatch(item -> item.equals(itemImport.getPeriod().start()))) {
 					historyStartDateList.add(itemImport.getPeriod().start());
 				}
 			}
 		}
-		
+
 		// get 所属職位の履歴
-		List<ExJobTitleHistoryImport> exJobTitleHistoryImports = employeeGeneralInfoImport.getExJobTitleHistoryImports();
+		List<ExJobTitleHistoryImport> exJobTitleHistoryImports = employeeGeneralInfoImport
+				.getExJobTitleHistoryImports();
 		// filter 所属職位の履歴 follow employeeID
-		List<ExJobTitleHistoryImport> newExJobTitleHistoryImports = exJobTitleHistoryImports.stream().filter(item -> item.getEmployeeId().equals(employeeID)).collect(Collectors.toList());
+		List<ExJobTitleHistoryImport> newExJobTitleHistoryImports = exJobTitleHistoryImports.stream()
+				.filter(item -> item.getEmployeeId().equals(employeeID)).collect(Collectors.toList());
 		// get all jobTitleHistory
 		List<ExJobTitleHistItemImport> jobTitleItems = new ArrayList<>();
 		newExJobTitleHistoryImports.stream().forEach(item -> {
@@ -494,28 +526,29 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		});
 		// add all startDate
 		if (jobTitleItems.size() > 1) {
-			for (ExJobTitleHistItemImport jobTitleHistItemImport : jobTitleItems){
-				if (!historyStartDateList.stream().anyMatch(item -> item.equals(jobTitleHistItemImport.getPeriod().start()))) {
+			for (ExJobTitleHistItemImport jobTitleHistItemImport : jobTitleItems) {
+				if (!historyStartDateList.stream()
+						.anyMatch(item -> item.equals(jobTitleHistItemImport.getPeriod().start()))) {
 					historyStartDateList.add(jobTitleHistItemImport.getPeriod().start());
 				}
 			}
 		}
-		
+
 		// 労働条件の履歴が区切られている年月日を判断する
 		// filter 労働条件の履歴 follow employeeID
 		if (mapLstDateHistoryItem.containsKey(employeeID)) {
 			List<DateHistoryItem> dateHistoryItems = mapLstDateHistoryItem.get(employeeID);
 			if (dateHistoryItems.size() > 1) {
-				for(DateHistoryItem dateHistoryItem : dateHistoryItems) {
+				for (DateHistoryItem dateHistoryItem : dateHistoryItems) {
 					if (!historyStartDateList.stream().anyMatch(item -> item.equals(dateHistoryItem.start()))) {
 						historyStartDateList.add(dateHistoryItem.start());
 					}
-				}	
+				}
 			}
 		}
-		
+
 		historyStartDateList.sort((item1, item2) -> item1.compareTo(item2));
-		
+
 		return historyStartDateList;
 	}
 
@@ -530,18 +563,21 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList) {
 
 		/**
-		 * 勤務種別変更時に再作成　=　false reCreateWorkType
-		 * 異動時に再作成　=　false reCreateWorkPlace
-		 * 休職・休業者再作成　=　false reCreateRestTime
-		 * 暫定データ作成もcreateDailyResultEmployeeDomainServiceの中で実行
+		 * 勤務種別変更時に再作成 = false reCreateWorkType 異動時に再作成 = false
+		 * reCreateWorkPlace 休職・休業者再作成 = false reCreateRestTime
 		 */
 		ProcessState cStatus = createDailyResultEmployeeDomainService.createDailyResultEmployee(asyncContext,
-				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false, false, false, 
-				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList);
-		
+				employeeId, periodTime, companyId, empCalAndSumExecLogID, executionLog, false, false, false,
+				employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem,
+				periodInMasterList);
+
+		// 暫定データの登録
+		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
+				periodTime.datesBetween());
+
 		// ログ情報（実行内容の完了状態）を更新する
 		updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExecLogID);
-		
+
 		// 状態確認
 		if (cStatus == ProcessState.SUCCESS) {
 			dataSetter.updateData("dailyCreateCount", stateHolder.count() + 1);
