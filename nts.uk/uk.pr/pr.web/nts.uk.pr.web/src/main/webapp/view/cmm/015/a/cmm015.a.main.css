@@ -1,0 +1,26 @@
+#left-content {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#right-content {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#lbl-01-code-name, #lbl-02-memo {
+    width: 200px;
+}
+
+#inp-01-code {
+    width: 85px;
+}
+
+#inp-02-name {
+
+}
+
+#txa-01-memo {
+    width: 350px;
+    height: 100px;
+}

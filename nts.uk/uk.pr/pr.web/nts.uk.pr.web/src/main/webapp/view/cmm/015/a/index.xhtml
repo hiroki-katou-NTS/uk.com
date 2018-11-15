@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 300, height: 200};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.orginfo.salarycls.salaryclsmaster.SalaryClsCode
+            nts.uk.ctx.pr.core.dom.wageprovision.orginfo.salarycls.salaryclsmaster.SalaryClsName
+            nts.uk.ctx.pr.core.dom.wageprovision.orginfo.salarycls.salaryclsmaster.Memo
+        </com:ValidatorScript>
+        <com:stylefile path="cmm015.a.main.css" />
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="cmm015.a.start.js" />
+        <com:scriptfile path="cmm015.a.vm.js" />
+        <com:scriptfile path="cmm015.a.service.js" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button tabindex="1" data-bind="click: setNewMode">
+                #{i18n.getText('CMM015_2')}
+            </button>
+            <!--A1_2-->
+            <button class="proceed" tabindex="2" data-bind="click: registerSalaryClsInfo">
+                #{i18n.getText('CMM015_3')}
+            </button>
+            <!--A1_3-->
+            <button tabindex="3" data-bind="click: ">
+                #{i18n.getText('CMM015_4')}
+            </button>
+            <!--A1_4-->
+            <button class="danger" tabindex="4" data-bind="click: deleteSalaryClsInfo, enable: isDeleteEnable">
+                #{i18n.getText('CMM015_5')}
+            </button>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+            <div class="fixed-flex-layout-left" style="margin-right: 0">
+                <!--A2_1-->
+                <div id="left-content">
+                    <div data-bind="ntsPanel:{showIcon: true}" class="cf">
+                        <!--A2_2-->
+                        <div data-bind="ntsSearchBox: {
+                                comId: 'single-list',
+                                items: dataSource,
+                                mode: 'igGrid',
+                                targetKey: 'salaryClsCode',
+                                selected: currentCode,
+                                selectedKey: 'salaryClsCode',
+                                fields: ['salaryClsName', 'salaryClsCode']}"
+                        />
+                        <!--A2_3-->
+                        <table id="single-list"
+                               data-bind="ntsGridList: {
+                                width: 300,
+                                height: 400,
+                                columns: columns,
+                                options: dataSource,
+                                optionsValue: 'salaryClsCode',
+                                multiple: false,
+                                value: currentCode}"
+                               tabindex="6" />
+                    </div>
+                </div>
+            </div>
+            <div id="right-content" class="fixed-flex-layout-right">
+                <div data-bind="with: currentItem">
+                    <div class="valign-center control-group">
+                        <!--A3_1-->
+                        <div data-bind="ntsFormLabel: {
+                            constraint: ['SalaryClsCode', 'SalaryClsName'],
+                            required: true,
+                            inline: false }"
+                             id="lbl-01-code-name">
+                            #{i18n.getText('CMM015_9')}
+                        </div>
+                        <!--A3_2-->
+                        <input data-bind="ntsTextEditor: {
+                            value: salaryClsCode,
+                            required: true,
+                            enable: isCodeEnable,
+                            readonly: false}" tabindex="7"
+                               id="inp-01-code" />
+                        <!--A3_3-->
+                        <input data-bind="ntsTextEditor: {
+                            value: salaryClsName,
+                            required: true,
+                            enable: true,
+                            readonly: false}" tabindex="8"
+                               id="inp-02-name" />
+                    </div>
+                    <div class="valign-center control-group">
+                        <!--A3_4-->
+                        <div data-bind="ntsFormLabel: {inline: false, constraint: 'Memo'}"
+                             id="lbl-02-memo">
+                            #{i18n.getText('CMM015_12')}
+                        </div>
+                        <!--A3_5-->
+                        <textarea id="txa-01-memo"
+                                  data-bind="ntsMultilineEditor: {
+                              value: memo}"
+                                  tabindex="9" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

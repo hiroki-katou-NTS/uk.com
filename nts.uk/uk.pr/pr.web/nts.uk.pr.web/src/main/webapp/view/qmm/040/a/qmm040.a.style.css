@@ -1,0 +1,42 @@
+.margin-top-item{
+    margin-top: 15px;
+}
+
+
+.margin-left-item{
+    margin-left: 30px;
+}
+
+.margin-top{
+    margin-top: 0px;
+}
+
+.caret-background.caret-bottom:after{
+    display: none !important;
+}
+
+#custom-caret:after{
+    font-size: 2em !important;
+    border-left: 1em solid !important;
+    border-top: 5em solid transparent !important;
+    border-bottom: 5em solid transparent !important;
+    color: #e0f59e !important;
+
+}
+
+.ci_scroll_header {
+    width: 17px !important;
+}
+
+.ci_scroll_body {
+    padding-right: 0px !important;
+}
+
+.edge_scroll_body {
+    padding-right: 0px !important;
+}
+
+.edge_scroll_header {
+    width: 16px !important;
+}
+
