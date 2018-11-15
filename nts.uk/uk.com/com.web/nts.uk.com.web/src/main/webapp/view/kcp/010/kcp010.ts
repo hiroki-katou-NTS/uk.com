@@ -68,6 +68,7 @@ module kcp010.viewmodel {
                     
                     // Selected OrdinalNumber
                     self.selectedOrdinalNumber = ko.computed(function() {
+                        self.wkpList(_.sortBy(self.wkpList(), [function(o) { return o.hierarchyCode; }]));
                         var currentItem = self.wkpList().filter((item) => {
                             return item.workplaceId == self.selectedItem();
                         })[0];
