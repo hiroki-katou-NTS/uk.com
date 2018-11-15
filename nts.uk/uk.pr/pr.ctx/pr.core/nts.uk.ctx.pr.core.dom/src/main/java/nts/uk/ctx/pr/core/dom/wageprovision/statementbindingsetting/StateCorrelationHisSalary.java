@@ -31,7 +31,7 @@ public class StateCorrelationHisSalary extends AggregateRoot implements Continuo
     }
 
     @Override
-    public List items() {
+    public List<YearMonthHistoryItem> items() {
         return history;
     }
 

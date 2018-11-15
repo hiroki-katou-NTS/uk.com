@@ -12,8 +12,7 @@ import java.util.Optional;
 * 明細書利用単位設定: Finder
 */
 @Stateless
-public class StateUseUnitSettingFinder
-{
+public class StateUseUnitSettingFinder {
 
     @Inject
     private StateUseUnitSettingRepository finder;
