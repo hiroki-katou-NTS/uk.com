@@ -541,7 +541,7 @@
         </div>
         <div id="functions-area-bottom">
             <button tabindex="16"
-                    data-bind="click: decide, enable: $root.errors.isEmpty &amp;&amp; screenControl().enableE4_1()"
+                    data-bind="click: decide, enable: screenControl().enableE4_1() &amp;&amp; $root.errors.isEmpty"
                     class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>

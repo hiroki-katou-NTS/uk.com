@@ -153,6 +153,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         initScreen() {
             let self = this;
+            self.dataScreen().initSubscribe();
             // 取得できたデータ件数を確認する
             if (_.isEmpty(self.itemNames())) {
                 // 未選択モードへ移行する
@@ -176,7 +177,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
-            self.dataScreen().initSubscribe();
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -531,6 +531,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+            windows.setShared("QMM019E_RESULTS", ko.toJS(self.dataScreen()));
             windows.close();
         }
 
