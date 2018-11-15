@@ -1,14 +1,14 @@
-package nts.uk.ctx.pr.core.infra.repository.fromsetting.employaverwage;
+package nts.uk.ctx.pr.core.infra.repository.employeeaverwage;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWage;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWageRepository;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.infra.entity.fromsetting.employaverwage.QpbmtEmployAverWage;
 import nts.uk.ctx.pr.core.infra.entity.fromsetting.employaverwage.QpbmtEmployAverWagePk;
 
@@ -17,7 +17,7 @@ public class JpaEmployAverWageRepository extends JpaRepository implements Employ
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmployAverWage f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.employAverWagePk.employeeId =:employeeId ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.employAverWagePk.employeeId =:employeeId AND  f.employAverWagePk.targetDate =:targetDate ";
 
     @Override
     public List<EmployAverWage> getAllEmployAverWage(){
@@ -26,10 +26,11 @@ public class JpaEmployAverWageRepository extends JpaRepository implements Employ
     }
 
     @Override
-    public Optional<EmployAverWage> getEmployAverWageById(String employeeId){
+    public Optional<EmployAverWage> getEmployAverWageById(String employeeId, int targetDate){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtEmployAverWage.class)
-        .setParameter("employeeId", employeeId)
-        .getSingle(c->c.toDomain());
+                .setParameter("employeeId", employeeId)
+                .setParameter("targetDate", targetDate)
+                .getSingle(c->c.toDomain());
     }
 
     @Override
@@ -43,7 +44,18 @@ public class JpaEmployAverWageRepository extends JpaRepository implements Employ
     }
 
     @Override
-    public void remove(String employeeId){
-        this.commandProxy().remove(QpbmtEmployAverWage.class, new QpbmtEmployAverWagePk(employeeId));
+    public void remove(String employeeId, int targetDate){
+        this.commandProxy().remove(QpbmtEmployAverWage.class, new QpbmtEmployAverWagePk(employeeId, targetDate));
     }
+
+    @Override
+    public void addAll(List<EmployAverWage> domains) {
+        this.commandProxy().insertAll(domains.stream().map(x -> QpbmtEmployAverWage.toEntity(x)).collect(Collectors.toList()));
+    }
+
+    @Override
+    public void updateAll(List<EmployAverWage> domains) {
+        this.commandProxy().updateAll(domains.stream().map(x -> QpbmtEmployAverWage.toEntity(x)).collect(Collectors.toList()));
+    }
+
 }

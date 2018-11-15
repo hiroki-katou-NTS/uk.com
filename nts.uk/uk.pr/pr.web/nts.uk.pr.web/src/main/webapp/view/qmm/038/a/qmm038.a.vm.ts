@@ -1,25 +1,27 @@
 module nts.uk.pr.view.qmm038.a {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
+    import validation = nts.uk.ui.validation;
     export module viewmodel {
 
         export class ScreenModel {
             statementItems: Array<IDataScreen> = [];
             ccg001ComponentOption: GroupOption = null;
-            baseDate: KnockoutObservable<string>;
+            baseDate: KnockoutObservable<any> = ko.observable(null);
+            giveCurrTreatYear: KnockoutObservable<any> = ko.observable(null);
+            employeeIds: Array<any>;
+            numberValidator = new validation.NumberValidator(getText("QMM038_11"), "AverageWage", { required: true });
+            dataUpdate: Array<UpdateEmployee> = [];
 
 
             constructor() {
                 let self = this;
-
-
                 nts.uk.pr.view.qmm038.a.service.defaultData().done(function(response) {
-                    self.baseDate = ko.observable(response);
+                    self.giveCurrTreatYear(response[0].substr(0,4) + "/" + response[0].substr(4));
+                    self.baseDate(response[1]);
+                    $("#A2_3").focus();
                 });
 
-
-
-                self.loadGrid();
                 // CCG001
                 self.ccg001ComponentOption = <GroupOption>{
                     /** Common properties */
@@ -62,10 +64,20 @@ module nts.uk.pr.view.qmm038.a {
                      * @param: data: the data return from CCG001
                      */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        self.employeeIds = data.listEmployee.map(item => item.employeeId);
+                        let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
+                        nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
+                            self.statementItems = [];
+                            self.statementItems = _.sortBy(response, ["employeeCode"]);
+                            $("#gridStatement").ntsGrid("destroy");
+                            self.loadGrid();
+                        });
                     }
+
                 }
 
                 $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+                self.loadGrid();
             }
 
             loadGrid(){
@@ -74,21 +86,18 @@ module nts.uk.pr.view.qmm038.a {
                     width: '807px',
                     height: '459px',
                     dataSource: self.statementItems,
-                    primaryKey: 'itemNameCd',
+                    primaryKey: 'employeeCode',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        {headerText: getText("QMM038_7"), key: 'itemNameCd', dataType: 'string', width: '150px'},
-                        {headerText: getText("QMM038_8"), key: 'name', dataType: 'string', width: '150px'},
-                        {headerText: getText("QMM038_9"), key: 'shortName', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_7"), key: 'employeeCode', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_8"), key: 'businessName', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_9"), key: 'departmentName', dataType: 'string', width: '150px'},
+                        {headerText: getText("QMM038_10"), key: 'employmentName', dataType: 'string', width: '150px'},
                         {
-                            headerText: getText("QMM038_10"), key: 'englishName', dataType: 'string', width: '150px',
+                            headerText: getText("QMM012_121"), key: 'averageWage', dataType: 'string', width: '207px',
                             ntsControl: 'TextEditor'
-                        },
-                        {
-                            headerText: getText("QMM038_11"), key: 'otherLanguageName', dataType: 'string', width: '200px',
-                            ntsControl: 'TextEditor'
-                        },
+                        }
                     ],
                     features: [
                         {
@@ -105,30 +114,51 @@ module nts.uk.pr.view.qmm038.a {
                     ],
                     ntsControls: [
                         {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}}
-                    ],
+                    ]
                 });
+            }
+
+            findByEmployee() {
+                let self = this;
+                let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
+                nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
+                    self.statementItems = [];
+                    self.statementItems = _.sortBy(response, ["employeeCode"]);
+                    $("#gridStatement").ntsGrid("destroy");
+                    self.loadGrid();
+                });
+                $("#A3_1").focus();
             }
 
             updateStatelmentItemName() {
                 let self = this;
                 let statementItems: Array<IDataScreen> = $("#gridStatement").igGrid("option", "dataSource")
-                // update
-                _.forEach(statementItems, (item: IDataScreen) => {
 
-                })
                 self.validateForm(statementItems);
                 if(nts.uk.ui.errors.hasError()) {
                     return;
                 }
                 block.invisible();
+                // update
+                _.forEach(statementItems, (item: IDataScreen) => {
+                    self.dataUpdate.push(new UpdateEmployee(item.employeeId,item.averageWage));
+                })
+                let command = {
+                    employeeDtoList : self.dataUpdate,
+                    giveCurrTreatYear : self.giveCurrTreatYear()
+                }
+                service.update(command).done(function(response) {
+                    if(response[0] == "Msg_15") {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 
-                service.update(statementItems).done(() => {
-
+                        });
+                    }
                 }).fail(function (error) {
 
                 }).always(function () {
                     block.clear();
                 });
+                $("#A2_3").focus();
             }
 
             validateForm(statementItems: Array<IDataScreen>) {
@@ -136,15 +166,18 @@ module nts.uk.pr.view.qmm038.a {
                     check: any;
                 nts.uk.ui.errors.clearAll();
                 _.each(statementItems, (item: IDataScreen) => {
-                    /*check = self.englishNameValidator.validate(item.englishName);
+                    check = self.numberValidator.validate(item.averageWage);
                     if(!check.isValid) {
-                        self.setErrorEnglishName(item.itemNameCd, check.errorCode, check.errorMessage)
+                        self.setErrorAverageWage(item.employeeCode, check.errorCode, check.errorMessage)
                     }
-                    check = self.otherLanguageNameValidator.validate(item.otherLanguageName);
-                    if(!check.isValid) {
-                        self.setErrorOtherLanguageName(item.itemNameCd, check.errorCode, check.errorMessage)
-                    }*/
                 })
+            }
+
+            setErrorAverageWage(id: string, messageId: any, message: any) {
+                $("#gridStatement").find(".nts-grid-control-averageWage-" + id + " input").ntsError('set', {
+                    messageId: messageId,
+                    message: message
+                });
             }
 
         }
@@ -152,10 +185,12 @@ module nts.uk.pr.view.qmm038.a {
 
     }
         export interface IDataScreen {
-            employeeCode: string;
-            businessName: string;
-            department: string;
-            employment: string;
+            employeeId: string; // 基準日
+            employeeCode: string; // 社員コード
+            businessName: string; // ビジネスネーム
+            departmentName: string; // 所属部門
+            employmentName: string; // 所属雇用
+            averageWage: string; // 所属雇用
         }
 
         // Note: Defining these interfaces are optional
@@ -199,19 +234,21 @@ module nts.uk.pr.view.qmm038.a {
             /** Data returned */
             returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
         }
-        export interface EmployeeSearchDto {
+        export class UpdateEmployee {
             employeeId: string;
-            employeeCode: string;
-            employeeName: string;
-            workplaceId: string;
-            workplaceName: string;
+            averageWage: string;
+            constructor(employeeId: string, averageWage: string) {
+                this.employeeId = employeeId;
+                this.averageWage = averageWage;
+            }
         }
         export interface Ccg001ReturnedData {
-            baseDate: string; // 基準日
-            closureId?: number; // 締めID
-            periodStart: string; // 対象期間（開始)
-            periodEnd: string; // 対象期間（終了）
-            listEmployee: Array<EmployeeSearchDto>; // 検索結果
+            employeeId: string; // 基準日
+            employeeCode: string; // 社員コード
+            businessName: string; // ビジネスネーム
+            departmentName: string; // 所属部門
+            employmentName: string; // 所属雇用
+            averageWage: string; // 所属雇用
         }
 
 }

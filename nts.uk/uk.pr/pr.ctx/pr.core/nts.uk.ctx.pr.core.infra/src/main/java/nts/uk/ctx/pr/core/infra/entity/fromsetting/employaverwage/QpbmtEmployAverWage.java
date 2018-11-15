@@ -22,31 +22,24 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_EMPLOY_AVER_WAGE")
+@Table(name = "QPBMT_EMP_AVERAGE_WAGE")
 public class QpbmtEmployAverWage extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * ID
-    */
+     * ID
+     */
     @EmbeddedId
     public QpbmtEmployAverWagePk employAverWagePk;
-    
+
     /**
-    * AverageWage
-    */
+     * 平均賃金
+     */
     @Basic(optional = false)
     @Column(name = "AVERAGE_WAGE")
     public BigDecimal averageWage;
-    
-    /**
-    * 対象年月
-    */
-    @Basic(optional = false)
-    @Column(name = "TARGET_DATE")
-    public int targetDate;
-    
+
     @Override
     protected Object getKey()
     {
@@ -54,10 +47,11 @@ public class QpbmtEmployAverWage extends UkJpaEntity implements Serializable
     }
 
     public EmployAverWage toDomain() {
-        return new EmployAverWage(this.employAverWagePk.employeeId, this.averageWage, this.targetDate);
+        return new EmployAverWage(this.employAverWagePk.employeeId, this.employAverWagePk.targetDate, this.averageWage);
     }
     public static QpbmtEmployAverWage toEntity(EmployAverWage domain) {
-        return new QpbmtEmployAverWage(new QpbmtEmployAverWagePk(domain.getEmployeeId()),BigDecimal.valueOf(domain.getAverageWage().v()), domain.getTargetDate());
+        return new QpbmtEmployAverWage(new QpbmtEmployAverWagePk(domain.getEmployeeId(), domain.getTargetDate()),BigDecimal.valueOf(domain.getAverageWage().v()));
     }
+
 
 }

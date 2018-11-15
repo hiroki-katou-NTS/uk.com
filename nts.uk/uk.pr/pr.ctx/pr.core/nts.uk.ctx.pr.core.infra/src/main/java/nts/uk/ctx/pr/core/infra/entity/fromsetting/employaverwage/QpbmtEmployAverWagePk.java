@@ -20,12 +20,19 @@ import lombok.NoArgsConstructor;
 public class QpbmtEmployAverWagePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * 社員ID
-    */
+     * 社員ID
+     */
     @Basic(optional = false)
     @Column(name = "EMPLOYEE_ID")
     public String employeeId;
+
+    /**
+     * 対象年月
+     */
+    @Basic(optional = false)
+    @Column(name = "TARGET_DATE")
+    public int targetDate;
     
 }

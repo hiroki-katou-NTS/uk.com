@@ -16,7 +16,7 @@
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
         <com:ValidatorScript>
 
-            nts.uk.ctx.pr.core.dom.fromsetting.AccountingOffName
+            nts.uk.ctx.pr.core.dom.employaverwage.AverageWage
 
         </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
@@ -28,17 +28,17 @@
 
     <ui:define name="content">
         <div id="functions-area" >
-            <button id="A1_1" class="proceed"  tabindex="1" style="margin-left: 110px;" data-bind="" >#{i18n.getText('QMM038_2')}</button>
+            <button id="A1_1" class="proceed"  tabindex="1" style="margin-left: 110px;" data-bind="click: updateStatelmentItemName" >#{i18n.getText('QMM038_2')}</button>
             <button  id="A1_2" data-bind="" tabindex="2">#{i18n.getText('QMM038_3')}</button>
         </div>
         <div id="contents-area"  style="margin-left: 15px;">
-            <div style="margin-left: 90px; border: 0.2px solid; width: 482px; padding: 14px;border-style:solid;">
+            <div style="margin-left: 90px; border: 0.2px solid; width: 380px; padding: 14px;border-style:solid;">
                 <div id="A2_2" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div>
-                <input id="A2_3" tabindex="8"/>
-                <button  id="A2_4" data-bind="" tabindex="2">#{i18n.getText('QMM038_5')}</button>
+                <div id="A2_3" tabindex="3" data-bind="ntsDatePicker: {value: giveCurrTreatYear, dateFormat: 'yearmonth', name: '#[QMM038_4]'}"></div>
+                <button  id="A2_4"  data-bind="click: findByEmployee" tabindex="4">#{i18n.getText('QMM038_5')}</button>
             </div>
             <div>
-                <div id="com-ccg001"></div>
+                <div id="com-ccg001" tabindex="5"></div>
                 <ui:include src="../a/contents.xhtml" />
             </div>
 
