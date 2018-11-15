@@ -64,6 +64,8 @@ module nts.uk.pr.view.qmm038.a {
                      * @param: data: the data return from CCG001
                      */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        block.invisible();
+                        nts.uk.ui.errors.clearAll();
                         self.employeeIds = data.listEmployee.map(item => item.employeeId);
                         let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
                         nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
@@ -71,7 +73,9 @@ module nts.uk.pr.view.qmm038.a {
                             self.statementItems = _.sortBy(response, ["employeeCode"]);
                             $("#gridStatement").ntsGrid("destroy");
                             self.loadGrid();
+                            block.clear();
                         });
+
                     }
 
                 }
@@ -84,7 +88,7 @@ module nts.uk.pr.view.qmm038.a {
                 let self = this;
                 $("#gridStatement").ntsGrid({
                     width: '807px',
-                    height: '459px',
+                    height: '350px',
                     dataSource: self.statementItems,
                     primaryKey: 'employeeCode',
                     virtualization: true,
@@ -119,6 +123,7 @@ module nts.uk.pr.view.qmm038.a {
             }
 
             findByEmployee() {
+                nts.uk.ui.errors.clearAll();
                 let self = this;
                 let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
                 nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
@@ -158,7 +163,7 @@ module nts.uk.pr.view.qmm038.a {
                 }).always(function () {
                     block.clear();
                 });
-                $("#A2_3").focus();
+
             }
 
             validateForm(statementItems: Array<IDataScreen>) {
@@ -166,7 +171,7 @@ module nts.uk.pr.view.qmm038.a {
                     check: any;
                 nts.uk.ui.errors.clearAll();
                 _.each(statementItems, (item: IDataScreen) => {
-                    check = self.numberValidator.validate(item.averageWage);
+                    check = self.numberValidator.validate(item.averageWage.toString());
                     if(!check.isValid) {
                         self.setErrorAverageWage(item.employeeCode, check.errorCode, check.errorMessage)
                     }
