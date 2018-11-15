@@ -99,7 +99,7 @@ module nts.uk.pr.view.qmm038.a {
                         {headerText: getText("QMM038_9"), key: 'departmentName', dataType: 'string', width: '150px'},
                         {headerText: getText("QMM038_10"), key: 'employmentName', dataType: 'string', width: '150px'},
                         {
-                            headerText: getText("QMM012_121"), key: 'averageWage', dataType: 'string', width: '207px',
+                            headerText: getText("QMM038_11"), key: 'averageWage', dataType: 'string', width: '207px',
                             ntsControl: 'TextEditor'
                         }
                     ],
@@ -146,6 +146,7 @@ module nts.uk.pr.view.qmm038.a {
                 block.invisible();
                 // update
                 _.forEach(statementItems, (item: IDataScreen) => {
+                    self.dataUpdate = [];
                     self.dataUpdate.push(new UpdateEmployee(item.employeeId,item.averageWage));
                 })
                 let command = {
@@ -155,7 +156,7 @@ module nts.uk.pr.view.qmm038.a {
                 service.update(command).done(function(response) {
                     if(response[0] == "Msg_15") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-
+                            $("#A2_3").focus();
                         });
                     }
                 }).fail(function (error) {
@@ -171,7 +172,11 @@ module nts.uk.pr.view.qmm038.a {
                     check: any;
                 nts.uk.ui.errors.clearAll();
                 _.each(statementItems, (item: IDataScreen) => {
-                    check = self.numberValidator.validate(item.averageWage.toString());
+                    if(item.averageWage == null) {
+                        check = false;
+                    } else {
+                        check = self.numberValidator.validate(item.averageWage.toString());
+                    }
                     if(!check.isValid) {
                         self.setErrorAverageWage(item.employeeCode, check.errorCode, check.errorMessage)
                     }
