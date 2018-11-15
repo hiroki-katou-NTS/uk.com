@@ -176,7 +176,7 @@ public interface SyWorkplacePub {
 	 * @return the wkp cd name
 	 */
 	// RequestList164
-	List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	List<WkpIdNameHierarchyCdExport> getWkpIdNameHierarchyCd(String companyId, GeneralDate baseDate, List<String> wkpIds);
 	
 	// RequestList120 version2
 	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,GeneralDate endDate);
