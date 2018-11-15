@@ -35,15 +35,15 @@ public class StateLinkSettingIndividualWebService extends WebService {
     private StateLinkSettingIndividualFinder stateLinkSettingIndividualFinder;
 
     @POST
-    @Path("getStateCorrelationHisIndividual")
-    public List<StateCorrelationHisIndividualDto> getLinkingHistoryIndividual(@PathParam("hisId") String empId){
+    @Path("getStateCorrelationHisIndividual/{empId}")
+    public List<StateCorrelationHisIndividualDto> getLinkingHistoryIndividual(@PathParam("empId") String empId){
         return stateCorrelationHisIndividualFinder.getLinkingHistoryIndividual(empId);
     }
 
     @POST
-    @Path("getEmployee/{hisId}")
-    public List<StateLinkSettingIndividualDto> getStatementLinkingSetting(@PathParam("hisId") String empId){
-        return null;
+    @Path("getStateLinkSettingMasterIndividual/{hisId}/{start}")
+    public StateLinkSettingIndividualDto getStatementLinkingSetting(@PathParam("hisId") String hisId, @PathParam("start") int start){
+        return stateLinkSettingIndividualFinder.getStatementLinkingSetting(hisId, start);
     }
 
     @POST

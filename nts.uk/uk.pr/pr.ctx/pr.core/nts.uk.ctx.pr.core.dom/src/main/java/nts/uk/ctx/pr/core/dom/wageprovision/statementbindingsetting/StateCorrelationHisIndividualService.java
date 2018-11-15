@@ -18,33 +18,24 @@ public class StateCorrelationHisIndividualService {
     private StateCorrelationHisIndividualRepository stateCorrelationHisIndividualRepository;
 
     @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
+    private StateLinkSettingIndividualRepository stateLinkSettingIndividualRepository;
 
 
-    public void addHistoryIndividual(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster, StateLinkSettingDate baseDate){
-        String cId = AppContexts.user().companyId();
+    public void addHistoryIndividual(String newHistID, YearMonth start, YearMonth end, StateLinkSettingIndividual stateLinkSettingIndividual, String empId){
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
-        StateCorrelationHisIndividual hisIndividual = new StateCorrelationHisIndividual(cId, new ArrayList<YearMonthHistoryItem>());
-        Optional<StateCorrelationHisIndividual> itemtoBeAdded = stateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(cId);
+        StateCorrelationHisIndividual hisIndividual = new StateCorrelationHisIndividual(empId, new ArrayList<YearMonthHistoryItem>());
+        Optional<StateCorrelationHisIndividual> itemtoBeAdded = stateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualByEmpId(empId);
         if(itemtoBeAdded.isPresent()) {
             hisIndividual = itemtoBeAdded.get();
         }
         hisIndividual.add(yearMonthItem);
-        stateCorrelationHisIndividualRepository.add(cId, yearMonthItem);
-        this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+        stateCorrelationHisIndividualRepository.add(empId, yearMonthItem);
+        stateLinkSettingIndividualRepository.add(stateLinkSettingIndividual);
     }
 
-    public void updateHistoryIndividual(List<StateLinkSettingMaster> stateLinkSettingMaster){
-        stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
+    public void updateHistoryIndividual(StateLinkSettingIndividual stateLinkSettingIndividual){
+        stateLinkSettingIndividualRepository.update(stateLinkSettingIndividual);
     }
 
-    private void updateItemBefore(StateCorrelationHisIndividual stateCorrelationHisIndividual, YearMonthHistoryItem item, String cId){
-        Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorrelationHisIndividual.immediatelyBefore(item);
-        if (!itemToBeUpdated.isPresent()){
-            return;
-        }
-        stateCorrelationHisIndividualRepository.update(cId, itemToBeUpdated.get());
-    }
     
 }

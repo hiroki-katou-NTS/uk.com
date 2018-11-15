@@ -217,10 +217,14 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         }
 
         openScreenL(){
+            block.invisible();
             let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                location.reload();
+                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
+                if(params && params.isSubmit) location.reload();
+
             });
+            block.clear();
         }
 
         openScreenM(item){
@@ -287,53 +291,11 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     self.enableRegisterButton(true);
                     self.transferMode(params.transferMethod);
                     self.currentSelectedHis(self.newHistoryId());
+                }else if(!params && self.listStateCorrelationHis().length === 0){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
             });
         }
-
-        /*openScreenK(){
-            let self = this;
-            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
-            let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.currentSelectedHis()});
-            setShared(model.PARAMETERS_SCREEN_K.INPUT, {
-                startYearMonthBefore : rs ? rs.startYearMonth : 0,
-                endYearMonth: rs ? rs.startYearMonth : 0,
-                hisId: self.currentSelectedHis(),
-                modeScreen: model.MODE_SCREEN.EMPLOYEE,
-                masterCode: null,
-                isFirst: index === 0 ? true : false,
-            });
-            modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{
-                let params = {
-                    methodEditing: 1,
-                };
-                if(params){
-                    service.getStateCorrelationHisEmployeeById().done((data)=>{
-
-                        if(params.methodEditing === 0){
-                            //case delete history => focus first history
-                            self.listStateCorrelationHis(self.convertToList(data));
-                            self.currentSelectedHis(self.currentSelectedHis());
-                        }else{
-                            //case update history => focus current history
-                            self.listStateCorrelationHis(self.convertToList(data));
-                            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
-                            let startYearMonth = rs ? rs.startYearMonth : 999912;
-                            service.getStateLinkSettingMasterByHisId(self.currentSelectedHis(),startYearMonth).done((data)=>{
-                                self.items(self.convertToGridItem(data));
-                                self.loadGrid();
-                            }).fail((err) =>{
-                                if(err) dialog.alertError(err);
-                            }).always(()=>{
-
-                            });
-                        }
-
-                    });
-                }
-
-            });
-        }*/
 
         openScreenK(){
             let self = this;

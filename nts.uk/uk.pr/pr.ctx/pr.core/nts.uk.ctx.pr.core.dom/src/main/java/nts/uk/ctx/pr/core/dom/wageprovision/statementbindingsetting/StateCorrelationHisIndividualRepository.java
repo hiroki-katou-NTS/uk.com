@@ -11,7 +11,7 @@ public interface StateCorrelationHisIndividualRepository {
 
     Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId, String hisId);
 
-    Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId);
+    Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualByEmpId(String empId);
 
     void add(String empId, YearMonthHistoryItem history);
 

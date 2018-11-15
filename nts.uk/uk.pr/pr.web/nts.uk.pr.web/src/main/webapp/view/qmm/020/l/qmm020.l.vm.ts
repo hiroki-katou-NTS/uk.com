@@ -3,6 +3,8 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
     import getText = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
     import block = nts.uk.ui.block;
+    import model = qmm020.share.model;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         masterUse: KnockoutObservableArray<any>;
         selectedMasterUse: KnockoutObservable<number> = ko.observable();
@@ -74,6 +76,9 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
 
             service.update(data).done(()=>{
                 dialog.info({ messageId: "Msg_15" }).then(() => {
+                    setShared(model.PARAMETERS_SCREEN_L.OUTPUT, {
+                        isSubmit: true
+                    });
                     close();
                 });
             }).fail((err)=>{

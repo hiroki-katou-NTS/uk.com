@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         targetBtnText: string;
 
         listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string>;
+        selectedItem: KnockoutObservable<string> = ko.observable();
         tabindex: number;
 
         //-- CCG001 ---->
@@ -46,6 +46,26 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             let self = this;
             self.initScreen(null).done(()  =>{
                 self.loadCCG001();
+
+            });
+
+            self.hisIdSelected.subscribe((data) => {
+                error.clearAll();
+                let self = this;
+                self.index(self.getIndex(data));
+                if (data != '') {
+                    if(self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
+                       self.getStateLinkSettingMasterIndividual(self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
+                    } else {
+                        self.getStateLinkSettingMasterIndividual(data, self.listStateCorrelationHis()[self.index()].startYearMonth);
+                        self.startYearMonth(self.listStateCorrelationHis()[self.index()].startYearMonth);
+                        self.endYearMonth(self.listStateCorrelationHis()[self.index()].endYearMonth);
+                    }
+                }
+            });
+
+            self.selectedItem.subscribe((data) => {
+                self.getHisIndividual(data, null);
             });
         }
 
@@ -92,8 +112,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.selectedEmployee(data.listEmployee);
-                    console.log(data.listEmployee);
+                    self.employeeInputList(self.setEmployee(data.listEmployee));
+                    self.loadKCP009();
                 }
             }
 
@@ -101,12 +121,58 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         }
 
+        selectSalary(){
+            block.invisible();
+            let self = this;
+            setShared(model.PARAMETERS_SCREEN_M.INPUT, {
+                startYearMonth: self.startYearMonth(),
+                modeScreen: model.MODE_SCREEN.INDIVIDUAL
+            });
+            modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
+                let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
+                if (params) {
+                    self.salaryCode(params.statementCode);
+                    self.salaryName(params.statementName);
+                }
+            });
+            block.clear();
+        }
+
+        selectBonus(){
+            block.invisible();
+            let self = this;
+            setShared(model.PARAMETERS_SCREEN_M.INPUT, {
+                startYearMonth: self.startYearMonth(),
+                modeScreen: model.MODE_SCREEN.INDIVIDUAL
+            });
+            modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
+                let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
+                if (params) {
+                    self.bonusCode(params.statementCode);
+                    self.bonusName(params.statementName);
+                }
+            });
+            block.clear();
+        }
+
+        setEmployee(item){
+            let listEmployee = [];
+            _.each(item, (item) => {
+                let employee: Employee = new Employee(item.employeeId,
+                item.employeeCode,
+                item.employeeName,
+                item.workplaceId,
+                item.workplaceName);
+                listEmployee.push(employee);
+            });
+            return listEmployee;
+        }
+
         loadKCP009(){
             let self = this;
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
+            self.isDisplayOrganizationName = ko.observable(false);
             self.targetBtnText = getText("KCP009_3");
-            self.selectedItem = ko.observable(null);
             self.tabindex = 1;
             self.listComponentOption = {
                 systemReference: self.systemReference(),
@@ -119,21 +185,64 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
-        getHisIndividual(hisId: string){
+        registerHisIndividual(){
             let self = this;
-            service.getStateCorrelationHisIndividual().done((listStateCorrelationHis: Array<StateCorrelationHisInvidual>) => {
+            if (self.mode() == model.MODE.NO_REGIS) {
+                return;
+            }
+
+            let data: any = {
+                salary: self.salaryCode(),
+                bonus: self.bonusCode(),
+                empId: self.selectedItem(),
+                mode: self.mode(),
+                hisId: self.hisIdSelected(),
+                start: self.startYearMonth(),
+                end:  self.endYearMonth(),
+            }
+            block.invisible();
+            service.registerHisIndividual(data).done(() => {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    self.transferMethod(null);
+                    self.initScreen(self.hisIdSelected());
+                });
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
+            }).always(() => {
+                block.clear();
+            });
+            $("#H3_1").focus();
+
+        }
+
+        getHisIndividual(emplId: string, hisId: string){
+            let self = this;
+            service.getStateCorrelationHisIndividual(emplId).done((listStateCorrelationHis: Array<StateCorrelationHisInvidual>) => {
                 if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
                     self.listStateCorrelationHis(StateCorrelationHisInvidual.convertToDisplay(listStateCorrelationHis));
                     if (hisId == null) {
                         self.index(FIRST);
                         self.hisIdSelected(self.listStateCorrelationHis()[FIRST].hisId);
+                    } else {
+                        self.hisIdSelected(self.listStateCorrelationHis()[self.getIndex(hisId)].hisId);
                     }
-                    self.hisIdSelected(self.listStateCorrelationHis()[self.getIndex(hisId)].hisId);
                 } else {
+                    self.listStateCorrelationHis([]);
                     self.mode(model.MODE.NO_REGIS);
                 }
             }).always(() => {
                 block.clear();
+            });
+        }
+
+        getStateLinkSettingMasterIndividual(hisId: string, start: number){
+            let self = this;
+            service.getStateLinkSettingMasterIndividual(hisId, start).done((item: StateLinkSettingMasterIndividual) => {
+                self.salaryCode(item.salaryCode);
+                self.salaryName(item.salaryName);
+                self.bonusCode(item.bonusCode);
+                self.bonusName(item.bonusName);
             });
         }
 
@@ -167,7 +276,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                         self.employeeInputList.push(new Employee(emp.sid,
                             emp.employeeCode, emp.employeeName, wp.name, wp.name));
                         self.loadKCP009();
-                        self.getHisIndividual(null);
+                        self.selectedItem(self.selectedEmployeeObject.employeeId);
                         dfd.resolve();
                     }
                 }).fail(function(result) {
@@ -191,8 +300,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             }
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth: start,
-                isPerson: false,
-                modeScreen: model.MODE_SCREEN.SALARY
+                isPerson: true,
+                modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
             modal("/view/qmm/020/j/index.xhtml").onClosed(() =>{
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
@@ -237,7 +346,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 endYearMonth: self.endYearMonth(),
                 hisId: self.hisIdSelected(),
                 startLastYearMonth: laststartYearMonth,
-                canDelete: canDelete
+                canDelete: canDelete,
+                modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
@@ -289,6 +399,17 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             return listSalary;
         }
 
+    }
+
+    export class StateLinkSettingMasterIndividual {
+        hisId: string;
+        salaryCode: number;
+        salaryName: number;
+        bonusCode: string;
+        bonusName
+        constructor() {
+
+        }
     }
 
     export const FIRST = 0;
