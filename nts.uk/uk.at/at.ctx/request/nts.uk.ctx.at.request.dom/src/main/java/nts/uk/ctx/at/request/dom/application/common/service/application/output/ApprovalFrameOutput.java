@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
+/*import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;*/
 
 /**
  * @author hiep.ld

@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+/*import nts.arc.time.GeneralDate;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectInformationResult;
