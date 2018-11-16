@@ -34,7 +34,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         constructor(){
             block.invisible();
             let self = this;
-            let firstHistory;
             self.shared(model);
             self.setShared(setShared);
             self.getShared(getShared);
@@ -93,6 +92,9 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 { headerText: getText('QMM020_23'), key: 'bonusCode', fields: ['bonusCode', 'bonusName'], width: '150px', template: template1},
                 { headerText: '', key: 'bonusName', width: '100px', hidden: true},
                 ]);
+
+
+            block.clear();
 
         }
 
