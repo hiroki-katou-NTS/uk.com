@@ -106,8 +106,8 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 stateLinkSettingMaster: self.listStateLinkSettingMaster(),
                 mode: self.mode(),
                 hisId: self.hisIdSelected(),
-                startYearMonth: self.startYearMonth(),
-                endYearMonth:  self.endYearMonth(),
+                startYearMonth: self.listStateCorrelationHisSalary()[self.index()].startYearMonth,
+                endYearMonth: self.listStateCorrelationHisSalary()[self.index()].endYearMonth,
             }
             block.invisible();
             service.registerCorrelationHisSalary(data).done(() => {
@@ -159,8 +159,12 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             return this.mode() == model.MODE.NO_REGIS;
         }
 
-        enableNew(){
-            return this.mode() == model.MODE.NEW ;
+        enableNew() {
+            let self = this;
+            if (self.listStateCorrelationHisSalary().length > 0) {
+                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHisSalary()[FIRST].hisId == HIS_ID_TEMP));
+            }
+            return self.mode() == model.MODE.NEW;
         }
 
         enableEdit(){
@@ -236,8 +240,8 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             }
 
             setShared(model.PARAMETERS_SCREEN_K.INPUT, {
-                startYearMonth: self.startYearMonth(),
-                endYearMonth: self.endYearMonth(),
+                startYearMonth: self.listStateCorrelationHisSalary()[self.index()].startYearMonth,
+                endYearMonth: self.listStateCorrelationHisSalary()[self.index()].endYearMonth,
                 hisId: self.hisIdSelected(),
                 startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete

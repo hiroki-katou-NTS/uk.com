@@ -31,7 +31,7 @@ public class StateCorrelationHisClassificationService {
         }
         hisClassification.add(yearMonthItem);
         stateCorrelationHisClassificationRepository.add(cId, yearMonthItem);
-        this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
+        this.updateItemBefore(hisClassification, yearMonthItem, cId);
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 

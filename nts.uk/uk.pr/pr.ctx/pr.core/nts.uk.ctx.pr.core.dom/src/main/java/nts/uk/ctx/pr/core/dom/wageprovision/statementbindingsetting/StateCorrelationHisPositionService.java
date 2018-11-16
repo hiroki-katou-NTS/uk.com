@@ -34,7 +34,7 @@ public class StateCorrelationHisPositionService {
         }
         hisPosition.add(yearMonthItem);
         stateCorrelationHisPositionRepository.add(cId, yearMonthItem);
-        this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
+        this.updateItemBefore(hisPosition, yearMonthItem, cId);
         stateLinkSettingDateRepository.add(baseDate);
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }

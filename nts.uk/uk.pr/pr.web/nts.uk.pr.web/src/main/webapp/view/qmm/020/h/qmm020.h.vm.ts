@@ -23,8 +23,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         transferMethod: KnockoutObservable<number> = ko.observable();
         selectedEmployeeObject: any;
         index: KnockoutObservable<number> = ko.observable(0);
-        startYearMonth: KnockoutObservable<number> = ko.observable();
-        endYearMonth: KnockoutObservable<number> = ko.observable(999912);
         startLastYearMonth: KnockoutObservable<number> = ko.observable(0);
 
         //--- KCP009 ----->
@@ -58,8 +56,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                        self.getStateLinkSettingMasterIndividual(self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
                     } else {
                         self.getStateLinkSettingMasterIndividual(data, self.listStateCorrelationHis()[self.index()].startYearMonth);
-                        self.startYearMonth(self.listStateCorrelationHis()[self.index()].startYearMonth);
-                        self.endYearMonth(self.listStateCorrelationHis()[self.index()].endYearMonth);
                     }
                 }
             });
@@ -125,7 +121,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             block.invisible();
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
-                startYearMonth: self.startYearMonth(),
+                startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
@@ -142,7 +138,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             block.invisible();
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
-                startYearMonth: self.startYearMonth(),
+                startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
@@ -197,8 +193,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 empId: self.selectedItem(),
                 mode: self.mode(),
                 hisId: self.hisIdSelected(),
-                start: self.startYearMonth(),
-                end:  self.endYearMonth(),
+                start: self.listStateCorrelationHis()[self.index()].startYearMonth,
+                end: self.listStateCorrelationHis()[self.index()].endYearMonth,
             }
             block.invisible();
             service.registerHisIndividual(data).done(() => {
@@ -299,12 +295,15 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         openJScreen() {
             block.invisible();
             let self = this;
-            let start = self.startLastYearMonth();
+            let start = 0;
+            let end = 0;
             if(self.listStateCorrelationHis() && self.listStateCorrelationHis().length > 0) {
                 start = self.listStateCorrelationHis()[FIRST].startYearMonth;
+                end = self.listStateCorrelationHis()[FIRST].endYearMonth;
             }
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth: start,
+                endYearMonth: end,
                 isPerson: true,
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
@@ -321,11 +320,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         createStateCorrelationHis(start: number, end: number){
             let self = this;
-            if (self.listStateCorrelationHis() && self.listStateCorrelationHis().length > 0) {
-                let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
-                self.listStateCorrelationHis()[FIRST].display = getText('QMM020_16',
-                    [model.convertMonthYearToString(self.listStateCorrelationHis()[FIRST].startYearMonth), model.convertMonthYearToString(end)]);
-            }
             let stateCorrelationHisSalary: StateCorrelationHisInvidual = new StateCorrelationHisInvidual();
             stateCorrelationHisSalary.hisId = HIS_ID_TEMP;
             stateCorrelationHisSalary.startYearMonth = start;
@@ -347,8 +341,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             }
 
             setShared(model.PARAMETERS_SCREEN_K.INPUT, {
-                startYearMonth: self.startYearMonth(),
-                endYearMonth: self.endYearMonth(),
+                startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
+                endYearMonth: self.listStateCorrelationHis()[self.index()].endYearMonth,
                 hisId: self.hisIdSelected(),
                 startLastYearMonth: lastStartYearMonth,
                 canDelete: canDelete,
@@ -375,7 +369,11 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         enableNew() {
-            return this.mode() == model.MODE.NEW;
+            let self = this;
+            if (self.listStateCorrelationHis().length > 0) {
+                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHis()[FIRST].hisId == HIS_ID_TEMP));
+            }
+            return self.mode() == model.MODE.NEW;
         }
 
         enableEdit() {

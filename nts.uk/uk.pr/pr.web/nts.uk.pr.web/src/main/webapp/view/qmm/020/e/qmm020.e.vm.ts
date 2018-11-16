@@ -45,9 +45,13 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             return this.mode() == model.MODE.NO_REGIS;
        }
 
-       enableNew(){
-           return this.mode() == model.MODE.NEW ;
-       }
+        enableNew() {
+            let self = this;
+            if (self.listStateCorrelationHisClassification().length > 0) {
+                return (self.mode() == model.MODE.NEW || (self.listStateCorrelationHisClassification()[FIRST].hisId == HIS_ID_TEMP));
+            }
+            return self.mode() == model.MODE.NEW;
+        }
 
        enableEdit(){
             return this.mode() == model.MODE.UPDATE;

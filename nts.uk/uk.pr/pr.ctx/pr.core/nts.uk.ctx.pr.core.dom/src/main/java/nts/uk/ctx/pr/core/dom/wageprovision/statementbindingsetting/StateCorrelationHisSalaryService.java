@@ -29,9 +29,8 @@ public class StateCorrelationHisSalaryService {
             hisSalary = itemtoBeAdded.get();
         }
         hisSalary.add(yearMonthItem);
-        itemtoBeAdded.get().add(yearMonthItem);
         stateCorrelationHisSalaryRepository.add(cId, yearMonthItem);
-        this.updateItemBefore(itemtoBeAdded.get(), yearMonthItem, cId);
+        this.updateItemBefore(hisSalary, yearMonthItem, cId);
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
