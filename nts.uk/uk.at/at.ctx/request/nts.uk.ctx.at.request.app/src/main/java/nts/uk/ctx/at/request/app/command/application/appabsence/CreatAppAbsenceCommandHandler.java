@@ -92,11 +92,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlg;
-	@Inject
-	private CollectAchievement collectAch;
-	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
+	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
 		CreatAppAbsenceCommand command = context.getCommand();
@@ -182,7 +178,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
-		List<GeneralDate> lstHoliday = this.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			if(!lstHoliday.contains(loopDate)) {
 				listDate.add(loopDate);	
@@ -321,7 +317,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・公休チェック区分＝（休暇申請設定．公休残数不足登録できる＝false）
 //		・超休チェック区分＝true
 		List<AppRemainCreateInfor> appData = new ArrayList<>();
-		List<GeneralDate> lstDateNotHoliday = this.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
+		List<GeneralDate> lstDateNotHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
 		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDateTime.now(), startDate, 
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
@@ -382,21 +378,5 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		absenceServiceProcess.checkDigestPriorityHd(EnumAdaptor.valueOf(setNo65.getPridigCheck(), AppliedDate.class),
 				setNo65.isSubVacaManage(), setNo65.isSubVacaTypeUseFlg(), setNo65.isSubHdManage(), setNo65.isSubHdTypeUseFlg(),
 				param.getNumberSubHd(), param.getNumberSubVaca());
-	}
-
-	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates){
-		List<GeneralDate> lstOutput = new ArrayList<>();
-		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
-			GeneralDate loopDate = dates.start().addDays(i);
-			//実績の取得
-			AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);
-			if(achInfor != null 
-					&& achInfor.getWorkType() != null
-					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
-					) {
-				lstOutput.add(loopDate);
-			}
-		}
-		return lstOutput;
 	}
 }
