@@ -93,6 +93,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	 */
 	private boolean canAbolition;
 	
+	/**
+	 * 初期値
+	 * InitValue
+	 */
+	private Optional<InitValue> initValue;
+	
 
 	public PersonInfoItemDefinition() {
 	};
@@ -273,7 +279,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			BigDecimal stringItemType,BigDecimal numericItemMinus, BigDecimal numericItemAmount, BigDecimal numericItemIntegerPart,
 			BigDecimal numericItemDecimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax, BigDecimal dateItemType, 
 			BigDecimal timeItemMax, BigDecimal timeItemMin, BigDecimal timepointItemMin, BigDecimal timepointItemMax, 
-			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode, int canAbolition, List<String> items) {
+			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode, int canAbolition, List<String> items, String initValue) {
 		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
 		item.perInfoItemDefId = perInfoItemDefId;
 		item.perInfoCategoryId = perInfoCategoryId;
@@ -287,7 +293,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		item.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
 		item.canAbolition = canAbolition == 0? false: true;
 		item.resourceId = resourceId != null ? Optional.of(resourceId) : Optional.empty();
-		
+		item.initValue = initValue != null ? Optional.of(new InitValue(initValue)) : Optional.empty();
 		DataTypeState dataTypeState = null;
 		ItemTypeState itemTypeState = null;
 		if (itemType == ItemType.SINGLE_ITEM.value) {
@@ -395,6 +401,5 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	
 	public boolean haveNotParentCode() {
 		return this.itemParentCode == null || this.itemParentCode.v().equals("");
-	}
-	
+	}	
 }
