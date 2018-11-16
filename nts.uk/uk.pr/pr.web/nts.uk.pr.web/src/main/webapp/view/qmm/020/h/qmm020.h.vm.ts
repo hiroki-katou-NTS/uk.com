@@ -312,6 +312,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 if (params) {
                     self.transferMethod(params.transferMethod);
                     self.listStateCorrelationHis.unshift(self.createStateCorrelationHis(params.start, params.end));
+                    self.mode(model.MODE.NEW);
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
             });
