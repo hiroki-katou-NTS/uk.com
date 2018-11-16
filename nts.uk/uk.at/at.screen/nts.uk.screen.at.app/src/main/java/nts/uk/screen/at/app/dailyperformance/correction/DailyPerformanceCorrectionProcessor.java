@@ -1588,8 +1588,13 @@ public class DailyPerformanceCorrectionProcessor {
 				// List<RegulationInfoEmployeeQueryR> regulationRs=
 				// regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(),
 				// range.getStartDate(), range.getEndDate()));
+				//社員と同じ職場の社員を取得する
 				List<String> listEmp = repo.getListEmpInDepartment(employeeIdLogin,
 						new DateRange(range.getStartDate(), range.getEndDate()));
+				//社員一覧を特定の会社に在籍している社員に絞り込む
+				listEmp = repo.getAffCompanyHistorySidDate(companyId, listEmp,
+						new DateRange(range.getStartDate(), range.getEndDate()));
+				
 				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 				if (closureId != null) {
 					Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,

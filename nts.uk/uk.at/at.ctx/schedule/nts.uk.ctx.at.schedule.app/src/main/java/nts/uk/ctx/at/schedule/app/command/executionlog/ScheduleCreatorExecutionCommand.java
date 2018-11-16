@@ -34,7 +34,7 @@ public class ScheduleCreatorExecutionCommand {
 	private Boolean confirm; 
 	
 	/** The is delete befor insert. */
-	private Boolean isDeleteBeforInsert;
+//	private Boolean isDeleteBeforInsert;
 
 	private ScheduleExecutionLog scheduleExecutionLog;
 
@@ -107,15 +107,15 @@ public class ScheduleCreatorExecutionCommand {
 
 
 
-	public Boolean getIsDeleteBeforInsert() {
-		return isDeleteBeforInsert;
-	}
+//	public Boolean getIsDeleteBeforInsert() {
+//		return isDeleteBeforInsert;
+//	}
 
 
 
-	public void setIsDeleteBeforInsert(Boolean isDeleteBeforInsert) {
-		this.isDeleteBeforInsert = isDeleteBeforInsert;
-	}
+//	public void setIsDeleteBeforInsert(Boolean isDeleteBeforInsert) {
+//		this.isDeleteBeforInsert = isDeleteBeforInsert;
+//	}
 
 
 

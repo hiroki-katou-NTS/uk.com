@@ -56,10 +56,10 @@ module nts.uk.at.view.kaf007.share {
                 self.workTimeName = ko.observable('');
                 self.excludeHolidayAtr = ko.observable(0);
                 self.workChangeAtr = ko.observable(0);
-                self.goWorkAtr1 = ko.observable(1);
-                self.backHomeAtr1 = ko.observable(1);
-                self.goWorkAtr2 = ko.observable(1);
-                self.backHomeAtr2 = ko.observable(1);
+                self.goWorkAtr1 = ko.observable(0);
+                self.backHomeAtr1 = ko.observable(0);
+                self.goWorkAtr2 = ko.observable(0);
+                self.backHomeAtr2 = ko.observable(0);
                 self.breakTimeStart1 = ko.observable(null);
                 self.breakTimeEnd1 = ko.observable(null);
                 self.workTimeStart1 = ko.observable(null);

@@ -168,7 +168,6 @@ public class ScheduleCreatorExecutionTransaction {
 	 *            the domain
 	 */
 	// スケジュールを再設定する
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
 			DatePeriod targetPeriod,
@@ -345,12 +344,8 @@ public class ScheduleCreatorExecutionTransaction {
 			List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule) {
 
-//		ExecutorService executorService = Executors.newFixedThreadPool(20);
-//		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
 		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
 		targetPeriod.datesBetween().forEach(dateInPeriod -> {
-//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//					.build(() -> {
 						boolean isEndLoop = this.createScheduleBasedPersonOneDate(
 								command,
 								creator,
@@ -361,25 +356,11 @@ public class ScheduleCreatorExecutionTransaction {
 								listBasicSchedule,
 								dateRegistedEmpSche);
 						if(isEndLoop) return;
-						// // Count down latch.
-//						countDownLatch.countDown();
 		});
 
 		if(dateRegistedEmpSche.getListDate().size() > 0){
 			registrationListDateSchedule.getRegistrationListDateSchedule().add(dateRegistedEmpSche);
 		}
-//			executorService.submit(task);
-//		});
-//
-//		// Wait for latch until finish.
-//		try {
-//			countDownLatch.await();
-//		} catch (InterruptedException ie) {
-//			throw new RuntimeException(ie);
-//		} finally {
-//			// // Force shut down executor services.
-//			executorService.shutdown();
-//		}
 
 	}
 
@@ -410,7 +391,7 @@ public class ScheduleCreatorExecutionTransaction {
 			BasicSchedule basicSchedule = optionalBasicSchedule.get();
 			// checked2018
 			// 登録前削除区分をTrue（削除する）とする
-			command.setIsDeleteBeforInsert(true); // FIX BUG #87113
+//			command.setIsDeleteBeforInsert(true); // FIX BUG #87113
 			// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
 			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
 			if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
@@ -429,7 +410,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// 登録前削除区分をTrue（削除する）とする
 			// checked2018
-			command.setIsDeleteBeforInsert(false); // FIX BUG #87113
+//			command.setIsDeleteBeforInsert(false); // FIX BUG #87113
 
 			// not exist data basic schedule
 			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, dateInPeriod, workingConditionItem, masterCache,

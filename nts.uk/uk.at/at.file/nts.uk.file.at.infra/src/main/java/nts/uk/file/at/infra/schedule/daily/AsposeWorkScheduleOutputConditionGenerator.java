@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +47,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringLength;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
@@ -225,6 +227,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The company daily item service. */
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 	
 	/** The optional item repo. */
 	@Inject
@@ -573,8 +578,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}).collect(Collectors.toList());
 		if (lstRemarkEnable.contains(RemarksContentChoice.REMARKS_INPUT))
 			itemsId.add(outputItem.getRemarkInputNo().value + 833); // Remark no (0~4) -> attendanceId (833~837)
-		// Request list #332
-		List<AttendanceResultImport> lstAttendanceResultImport = attendaceAdapter.getValueOf(query.getEmployeeId(), new DatePeriod(query.getStartDate(), query.getEndDate()), itemsId);
+		
+		List<AttendanceResultImport> lstAttendanceResultImport;
+		{
+			List<AttendanceResultImport> resultsSync = Collections.synchronizedList(new ArrayList<>());
+			this.parallel.forEach(query.getEmployeeId(), employeeId -> {
+				// Request list #332
+				List<AttendanceResultImport> result = attendaceAdapter.getValueOf(Arrays.asList(employeeId), new DatePeriod(query.getStartDate(), query.getEndDate()), itemsId);
+				resultsSync.addAll(result);
+			});
+			lstAttendanceResultImport = new ArrayList<>();
+			lstAttendanceResultImport.addAll(resultsSync);
+		}
+		
 		queryData.setLstAttendanceResultImport(lstAttendanceResultImport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
@@ -1776,11 +1792,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		//condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
-			AttItemName attendanceItem = lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
-			OutputItemSetting setting = new OutputItemSetting();
-			setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
-			setting.setItemName(attendanceItem.getAttendanceItemName());
-			headerData.lstOutputItemSettingCode.add(setting);
+			lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().ifPresent(attendanceItem -> {
+				OutputItemSetting setting = new OutputItemSetting();
+				setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
+				setting.setItemName(attendanceItem.getAttendanceItemName());
+				headerData.lstOutputItemSettingCode.add(setting);
+			});
 		});
 	}
 	
@@ -1835,13 +1852,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell dateCell = cells.get(currentRow, 1);
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
 			
-			// A2_3
-			Cell dayMonCell = cells.get(currentRow + 1, 1);
-			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
-			
-			// A2_4
-			Cell dayCell = cells.get(currentRow + 1, 2);
-			dayCell.setValue(headerData.getFixedHeaderData().get(3));
+//			// A2_3
+//			Cell dayMonCell = cells.get(currentRow + 1, 1);
+//			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
+//			
+//			// A2_4
+//			Cell dayCell = cells.get(currentRow + 1, 2);
+//			dayCell.setValue(headerData.getFixedHeaderData().get(3));
 			
 			// A2_6
 			Cell remarkCell = cells.get(currentRow, 35);
@@ -1896,7 +1913,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	cell.setValue(outputItem.getItemName());
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemCode());
+//            	cell.setValue(outputItem.getItemCode());
             }
         }
 	}
@@ -2363,7 +2380,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private void writeDetailValue(ActualValue actualValue, Cell cell) {
 		Style style = cell.getStyle();
 		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-		if (valueTypeEnum.isTime() || valueTypeEnum.isDouble()) {
+		if (valueTypeEnum.isTime()) {
 			String value = actualValue.getValue();
 			if (value != null) {
 				if (valueTypeEnum == ValueType.TIME) {
@@ -2372,6 +2389,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					cell.setValue(getTimeAttr(value, true));
 				}
 			}
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		} else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
+			cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		}
 		else {
@@ -3150,14 +3170,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 
 		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optReason = lstReason.stream()
-					.filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
-			if (!optReason.isPresent()) {
+			String itemId = this.getIdFromAttendanceId(attendanceId);
+			List<CodeName> optReason = lstReason.stream().filter(reason -> reason.getCode().equalsIgnoreCase(code))
+					.filter(item -> item.getId().equalsIgnoreCase(itemId)).collect(Collectors.toList());
+			if (optReason.isEmpty()) {
 				return MASTER_UNREGISTERED;
 			}
-
-			CodeName reason = optReason.get();
-			return reason.getName();
+			return optReason.get(0).getName();
 		}
 		
 		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
@@ -3215,6 +3234,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 
 		return "";
+	}
+
+	//convert from attendanceId to reasonId
+	private String getIdFromAttendanceId(int attendanceId) {
+		int indexNumber = 0;
+		for (int i = 0; i < ATTENDANCE_ID_REASON.length; i++)
+			if (ATTENDANCE_ID_REASON[i] == attendanceId) {
+				indexNumber = i;
+			}
+		//because index start from 0
+		return String.valueOf(indexNumber + 1);
 	}
 	
 }

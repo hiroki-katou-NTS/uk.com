@@ -219,12 +219,12 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             if (selectedPublicHoliday !== undefined) {
                 self.isCreate(false);
                 self.selectedPublicHoliday(new PublicHolidayObs(selectedPublicHoliday.date, _.unescape(selectedPublicHoliday.holidayName)));
-                _.defer(() => { $("#name").focus(); });
+                //_.defer(() => { $("#name").focus(); });
             }
             else {
                 self.isCreate(true);
                 self.selectedPublicHoliday(new PublicHolidayObs("", ""));
-                _.defer(() => { $("#date").focus(); });
+                //_.defer(() => { $("#date").focus(); });
             }
         }
 
