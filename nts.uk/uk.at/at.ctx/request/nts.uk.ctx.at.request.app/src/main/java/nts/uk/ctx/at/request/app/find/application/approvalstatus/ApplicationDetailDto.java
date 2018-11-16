@@ -6,8 +6,8 @@ import java.util.Objects;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+/*import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;*/
 
 /**
  * 
