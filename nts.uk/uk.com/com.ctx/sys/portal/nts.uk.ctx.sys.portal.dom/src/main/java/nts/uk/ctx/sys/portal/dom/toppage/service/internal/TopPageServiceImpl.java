@@ -73,7 +73,7 @@ public class TopPageServiceImpl implements TopPageService {
 	}
 	
 	private void addStandardMenu(String cID, int system, int classification, String copyCode, TopPage topPage) {
-		Optional<StandardMenu> standardMenubyCode = standardMenuRepo.getStandardMenubyCode(cID, copyCode, system, classification);
+		Optional<StandardMenu> standardMenubyCode = standardMenuRepo.getStandardMenubyCode(cID, topPage.getTopPageCode().v(), system, classification);
 		if(standardMenubyCode.isPresent()) {
 			StandardMenu standardMenuUpdate = standardMenubyCode.get();
 			standardMenuUpdate.setTargetItems(topPage.getTopPageName().v());
