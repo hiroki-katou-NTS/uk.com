@@ -56,50 +56,21 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    {headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100', hidden: true},
+                    {headerText: '', key: 'id', dataType: 'number', width: '100', hidden: true},
                     {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100'},
                     {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '200'},
-                    {
-                        headerText: getText('QMM020_20'),
-                        key: 'salary',
-                        dataType: 'string',
-                        width: '80px',
-                        unbound: true,
-                        ntsControl: 'Salary'
-                    },
+                    {headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Salary'},
                     {headerText: '', key: 'displayE3_4', dataType: 'string', width: '170'},
-                    {
-                        headerText: getText('QMM020_22'),
-                        key: 'bonus',
-                        dataType: 'string',
-                        width: '80px',
-                        unbound: true,
-                        ntsControl: 'Bonus'
-                    },
+                    {headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Bonus'},
                     {headerText: '', key: 'displayE3_5', dataType: 'string', width: '170'},
 
                 ],
                 features: [
-                    {
-                        name: 'Sorting',
-                        type: 'local'
-                    },
-                    {
-                        name: 'Selection',
-                        mode: 'row',
-                        multipleSelection: true
-                    }],
+                    {name: 'Sorting', type: 'local'},
+                    {name: 'Selection', mode: 'row', multipleSelection: true}],
                 ntsControls: [
-                    {
-                        name: 'Salary', text: getText("QMM020_21"), click: function (item) {
-                            self.openMScreen(item, 1)
-                        }, controlType: 'Button'
-                    },
-                    {
-                        name: 'Bonus', text: getText("QMM020_21"), click: function (item) {
-                            self.openMScreen(item, 2)
-                        }, controlType: 'Button'
-                    }]
+                    {name: 'Salary', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
+                    {name: 'Bonus', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 2)}, controlType: 'Button'}]
             });
             $("#F3_1").setupSearchScroll("igGrid", true);
         }
@@ -116,6 +87,8 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     }
                     self.hisIdSelected(self.listStateCorrelationHisPosition()[self.getIndex(hisId)].hisId);
                 } else {
+                    self.listStateCorrelationHisPosition([]);
+                    self.listStateLinkSettingMaster([]);
                     self.mode(model.MODE.NO_REGIS);
                     self.loadGird();
                 }
@@ -307,10 +280,10 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function () {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
-                if (params && params.modeEditHistory == 1) {
+                if (params && params.modeEditHistory == model.EDIT_METHOD.UPDATE) {
                     self.initScreen(self.hisIdSelected());
                 }
-                if (params && params.modeEditHistory == 0) {
+                if (params && params.modeEditHistory == model.EDIT_METHOD.DELETE) {
                     self.initScreen(null);
                 }
                 $('#F2_1').focus();
