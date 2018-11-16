@@ -9,8 +9,17 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import mockit.internal.ClassIdentification;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
+import nts.uk.ctx.sys.portal.dom.standardmenu.MenuCode;
+import nts.uk.ctx.sys.portal.dom.standardmenu.MenuDisplayName;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
@@ -27,6 +36,10 @@ public class TopPageServiceImpl implements TopPageService {
 	
 	@Inject
 	private LayoutService layoutService;
+	
+
+	@Inject
+	private StandardMenuRepository standardMenuRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -55,6 +68,36 @@ public class TopPageServiceImpl implements TopPageService {
 			TopPage newTopPage = TopPage.createFromJavaType(topPage.getCompanyId(), topPage.getTopPageCode().v(),
 					newLayoutId, topPage.getTopPageName().v(), topPage.getLanguageNumber());
 			topPageRepository.add(newTopPage);
+		}
+		addStandardMenu(companyId, System.COMMON.value, MenuClassification.TopPage.value, copyCode, topPage);
+	}
+	
+	private void addStandardMenu(String cID, int system, int classification, String copyCode, TopPage topPage) {
+		Optional<StandardMenu> standardMenubyCode = standardMenuRepo.getStandardMenubyCode(cID, copyCode, system, classification);
+		if(standardMenubyCode.isPresent()) {
+			StandardMenu standardMenuUpdate = standardMenubyCode.get();
+			standardMenuUpdate.setTargetItems(topPage.getTopPageName().v());
+			standardMenuUpdate.setDisplayName(new MenuDisplayName(topPage.getTopPageName().v()));
+			standardMenuRepo.updateStandardMenu(standardMenuUpdate);
+		}else {
+			int maxOrder = standardMenuRepo.maxOrderStandardMenu(cID, system, classification);
+			StandardMenu standardMenuUpdate = new StandardMenu(
+					cID, 
+					new MenuCode(topPage.getTopPageCode().v()), 
+					topPage.getTopPageName().v(), 
+					new MenuDisplayName(topPage.getTopPageName().v()), 
+					maxOrder + 1, 
+					MenuAtr.Menu, 
+					"/nts.uk.com.web/view/ccg/008/a/index.xhtml", 
+					System.valueOf(system), 
+					MenuClassification.valueOf(classification), 
+					WebMenuSetting.Display, 
+					0, 
+					1, 
+					"CCG008", 
+					"A", 
+					"toppagecode ="+topPage.getTopPageCode().v());
+			standardMenuRepo.insertStandardMenu(standardMenuUpdate);
 		}
 	}
 
