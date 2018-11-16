@@ -239,10 +239,15 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         getStateLinkSettingMasterIndividual(hisId: string, start: number){
             let self = this;
             service.getStateLinkSettingMasterIndividual(hisId, start).done((item: StateLinkSettingMasterIndividual) => {
+                if(item)
                 self.salaryCode(item.salaryCode);
                 self.salaryName(item.salaryName);
                 self.bonusCode(item.bonusCode);
                 self.bonusName(item.bonusName);
+                self.mode(model.MODE.UPDATE);
+                if(hisId == HIS_ID_TEMP) {
+                    self.mode(model.MODE.NEW);
+                }
             });
         }
 
