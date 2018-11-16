@@ -337,9 +337,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         openKScreen(){
             let self = this;
             self.index(self.getIndex(self.hisIdSelected()));
-            let laststartYearMonth: number = 0;
+            let lastStartYearMonth: number = 0;
             if (self.listStateCorrelationHis() && self.listStateCorrelationHis().length != self.index() + 1) {
-                laststartYearMonth = self.listStateCorrelationHis().length > 1 ? self.listStateCorrelationHis()[self.index() + 1].startYearMonth : 0;
+                lastStartYearMonth = self.listStateCorrelationHis().length > 1 ? self.listStateCorrelationHis()[self.index() + 1].startYearMonth : 0;
             }
             let canDelete: boolean = false;
             if (self.listStateCorrelationHis().length > 1 && self.hisIdSelected() == self.listStateCorrelationHis()[FIRST].hisId) {
@@ -350,7 +350,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 startYearMonth: self.startYearMonth(),
                 endYearMonth: self.endYearMonth(),
                 hisId: self.hisIdSelected(),
-                startLastYearMonth: laststartYearMonth,
+                startLastYearMonth: lastStartYearMonth,
                 canDelete: canDelete,
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
