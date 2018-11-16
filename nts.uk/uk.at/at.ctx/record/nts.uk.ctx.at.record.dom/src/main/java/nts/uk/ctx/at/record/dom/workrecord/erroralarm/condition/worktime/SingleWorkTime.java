@@ -57,12 +57,15 @@ public class SingleWorkTime extends WorkTimeCondition {
 //				!workInfo.getScheduleInfo().getWorkTimeCode().equals(workInfo.getRecordInfo().getWorkTimeCode())){
 //			return true;
 //		}
-		if (this.targetWorkTime != null && isUse()) {
-			if(this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode())){
-				return WorkCheckResult.ERROR;
+		if (this.targetWorkTime != null) {
+			if(this.targetWorkTime.isUse() && !this.targetWorkTime.getLstWorkTime().isEmpty()){
+				if(this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode())){
+					return WorkCheckResult.ERROR;
+				}
+				return WorkCheckResult.NOT_ERROR;
 			}
 		}
-		return WorkCheckResult.NOT_ERROR;
+		return WorkCheckResult.NOT_CHECK;
 
 	}
 	

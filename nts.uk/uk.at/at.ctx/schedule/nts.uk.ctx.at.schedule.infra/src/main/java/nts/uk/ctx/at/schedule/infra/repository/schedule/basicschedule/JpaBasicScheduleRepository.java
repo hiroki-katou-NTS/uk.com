@@ -98,8 +98,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
-	@Override
-	public void insertRelateToWorkTimeCd(BasicSchedule bSchedule) {
+	private void insertRelateToWorkTimeCd(BasicSchedule bSchedule) {
 		String employeeId = bSchedule.getEmployeeId();
 		GeneralDate date = bSchedule.getDate();
 		List<WorkScheduleTimeZone> list = new ArrayList<>();
@@ -111,21 +110,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-		
-		this.removeAllChildCare(employeeId, date);
 		this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 	}
 
-	public void insertScheTimeZone(BasicSchedule bSchedule) {
-		List<WorkScheduleTimeZone> list = new ArrayList<>();
-		bSchedule.getWorkScheduleTimeZones().stream()
-				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
-				.map(map -> list.add(map)).collect(Collectors.toList());
-		if (list.size() > 0) {
-			this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(), list);
-		}
-	}
-	
 	private void insertScheBasic(BasicSchedule bSchedule) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String workTimeCode = bSchedule.getWorkTimeCode() != null ? "'" + bSchedule.getWorkTimeCode() + "'" : null;
@@ -140,19 +127,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public void insertScheTime(BasicSchedule bSchedule) {
-		this.insertScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
-	}
-
-	public void insertScheBreak(BasicSchedule bSchedule) {
-		this.insertScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
-	}
-
-	@Override
-	public void insertAll(List<BasicSchedule> listBSchedule) {
-		listBSchedule.forEach(x -> insert(x));
 	}
 
 	/**
@@ -172,7 +146,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
 		
 		this.removeAllScheduleBreakTime(employeeId, date);
-		this.insertScheBreak(bSchedule);
+		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
@@ -193,25 +167,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public void updateScheBasicState(BasicSchedule bSchedule) {
-		this.updateScheBasic(bSchedule);
-		this.removeScheState(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleStates());
-		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
-	}
-
-	public void updateScheTime(BasicSchedule bSchedule) {
-		this.updateScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
-	}
-
-	public void updateScheBreak(BasicSchedule bSchedule) {
-		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
-	}
-
-	@Override
-	public void updateAll(List<BasicSchedule> listBSchedule) {
-		listBSchedule.forEach(x -> update(x));
 	}
 
 	@Override
@@ -1127,29 +1082,36 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 
 		WorkScheduleTime scheduleTime = workScheduleTime.get();
-		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
+//		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
 		// can check isPresent vi ngay truoc ben man KSC001 k insert vao bang scheTime
 		// neu update lai vao du lieu ngay xua se loi do chua ton tai
-		Optional<KscdtScheTime> entityOpt = this.queryProxy().find(key, KscdtScheTime.class);
-		if (entityOpt.isPresent()) {
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String sqlQuery = "Update KSCDT_SCHE_TIME Set BREAK_TIME = " + scheduleTime.getBreakTime().valueAsMinutes() + ", "
-					+ "WORKING_TIME = " + scheduleTime.getWorkingTime().valueAsMinutes() + ", " + "WEEKDAY_TIME = " + scheduleTime.getWeekdayTime().valueAsMinutes()
-					+ ", " + "PRESCRIBED_TIME = " + scheduleTime.getPredetermineTime().valueAsMinutes() + ", " + "TOTAL_LABOR_TIME = "
-					+ scheduleTime.getTotalLaborTime().valueAsMinutes() + ", " + "CHILD_TIME = " + scheduleTime.getChildTime().valueAsMinutes()
-					+ ", " + "CARE_TIME = " + scheduleTime.getCareTime().valueAsMinutes() + ", " + "FLEX_TIME = " + scheduleTime.getFlexTime().valueAsMinutes()
-					+ " Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'"
-					+ baseDate + "'";
-			try {
-				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+//		Optional<KscdtScheTime> entityOpt = this.queryProxy().find(key, KscdtScheTime.class);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String countQuery = "select count (SID) from KSCDT_SCHE_TIME"
+				+ " Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'"
+				+ baseDate + "'";
+		try {
+			ResultSet rs = con.createStatement().executeQuery(countQuery);
+			while (rs.next()) {
+				if (rs.getInt(1) > 0) {
+					String sqlQuery = "Update KSCDT_SCHE_TIME Set BREAK_TIME = "
+							+ scheduleTime.getBreakTime().valueAsMinutes() + ", " + "WORKING_TIME = "
+							+ scheduleTime.getWorkingTime().valueAsMinutes() + ", " + "WEEKDAY_TIME = "
+							+ scheduleTime.getWeekdayTime().valueAsMinutes() + ", " + "PRESCRIBED_TIME = "
+							+ scheduleTime.getPredetermineTime().valueAsMinutes() + ", " + "TOTAL_LABOR_TIME = "
+							+ scheduleTime.getTotalLaborTime().valueAsMinutes() + ", " + "CHILD_TIME = "
+							+ scheduleTime.getChildTime().valueAsMinutes() + ", " + "CARE_TIME = "
+							+ scheduleTime.getCareTime().valueAsMinutes() + ", " + "FLEX_TIME = "
+							+ scheduleTime.getFlexTime().valueAsMinutes() + " Where SID = " + "'" + employeeId + "'"
+							+ " and YMD = " + "'" + baseDate + "'";
+					con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
+				} else {
+					// case for KSC001 update
+					this.insertScheduleTime(employeeId, baseDate, workScheduleTime);
+				}
 			}
-			
-		} else {
-			// case for KSC001 update
-			this.insertScheduleTime(employeeId, baseDate, workScheduleTime);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 	}

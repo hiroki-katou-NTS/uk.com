@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
@@ -272,6 +273,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val empBasicInfo = annualLeaveEmpBasicInfoOpt.get();
 		val grantTableCode = empBasicInfo.getGrantRule().getGrantTableCode().v();
 		
+		// 「休暇の集計期間から入社前、退職後を除く」を実行する
+		this.aggrPeriod = ConfirmLeavePeriod.sumPeriod(this.aggrPeriod, employee);
+		if (this.aggrPeriod == null) return Optional.empty();
+		
 		// 年休付与テーブル設定、勤続年数テーブル　取得
 		Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
 		Optional<List<LengthServiceTbl>> lengthServiceTblsOpt = Optional.empty();
@@ -313,7 +318,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		{
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
-					companyId, employeeId, Optional.of(aggrPeriod),
+					companyId, employeeId, Optional.of(this.aggrPeriod),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 			

@@ -48,12 +48,15 @@ public class SingleWorkType extends WorkTypeCondition {
 
 	@Override
 	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
-		if (this.isUse() && this.targetWorkType != null) {
-			if (this.targetWorkType.contains(workInfo.getRecordInfo().getWorkTypeCode())) {
-				return WorkCheckResult.ERROR;
+		if (this.targetWorkType != null) {
+			if(this.targetWorkType.isUse() && !this.targetWorkType.getLstWorkType().isEmpty()){
+				if(this.targetWorkType.contains(workInfo.getRecordInfo().getWorkTypeCode())){
+					return WorkCheckResult.ERROR;
+				} 
+				return WorkCheckResult.NOT_ERROR;
 			}
 		}
-		return WorkCheckResult.NOT_ERROR;
+		return WorkCheckResult.NOT_CHECK;
 	}
 
 	@Override

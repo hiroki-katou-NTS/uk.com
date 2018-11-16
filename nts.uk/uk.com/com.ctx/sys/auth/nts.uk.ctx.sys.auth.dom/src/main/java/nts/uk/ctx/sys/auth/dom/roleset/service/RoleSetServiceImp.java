@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset.service;
@@ -157,24 +157,29 @@ public class RoleSetServiceImp implements RoleSetService{
         return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(roleSetCd, companyId);
     }
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService#getRoleSetFromUserId(java.lang.String, nts.arc.time.GeneralDate)
+	 */
 	@Override
-	public RoleSet getRoleSetFromUserId(String userId, GeneralDate baseDate) {
+	public Optional<RoleSet> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
 		String companyId = AppContexts.user().companyId();
 		User user = userRepo.getByUserID(userId).get();
 		
-		if (user.getAssociatedPersonID() == null)
-			throw new RuntimeException("取得失敗");
+		if (user.getAssociatedPersonID() == null || !user.getAssociatedPersonID().isPresent())
+			return Optional.empty();
+//			throw new RuntimeException("取得失敗");
 		
 		Optional<EmpInfoByCidSidImport> optImportEmployee = employeeInfoAdapter.getEmpInfoBySidCid(user.getAssociatedPersonID().get(), companyId);
 		if (!optImportEmployee.isPresent())
-			throw new RuntimeException("取得失敗");
+			return Optional.empty();
+//			throw new RuntimeException("取得失敗");
 		
 		// Get RoleSet granted for Person
 		EmpInfoByCidSidImport importEmployee = optImportEmployee.get();
 		// Update EAP No.2709
 		Optional<RoleSetGrantedPerson> optRoleSetGrantedPerson = roleSetGrantedPersonRepository.getByEmployeeDate(importEmployee.getSid(), baseDate);
 		if (optRoleSetGrantedPerson.isPresent())
-			return roleSetRepository.findByRoleSetCdAndCompanyId(optRoleSetGrantedPerson.get().getRoleSetCd().v(), companyId).get();
+			return roleSetRepository.findByRoleSetCdAndCompanyId(optRoleSetGrantedPerson.get().getRoleSetCd().v(), companyId);
 		
 		// Get RoleSet granted for JobTitle
 		val optSysJobTitle = syJobTitleAdapter.gerBySidAndBaseDate(importEmployee.getSid(), baseDate);
@@ -183,12 +188,12 @@ public class RoleSetServiceImp implements RoleSetService{
 			RoleSetGrantedJobTitle roleSetGrantedJobTitle = roleSetGrantedJobTitleRepository.getOneByCompanyId(companyId).get();
 	    	Optional<RoleSetGrantedJobTitleDetail> optJobTitleInCompany = roleSetGrantedJobTitle.getDetails().stream().filter(c -> c.getJobTitleId().equals(jobTitleId)).findFirst();
 	    	if (optJobTitleInCompany.isPresent()) {
-	    		return roleSetRepository.findByRoleSetCdAndCompanyId(optJobTitleInCompany.get().getRoleSetCd().v(), companyId).get();
+	    		return roleSetRepository.findByRoleSetCdAndCompanyId(optJobTitleInCompany.get().getRoleSetCd().v(), companyId);
 	    	}
 		}
 		
     	// Get Default RoleSet
     	String defaultRoleSetCD = defaultRoleSetRepository.findByCompanyId(companyId).get().getRoleSetCd().v();
-    	return roleSetRepository.findByRoleSetCdAndCompanyId(defaultRoleSetCD, companyId).get();
+    	return roleSetRepository.findByRoleSetCdAndCompanyId(defaultRoleSetCD, companyId);
 	}
 }
