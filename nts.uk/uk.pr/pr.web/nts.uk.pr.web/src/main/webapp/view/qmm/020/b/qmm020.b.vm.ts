@@ -221,7 +221,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 let rs = _.find(listStateCorrelationHis,{hisId: self.currentSelectedHis()});
                 let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.currentSelectedHis()});
                 setShared(model.PARAMETERS_SCREEN_K.INPUT, {
-                    startYearMonthBefore : index != self.listStateCorrelationHis().length-1 ? self.listStateCorrelationHis()[index+1].startYearMonth : 0,
+                    startLastYearMonth : index != self.listStateCorrelationHis().length-1 ? self.listStateCorrelationHis()[index+1].startYearMonth : 0,
                     startYearMonth : rs ? rs.startYearMonth : 0,
                     endYearMonth:  rs ? rs.endYearMonth : 999912,
                     hisId: self.currentSelectedHis(),
