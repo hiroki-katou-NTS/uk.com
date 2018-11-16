@@ -2314,6 +2314,31 @@ public class ProgramsManager {
 			"/view/qmm/023/a/index.xhtml");
 
 	/**
+	 * QMM003
+	 */
+	public static final Program QMM003A = new Program(WebAppId.PR, ProgramIdConsts.QMM003A, "QMM003_36",
+			"/view/qmm/003/a/index.xhtml");
+	public static final Program QMM003B = new Program(WebAppId.PR, ProgramIdConsts.QMM003B, "QMM003_8",
+			"/view/qmm/003/b/index.xhtml");
+	public static final Program QMM003C = new Program(WebAppId.PR, ProgramIdConsts.QMM003C, "QMM003_37",
+			"/view/qmm/003/c/index.xhtml");
+	public static final Program QMM003D = new Program(WebAppId.PR, ProgramIdConsts.QMM003D, "QMM003_7",
+			"/view/qmm/003/d/index.xhtml");
+	public static final Program QMM003E = new Program(WebAppId.PR, ProgramIdConsts.QMM003E, "QMM003_4",
+			"/view/qmm/003/e/index.xhtml");
+	
+	/**
+	 * QMM006
+	 */
+	public static final Program QMM006A = new Program(WebAppId.PR, ProgramIdConsts.QMM006A, "QMM006_48",
+			"/view/qmm/006/a/index.xhtml");
+	public static final Program QMM006B = new Program(WebAppId.PR, ProgramIdConsts.QMM006B, "QMM006_49",
+			"/view/qmm/006/b/index.xhtml");
+	public static final Program QMM006C = new Program(WebAppId.PR, ProgramIdConsts.QMM006C, "QMM006_3",
+			"/view/qmm/006/c/index.xhtml");
+	
+	
+	/**
 	 * All programs map.
 	 */
 	private static final Map<WebAppId, List<Program>> PROGRAMS;

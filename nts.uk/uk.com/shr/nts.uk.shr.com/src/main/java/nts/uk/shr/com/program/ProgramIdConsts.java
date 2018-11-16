@@ -1033,4 +1033,16 @@ public class ProgramIdConsts {
 	public static final String QMM039C = "QMM039C";
 	public static final String QMM039D = "QMM039D";
 
+	/* QMM003 */ 
+	public static final String QMM003A = "QMM003A";
+	public static final String QMM003B = "QMM003B";
+	public static final String QMM003C = "QMM003C";
+	public static final String QMM003D = "QMM003D";
+	public static final String QMM003E = "QMM003E";
+	
+	/* QMM006 */ 
+	public static final String QMM006A = "QMM006A";
+	public static final String QMM006B = "QMM006B";
+	public static final String QMM006C = "QMM006C";
+	
 }
