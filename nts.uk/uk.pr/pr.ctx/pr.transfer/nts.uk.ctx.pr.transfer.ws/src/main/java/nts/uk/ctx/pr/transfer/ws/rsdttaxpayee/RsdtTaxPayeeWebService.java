@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.ResidentTaxPayeeDto;
 import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.ResidentTaxPayeeFinder;
 import nts.uk.shr.com.context.AppContexts;
 
-@Path("cts/pr/transfer/rsdttaxpayee")
+@Path("ctx/pr/transfer/rsdttaxpayee")
 @Produces("application/json")
 public class RsdtTaxPayeeWebService extends WebService {
 
@@ -38,11 +38,23 @@ public class RsdtTaxPayeeWebService extends WebService {
 	public List<ResidentTaxPayeeDto> getAllResidentTaxPayee() {
 		return finder.getAll();
 	}
+	
+	@POST
+	@Path("get-all-resident-tax-payee-company-zero")
+	public List<ResidentTaxPayeeDto> getAllResidentTaxPayeeCompanyZero() {
+		return finder.getAllCompanyZero();
+	}
 
 	@POST
 	@Path("get-resident-tax-payee/{code}")
 	public ResidentTaxPayeeDto getRsdtTaxPayee(@PathParam("code") String code) {
 		return finder.getResidentTaxPayee(code);
+	}
+	
+	@POST
+	@Path("get-resident-tax-payee-company-zero/{code}")
+	public ResidentTaxPayeeDto getRsdtTaxPayeeCompanyZero(@PathParam("code") String code) {
+		return finder.getResidentTaxPayeeCompanyZero(code);
 	}
 
 	@POST

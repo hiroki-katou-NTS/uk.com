@@ -47,9 +47,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- B3_1 -->
-				<button tabindex="3" class="x-large proceed" data-bind="click: select">#{i18n.getText('QMM003_24')}</button>
+				<button tabindex="3" class="x-large proceed" data-bind="enable: selectedCode().length > 2, click: select, timeClick: 500">#{i18n.getText('QMM003_24')}</button>
 				<!-- B3_2 -->
-				<button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM003_25')}</button>
+				<button tabindex="4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>
 			<style>
 				#B2_1_container{clear: both}

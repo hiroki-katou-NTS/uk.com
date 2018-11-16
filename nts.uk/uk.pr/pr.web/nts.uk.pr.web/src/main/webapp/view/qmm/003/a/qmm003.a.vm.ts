@@ -164,7 +164,18 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
         openDialogQmm003b() {
             let self = this;
             modal("/view/qmm/003/b/index.xhtml").onClosed(() => {
-                
+                let code: string = getShared("QMM003BResult");
+                if (code && code.length > 3) {
+                    block.invisible()
+                    service.getResidentTaxPayeeZero(code).done(data => {
+                        self.setData(data);
+                        $("#A3_3").focus();
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
             });
         }
         

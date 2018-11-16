@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm003.e.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getAllResidentTaxPayee: "cts/pr/transfer/rsdttaxpayee/get-all-resident-tax-payee"
+        getAllResidentTaxPayee: "ctx/pr/transfer/rsdttaxpayee/get-all-resident-tax-payee"
     };
 
     export function getAllResidentTaxPayee(): JQueryPromise<any> {

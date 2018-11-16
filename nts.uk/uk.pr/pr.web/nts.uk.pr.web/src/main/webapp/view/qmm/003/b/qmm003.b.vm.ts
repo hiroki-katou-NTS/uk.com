@@ -3,13 +3,12 @@ module nts.uk.pr.view.qmm003.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import constants = qmm003.share.constants;
 
     export class ScreenModel {
         
         items2: KnockoutObservableArray<any>;
-        selectedCode: any;
+        selectedCode: KnockoutObservable<string>;
         headers: any;
         listRegions: Array<any> = constants.listRegions;
         listPrefectures: Array<any>;
@@ -17,7 +16,7 @@ module nts.uk.pr.view.qmm003.b.viewmodel {
         constructor() {
             let self = this;
             self.items2 = ko.observableArray([]);
-            self.selectedCode = ko.observable(null);
+            self.selectedCode = ko.observable("");
             self.headers = ko.observableArray([getText("QMM003_9")]);
             self.listPrefectures = constants.listPrefectures;
         }
@@ -56,6 +55,7 @@ module nts.uk.pr.view.qmm003.b.viewmodel {
 
         select() {
             let self = this;
+            setShared("QMM003BResult", self.selectedCode());
             nts.uk.ui.windows.close();
         }
 

@@ -47,9 +47,25 @@ public class ResidentTaxPayeeFinder {
 		return rsdtTaxPayeeRepo.getAllResidentTaxPayee(companyId).stream().map(r -> new ResidentTaxPayeeDto(r, null))
 				.collect(Collectors.toList());
 	}
+	
+	public List<ResidentTaxPayeeDto> getAllCompanyZero() {
+		String companyId = AppContexts.user().zeroCompanyIdInContract();
+		return rsdtTaxPayeeRepo.getAllResidentTaxPayee(companyId).stream().map(r -> new ResidentTaxPayeeDto(r, null))
+				.collect(Collectors.toList());
+	}
 
 	public ResidentTaxPayeeDto getResidentTaxPayee(String code) {
 		String companyId = AppContexts.user().companyId();
+		val domain = rsdtTaxPayeeRepo.getResidentTaxPayeeById(companyId, code);
+		val reportDomain = rsdtTaxPayeeRepo.getResidentTaxPayeeById(companyId,
+				domain.isPresent() && domain.get().getReportCd().isPresent() ? domain.get().getReportCd().get().v()
+						: "");
+		return domain.isPresent() ? new ResidentTaxPayeeDto(domain.get(),
+				reportDomain.isPresent() ? reportDomain.get().getName().v() : null) : null;
+	}
+	
+	public ResidentTaxPayeeDto getResidentTaxPayeeCompanyZero(String code) {
+		String companyId = AppContexts.user().zeroCompanyIdInContract();
 		val domain = rsdtTaxPayeeRepo.getResidentTaxPayeeById(companyId, code);
 		val reportDomain = rsdtTaxPayeeRepo.getResidentTaxPayeeById(companyId,
 				domain.isPresent() && domain.get().getReportCd().isPresent() ? domain.get().getReportCd().get().v()
