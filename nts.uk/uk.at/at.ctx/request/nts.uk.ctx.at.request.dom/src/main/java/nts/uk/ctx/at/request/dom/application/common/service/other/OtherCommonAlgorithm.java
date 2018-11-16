@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface OtherCommonAlgorithm {
 	/**
@@ -104,4 +105,12 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public MailResult sendMailApplicant(Application_New application, String text);
+	/**
+	 * 申請期間から休日の申請日を取得する
+	 * @param cid
+	 * @param sid
+	 * @param dates
+	 * @return
+	 */
+	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates);
 }
