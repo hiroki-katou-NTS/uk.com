@@ -4,11 +4,11 @@ module nts.uk.pr.view.qmm020.k {
          * define path to service
          */
         var path: any = {
-            getStateLinkSettingCompanyById: "core/wageprovision/statementbindingsetting/deleteStateCorrelationHis",
+            editHistoryProcess: "core/wageprovision/statementbindingsetting/editHistoryProcess",
 
         };
-        export function deleteStateCorrelationHis(data: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getStateLinkSettingCompanyById,data);
+        export function editHistoryProcess(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.editHistoryProcess,data);
         }
 
     }

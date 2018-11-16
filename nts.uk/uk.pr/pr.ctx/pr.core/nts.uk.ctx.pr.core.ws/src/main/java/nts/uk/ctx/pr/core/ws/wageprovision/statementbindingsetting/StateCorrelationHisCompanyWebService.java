@@ -34,12 +34,13 @@ public class StateCorrelationHisCompanyWebService extends WebService {
         return stateCorrelationHisCompanyFinder.getStateCorrelationHisCompanyById(cid);
     }
     @POST
-    @Path("deleteStateCorrelationHis")
-    public void deleteStateCorrelationHis(StateCorrelationHisCompanyCommand command){
+    @Path("editHistoryProcess")
+    public void editHistoryProcess(StateCorrelationHisCompanyCommand command){
         mStateCorrelationHistoryService.editHistoryProcess(command.getType(),
                 command.getModeEditHistory(),
                 command.getHistoryID(),
                 command.getMasterCode(),
+                command.getEmployeeId(),
                 new YearMonthHistoryItem(
                         command.getHistoryID(),
                         new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth()))),

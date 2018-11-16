@@ -56,8 +56,11 @@ public class StateCorrelationHisEmployeeFinder {
 
     public List<StateCorrelationHisEmployeeSettingDto> getStateLinkSettingMasterByHisId(String cid,String hisId,int startYearMonth){
         List<StateCorrelationHisEmployeeSettingDto> stateCorrelationHisEmployeeSettingDto = new ArrayList<>();
-        List<StateLinkSettingMaster> stateLinkSettingMaster = stateLinkSettingMasterRepository.getStateLinkSettingMasterByHisId(hisId);
         List<EmpCdNameImportDto>  listEmployee = this.findEmploymentAll(cid);
+        if(listEmployee.size() == 0){
+            return stateCorrelationHisEmployeeSettingDto;
+        }
+        List<StateLinkSettingMaster> stateLinkSettingMaster = stateLinkSettingMasterRepository.getStateLinkSettingMasterByHisId(hisId);
         if(stateLinkSettingMaster.size() > 0){
             stateCorrelationHisEmployeeSettingDto = stateLinkSettingMaster.stream().map(item ->{
                 String salaryCode = null;

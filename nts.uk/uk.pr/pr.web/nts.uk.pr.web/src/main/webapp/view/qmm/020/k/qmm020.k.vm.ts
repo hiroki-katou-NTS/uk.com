@@ -35,9 +35,10 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 modeEditHistory: self.methodEditing(),
                 type: self.params().modeScreen,
                 masterCode: self.params().masterCode,
-                isUpdate : (self.startYearMonthPeriod() > self.startYearMonthBefore() && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) ? true : false
+                isUpdate : self.startYearMonthPeriod() > self.params().startLastYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod(),
+                employeeId : self.params().employeeId
             };
-            nts.uk.pr.view.qmm020.k.service.deleteStateCorrelationHis(data).done(()=>{
+            nts.uk.pr.view.qmm020.k.service.editHistoryProcess(data).done(()=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                     let data : any ={
                         modeEditHistory: self.methodEditing()

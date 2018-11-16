@@ -35,6 +35,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
 
             }).always(()=>{
                 block.clear();
+                $("#L1_6").focus();
             });
 
         }
