@@ -61,6 +61,11 @@ module nts.uk.pr.view.qmm020.share.model {
         return _.orderBy(listStateLinkSettingMaster, ['masterCode'],['asc']);
     }
 
+    export enum EDIT_METHOD {
+        DELETE = 0,
+        UPDATE = 1
+    }
+
     export enum MODE {
         NEW = 0,
         UPDATE = 1,

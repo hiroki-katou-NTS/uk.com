@@ -38,7 +38,12 @@ public class RegisterStateCorrelationHisPositionCommandHandler extends CommandHa
         } else {
             String hisId = command.getHisId();
             List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()) );}).collect(Collectors.toList());
+                return new StateLinkSettingMaster(
+                        hisId,
+                        new MasterCode(i.getMasterCode()),
+                        i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
+                        i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
+                        }).collect(Collectors.toList());
             stateCorrelationHisPositionService.updateHistoryPosition(listStateLinkSettingMaster);
         }
     

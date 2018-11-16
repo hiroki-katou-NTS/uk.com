@@ -409,7 +409,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         salaryCode: number;
         salaryName: number;
         bonusCode: string;
-        bonusName
+        bonusName: string;
         constructor() {
 
         }
