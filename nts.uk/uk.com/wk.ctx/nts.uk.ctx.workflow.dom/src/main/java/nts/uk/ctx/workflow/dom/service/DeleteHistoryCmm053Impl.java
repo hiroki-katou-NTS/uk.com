@@ -72,8 +72,8 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 				repoPerson.updatePsApprovalRoot(psAppRoot);
 			}
 		}
-		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
-		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
+		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate, startDate);
+		createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate, startDate);
 	}
 
 	/**
