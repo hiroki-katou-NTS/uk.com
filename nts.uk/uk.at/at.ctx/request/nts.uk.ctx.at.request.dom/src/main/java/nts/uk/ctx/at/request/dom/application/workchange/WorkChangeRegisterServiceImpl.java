@@ -14,10 +14,12 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
@@ -43,7 +45,8 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
 	public ProcessResult registerData(AppWorkChange workChange, Application_New app) {
 
@@ -61,8 +64,12 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		GeneralDate startDateParam = app.getStartDate().orElse(app.getAppDate());
 		GeneralDate endDateParam = app.getEndDate().orElse(app.getAppDate());
 		List<GeneralDate> listDate = new ArrayList<>();
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(app.getCompanyID(), app.getEmployeeID(), new DatePeriod(startDateParam, endDateParam));
+		
 		for(GeneralDate loopDate = startDateParam; loopDate.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)){
-			listDate.add(loopDate);
+			if(!lstHoliday.contains(loopDate) && workChange.getExcludeHolidayAtr() == 0) {
+				listDate.add(loopDate);	
+			}
 		}
 		interimRemainDataMngRegisterDateChange.registerDateChange(
 				app.getCompanyID(), 
