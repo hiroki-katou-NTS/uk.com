@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 450, height: 620 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="qmm006.b.service.js" />
+			<com:scriptfile path="qmm006.b.vm.js" />
+			<com:scriptfile path="qmm006.b.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="contents-area dialog-content" style="padding: 20px 25px">
+				<div class="valign-center control-group">
+					<!-- B1_1 -->
+					<span class="label">#{i18n.getText('QMM006_36')}</span>
+				</div>
+				<div class="valign-center control-group">
+					<!-- B1_2 -->
+					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+					<!-- B1_3 -->
+					<div tabindex="1" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+						targetKey: 'id', mode:'igTree', comId:'B1_4', items: bankBranchList, 
+						selected: selectedCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+				</div>
+				<!-- B1_4 -->
+				<table id="B1_4" tabindex="2"
+					data-bind="ntsTreeGridView:{
+						width: 400,
+						name: '#[QMM006_37]',
+						dataSource: bankBranchList,
+						value: selectedCode,
+						headers: headers,
+						primaryKey: 'id',
+						childDataKey: 'children',
+						primaryText: 'nodeText',
+						multiple: false,
+						enable: true,
+						rows: 15,
+						initialExpandDepth: 0,
+						showCheckBox: false}"></table>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- C3_1 -->
+				<button tabindex="3" class="x-large proceed" data-bind="enable: selectedCode().length > 4, click: select, timeClick: 500">#{i18n.getText('QMM006_38')}</button>
+				<!-- C3_2 -->
+				<button tabindex="4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM006_39')}</button>
+			</div>
+			<style>
+				#B1_4_container{clear: both}
+			</style>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

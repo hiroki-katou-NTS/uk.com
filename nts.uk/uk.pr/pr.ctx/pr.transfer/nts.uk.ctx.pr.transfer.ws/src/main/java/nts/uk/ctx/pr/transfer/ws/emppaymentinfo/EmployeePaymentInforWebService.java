@@ -1,22 +1,31 @@
 package nts.uk.ctx.pr.transfer.ws.emppaymentinfo;
 
 import javax.inject.Inject;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.SourceBankIntegrationCommandHandler;
+
 /**
  * 
  * @author HungTT
  *
  */
-import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.IntegrationProcessCommandHandler;
 
 @Path("ctx/pr/transfer/emppaymentinfo")
 @Produces("application/json")
 public class EmployeePaymentInforWebService extends WebService {
 
 	@Inject
-	private IntegrationProcessCommandHandler integrationHandler;
-	
+	private SourceBankIntegrationCommandHandler integrationHandler;
+
+	@POST
+	@Path("source-bank-integration/{code}")
+	public void sourceBankIntegration(@PathParam("code") String code) {
+		integrationHandler.handle(code);
+	}
+
 }

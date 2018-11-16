@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.transfer.dom.sourcebank;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * 
  * @author HungTT
@@ -7,6 +10,14 @@ package nts.uk.ctx.pr.transfer.dom.sourcebank;
  */
 public interface TransferSourceBankRepository {
 	
+	public List<TransferSourceBank> getAllSourceBank(String companyId);
+	
+	public Optional<TransferSourceBank> getSourceBank(String companyId, String code);
+	
 	public void addSourceBank(TransferSourceBank sourceBank);
+	
+	public void updateSourceBank(TransferSourceBank sourceBank);
+	
+	public void removeSourceBank(String companyId, String code);
 
 }

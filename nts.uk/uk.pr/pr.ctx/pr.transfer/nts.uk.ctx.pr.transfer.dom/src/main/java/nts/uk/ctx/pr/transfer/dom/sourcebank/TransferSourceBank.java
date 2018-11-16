@@ -73,8 +73,8 @@ public class TransferSourceBank extends AggregateRoot {
 		this.accountNumber = new AccountNumber(accountNumber);
 		this.accountAtr = AccountAtr.of(accountAtr);
 		this.entrustorInfor = entrustorInfor.isEmpty() ? Optional.empty() : Optional.of(entrustorInfor);
-		this.transferRequesterName = transferRequesterName == null ? Optional.empty() : Optional.of(new TransferRequesterName(transferRequesterName));
-		this.memo = memo == null ? Optional.empty() : Optional.of(new Memo(memo));
+		this.transferRequesterName = transferRequesterName == null || transferRequesterName.isEmpty() ? Optional.empty() : Optional.of(new TransferRequesterName(transferRequesterName));
+		this.memo = memo == null || memo.isEmpty() ? Optional.empty() : Optional.of(new Memo(memo));
 	}
 
 }
