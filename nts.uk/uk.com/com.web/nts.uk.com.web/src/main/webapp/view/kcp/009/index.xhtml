@@ -28,6 +28,15 @@
 						<hr></hr>
 						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
+								<b>Base Date:</b>
+							</p>
+							<br></br>
+							<div data-bind="ntsCheckBox:{checked: setBaseDate}"></div>
+							<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD', enable: setBaseDate}"></div>
+						</div>
+						<br></br>
+						<div style="margin-left: 10px; padding-top: 10px">
+							<p>
 								<b>Display Organization Name:</b>
 							</p>
 							<br></br>
