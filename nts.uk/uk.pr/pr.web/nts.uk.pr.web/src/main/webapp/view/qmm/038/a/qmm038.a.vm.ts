@@ -60,7 +60,7 @@ module nts.uk.pr.view.qmm038.a {
                     showJobTitle: false,
                     showWorktype: false,
                     isMutipleCheck: false,
-                    tabindex: 4,
+                    tabindex: 5,
 
                     /**
                      * Self-defined function: Return data from CCG001
@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm038.a {
                         block.invisible();
                         nts.uk.ui.errors.clearAll();
                         self.employeeIds = data.listEmployee.map(item => item.employeeId);
-                        let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/DD")};
+                        let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/MM")};
                         nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
                             self.statementItems = [];
                             self.statementItems = _.sortBy(response, ["employeeCode"]);
@@ -145,7 +145,9 @@ module nts.uk.pr.view.qmm038.a {
                         {headerText: getText("QMM038_9"), key: 'departmentName', dataType: 'string', width: '150px'},
                         {headerText: getText("QMM038_10"), key: 'employmentName', dataType: 'string', width: '150px'},
                         {
-                            headerText: getText("QMM038_11"), key: 'averageWage', dataType: 'string', width: '207px',
+                            headerText: getText("QMM038_11"), key: 'averageWage', dataType: 'string', width: '207px',option: {
+                                grouplength: 3
+                            },
                             ntsControl: 'TextEditor'
                         }
                     ],
@@ -163,7 +165,7 @@ module nts.uk.pr.view.qmm038.a {
 
                     ],
                     ntsControls: [
-                        {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}}
+                        {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}, }
                     ]
                 });
             }
@@ -171,7 +173,7 @@ module nts.uk.pr.view.qmm038.a {
             findByEmployee() {
                 let self = this;
                 nts.uk.ui.errors.clearAll();
-                let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
+                let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/MM") };
                 nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
                     self.statementItems = [];
                     self.statementItems = _.sortBy(response, ["employeeCode"]);
@@ -181,8 +183,9 @@ module nts.uk.pr.view.qmm038.a {
                     } else {
                         self.loadGrid();
                     }
+                    $("#gridStatement_container").focus();
                 });
-                $("#A3_1").focus();
+
             }
 
             updateStatelmentItemName() {
@@ -201,7 +204,7 @@ module nts.uk.pr.view.qmm038.a {
                 })
                 let command = {
                     employeeDtoList : self.dataUpdate,
-                    giveCurrTreatYear : self.giveCurrTreatYear()
+                    giveCurrTreatYear : moment(self.giveCurrTreatYear()).format("YYYY/MM")
                 }
                 service.update(command).done(function(response) {
                     if(response[0] == "Msg_15") {
