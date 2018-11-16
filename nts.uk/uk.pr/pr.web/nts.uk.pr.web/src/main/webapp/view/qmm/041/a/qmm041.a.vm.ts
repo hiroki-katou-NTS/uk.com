@@ -8,23 +8,28 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import MODIFY_METHOD = nts.uk.pr.view.qmm041.share.model.MODIFY_METHOD;
     import hasError = nts.uk.ui.errors.hasError;
+    import model = nts.uk.pr.view.qmm041.share.model;
 
     export class ScreenModel {
         // VM
-        dataSource: KnockoutObservableArray<any>;
-        selectedCode: KnockoutObservable<any>;
-        isAddableHis: KnockoutObservable<boolean>;
-        isEditableHis: KnockoutObservable<boolean>;
-        isRegistrable: KnockoutObservable<boolean>;
-        historyList: KnockoutObservableArray<any>;
-        selectedHistoryCode: KnockoutObservable<any>;
+        dataSource: KnockoutObservableArray<model.SalPerUnitPriceName[]> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<string> = ko.observable(null);
+        isAddableHis: KnockoutObservable<boolean> = ko.observable(false);
+        isEditableHis: KnockoutObservable<boolean> = ko.observable(false);
+        isRegistrable: KnockoutObservable<boolean> = ko.observable(false);
+        historyList: KnockoutObservableArray<HistoryModel> = ko.observableArray([]);
+        selectedHistoryCode: KnockoutObservable<string> = ko.observable(null);
         columns: any;
-        currencyValue: KnockoutObservable<any>;
-        currencyEnable: KnockoutObservable<boolean>;
-        mode: KnockoutObservable<number>;
-        periodStartYM: KnockoutObservable<string>;
-        periodEndYM: KnockoutObservable<string> = ko.observable('');
-
+        currencyValue: KnockoutObservable<number> = ko.observable(null);
+        currencyEnable: KnockoutObservable<boolean> = ko.observable(false);
+        mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
+        periodStartYM: KnockoutObservable<string> = ko.observable(null);
+        periodEndYM: KnockoutObservable<string> = ko.observable(null);
+        salPerUnitPriceName: KnockoutObservable<string> = ko.observable(null);
+        salPerUnitPriceCode: KnockoutObservable<string> = ko.observable(null);
+        salPerUnitPriceNameLabel: KnockoutObservable<string> = ko.observable(null);
+        salPerUnitPriceCodeLabel: KnockoutObservable<string> = ko.observable(null);
+        A5_6: KnockoutObservable<string> = ko.observable(null);
 
         // CCG001
         ccgComponent: GroupOption;
@@ -42,21 +47,41 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         constructor() {
             let self = this;
             //VM
-            self.mode = ko.observable(MODE.NORMAL);
-            self.dataSource = ko.observableArray([]);
-            self.selectedCode = ko.observable(null);
-            self.isAddableHis = ko.observable(false);
-            self.isEditableHis = ko.observable(false);
-            self.isRegistrable = ko.observable(false);
-            self.historyList = ko.observableArray([]);
-            self.selectedHistoryCode = ko.observable(null);
             self.columns = [
                 {key: 'index', length: 0, hidden: true},
                 {key: 'period', length: 8},
                 {key: 'amount', length: 6, template: "<div style='text-align: right'>${amount}</div>"}
             ];
-            self.currencyValue = ko.observable(null);
-            self.currencyEnable = ko.observable(false);
+
+            //subscribe
+            self.selectedHistoryCode.subscribe((historyCode) => {
+                if (historyCode) {
+                    self.salPerUnitPriceCodeLabel(self.salPerUnitPriceCode());
+                    self.salPerUnitPriceNameLabel(self.salPerUnitPriceName());
+                    self.A5_6(' ～ ');
+                    self.periodEndYM(self.historyList()[historyCode].periodEndYM);
+                    self.periodStartYM(self.historyList()[historyCode].periodEndYM);
+                    self.currencyValue(self.historyList()[historyCode].amount);
+                    self.currencyEnable(true);
+                } else {
+                    self.salPerUnitPriceCodeLabel(null);
+                    self.salPerUnitPriceNameLabel(null);
+                    self.A5_6(null);
+                    self.periodEndYM(null);
+                    self.periodStartYM(null);
+                    self.currencyValue(null);
+                    self.currencyEnable(false);
+                }
+            });
+
+            self.selectedCode.subscribe((code) => {
+                self.getIndividualEmpSalUnitPrice(code);
+            });
+
+            // self.selectedItem.subscribe((item) => {
+            //
+            // });
+
             self.mode.subscribe((mode) => {
                 if (mode === MODE.NORMAL) {
                     self.isRegistrable(true);
@@ -69,6 +94,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     self.isEditableHis(false);
                     self.isAddableHis(true);
                     self.currencyEnable(false);
+                    self.selectedHistoryCode(null);
                 }
                 if (mode === MODE.ADD_HISTORY) {
                     self.isRegistrable(true);
@@ -77,8 +103,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     self.currencyEnable(true);
                 }
             });
-            self.periodStartYM = ko.observable('');
-            self.periodEndYM = ko.observable('');
 
             //CCG001
             self.selectedEmployee = ko.observableArray([]);
@@ -128,7 +152,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 }
 
             }
-            $('#com-ccg001').ntsGroupComponent(self.ccgComponent);
 
             //KCP009
             self.employeeInputList = ko.observableArray([]);
@@ -148,26 +171,77 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             };
         }
 
+        formatYM(intYM) {
+            return intYM.toString().substr(0, 4) + '/' + intYM.toString().substr(4, intYM.length);
+        }
+
+        formatYMToInt(stringYM: string) {
+            let arr = stringYM.split('/');
+            return parseInt(arr[0]) * 100 + parseInt(arr[1]);
+        }
+
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             service.getInfoEmpLogin().done((emp) => {
                 service.getWpName().done((wp) => {
-                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
-                    } else {
-                        self.employeeInputList.push(new EmployeeModel(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, ""));
-                        $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-                        dfd.resolve();
-                    }
+                    service.getBaseDate().done((baseDate) => {
+                        service.getSalPerUnitPriceName().done((data) => {
+                            if (data.length > 0) {
+                                self.dataSource(data);
+                                self.selectedCode(data[0].code);
+                            } else {
+                                self.isAddableHis(false);
+                                nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
+                            }
+                            self.employeeInputList.push(new EmployeeModel(emp.sid,
+                                emp.employeeCode, emp.employeeName, wp.name, ""));
+                            $('#com-ccg001').ntsGroupComponent(self.ccgComponent);
+                            if (baseDate) {
+                                self.ccgComponent.baseDate = baseDate;
+                            }
+                            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                            dfd.resolve();
+                        }).fail((res) => {
+                            dfd.reject()
+                        });
+                    }).fail((res) => {
+                        dfd.reject()
+                    });
                 }).fail(function (res) {
                     dfd.reject();
                 });
                 $('#emp-component').focus();
-            }).fail(function (res) {
+            }).fail((res) => {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+
+        getIndividualEmpSalUnitPrice(code) {
+            let self = this;
+            service.getIndividualEmpSalUnitPrices(code).done((data) => {
+                if (data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        self.historyList.push(
+                            new HistoryModel(
+                                i,
+                                data.perUnitPrice,
+                                data.historyID,
+                                data.periodStartYm,
+                                data.periodEndYm,
+                                format(getText("QMM039_18"), self.formatYM(data.periodStartYm), self.formatYM(data.periodEndYm)),
+                                data.amountOfMoney));
+                    }
+                    self.selectedHistoryCode(self.historyList()[0].index);
+                    self.mode(MODE.NORMAL);
+                } else {
+                    self.selectedHistoryCode(null);
+                    self.mode(MODE.HISTORY_UNREGISTERED);
+                }
+            }).fail((res) => {
+                nts.uk.ui.dialog.bundledErrors(res);
+            });
         }
 
         convertEmployeeCcg01ToKcp009(dataList: EmployeeSearchDto[]): void {
@@ -176,7 +250,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             _.each(dataList, (item) => {
                 self.employeeInputList.push(new EmployeeModel(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
             });
-            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
             if (dataList.length === 0) {
                 self.selectedItem('');
             } else {
@@ -233,7 +306,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             modal('/view/qmm/041/b/index.xhtml', {title: '',}).onClosed((): any => {
                 let params = getShared("QMM041_B_RES_PARAMS");
                 if (params) {
-                    self.selectedHistoryCode(0);
+                    self.selectedHistoryCode('0');
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
                     self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
 
@@ -244,14 +317,15 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     }
                     let array = self.historyList();
                     self.historyList([]);
-                    array.unshift(new ItemModel(
+                    array.unshift([new HistoryModel(
                         0,
+                        null,
                         null,
                         params.period.periodStartYm,
                         params.period.periodEndYm,
                         format(getText("#QMM041_13"), nts.uk.time.parseYearMonth(params.period.periodStartYm).format(), nts.uk.time.parseYearMonth(params.period.periodEndYm).format()),
-                        self.currencyValue() + "¥"
-                    ));
+                        self.currencyValue()
+                    )]);
                     if (array.length > 1) {
                         array[1].periodEndYm = (params.periodStartYm - 1) % 100 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
                         array[1].period = format(getText("#QMM041_13"), nts.uk.time.parseYearMonth(array[1].periodStartYm).format(), nts.uk.time.parseYearMonth(array[1].periodEndYm).format());
@@ -321,9 +395,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 salBonusCate: self.salaryBonusCategory()
             }
             setShared("QMM041_D_PARAMS", params);
-            modal('/view/qmm/041/d/index.xhtml', {title: '',}).onClosed(function (): any {
-
-            });
         }
     }
 
@@ -441,6 +512,26 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         static PERSONNEL = 3;
         static ACCOUNTING = 4;
         static OH = 6;
+    }
+
+    class HistoryModel {
+        index: number;
+        perUnitPrice: string;
+        historyID: string;
+        periodStartYm: number;
+        periodEndYm: number;
+        period: string;
+        amount: number;
+
+        constructor(index: number, perUnitPrice: string, historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: number) {
+            this.index = index;
+            this.perUnitPrice = perUnitPrice;
+            this.historyID = historyID;
+            this.periodStartYm = periodStartYm;
+            this.periodEndYm = periodEndYm;
+            this.period = period;
+            this.amount = amount;
+        }
     }
 
 }

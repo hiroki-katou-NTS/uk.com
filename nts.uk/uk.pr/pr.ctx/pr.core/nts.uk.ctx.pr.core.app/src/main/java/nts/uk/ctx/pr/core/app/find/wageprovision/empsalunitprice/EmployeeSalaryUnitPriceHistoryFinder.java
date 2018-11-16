@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoAdapter;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,5 +20,4 @@ public class EmployeeSalaryUnitPriceHistoryFinder {
     public EmployeeSalaryUnitPriceDto getEmployeeSalaryUnitPriceDto(String personalUnitPriceCode, List<String> employeeIds) {
         return new EmployeeSalaryUnitPriceDto(this.employeeSalaryUnitPriceHistoryRepository.getEmployeeSalaryUnitPriceHistory(personalUnitPriceCode, employeeIds), this.employeeInfoAdapter.getByListSid(employeeIds));
     }
-
 }

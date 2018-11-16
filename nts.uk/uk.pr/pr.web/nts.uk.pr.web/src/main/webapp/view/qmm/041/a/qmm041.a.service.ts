@@ -1,10 +1,14 @@
 module nts.uk.pr.view.qmm041.a.service {
     import ajax = nts.uk.request.ajax;
+    import model = nts.uk.pr.view.qmm041.share.model;
+    import format = nts.uk.text.format;
 
     let paths: any = {
         getInfoEmpLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
         getWpName: "screen/com/kcp010/getLoginWorkPlace",
-        getEmpSalUnitPriceHis: "ctx/pr/core/wageprovision/empsalunitprice/getEmployeeSalaryUnitPriceHistory",
+        getIndividualEmpSalUnitPrices: "ctx/pr/core/wageprovision/empsalunitprice/getIndividualEmpSalUnitPrices/{code}",
+        getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
+        getSalPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
     }
 
     export function getInfoEmpLogin(): JQueryPromise<any> {
@@ -15,7 +19,16 @@ module nts.uk.pr.view.qmm041.a.service {
         return ajax("com", paths.getWpName);
     }
 
-    export function getEmpSalUnitPriceHis() {
-
+    export function getBaseDate(): JQueryPromise<any> {
+        return ajax("pr", paths.getBaseDate);
     }
+
+    export function getSalPerUnitPriceName(): JQueryPromise<model.SalPerUnitPriceName> {
+        return ajax("pr", paths.getSalPerUnitPriceName);
+    }
+
+    export function getIndividualEmpSalUnitPrices(perUnitPriceCode: string): JQueryPromise<any> {
+        return ajax("pr", format(paths.getIndividualEmpSalUnitPrices, perUnitPriceCode));
+    }
+
 }

@@ -1,23 +1,23 @@
 module nts.uk.pr.view.qmm041.share.model {
 
-
-    export interface IGenericHistYMPeriod {
-        historyID: string;
-        periodStartYm: string;
-        periodEndYm: string;
+    export interface ISalPerUnitPriceName {
+        code: string,
+        name: string
     }
 
-    export class GenericHistYMPeriod {
-        historyID: KnockoutObservable<string> = ko.observable(null);
-        periodStartYm: KnockoutObservable<string> = ko.observable(null);
-        periodEndYm: KnockoutObservable<string> = ko.observable(null);
 
-        constructor(params: IGenericHistYMPeriod) {
-            this.historyID(params ? params.historyID : null);
-            this.periodStartYm(params ? params.periodStartYm : null);
-            this.periodEndYm(params ? params.periodEndYm : null);
+    export class SalPerUnitPriceName {
+        code: string;
+        name: string;
+
+        constructor(param: ISalPerUnitPriceName) {
+            if (param) {
+                this.code = param.code;
+                this.name = param.name;
+            }
         }
     }
+
     export class EnumModel {
         value: number;
         name: string;

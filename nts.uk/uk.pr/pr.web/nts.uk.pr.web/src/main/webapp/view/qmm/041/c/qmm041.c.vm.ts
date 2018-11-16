@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
         isDeletable: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
-            var self = this;
+            let self = this;
             block.invisible();
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");
@@ -147,7 +147,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
         }

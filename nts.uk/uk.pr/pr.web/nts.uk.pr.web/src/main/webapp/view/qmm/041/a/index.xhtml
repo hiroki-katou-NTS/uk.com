@@ -79,12 +79,12 @@
                              data-bind="ntsPanel:{width: '275px', direction: 'none'}">
                             <!--A4_2 履歴追加-->
                             <button id="A4_2" tabindex="7" class="pull-left"
-                                    data-bind="click: toScreenB, enable: isAddableHis &amp;&amp; $root.errors.isEmpty">
+                                    data-bind="click: toScreenB, enable: isAddableHis">
                                 #{i18n.getText('QMM041_10')}
                             </button>
                             <!--A4_3 履歴編集-->
                             <button id="A4_3" tabindex="8" class="pull-right"
-                                    data-bind="click: toScreenC, enable: isEditableHis &amp;&amp; $root.errors.isEmpty">
+                                    data-bind="click: toScreenC, enable: isEditableHis">
                                 #{i18n.getText('QMM041_11')}
                             </button>
                             <!--A4_4 履歴リスト-->
@@ -95,7 +95,7 @@
                                     multiple: false,
                                     value: selectedHistoryCode,
                                     enable: true,
-                                    rows: 5,
+                                    rows: 6,
                                     columns: columns,
                                     name: '#[QMM041_12]'}"/>
                         </div>
@@ -110,39 +110,36 @@
                         <!--A5_1 コード・名称-->
                         <div id="A5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM041_15')}</div>
                         <!--A5_2 コード-->
-                        <span class="label" data-bind="text: , click: "/>
+                        <span class="label" data-bind="text: salPerUnitPriceCodeLabel"/>
                         <!--A5_3 名称-->
-                        <span class="label" data-bind="text: , click: "/>
+                        <span class="label" data-bind="text: salPerUnitPriceNameLabel"/>
 
                     </div>
                     <div class="control-group valign-center row">
                         <!--A5_4 期間-->
                         <div id="A5_4" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM041_16')}</div>
                         <!--A5_5 履歴開始年月-->
-                        <span class="label" data-bind="text: "/>
+                        <span class="label" data-bind="text: periodStartYM"/>
                         <!--A5_6 ～-->
-                        <span class="label">～</span>
+                        <span class="label" data-bind="text: A5_6" />
                         <!--A5_7 履歴開始年月-->
-                        <span class="label" data-bind="text: "/>
+                        <span class="label" data-bind="text: periodEndYM"/>
                     </div>
                     <div class="control-group valign-center row">
                         <!--A5_8 金額-->
                         <div id="A5_8" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM041_18')}</div>
                         <!--A5_9 金額-->
-                        <input id="A5_9"
-                               tabindex="10"
-                               data-bind="ntsNumberEditor: {
-                                    value: currencyValue,
-                                    constraint: 'SalaryUnitPrice',
-                                    required: true,
-                                    name: '#[QMM041_18]',
-                                    enable: currencyEnable,
-                                    option: {
-                                        grouplength: 3,
-                                        decimallength: 2,
-                                        currencyformat: 'JPY'
-                                        }
-                                    }"
+                        <input id="A5_9" tabindex="10" data-bind="ntsNumberEditor: {
+                            value: currencyValue,
+                            constraint: 'SalaryUnitPrice',
+                            required: true,
+                            name: '#[QMM041_18]',
+                            enable: currencyEnable,
+                            option: {
+                                grouplength: 3,
+                                decimallength: 2
+                                }
+                            }"
                         />
                     </div>
                 </div>

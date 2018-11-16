@@ -18,6 +18,9 @@ import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPr
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.IndividualEmpSalUnitPrice;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.PerUnitPriceCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.SalaryUnitPrice;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -64,11 +67,21 @@ public class QpbmtEmpSalPriHis extends UkJpaEntity implements Serializable {
         return empSalPriHisPk;
     }
 
-    public static EmployeeSalaryUnitPriceHistory toDomain(List<QpbmtEmpSalPriHis> entites) {
-        val personalUnitPriceCode = entites.get(0).empSalPriHisPk.personalUnitPriceCode;
-        val employeeId = entites.get(0).empSalPriHisPk.employeeId;
-        List<YearMonthHistoryItem> period = entites.stream().map(v -> new YearMonthHistoryItem(v.empSalPriHisPk.historyId, new YearMonthPeriod(new YearMonth(v.startYearMonth), new YearMonth(v.endYearMonth)))).collect(Collectors.toList());
+    public static EmployeeSalaryUnitPriceHistory toDomain(List<QpbmtEmpSalPriHis> entities) {
+        val personalUnitPriceCode = entities.get(0).empSalPriHisPk.personalUnitPriceCode;
+        val employeeId = entities.get(0).empSalPriHisPk.employeeId;
+        List<YearMonthHistoryItem> period = entities.stream().map(v -> new YearMonthHistoryItem(v.empSalPriHisPk.historyId, new YearMonthPeriod(new YearMonth(v.startYearMonth), new YearMonth(v.endYearMonth)))).collect(Collectors.toList());
         return new EmployeeSalaryUnitPriceHistory(personalUnitPriceCode, employeeId, period);
+    }
+
+    public static IndividualEmpSalUnitPrice toDomain(QpbmtEmpSalPriHis entity) {
+        return new IndividualEmpSalUnitPrice(
+                new PerUnitPriceCode(entity.empSalPriHisPk.personalUnitPriceCode),
+                entity.empSalPriHisPk.employeeId,
+                entity.empSalPriHisPk.historyId,
+                entity.startYearMonth,
+                entity.endYearMonth,
+                new SalaryUnitPrice(entity.indvidualUnitPrice));
     }
 
     public static List<EmployeeSalaryUnitPriceHistory> toDomains(List<QpbmtEmpSalPriHis> entites) {
@@ -98,6 +111,14 @@ public class QpbmtEmpSalPriHis extends UkJpaEntity implements Serializable {
                 item.end().v(),
                 new BigDecimal(0)
         )).collect(Collectors.toList());
+    }
+
+    public static QpbmtEmpSalPriHis toEntity(IndividualEmpSalUnitPrice domain) {
+        return new QpbmtEmpSalPriHis(
+                new QpbmtEmpSalPriHisPk(domain.getPerUnitPriceCode().v(), domain.getEmployeeID(), domain.getHistoryID()),
+                domain.getStartYearMonth(),
+                domain.getEndYearMonth(),
+                domain.getAmountOfMoney().v());
     }
 
 }

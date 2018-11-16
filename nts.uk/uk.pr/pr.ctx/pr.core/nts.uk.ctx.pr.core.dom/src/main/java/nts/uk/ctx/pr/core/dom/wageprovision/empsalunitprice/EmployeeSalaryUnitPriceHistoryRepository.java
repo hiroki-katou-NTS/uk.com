@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.List;
 
 /**
@@ -19,5 +18,11 @@ public interface EmployeeSalaryUnitPriceHistoryRepository
     void update(EmployeeSalaryUnitPriceHistory domain);
 
     void remove(String personalUnitPriceCode, String employeeId, String historyId);
+
+    List<IndividualEmpSalUnitPrice> getIndividualEmpSalUnitPrices(String perUnitPriceCode, String employeeId);
+
+    void add(IndividualEmpSalUnitPrice domain);
+
+    void update(IndividualEmpSalUnitPrice domain);
 
 }
