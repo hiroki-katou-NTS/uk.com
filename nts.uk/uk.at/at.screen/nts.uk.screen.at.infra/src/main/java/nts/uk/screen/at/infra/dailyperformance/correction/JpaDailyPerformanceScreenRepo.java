@@ -257,6 +257,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public final static String SELECT_BY_LIST_EMPID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
 
 	private static final String SELECT_BY_EMPLOYEE_ID_AFF_COM = "SELECT c FROM BsymtAffCompanyHist c WHERE c.bsymtAffCompanyHistPk.sId IN :sIds and c.companyId = :cid ORDER BY c.startDate ";
+	
+	private static final String SELECT_BY_SID_DATE_AF_COM = "SELECT c.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist c WHERE c.bsymtAffCompanyHistPk.sId IN :sIds and c.companyId = :cid and c.startDate <= :endDate and c.endDate >= :startDate ";
 
 	private static final String SELECT_BY_LISTSID_WPH;
 
@@ -335,8 +337,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
 		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
 		builderString.append("WHERE a.sid = :sId ");
-		builderString.append("AND a.strDate <= :baseDate ");
-		builderString.append("AND a.endDate >= :baseDate ");
+		builderString.append("AND a.strDate <= :endDate ");
+		builderString.append("AND a.endDate >= :startDate ");
 		builderString.append("AND w.sid = a.sid ");
 		SEL_WORKPLACE = builderString.toString();
 
@@ -353,8 +355,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("SELECT w.sid FROM BsymtAffiWorkplaceHistItem w JOIN ");
 		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
 		builderString.append("WHERE w.workPlaceId IN :workPlaceId ");
-		builderString.append("AND a.strDate <= :baseDate ");
-		builderString.append("AND a.endDate >= :baseDate ");
+		builderString.append("AND a.strDate <= :endDate ");
+		builderString.append("AND a.endDate >= :startDate ");
 		FIND_EMP_WORKPLACE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -745,7 +747,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		Map<String, String> lstWkp = new HashMap<>();
 		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
 				.query(SEL_WORKPLACE, BsymtAffiWorkplaceHistItem.class).setParameter("sId", employeeId)
-				.setParameter("baseDate", dateRange.getEndDate()).getList();
+				.setParameter("startDate", dateRange.getEndDate()).getList();
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 
@@ -780,13 +782,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<String> getListEmpInDepartment(String employeeId, DateRange dateRange) {
 		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
 				.query(SEL_WORKPLACE, BsymtAffiWorkplaceHistItem.class).setParameter("sId", employeeId)
-				.setParameter("baseDate", dateRange.getEndDate()).getList();
+				.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate()).getList();
 		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
 				.collect(Collectors.toList());
 		if (workPlaceIds.isEmpty())
 			return Collections.emptyList();
 		return this.queryProxy().query(FIND_EMP_WORKPLACE, String.class).setParameter("workPlaceId", workPlaceIds)
-				.setParameter("baseDate", dateRange.getEndDate()).getList();
+				.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate()).getList();
 	}
 
 	@Override
@@ -1608,6 +1610,23 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				Collectors.mapping(x -> x, Collectors.toList())));
 	}
 
+	//SELECT_BY_SID_DATE_AF_COM
+	@Override
+	public List<String> getAffCompanyHistorySidDate(String cid,
+			List<String> employeeIds, DateRange range) {
+		if (employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<String> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_SID_DATE_AF_COM, String.class)
+					.setParameter("sIds", subList).setParameter("cid", cid)
+					.setParameter("startDate", range.getStartDate())
+					.setParameter("endDate", range.getEndDate())
+					.getList());
+		});
+		return new ArrayList<>(resultList.stream().collect(Collectors.toSet()));
+	}
+	
 	@Override
 	public List<EnumConstant> findApplicationCall(String companyId) {
 		List<KfnmtApplicationCall> entities = this.queryProxy().query(FIND_APPLICATION_CALL, KfnmtApplicationCall.class)
