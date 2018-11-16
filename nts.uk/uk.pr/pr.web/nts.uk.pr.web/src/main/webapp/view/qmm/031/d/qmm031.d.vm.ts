@@ -44,6 +44,7 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
             self.viewCode(self.lifeInsuranceCode());
             self.viewName(self.lifeInsuranceName());
             self.isNewMode(false);
+            self.isComboType(true);
             self.atrOfInsuranceType(getAtrOfInsuranceType());
             self.currentCode.subscribe((item) => {
                 if (item != '') {
