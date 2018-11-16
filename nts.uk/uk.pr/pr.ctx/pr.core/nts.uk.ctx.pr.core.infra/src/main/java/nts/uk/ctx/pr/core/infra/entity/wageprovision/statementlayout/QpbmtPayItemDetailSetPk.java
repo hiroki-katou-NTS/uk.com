@@ -27,5 +27,25 @@ public class QpbmtPayItemDetailSetPk implements Serializable
     @Basic(optional = false)
     @Column(name = "HIST_ID")
     public String histId;
-    
+
+    /**
+     * カテゴリ区分
+     */
+    @Basic(optional = false)
+    @Column(name="CTG_ATR")
+    public int categoryAtr;
+
+    /**
+     * 行番号
+     */
+    @Basic(optional = false)
+    @Column(name="LINE_NUM")
+    public int lineNumber;
+
+    /**
+     * 終了日
+     */
+    @Basic(optional = false)
+    @Column(name = "ITEM_POSITION")
+    public int itemPosition;
 }

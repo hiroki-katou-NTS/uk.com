@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentItemDetailSet;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -26,11 +27,18 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     public QpbmtPayItemDetailSetPk payItemDetailSetPk;
 
     /**
-    * 給与項目ID
-    */
+     * 会社ID
+     */
     @Basic(optional = false)
-    @Column(name = "SALARY_ITEM_ID")
-    public String salaryItemId;
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * 項目名コード
+     */
+    @Basic(optional = false)
+    @Column(name = "ITEM_NAME_CD")
+    public String itemNameCd;
     
     /**
     * 合計対象
@@ -102,14 +110,15 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     }
 
     public PaymentItemDetailSet toDomain(){
-        return new PaymentItemDetailSet(this.payItemDetailSetPk.histId,this.salaryItemId,this.totalObj,this.proportionalAtr,this.proportionalMethod,this.calcMethod,this.calcFormulaCd,this.personAmountCd,this.commonAmount,this.wageTblCd,this.workingAtr);
+        return new PaymentItemDetailSet(this.payItemDetailSetPk.histId,this.itemNameCd,this.totalObj,this.proportionalAtr,this.proportionalMethod,this.calcMethod,this.calcFormulaCd,this.personAmountCd,this.commonAmount,this.wageTblCd,this.workingAtr);
     }
 
 
-    public  static QpbmtPayItemDetailSet toEntity(PaymentItemDetailSet domain){
+    public  static QpbmtPayItemDetailSet toEntity(PaymentItemDetailSet domain, int categoryAtr, int lineNumber, int itemPosition){
         QpbmtPayItemDetailSet entity = new QpbmtPayItemDetailSet();
-        entity.payItemDetailSetPk = new QpbmtPayItemDetailSetPk(domain.getHistId());
-        entity.salaryItemId = domain.getSalaryItemId();
+        entity.payItemDetailSetPk = new QpbmtPayItemDetailSetPk(domain.getHistId(), categoryAtr, lineNumber, itemPosition);
+        entity.cid = AppContexts.user().companyId();
+        entity.itemNameCd = domain.getSalaryItemId();
         entity.totalObj = domain.getTotalObj().value;
         entity.proportionalAtr = domain.getProportionalAtr().value;
         entity.proportionalMethod = domain.getProportionalMethod().map(i->i.value).orElse(null);

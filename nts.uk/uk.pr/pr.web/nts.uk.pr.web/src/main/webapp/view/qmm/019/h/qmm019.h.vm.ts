@@ -46,12 +46,14 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             });
 
             self.statementLayoutCodeSelected.subscribe(value => {
-                let statementLayout: IStatementLayout = _.find(self.statementLayoutList(), (item: IStatementLayout) => {
-                    return item.statementCode == value;
-                });
+                if(value != null) {
+                    let statementLayout: IStatementLayout = _.find(self.statementLayoutList(), (item: IStatementLayout) => {
+                        return item.statementCode == value;
+                    });
 
-                self.layoutPatternClone(statementLayout.history[0].layoutPattern);
-                self.layoutPatternCloneText(getLayoutPatternText(statementLayout.history[0].layoutPattern));
+                    self.layoutPatternClone(statementLayout.history[0].layoutPattern);
+                    self.layoutPatternCloneText(getLayoutPatternText(statementLayout.history[0].layoutPattern));
+                }
             });
 
             self.startDate.subscribe(value => {
