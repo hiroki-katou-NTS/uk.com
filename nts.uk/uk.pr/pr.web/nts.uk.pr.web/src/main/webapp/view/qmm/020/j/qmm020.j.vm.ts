@@ -25,7 +25,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         submit(){
             let self = this;
-            if(self.params.isPerson){
+            if(self.params().isPerson){
                 if (self.startYearMonthPeriod() > self.params().endYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) {
                     let data :any = {
                         start: self.startYearMonthPeriod(),
@@ -38,6 +38,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 }
                 else {
                     nts.uk.ui.dialog.info({messageId: 'Msg_106'});
+                    return;
                 }
             }
             if (self.startYearMonthPeriod() > self.params().startYearMonth) {
@@ -67,6 +68,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             }
             self.isFirst(self.params().isFirst);
             self.startYearMonthPeriod(self.params().startYearMonth == 0 ? null : self.params().startYearMonth);
+            self.endYearMonthPeriod(self.params().endYearMonth == 0 ? null : self.params().endYearMonth);
             if(self.isFirst()){
                 self.itemList(getHistoryEditMethod(true));
             }

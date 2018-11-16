@@ -58,7 +58,7 @@ public class StateCorrelationHistoryService {
     private StateCorrelationHisIndividualRepository mStateCorrelationHisIndividualRepository;
 
 
-    public void editHistoryProcess(int type, int modeEdit, String hisId, String masterCode, YearMonthHistoryItem history, boolean isUpdate) {
+    public void editHistoryProcess(int type, int modeEdit, String hisId, String masterCode,String employeeId, YearMonthHistoryItem history, boolean isUpdate) {
         String cid = AppContexts.user().companyId();
         switch (type){
             case COMPANY : {
@@ -69,11 +69,11 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
 
                 } else {
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -88,12 +88,12 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
 
                 }
                 else{
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -109,11 +109,11 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
                 }
                 else{
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -128,11 +128,11 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
                 }
                 else{
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -148,12 +148,12 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
 
                 }
                 else{
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -169,11 +169,11 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
                 }
                 else{
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -189,11 +189,11 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid);
+                    historyDeletionProcessing(type,hisId,cid,employeeId);
                 }
                 else{
                     if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
+                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
                         return;
                     }
                     throw new BusinessException("Msg_107");
@@ -204,7 +204,7 @@ public class StateCorrelationHistoryService {
         }
     }
 
-    private void historyDeletionProcessing(int type, String hisId, String cId) {
+    private void historyDeletionProcessing(int type, String hisId, String cId, String employeeId) {
         switch (type) {
             case COMPANY: {
                 Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
@@ -219,7 +219,6 @@ public class StateCorrelationHistoryService {
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisCompanyRepository.remove(cId, hisId);
-                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
                     return;
                 }
                 accInsurHis.get().remove(itemToBeDelete.get());
@@ -243,7 +242,6 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
                     mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
                     return;
                 }
@@ -270,7 +268,6 @@ public class StateCorrelationHistoryService {
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
-                    mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
                     return;
                 }
                 accInsurHis.get().remove(itemToBeDelete.get());
@@ -294,7 +291,6 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisClassificationRepository.remove(cId, hisId);
                     mStateCorrelationHisClassificationRepository.remove(cId, hisId);
                     return;
                 }
@@ -321,7 +317,6 @@ public class StateCorrelationHistoryService {
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisPositionRepository.remove(cId, hisId);
-                    mStateCorrelationHisPositionRepository.remove(cId, hisId);
                     return;
                 }
                 accInsurHis.get().remove(itemToBeDelete.get());
@@ -334,8 +329,7 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case SALARY: {
-
-                Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
+                Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
                 if (!accInsurHis.isPresent()) {
                     throw new RuntimeException("invalid employmentHistory");
                 }
@@ -346,17 +340,35 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
-                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                    mStateCorrelationHisClassificationRepository.remove(cId, hisId);
                     return;
                 }
                 accInsurHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                mStateCorrelationHisClassificationRepository.remove(cId, hisId);
                 if (accInsurHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
                     accInsurHis.get().exCorrectToRemove(lastestItem);
-                    mStateCorrelationHisSalaryRepository.update(cId, lastestItem);
+                    mStateCorrelationHisClassificationRepository.update(cId, lastestItem);
                 }
+                break;
+            }
+            case INDIVIDUAL : {
+                String companyId = AppContexts.user().companyId();
+
+                Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId,hisId);
+
+                if (!existHist.isPresent()){
+                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+
+                if (!itemToBeDelete.isPresent()){
+                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                }
+                existHist.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisIndividualRepository.remove(employeeId,hisId);
                 break;
             }
 
@@ -366,7 +378,7 @@ public class StateCorrelationHistoryService {
 
     }
 
-    private void historyCorrectionProcecessing(int type, String cId, String hisId, YearMonth start, YearMonth end) {
+    private void historyCorrectionProcecessing(int type, String cId, String hisId, YearMonth start, YearMonth end,String employeeId) {
         switch (type) {
             case COMPANY: {
                 // // //
@@ -498,6 +510,29 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 mStateCorrelationHisSalaryRepository.update(cId, itemToBeUpdated.get());
+                break;
+            }
+            case INDIVIDUAL :{
+                // Update history table
+                // In case of date period are exist in the screen
+                if (start != null){
+                    Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId, hisId);
+                    if (!existHist.isPresent()) {
+                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                    }
+
+                    Optional<YearMonthHistoryItem> itemToBeUpdate = existHist.get().getHistory().stream()
+                            .filter(h -> h.identifier().equals(hisId)).findFirst();
+
+                    if (!itemToBeUpdate.isPresent()) {
+                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                    }
+                    existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,
+                            end != null ? end : new YearMonth(999912)));
+                    mStateCorrelationHisIndividualRepository.update(employeeId, itemToBeUpdate.get());
+                }
+
+
                 break;
             }
 
