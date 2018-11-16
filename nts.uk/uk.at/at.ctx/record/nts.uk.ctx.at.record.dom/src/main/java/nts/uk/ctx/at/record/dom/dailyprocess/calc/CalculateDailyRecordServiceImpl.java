@@ -258,8 +258,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
 		//計算できる状態にあるかのチェック①(勤務情報、会社共通の設定、個人共通の設定)
-		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null || personCommonSetting == null)
+		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null || personCommonSetting == null) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
+		}
 		
 		boolean isShareContainerNotInit = companyCommonSetting.getShareContainer() == null;
 		if(isShareContainerNotInit) {
@@ -319,6 +320,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//不正の場合、勤務情報の計算ステータス→未計算にしつつ、エラーチェックは行う必要有）
 		val errorList = dailyRecordCreateErrorAlermService.stampIncorrectOrderAlgorithm(integrationOfDaily);
 		if(!errorList.stream().filter(tc -> tc!= null).collect(Collectors.toList()).isEmpty()) {
+			val zeroValueClass = AttendanceTimeOfDailyPerformance.allZeroValue(integrationOfDaily.getAffiliationInfor().getEmployeeId(), 
+					   integrationOfDaily.getAffiliationInfor().getYmd());
+			integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(zeroValueClass));
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
 		}
 		val copyCalcAtr = integrationOfDaily.getCalAttr();

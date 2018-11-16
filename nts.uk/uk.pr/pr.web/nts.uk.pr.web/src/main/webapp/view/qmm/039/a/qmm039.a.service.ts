@@ -10,14 +10,17 @@ module nts.uk.pr.view.qmm039.a.service {
         processYearFromEmp: "ctx/pr/core/ws/wageprovision/individualwagecontract/processYearFromEmp/{0}",
         updateHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/updateHistory",
         addHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/addHistory",
+        getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
     }
 
     export function getInfoEmLogin(): JQueryPromise<any> {
         return ajax("com", paths.getInfoEmLogin);
     }
+
     export function getWpName(): JQueryPromise<any> {
         return ajax("com", paths.getWpName);
     }
+
     export function getPersonalMoneyName(cateIndicator: number): JQueryPromise<any> {
         return ajax("pr", format(paths.getPersonalMoneyName, cateIndicator));
     }
@@ -31,10 +34,14 @@ module nts.uk.pr.view.qmm039.a.service {
     }
 
     export function updateHistory(command): JQueryPromise<any> {
-        return ajax("pr", paths.updateHistory,command);
+        return ajax("pr", paths.updateHistory, command);
     }
 
     export function addHistory(command): JQueryPromise<any> {
         return ajax("pr", paths.addHistory, command);
+    }
+
+    export function getBaseDate(): JQueryPromise<any> {
+        return ajax("pr", paths.getBaseDate);
     }
 }
