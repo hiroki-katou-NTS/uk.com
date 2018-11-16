@@ -14,12 +14,20 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
         referenceYear: KnockoutObservable<number>;
         items: KnockoutObservableArray<ItemModel>;
         currentCode: KnockoutObservable<any>;
+        columns: any;
 
         constructor() {
             var self = this;
             self.referenceYear = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.items = ko.observableArray();
-            this.currentCode = ko.observable();
+            self.currentCode = ko.observable();
+            self.columns = [
+                {key:'empId', length: 0, hidden: true},
+                {headerText: getText('QMM039_13'), key: 'code', width: 70, formatter: _.escape },
+                {headerText: getText('QMM039_14'), key: 'name', width: 180, formatter: _.escape},
+                {headerText: getText('QMM039_23'), key: 'period', width: 150, formatter: _.escape},
+                {headerText: getText('QMM039_25'), key: 'amount', width: 120, formatter: _.escape, template: "<div style='text-align: right'>${amount}</div>"}
+            ];
 
         }
 
@@ -40,14 +48,32 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
             self.getSalIndAmountHis(dto);
         }
 
-        startPage(params): JQueryPromise<any> {
+        startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.params = getShared('QMM039_D_PARAMS');
-            self.itemClassification(self.params.itemClassification);
+            switch(self.params.itemClassification) {
+                case 0:
+                    self.itemClassification(format(getText('QMM039_21'), '給与支給'));
+                    break;
+                case 1:
+                    self.itemClassification(format(getText('QMM039_21'), '給与控除'));
+                    break;
+                case 2:
+                    self.itemClassification(format(getText('QMM039_21'), '賞与支給'));
+                    break;
+                case 3:
+                    self.itemClassification(format(getText('QMM039_21'), '賞与控除'));
+                    break;
+                default:
+                    break;
+            }
+
             self.empCode(self.params.empCode);
             self.empName(self.params.empName);
-            self.startupScreen();
+            if(self.params.personalValCode) {
+                self.startupScreen();
+            }
             dfd.resolve();
             return dfd.promise();
         }
@@ -77,7 +103,7 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
                         for (let i = 0; i < data.length; i++) {
                             for (let j = 0; j < data[i].period.length; j++) {
                                 array.push(new ItemModel(data[i].empId,data[i].perValCode, data[i].perValName,
-                                    format(getText("QMM039_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney + "¥"
+                                    format(getText("QMM039_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney
                                 ))
                             }
                         }

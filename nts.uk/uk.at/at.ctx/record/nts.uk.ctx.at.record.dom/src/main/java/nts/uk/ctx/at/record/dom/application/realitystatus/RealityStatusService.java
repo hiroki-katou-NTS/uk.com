@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.ApprovalStatusRequestAdapter;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverApproveImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproverEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
@@ -351,9 +353,9 @@ public class RealityStatusService {
 	 * 承認状況未確認メール送信実行
 	 */
 	public SendMailResultImport exeSendUnconfirmMail(ApprovalStatusMailType type, List<WkpIdMailCheckOutput> listWkp,
-			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCd) {
+			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCd, Integer closureID) {
 		// アルゴリズム「承認状況未確認メール送信社員取得」を実行する
-		EmpUnconfirmResultOutput result = this.getListEmpUnconfirm(type, listWkp, startDate, endDate, listEmpCd);
+		EmpUnconfirmResultOutput result = this.getListEmpUnconfirm(type, listWkp, startDate, endDate, listEmpCd, closureID);
 		if (!result.isOK()) {
 			// メッセージ（Msg_787）を表示する
 			throw new BusinessException("Msg_787");
@@ -376,7 +378,7 @@ public class RealityStatusService {
 	 */
 	private EmpUnconfirmResultOutput getListEmpUnconfirm(ApprovalStatusMailType type,
 			List<WkpIdMailCheckOutput> listWkpId, GeneralDate closureStart, GeneralDate closureEnd,
-			List<String> listEmpCd) {
+			List<String> listEmpCd, Integer closureID) {
 		List<String> listSId = new ArrayList<>();
 		// 職場一覧
 		for (WkpIdMailCheckOutput wkp : listWkpId) {
@@ -398,7 +400,7 @@ public class RealityStatusService {
 				break;
 			case MONTHLY:
 				// アルゴリズム「承認状況未確認メール送信月次確認者取得」を実行する
-				listSId.addAll(this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId()));
+				listSId.addAll(this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId(), closureID, closureStart, closureEnd));
 				break;
 			}
 		}
@@ -515,28 +517,26 @@ public class RealityStatusService {
 
 	/**
 	 * 承認状況未確認メール送信月次確認者取得
-	 * 
-	 * @param listEmp
-	 *            社員ID＜社員ID、期間＞(リスト)
-	 * @param wkpId
-	 *            職場ID
+	 * @param listEmp - 社員ID＜社員ID、期間＞(リスト)
+	 * @param wkpId - 職場ID
 	 * @return 未確認者＜社員ID、期間＞（リスト）
 	 */
-	private List<String> getEmpUnconfirmByMonthly(List<RealityStatusEmployeeImport> listEmp, String wkpId) {
-		String cId = AppContexts.user().companyId();
+	private List<String> getEmpUnconfirmByMonthly(List<RealityStatusEmployeeImport> listEmp, 
+			String wkpId, Integer closureID, GeneralDate startDate, GeneralDate endDate) {
 		List<String> listEmpUnconfirm = new ArrayList<>();
 		// 社員ID（リスト）
+        GeneralDate tmpDate = endDate.addDays(1);
+        int monthTmp = tmpDate.month();
+        int month = endDate.month();
+        int day = endDate.day();
+        Boolean lastDayOfMonth = monthTmp - 1 == month ? true : false;
+        ClosureDate closureDate = new ClosureDate(lastDayOfMonth ? 1 : day, lastDayOfMonth);
 		for (RealityStatusEmployeeImport emp : listEmp) {
-			// imported（申請承認）「List<日付、状態＞」を取得する
-			// RequestList 532
-			List<ApproveRootStatusForEmpImport> listAppRootStatus = approvalStatusAdapter
-					.getApprovalByEmplAndDate(emp.getStartDate(), emp.getEndDate(), emp.getSId(), cId, 2);
-			Optional<ApproveRootStatusForEmpImport> appRootStatus = listAppRootStatus.stream().findFirst();
-			// 承認ルートの状況
-			if (appRootStatus.isPresent()
-					&& ApprovalStatusForEmployee.UNAPPROVED.equals(appRootStatus.get().getApprovalStatus())) {
-				// 未確認者に承認ルートの状況.承認者をセット ※複数の場合複数セット
-				listEmpUnconfirm.add(emp.getSId());
+			//アルゴリズム「承認状況未確認チェック月別」を実行する
+			List<String> lstNew = this.checkUnConfByMonth(listEmpUnconfirm, emp.getSId(), endDate.yearMonth(), 
+					new DatePeriod(startDate, endDate), closureID, closureDate);
+			if(!lstNew.isEmpty()){
+				listEmpUnconfirm.addAll(lstNew);
 			}
 		}
 		return listEmpUnconfirm;
@@ -668,5 +668,26 @@ public class RealityStatusService {
 		}
 
 		return daysBetween;
+	}
+	/**
+	 * 承認状況未確認チェック月別
+	 * @param 社員ID - sID
+	 * @param 年月 - yearMonth
+	 * @param 期間 - period
+	 * @return 結果（あり/なし) - 月別未承認社員ID（リスト）
+	 */
+	public List<String> checkUnConfByMonth(List<String> lstAppr, String sID, YearMonth yearMonth, DatePeriod period, 
+			Integer closureID, ClosureDate baseDate){
+		//imported（ワークフロー）「社員」を取得する - RequestList538
+//		社員ID（申請者）＝社員ID
+//		年月＝年月
+//		締めID＝A画面で指定した締めID
+//		締め日＝A画面で指定した締めIDの締め日
+//		基準日＝期間終了日
+		ApproverApproveImport appr = approvalStatusAdapter.getApproverByPeriodMonth(sID, closureID, yearMonth, baseDate, period.end());
+		//月別未承認社員ID（リスト）に「承認すべき承認者.社員（リスト）」を追加する
+		List<String> lstResult = appr.getAuthorList().stream()
+				.filter(c -> !lstAppr.contains(c)).map(c -> c.getEmployeeID()).collect(Collectors.toList());
+		return lstResult;
 	}
 }

@@ -47,6 +47,7 @@ module nts.uk.at.view.kaf007.b {
             appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
             targetDate: any = moment(new Date()).format("YYYY/MM/DD");
             requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
+            timeRequired: KnockoutObservable<boolean> = ko.observable(false);
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
@@ -96,7 +97,7 @@ module nts.uk.at.view.kaf007.b {
                         self.requiredReason( settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false );
                         //A8 勤務時間２ ※A7
                         //共通設定.複数回勤務
-                        // self.isMultipleTime( settingData.multipleTime );
+                         self.isMultipleTime( settingData.multipleTime );
                         //勤務変更申請基本データ（更新）
                         service.getWorkchangeByAppID( self.appID() ).done( function( detailData: any ) {
                             //workChangeDto
@@ -125,6 +126,7 @@ module nts.uk.at.view.kaf007.b {
                             self.workTypeCodes = detailData.dataWorkDto.workTypeCodes;
                             self.workTimeCodes = detailData.dataWorkDto.workTimeCodes;
                             self.requiredCheckTime(self.isWorkChange() && detailData.timeRequired);
+                            self.timeRequired(detailData.timeRequired);
                             //画面モード(表示/編集)
                             //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
                             
@@ -402,7 +404,11 @@ module nts.uk.at.view.kaf007.b {
                         workChange.workTimeCd(childData.selectedWorkTimeCode);
                         workChange.workTimeName(childData.selectedWorkTimeName);
                         service.isTimeRequired( workChange.workTypeCd()).done((rs) =>{
-                            self.requiredCheckTime(self.isWorkChange() && rs);    
+                            self.requiredCheckTime(self.isWorkChange() && rs);
+                            if(self.requiredCheckTime()){
+                                workChange.workTimeStart1(childData.first.start);
+                                workChange.workTimeEnd1(childData.first.end); 
+                            }    
                         });
                     }
                     //フォーカス制御

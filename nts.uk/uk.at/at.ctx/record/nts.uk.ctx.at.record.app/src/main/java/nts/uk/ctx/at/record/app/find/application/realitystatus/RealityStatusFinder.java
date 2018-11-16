@@ -44,7 +44,7 @@ public class RealityStatusFinder {
 		// アルゴリズム「承認状況未確認メール送信実行」を実行する
 		SendMailResultImport result = realityStatusService.exeSendUnconfirmMail(
 				EnumAdaptor.valueOf(dto.getType(), ApprovalStatusMailType.class), listWkp, dto.getStartDate(),
-				dto.getEndDate(), dto.getListEmpCd());
+				dto.getEndDate(), dto.getListEmpCd(), dto.getClosureID());
 		return new SendMailResultDto(result.isOK(), result.getListError());
 	}
 
