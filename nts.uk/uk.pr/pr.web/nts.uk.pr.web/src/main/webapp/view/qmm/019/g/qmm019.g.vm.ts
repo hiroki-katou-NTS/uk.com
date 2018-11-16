@@ -12,13 +12,13 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
         selectedSearchIitemName: KnockoutObservable<any>;
         itemNames: KnockoutObservableArray<StatementItem>;
         codeSelected: KnockoutObservable<any>;
-        itemNameSelected: KnockoutObservable<StatementItem>;
 
         categoryAtr: number;
         params: IParams;
         categoryAtrText: KnockoutObservable<string>;
 
         params: IParams;
+        dataScreen: KnockoutObservable<Params>;
 
         constructor() {
             let self = this;
@@ -27,10 +27,10 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             self.selectedSearchIitemName = ko.observable(null);
             self.itemNames = ko.observableArray([]);
             self.codeSelected = ko.observable(null);
-            self.itemNameSelected = ko.observable(new StatementItem(null));
 
             self.categoryAtr = shareModel.CategoryAtr.REPORT_ITEM;
             self.categoryAtrText = ko.observable(null);
+            self.dataScreen = ko.observable(new Params());
 
             // G10_1
             $("[data-toggle='userguide-register']").ntsUserGuide();
@@ -43,7 +43,8 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
                 let itemName = _.find(self.itemNames(), (item: IStatementItem) => {
                     return item.itemNameCd == value;
                 })
-                self.itemNameSelected(itemName);
+                self.dataScreen().itemNameCode(itemName.itemNameCd);
+                self.dataScreen().name(itemName.name);
                 // 選択モードへ移行する
                 self.selectedMode();
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
@@ -163,6 +164,8 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
         }
 
         decide() {
+            let self = this;
+            windows.setShared("QMM019G_RESULTS", ko.toJS(self.dataScreen()));
             windows.close();
         }
 
@@ -231,5 +234,16 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
     interface IParams {
         itemNameCode: string;
         itemNameCdExcludeList: Array<string>;
+    }
+
+    class Params {
+        /**
+         * 項目名コード
+         */
+        itemNameCode: KnockoutObservable<string> = ko.observable(null);
+        /**
+         * 名称
+         */
+        name: KnockoutObservable<string> = ko.observable(null);
     }
 }

@@ -79,8 +79,8 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
             let params: IParams = <IParams>{};
-            params.itemNameCode = "000s3";
-            params.itemNameCdExcludeList = ["0001", "0002"];
+            params.itemNameCode = "0003d";
+            params.itemNameCdExcludeList = [];
             params.rangeValAttribute = null;
             params.errorRangeSetting = <IErrorAlarmRangeSetting>{};
             params.errorRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
@@ -122,6 +122,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
 
         initScreen() {
             let self = this;
+            self.dataScreen().initSubscribe();
             // 取得できたデータ件数を確認する
             if (_.isEmpty(self.itemNames())) {
                 // 未選択モードへ移行する
@@ -145,7 +146,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
-            self.dataScreen().initSubscribe();
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -379,6 +379,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+            windows.setShared("QMM019F_RESULTS", ko.toJS(self.dataScreen()));
             windows.close();
         }
 
@@ -744,8 +745,8 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
 
     interface IAttendanceItemSet {
         timeCountAtr: number;
-        errorRangeSetting: IErrorAlarmRangeSetting;
-        alarmRangeSetting: IErrorAlarmRangeSetting;
+        errorRangeSetting: IDetailTimeErrorAlarmRangeSetting;
+        alarmRangeSetting: IDetailTimeErrorAlarmRangeSetting;
     }
 
     class AttendanceItemSet {
@@ -754,8 +755,14 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
          */
         timeCountAtr: KnockoutObservable<number> = ko.observable(null);
         timeCountAtrText: KnockoutObservable<string> = ko.observable(null);
-        errorRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
-        alarmRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
+        /**
+         * 勤怠エラー範囲設定
+         */
+        errorRangeSetting: DetailTimeErrorAlarmRangeSetting = new DetailTimeErrorAlarmRangeSetting();
+        /**
+         * 勤怠アラーム範囲設定
+         */
+        alarmRangeSetting: DetailTimeErrorAlarmRangeSetting = new DetailTimeErrorAlarmRangeSetting();
 
         constructor() {
         }
@@ -765,6 +772,73 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             this.timeCountAtrText(shareModel.getTimeCountAtrText(data.timeCountAtr));
             this.errorRangeSetting.setData(data.errorRangeSetting);
             this.alarmRangeSetting.setData(data.alarmRangeSetting);
+        }
+    }
+
+    interface IDetailTimeErrorAlarmRangeSetting {
+        upperLimitSetting: IDetailTimeErrorAlarmValueSetting;
+        lowerLimitSetting: IDetailTimeErrorAlarmValueSetting;
+    }
+
+    class DetailTimeErrorAlarmRangeSetting {
+        /**
+         * 上限設定
+         */
+        upperLimitSetting: DetailTimeErrorAlarmValueSetting;
+        /**
+         * 下限設定
+         */
+        lowerLimitSetting: DetailTimeErrorAlarmValueSetting;
+
+        constructor() {
+            this.upperLimitSetting = new DetailTimeErrorAlarmValueSetting();
+            this.lowerLimitSetting = new DetailTimeErrorAlarmValueSetting();
+        }
+
+        setData(data: IDetailTimeErrorAlarmRangeSetting) {
+            this.upperLimitSetting.setData(data.upperLimitSetting);
+            this.lowerLimitSetting.setData(data.lowerLimitSetting);
+        }
+    }
+
+    interface IDetailTimeErrorAlarmValueSetting {
+        valueSettingAtr: number;
+        timesValue: number;
+        timeValue: number;
+    }
+
+    class DetailTimeErrorAlarmValueSetting {
+        /**
+         * 値設定区分
+         */
+        valueSettingAtr: KnockoutObservable<number>;
+        /**
+         * 明細範囲値（回数）
+         */
+        timesValue: KnockoutObservable<number>;
+        /**
+         * 明細範囲値（時間）
+         */
+        timeValue: KnockoutObservable<number>;
+
+        constructor() {
+            this.valueSettingAtr = ko.observable(null);
+            this.timesValue = ko.observable(null);
+            this.timeValue = ko.observable(null);
+        }
+
+        setData(data: IDetailTimeErrorAlarmValueSetting) {
+            this.valueSettingAtr(data.valueSettingAtr);
+            if (isNullOrUndefined(data.timesValue)) {
+                this.timesValue(null);
+            } else {
+                this.timesValue(data.timesValue.toFixed(2));
+            }
+            if (isNullOrUndefined(data.timeValue)) {
+                this.timeValue(null);
+            } else {
+                this.timeValue(nts.uk.time.format.byId("Clock_Short_HM", data.timeValue));
+            }
         }
     }
 

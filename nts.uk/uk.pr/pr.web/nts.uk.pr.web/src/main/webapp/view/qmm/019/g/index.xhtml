@@ -82,13 +82,13 @@
                         <div class="cell valign-center">
                             <com:ko-if bind="screenControl().visibleG2_2()">
                                 <!--G2_2-->
-                                <div class="label" data-bind="text: itemNameSelected().itemNameCd"/>
+                                <div class="label" data-bind="text: dataScreen().itemNameCode"/>
                             </com:ko-if>
                         </div>
                         <div class="cell valign-center">
                             <com:ko-if bind="screenControl().visibleG2_2()">
                                 <!--G2_3-->
-                                <div class="label" data-bind="text: itemNameSelected().name"/>
+                                <div class="label" data-bind="text: dataScreen().name"/>
                             </com:ko-if>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                                         </th>
                                         <td>
                                             <!--G4_6-->
-                                            <div class="label limited-label" data-bind="text: itemNameSelected().name"/>
+                                            <div class="label limited-label" data-bind="text: dataScreen().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -155,7 +155,7 @@
         </div>
         <div id="functions-area-bottom">
             <button tabindex="16"
-                    data-bind="click: decide, enable: $root.errors.isEmpty &amp;&amp; screenControl().enableG3_1()"
+                    data-bind="click: decide, enable: screenControl().enableG3_1() &amp;&amp; $root.errors.isEmpty"
                     class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
