@@ -11,5 +11,5 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
  *
  */
 public interface CreateperApprovalDailyService {
-	public boolean createperApprovalDaily(String companyId,String executionId,List<String> employeeIDs,int processExecType,Integer createNewEmp,GeneralDate startDateClosure);
+	public boolean createperApprovalDaily(String companyId,String executionId,List<String> employeeIDs,int processExecType,Integer createNewEmp,GeneralDate startDateClosure,GeneralDate endDateClosure);
 }
