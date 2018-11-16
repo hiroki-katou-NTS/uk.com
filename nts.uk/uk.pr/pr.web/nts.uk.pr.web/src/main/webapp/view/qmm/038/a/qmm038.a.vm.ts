@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm038.a {
             statementItems: Array<IDataScreen> = [];
             ccg001ComponentOption: GroupOption = null;
             baseDate: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM/DD"));
-            giveCurrTreatYear: KnockoutObservable<any> = ko.observable(null);
+            giveCurrTreatYear: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM"));
             employeeIds: Array<any>;
             numberValidator = new validation.NumberValidator(getText("QMM038_11"), "AverageWage", { required: true });
             dataUpdate: Array<UpdateEmployee> = [];
@@ -39,7 +39,7 @@ module nts.uk.pr.view.qmm038.a {
                     periodFormatYM: false,
 
                     /** Required parameter */
-                    baseDate: moment().format("YYYY-MM-DD"),
+                    baseDate: moment().format("YYYY/MM/DD"),
                     periodStartDate: moment().toISOString(),
                     periodEndDate: moment().toISOString(),
                     inService: true,
@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm038.a {
                         block.invisible();
                         nts.uk.ui.errors.clearAll();
                         self.employeeIds = data.listEmployee.map(item => item.employeeId);
-                        let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: self.giveCurrTreatYear() };
+                        let command = { employeeIds: self.employeeIds, baseDate: self.baseDate(),giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/DD")};
                         nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function(response) {
                             self.statementItems = [];
                             self.statementItems = _.sortBy(response, ["employeeCode"]);

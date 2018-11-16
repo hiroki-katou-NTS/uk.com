@@ -22,26 +22,30 @@ public class EmployeeAverWageHandler extends CommandHandlerWithResult<EmployeeAv
     protected List<String> handle(CommandHandlerContext<EmployeeAverWageComand> context) {
         List<String> response = new ArrayList<>();
         EmployeeAverWageComand employeeComand = context.getCommand();
-        List<EmployeeDto> employeeDtoList = employeeComand.getEmployeeDtoList();
-        List<EmployAverWage> newEmployee = new ArrayList<>();
-        List<EmployAverWage> oldEmployee = new ArrayList<>();
-        for (EmployeeDto employee : employeeDtoList) {
-            int targetDate = Integer.valueOf(employeeComand.getGiveCurrTreatYear().replaceAll("/",""));
-            Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(employee.getEmployeeId(),targetDate);
-            if (employAverWage.isPresent()) {
-                oldEmployee.add(new EmployAverWage(employee.getEmployeeId(),targetDate, BigDecimal.valueOf(employee.getAverageWage())));
-            } else {
-                newEmployee.add(new EmployAverWage(employee.getEmployeeId(),targetDate, BigDecimal.valueOf(employee.getAverageWage())));
+        if(employeeComand.getEmployeeDtoList().size() > 0) {
+            List<EmployeeDto> employeeDtoList = employeeComand.getEmployeeDtoList();
+            List<EmployAverWage> newEmployee = new ArrayList<>();
+            List<EmployAverWage> oldEmployee = new ArrayList<>();
+            for (EmployeeDto employee : employeeDtoList) {
+                int targetDate = Integer.valueOf(employeeComand.getGiveCurrTreatYear().replaceAll("/",""));
+                Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(employee.getEmployeeId(),targetDate);
+                if (employAverWage.isPresent()) {
+                    oldEmployee.add(new EmployAverWage(employee.getEmployeeId(),targetDate, BigDecimal.valueOf(employee.getAverageWage())));
+                } else {
+                    newEmployee.add(new EmployAverWage(employee.getEmployeeId(),targetDate, BigDecimal.valueOf(employee.getAverageWage())));
+                }
             }
-        }
-        try {
-            employAverWageRepository.updateAll(oldEmployee);
-            employAverWageRepository.addAll(newEmployee);
-        } catch (Exception e) {
+            try {
+                employAverWageRepository.updateAll(oldEmployee);
+                employAverWageRepository.addAll(newEmployee);
+            } catch (Exception e) {
+                response.add("Error");
+                return response;
+            }
+            response.add("Msg_15");
+        } else {
             response.add("Error");
-            return response;
         }
-        response.add("Msg_15");
         return response;
     }
 }

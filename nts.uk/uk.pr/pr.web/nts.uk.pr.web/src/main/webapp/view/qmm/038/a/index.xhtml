@@ -34,7 +34,7 @@
         <div id="contents-area"  style="margin-left: 15px;">
             <div style="margin-left: 90px; border: 0.2px solid; border-color: #DCDCDC; width: 300px; padding: 14px;border-style:solid;">
                 <div id="A2_2" data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('QMM038_4')}</div>
-                <div id="A2_3" tabindex="3" data-bind="ntsDatePicker: {value: giveCurrTreatYear, dateFormat: 'yearmonth', name: '#[QMM038_4]'}"></div>
+                <div id="A2_3" tabindex="3" data-bind="ntsDatePicker: {value: giveCurrTreatYear, dateFormat: 'yearmonth', name: '#[QMM038_4]',required: true}"></div>
                 <button  id="A2_4"  data-bind="click: findByEmployee" tabindex="4">#{i18n.getText('QMM038_5')}</button>
             </div>
             <div>
