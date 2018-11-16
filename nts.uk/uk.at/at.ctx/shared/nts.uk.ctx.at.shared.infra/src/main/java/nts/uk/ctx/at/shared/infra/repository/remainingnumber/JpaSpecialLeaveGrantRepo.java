@@ -24,20 +24,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private static final String GET_ALL_BY_SID_SPECIALCODE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode order by a.grantDate DESC";
 
-	private static final String QUERY_WITH_SPECIALID = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.specialLeaID = :specialLeaId";
 
 	private static final String GET_ALL_BY_SID_SPECIALCODE_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :employeeId AND a.specialLeaCode = :specialLeaCode AND a.expStatus = :expStatus order by a.grantDate";
-
-	private static final String DELETE_QUERY = "DELETE FROM KrcmtSpecialLeaveReam a" + " WHERE a.specialLeaID = :specialid ";
-	
-	private static final String GET_BY_PERIOD_STATUS = "SELECT a FROM KrcmtSpecialLeaveReam a"
-			+ " WHERE a.employeeId = :employeeId"
-			+ " AND a.specialLeaCode = :specialLeaCode"			
-			+ " AND a.grantDate <= :grantDate"
-			+ " AND a.deadlineDate >= :deadlineDate"
-			+ " AND a.expStatus = :expStatus"
-			+ " ORDER BY a.grantDate ASC";
-	
 	private static final String GET_ALL_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtSpecialLeaveReam a WHERE a.employeeId = :sid AND a.grantDate =:grantDate AND a.specialLeaID !=:specialLeaID AND a.specialLeaCode =:specialLeaCode";
 
 	@Override
@@ -217,13 +205,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		return entity;
 	}
 
-	private SpecialLeaveGrantRemainingData toDomain(KrcmtSpecialLeaveReam e) {
-		// TODO Auto-generated method stub
-		return SpecialLeaveGrantRemainingData.createFromJavaType(e.specialLeaID, e.cId, e.employeeId, e.specialLeaCode,
-				e.grantDate, e.deadlineDate, e.expStatus, e.registerType, e.numberDayGrant, e.timeGrant, e.numberDayUse,
-				e.timeUse, e.useSavingDays, e.numberOverDays, e.timeOver, e.numberDayRemain, e.timeRemain);
-	}
-
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode,
 			int expirationStatus) {
@@ -266,13 +247,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		}
 		
 	}
-	private SpecialLeaveGrantRemainingData toDomainSpe(KrcmtSpecialLeaveReam x) {
-		return SpecialLeaveGrantRemainingData.createFromJavaType(x.specialLeaID, x.cId, x.employeeId,
-				x.specialLeaCode, x.grantDate, x.deadlineDate, x.expStatus, x.registerType, x.numberDayGrant,
-				x.timeGrant, x.numberDayUse, x.timeUse, x.useSavingDays, x.numberOverDays, x.timeOver,
-				x.numberDayRemain, x.timeRemain);
-	}
-	
 
 	@Override
 	public boolean isHasData(String sid, String specialId, GeneralDate grantDate, int specialLeaCode) {
