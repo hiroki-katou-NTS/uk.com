@@ -50,17 +50,17 @@
 }
 
 #oneday-set-1, #oneday-set-5, #oneday-set-6, #oneday-set-7,
-	#oneday-set-8 {
+	#oneday-set-8, #oneday-set-10 {
 	margin-left: 180px;
 	margin-top: 20px;
 }
 
-#morning-set-1, #morning-set-5, #morning-set-6, #morning-set-8 {
+#morning-set-1, #morning-set-5, #morning-set-6, #morning-set-8, #morning-set-9 {
 	margin-left: 70px;
 	margin-top: 20px;
 }
 
-#afternoon-set-1, #afternoon-set-5, #afternoon-set-6, #afternoon-set-8 {
+#afternoon-set-1, #afternoon-set-5, #afternoon-set-6, #afternoon-set-8, #afternoon-set-9 {
 	margin-left: 70px;
 	margin-top: 20px;
 }
