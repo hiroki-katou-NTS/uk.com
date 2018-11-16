@@ -86,9 +86,11 @@ public class EmployeeAverWageFinder {
                     }else{
                         dto.setDepartmentName("");
                     }
-                    Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(),Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/","")));
-                    if(employAverWage.isPresent())
-                    dto.setAverageWage(employAverWage.get().getAverageWage().v());
+                    if(param.getGiveCurrTreatYear() != null) {
+                        Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(),Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/","")));
+                        if(employAverWage.isPresent())
+                            dto.setAverageWage(employAverWage.get().getAverageWage().v());
+                    }
                     return dto;
                 }).collect(Collectors.toList());
     }

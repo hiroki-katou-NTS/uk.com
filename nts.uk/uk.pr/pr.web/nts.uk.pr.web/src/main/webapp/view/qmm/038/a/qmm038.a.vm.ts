@@ -7,7 +7,7 @@ module nts.uk.pr.view.qmm038.a {
         export class ScreenModel {
             statementItems: Array<IDataScreen> = [];
             ccg001ComponentOption: GroupOption = null;
-            baseDate: KnockoutObservable<any> = ko.observable(null);
+            baseDate: KnockoutObservable<any> = ko.observable(moment().format("YYYY/MM/DD"));
             giveCurrTreatYear: KnockoutObservable<any> = ko.observable(null);
             employeeIds: Array<any>;
             numberValidator = new validation.NumberValidator(getText("QMM038_11"), "AverageWage", { required: true });
@@ -16,8 +16,12 @@ module nts.uk.pr.view.qmm038.a {
             constructor() {
                 let self = this;
                 nts.uk.pr.view.qmm038.a.service.defaultData().done(function(response) {
-                    self.giveCurrTreatYear(response[0].substr(0,4) + "/" + response[0].substr(4));
-                    self.baseDate(response[1]);
+                    if(response[0] != null) {
+                        self.giveCurrTreatYear(response[0].substr(0,4) + "/" + response[0].substr(4));
+                        self.baseDate(response[1]);
+                        self.ccg001ComponentOption.baseDate = self.baseDate();
+                    }
+                    $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
                     $("#A2_3").focus();
                 });
 
@@ -35,7 +39,7 @@ module nts.uk.pr.view.qmm038.a {
                     periodFormatYM: false,
 
                     /** Required parameter */
-                    baseDate: self.baseDate(),
+                    baseDate: moment().format("YYYY-MM-DD"),
                     periodStartDate: moment().toISOString(),
                     periodEndDate: moment().toISOString(),
                     inService: true,
@@ -83,7 +87,7 @@ module nts.uk.pr.view.qmm038.a {
 
                 }
 
-                $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+
                 self.loadGrid();
             }
 
