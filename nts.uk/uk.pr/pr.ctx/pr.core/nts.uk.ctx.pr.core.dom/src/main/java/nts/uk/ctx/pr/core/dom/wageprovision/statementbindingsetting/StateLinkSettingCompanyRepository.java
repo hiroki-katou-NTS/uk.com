@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface StateLinkSettingCompanyRepository {
 
     Optional<StateLinkSettingCompany> getStateLinkSettingCompanyById(String hisId);
+    
     Optional<StateLinkSettingCompany> getStateLinkSettingCompanyByCode(String hisId,String departmentCode);
 
     void add(StateLinkSettingCompany domain);

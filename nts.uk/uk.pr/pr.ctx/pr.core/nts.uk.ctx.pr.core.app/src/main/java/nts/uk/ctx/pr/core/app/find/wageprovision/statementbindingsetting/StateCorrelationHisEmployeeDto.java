@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 */
 @AllArgsConstructor
 @Value
-public class StateCorrelationHisEmployeeDto
-{
+public class StateCorrelationHisEmployeeDto {
     
     /**
     * 会社ID

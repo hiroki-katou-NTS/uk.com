@@ -16,8 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class JpaStateCorrelationHisDeparmentRepository extends JpaRepository implements StateCorrelationHisDeparmentRepository
-{
+public class JpaStateCorrelationHisDeparmentRepository extends JpaRepository implements StateCorrelationHisDeparmentRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisDep f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid AND  f.stateCorHisDepPk.hisId =:hisId ";

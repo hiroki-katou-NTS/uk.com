@@ -27,45 +27,51 @@
 
         <com:scriptfile path="../e/qmm020.e.vm.js" />
         <com:scriptfile path="../e/qmm020.e.service.js" />
+        <com:stylefile path="../e/qmm020.e.style.css" />
 
         <com:scriptfile path="../f/qmm020.f.vm.js" />
         <com:scriptfile path="../f/qmm020.f.service.js" />
+        <com:stylefile path="../f/qmm020.f.style.css" />
 
         <com:scriptfile path="../g/qmm020.g.vm.js" />
         <com:scriptfile path="../g/qmm020.g.service.js" />
+        <com:stylefile path="../g/qmm020.g.style.css" />
 
         <com:scriptfile path="../h/qmm020.h.vm.js" />
         <com:scriptfile path="../h/qmm020.h.service.js" />
+        <com:stylefile path="../h/qmm020.h.style.css" />
+        <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+        <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
     </ui:define>
     <ui:define name="sidebar">
         <ul class="navigator">
 
             <li><a tabindex="-1" href="#tabpanel-1" class="tab-b-sidebar" role="tab-navigator">#{i18n.getText('QMM020_5')}</a></li>
-
-                <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">
                     <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 0">
-                        #{i18n.getText('QMM020_6')}
+                        <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">#{i18n.getText('QMM020_6')}</a></li>
                     </com:ko-if>
 
                     <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 1">
-                        #{i18n.getText('QMM020_7')}
+                        <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">#{i18n.getText('QMM020_7')}</a></li>
                     </com:ko-if>
 
                     <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 2">
-                        #{i18n.getText('QMM020_8')}
+                        <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">#{i18n.getText('QMM020_8')}</a></li>
                     </com:ko-if>
 
                     <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 3">
-                        #{i18n.getText('QMM020_9')}
+                        <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">#{i18n.getText('QMM020_9')}</a></li>
                     </com:ko-if>
 
                     <com:ko-if bind="$vm.viewmodelA.masterUse() === 1 &amp;&amp; $vm.viewmodelA.usageMaster() === 4">
-                        #{i18n.getText('QMM020_10')}
+                        <li><a tabindex="-1" href="#tabpanel-2" class="tab-2-sidebar" role="tab-navigator">#{i18n.getText('QMM020_10')}</a></li>
                     </com:ko-if>
-
-                </a></li>
-
-
             <com:ko-if bind="$vm.viewmodelA.individualUse() === 1">
                 <li><a tabindex="-1" href="#tabpanel-3" class="tab-h-sidebar" role="tab-navigator">#{i18n.getText('QMM020_11')}</a></li>
             </com:ko-if>

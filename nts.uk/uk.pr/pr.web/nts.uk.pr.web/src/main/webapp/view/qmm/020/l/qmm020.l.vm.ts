@@ -35,22 +35,24 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
 
             }).always(()=>{
                 block.clear();
+                $("#L1_6").focus();
             });
 
         }
 
         init(){
             let self = this;
+            //L1_7, L1_8
             self.masterUse = ko.observableArray([
                 { code: 1, name: getText('QMM020_74') },
                 { code: 0, name: getText('QMM020_77') }
             ]);
-
+            //L1_17, L1_18
             self.individualUse = ko.observableArray([
                 { code: 1, name: getText('QMM020_74') },
                 { code: 0, name: getText('QMM020_77') }
             ]);
-
+            //L1_10, L1_11, L1_12, L1_13, L1_14
             self.usageMaster = ko.observableArray([
                 new BoxModel(0, getText('QMM020_6')),
                 new BoxModel(1, getText('QMM020_78')),

@@ -14,8 +14,7 @@ import java.util.Optional;
 
 @Stateless
 @Transactional
-public class UpdateStateUseUnitSettingCommandHandler extends CommandHandler<StateUseUnitSettingCommand>
-{
+public class UpdateStateUseUnitSettingCommandHandler extends CommandHandler<StateUseUnitSettingCommand>{
     
     @Inject
     private StateUseUnitSettingRepository repository;

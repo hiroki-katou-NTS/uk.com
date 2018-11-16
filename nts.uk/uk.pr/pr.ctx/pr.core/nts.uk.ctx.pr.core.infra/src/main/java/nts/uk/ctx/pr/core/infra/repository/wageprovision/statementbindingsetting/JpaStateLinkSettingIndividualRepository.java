@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaStateLinkSettingIndividualRepository extends JpaRepository implements StateLinkSettingIndividualRepository
-{
+public class JpaStateLinkSettingIndividualRepository extends JpaRepository implements StateLinkSettingIndividualRepository{
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateLinkSetIndi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateLinkSetIndiPk.hisId =:hisId ";
