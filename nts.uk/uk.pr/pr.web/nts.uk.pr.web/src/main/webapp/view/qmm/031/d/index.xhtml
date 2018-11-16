@@ -96,7 +96,8 @@
                              data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM031_17')}</div>
                         <!-- D3_7 D3_8-->
                         <div tabindex="7" data-bind="ntsComboBox: {
-										 name:'#[QMM031_27]', width:150 ,
+                                        enable: isComboType,
+									    name:'#[QMM031_27]', width:150 ,
 										options: atrOfInsuranceType,
 										optionsValue: 'code',
 										visibleItemsCount: 3,

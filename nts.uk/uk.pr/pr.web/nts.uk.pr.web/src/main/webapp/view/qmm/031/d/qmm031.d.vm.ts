@@ -29,6 +29,7 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
         lifeInsuranceName: KnockoutObservable<string> = ko.observable(null);
 
         columns: KnockoutObservableArray<any>;
+        isComboType: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 dfd = $.Deferred();
@@ -54,6 +55,7 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
                     self.selectAtrOfInsuranceType(itemModel.atrOfInsuranceType);
                     self.isNewMode(false);
                     self.enableInsuranceTypeCode(false);
+                    self.isComboType(false);
                     $("#insuranceTypeName").focus();
                     nts.uk.ui.errors.clearAll();
                 }
@@ -131,6 +133,7 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
             self.currentCode('');
             self.isNewMode(true);
             self.enableInsuranceTypeCode(true);
+            self.isComboType(true);
             $("#insuranceTypeCode").focus();
         }
 
@@ -235,6 +238,8 @@ module nts.uk.pr.view.qmm031.d.viewmodel {
 
         close() {
             let self = this;
+            let dataSort = _.sortBy(self.lstInsuranceType(), ["atrOfInsuranceType"]);
+            self.lstInsuranceType(dataSort);
             setShared("QMM031_A", {
                 lstdata: self.lstInsuranceType()
             });
