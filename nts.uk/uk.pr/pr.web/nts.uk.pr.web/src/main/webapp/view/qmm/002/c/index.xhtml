@@ -15,7 +15,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex = "1" data-bind="click: execute, timeClick: 500">#{i18n.getText('QMM002_22')}</button>
+				<button tabindex = "1" data-bind="click: execute, enable: selectedSourceBranchCodes().length > 0, timeClick: 500">#{i18n.getText('QMM002_22')}</button>
 				<button tabindex = "2" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM002_23')}</button>
 			</div>
 			<div class="contents-area dialog-content" style="padding: 10px 25px">

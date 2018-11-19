@@ -103,7 +103,7 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 			List<EmploymentTiedProcYmImport> lstEmpTiedProcYm, List<CurrProcessYmImport> lstCurrProcYm,
 			String selectedBranchId) {
 		val optEmpTiedProcYm = lstEmpTiedProcYm.stream().filter(t -> t.getEmploymentCodes().contains(employmentCode))
-				.findAny();
+				.findFirst();
 		val optSalPayInfor = payInfoRepo.getEmpSalPaymentInfo(employeeId);
 		if (optSalPayInfor.isPresent()) {
 			String salHistId = getSalaryHistId(optSalPayInfor.get(), optEmpTiedProcYm, lstCurrProcYm);
@@ -144,14 +144,21 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 		if (empTiedProcYm.isPresent()) {
 			val optCurrProcYm = lstCurrProcYm.stream()
 					.filter(p -> p.getProcessCateNo() == empTiedProcYm.get().getProcessCateNo()).findFirst();
-			val optSalInfor = salPayInfor.items().stream()
-					.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
-			return optSalInfor.isPresent() ? optSalInfor.get().identifier() : "";
+			if (optCurrProcYm.isPresent()) {
+				val optSalInfor = salPayInfor.items().stream()
+						.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
+				return optSalInfor.isPresent() ? optSalInfor.get().identifier() : "";
+			} else
+				return "";
+
 		} else {
 			val optCurrProcYm = lstCurrProcYm.stream().filter(p -> p.getProcessCateNo() == 1).findFirst();
-			val optSalInfor = salPayInfor.items().stream()
-					.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
-			return optSalInfor.isPresent() ? optSalInfor.get().identifier() : "";
+			if (optCurrProcYm.isPresent()) {
+				val optSalInfor = salPayInfor.items().stream()
+						.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
+				return optSalInfor.isPresent() ? optSalInfor.get().identifier() : "";
+			} else
+				return "";
 		}
 	}
 
@@ -160,14 +167,21 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 		if (empTiedProcYm.isPresent()) {
 			val optCurrProcYm = lstCurrProcYm.stream()
 					.filter(p -> p.getProcessCateNo() == empTiedProcYm.get().getProcessCateNo()).findFirst();
-			val optBonInfor = bonPayInfor.items().stream()
-					.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
-			return optBonInfor.isPresent() ? optBonInfor.get().identifier() : "";
+			if (optCurrProcYm.isPresent()) {
+				val optBonInfor = bonPayInfor.items().stream()
+						.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
+				return optBonInfor.isPresent() ? optBonInfor.get().identifier() : "";
+			} else
+				return "";
+
 		} else {
 			val optCurrProcYm = lstCurrProcYm.stream().filter(p -> p.getProcessCateNo() == 1).findFirst();
-			val optBonInfor = bonPayInfor.items().stream()
-					.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
-			return optBonInfor.isPresent() ? optBonInfor.get().identifier() : "";
+			if (optCurrProcYm.isPresent()) {
+				val optBonInfor = bonPayInfor.items().stream()
+						.filter(h -> h.end().greaterThanOrEqualTo(optCurrProcYm.get().getCurrentYm())).findFirst();
+				return optBonInfor.isPresent() ? optBonInfor.get().identifier() : "";
+			} else
+				return "";
 		}
 	}
 
