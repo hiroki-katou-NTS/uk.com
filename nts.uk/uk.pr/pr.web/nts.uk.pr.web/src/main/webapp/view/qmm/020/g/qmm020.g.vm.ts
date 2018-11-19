@@ -21,7 +21,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
         constructor(){
             let self = this;
-            self.initScreen(null);
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
                 let self = this;

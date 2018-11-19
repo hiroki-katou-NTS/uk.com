@@ -23,9 +23,9 @@ public class StateLinkSettingDateWebService extends WebService {
     @Path("getStateLinkSettingDateById/{hisId}")
     public StateLinkSettingDateDto getStateLinkSettingDateById(@PathParam("hisId") String hisId){
         Optional<StateLinkSettingDateDto> stateLinkSettingDateDto = stateLinkSettingDateFinder.getStateLinkSettingDateById(hisId);
-        if(stateLinkSettingDateDto.isPresent()){
-            return stateLinkSettingDateDto.get();
+        if(!stateLinkSettingDateDto.isPresent()){
+            return null;
         }
-        return null;
+        return stateLinkSettingDateDto.get();
     }
 }
