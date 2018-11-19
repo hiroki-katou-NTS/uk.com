@@ -452,6 +452,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		// 加給利用単位．職場使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getWorkplaceUseAtr() == UseAtr.USE) {
 			Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
+			// 職場の加給設定を取得する
 			for (String wPId : workPlaceIdList) {
 				workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(companyId,
 						new WorkplaceId(wPId));
