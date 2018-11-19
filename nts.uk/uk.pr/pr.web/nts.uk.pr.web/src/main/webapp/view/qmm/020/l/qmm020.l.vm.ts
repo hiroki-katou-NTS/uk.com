@@ -21,7 +21,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
                 if(data){
                     self.selectedMasterUse(data.masterUse);
                     self.selectedIndividualUse(data.individualUse);
-                    self.selectedUsageMaster(data.usageMaster);
+                    self.selectedUsageMaster(data.usageMaster === null ? 0 : data.usageMaster);
                     self.currentSelectedUsageMaster(data.usageMaster);
                 }else{
                     self.selectedMasterUse(1);

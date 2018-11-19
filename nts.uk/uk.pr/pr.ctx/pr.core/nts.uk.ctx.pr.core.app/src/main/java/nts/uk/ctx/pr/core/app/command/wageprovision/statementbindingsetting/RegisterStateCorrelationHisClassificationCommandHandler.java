@@ -31,16 +31,24 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
             String hisId = IdentifierUtil.randomUniqueId();
             if(command.getStateLinkSettingMaster() != null) {
                 listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                    return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()));
-                }).collect(Collectors.toList());
+                    return new StateLinkSettingMaster(
+                            hisId,
+                            new MasterCode(i.getMasterCode()),
+                            i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
+                            i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
+                            }).collect(Collectors.toList());
             }
             stateCorrelationHisClassificationService.addHistoryClassification(hisId, start, end, listStateLinkSettingMaster);
         } else {
             String hisId = command.getHisId();
             if(command.getStateLinkSettingMaster() != null) {
                 listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                    return new StateLinkSettingMaster(hisId, new MasterCode(i.getMasterCode()), new StatementCode(i.getSalaryCode()), new StatementCode(i.getBonusCode()));
-                }).collect(Collectors.toList());
+                    return new StateLinkSettingMaster(
+                            hisId,
+                            new MasterCode(i.getMasterCode()),
+                            i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
+                            i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
+                            }).collect(Collectors.toList());
             }
             stateCorrelationHisClassificationService.updateHistoryClassification(listStateLinkSettingMaster);
         }

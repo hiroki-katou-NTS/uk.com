@@ -233,14 +233,16 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 endYearMonth: self.endYearMonth(),
                 hisId: self.hisIdSelected(),
                 startLastYearMonth: laststartYearMonth,
-                canDelete: canDelete
+                canDelete: canDelete,
+                isPerson: false,
+                modeScreen: model.MODE_SCREEN.CLASSIFICATION
             });
             modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
-                if(params && params.methodEditing == 1) {
+                if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());
                 }
-                if(params && params.methodEditing == 0) {
+                if(params && params.modeEditHistory == 0) {
                     self.initScreen(null);
                 }
                 $('#E2_1').focus();

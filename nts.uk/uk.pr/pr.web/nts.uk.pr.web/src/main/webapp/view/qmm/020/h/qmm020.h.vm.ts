@@ -42,11 +42,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         constructor() {
             let self = this;
-            self.initScreen(null).done(()  =>{
-                self.loadCCG001();
-
-            });
-
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
                 let self = this;
@@ -312,6 +307,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 if (params) {
                     self.transferMethod(params.transferMethod);
                     self.listStateCorrelationHis.unshift(self.createStateCorrelationHis(params.start, params.end));
+                    self.mode(model.MODE.NEW);
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
             });
@@ -350,10 +346,10 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
-                if(params && params.methodEditing == 1) {
+                if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());
                 }
-                if(params && params.methodEditing == 0) {
+                if(params && params.modeEditHistory == 0) {
                     self.initScreen(null);
                 }
                 $('#G2_1').focus();
@@ -409,7 +405,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         salaryCode: number;
         salaryName: number;
         bonusCode: string;
-        bonusName
+        bonusName: string;
         constructor() {
 
         }
