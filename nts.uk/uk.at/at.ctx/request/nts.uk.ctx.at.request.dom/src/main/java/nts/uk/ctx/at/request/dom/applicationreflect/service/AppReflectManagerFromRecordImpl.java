@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -159,7 +158,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		
 		for (Application_New appData : lstApp) {			
-			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData, reflectSetting);
+			appRefMng.reflectEmployeeOfApp(appData, reflectSetting);
 			
 			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
@@ -236,11 +235,6 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		//再実行かどうか判断する 
 		Optional<SetInforReflAprResultImport> optRefAppResult = execuLog.optReflectResult(workId, 2);//2: 承認結果反映 
-		//対象社員を取得
-		List<TargetPersonImport> lstPerson = targetPerson.getTargetPerson(workId)
-				.stream()
-				.sorted(Comparator.comparing(TargetPersonImport::getEmployeeId))
-				.collect(Collectors.toList());
 		ExecutionTypeExImport aprResult = ExecutionTypeExImport.NORMAL_EXECUTION;
 		if(optRefAppResult.isPresent()) {
 			aprResult = optRefAppResult.get().getExecutionType();
