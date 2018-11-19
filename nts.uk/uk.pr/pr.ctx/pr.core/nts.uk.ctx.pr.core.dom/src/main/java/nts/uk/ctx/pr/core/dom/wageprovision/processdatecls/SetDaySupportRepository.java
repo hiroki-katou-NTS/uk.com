@@ -24,8 +24,6 @@ public interface SetDaySupportRepository {
 
     Optional<SetDaySupport> getSetDaySupportByIdAndProcessDate(String cid, int processCateNo, int processDate);
 
-
-
-
+    Optional<SetDaySupport> findById(String cid, int processCateNo , int processDate);
 
 }

@@ -11,4 +11,8 @@ public class AddIndividualwagecontractCommand {
 
     SalIndAmountCommand salIndAmountCommand;
 
+    String oldHistoryId;
+
+    int newEndMonthOfOldHistory;
+
 }

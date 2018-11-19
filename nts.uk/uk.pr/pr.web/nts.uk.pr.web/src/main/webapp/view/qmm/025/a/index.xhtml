@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm025.a.service.js"/>
+        <com:scriptfile path="qmm025.a.vm.js"/>
+        <com:scriptfile path="qmm025.a.start.js"/>
+        <com:stylefile path="qmm025.a.style.css"/>
+
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+        </com:ValidatorScript>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <button class="proceed" data-bind="click: registerAmount">#{i18n.getText('QMM025_1')}</button>
+            <button>#{i18n.getText('QMM025_2')}</button>
+            <a class="goout" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM025_3')}</a>
+        </div>
+        <div id="contents-area">
+            <div id="com-ccg001"></div>
+            <div id="content-qmm">
+                <div id="A2_1" class="panel panel-frame">
+                    <div class="table">
+                        <div class="cell valign-center">
+                            <div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM025_4')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"></div>
+                        </div>
+                        <div class="cell valign-center">
+                            <div class="label" data-bind="text: japanYear()"></div>
+                        </div>
+                        <div class="cell valign-center">
+                            <div class="label">#{i18n.getText('QMM025_5')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <button id="A2_6" class="small" data-bind="click: getEmpAmount">#{i18n.getText('QMM025_6')}</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="A2_8" class="danger" data-bind="click: deleteAmount">#{i18n.getText('QMM025_7')}</button>
+                <table id="grid"></table>
+                <!--<table id="single-list" data-bind="ntsGridList: {
+                    rows: 12,
+                    dataSource: empAmountItems,
+                    primaryKey: 'sid',
+                    columns: columns,
+                    multiple: true,
+                    value: currentSidItems
+                }"></table>-->
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

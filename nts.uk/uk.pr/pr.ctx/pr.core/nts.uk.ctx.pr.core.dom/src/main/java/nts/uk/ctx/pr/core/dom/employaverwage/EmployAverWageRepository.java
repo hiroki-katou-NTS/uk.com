@@ -1,0 +1,26 @@
+package nts.uk.ctx.pr.core.dom.employaverwage;
+
+import java.util.Optional;
+import java.util.List;
+
+/**
+* 社員平均賃金
+*/
+public interface EmployAverWageRepository
+{
+
+    List<EmployAverWage> getAllEmployAverWage();
+
+    Optional<EmployAverWage> getEmployAverWageById(String employeeId, int targetDate);
+
+    void add(EmployAverWage domain);
+
+    void update(EmployAverWage domain);
+
+    void remove(String employeeId, int targetDate);
+
+    void addAll(List<EmployAverWage> domains);
+
+    void updateAll(List<EmployAverWage> domains);
+
+}

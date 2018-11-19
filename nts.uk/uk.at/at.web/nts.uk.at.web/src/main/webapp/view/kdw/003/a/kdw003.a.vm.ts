@@ -3081,7 +3081,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? self.convertToHours(Number(id.value)) : id.value;
+                let valueUI = ""
+                if(id.value != null && cDisplayType == 'Clock'){
+                   valueUI = self.convertToHours(Number(id.value)) 
+                }else if(cDisplayType == 'Currency'){
+                   valueUI = self.convertMoney(id.value, "¥");
+                }else{
+                   valueUI = id.value; 
+                }
+                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = valueUI;
                 totalWidthColumn += id.columnWidth;
             });
 
@@ -3107,11 +3115,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return "Clock";
                 case "DAYS": return "Decimal";
                 case "COUNT": return "Integer";
-                case "CURRENCY": return "Currency";
+                case "AMOUNT": return "Currency";
                 default: return "String";
             }
         }
-
+        
+        convertMoney(value: any, unit: string): any{
+            let self = this;
+            if(_.isEmpty(value)) return unit+"";
+            else return unit+" "+self.formatMoney(Number(value), 0, '.', ',');
+        }
+        
+        formatMoney(n: number, c, d, t) : any{
+            let c = isNaN(c = Math.abs(c)) ? 2 : c, d = d == undefined ? "," : d, t = t == undefined ? "." : t, s = n < 0 ? "-" : "", i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
+            return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+        };
+        
         clickButtonApplication(data) {
             let self = this;
             let source: any = $("#dpGrid").mGrid("dataSource");
@@ -3587,10 +3606,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 keyId: any,
                 valueError: any,
                 dataChange: any,
-                dataChageRow: any;
+                dataChageRow: any,
+                errorGrid: any;
             __viewContext.vm.flagCalculation = false;
             $("#next-month").ntsError("clear");
+            // get error grid
+            errorGrid = $("#dpGrid").mGrid("errors");
             
+            let hasErrorValidate = _.find(errorGrid, row =>{
+                return row.rowId == rowId;
+            })
             _.remove(__viewContext.vm.listCheck28(), error => {
                 return error.rowId == rowId;
             })
@@ -3618,7 +3643,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                 let rowError = _.find(__viewContext.vm.listCheck28(), data => {
 //                    return data.rowId == rowId && columnKey != "A29";
 //                });
-                if (valueError != undefined) {
+                if (valueError != undefined || hasErrorValidate != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
                     //nts.uk.ui.block.invisible();
