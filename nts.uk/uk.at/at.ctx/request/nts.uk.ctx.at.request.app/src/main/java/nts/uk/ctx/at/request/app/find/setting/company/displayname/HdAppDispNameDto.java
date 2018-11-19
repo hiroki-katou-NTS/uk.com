@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.request.app.find.setting.company.displayname;
 
+/*import nts.uk.ctx.at.request.dom.setting.company.displayname.DispName;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;*/
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.DispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 /**
  * 
  * @author yennth

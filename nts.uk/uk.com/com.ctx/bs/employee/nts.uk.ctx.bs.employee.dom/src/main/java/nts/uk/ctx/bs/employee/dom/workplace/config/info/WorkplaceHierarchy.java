@@ -97,5 +97,11 @@ public class WorkplaceHierarchy extends DomainObject {
             return false;
         return true;
     }
+
+	public WorkplaceHierarchy(String workplaceId, HierarchyCode hierarchyCode) {
+		super();
+		this.workplaceId = workplaceId;
+		this.hierarchyCode = hierarchyCode;
+	}
 	
 }

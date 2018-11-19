@@ -50,8 +50,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class WorkUpdateServiceImpl implements WorkUpdateService{
 	@Inject
-	private WorkInformationRepository workRepository;
-	@Inject
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
@@ -529,10 +527,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						stamp.getStampSourceInfo());
 				
 			} else {
-				stampTmp = new WorkStamp(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
-						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
-						null,
-						StampSourceInfo.GO_STRAIGHT_APPLICATION);
+				if(data.getStartTime() != null) {
+					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+							new TimeWithDayAttr(data.getStartTime()),
+							null,
+							StampSourceInfo.GO_STRAIGHT_APPLICATION);
+				}
+				
 			}
 			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
 					stampTmp,

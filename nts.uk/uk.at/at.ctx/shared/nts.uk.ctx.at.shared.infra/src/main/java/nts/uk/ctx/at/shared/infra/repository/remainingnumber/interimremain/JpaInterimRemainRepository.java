@@ -4,13 +4,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-
-import org.apache.log4j.Logger;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -27,18 +24,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcmtInterimRemainMng;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
-	
-	private static final String QUERY_BY_SID_PRIOD = "SELECT c FROM KrcmtInterimRemainMng c"
-			+ " WHERE c.sId = :employeeId"
-			+ " AND c.ymd >= :startDate"
-			+ " AND c.ymd <= :endDate"
-			+ " AND c.remainType = :remainType";
 	private static final String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
@@ -51,9 +41,6 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c"
 			+ " WHERE c.remainMngId = :remainMngId";
 
-	private static final String QUERY_BY_SID_YMDs = "SELECT c FROM KrcmtInterimRemainMng c"
-			+ " WHERE c.sId = :sId"
-			+ " AND c.ymd IN :ymd";	
 	@SneakyThrows
 	@Override
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {

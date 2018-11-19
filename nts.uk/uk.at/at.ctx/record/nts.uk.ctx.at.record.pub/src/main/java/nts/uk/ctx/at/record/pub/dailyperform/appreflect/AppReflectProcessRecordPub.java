@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 
 /**
  * 反映状況によるチェック
@@ -61,7 +60,7 @@ public interface AppReflectProcessRecordPub {
 	 * @param isPre : true: 事前申請処理, false: 事後申請処理
 	 * @return
 	 */
-	public boolean workChangeReflect(CommonReflectPubParameter param, boolean isPre);
+	public boolean workChangeReflect(WorkChangeCommonReflectPubPara param, boolean isPre);
 	/**
 	 * 振休申請
 	 * @param param

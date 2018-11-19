@@ -61,7 +61,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
 			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
 			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition");
+			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId, ic.relatedCategoryCode, ic.resourceId, ic.canAbolition, i.initValue");
 
 	private final static String JOIN_COMMON_TABLE = String.join(" ",
 			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -324,7 +324,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND ic.itemType <> 1";
 	
 	private static Comparator<Object[]> SORT_BY_DISPORDER = (o1, o2) -> {
-		return ((int) o1[31]) - ((int) o2[31]); // index 31 for [disporder] 
+		return ((int) o1[32]) - ((int) o2[32]); // index 31 for [disporder] 
 	};
 	
 	@Override
@@ -596,13 +596,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String relatedCategoryCode = String.valueOf(i[28]);
 		String resourceId = i[29] == null ? null : String.valueOf(i[29]);
 		int canAbolition = Integer.parseInt(String.valueOf(i[30]));
+		String initValue = i[31] == null ? null : String.valueOf(i[31]);
 
 		return PersonInfoItemDefinition.createNewPersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId,
 				itemParentCode, itemCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable,
 				resourceId, itemType, dataType, stringItemLength, stringItemDataType, stringItemType, numericItemMinus,
 				numericItemAmount, numericItemIntegerPart, numericItemDecimalPart, numericItemMin, numericItemMax,
 				dateItemType, timeItemMax, timeItemMin, timepointItemMin, timepointItemMax, selectionItemRefType,
-				selectionItemRefCode, relatedCategoryCode, canAbolition, items);
+				selectionItemRefCode, relatedCategoryCode, canAbolition, items, initValue);
 	}
 
 	private PersonInfoItemDefinition createDomainFromEntity1(Object[] i, List<String> items) {
@@ -638,13 +639,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		String relatedCategoryCode = String.valueOf(i[28]);
 		String resourceId = i[29] == null ? null : String.valueOf(i[29]);
 		int canAbolition = Integer.parseInt(String.valueOf(i[30]));
+		String initValue = i[31] == null ? null : String.valueOf(i[31]);
 
 		return PersonInfoItemDefinition.createNewPersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId,
 				itemParentCode, itemCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable,
 				resourceId, itemType, dataType, stringItemLength, stringItemDataType, stringItemType, numericItemMinus,
 				numericItemAmount, numericItemIntegerPart, numericItemDecimalPart, numericItemMin, numericItemMax,
 				dateItemType, timeItemMax, timeItemMin, timepointItemMin, timepointItemMax, selectionItemRefType,
-				selectionItemRefCode, relatedCategoryCode, canAbolition, items);
+				selectionItemRefCode, relatedCategoryCode, canAbolition, items, initValue);
 	}
 
 	private PersonInfoItemDefinition toDomain(Object[] i) {
@@ -660,7 +662,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
 		return new PpemtPerInfoItem(perInfoItemPK, perInfoItemDef.getPerInfoCategoryId(),
 				perInfoItemDef.getItemCode().v(), perInfoItemDef.getItemName().v(),
-				perInfoItemDef.getIsAbolition().value, perInfoItemDef.getIsRequired().value);
+				perInfoItemDef.getIsAbolition().value, perInfoItemDef.getIsRequired().value,
+				perInfoItemDef.getInitValue() == null? null:
+				(perInfoItemDef.getInitValue().isPresent()? perInfoItemDef.getInitValue().get().toString() : null));
 	}
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomainWithCtgId(PersonInfoItemDefinition perInfoItemDef,
@@ -668,7 +672,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(IdentifierUtil.randomUniqueId());
 		return new PpemtPerInfoItem(perInfoItemPK, perInfoCtgId, perInfoItemDef.getItemCode().v(),
 				perInfoItemDef.getItemName().v(), perInfoItemDef.getIsAbolition().value,
-				perInfoItemDef.getIsRequired().value);
+				perInfoItemDef.getIsRequired().value, perInfoItemDef.getInitValue() == null? null:
+					(perInfoItemDef.getInitValue().isPresent()? perInfoItemDef.getInitValue().get().toString() : null));
 	}
 
 	private PpemtPerInfoItemCm createPerInfoItemDefCmFromDomain(PersonInfoItemDefinition perInfoItemDef,

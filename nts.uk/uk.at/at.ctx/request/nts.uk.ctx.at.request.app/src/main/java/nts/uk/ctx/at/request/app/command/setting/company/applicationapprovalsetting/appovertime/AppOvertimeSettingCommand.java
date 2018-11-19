@@ -2,8 +2,8 @@ package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalset
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.BreakReflect;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
+/*import nts.uk.ctx.at.request.dom.application.BreakReflect;
+import nts.uk.ctx.at.request.dom.application.UseAtr;*/
 
 @Data
 @AllArgsConstructor

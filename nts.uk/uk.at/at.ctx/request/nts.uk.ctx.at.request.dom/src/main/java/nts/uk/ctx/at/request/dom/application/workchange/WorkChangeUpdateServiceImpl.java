@@ -12,8 +12,10 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
@@ -31,7 +33,8 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlg;
 	@Override
 	public ProcessResult UpdateWorkChange(Application_New app, AppWorkChange workChange) {
 		
@@ -51,8 +54,13 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 		GeneralDate startDateParam = app.getStartDate().orElse(app.getAppDate());
 		GeneralDate endDateParam = app.getEndDate().orElse(app.getAppDate());
 		List<GeneralDate> listDate = new ArrayList<>();
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(app.getCompanyID(), app.getEmployeeID(), new DatePeriod(startDateParam, endDateParam));
+		
 		for(GeneralDate loopDate = startDateParam; loopDate.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)){
-			listDate.add(loopDate);
+			if(workChange.getExcludeHolidayAtr() == 0
+					|| (workChange.getExcludeHolidayAtr() == 1 && !lstHoliday.contains(loopDate))) {
+				listDate.add(loopDate);	
+			}			
 		}
 		interimRemainDataMngRegisterDateChange.registerDateChange(
 				app.getCompanyID(), 

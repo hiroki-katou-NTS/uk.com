@@ -142,12 +142,15 @@ public class DailyModifyResCommandFacade {
 
 		List<DailyRecordWorkCommand> commandOld = createCommands(sid, dtoOlds, querys);
 		if (!flagCalculation) {
-			return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
+			val result =  this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
+			validatorDataDaily.removeErrorRemarkAll(AppContexts.user().companyId(), result.getLstDailyDomain(), dtoNews);
+			return result;
 		} else {
 			List<EmployeeDailyPerErrorDto> lstErrorDto = dtoNews.stream().map(result -> result.getErrors())
 					.flatMap(List::stream).collect(Collectors.toList());
 			List<EmployeeDailyPerError> lstError = lstErrorDto.stream()
 					.map(x -> x.toDomain(x.getEmployeeID(), x.getDate())).collect(Collectors.toList());
+			lstError = validatorDataDaily.removeErrorRemark(AppContexts.user().companyId(), lstError, dtoNews);
 			this.handler.handlerNoCalc(commandNew, commandOld, lstError, dailyItems, true, month, mode,
 					lstAttendanceItem);
 			return null;
@@ -176,7 +179,7 @@ public class DailyModifyResCommandFacade {
 			dailyEdits.addAll(queryNotChanges.isEmpty() ? temp : toDto(queryNotChanges, temp));
 		} else {
 			dailyOlds.addAll(dataParent.getDailyOlds());
-			dailyEdits.addAll(dataParent.getDailyEdits());
+			dailyEdits.addAll(queryNotChanges.isEmpty() ? dataParent.getDailyEdits() : toDto(queryNotChanges, dataParent.getDailyEdits()));
 		}
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
