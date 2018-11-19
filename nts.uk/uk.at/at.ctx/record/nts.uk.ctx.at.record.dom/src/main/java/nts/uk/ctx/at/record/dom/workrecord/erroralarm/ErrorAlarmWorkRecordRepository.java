@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,7 +52,9 @@ public interface ErrorAlarmWorkRecordRepository {
 	List<ErrorAlarmWorkRecord> getAllErAlCompany(String companyId);
 
 	// get all errors and alarms's settings of login company and  Category = Error
-    List<ErrorAlarmWorkRecord> getListErAlByListCodeError(String companyId,List<String> listCode);
+    List<ErrorAlarmWorkRecord> getListErAlByListCodeError(String companyId, List<String> listCode);
+    
+    List<ErrorAlarmWorkRecord> getListErAlByListCodeRemark(String companyId, Collection<String> listCode);
     
     // get all errors and alarms's settings of login company and  useAtr = true
     List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtr(String companyId, boolean useAtr);

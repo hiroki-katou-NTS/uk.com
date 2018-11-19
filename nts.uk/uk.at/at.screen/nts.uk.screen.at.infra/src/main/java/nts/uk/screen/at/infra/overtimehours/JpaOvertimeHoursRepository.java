@@ -16,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.screen.at.app.ktgwidget.OvertimeHoursRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -39,16 +40,20 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 	}
 
 
-	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi" + " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
+	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId  AND eh.companyId = :companyId"
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 
 	@Override
 	public List<String> getListEmptByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
 		List<String> listHistItem = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		
 		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPTCODE_DATEPERIOD, String.class).setParameter("employmentCodes", subList).setParameter("startDate", dateperiod.start())
+					.setParameter("companyId", companyId)
 					.setParameter("endDate", dateperiod.end()).getList());
 		});
+		
 		if (listHistItem.isEmpty()) {
 			return Collections.emptyList();
 		}

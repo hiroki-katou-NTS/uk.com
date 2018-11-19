@@ -254,7 +254,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			if(procExec.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent())
 				createNewEmp = procExec.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value;
 			boolean check = createperApprovalDailyAdapter.createperApprovalDaily(procExec.getCompanyId(), procExecLog.getExecId(),
-					listEmployeeID, procExec.getProcessExecType().value, createNewEmp, closureData.getClosureStartDate());
+					listEmployeeID, procExec.getProcessExecType().value, createNewEmp, closureData.getClosureStartDate(),closureData.getClosureEndDate());
 			listCheckCreateApp.add(new CheckCreateperApprovalClosure(closure.getClosureId().value,check));
 		}
 		

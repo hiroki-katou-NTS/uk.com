@@ -140,5 +140,11 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	List<InterimRecAbsMng> getAbsByIdsMngAtr(List<String> absIds, DataManagementAtr absMngAtr);
-	
+	/**
+	 * get 暫定振出管理データ
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period);
 }
