@@ -30,16 +30,16 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
                 .getProcessInformationByDeprecatedCategory(cid, deprecatedCategory);
         if (!dataProcessInformation.isEmpty()) {
             // 取得した処理区分NOで以下の処理をループする
-            for (int i = 0; i < dataProcessInformation.size(); i++) {
+            for (ProcessInformation aDataProcessInformation : dataProcessInformation) {
                 // ドメインモデル「現在処理年月」を更新する
-                int processCateNo = dataProcessInformation.get(i).getProcessCateNo();
-                int giveCurrTreatYear = addCommand.getCurrProcessDateCommand().get(i).getGiveCurrTreatYear();
+                int processCateNo = aDataProcessInformation.getProcessCateNo();
+                int giveCurrTreatYear = addCommand.getCurrProcessDateCommand().get(processCateNo - 1).getGiveCurrTreatYear();
                 CurrProcessDate currProcessDate = new CurrProcessDate(cid, processCateNo, giveCurrTreatYear);
                 repoCurrProcessDate.update(currProcessDate);
                 // ドメインモデル「処理年月に紐づく雇用」を取得する
                 Optional<EmpTiedProYear> dataEmpTiedProYear = repoEmpTiedProYear.getEmpTiedProYearById(cid,
                         processCateNo);
-                List<EmploymentCode> employmentCodes = addCommand.getEmpTiedProYearCommand().get(i).getEmploymentCodes().stream().map(item -> new EmploymentCode(item)).collect(Collectors.toList());
+                List<EmploymentCode> employmentCodes = addCommand.getEmpTiedProYearCommand().get(processCateNo - 1).getEmploymentCodes().stream().map(EmploymentCode::new).collect(Collectors.toList());
                 EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCodes);
                 if (dataEmpTiedProYear.isPresent()) {
                     // ドメインモデル「処理年月に紐づく雇用」を更新する
