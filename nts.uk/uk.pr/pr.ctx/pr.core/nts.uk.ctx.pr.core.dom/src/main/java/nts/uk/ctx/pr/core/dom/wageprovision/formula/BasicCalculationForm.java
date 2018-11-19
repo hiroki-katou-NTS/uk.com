@@ -59,14 +59,14 @@ public class BasicCalculationForm extends DomainObject {
     private Optional<RoundingMethod> roundingMethod;
 
     
-    public BasicCalculationForm(BasicCalculationStandardAmount basicCalculationStandardAmount, BasicCalculationFactorClassification basicCalculationFactorClassification, int formulaType, int roundingResult, int adjustmentClassification,  BasicCalculationItemCategory basicCalculationItemCategory, Integer premiumRate, Integer roundingMethod) {
+    public BasicCalculationForm(BasicCalculationStandardAmount basicCalculationStandardAmount, BasicCalculationFactorClassification basicCalculationFactorClassification, int formulaType, int roundingResult, int adjustmentClassification,  Optional<BasicCalculationItemCategory> basicCalculationItemCategory, Integer premiumRate, Integer roundingMethod) {
         this.premiumRate = premiumRate == null ? Optional.empty() : Optional.of(new PremiumRate(premiumRate));
         this.roundingMethod = roundingMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(roundingMethod, RoundingMethod.class));
         this.roundingResult = EnumAdaptor.valueOf(roundingResult, RoundingResult.class);
         this.adjustmentClassification = EnumAdaptor.valueOf(adjustmentClassification, AdjustmentClassification.class);
         this.formulaType = EnumAdaptor.valueOf(formulaType, FormulaType.class);
         this.basicCalculationStandardAmount = basicCalculationStandardAmount;
-        this.basicCalculationItemCategory = Optional.ofNullable(basicCalculationItemCategory);
+        this.basicCalculationItemCategory = basicCalculationItemCategory;
         this.basicCalculationFactorClassification = basicCalculationFactorClassification;
     }
     

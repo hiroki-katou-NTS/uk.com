@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 
 @Getter
+@AllArgsConstructor
 public class FormulaHistory extends AggregateRoot implements ContinuousHistory<YearMonthHistoryItem, YearMonthPeriod, YearMonth> {
 	/**
 	 * 会社ID

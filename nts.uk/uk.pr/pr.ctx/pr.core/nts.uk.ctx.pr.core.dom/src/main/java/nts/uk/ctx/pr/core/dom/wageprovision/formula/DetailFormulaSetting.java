@@ -13,7 +13,21 @@ import javax.xml.soap.Detail;
 */
 @Getter
 public class DetailFormulaSetting extends AggregateRoot {
-    
+    /**
+     * 履歴ID
+     */
+    private String historyId;
+
+    /**
+     * 参照月
+     */
+    private ReferenceMonth referenceMonth;
+
+    /**
+     * 詳細計算式（コード）
+     */
+    private List<DetailCalculationFormula> detailCalculationFormula;
+
     /**
     * 端数処理(詳細計算式)
     */
@@ -24,22 +38,11 @@ public class DetailFormulaSetting extends AggregateRoot {
     */
     private RoundingPosition roundingPosition;
     
-    /**
-    * 参照月
-    */
-    private ReferenceMonth referenceMonth;
+
     
-    /**
-    * 履歴ID
-    */
-    private String historyId;
+
     
-    /**
-    * 詳細計算式（コード）
-    */
-    private List<DetailCalculationFormula> detailCalculationFormula;
-    
-    public DetailFormulaSetting(Integer roundingMethod, Integer roundingPosition, Integer referenceMonth, String elementOrder, List<DetailCalculationFormula> detailCalculationFormula) {
+    public DetailFormulaSetting( String historyId, int referenceMonth, List<DetailCalculationFormula> detailCalculationFormula, int roundingMethod, int roundingPosition) {
         this.roundingMethod = EnumAdaptor.valueOf(roundingMethod, Rounding.class);
         this.roundingPosition = EnumAdaptor.valueOf(roundingPosition, RoundingPosition.class);
         this.referenceMonth = EnumAdaptor.valueOf(referenceMonth, ReferenceMonth.class);

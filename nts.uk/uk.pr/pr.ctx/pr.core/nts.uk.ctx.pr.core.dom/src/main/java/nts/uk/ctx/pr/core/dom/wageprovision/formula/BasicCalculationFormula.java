@@ -42,12 +42,12 @@ public class BasicCalculationFormula extends AggregateRoot {
     */
     private Optional<BasicCalculationForm> basicCalculationForm;
     
-    public BasicCalculationFormula(String masterUseCode, int calculationFormulaClassification, String historyID, BigDecimal basicCalculationFormula, BasicCalculationForm basicCalculationForm) {
+    public BasicCalculationFormula(String historyID, String masterUseCode, int calculationFormulaClassification, BigDecimal basicCalculationFormula, BasicCalculationForm basicCalculationForm) {
+        this.historyID = historyID;
         this.masterUseCode = new MasterUseCode(masterUseCode);
         this.calculationFormulaClassification = EnumAdaptor.valueOf(calculationFormulaClassification, CalculationFormulaClassification.class);
         this.basicCalculationFormula = basicCalculationFormula == null ? Optional.empty() : Optional.of(new FixedAmount(basicCalculationFormula));
         this.basicCalculationForm = Optional.ofNullable(basicCalculationForm);
-        this.historyID = historyID;
     }
     
 }

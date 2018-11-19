@@ -30,7 +30,7 @@ public class BasicFormulaSetting extends AggregateRoot {
     */
     private String historyID;
     
-    public BasicFormulaSetting(Integer masterUse, int masterBranchUse, String historyID) {
+    public BasicFormulaSetting(String historyID, int masterBranchUse, Integer masterUse) {
         this.masterUse = masterUse == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(masterUse, MasterUse.class));
         this.masterBranchUse = EnumAdaptor.valueOf(masterBranchUse, MasterBranchUse.class);
         this.historyID = historyID;

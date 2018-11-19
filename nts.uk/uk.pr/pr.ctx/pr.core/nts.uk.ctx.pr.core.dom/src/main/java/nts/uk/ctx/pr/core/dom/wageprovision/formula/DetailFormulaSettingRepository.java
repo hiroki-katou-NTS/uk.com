@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+
 import java.util.Optional;
 import java.util.List;
 
@@ -11,12 +13,16 @@ public interface DetailFormulaSettingRepository
 
     List<DetailFormulaSetting> getAllDetailFormulaSetting();
 
-    Optional<DetailFormulaSetting> getDetailFormulaSettingById();
+    Optional<DetailFormulaSetting> getDetailFormulaSettingById(String historyID);
 
     void add(DetailFormulaSetting domain);
 
     void update(DetailFormulaSetting domain);
 
-    void remove();
+    void remove(DetailFormulaSetting domain);
+
+    void removeByHistory(String historyID);
+
+    void removeByFormulaCode(String formulaCode);
 
 }

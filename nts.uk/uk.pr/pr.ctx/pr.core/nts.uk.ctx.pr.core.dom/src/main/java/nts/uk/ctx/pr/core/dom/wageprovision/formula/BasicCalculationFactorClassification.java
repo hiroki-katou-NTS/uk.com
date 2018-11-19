@@ -29,7 +29,7 @@ public class BasicCalculationFactorClassification extends DomainObject
     */
     private CoefficientItem coefficientItem;
     
-    public BasicCalculationFactorClassification(BigDecimal coefficientFixedValue, CoefficientItem coefficientItem) {
+    public BasicCalculationFactorClassification(CoefficientItem coefficientItem, BigDecimal coefficientFixedValue) {
         this.coefficientItem = coefficientItem;
         this.coefficientFixedValue = coefficientFixedValue == null ? Optional.empty() : Optional.of(new CoefficientFixedValue(coefficientFixedValue));
     }

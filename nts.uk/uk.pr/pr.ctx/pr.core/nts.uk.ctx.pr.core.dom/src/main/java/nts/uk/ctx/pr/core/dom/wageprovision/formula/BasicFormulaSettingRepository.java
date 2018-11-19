@@ -11,12 +11,16 @@ public interface BasicFormulaSettingRepository
 
     List<BasicFormulaSetting> getAllBasicFormulaSetting();
 
-    Optional<BasicFormulaSetting> getBasicFormulaSettingById();
+    Optional<BasicFormulaSetting> getBasicFormulaSettingById(String historyID);
 
     void add(BasicFormulaSetting domain);
 
     void update(BasicFormulaSetting domain);
 
-    void remove();
+    void remove(BasicFormulaSetting domain);
+
+    void removeByHistory(String historyID);
+
+    void removeByFormulaCode(String formulaCode);
 
 }

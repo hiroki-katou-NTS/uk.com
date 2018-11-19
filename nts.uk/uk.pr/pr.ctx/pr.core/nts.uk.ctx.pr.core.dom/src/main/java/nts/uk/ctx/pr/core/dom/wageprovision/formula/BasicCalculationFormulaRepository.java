@@ -6,17 +6,18 @@ import java.util.List;
 /**
 * かんたん計算式
 */
-public interface BasicCalculationFormulaRepository
-{
+public interface BasicCalculationFormulaRepository {
 
-    List<BasicCalculationFormula> getAllBasicCalculationFormula();
+    List<BasicCalculationFormula> getBasicCalculationFormulaByHistoryID(String historyID);
 
-    Optional<BasicCalculationFormula> getBasicCalculationFormulaById();
+    void addAll(List<BasicCalculationFormula> domains);
 
-    void add(BasicCalculationFormula domain);
+    void updateAll(List<BasicCalculationFormula> domains);
 
-    void update(BasicCalculationFormula domain);
+    void removeAll(List<BasicCalculationFormula> domains);
 
-    void remove();
+    void removeByHistoryID(String historyID);
+
+    void removeByFormulaCode(String formulaCode);
 
 }
