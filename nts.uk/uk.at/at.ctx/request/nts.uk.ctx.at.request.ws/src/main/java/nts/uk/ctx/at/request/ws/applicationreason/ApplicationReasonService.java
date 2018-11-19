@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.ws.applicationreason;
-
+/*import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;*/
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,18 +13,14 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
-import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.applicationreason.ApplicationReasonCommand;
 import nts.uk.ctx.at.request.app.command.applicationreason.DeleteApplicationReasonCommand;
 import nts.uk.ctx.at.request.app.command.applicationreason.DeleteApplicationReasonCommandHandler;
 import nts.uk.ctx.at.request.app.command.applicationreason.InsertApplicationReasonCommandHandler;
 import nts.uk.ctx.at.request.app.command.applicationreason.UpdateApplicationReasonCommand;
 import nts.uk.ctx.at.request.app.command.applicationreason.UpdateApplicationReasonCommandHandler;
-import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonFinder;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application-reason")
 @Produces("application/json")

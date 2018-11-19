@@ -1,6 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.ArrayList;
+/*import java.util.ArrayList;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.gul.text.StringUtil;
+import nts.gul.collection.CollectionUtil;*/
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -11,20 +16,15 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -37,10 +37,10 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	private IWorkChangeRegisterService workChangeRegisterService;
 	@Inject
 	private IFactoryApplication IfacApp;
-	@Inject
-	private CollectAchievement collectAchievement;
-	@Inject
-	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
+//	@Inject
+//	private CollectAchievement collectAchievement;
+//	@Inject
+//	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
 	@Inject 
 	private OtherCommonAlgorithm  otherCommonAlgorithm;
 	
