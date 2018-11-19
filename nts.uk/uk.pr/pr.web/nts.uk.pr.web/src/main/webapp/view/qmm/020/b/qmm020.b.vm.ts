@@ -116,7 +116,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             });
         }
 
-        register(){
+        registerStateLinkSettingCompany(){
             block.invisible();
             let self = this;
             let historyID;
@@ -141,7 +141,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                 mode: self.mode()
 
             }
-            service.register(data).done(()=>{
+            service.registerStateLinkSettingCompany(data).done(()=>{
                 dialog.info({ messageId: "Msg_15" }).then(() => {
                     service.getStateCorrelationHisCompanyById().done((data)=>{
                         self.listStateCorrelationHis(self.convertToList(data));

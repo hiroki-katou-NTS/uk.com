@@ -20,18 +20,8 @@ import java.util.stream.Collectors;
 public class JpaStateCorrelationHisCompanyRepository extends JpaRepository implements StateCorrelationHisCompanyRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisCom f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND  f.stateCorHisComPk.hisId =:hisId ";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid ORDER BY f.endYearMonth DESC";
     private static final String SELECT_BY_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND f.startYearMonth <=:basedate AND f.endYearMonth >=:basedate";
-
-    @Override
-    public Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid, String hisId){
-        List<QpbmtStateCorHisCom> listStateCorHisCom = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisCom.class)
-                .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
-                .getList();
-        return this.toDomain(listStateCorHisCom);
-    }
 
     @Override
     public Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid) {

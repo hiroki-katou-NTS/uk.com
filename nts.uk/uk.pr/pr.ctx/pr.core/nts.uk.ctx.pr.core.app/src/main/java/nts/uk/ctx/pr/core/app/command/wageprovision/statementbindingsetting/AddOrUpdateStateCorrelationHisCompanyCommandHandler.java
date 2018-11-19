@@ -12,10 +12,10 @@ import javax.transaction.Transactional;
 
 @Stateless
 @Transactional
-public class AddStateCorrelationHisCompanySettingCommandHandler extends CommandHandler<StateCorrelationHisCompanySettingCommand> {
+public class AddOrUpdateStateCorrelationHisCompanyCommandHandler extends CommandHandler<StateCorrelationHisCompanySettingCommand> {
 
     @Inject
-    private StateLinkSettingCompanyRepository repository;
+    private StateLinkSettingCompanyRepository stateLinkSettingCompanyRepository;
 
     @Inject
     private StateCorrelationHisCompanyService stateCorrelationHisCompanyService;
@@ -30,13 +30,13 @@ public class AddStateCorrelationHisCompanySettingCommandHandler extends CommandH
 
         int mode = commandHandlerContext.getCommand().getMode();
         if(mode == RegisterMode.NEW.value){
-            repository.add(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
+            stateLinkSettingCompanyRepository.add(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
                     stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
                     stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
 
             stateCorrelationHisCompanyService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()));
         }else if(mode == RegisterMode.UPDATE.value){
-            repository.update(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
+            stateLinkSettingCompanyRepository.update(new StateLinkSettingCompany(stateLinkSettingCompanyCommand.getHistoryID(),
                     stateLinkSettingCompanyCommand.getSalaryCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getSalaryCode()),
                     stateLinkSettingCompanyCommand.getBonusCode() == null ? null : new StatementCode(stateLinkSettingCompanyCommand.getBonusCode())));
         }

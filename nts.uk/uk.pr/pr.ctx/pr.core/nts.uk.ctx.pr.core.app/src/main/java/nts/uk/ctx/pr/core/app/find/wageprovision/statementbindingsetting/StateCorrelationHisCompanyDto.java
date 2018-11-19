@@ -40,9 +40,7 @@ public class StateCorrelationHisCompanyDto {
 
         List<StateCorrelationHisCompanyDto> listStateCorrelationHisCompanyDto = new ArrayList<StateCorrelationHisCompanyDto>();
         if(domain.getHistory().size() > 0){
-            listStateCorrelationHisCompanyDto = domain.getHistory().stream().map(item ->{
-                return new StateCorrelationHisCompanyDto(cid,item.identifier(),item.start().v(),item.end().v());
-            }).collect(Collectors.toList());
+            listStateCorrelationHisCompanyDto = domain.getHistory().stream().map(item -> new StateCorrelationHisCompanyDto(cid,item.identifier(),item.start().v(),item.end().v())).collect(Collectors.toList());
         }
 
         return listStateCorrelationHisCompanyDto;

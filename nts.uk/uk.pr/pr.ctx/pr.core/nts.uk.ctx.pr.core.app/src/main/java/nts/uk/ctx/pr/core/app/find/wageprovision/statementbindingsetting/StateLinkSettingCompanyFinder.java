@@ -39,27 +39,29 @@ public class StateLinkSettingCompanyFinder {
         String salaryLayoutName = null;
         String bonusCode = null;
         String bonusLayoutName = null;
-        if(stateLinkSettingCompany.isPresent()){
-            stateLinkSettingCompanyDto = StateLinkSettingCompanyDto.fromDomain(stateLinkSettingCompany.get());
-            List<StatementLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
-            Optional<StatementLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getSalaryCode())).findFirst();
-            if(salaryLayout.isPresent()){
-                salaryCode = salaryLayout.get().getStatementCode();
-                salaryLayoutName = salaryLayout.get().getStatementName();
-            }
-            Optional<StatementLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getBonusCode())).findFirst();
-            if(bonusLayout.isPresent()){
-                bonusCode = bonusLayout.get().getStatementCode();
-                bonusLayoutName = bonusLayout.get().getStatementName();
-            }
-
-            return Optional.of(new StatementLayoutDto(hisId,
-                    salaryCode,
-                    salaryLayoutName,
-                    bonusCode,
-                    bonusLayoutName));
+        if(!stateLinkSettingCompany.isPresent()){
+            return Optional.empty();
         }
-        return Optional.empty();
+
+        stateLinkSettingCompanyDto = StateLinkSettingCompanyDto.fromDomain(stateLinkSettingCompany.get());
+        List<StatementLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
+        Optional<StatementLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getSalaryCode())).findFirst();
+        if(salaryLayout.isPresent()){
+            salaryCode = salaryLayout.get().getStatementCode();
+            salaryLayoutName = salaryLayout.get().getStatementName();
+        }
+        Optional<StatementLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getBonusCode())).findFirst();
+        if(bonusLayout.isPresent()){
+            bonusCode = bonusLayout.get().getStatementCode();
+            bonusLayoutName = bonusLayout.get().getStatementName();
+        }
+
+        return Optional.of(new StatementLayoutDto(hisId,
+                salaryCode,
+                salaryLayoutName,
+                bonusCode,
+                bonusLayoutName));
+
     }
 
     public List<StatementLayoutHistDto> getAllStatementLayoutHis(int startYearMonth) {

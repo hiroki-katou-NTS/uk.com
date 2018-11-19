@@ -35,16 +35,14 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         //convert to domain
         List<StateLinkSettingMaster> stateLinkSettingMaster = new ArrayList<StateLinkSettingMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
-            stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item ->{
-                return new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
-                        item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
-                        item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()));
-            }).collect(Collectors.toList());
+            stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
+                    item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
+                    item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()))).collect(Collectors.toList());
         }
 
         StateLinkSettingDateCommand stateLinkSettingDateCommand = context.getCommand().getStateLinkSettingDateCommand();
 
-        GeneralDate date = this.convertStringToGeneralDate(stateLinkSettingDateCommand.getDate());
+        GeneralDate date =  GeneralDate.fromString(stateLinkSettingDateCommand.getDate(),"yyyy/MM/dd");
 
         StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(stateLinkSettingDateCommand.getHistoryID(), date);
         StateCorrelationHisDeparmentCommand stateCorrelationHisDeparmentCommand = context.getCommand().getStateCorrelationHisDeparmentCommand();
@@ -56,13 +54,4 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         stateCorrelationHisDeparmentService.addOrUpdate(cid,hisID,start,end,mode,stateLinkSettingDate,stateLinkSettingMaster);
     }
 
-    private GeneralDate convertStringToGeneralDate(String strDate){
-
-        String[] date = strDate.split("/");
-        int y = Integer.valueOf(date[0]);
-        int m = Integer.valueOf(date[1]);
-        int d = Integer.valueOf(date[2]);
-
-        return GeneralDate.ymd(y,m,d);
-    }
 }
