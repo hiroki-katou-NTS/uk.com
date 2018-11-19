@@ -107,7 +107,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int START_REPORT_DATA_ROW = 11;
 
 	/** The Constant MAX_ROW_PER_EMPL. */
-	private static final int MAX_ROW_PER_EMPL = 45;
+	private static final int MAX_ROW_PER_EMPL = 50;
 
 	/** The Constant EMPL_INVIDUAL_INDEX. */
 	private static final int EMPL_INVIDUAL_INDEX = 0;
@@ -119,7 +119,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int EMPL_EMPLOYMENT_INDEX = 0;
 
 	/** The Constant EMPL_TITLE_INDEX. */
-	private static final int EMPL_TITLE_INDEX = 5;
+	private static final int EMPL_TITLE_INDEX = 7;
 
 	/** The Constant EMPL_WORKTYPE_INDEX. */
 	private static final int EMPL_WORKTYPE_INDEX = 10;
