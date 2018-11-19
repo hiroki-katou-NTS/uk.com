@@ -36,6 +36,17 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
         }
 
+        openLScreen(){
+            block.invisible();
+            let self = this;
+            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
+                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
+                if(params && params.isSubmit) location.reload();
+
+            });
+            block.clear();
+        }
+
         loadGird(){
             let self = this;
             $("#G3_1").ntsGrid({
@@ -88,7 +99,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            block.clear();
         }
 
         registerSalary(){
@@ -224,6 +234,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         openKScreen(){
+            block.invisible();
             let self = this;
             self.index(self.getIndex(self.hisIdSelected()));
             let laststartYearMonth: number = 0;

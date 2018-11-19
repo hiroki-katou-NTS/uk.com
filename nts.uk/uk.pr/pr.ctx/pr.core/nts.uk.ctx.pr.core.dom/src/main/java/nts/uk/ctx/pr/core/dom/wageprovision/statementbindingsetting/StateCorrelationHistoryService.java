@@ -267,9 +267,9 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case SALARY: {
-                Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
+                Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid StateCorrelationHisClassification");
+                    throw new RuntimeException("invalid StateCorrelationHisSalary");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -278,15 +278,15 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (accInsurHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
                     return;
                 }
                 accInsurHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                mStateCorrelationHisSalaryRepository.remove(cId, hisId);
                 if (accInsurHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
                     accInsurHis.get().exCorrectToRemove(lastestItem);
-                    mStateCorrelationHisClassificationRepository.update(cId, lastestItem);
+                    mStateCorrelationHisSalaryRepository.update(cId, lastestItem);
                 }
                 break;
             }

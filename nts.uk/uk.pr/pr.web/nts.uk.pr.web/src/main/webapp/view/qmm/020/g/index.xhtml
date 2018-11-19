@@ -8,19 +8,19 @@
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
             <button id="A1_3" tabindex="3"
-                    data-bind="enable: true">#{i18n.getText('QMM020_3')}</button>
+                    data-bind="click: openLScreen, timeClick: 800, enable: true">#{i18n.getText('QMM020_3')}</button>
 
             <button id="A1_4" tabindex="4"
-                    data-bind=" enable: true">#{i18n.getText('QMM020_4')}</button>
+                    data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
         </div>
 
     <div style="margin-top: 15px;" class="contents-area fixed-flex-layout">
         <div class="fixed-flex-layout-left" style="margin-left: 20px">
             <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
-                    <button id="G1_3" data-bind="click: openJScreen, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
+                    <button id="G1_3" data-bind="click: openJScreen, timeClick: 800, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
 
-                    <button id="G1_4" data-bind="click: openKScreen, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
+                    <button id="G1_4" data-bind="click: openKScreen, timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
                 <div style="margin-top: 10px">

@@ -35,8 +35,9 @@ public class StateCorrelationHisClassificationService {
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
-    public void updateHistoryClassification(List<StateLinkSettingMaster> stateLinkSettingMaster){
-        stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
+    public void updateHistoryClassification(List<StateLinkSettingMaster> stateLinkSettingMaster, String hisId){
+        stateLinkSettingMasterRepository.removeAll(hisId);
+        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
     private void updateItemBefore(StateCorrelationHisClassification stateCorrelationHisClassification, YearMonthHistoryItem item, String cId){

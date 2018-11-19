@@ -281,6 +281,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                             employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName,
                             workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
                         };
+                        self.employeeInputList.removeAll();
                         self.employeeInputList.push(new Employee(emp.sid,
                             emp.employeeCode, emp.employeeName, wp.name, wp.name));
                         self.loadKCP009();
@@ -336,6 +337,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         openKScreen(){
+            block.invisible();
             let self = this;
             self.index(self.getIndex(self.hisIdSelected()));
             let lastStartYearMonth: number = 0;
@@ -353,17 +355,29 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 hisId: self.hisIdSelected(),
                 startLastYearMonth: lastStartYearMonth,
                 canDelete: canDelete,
-                modeScreen: model.MODE_SCREEN.INDIVIDUAL
+                modeScreen: model.MODE_SCREEN.INDIVIDUAL,
+                employeeId: self.selectedItem()
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
-                    self.getHisIndividual(self.selectedItem, self.hisIdSelected());
+                    self.getHisIndividual(self.selectedItem(), self.hisIdSelected());
                 }
                 if(params && params.modeEditHistory == 0) {
-                    self.getHisIndividual(self.selectedItem, null);
+                    self.getHisIndividual(self.selectedItem(), null);
                 }
                 $('#H2_1').focus();
+
+            });
+            block.clear();
+        }
+
+        openLScreen(){
+            block.invisible();
+            let self = this;
+            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
+                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
+                if(params && params.isSubmit) location.reload();
 
             });
             block.clear();
