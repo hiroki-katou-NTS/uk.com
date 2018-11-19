@@ -10,17 +10,17 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
 
     export class ScreenModel {
         // tree grid variables
-        sourceBankBranchList: KnockoutObservableArray<any>;
-        selectedSourceBranchCodes: KnockoutObservableArray<any>;
+        sourceBankBranchList: KnockoutObservableArray<Node>;
+        selectedSourceBranchCodes: KnockoutObservableArray<string>;
         headers: any;
-        desBankBranchList: KnockoutObservableArray<any>;
-        selectedDesBranchCode: KnockoutObservable<any>;
+        desBankBranchList: KnockoutObservableArray<Node>;
+        selectedDesBranchCode: KnockoutObservable<string>;
         
         constructor() {
             var self = this;
             self.headers = ko.observableArray(["Item Value Header"]);
             self.sourceBankBranchList = ko.observableArray([]);
-            self.selectedSourceBranchCodes = ko.observableArray(null);
+            self.selectedSourceBranchCodes = ko.observableArray([]);
             self.desBankBranchList = ko.observableArray([]);
             self.selectedDesBranchCode = ko.observable(null);
         }
@@ -71,11 +71,14 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
 
         execute() {
             let self = this;
-//            let newDS = self.dataSource();
-//            newDS.push(self.selectedBank());
-//            self.dataSource(newDS);
-//            let newDL = self.bankList();
-//            newDL.push({code: self.selectedBank().code(), name: self.selectedBank().name(), displayText: self.selectedBank().code() + " " + self.selectedBank().name()});
+            block.invisible();
+            service.integration(self.selectedSourceBranchCodes()).done(() => {
+                nts.uk.ui.windows.close();
+            }).fail(error => {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
         }
         
     }

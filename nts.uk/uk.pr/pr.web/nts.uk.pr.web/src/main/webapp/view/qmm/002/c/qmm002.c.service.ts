@@ -5,9 +5,7 @@ module nts.uk.pr.view.qmm002.c {
         var paths = {
             getAllBank: "ctx/pr/transfer/bank/get-all-bank",
             getAllBankBranch: "ctx/pr/transfer/bank/get-all-bank-branch",
-            getBankBranch: "ctx/pr/transfer/bank/get-bank-branch/{0}",
-            registerBank: "ctx/pr/transfer/bank/reg-bank",
-            registerBranch: "ctx/pr/transfer/bank/reg-bank-branch"
+            integration: "ctx/pr/transfer/emppaymentinfo/bank-integration"
         }
 
         export function getAllBank(): JQueryPromise<any> {
@@ -18,17 +16,8 @@ module nts.uk.pr.view.qmm002.c {
             return ajax("pr", paths.getAllBankBranch, data);
         };
         
-        export function getBankBranch(data: string): JQueryPromise<any> {
-            let _path = format(paths.getBankBranch, data);
-            return ajax("pr", _path);
-        }
-        
-        export function registerBank(data: any): JQueryPromise<any> {
-            return ajax("pr", paths.registerBank, data);
-        };
-        
-        export function registerBranch(data: any): JQueryPromise<any> {
-            return ajax("pr", paths.registerBranch, data);
+        export function integration(data: Array<any>): JQueryPromise<any> {
+            return ajax("pr", paths.integration, data);
         };
 
     }

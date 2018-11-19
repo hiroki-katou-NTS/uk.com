@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.transfer.dom.bank.AccountNumber;
 import nts.uk.ctx.pr.transfer.dom.emppaymentinfo.AccountAtr;
@@ -36,6 +37,7 @@ public class TransferSourceBank extends AggregateRoot {
 	/**
 	 * 支店ID
 	 */
+	@Setter
 	private String branchId;
 
 	/**

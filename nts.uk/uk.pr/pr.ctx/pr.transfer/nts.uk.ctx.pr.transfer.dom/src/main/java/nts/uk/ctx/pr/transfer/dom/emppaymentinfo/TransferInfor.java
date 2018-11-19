@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.transfer.dom.emppaymentinfo;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.transfer.dom.bank.AccountNumber;
 import nts.uk.ctx.pr.transfer.dom.sourcebank.SourceBankCode;
 
@@ -16,6 +17,7 @@ public class TransferInfor {
 	/**
 	 * 振込元銀行支店情報: 振込元銀行コード
 	 */
+	@Setter
 	private SourceBankCode sourceBankBranchInfor;
 
 	/**
@@ -36,6 +38,7 @@ public class TransferInfor {
 	/**
 	 * 振込先銀行支店情報: 銀行支店ID
 	 */
+	@Setter
 	private String desBankBranchInfor;
 
 	/**

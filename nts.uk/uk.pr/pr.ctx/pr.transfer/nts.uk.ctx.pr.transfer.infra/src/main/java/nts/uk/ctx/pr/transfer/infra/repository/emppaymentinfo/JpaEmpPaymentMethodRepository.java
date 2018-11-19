@@ -83,4 +83,15 @@ public class JpaEmpPaymentMethodRepository extends JpaRepository implements Empl
 		this.commandProxy().insertAll(QxxmtEmpBonPayMethod.fromDomain(domain));
 	}
 
+	@Override
+	public void updateEmpSalaryPayMethod(EmployeeSalaryPaymentMethod domain) {
+		this.commandProxy().updateAll(QxxmtEmpSalPayMethod.fromDomain(domain));
+	}
+
+	@Override
+	public void updateEmpBonusPayMethod(EmployeeBonusPaymentMethod domain) {
+		this.commandProxy().updateAll(QxxmtEmpBonPayMethod.fromDomain(domain));
+
+	}
+
 }

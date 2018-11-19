@@ -21,14 +21,14 @@
 		
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: createNew">#{i18n.getText('QMM002_1')}</button>
-				<button tabindex="2" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('QMM002_2')}</button>
+				<button tabindex="1" data-bind="click: createNew, timeClick: 500">#{i18n.getText('QMM002_1')}</button>
+				<button tabindex="2" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM002_2')}</button>
 				<button tabindex="3" data-bind="enable: false">#{i18n.getText('QMM002_3')}</button>
-				<button tabindex="4" data-bind="click: openDialogQmm002d">#{i18n.getText('QMM002_4')}</button>
-				<button tabindex="5" data-bind="click: openDialogQmm002c, enable: totalBranches() > 1">#{i18n.getText('QMM002_5')}</button>
+				<button tabindex="4" data-bind="click: openDialogQmm002d, timeClick: 500">#{i18n.getText('QMM002_4')}</button>
+				<button tabindex="5" data-bind="click: openDialogQmm002c, enable: totalBranches() > 1, timeClick: 500">#{i18n.getText('QMM002_5')}</button>
 				<button tabindex="6" data-bind="enable: false">#{i18n.getText('QMM002_6')}</button>
-				<button tabindex="7" class="danger" data-bind="click: deleteBranch, enable: updateMode()">#{i18n.getText('QMM002_7')}</button>
-				<button tabindex="8" class="danger" data-bind="click: openDialogQmm002b">#{i18n.getText('QMM002_8')}</button>
+				<button tabindex="7" class="danger" data-bind="click: deleteBranch, enable: updateMode(), timeClick: 500">#{i18n.getText('QMM002_7')}</button>
+				<button tabindex="8" class="danger" data-bind="click: openDialogQmm002b, timeClick: 500">#{i18n.getText('QMM002_8')}</button>
 				<a class="goout" tabindex="9" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('QMM002_9')}</a>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">

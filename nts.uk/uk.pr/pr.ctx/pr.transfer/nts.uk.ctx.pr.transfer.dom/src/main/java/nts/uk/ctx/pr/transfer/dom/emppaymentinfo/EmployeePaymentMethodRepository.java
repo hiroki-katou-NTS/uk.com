@@ -23,4 +23,8 @@ public interface EmployeePaymentMethodRepository {
 	
 	public void addEmpBonusPayMethod(EmployeeBonusPaymentMethod domain);
 	
+	public void updateEmpSalaryPayMethod(EmployeeSalaryPaymentMethod domain);
+	
+	public void updateEmpBonusPayMethod(EmployeeBonusPaymentMethod domain);
+	
 }
