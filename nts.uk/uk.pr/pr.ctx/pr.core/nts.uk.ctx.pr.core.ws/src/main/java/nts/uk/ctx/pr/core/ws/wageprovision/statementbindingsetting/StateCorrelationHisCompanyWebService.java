@@ -72,7 +72,7 @@ public class StateCorrelationHisCompanyWebService extends WebService {
 
     @POST
     @Path("registerStateLinkSettingCompany")
-    public void register(StateCorrelationHisCompanySettingCommand command){
+    public void registerStateLinkSettingCompany(StateCorrelationHisCompanySettingCommand command){
         addOrUpdateStateCorrelationHisCompanyCommandHandler.handle(command);
     }
 }
