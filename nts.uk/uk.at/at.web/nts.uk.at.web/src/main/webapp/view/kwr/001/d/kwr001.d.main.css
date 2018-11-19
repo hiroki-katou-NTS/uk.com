@@ -43,3 +43,6 @@ button {
     top: 10px !important;
     left: 50px !important;
 }
+.pad_left_50 {
+	padding-left: 50px;
+}
