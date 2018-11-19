@@ -32,7 +32,7 @@
                     data-bind="click : create, enable: !statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().categoryAtr() == null)">#{i18n.getText('QMM012_20')}</button>
             <!-- 登録 -->
             <button id="B1_2" tabindex="2" class="registerBtn proceed"
-                    data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null)">#{i18n.getText('QMM012_21')}</button>
+                    data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM012_21')}</button>
             <!-- コピー -->
             <button id="B1_3" tabindex="3" class="copyBtn"
                     data-bind="click: copy, enable: false">#{i18n.getText('QMM012_22')}</button>
