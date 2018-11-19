@@ -65,10 +65,6 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             let self = this;
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
-            if( self.params().modeScreen == model.MODE_SCREEN.INDIVIDUAL){
-                let windowSize = nts.uk.ui.windows.getSelf();
-                windowSize.$dialog.height(385);
-            }
             self.startYearMonthPeriod(self.params().startYearMonth);
             self.startDateMaster(self.params().baseDate);
             self.endYearMonthPeriod(self.params().endYearMonth);
