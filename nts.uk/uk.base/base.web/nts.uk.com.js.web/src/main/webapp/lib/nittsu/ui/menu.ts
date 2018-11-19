@@ -136,6 +136,7 @@ module nts.uk.ui.menu {
                         $companyName.text(comp.companyName);
                         $userName.text(personName);
                         $companyList.css("right", $user.outerWidth() + 30);
+                        location.reload(true);
                     });
                 });
             });

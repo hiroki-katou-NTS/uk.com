@@ -1,6 +1,11 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -22,8 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_STATE_LINK_SET_MAS")
-public class QpbmtStateLinkSetMas extends UkJpaEntity implements Serializable
-{
+public class QpbmtStateLinkSetMas extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -57,6 +61,19 @@ public class QpbmtStateLinkSetMas extends UkJpaEntity implements Serializable
     }
     public static QpbmtStateLinkSetMas toEntity(StateLinkSettingMaster domain) {
         return new QpbmtStateLinkSetMas(new QpbmtStateLinkSetMasPk(domain.getHistoryID(), domain.getMasterCode().v()),domain.getSalaryCode().get().v(), domain.getBonusCode().get().v());
+    }
+
+    public static List<QpbmtStateLinkSetMas> toEntity(List<StateLinkSettingMaster> domain) {
+        List<QpbmtStateLinkSetMas> listStateLinkSettingMaster = new ArrayList<>();
+        if(domain.size() > 0){
+            listStateLinkSettingMaster = domain.stream().map(item ->{
+                return new QpbmtStateLinkSetMas(new QpbmtStateLinkSetMasPk(item.getHistoryID(),
+                        item.getMasterCode().v()),
+                        item.getSalaryCode().isPresent() ? item.getSalaryCode().get().v() : null,
+                        item.getBonusCode().isPresent() ? item.getBonusCode().get().v() : null);
+            }).collect(Collectors.toList());
+        }
+        return listStateLinkSettingMaster;
     }
 
 }

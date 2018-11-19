@@ -1,13 +1,13 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
-
-import java.util.List;
 
 /**
 * 明細書紐付け履歴（職位）
@@ -31,7 +31,7 @@ public class StateCorrelationHisPosition extends AggregateRoot implements Contin
     }
 
     @Override
-    public List items() {
+    public List<YearMonthHistoryItem> items() {
         return history;
     }
 

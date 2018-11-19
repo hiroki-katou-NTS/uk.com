@@ -3,8 +3,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting;
 import lombok.Value;
 
 @Value
-public class StateCorrelationHisCompanyCommand
-{
+public class StateCorrelationHisCompanyCommand {
     
     /**
     * 会社ID
@@ -25,6 +24,14 @@ public class StateCorrelationHisCompanyCommand
     * 終了年月
     */
     private int endYearMonth;
-    
 
+    private int modeEditHistory;
+
+    private int type;
+
+    private String masterCode ;
+
+    private boolean isUpdate;
+
+    private String employeeId ;
 }

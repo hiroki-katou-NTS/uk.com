@@ -9,8 +9,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnit
 */
 @AllArgsConstructor
 @Value
-public class StateUseUnitSettingDto
-{
+public class StateUseUnitSettingDto {
     
     /**
     * 会社ID
@@ -33,8 +32,7 @@ public class StateUseUnitSettingDto
     private Integer usageMaster;
     
     
-    public static StateUseUnitSettingDto fromDomain(StateUseUnitSetting domain)
-    {
+    public static StateUseUnitSettingDto fromDomain(StateUseUnitSetting domain) {
         return new StateUseUnitSettingDto(domain.getCompanyID(), domain.getMasterUse().value, domain.getIndividualUse().value, domain.getUsageMaster().map(i->i.value).orElse(null));
     }
     

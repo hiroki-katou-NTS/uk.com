@@ -24,6 +24,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
+import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
@@ -70,6 +71,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private static final String FILE_NAME_CSV1 = "保存対象テーブル一覧";
 	private static final String FILE_NAME_CSV2 = "対象社員";
 	private static final int NUM_OF_TABLE_EACH_PROCESS = 100;
+	private static final String EMPLOYEE_CD = "5";
 
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
@@ -200,8 +202,20 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
 			if (category.isPresent()) {
-				categoryName = category.get().getCategoryName().v();
 				storageRangeSaved = category.get().getStorageRangeSaved().value;
+				// CR #102535
+				if (category.get().getStorageRangeSaved().value == StorageRangeSaved.EARCH_EMP.value){
+					List<String> clsKeyQuerys = Arrays.asList( categoryFieldMt.getClsKeyQuery1(), categoryFieldMt.getClsKeyQuery2(),
+							categoryFieldMt.getClsKeyQuery3(), categoryFieldMt.getClsKeyQuery4(),
+							categoryFieldMt.getClsKeyQuery5(), categoryFieldMt.getClsKeyQuery6(),
+							categoryFieldMt.getClsKeyQuery7(), categoryFieldMt.getClsKeyQuery8(),
+							categoryFieldMt.getClsKeyQuery9(), categoryFieldMt.getClsKeyQuery10());
+					if (!clsKeyQuerys.contains(EMPLOYEE_CD)) {
+						storageRangeSaved = StorageRangeSaved.ALL_EMP.value;
+					}
+				}
+				
+				categoryName = category.get().getCategoryName().v();
 				retentionPeriodCls = category.get().getTimeStore();
 				anotherComCls = category.get().getOtherCompanyCls() != null ? category.get().getOtherCompanyCls().value
 						: null;

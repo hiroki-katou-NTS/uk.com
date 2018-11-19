@@ -34,13 +34,14 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
     @Override
     @SneakyThrows
     public Optional<ApprovalProcess> getApprovalProcessById(String cid){
-    	PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_BOSS_CHECK_SET h WHERE h.CID = ?");
-		statement.setString(1, cid);
-		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-			return new ApprovalProcess(cid, rec.getString("JOB_TITLE_NOT_BOSS_CHECK"), 
-	        		rec.getInt("USE_DAILY_BOSS_CHECK"), rec.getInt("USE_MONTHLY_BOSS_CHECK"), 
-	        		rec.getInt("SUPERVISOR_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("SUPERVISOR_CONFIRM_ERROR"), YourselfConfirmError.class));
-		});
+    	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_BOSS_CHECK_SET h WHERE h.CID = ?")) {
+			statement.setString(1, cid);
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				return new ApprovalProcess(cid, rec.getString("JOB_TITLE_NOT_BOSS_CHECK"), 
+		        		rec.getInt("USE_DAILY_BOSS_CHECK"), rec.getInt("USE_MONTHLY_BOSS_CHECK"), 
+		        		rec.getInt("SUPERVISOR_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("SUPERVISOR_CONFIRM_ERROR"), YourselfConfirmError.class));
+			});
+    	}
     }
 
     @Override

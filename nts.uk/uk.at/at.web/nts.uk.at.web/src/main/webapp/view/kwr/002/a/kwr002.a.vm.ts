@@ -40,7 +40,7 @@ module nts.uk.com.view.kwr002.a {
 
             permission: KnockoutObservable<boolean>;
 
-            lstPersonComponentOption: any;
+            lstPersonComponentOption: ComponentOption;
 
             selectedEmployeeCode: KnockoutObservableArray<string>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -102,6 +102,7 @@ module nts.uk.com.view.kwr002.a {
                 self.ccgcomponent = {
 
                     /** Common properties */
+                    tabindex: -1,
                     systemType: 1, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
@@ -227,6 +228,7 @@ module nts.uk.com.view.kwr002.a {
                 }
                 self.employeeList(employeeSearchs);
                 self.lstPersonComponentOption = {
+                    tabindex: 3,
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.EMPLOYEE,

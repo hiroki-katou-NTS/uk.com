@@ -34,20 +34,60 @@ module nts.uk.at.view.kbt002.f {
                     { headerText: getText("KBT002_143"), key: 'overallStatus', width: 100, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" id="A${execItemCd}" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
+                        formatter: function(execItemCd, record) {
+                        	let disable = true;                            
+                        	if ((record.overallStatusCd != '') && (record.overallStatusCd == 3) &&(record.currentStatus != 0)){
+                        		disable = false;
+                        	}
+                        	
+                         	let $button = $("<button>", { "class": "setting small button1", "tabindex": -1, "disabled": disable, "text" : getText("KBT002_144")  });
+                            $button.attr("data-value", record["execItemCd"]);
+                         	return $button[0].outerHTML;
+                        	//return "<button tabindex='-1' class='setting small' id='A${execItemCd}' data-bind='click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != '') && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}' data-code='${execItemCd}' style='margin-left: 7px;'>" + getText("KBT002_144") + "</button>";
+                    	} 
+                        //template: '<button tabindex="-1" class="setting small" id="A${execItemCd}" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
                     },
                     { headerText: getText("KBT002_131"), key: 'nextExecDateTime', width: 180, formatter: _.escape },
                     {
                         headerText: "", key: 'execItemCd', width: 85, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { execute(data, event, ${execItemCd})}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} != 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_132") + '</button>',
+                        formatter: function(nextExecDateTime, record) {
+                        	let disable = true;
+                        	if ((record.currentStatusCd != '') && (record.currentStatusCd != 0)){
+                        		disable = false;
+                        	}
+                        	
+                         	let $button = $("<button>", { "class": "setting small button2", "tabindex": -1, "disabled": disable, "text" : getText("KBT002_132")  });
+                            $button.attr("data-value", record["execItemCd"]);
+                            return $button[0].outerHTML;	                    
+                        } 
+                        //template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { execute(data, event, ${execItemCd})}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} != 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_132") + '</button>',
                     },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { terminate(data, event)}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} == 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_133") + '</button>',
+                        formatter: function(execItemCd, record) {
+                        	let disable = true;
+                        	if ((record.currentStatusCd != '') && (record.currentStatusCd == 0)){
+                        		disable = false;
+                        	}
+                        	
+                         	let $button = $("<button>", { "class": "setting small button3", "tabindex": -1, "disabled": disable, "text" : getText("KBT002_133") });
+                            $button.attr("data-value", record["execItemCd"]);
+                         	//"onclick" : function(data, event) { self.terminate(data, event)}
+                            //, 'onclick': 'function() { kbt002FModel.terminate() }'
+                         	return $button[0].outerHTML;
+	                    } 
+                        //template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { terminate(data, event)}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} == 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_133") + '</button>',
                     },
                     {
                         headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        template: '<button tabindex="-1" class="setting small" onclick="kbt002FModel.openDialogH(${execItemCd})" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
+                        formatter: function(execItemCd, record) {
+                        	
+                         	let $button = $("<button>", { "class": "setting small button4", "tabindex": -1, "text" : getText("KBT002_147")  });
+                            $button.attr("data-value", record["execItemCd"]);
+                         	//"onclick" : function(data, event) { self.terminate(data, event)}
+                         	return $button[0].outerHTML;
+	                    } 
+                        //template: '<button tabindex="-1" class="setting small" onclick="kbt002FModel.openDialogH(${execItemCd})" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
                     },
                 ]);
                 
@@ -93,10 +133,9 @@ module nts.uk.at.view.kbt002.f {
                 return dfd.promise();
             }
             
-            openDialogG(data, event){
+            openDialogG(execItemCd){
                 let self = this;
                 block.grayout();
-                var execItemCd = $(event.target).data("code");
                 var execLog = _.find(self.execLogList(), function(o) { return o.execItemCd == execItemCd; });
                 setShared('inputDialogG', {execLog: execLog});
                 modal("/view/kbt/002/g/index.xhtml").onClosed(function(){
@@ -106,11 +145,11 @@ module nts.uk.at.view.kbt002.f {
             openDialogH(execItemCd){
                 let self = this;
                 block.grayout();
-                let cd = execItemCd;
-                if(execItemCd<10)
-                    cd = "0"+cd;
+//                let cd = execItemCd;
+//                if(execItemCd<10)
+//                    cd = "0"+cd;
                     
-                setShared('inputDialogH', {execItemCd: cd});
+                setShared('inputDialogH', {execItemCd: execItemCd});
                 modal("/view/kbt/002/h/index.xhtml").onClosed(function(){
                     block.clear();
                 });    
@@ -124,7 +163,7 @@ module nts.uk.at.view.kbt002.f {
                 });
             }
             
-             execute(data, event, idd){
+             execute(idd){
                 let self = this;
 //                var dfd = $.Deferred();
                  let cd =""+idd;
@@ -243,7 +282,7 @@ module nts.uk.at.view.kbt002.f {
             return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
         }
             
-            terminate(data, event){
+            terminate(){
                 let self = this;
                 block.grayout();
 //                var dfd = $.Deferred();

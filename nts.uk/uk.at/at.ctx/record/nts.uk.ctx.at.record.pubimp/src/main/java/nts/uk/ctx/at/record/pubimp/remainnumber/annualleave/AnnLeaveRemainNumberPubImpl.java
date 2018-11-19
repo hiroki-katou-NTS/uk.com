@@ -239,11 +239,11 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		Optional<GeneralDate> startDate = closureStartService.algorithm(employeeID);
 		if (!startDate.isPresent())
 			return null;
-		// 集計終了日　←　締め開始日+1年-1日
-		GeneralDate aggrEnd = startDate.get().addYears(1).addDays(-1);
+		// 集計終了日　←　「基準日」+1年-1日
+		GeneralDate aggrEnd = date.addYears(1).addDays(-1);
 		// 「次回年休付与日を計算」を実行
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrants = this.calcNextAnnualLeaveGrantDate.algorithm(
-				companyId, employeeID, Optional.empty());
+				companyId, employeeID, Optional.of(new DatePeriod(date, aggrEnd)));
 		if (nextAnnualLeaveGrants.size() > 0){
 			// 次回付与日前日　←　先頭の「次回年休付与」．付与年月日-1日
 			GeneralDate prevNextGrant = nextAnnualLeaveGrants.get(0).getGrantDate().addDays(-1);

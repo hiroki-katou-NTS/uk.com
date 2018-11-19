@@ -142,7 +142,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					
 					int count = 0;
 					for(int i =0 ; i< agreementOneEmp.size(); i++) {
-						if(agreementOneEmp.get(i).valueAsMinutes() >= agreeCond.getOt36().valueAsMinutes())
+						if(agreementOneEmp.get(i).valueAsMinutes() > agreeCond.getOt36().valueAsMinutes())
 							count ++;						
 				    }
 					if(count >= agreeCond.getExcessNum().v()) {

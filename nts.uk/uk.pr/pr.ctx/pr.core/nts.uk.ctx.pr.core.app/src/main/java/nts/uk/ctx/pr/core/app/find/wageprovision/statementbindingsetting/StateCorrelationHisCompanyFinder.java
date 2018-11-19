@@ -15,8 +15,7 @@ import javax.inject.Inject;
 * 明細書紐付け履歴（会社）: Finder
 */
 @Stateless
-public class StateCorrelationHisCompanyFinder
-{
+public class StateCorrelationHisCompanyFinder {
 
     @Inject
     private StateCorrelationHisCompanyRepository finder;

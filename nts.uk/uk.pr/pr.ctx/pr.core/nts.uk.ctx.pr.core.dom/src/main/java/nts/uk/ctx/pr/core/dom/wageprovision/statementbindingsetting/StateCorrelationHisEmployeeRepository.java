@@ -11,6 +11,8 @@ public interface StateCorrelationHisEmployeeRepository {
 
     Optional<StateCorrelationHisEmployee> getStateCorrelationHisEmployeeById(String cid, String hisId);
 
+    Optional<StateCorrelationHisEmployee> getStateCorrelationHisEmployeeById(String cid);
+
     void add(String cid, YearMonthHistoryItem history);
 
     void update(String cid, YearMonthHistoryItem history);

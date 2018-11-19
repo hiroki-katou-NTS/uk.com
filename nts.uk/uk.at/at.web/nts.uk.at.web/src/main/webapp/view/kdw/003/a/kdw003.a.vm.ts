@@ -1021,7 +1021,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                     }
                     dataParent["monthValue"] = self.valueUpdateMonth;
-                } else if(self.displayFormat() == 1) {
+                } else {
                     dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[0].dateDetail } : null;
                 }
 
@@ -1175,6 +1175,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listErrorMonth = [];
                 let dataChange: any = $("#dpGrid").mGrid("updatedCells");
                 var dataSource = $("#dpGrid").mGrid("dataSource");
+                if(_.isEmpty(dataSource)) {
+                   nts.uk.ui.block.clear();
+                   return;
+                }
                 let dataChangeProcess: any = [];
                 let dataCheckSign: any = [];
                 let dataCheckApproval: any = [];
@@ -1586,7 +1590,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         convertToHours(value: any): string {
             let self = this;
-            let hours = value < 0 ? String(0 - Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
+            let hours = value < 0 ? "-"+String(Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
             let minutes = String(Math.abs(value) % 60);
             if (Number(minutes) < 10) minutes = "0" + minutes;
             return hours + ":" + minutes;
@@ -2501,7 +2505,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             })
            
-            if(self.isVisibleMIGrid()){
+            if(self.isVisibleMIGrid() && jsonColumnWidthMiGrid != null){
                 let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
                 delete columnWidthMiGrid.monthYear;
                 command.lstHeaderMiGrid = columnWidthMiGrid;
@@ -3077,7 +3081,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? self.convertToHours(id.value) : id.value;
+                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? self.convertToHours(Number(id.value)) : id.value;
                 totalWidthColumn += id.columnWidth;
             });
 
@@ -4357,7 +4361,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataShare(dataInit: any, dataExtract: any, dataSPR: any) {
             var self = this;
             if (dataInit != undefined) {
-                this.changePeriodAtr = dataInit.changePeriodAtr;
+                this.changePeriodAtr = (dataInit.changePeriodAtr == null || dataInit.changePeriodAtr == undefined) ? true : dataInit.changePeriodAtr;
                 this.errorRefStartAtr = dataInit.errorRefStartAtr;
                 this.initClock = dataInit.initClock == undefined ? null : new SPRTime(dataInit.initClock);
                 this.lstEmployeeShare = dataInit.lstEmployee;
@@ -4544,7 +4548,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         convertToHours(value: any): string {
             let self = this;
-            let hours = value < 0 ? String(0 - Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
+            let hours = value < 0 ? "-"+String(Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
             let minutes = String(Math.abs(value) % 60);
             if (Number(minutes) < 10) minutes = "0" + minutes;
             return hours + ":" + minutes;

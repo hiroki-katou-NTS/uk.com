@@ -87,13 +87,13 @@ __viewContext.ready(function() {
                     //表示形式
                     displayFormat: 0, // DPCorrectionDisplayFormat.INDIVIDUAl(個人別)
                     //期間
-                    startDate: moment.utc(success.issueDate).format("YYYY/MM/DD"),
-                    endDate: moment.utc(success.issueDate).format("YYYY/MM/DD"),
+                    startDate: null,
+                    endDate: null,
                     //抽出した社員一覧
                     lstExtractedEmployee: [success.sID],
                     //Optional
                     //日付別で起動
-                    dateTarget: moment.utc(success.issueDate).format("YYYY/MM/DD"),
+                    dateTarget: null,
                     individualTarget: success.sID,
                 }
                 nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});    

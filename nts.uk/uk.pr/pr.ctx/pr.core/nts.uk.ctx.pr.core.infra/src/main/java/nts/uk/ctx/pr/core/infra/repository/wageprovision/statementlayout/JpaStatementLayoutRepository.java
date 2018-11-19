@@ -17,11 +17,14 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayout f ";
     private static final String SELECT_ALL_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE f.statementLayoutPk.cid =:cid ORDER BY f.statementLayoutPk.statementCd ASC";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid AND  f.statementLayoutPk.statementCd =:statementCd ";
-    private static final String SELECT_SPEC_NAME = "SELECT e.specCode, e.specName FROM QpbmtStatementLayoutHist f INNER JOIN QpbmtStatementLayout e on e.statementLayoutPk.statementCd = f.statementLayoutPk.statementCd" +
-            " Where f.startYearMonth > :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
+
+    private static final String SELECT_BY_KEY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid ";
+    private static final String SELECT_STATEMENT = "SELECT f FROM QpbmtStatementLayout f Where f.statementLayoutPk.statementCd IN  " +
+            "(SELECT e.statementLayoutHistPk.statementCd from QpbmtStatementLayoutHist e WHERE e.startYearMonth < :startYearMonth AND e.endYearMonth > :startYearMonth AND e.statementLayoutHistPk.cid = :cid)";
+
     @Override
-    public List<StatementLayout> getStatementCode(String cid, int startYearMonth) {
-        return  this.queryProxy().query(SELECT_SPEC_NAME, QpbmtStatementLayout.class)
+    public List<StatementLayout> getStatement(String cid, int startYearMonth) {
+        return  this.queryProxy().query(SELECT_STATEMENT, QpbmtStatementLayout.class)
                 .setParameter("startYearMonth", startYearMonth)
                 .setParameter("cid", cid)
                 .getList().stream().map(i->i.toDomain()).collect(Collectors.toList());
@@ -46,6 +49,13 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
         .setParameter("cid", cid)
         .setParameter("statementCd", statementCd)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public List<StatementLayout> getStatementLayoutByCId(String cid) {
+        return this.queryProxy().query(SELECT_BY_KEY_CID_STRING, QpbmtStatementLayout.class)
+                .setParameter("cid", cid)
+                .getList(item -> item.toDomain());
     }
 
     @Override

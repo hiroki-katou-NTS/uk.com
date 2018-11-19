@@ -93,5 +93,10 @@ public class AlCheckTargetCondition extends DomainObject {
 		return lstClassificationCode;
 	}
 
-	
+	public void clearDuplicate(){
+		this.lstBusinessTypeCode = this.lstBusinessTypeCode.stream().distinct().collect(Collectors.toList());
+		this.lstJobTitleId = this.lstJobTitleId.stream().distinct().collect(Collectors.toList());
+		this.lstEmploymentCode = this.lstEmploymentCode.stream().distinct().collect(Collectors.toList());
+		this.lstClassificationCode = this.lstClassificationCode.stream().distinct().collect(Collectors.toList());
+	}
 }

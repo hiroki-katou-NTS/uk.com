@@ -200,6 +200,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 						registerBasicScheduleCommand.setEmployeeId(employeeId);
 						registerBasicScheduleCommand.setWorkTimeCode(command.getWorktimeCode());
 						registerBasicScheduleCommand.setWorkTypeCode(command.getWorktypeCode());
+						lstRegisterBasicScheduleCommand.clear();
 						lstRegisterBasicScheduleCommand.add(registerBasicScheduleCommand);
 						
 						countSuccess++;

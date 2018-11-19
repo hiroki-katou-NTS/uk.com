@@ -6,3 +6,7 @@
 .sidebar-content{
     overflow:inherit !important;
 }
+#center {
+    margin: auto;
+    padding: 10px;
+}

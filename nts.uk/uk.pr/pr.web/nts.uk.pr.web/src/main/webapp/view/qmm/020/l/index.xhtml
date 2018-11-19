@@ -22,13 +22,13 @@
             </div>
 
             <div class="control-group" style="margin-left:10px">
-                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_73')}</div>
-                <span class="label">#{i18n.getText('QMM020_74')}</span>
+                <div id="L1_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_73')}</div>
+                <span id="L1_4" class="label">#{i18n.getText('QMM020_74')}</span>
             </div>
             <div class="control-group" style="margin-left:10px">
-                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
-                <div class="cf" data-bind="ntsSwitchButton: {
-                                        name: 'Sample Switch',
+                <div id="L1_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
+                <div id="L1_6" tabindex="1" class="cf" data-bind="ntsSwitchButton: {
+                                        name: '#{i18n.getText('QMM020_76')}',
                                         options: masterUse,
                                         optionsValue: 'code',
                                         optionsText: 'name',
@@ -38,17 +38,19 @@
             </div>
 
             <div class="control-group" style="margin-left:10px">
-                <div id="L1_9" data-bind="ntsRadioBoxGroup: {
+                <div id="L1_9" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                                name: '#{i18n.getText('QMM020_76')}',
                                 options: usageMaster,
                                 optionsValue: 'id',
                                 optionsText: 'name',
                                 value: selectedUsageMaster,
-                                enable: true}"></div>
+                                enable: selectedMasterUse() === 1
+                                }"></div>
             </div>
 
             <div class="control-group" style="margin-left:10px">
-                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
-                <div class="cf" data-bind="ntsSwitchButton: {
+                <div id="L1_15" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
+                <div id="L1_16" tabindex="3" class="cf" data-bind="ntsSwitchButton: {
                                         name: 'Sample Switch',
                                         options: individualUse,
                                         optionsValue: 'code',
@@ -61,10 +63,10 @@
         </div>
         <div id= "functions-area-bottom" style="z-index: auto">
 
-            <button id="L2_1"  class="proceed large"
+            <button id="L2_1" tabindex="4" class="proceed large"
                     data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_64')}</button>
 
-            <button id="L2_2"
+            <button id="L2_2" tabindex="5"
                     data-bind="click: cancel">#{i18n.getText('QMM020_65')}</button>
         </div>
     </ui:define>

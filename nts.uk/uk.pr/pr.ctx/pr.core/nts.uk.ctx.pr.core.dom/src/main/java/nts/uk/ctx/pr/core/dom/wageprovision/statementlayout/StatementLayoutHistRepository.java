@@ -1,15 +1,15 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout;
 
+
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
-* 明細書レイアウト履歴
-*/
-public interface StatementLayoutHistRepository
-{
+ * 明細書レイアウト履歴
+ */
+public interface StatementLayoutHistRepository {
 
     List<StatementLayoutHist> getAllStatementLayoutHist();
 
@@ -22,6 +22,10 @@ public interface StatementLayoutHistRepository
     Optional<YearMonthHistoryItem> getLatestHistByCidAndCode(String cid, String code);
 
     List<YearMonthHistoryItem> getHistByCidAndCodeAndAfterDate(String cid, String code, int startYearMonth);
+
+    List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid, int startYearMonth);
+
+    Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int code, String histId);
 
     void add(StatementLayoutHist domain);
 

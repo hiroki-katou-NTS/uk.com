@@ -9,6 +9,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.Re
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeaveRemain;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeaveRemainDay;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveRemain;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveRemainDay;
@@ -33,10 +35,12 @@ public class DayAndTimeDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private Integer time;
 	
+	public static DayAndTimeDto from(ActualSpecialLeaveRemain domain){
+		return domain == null ? null : new DayAndTimeDto(domain.getDays().v(), domain.getTime().isPresent() ? domain.getTime().get().valueAsMinutes() : null);
+	}
 	public static DayAndTimeDto from(SpecialLeaveRemain domain){
 		return domain == null ? null : new DayAndTimeDto(domain.getDays().v(), domain.getTime().isPresent() ? domain.getTime().get().valueAsMinutes() : null);
 	}
-	
 	public static DayAndTimeDto from(SpecialLeaveUnDigestion domain){
 		return domain == null ? null : new DayAndTimeDto(domain.getDays().v(), domain.getTimes().isPresent() ? domain.getTimes().get().valueAsMinutes() : null);
 	}
@@ -45,7 +49,10 @@ public class DayAndTimeDto implements ItemConst {
 		return new SpecialLeaveRemain(new SpecialLeaveRemainDay(days == null ? 0 : days),
 				Optional.ofNullable(time == null ? null : new SpecialLeavaRemainTime(time)));
 	}
-	
+	public ActualSpecialLeaveRemain toActualSpecial(){
+		return new ActualSpecialLeaveRemain(new ActualSpecialLeaveRemainDay(days == null ? 0 : days),
+				Optional.ofNullable(time == null ? null : new SpecialLeavaRemainTime(time)));
+	}
 	public SpecialLeaveUnDigestion toUnDegest(){
 		return new SpecialLeaveUnDigestion(new SpecialLeaveRemainDay(days == null ? 0 : days),
 				Optional.ofNullable(time == null ? null : new SpecialLeavaRemainTime(time)));

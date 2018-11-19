@@ -17,12 +17,15 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 public class SubstVacationSetting extends DomainObject {
 
 	/** The is manage. */
+	// 管理区分
 	private ManageDistinct isManage;
 
 	/** The expiration date. */
+	// 休暇使用期限
 	private ExpirationTime expirationDate;
 
 	/** The allow prepaid leave. */
+	// 先取り許可
 	private ApplyPermission allowPrepaidLeave;
 
 	/**

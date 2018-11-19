@@ -84,11 +84,8 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstDelete.add(x);
 				}
 			});
-			if(!lstDelete.isEmpty()) {
-				lstDate = lstDelete;
-			}
 			//スケジュールのデータがないし実績データがないし、申請を削除の場合暫定データがあったら削除します。
-			List<InterimRemain> getDataBySidDates = inRemainData.getDataBySidDates(sid, lstDate);
+			List<InterimRemain> getDataBySidDates = inRemainData.getDataBySidDates(sid, !lstDelete.isEmpty() ? lstDelete : lstDate);
 			getDataBySidDates.stream().forEach(x -> {
 				
 				inRemainData.deleteById(x.getRemainManaID());

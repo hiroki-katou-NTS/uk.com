@@ -81,10 +81,9 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			int closureId) {
 		List<ConfirmationMonth> data = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT * from KRCDT_CONFIRMATION_MONTH h WHERE h.CLOSURE_DAY = ? AND h.IS_LAST_DAY = ? AND h.PROCESS_YM = ?"
-						+ " AND h.CLOSURE_ID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " AND h.CLOSURE_ID = ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setInt(1, closureDate);
 				statement.setInt(2, isLastDayOfMonth ? 1 : 0);
 				statement.setInt(3, processYM);

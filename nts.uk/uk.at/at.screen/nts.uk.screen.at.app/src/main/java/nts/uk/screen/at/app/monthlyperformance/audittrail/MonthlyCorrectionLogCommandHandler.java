@@ -63,10 +63,11 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 				itemNewMap.forEach((key, value) -> {
 					ItemValue itemNew = value;
 					ItemValue itemOld = itemOldMap.get(key);
-					if (itemNew.getValue() != null && itemOld.getValue() != null
-							&& !itemNew.getValue().equals(itemOld.getValue())
-							|| (itemNew.getValue() == null && itemOld.getValue() != null)
-							|| (itemNew.getValue() != null && itemOld.getValue() == null)) {
+					if(itemNew.getValue() != null && itemOld.getValue() != null && itemNew.getValueType().isDouble()){
+						itemNew.value(String.valueOf(Double.valueOf(itemNew.getValue()))).valueType(ValueType.COUNT_WITH_DECIMAL);
+						itemOld.value(String.valueOf(Double.valueOf(itemOld.getValue()))).valueType(ValueType.COUNT_WITH_DECIMAL);;
+					}
+					if (!itemNew.equals(itemOld)) {
 						MonthlyCorrectedItem item = new MonthlyCorrectedItem(itemNameMap.get(key), key, itemOld.getValue(),
 								itemNew.getValue(), convertType(itemNew.getValueType()),
 								editItems.contains(key) ? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);

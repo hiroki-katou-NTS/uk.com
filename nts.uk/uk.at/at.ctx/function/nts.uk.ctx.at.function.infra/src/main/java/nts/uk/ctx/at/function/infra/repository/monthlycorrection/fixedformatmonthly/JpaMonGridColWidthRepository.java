@@ -33,19 +33,20 @@ public class JpaMonGridColWidthRepository extends JpaRepository implements Colum
 	@Override
 	@SneakyThrows
 	public Optional<ColumnWidtgByMonthly> getColumnWidtgByMonthly(String companyID) {
-		PreparedStatement statement = this.connection().prepareStatement(
-				"SELECT * from KRCMT_MON_GRID_COL_WIDTH h WHERE h.CID = ?");
-		statement.setString(1, companyID);
-		
-		List<ColumnWidthOfDisplayItem> columns = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-			return new ColumnWidthOfDisplayItem(rec.getInt("ATTENDANCE_ITEM_ID"), rec.getInt("COLUMN_WIDTH"));
-		});
-
-		if (!columns.isEmpty()) {
-			return Optional.of(new ColumnWidtgByMonthly(companyID, columns));
-
+		try(PreparedStatement statement = this.connection().prepareStatement(
+				"SELECT * from KRCMT_MON_GRID_COL_WIDTH h WHERE h.CID = ?")) {
+			statement.setString(1, companyID);
+			
+			List<ColumnWidthOfDisplayItem> columns = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				return new ColumnWidthOfDisplayItem(rec.getInt("ATTENDANCE_ITEM_ID"), rec.getInt("COLUMN_WIDTH"));
+			});
+	
+			if (!columns.isEmpty()) {
+				return Optional.of(new ColumnWidtgByMonthly(companyID, columns));
+	
+			}
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 	@Override
