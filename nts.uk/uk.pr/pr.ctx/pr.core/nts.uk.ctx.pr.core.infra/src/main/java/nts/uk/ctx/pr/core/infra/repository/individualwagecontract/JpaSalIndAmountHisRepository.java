@@ -21,6 +21,7 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     private static final String SELECT_BY_KEY_STRING_DISPLAY = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator and f.periodStartYm <= :currentProcessYearMonth and f.periodEndYm >= :currentProcessYearMonth ORDER BY f.periodStartYm DESC";
     private static final String SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT = " SELECT f.salIndAmountHisPk.empId, f.salIndAmountHisPk.historyId, f.periodStartYm , f.periodEndYm , s.amountOfMoney FROM QpbmtSalIndAmountHis f LEFT JOIN QpbmtSalIndAmount s ON s.salIndAmountPk.historyId = f.salIndAmountHisPk.historyId " +
             "WHERE f.salIndAmountHisPk.perValCode =:perValCode AND f.salIndAmountHisPk.empId IN :empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
+    private static final String UPDATE_OLD_HISTORY=" UPDATE QpbmtSalIndAmountHis f set f.periodEndYm =:periodEndYm WHERE f.salIndAmountHisPk.historyId =:historyId ";
 
     private Optional<SalIndAmountHis> toDomain(List<QpbmtSalIndAmountHis> entity) {
         if (entity.size() > 0) {
@@ -79,6 +80,15 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
         List<PersonalAmount> personalAmount = data.stream().map(x -> new PersonalAmount(x[0].toString(), x[1].toString(), "", "", (Integer) x[2], (Integer) x[3], (Long) x[4])).collect(Collectors.toList());
 
         return personalAmount;
+
+    }
+
+    @Override
+    public void updateOldHistorty(String historyId, int newEndMonthOfOldHistory) {
+        this.getEntityManager().createQuery(UPDATE_OLD_HISTORY,QpbmtSalIndAmountHis.class)
+                .setParameter("periodEndYm",newEndMonthOfOldHistory)
+                .setParameter("historyId",historyId).executeUpdate();
+
 
     }
 

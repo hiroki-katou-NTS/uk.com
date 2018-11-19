@@ -26,7 +26,8 @@
                 #{i18n.getText('CMM015_2')}
             </button>
             <!--A1_2-->
-            <button class="proceed" tabindex="2" data-bind="click: registerSalaryClassificationInformation, enable: $root.errors.isEmpty">
+            <button class="proceed" tabindex="2"
+                    data-bind="click: registerSalaryClassificationInformation, enable: $root.errors.isEmpty">
                 #{i18n.getText('CMM015_3')}
             </button>
             <!--A1_3-->
@@ -42,9 +43,10 @@
         <div id="contents-area" class="fixed-flex-layout">
             <!--A2_1-->
             <div id="left-content" class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{showIcon: true, width: 300}" class="cf">
-                    <!--A2_2-->
-                    <div data-bind="ntsSearchBox: {
+                <div id="left">
+                    <div data-bind="ntsPanel:{showIcon: true, width: 300}" class="cf">
+                        <!--A2_2-->
+                        <div data-bind="ntsSearchBox: {
                                 comId: 'single-list',
                                 items: dataSource,
                                 mode: 'igGrid',
@@ -52,11 +54,11 @@
                                 selected: selectedCode,
                                 selectedKey: 'salaryClassificationName',
                                 fields: ['salaryClassificationName', 'salaryClassificationCode']}"
-                         id="A2_2"
-                         tabindex="5"/>
-                    <!--A2_3-->
-                    <table id="single-list"
-                           data-bind="ntsGridList: {
+                             id="A2_2"
+                             tabindex="5"/>
+                        <!--A2_3-->
+                        <table id="single-list"
+                               data-bind="ntsGridList: {
                                 name: '#[CMM015_6]',
                                 width: 300,
                                 height: 400,
@@ -66,51 +68,54 @@
                                 optionsValue: 'salaryClassificationCode',
                                 multiple: false,
                                 value: selectedCode}"
-                           tabindex="6"/>
+                               tabindex="6"/>
+                    </div>
                 </div>
             </div>
             <div id="right-content" class="fixed-flex-layout-right">
-                <div data-bind="with: selectedItem">
-                    <div class="valign-center control-group">
-                        <!--A3_1-->
-                        <div data-bind="ntsFormLabel: {
+                <div id="right">
+                    <div data-bind="with: selectedItem">
+                        <div class="valign-center control-group">
+                            <!--A3_1-->
+                            <div data-bind="ntsFormLabel: {
                             constraint: ['SalaryClassificationCode', 'SalaryClassificationName'],
                             required: true,
                             inline: false }"
-                             id="A3_1">
-                            #{i18n.getText('CMM015_9')}
-                        </div>
-                        <!--A3_2-->
-                        <input data-bind="ntsTextEditor: {
+                                 id="A3_1">
+                                #{i18n.getText('CMM015_9')}
+                            </div>
+                            <!--A3_2-->
+                            <input data-bind="ntsTextEditor: {
                             value: salaryClassificationCode,
                             constraint: 'SalaryClassificationCode',
                             name: '#[CMM015_10]',
                             required: true,
                             enable: $vm.isCodeEnable}"
-                               tabindex="7"
-                               id="A3_2"/>
-                        <!--A3_3-->
-                        <input data-bind="ntsTextEditor: {
+                                   tabindex="7"
+                                   id="A3_2"/>
+                            <!--A3_3-->
+                            <input data-bind="ntsTextEditor: {
                             value: salaryClassificationName,
                             constraint: 'SalaryClassificationName',
                             name: '#[CMM015_11]',
                             required: true,
                             enable: true}" tabindex="8"
-                               id="A3_3"/>
-                    </div>
-                    <div class="valign-top control-group">
-                        <!--A3_4-->
-                        <div data-bind="ntsFormLabel: {inline: false, constraint: 'Memo'}"
-                             id="A3_4">
-                            #{i18n.getText('CMM015_12')}
+                                   id="A3_3"/>
                         </div>
-                        <!--A3_5-->
-                        <textarea id="A3_5"
-                                  data-bind="ntsMultilineEditor: {
+                        <div class="valign-top control-group">
+                            <!--A3_4-->
+                            <div data-bind="ntsFormLabel: {inline: false, constraint: 'Memo'}"
+                                 id="A3_4">
+                                #{i18n.getText('CMM015_12')}
+                            </div>
+                            <!--A3_5-->
+                            <textarea id="A3_5"
+                                      data-bind="ntsMultilineEditor: {
                                   name: '#[CMM015_12]',
                                   constraint: 'Memo',
                                   value: memo}"
-                                  tabindex="9"/>
+                                      tabindex="9"/>
+                        </div>
                     </div>
                 </div>
             </div>

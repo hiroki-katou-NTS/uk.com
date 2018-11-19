@@ -103,7 +103,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             for (let i = 0; i < self.itemBinding().length; i++) {
                 existList = existList.concat(self.itemBinding()[i].employeeList());
             }
-            let employeeArr = existList.length == 0 ? [] : self.itemTable.empCdNameImports.filter(self.comparer(existList));
+            let employeeArr = existList.length == 0 ? self.itemTable.empCdNameImports : self.itemTable.empCdNameImports.filter(self.comparer(existList));
             let paramEmployment = {
                 processCateNo: processCateNo,
                 employeeList: employeeArr,

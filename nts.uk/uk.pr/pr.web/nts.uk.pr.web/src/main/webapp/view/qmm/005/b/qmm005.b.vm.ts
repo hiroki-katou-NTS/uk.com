@@ -33,10 +33,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         constructor() {
             var self = this;
-            self.targetMonth = ko.observable();
+            self.targetMonth            = ko.observable();
             self.processingDivisionName = ko.observable();
-            self.settingPaymentList = ko.observableArray([]);
-            self.processingYearList = ko.observableArray([]);
+            self.settingPaymentList     = ko.observableArray([]);
+            self.processingYearList     = ko.observableArray([]);
             self.show = ko.observable(false);
             self.btnText = ko.computed(function () {
                 if (self.show()) {
@@ -45,10 +45,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     return "+";
                 }
             });
-            self.isNewMode = ko.observable(false);
-            self.acceptRegistration = ko.observable(true);
-            self.processingYear = ko.observable(null);
-            self.processingYearInput = ko.observable(null);
+            self.isNewMode            = ko.observable(false);
+            self.acceptRegistration   = ko.observable(true);
+            self.processingYear       = ko.observable(null);
+            self.processingYearInput  = ko.observable(moment().year());
             self.processingYearNative = null;
             self.processingYear.subscribe(function (newValue) {
                 if (newValue != self.processingYearNative && newValue != '') {
@@ -67,11 +67,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
-                    self.processingYearInput(newValue);
+                    self.processingYearInput(Number(newValue));
                     nts.uk.ui.errors.clearAll();
                 }
             });
             self.processingYearInput.subscribe(function (newValue) {
+                if(typeof(newValue) === 'string'){
+                    self.processingYearInput(Number(newValue));
+                }
                 if (self.isNewMode()) {
                     self.blankData();
                 }
@@ -139,12 +142,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     if (selectItem) {
                         self.processingYearNative = parseInt(selectItem);
                         self.processingYear(selectItem);
-                        self.processingYearInput(selectItem)
+                        self.processingYearInput(Number(selectItem))
                         self.selectProcessingYear(selectItem);
                     } else {
                         self.processingYearNative = parseInt(self.processingYearList()[0].code);
                         self.processingYear(self.processingYearList()[0].code);
-                        self.processingYearInput(self.processingYearList()[0].code);
+                        self.processingYearInput(Number(self.processingYearList()[0].code));
                         self.selectProcessingYear(self.processingYearList()[0].code);
                     }
                 }

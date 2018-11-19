@@ -38,4 +38,8 @@ public class SalIndAmountHisCommand {
      * 給与賞与区分
      */
     private int salBonusCate;
+
+
+    private String lastHistoryId;
+
 }

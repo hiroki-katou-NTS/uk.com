@@ -17,6 +17,8 @@ public interface SalIndAmountHisRepository
 
     List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode,int cateIndicator,int salBonusCate,List<String> empIds);
 
+    void updateOldHistorty(String historyId,int newEndMonthOfOldHistory);
+
     void add(SalIndAmountHis domain);
 
     void update(SalIndAmountHis domain);

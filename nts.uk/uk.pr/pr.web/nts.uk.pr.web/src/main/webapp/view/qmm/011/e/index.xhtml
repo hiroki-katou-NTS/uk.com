@@ -43,32 +43,29 @@
 					<span id="E1_6" class="label" style="margin-left: 10px">#{i18n.getText('QMM011_46')}</span>
 				</div>
 				<!-- E1_7 履歴の引継ぎ -->
-				<div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+
 				<com:ko-if bind="flag()">
-					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM011_47')}</span>
-					<div id = "E1_8" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
+                    <div class=" table table-col-2">
+                        <div class ="cell valign-top">
+                            <div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					        <span class="label">#{i18n.getText('QMM011_47')}</span>
 						<!-- E1_8 履歴の引継ぎ -->
-						
-							<div id="E1_9" class="cell" tabIndex = "-1"
-							 	data-bind="ntsRadioButton: {
-										checked: takeOver,
-										option: listTakeOver()[0],
-										optionValue: 'code',
-										optionText: 'name',
-										group: 'periodOption'}" >
+                            </div>
+                        </div>
+                        <div class ="cell valign-top">
+							<div id="E1_8" class="control-group" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px"
+							 	data-bind="ntsRadioBoxGroup: {
+										value: takeOver,
+										options: listTakeOver,
+										optionsValue: 'code',
+										optionsText: 'name',
+										enable: true}" >
 							</div>
-							<br/>
-							<div id="E1_10"  class="cell" tabIndex = "-1"
-							 	data-bind="ntsRadioButton: {
-										checked: takeOver,
-										option: listTakeOver()[1],
-										optionValue: 'code',
-										optionText: 'name',
-										group: 'periodOption'}" >
-							</div>
+                        </div>
 					</div>
 					</com:ko-if>
 					<com:ko-if bind="!flag()">
+                    <div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
 					<span class="label" >#{i18n.getText('QMM011_47')}</span>
 						<div id = "E1_8" tabIndex = "2" style= "display: inline-block;text-align: left; margin-left:30px;">
 							<div id="E1_10"  class="cell"
@@ -80,9 +77,9 @@
 										group: 'periodOption'}" >
 							</div>
 						</div>
+                    </div>
 					</com:ko-if>
 				</div>
-			</div>
 			<div id="functions-area-bottom">
 				<!-- E2_1 登録 -->
 				<button id="E2_1" tabindex="3" class="proceed large"

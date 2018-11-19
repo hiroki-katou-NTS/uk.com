@@ -32,7 +32,7 @@
                     data-bind="click : create, enable: !statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().categoryAtr() == null)">#{i18n.getText('QMM012_20')}</button>
             <!-- 登録 -->
             <button id="B1_2" tabindex="2" class="registerBtn proceed"
-                    data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null)">#{i18n.getText('QMM012_21')}</button>
+                    data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM012_21')}</button>
             <!-- コピー -->
             <button id="B1_3" tabindex="3" class="copyBtn"
                     data-bind="click: copy, enable: false">#{i18n.getText('QMM012_22')}</button>
@@ -212,7 +212,7 @@
 																					enable: ($parent.statementItem().defaultAtr != 1) &amp;&amp; (timeCountAtr() == 1) }"></div>
                                     </div>
                                     <div class="valign-center control-group">
-                                        <!-- 平均賃金 -->
+                                        <!-- AverageWage -->
                                         <div id="E1_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_51')}</div>
                                         <!-- 平均賃金対象区分 -->
                                         <div id="E1_10" tabindex="20" class="cf" data-bind="ntsSwitchButton: {
@@ -415,7 +415,7 @@
                                 <!-- CategoryAtr is PAYMENT_ITEM  -->
                                 <com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
                                     <div class="valign-center control-group">
-                                        <!-- 平均賃金 -->
+                                        <!-- AverageWage -->
                                         <div id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_51')}</div>
                                         <!-- 平均賃金対象区分 -->
                                         <div id="C2_2" tabindex="31" class="cf" data-bind="ntsSwitchButton: {
