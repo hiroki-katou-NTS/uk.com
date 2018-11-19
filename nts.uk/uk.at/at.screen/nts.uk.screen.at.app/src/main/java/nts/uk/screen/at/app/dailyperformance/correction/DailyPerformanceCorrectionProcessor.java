@@ -499,7 +499,7 @@ public class DailyPerformanceCorrectionProcessor {
 					lstError = new ArrayList<>();
 				}
 				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 
