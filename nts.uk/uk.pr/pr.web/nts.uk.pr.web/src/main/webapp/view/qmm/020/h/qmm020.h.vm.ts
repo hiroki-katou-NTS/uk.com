@@ -42,11 +42,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
 
         constructor() {
             let self = this;
-            self.initScreen(null).done(()  =>{
-                self.loadCCG001();
-
-            });
-
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
                 let self = this;
