@@ -44,7 +44,7 @@ public class RegisterStateCorrelationHisPositionCommandHandler extends CommandHa
                         i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
                         i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
                         }).collect(Collectors.toList());
-            stateCorrelationHisPositionService.updateHistoryPosition(listStateLinkSettingMaster);
+            stateCorrelationHisPositionService.updateHistoryPosition(listStateLinkSettingMaster, hisId);
         }
     
     }

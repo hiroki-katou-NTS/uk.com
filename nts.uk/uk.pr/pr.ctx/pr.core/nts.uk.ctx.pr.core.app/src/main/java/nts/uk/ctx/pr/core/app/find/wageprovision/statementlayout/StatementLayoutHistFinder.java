@@ -15,6 +15,7 @@ import java.util.List;
 /**
 * 明細書レイアウト履歴: Finder
 */
+
 public class StatementLayoutHistFinder
 {
     @Inject

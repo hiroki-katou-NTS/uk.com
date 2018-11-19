@@ -95,8 +95,6 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            block.clear();
-
         }
 
         registerPosition() {

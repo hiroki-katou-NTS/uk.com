@@ -99,7 +99,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            block.clear();
         }
 
         registerSalary(){
