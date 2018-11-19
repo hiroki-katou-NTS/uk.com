@@ -22,9 +22,9 @@ public class StateLinkSettingIndividualDto {
 
     private String salaryName;
 
-    private String bonusName;
-
     private String bonusCode;
+
+    private String bonusName;
 
 
     public static StateLinkSettingIndividualDto fromDomain(StateLinkSettingIndividual domain, List<StatementLayout> listStatementLayout) {
@@ -33,9 +33,9 @@ public class StateLinkSettingIndividualDto {
         return new StateLinkSettingIndividualDto (
                 domain.getHistoryID(),
                 domain.getSalaryCode().isPresent() ? domain.getSalaryCode().get().v() : null,
+                tempSalary.isPresent() ? tempSalary.get().getStatementName().v() : null,
                 domain.getBonusCode().isPresent() ? domain.getBonusCode().get().v() : null,
-                tempBonus.isPresent() ? tempBonus.get().getStatementName().v() : null,
-                tempSalary.isPresent() ? tempSalary.get().getStatementName().v() : null);
+                tempBonus.isPresent() ? tempBonus.get().getStatementName().v() : null);
     }
     
 }

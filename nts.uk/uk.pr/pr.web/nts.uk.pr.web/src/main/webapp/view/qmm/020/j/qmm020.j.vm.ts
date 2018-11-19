@@ -85,15 +85,15 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         getMode(modeScreen : number ){
             switch (modeScreen) {
                 case model.MODE_SCREEN.INDIVIDUAL : {
-                    return 3;
+                    return MODE_SCREEN.MODE_THREE;
                 }
                 case model.MODE_SCREEN.DEPARMENT : {
-                    return 2;
+                    return MODE_SCREEN.MODE_TWO;
                 }
                 case model.MODE_SCREEN.POSITION : {
-                    return 2;
+                    return MODE_SCREEN.MODE_TWO;
                 }
-                default : return 1;
+                default : return MODE_SCREEN.MODE_ONE;
             }
         }
 

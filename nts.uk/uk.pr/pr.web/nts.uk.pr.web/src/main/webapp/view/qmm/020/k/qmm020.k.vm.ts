@@ -39,6 +39,16 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
                 employeeId : self.params().employeeId
             };
             nts.uk.pr.view.qmm020.k.service.editHistoryProcess(data).done(()=>{
+                if(self.methodEditing() == EDIT_METHOD.UPDATE){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        let data : any ={
+                            modeEditHistory: self.methodEditing()
+                        };
+                        setShared(model.PARAMETERS_SCREEN_K.OUTPUT, data);
+                        close();
+                    });
+                    return;
+                }
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                     let data : any ={
                         modeEditHistory: self.methodEditing()
@@ -75,15 +85,15 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
         getMode(modeScreen : number ){
             switch (modeScreen) {
                 case model.MODE_SCREEN.INDIVIDUAL : {
-                    return 3;
+                    return MODE_SCREEN.MODE_THREE;
                 }
                 case model.MODE_SCREEN.DEPARMENT : {
-                    return 2;
+                    return MODE_SCREEN.MODE_TWO;
                 }
                 case model.MODE_SCREEN.POSITION : {
-                    return 2;
+                    return MODE_SCREEN.MODE_TWO;
                 }
-                default : return 1;
+                default : return MODE_SCREEN.MODE_ONE;
             }
         }
 
