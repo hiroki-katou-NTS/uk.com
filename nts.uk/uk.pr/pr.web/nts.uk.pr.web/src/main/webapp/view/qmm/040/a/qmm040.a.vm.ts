@@ -331,6 +331,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 showJobTitle: false,
                 showWorktype: false,
                 isMutipleCheck: true,
+                showOnStart: true,
                 tabindex: 2,
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {

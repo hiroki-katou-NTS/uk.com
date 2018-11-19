@@ -27,6 +27,7 @@
     </ui:define>
 
     <ui:define name="content">
+        <div id="com-ccg001"></div>
         <div id="functions-area" >
             <button id="A1_1" class="proceed"  tabindex="1" style="margin-left: 110px;" data-bind="click: updateStatelmentItemName" >#{i18n.getText('QMM038_2')}</button>
             <button  id="A1_2" data-bind="enable: false" tabindex="2">#{i18n.getText('QMM038_3')}</button>
@@ -38,7 +39,6 @@
                 <button  id="A2_4"  data-bind="click: findByEmployee" tabindex="4">#{i18n.getText('QMM038_5')}</button>
             </div>
             <div>
-                <div id="com-ccg001"></div>
                 <ui:include src="../a/contents.xhtml" />
             </div>
 

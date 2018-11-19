@@ -61,6 +61,7 @@ module nts.uk.pr.view.qmm038.a {
                     showWorktype: false,
                     isMutipleCheck: false,
                     tabindex: 5,
+                    showOnStart: true,
 
                     /**
                      * Self-defined function: Return data from CCG001
