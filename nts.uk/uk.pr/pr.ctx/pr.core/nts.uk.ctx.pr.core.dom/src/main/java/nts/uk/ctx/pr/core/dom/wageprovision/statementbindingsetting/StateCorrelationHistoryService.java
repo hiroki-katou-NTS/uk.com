@@ -60,48 +60,33 @@ public class StateCorrelationHistoryService {
 
     public void editHistoryProcess(int type, int modeEdit, String hisId, String masterCode,String employeeId, YearMonthHistoryItem history, boolean isUpdate) {
         String cid = AppContexts.user().companyId();
+        if (modeEdit == MODE_UPDATE) {
+            if (isUpdate) {
+                historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(), employeeId);
+                return;
+            }
+            throw new BusinessException("Msg_107");
+        }
         switch (type){
             case COMPANY : {
-                if(modeEdit == MODE_DELETE){
                     mStateLinkSettingCompanyRepository.remove(hisId);
 //                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid).get().items().size() == 1) {
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
-
-                } else {
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
                 break;
             }
             case EMPLOYEE : {
-                if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
 //                    if(mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
-
-                }
-                else{
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
                 break;
             }
             case DEPARMENT : {
-                if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
                     mStateLinkSettingDateRepository.remove(hisId);
 //                    if(mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cid).get().items().size() == 1){
@@ -109,38 +94,18 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
-                }
-                else{
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
                 break;
             }
             case CLASSIFICATION : {
-                if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
 //                    if(mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
-                }
-                else{
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
                 break;
             }
             case POSITION : {
-                if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
                     mStateLinkSettingDateRepository.remove(hisId);
 //                    if(mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cid).get().items().size() == 1){
@@ -148,60 +113,33 @@ public class StateCorrelationHistoryService {
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
 
-                }
-                else{
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
+
                 break;
 
             }
             case SALARY : {
-                if(modeEdit == MODE_DELETE){
                     masterRepository.remove(hisId,masterCode);
 //                    if(mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
-                }
-                else{
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
                 break;
-
             }
             case INDIVIDUAL : {
-                if(modeEdit == MODE_DELETE){
                     mStateLinkSettingIndividualRepository.remove(hisId);
 //                    if(mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
 //                    }
 //                    historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end());
-                    historyDeletionProcessing(type,hisId,cid,employeeId);
-                }
-                else{
-                    if (isUpdate) {
-                        historyCorrectionProcecessing(type, cid, history.identifier(), history.start(), history.end(),employeeId);
-                        return;
-                    }
-                    throw new BusinessException("Msg_107");
-                }
+
                 break;
             }
-
         }
+
+        historyDeletionProcessing(type, hisId, cid, employeeId);
     }
 
     private void historyDeletionProcessing(int type, String hisId, String cId, String employeeId) {
@@ -209,7 +147,7 @@ public class StateCorrelationHistoryService {
             case COMPANY: {
                 Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid employmentHistory");
+                    throw new RuntimeException("invalid StateCorrelationHisCompany");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -233,7 +171,7 @@ public class StateCorrelationHistoryService {
             case EMPLOYEE: {
                 Optional<StateCorrelationHisEmployee> accInsurHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid employmentHistory");
+                    throw new RuntimeException("invalid StateCorrelationHisEmployee");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -258,7 +196,7 @@ public class StateCorrelationHistoryService {
             case DEPARMENT: {
                 Optional<StateCorrelationHisDeparment> accInsurHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid employmentHistory");
+                    throw new RuntimeException("invalid StateCorrelationHisDeparment");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -282,7 +220,7 @@ public class StateCorrelationHistoryService {
             case CLASSIFICATION: {
                 Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid employmentHistory");
+                    throw new RuntimeException("invalid StateCorrelationHisClassification");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -307,7 +245,7 @@ public class StateCorrelationHistoryService {
             case POSITION: {
                 Optional<StateCorrelationHisPosition> accInsurHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid employmentHistory");
+                    throw new RuntimeException("invalid StateCorrelationHisPosition");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -331,7 +269,7 @@ public class StateCorrelationHistoryService {
             case SALARY: {
                 Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
                 if (!accInsurHis.isPresent()) {
-                    throw new RuntimeException("invalid employmentHistory");
+                    throw new RuntimeException("invalid StateCorrelationHisClassification");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
@@ -353,17 +291,13 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case INDIVIDUAL : {
-                String companyId = AppContexts.user().companyId();
-
                 Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId,hisId);
-
                 if (!existHist.isPresent()){
                     throw new RuntimeException("invalid StateCorrelationHisIndividual");
                 }
                 Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
-
                 if (!itemToBeDelete.isPresent()){
                     throw new RuntimeException("invalid StateCorrelationHisIndividual");
                 }
@@ -371,17 +305,11 @@ public class StateCorrelationHistoryService {
                 mStateCorrelationHisIndividualRepository.remove(employeeId,hisId);
                 break;
             }
-
-
         }
-
-
     }
-
     private void historyCorrectionProcecessing(int type, String cId, String hisId, YearMonth start, YearMonth end,String employeeId) {
         switch (type) {
             case COMPANY: {
-                // // //
                 Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
                 if (!accInsurHis.isPresent()) {
                     return;
@@ -491,7 +419,6 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case SALARY: {
-
                 // // //
                 Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
                 if (!accInsurHis.isPresent()) {
@@ -531,18 +458,8 @@ public class StateCorrelationHistoryService {
                             end != null ? end : new YearMonth(999912)));
                     mStateCorrelationHisIndividualRepository.update(employeeId, itemToBeUpdate.get());
                 }
-
-
                 break;
             }
-
-
         }
-
-
     }
-
-
-
-
 }

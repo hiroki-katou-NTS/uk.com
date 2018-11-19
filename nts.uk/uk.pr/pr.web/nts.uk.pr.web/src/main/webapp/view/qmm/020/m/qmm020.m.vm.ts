@@ -43,7 +43,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
             let self = this;
             let data :any = {
                 statementCode : self.currentCodeList() ,
-                statementName : _.find(self.items(), function(item) { return item.statementCode == self.currentCodeList() ; }).statementName;
+                statementName : _.find(self.items(), function(item) { return item.statementCode == self.currentCodeList() ; }).statementName
 
             }
             setShared(model.PARAMETERS_SCREEN_M.OUTPUT, data);
