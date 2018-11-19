@@ -210,7 +210,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		}
 		int ageLowerLimit = c.getInt("AGE_LOWER_LIMIT") != null ? c.getInt("AGE_LOWER_LIMIT") : 0;
 		int ageHigherLimit = c.getInt("AGE_HIGHER_LIMIT") != null ? c.getInt("AGE_HIGHER_LIMIT") : 0;
-		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 0;
+		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
 		
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);

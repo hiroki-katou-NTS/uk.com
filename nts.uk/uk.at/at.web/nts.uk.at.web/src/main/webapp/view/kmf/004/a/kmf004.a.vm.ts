@@ -315,11 +315,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.ageSelected = ko.observable(false);
             
             self.genderOptions = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText('KMF004_55') },
-                { code: '1', name: nts.uk.resource.getText('KMF004_56') }
+                { code: '1', name: nts.uk.resource.getText('KMF004_55') },
+                { code: '2', name: nts.uk.resource.getText('KMF004_56') }
             ]);
             
-            self.selectedGender = ko.observable(0);
+            self.selectedGender = ko.observable(1);
             self.genderOptionEnable = ko.observable(false);
             
             self.empLstEnable = ko.observable(false);
@@ -349,7 +349,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.genderOptionEnable(true);
                 } else {
                     self.genderOptionEnable(false);
-                    self.selectedGender(0);
+                    self.selectedGender(1);
                 }
             });
             
@@ -820,7 +820,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.empSelected(false);
             self.clsSelected(false);
             self.ageSelected(false);
-            self.selectedGender(0);
+            self.selectedGender(1);
             self.empLst([]);
             self.clsLst([]);
             self.startAge("");
