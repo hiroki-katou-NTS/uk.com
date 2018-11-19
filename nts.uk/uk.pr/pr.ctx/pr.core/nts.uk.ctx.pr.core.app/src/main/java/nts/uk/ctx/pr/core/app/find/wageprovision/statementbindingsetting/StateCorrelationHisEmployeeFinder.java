@@ -84,9 +84,7 @@ public class StateCorrelationHisEmployeeFinder {
                 return new StateCorrelationHisEmployeeSettingDto(item.getCode(),item.getName(),stateLinkSettingMaster.getHistoryID(),stateLinkSettingMaster.getMasterCode().v(),salaryCode,salaryLayoutName,bonusCode,bonusLayoutName);
             }).sorted(Comparator.comparing(StateCorrelationHisEmployeeSettingDto::getCode)).collect(Collectors.toList());
         }else{
-            stateCorrelationHisEmployeeSettingDto = listEmployee.stream().map(item ->{
-                return new StateCorrelationHisEmployeeSettingDto(item.getCode(),item.getName(),hisId,null,null,null,null,null);
-            }).sorted(Comparator.comparing(StateCorrelationHisEmployeeSettingDto::getCode)).collect(Collectors.toList());
+            stateCorrelationHisEmployeeSettingDto = listEmployee.stream().map(item -> new StateCorrelationHisEmployeeSettingDto(item.getCode(),item.getName(),hisId,null,null,null,null,null)).sorted(Comparator.comparing(StateCorrelationHisEmployeeSettingDto::getCode)).collect(Collectors.toList());
         }
 
         return stateCorrelationHisEmployeeSettingDto;
