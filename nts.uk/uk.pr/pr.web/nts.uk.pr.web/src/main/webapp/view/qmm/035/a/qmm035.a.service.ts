@@ -2,11 +2,11 @@ module nts.uk.pr.view.qmm035.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        defaultData: "pr/core/printdata/start",
-        findByCode: "pr/core/printdata/getbycode/{0}",
-        update: "pr/core/printdata/update",
-        create: "pr/core/printdata/create",
-        delete: "pr/core/printdata/delete"
+        defaultData: "pr/core/fromsetting/start",
+        findByCode: "pr/core/fromsetting/getbycode/{0}",
+        update: "pr/core/fromsetting/update",
+        create: "pr/core/fromsetting/create",
+        delete: "pr/core/fromsetting/delete"
     }
     export function defaultData(): JQueryPromise<any> {
        return ajax("pr",paths.defaultData);
