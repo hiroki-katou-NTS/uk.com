@@ -22,7 +22,7 @@ import java.util.List;
 public class StateCorrelationHisCompanyWebService extends WebService {
 
     @Inject
-    StateCorrelationHisCompanyFinder stateCorrelationHisCompanyFinder;
+    private StateCorrelationHisCompanyFinder stateCorrelationHisCompanyFinder;
 
     @Inject
     private StateCorrelationHistoryService mStateCorrelationHistoryService;

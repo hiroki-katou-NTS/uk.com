@@ -63,7 +63,6 @@ public class StateCorrelationHisEmployeeFinder {
         List<StateLinkSettingMaster> listStateLinkSettingMaster = stateLinkSettingMasterRepository.getStateLinkSettingMasterByHisId(hisId);
         List<StatementLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
         if(listStateLinkSettingMaster.size() > 0){
-
             stateCorrelationHisEmployeeSettingDto = listEmployee.stream().map(item ->{
                 String salaryCode = null;
                 String salaryLayoutName = null;

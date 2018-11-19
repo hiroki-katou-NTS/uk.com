@@ -16,7 +16,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         currentSelectedHis: KnockoutObservable<any> = ko.observable();
         index: number;
         currentSelectedDep:  any;
-        singleSelectedCode: any;
         columns: any;
         selectedCodes2: any;
         list: any;
@@ -85,17 +84,12 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             let template1 = '<button class="setting" onclick="openScreenM1(\'${departmentID}\')" >設定</button>${bonusCode} ${bonusName} ';
 
             self.columns = ko.observableArray([{ headerText: getText('QMM020_33'), width: "450px", key: 'departmentID', dataType: "string" },
-                /*{ headerText: getText('QMM020_20'), key: 'nodeText', width: "250px", dataType: "string", ntsControl: 'Button' },
-                { headerText: getText('QMM020_23'), key: 'custom', width: "250px", dataType: "string", ntsControl: 'Button' }]),*/
                 { headerText: getText('QMM020_23'), key: 'salaryCode', fields: ['salaryCode', 'salaryName'],  width: '150px', template: template},
                 { headerText: '', key: 'salaryName', width: '100px', hidden: true},
                 { headerText: getText('QMM020_23'), key: 'bonusCode', fields: ['bonusCode', 'bonusName'], width: '150px', template: template1},
                 { headerText: '', key: 'bonusName', width: '100px', hidden: true},
                 ]);
-
-
             block.clear();
-
         }
 
         startPage(): JQueryPromise<any>{
