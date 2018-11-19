@@ -257,6 +257,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
 
         openKScreen() {
+            block.invisible();
             let self = this;
             self.index(self.getIndex(self.hisIdSelected()));
             let laststartYearMonth: number = 0;
