@@ -35,7 +35,6 @@ public class StateCorrelationHisDeparmentWebService extends WebService {
     @Path("registerStateCorrelationHisDeparment")
     public void register(ListStateLinkSettingMasterCommand command) {
         addOrUpdateStateCorrelationHisDeparmentCommandHandler.handle(command);
-
     }
 
 }

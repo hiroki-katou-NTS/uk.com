@@ -44,11 +44,4 @@ public class StateCorrelationHisEmployeeWebService extends WebService {
         return stateCorrelationHisEmployeeFinder.getStateLinkSettingMasterByHisId(cid,hisId,startYearMonth);
     }
 
-    @POST
-    @Path("findEmploymentAll")
-    public List<EmpCdNameImportDto>  findEmploymentAll(){
-        String cid = AppContexts.user().companyId();
-        return stateCorrelationHisEmployeeFinder.findEmploymentAll(cid);
-    }
-
 }
