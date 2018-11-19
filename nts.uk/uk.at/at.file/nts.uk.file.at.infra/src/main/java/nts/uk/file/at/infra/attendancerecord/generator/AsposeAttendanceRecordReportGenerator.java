@@ -95,10 +95,16 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final String PRINT_TITLE_ROW = "$6:$7";
 
 	/** The Constant START_EMPLOYEE_DATA_ROW. */
-	private static final int START_EMPLOYEE_DATA_ROW = 5;
+	private static final int START_EMPLOYEE_DATA_ROW = 1;
+	
+	/** The Constant START_EMPLOYEE_CENTER_DATA_ROW. */
+	private static final int START_EMPLOYEE_CENTER_DATA_ROW = 2;
+	
+	/** The Constant START_EMPLOYEE_BOTTOM_DATA_ROW. */
+	private static final int START_EMPLOYEE_BOTTOM_DATA_ROW = 3;
 
-	/** The Constant START_REPORT_DATA_ROW. */
-	private static final int START_REPORT_DATA_ROW = 8;
+	/** The Constant START_REPORT_DATA_ROW. in ra data .... */ 
+	private static final int START_REPORT_DATA_ROW = 11;
 
 	/** The Constant MAX_ROW_PER_EMPL. */
 	private static final int MAX_ROW_PER_EMPL = 45;
@@ -119,10 +125,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int EMPL_WORKTYPE_INDEX = 10;
 
 	/** The Constant EMPL_YEARMONTH_INDEX. */
-	private static final int EMPL_YEARMONTH_INDEX = 16;
+	private static final int EMPL_YEARMONTH_INDEX = 0;
 
 	/** The Constant MONTHLY_DATA_START_ROW. */
-	private static final int MONTHLY_DATA_START_ROW = 3;
+	private static final int MONTHLY_DATA_START_ROW = 6;
 
 	/** The Constant REPORT_ROW_BG_WHITE. */
 	private static final int REPORT_ROW_BG_WHITE = 1;
@@ -302,8 +308,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// Add employee info
 		Range employeeInfoL = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR,
 				(startNewPage + START_EMPLOYEE_DATA_ROW), (startNewPage + START_EMPLOYEE_DATA_ROW)));
-		Range employeeInfoR = worksheet.getCells().createRange(String.format(REPORT_RIGHT_COL_ADDR,
-				(startNewPage + START_EMPLOYEE_DATA_ROW), (startNewPage + START_EMPLOYEE_DATA_ROW)));
+		Range employeeInfoR = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR,
+				(startNewPage + START_EMPLOYEE_CENTER_DATA_ROW), (startNewPage + START_EMPLOYEE_CENTER_DATA_ROW)));
+		Range employeeYearInfo = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR,
+				(startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW), (startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW)));
 
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
 				.setValue(TextResource.localize("KWR002_212") + " " + employeeData.getInvidual());
@@ -315,7 +323,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				.setValue(TextResource.localize("KWR002_215", "#Com_Jobtitle") + " " + employeeData.getTitle());
 		employeeInfoR.get(0, EMPL_WORKTYPE_INDEX)
 				.setValue(TextResource.localize("KWR002_216") + " " + employeeData.getWorkType());
-		employeeInfoR.get(0, EMPL_YEARMONTH_INDEX)
+		employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX)
 				.setValue(TextResource.localize("KWR002_217") + " " + employeeData.getYearMonth());
 
 		// Create weekly data
