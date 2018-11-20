@@ -86,7 +86,7 @@ public class ConfirmOfIndividualSetSttFinder {
     private static final int SALARY = 4;
 
 
-    public void indiTiedStatAcquiProcess(int type,String empID, String hisId, GeneralDate baseDate) {
+    public void indiTiedStatAcquiProcess(int type,String empID, String hisId, GeneralDate baseDate,EmployeeInformationQueryDtoImport param) {
         String cid = AppContexts.user().companyId();
         /*return for I2_15*/
         Optional<StateUseUnitSetting> mStateUseUnitSetting = mStateUseUnitSettingRepository.getStateUseUnitSettingById(cid);
@@ -99,7 +99,7 @@ public class ConfirmOfIndividualSetSttFinder {
                     return;
                 }
             }
-            getAcquireMasterLinkedStatement(type, empID,baseDate, hisId);
+            getAcquireMasterLinkedStatement(type, empID,baseDate, hisId,param);
         }
         Optional<StateCorrelationHisCompany> mSStateCorrelationHisCompany = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyByDate(cid, baseDate);
         /*return for I2_9 and I2_11*/
@@ -112,7 +112,7 @@ public class ConfirmOfIndividualSetSttFinder {
     }
 
     /*マスタ紐付け明細書取得*/ /*return for I2_14 */
-    private Optional<StateLinkSettingMaster> getAcquireMasterLinkedStatement(int type, String employeeId, GeneralDate baseDate, String hisId) {
+    private Optional<StateLinkSettingMaster> getAcquireMasterLinkedStatement(int type, String employeeId, GeneralDate baseDate, String hisId,EmployeeInformationQueryDtoImport param) {
         String cid = AppContexts.user().companyId();
         switch (type) {
             case DEPARMENT: {
