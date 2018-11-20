@@ -50,7 +50,6 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
@@ -1495,11 +1494,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	String value = actualValue.getValue();
 				            	if (valueTypeEnum.isTime()) {
 									if (value != null) {
-										if (valueTypeEnum == ValueType.TIME) {
-											cell.setValue(getTimeAttr(value, false));
-										} else {
-											cell.setValue(getTimeAttr(value, true));
-										}
+//										if (valueTypeEnum == ValueType.TIME) {
+//											cell.setValue(getTimeAttr(value, false));
+//										} else {
+//											cell.setValue(getTimeAttr(value, true));
+//										}
+										cell.setValue(getTimeAttr(value, false));
 									}
 									else{
 										cell.setValue(getTimeAttr("0", true));
