@@ -93,7 +93,7 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 						Double count = (double) 0;
 						if (!workInfoList.isEmpty()) {
 							List<WorkInfoOfDailyPerformance> workInfoListNew = workInfoList.stream()
-									.filter(item -> item.getRecordInfo().getWorkTypeCode().equals(WorkTypeCode))
+									.filter(item -> item.getRecordInfo().getWorkTypeCode().equals(WorkTypeCode.v()))
 									.collect(Collectors.toList());
 
 							count = new Double(workInfoListNew.size());
@@ -115,7 +115,7 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 						
 						if (!interimRemains.isEmpty()) {
 							List<TmpAnnualHolidayMng> listNew = interimRemains.stream()
-									.filter(item -> item.getWorkTypeCode().equals(WorkTypeCode))
+									.filter(item -> item.getWorkTypeCode().equals(WorkTypeCode.v()))
 									.collect(Collectors.toList());
 
 							count = new Double(listNew.size());
