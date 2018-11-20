@@ -6,8 +6,8 @@ package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 */
 public enum FormulaSettingMethod
 {
-    
-    SIMPLE_SETTING(0, "かんたん設定"),
+
+    BASIC_SETTING(0, "かんたん設定"),
     DETAIL_SETTING(1, "詳細設定");
     
     /** The value. */

@@ -64,13 +64,13 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
         }
 
         updateHistory() {
-            let self = this;
-            let newHistory = self.selectedHistory;
+            let self = this, newHistory = self.selectedHistory;
             newHistory.startMonth = self.startMonth();
-            let command = { formulaCode: self.formulaCode(), yearMonthHistoryItem: newHistory };
+            let formulaSettingCommand = {yearMonth: newHistory}
+            let command = { formulaCode: self.formulaCode(), formulaSettingCommand: formulaSettingCommand};
             service.editFormulaHistory(command).done(function() {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    setShared('QMM016_I_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    setShared('QMM017_I_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                     nts.uk.ui.windows.close();
                 })
             }).fail(function(err) {
@@ -79,11 +79,12 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
         }
 
         deleteHistory() {
-            let self = this;
-            let command = { formulaCode: self.formulaCode(), yearMonthHistoryItem: self.selectedHistory };
+            let self = this, formulaSettingCommand = {};
+            let formulaSettingCommand = {yearMonth: self.selectedHistory}
+            let command = { formulaCode: self.formulaCode(), formulaSettingCommand: formulaSettingCommand};
             service.deleteFormulaHistory(command).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    setShared('QMM016_I_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    setShared('QMM017_I_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                     nts.uk.ui.windows.close();
                 });
             }).fail(function(err) {

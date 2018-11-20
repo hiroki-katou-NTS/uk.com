@@ -16,7 +16,7 @@ public interface BasicCalculationFormulaRepository {
 
     void removeAll(List<BasicCalculationFormula> domains);
 
-    void removeByHistoryID(String historyID);
+    void removeByHistory(String historyID);
 
     void removeByFormulaCode(String formulaCode);
 

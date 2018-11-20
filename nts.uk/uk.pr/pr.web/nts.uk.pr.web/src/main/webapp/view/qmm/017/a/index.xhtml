@@ -11,6 +11,7 @@
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="../d/qmm017.d.vm.js"/>
         <com:scriptfile path="../d/qmm017.d.service.js"/>
+        <com:scriptfile path="qmm017.a.service.js"/>
         <com:scriptfile path="qmm017.a.vm.js"/>
         <com:stylefile path="qmm017.a.style.css"/>
         <com:ValidatorScript>
@@ -32,11 +33,11 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1; A1_,2; A1_3; A1_4; A1_5-->
-            <button tabindex="1">#{i18n.getText('QMM017_1')}</button>
-            <button tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
-            <button tabindex="3">#{i18n.getText('QMM017_3')}</button>
-            <button tabindex="4">#{i18n.getText('QMM017_4')}</button>
-            <button tabindex="5">#{i18n.getText('QMM017_5')}</button>
+            <button data-bind = "click: changeToNewMode" tabindex="1">#{i18n.getText('QMM017_1')}</button>
+            <button data-bind = "click: register" tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
+            <button data-bind = "enable: false" tabindex="3">#{i18n.getText('QMM017_3')}</button>
+            <button data-bind = "enable: false" tabindex="4">#{i18n.getText('QMM017_4')}</button>
+            <button data-bind = "enable: false" tabindex="5">#{i18n.getText('QMM017_5')}</button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div class="fixed-flex-layout-left" style="margin-left: 20px; margin-top: 15px;">
@@ -96,8 +97,8 @@
                             <div class="column-1"
                                  data-bind="ntsFormLabel: { required: true, constraint: ['FormulaCode', 'FormulaName'] }">#{i18n.getText('QMM017_8')}</div>
                             <!--A3_3-->
-                            <input tabindex="11"
-                                   data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 1}"/>
+                            <input tabindex="11" id = "A3_3"
+                                   data-bind="ntsTextEditor: {name: '#[QMM017_14]', value: formulaCode, required: true, constraint: 'FormulaCode', enable: $vm.screenMode() == 0}"/>
                             <!--A3_4-->
                             <input tabindex="12" id ="A3_4"
                                    data-bind="ntsTextEditor: {name: '#[QMM017_15]', value: formulaName, required: true, constraint: 'FormulaName'}"/>
@@ -131,7 +132,7 @@
 									optionsText: 'name',
 									value: settingMethod,
 									required: true,
-									enable: $vm.isUpdateMode }"></div>
+									enable: $vm.isNewMode }"></div>
                         </div>
                         <div class="tab-row">
                             <div class="column-2">
@@ -156,7 +157,7 @@
                                                 optionsText: 'name',
                                                 value: masterBranchUse,
                                                 required: true,
-                                                enable: $vm.isUpdateMode }">
+                                                enable: $vm.isNewMode }">
                                             </div>
                                         </div>
                                         <!--A3_19-->
@@ -169,7 +170,7 @@
                                                 visibleItemsCount: 5,
                                                 value: masterUse,
                                                 optionsText: 'name',
-                                                enable: $vm.isUpdateMode,
+                                                enable: $vm.isNewMode,
                                                 required: true,
                                                 columns: [
                                                     { prop: 'fix_length', length: 0 },
@@ -194,7 +195,7 @@
                                                 optionsText: 'name',
                                                 value: nestedAtr,
                                                 required: true,
-                                                enable: $vm.isUpdateMode }">
+                                                enable: $vm.isNewMode }">
                                         </div>
                                     </div>
                                 </div>

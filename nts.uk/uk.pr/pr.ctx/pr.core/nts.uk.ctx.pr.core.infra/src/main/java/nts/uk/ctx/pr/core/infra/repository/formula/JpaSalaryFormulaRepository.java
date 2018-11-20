@@ -17,14 +17,15 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 @Stateless
-public class JpaFormulaRepository extends JpaRepository implements FormulaRepository
+public class JpaSalaryFormulaRepository extends JpaRepository implements FormulaRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtFormula f ";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.formulaPk.cid =:cid AND f.formulaPk.formulaCode =:formulaCode";
     private static final String SELECT_BY_COMPANY = SELECT_ALL_QUERY_STRING + "WHERE f.formulaPk.cid =:cid ORDER BY f.formulaPk.formulaCode";
-    private static final String SELECT_FORMULA_HISTORY_BY_CODE = "SELECT f FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode ORDER BY startMonth DESC";
+    private static final String SELECT_FORMULA_HISTORY_BY_CODE = "SELECT f FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode ORDER BY f.startMonth DESC";
 
+    private static final String DELETE_FORMULA_HISTORY_BY_ID = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.historyID =:historyID";
     private static final String DELETE_FORMULA_HISTORY_BY_CODE = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode";
     @Override
     public List<Formula> getAllFormula(){
@@ -65,12 +66,12 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 
     @Override
     public void updateFormulaHistory(String formulaCode, YearMonthHistoryItem yearMonth) {
-        this.commandProxy().insert(new QpbmtFormulaHistory(new QpbmtFormulaHistoryPk(AppContexts.user().companyId(), formulaCode, yearMonth.identifier()), yearMonth.start().v(), yearMonth.end().v()));
+        this.commandProxy().update(new QpbmtFormulaHistory(new QpbmtFormulaHistoryPk(AppContexts.user().companyId(), formulaCode, yearMonth.identifier()), yearMonth.start().v(), yearMonth.end().v()));
     }
 
     @Override
-    public void removeFormulaHistory(String formulaCode, YearMonthHistoryItem yearMonth) {
-        this.commandProxy().remove(new QpbmtFormulaHistory(new QpbmtFormulaHistoryPk(AppContexts.user().companyId(), formulaCode, yearMonth.identifier()), yearMonth.start().v(), yearMonth.end().v()));
+    public void removeFormulaHistory(String historyID) {
+        this.getEntityManager().createQuery(DELETE_FORMULA_HISTORY_BY_ID).setParameter("historyID", historyID).executeUpdate();
     }
 
     @Override

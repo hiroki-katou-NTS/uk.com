@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.wageprovision.formula;
+package nts.uk.ctx.pr.core.app.find.wageprovision.formula;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,11 +8,11 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Data
 @AllArgsConstructor
-public class YearMonthHistoryItemCommand {
+public class YearMonthHistoryItemDto {
 	public String historyID;
 	public Integer startMonth;
 	public Integer endMonth;
-	public YearMonthHistoryItem fromCommandToDomain (){
-		return new YearMonthHistoryItem(this.historyID, new YearMonthPeriod(new YearMonth(this.startMonth), new YearMonth(this.endMonth)));
+	public static YearMonthHistoryItemDto fromDomainToDto (YearMonthHistoryItem yearMonth){
+		return new YearMonthHistoryItemDto(yearMonth.identifier(), yearMonth.start().v(), yearMonth.end().v());
 	}
 }

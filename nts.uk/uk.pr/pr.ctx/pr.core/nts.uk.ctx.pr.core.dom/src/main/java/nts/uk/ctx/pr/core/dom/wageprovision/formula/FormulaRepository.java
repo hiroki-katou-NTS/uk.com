@@ -28,7 +28,7 @@ public interface FormulaRepository
 
     void updateFormulaHistory (String formulaCode, YearMonthHistoryItem yearMonth);
 
-    void removeFormulaHistory (String formulaCode, YearMonthHistoryItem yearMonth);
+    void removeFormulaHistory (String historyID);
 
     void removeByFormulaCode (String formulaCode);
 

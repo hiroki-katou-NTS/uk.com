@@ -99,7 +99,7 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
     }
 
     @Override
-    public void removeByHistoryID(String historyID) {
+    public void removeByHistory(String historyID) {
         this.getEntityManager().createQuery(REMOVE_BY_HISTORY).setParameter("historyID", historyID).executeUpdate();
         this.getEntityManager().createQuery(REMOVE_STANDARD_AMOUNT_BY_HISTORY).setParameter("historyID", historyID).executeUpdate();
     }

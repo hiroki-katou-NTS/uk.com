@@ -1,14 +1,8 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.formula;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.laborinsuranceoffice.AddLaborInsuranceOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.laborinsuranceoffice.RemoveLaborInsuranceOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.laborinsurance.laborinsuranceoffice.UpdateLaborInsuranceOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.socialinsurance.healthinsurance.command.HealthInsuranceCommand;
-import nts.uk.ctx.pr.core.app.command.wageprovision.formula.FormulaCommand;
-import nts.uk.ctx.pr.core.app.find.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeDto;
-import nts.uk.ctx.pr.core.app.find.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeFinder;
+import nts.uk.ctx.pr.core.app.command.wageprovision.formula.*;
+import nts.uk.ctx.pr.core.app.find.wageprovision.formula.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -21,15 +15,72 @@ import java.util.List;
 @Produces("application/json")
 public class FormulaWebservice extends WebService {
 
-    @POST
-    @Path("editHistory")
-    public void editFormulaHistory(FormulaCommand command) {
+    @Inject
+    private FormulaFinder formulaFinder;
 
+    @Inject
+    private BasicCalculationFormulaFinder basicCalculationFormulaFinder;
+
+    @Inject
+    private BasicFormulaSettingFinder basicFormulaSettingFinder;
+
+    @Inject
+    private DetailFormulaSettingFinder detailFormulaSettingFinder;
+
+    @Inject
+    private AddFormulaCommandHandler addFormulaCommandHandler;
+
+    @Inject
+    private UpdateFormulaSettingCommandHandler updateFormulaSettingCommandHandler;
+
+    @Inject
+    private AddFormulaHistoryCommandHandler addFormulaHistoryCommandHandler;
+
+    @Inject
+    private UpdateFormulaHistoryCommandHandler updateFormulaHistoryCommandHandler;
+
+    @Inject
+    private RemoveFormulaHistoryCommandHandler removeFormulaHistoryCommandHandler;
+
+    @POST
+    @Path("getAllFormula")
+    public List<FormulaDto> getAllFormula() {
+        return formulaFinder.getAllFormulaAndHistory();
     }
 
     @POST
-    @Path("deleteHistory")
-    public void deleteFormulaHistory(FormulaCommand command) {
+    @Path("getFormulaSettingByHistoryID/{historyID}")
+    public FormulaSettingDto getAllFormula(@PathParam("historyID") String historyID) {
+        return new FormulaSettingDto(basicFormulaSettingFinder.getBasicFormulaSettingByHistoryID(historyID), detailFormulaSettingFinder.getDetailFormulaSettingByHistoryID(historyID), basicCalculationFormulaFinder.getBasicCalculationFormulaByHistoryID(historyID));
+    }
 
+    @POST
+    @Path("addFormula")
+    public void addFormula(FormulaCommand command) {
+        addFormulaCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("updateFormulaSetting")
+    public void updateFormulaSetting(FormulaCommand command) {
+        updateFormulaSettingCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("addFormulaHistory")
+    public void addHistory(FormulaCommand command) {
+        addFormulaHistoryCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("editFormulaHistory")
+    public void editFormulaHistory(FormulaCommand command) {
+        updateFormulaHistoryCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("deleteFormulaHistory")
+    public void deleteFormulaHistory(FormulaCommand command) {
+        removeFormulaHistoryCommandHandler.handle(command);
     }
 }

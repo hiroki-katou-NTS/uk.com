@@ -19,16 +19,17 @@ public class Formula extends AggregateRoot {
     * 会社ID
     */
     private String companyId;
-    
+
+    /**
+     * 計算式コード
+     */
+    private FormulaCode formulaCode;
     /**
     * 計算式名
     */
     private FormulaName formulaName;
     
-    /**
-    * 計算式コード
-    */
-    private FormulaCode formulaCode;
+
     
     /**
     * 計算式の設定方法
@@ -40,7 +41,7 @@ public class Formula extends AggregateRoot {
     */
     private Optional<NestedUseCls> nestedAtr;
     
-    public Formula(String companyId, String formulaName, String formulaCode, int settingMethod, Integer nestedAtr) {
+    public Formula(String companyId, String formulaCode, String formulaName, int settingMethod, Integer nestedAtr) {
         this.companyId = companyId;
         this.formulaName = new FormulaName(formulaName);
         this.formulaCode = new FormulaCode(formulaCode);

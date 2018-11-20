@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_FORMULA")
+@Table(name = "QPBMT_SALARY_FORMULA")
 public class QpbmtFormula extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     

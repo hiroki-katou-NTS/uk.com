@@ -607,13 +607,13 @@ module nts.uk.pr.view.qmm017.share.model {
     }
 
     export interface IDetailCalculationFormula {
-        elementOrder: string;
+        elementOrder: number;
         formulaElement: string;
     }
 
     export class DetailCalculationFormula {
 
-        elementOrder: KnockoutObservable<string> = ko.observable(null);
+        elementOrder: KnockoutObservable<number> = ko.observable(null);
         formulaElement: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IDetailCalculationFormula) {
             this.elementOrder(params ? params.elementOrder : null);
