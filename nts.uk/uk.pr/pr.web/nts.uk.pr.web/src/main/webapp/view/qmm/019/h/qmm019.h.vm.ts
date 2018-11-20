@@ -1,50 +1,61 @@
 module nts.uk.pr.view.qmm019.h.viewmodel {
     import shareModel = nts.uk.pr.view.qmm019.share.model;
+    import IStatementLayout = nts.uk.pr.view.qmm019.share.model.IStatementLayout;
+    import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
+    import block = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
 
-        itemList: KnockoutObservableArray<shareModel.BoxModel>;
-        selectedId: KnockoutObservable<number>;
+        cloneList: KnockoutObservableArray<shareModel.BoxModel>;
+        isClone: KnockoutObservable<number>;
 
-        existingSpecs: KnockoutObservableArray<ExistingSpec>;
-        existingSpecCode: KnockoutObservable<string>;
+        statementLayoutList: KnockoutObservableArray<IStatementLayout>;
+        statementLayoutCodeSelected: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
-        specInfo: KnockoutObservable<string>;
-        specCode: KnockoutObservable<string>;
-        specName: KnockoutObservable<string>;
+        layoutPatternClone: KnockoutObservable<number>;
+        layoutPatternCloneText: KnockoutObservable<string>;
+        histIdClone: KnockoutObservable<string>;
+        statementCode: KnockoutObservable<string>;
+        statementName: KnockoutObservable<string>;
         startDate: KnockoutObservable<number>;
         startDateJp: KnockoutObservable<string>;
+        layoutPatternSelected: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
 
-            self.itemList = ko.observableArray(shareModel.getSpecCreateAtr());
-            self.selectedId = ko.observable(shareModel.SpecCreateAtr.NEW);
+            self.cloneList = ko.observableArray(shareModel.getSpecCreateAtr());
+            self.isClone = ko.observable(shareModel.SpecCreateAtr.NEW);
 
-            self.existingSpecs = ko.observableArray([
-                new ExistingSpec('1', '基本給', '123345'),
-                new ExistingSpec('2', '役職手当', '456778'),
-                new ExistingSpec('3', '基本給ながい文字列ながい文字列ながい文字列', 'fghgfhret')
-            ]);
-            self.existingSpecCode = ko.observable(null);
-
+            self.statementLayoutList = ko.observableArray([]);
+            self.statementLayoutCodeSelected = ko.observable(null);
 
             self.isEnable = ko.observable(false);
-            self.specInfo = ko.observable("");
-            self.specCode = ko.observable(null);
-            self.specName = ko.observable(null);
+            self.layoutPatternClone = ko.observable(null);
+            self.layoutPatternCloneText = ko.observable("");
+            self.histIdClone = ko.observable(null);
+            self.statementCode = ko.observable(null);
+            self.statementName = ko.observable(null);
             self.startDate = ko.observable(null);
             self.startDateJp = ko.observable(null);
+            self.layoutPatternSelected = ko.observable(0);
 
-            self.selectedId.subscribe(value => {
+            self.isClone.subscribe(value => {
                 self.isEnable(value == shareModel.SpecCreateAtr.COPY);
-            })
-            self.existingSpecCode.subscribe(value => {
-                let spec: ExistingSpec = _.find(self.existingSpecs(), (item: ExistingSpec) => {
-                    return item.code == value;
-                })
-                self.specInfo(spec.histId);
-            })
+            });
+
+            self.statementLayoutCodeSelected.subscribe(value => {
+                if(value != null) {
+                    let statementLayout: IStatementLayout = _.find(self.statementLayoutList(), (item: IStatementLayout) => {
+                        return item.statementCode == value;
+                    });
+
+                    self.layoutPatternClone(statementLayout.history[0].layoutPattern);
+                    self.layoutPatternCloneText(getLayoutPatternText(statementLayout.history[0].layoutPattern));
+                }
+            });
+
             self.startDate.subscribe(value => {
                 let dateJp = nts.uk.time.yearmonthInJapanEmpire(value);
                 if(dateJp == null){
@@ -52,34 +63,75 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
                 }else{
                     self.startDateJp(dateJp.toString());
                 }
-            })
+            });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
+
+            service.getAllStatementLayoutAndLastHist().done(function(data: Array<IStatementLayout>) {
+                self.statementLayoutList(data);
+
+                if(data.length > 0) {
+                    self.statementLayoutCodeSelected(data[0].statementCode);
+                } else {
+                    //TODO
+                }
+
+                block.clear();
+            });
+
             dfd.resolve();
             return dfd.promise();
         }
 
         decide() {
-            nts.uk.ui.windows.close();
+            let self = this;
+            block.invisible();
+
+            let histIdNew = nts.uk.util.randomId();
+            let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
+                    self.layoutPatternClone(), self.statementCode(), self.statementName(), self.startDate(), self.layoutPatternSelected());
+
+            //TODO $("#B1_6").trigger("validate");
+            if(!nts.uk.ui.errors.hasError()) {
+                service.addStatementLayout(command).done(() => {
+                    setShared("QMM019_H_TO_A_PARAMS", { isRegistered: false, histID: histIdNew});
+                    nts.uk.ui.windows.close();
+                }).fail(err => {
+                    //TODO
+                });
+            }
         }
 
         cancel() {
+            setShared("QMM019_H_TO_A_PARAMS", { isRegistered: false});
             nts.uk.ui.windows.close();
         }
     }
 
-    class ExistingSpec {
-        code: string;
-        name: string;
-        histId: string;
+    class StatementLayoutCommand {
+        isClone: number;
+        histIdNew: string;
+        histIdClone: string;
+        layoutPatternClone: number;
+        statementCode: string;
+        statementName: string;
+        startDate: number;
+        layoutPattern: number;
 
-        constructor(code: string, name: string, histId: string) {
-            this.code = code;
-            this.name = name;
-            this.histId = histId;
+        constructor(isClone: number, histIdNew: string, histIdClone: string, layoutPatternClone: number,
+                    statementCode: string, statementName: string, startDate: number, layoutPattern: number) {
+            this.isClone = isClone;
+            this.histIdNew = histIdNew;
+            this.histIdClone = histIdClone;
+            this.layoutPatternClone = layoutPatternClone;
+            this.statementCode = statementCode;
+            this.statementName = statementName;
+            this.startDate = startDate;
+            this.layoutPattern = layoutPattern;
         }
     }
 }

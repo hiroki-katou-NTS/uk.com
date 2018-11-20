@@ -11,9 +11,9 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
     export class ScreenModel {
 
         listStateCorrelationHis: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
-        to : KnockoutObservable<string> = ko.observable(' ～ ');
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         currentSelectedHis: KnockoutObservable<any> = ko.observable();
+        date: KnockoutObservable<string> = ko.observable();
         index: number;
         currentSelectedDep:  any;
         columns: any;
@@ -29,6 +29,8 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         transferMode: KnockoutObservable<number> = ko.observable();
         enableAddHisButton:  KnockoutObservable<boolean> = ko.observable(true);
         enableEditHisButton:  KnockoutObservable<boolean> = ko.observable(true);
+        enableRegisterButton:KnockoutObservable<boolean> = ko.observable(true);
+        newHistoryId: KnockoutObservable<string> = ko.observable();
         isModeAddHistory: KnockoutObservable<boolean> = ko.observable();
         constructor(){
             block.invisible();
@@ -37,6 +39,8 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             self.setShared(setShared);
             self.getShared(getShared);
             self.modal(modal);
+
+            //TODO
             self.list = [
                 {
                     CID: '000000000000-0001',
@@ -66,14 +70,12 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                     CD: 2,
                     NAME: 'C#'
                 },
-
             ]
-
-
 
             self.items = ko.observableArray([]);
             self.createList();
             self.currentSelectedDep = ko.observableArray([]);
+            //TODO
             self.currentSelectedHis.subscribe((hisId)=>{
                console.dir(hisId);
             });
@@ -101,7 +103,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             service.getStateCorrelationHisDeparmentById().done((data)=>{
                 if(data.length > 0){
                     _.forEach(data,(o)=>{
-                        listStateCorrelationHis.push(new ItemModel(o.historyID, '', o.startYearMonth , o.endYearMonth,self.to()));
+                        listStateCorrelationHis.push(new ItemModel(o.historyID,  o.startYearMonth , o.endYearMonth));
                     });
                     self.listStateCorrelationHis(listStateCorrelationHis);
                     firstHistory = _.head(self.listStateCorrelationHis());
@@ -131,18 +133,22 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         }
 
         openScreenJ(){
+
             let self = this;
             let hisId,startYearMonth, endYearMonth,temp;
-            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+            let rs = _.head(self.listStateCorrelationHis());
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth : rs ? rs.startYearMonth : 0,
                 isPerson: false,
-                modeScreen: model.MODE_SCREEN.EMPLOYEE,
+                modeScreen: model.MODE_SCREEN.DEPARMENT,
             });
+
             modal("/view/qmm/020/j/index.xhtml").onClosed(()=>{
+                block.invisible();
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if(params){
-                    hisId = HISTORY.NEW;
+                    hisId = nts.uk.util.randomId();
+                    self.newHistoryId(hisId);
                     startYearMonth = params.start;
                     self.startYearMonth(startYearMonth);
                     endYearMonth = Number(startYearMonth.toString().slice(4, 6)) == 1 ? (startYearMonth - 89) : (startYearMonth - 1);
@@ -150,30 +156,90 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                         temp = _.head(self.listStateCorrelationHis());
                         temp.endYearMonth = endYearMonth;
                         temp.changeDisplay();
-                        self.listStateCorrelationHis.unshift(new ItemModel(hisId, '', startYearMonth , 999912,self.to()));
+                        self.listStateCorrelationHis.unshift(new ItemModel(hisId,  startYearMonth , 999912));
                         self.isModeAddHistory(true);
                         self.listStateCorrelationHis(self.listStateCorrelationHis());
                     }else{
-                        self.listStateCorrelationHis.push(new ItemModel(hisId, '', startYearMonth, 999912,self.to()));
+                        self.listStateCorrelationHis.push(new ItemModel(hisId,  startYearMonth, 999912));
                         self.isModeAddHistory(true);
                         self.listStateCorrelationHis(self.listStateCorrelationHis());
                     }
-
+                    self.enableRegisterButton(true);
                     self.transferMode(params.transferMethod);
-                    self.currentSelectedHis(HISTORY.NEW);
+                    self.currentSelectedHis(self.newHistoryId());
+                }else if(!params && self.listStateCorrelationHis().length === 0){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                 }
+                block.clear();
             });
         }
 
         openScreenK(){
-            modal("/view/qmm/020/k/index.xhtml");
+            block.invisible();
+            let self = this;
+            let listStateCorrelationHis = [];
+            service.getStateCorrelationHisDeparmentById().done((data)=>{
+                listStateCorrelationHis = self.convertToList(data);
+                let rs = _.find(listStateCorrelationHis,{hisId: self.currentSelectedHis()});
+                let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.currentSelectedHis()});
+                setShared(model.PARAMETERS_SCREEN_K.INPUT, {
+                    startLastYearMonth : index != self.listStateCorrelationHis().length-1 ? self.listStateCorrelationHis()[index+1].startYearMonth : 0,
+                    startYearMonth : rs ? rs.startYearMonth : 0,
+                    endYearMonth:  rs ? rs.endYearMonth : 999912,
+                    hisId: self.currentSelectedHis(),
+                    modeScreen: model.MODE_SCREEN.DEPARMENT,
+                    masterCode: null,
+                    isFirst: index === 0 && self.listStateCorrelationHis().length > 1 ? true : false,
+                });
+            }).fail((err)=>{
+                if(err) dialog.alertError(err);
+            }).always(()=>{
+                block.clear();
+            });
+
+            modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{
+                block.invisible();
+                let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
+                if(params){
+                    service.getStateCorrelationHisEmployeeById().done((data)=>{
+                        if(params.modeEditHistory === EDIT_METHOD.DELETE){
+                            //case delete history => focus first history
+                            self.listStateCorrelationHis(self.convertToList(data));
+                            self.currentSelectedHis(_.head(self.listStateCorrelationHis()).hisId);
+                        }else{
+                            //case update history => focus current history
+                            self.listStateCorrelationHis(self.convertToList(data));
+                            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+                            let startYearMonth = rs ? rs.startYearMonth : 0;
+
+                        }
+                        self.enableAddHisButton(true);
+                        self.enableEditHisButton(true);
+                    });
+                }else{
+                    block.clear();
+                }
+
+            });
         }
+
+        convertToList(data: any){
+            let self = this;
+            let list = [];
+            _.forEach(data,(o)=>{
+                list.push(new ItemModel(o.hisId,  o.startYearMonth , o.endYearMonth));
+            });
+
+            return list;
+        }
+
         createList(){
             let self = this;
             let node = new Node('0000' + 0, 'TaiTT', '01','aaaaaaa','02','ffffffff',[]);
             self.createGrisList(self.list,0,node);
             self.items.push(node);
         }
+
         createGrisList(data:any, parrent_id:number, node: Node){
             let self = this;
             _.forEach(data,(o)=>{
@@ -258,28 +324,21 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return nts.uk.time.formatYearMonth(yearMonth);
         }
-
-
-
     }
 
     export class ItemModel {
         hisId: string;
-        name: string;
         display: string;
         startYearMonth: number;
         endYearMonth: number;
-        to: string;
-        constructor(hisId: string, name: string, startYearMonth: number,endYearMonth: number, to: string) {
+        constructor(hisId: string, startYearMonth: number,endYearMonth: number) {
             this.hisId = hisId;
-            this.name = name;
             this.startYearMonth = startYearMonth;
             this.endYearMonth = endYearMonth;
-            this.to = to;
-            this.display = this.convertYearMonthToDisplayYearMonth(startYearMonth)+ this.to + this.convertYearMonthToDisplayYearMonth(endYearMonth);
+            this.display = getText('QMM020_16',[this.convertYearMonthToDisplayYearMonth(startYearMonth),this.convertYearMonthToDisplayYearMonth(endYearMonth)]);
         }
         changeDisplay(){
-            this.display = this.convertYearMonthToDisplayYearMonth(this.startYearMonth)+ this.to + this.convertYearMonthToDisplayYearMonth(this.endYearMonth);
+            this.display = getText('QMM020_16',[this.convertYearMonthToDisplayYearMonth(this.startYearMonth),this.convertYearMonthToDisplayYearMonth(this.endYearMonth)]);
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
@@ -336,6 +395,10 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         UPDATE = 1,
     }
 
+    export enum EDIT_METHOD {
+        DELETE = 0,
+        UPDATE = 1
+    }
     export enum HISTORY{
         NEW = '0'
     }

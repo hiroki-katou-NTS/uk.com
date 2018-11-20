@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
-
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -46,7 +45,7 @@ public class StateCorrelationHisDeparmentService {
         this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisDeparment);
     }
 
-    private void updateItemBefore( String cId, YearMonthHistoryItem item, StateCorrelationHisDeparment stateCorrelationHisDeparment){
+    private void updateItemBefore(String cId, YearMonthHistoryItem item, StateCorrelationHisDeparment stateCorrelationHisDeparment){
         Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorrelationHisDeparment.immediatelyBefore(item);
         if (!itemToBeUpdated.isPresent()){
             return;

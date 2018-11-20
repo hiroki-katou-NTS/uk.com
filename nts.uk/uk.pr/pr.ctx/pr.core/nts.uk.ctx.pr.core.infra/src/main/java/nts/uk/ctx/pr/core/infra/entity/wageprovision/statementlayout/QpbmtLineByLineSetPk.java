@@ -41,10 +41,4 @@ public class QpbmtLineByLineSetPk implements Serializable {
     @Column(name="LINE_NUM")
     public int lineNumber;
 
-    /**
-     * 項目ID
-     */
-    @Basic(optional = false)
-    @Column(name="ITEM_ID")
-    public int itemID;
 }

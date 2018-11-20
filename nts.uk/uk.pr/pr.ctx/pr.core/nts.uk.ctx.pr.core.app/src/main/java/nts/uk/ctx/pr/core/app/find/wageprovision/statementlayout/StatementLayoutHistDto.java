@@ -1,49 +1,30 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.YearMonthHistoryItemCustom;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 
-/**
-* 明細書レイアウト履歴: DTO
-*/
+@Data
 @AllArgsConstructor
-@Value
-public class StatementLayoutHistDto
-{
-    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 明細書コード
-    */
-    private String statementCode;
-    /**
-     * 明細書名称
-     */
-    private String statementName;
-    
-    /**
-    * 履歴ID
-    */
-    private String historyId;
+public class StatementLayoutHistDto {
+    public String historyId;
+    public Integer startMonth;
+    public Integer endMonth;
+    public Integer layoutPattern;
 
-    /**
-     * 開始年月
-     */
-    private int startYearMonth;
+    private StatementLayoutHistDto(String historyId, Integer startMonth, Integer endMonth) {
+        this.historyId = historyId;
+        this.startMonth = startMonth;
+        this.endMonth = endMonth;
+    }
+    public static StatementLayoutHistDto fromDomainToDto (YearMonthHistoryItem domain){
+        StatementLayoutHistDto result = new StatementLayoutHistDto(domain.identifier(), domain.start().v(), domain.end().v());
 
-    /**
-     * 終了年月
-     */
-    private int endYearMonth;
+        if(domain instanceof YearMonthHistoryItemCustom) {
+            result.setLayoutPattern(((YearMonthHistoryItemCustom) domain).getLayoutPattern());
+        }
 
-
-
-    
-    
-
-    
+        return result;
+    }
 }

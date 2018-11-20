@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
 * 計算式
@@ -11,7 +11,9 @@ public interface FormulaRepository
 
     List<Formula> getAllFormula();
 
-    Optional<Formula> getFormulaById(String cid, int formulaCode);
+    Optional<Formula> getFormulaById(String cid, String formulaCode);
+
+    List<Formula> getFormulaByCodes(String cid, List<String> formulaCodes);
 
     void add(Formula domain);
 

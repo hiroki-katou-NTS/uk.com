@@ -39,8 +39,9 @@ public class StateCorrelationHisPositionService {
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
-    public void updateHistoryPosition(List<StateLinkSettingMaster> stateLinkSettingMaster){
-        stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
+    public void updateHistoryPosition(List<StateLinkSettingMaster> stateLinkSettingMaster, String hisId){
+        stateLinkSettingMasterRepository.removeAll(hisId);
+        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
     private void updateItemBefore(StateCorrelationHisPosition stateCorrelationHisPosition, YearMonthHistoryItem item, String cId){

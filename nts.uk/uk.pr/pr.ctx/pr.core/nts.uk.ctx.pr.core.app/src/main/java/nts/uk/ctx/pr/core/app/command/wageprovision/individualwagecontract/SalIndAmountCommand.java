@@ -5,18 +5,16 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 @Value
-public class SalIndAmountCommand
-{
-    
+public class SalIndAmountCommand {
+
     /**
-    * 履歴ID
-    */
+     * 履歴ID
+     */
     private String historyId;
-    
+
     /**
-    * 金額
-    */
-    private int amountOfMoney;
-    
+     * 金額
+     */
+    private long amountOfMoney;
 
 }

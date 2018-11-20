@@ -27,7 +27,7 @@
             <div class="table table-origin">
                 <div class="cell valign-top">
                     <!--G1_1-->
-                    <div data-bind="ntsPanel:{width: '280px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+                    <div data-bind="ntsPanel:{width: '260px', height: '490px', direction: 'right', showIcon: true, visible: true}">
                         <div class="table table-search">
                             <div class="cell valign-center">
                                 <!--G1_2-->
@@ -41,35 +41,36 @@
                         <div class="table table-search">
                             <div class="cell valign-top">
                                 <!--G1_4-->
-                                <div data-bind="ntsFormLabel: {}">G1_4</div>
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_7')}</div>
                             </div>
                             <div class="cell valign-top">
                                 <!--G1_5-->
-                                <div style="width: 190px" data-bind="ntsSearchBox: {
+                                <div tabindex="1" style="width: 170px" data-bind="ntsSearchBox: {
 									searchMode: 'highlight',
-									targetKey: 'code',
+									targetKey: 'itemNameCd',
 									comId: 'G1_6',
 									items: itemNames,
 									selected: selectedSearchIitemName,
-									selectedKey: 'code',
-									fields: ['code', 'name'],
+									selectedKey: 'itemNameCd',
+									fields: ['itemNameCd', 'name'],
 									mode: 'igGrid'}"/>
                             </div>
                         </div>
                         <!--G1_6-->
-                        <table id="G1_6" data-bind="ntsGridList: {
+                        <table id="G1_6" tabindex="2" data-bind="ntsGridList: {
                             rows: 15,
                             name: '#[QMM019_174]',
                             dataSource: itemNames,
-                            primaryKey: 'code',
+                            primaryKey: 'itemNameCd',
                             columns: [
-                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'code', width: 50, formatter: _.escape},
-                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 213, formatter: _.escape}
+                                { headerText: '#{i18n.getText('QMM019_108')}', key: 'itemNameCd', width: 50, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 193, formatter: _.escape}
                             ],
                             multiple: false,
                             value: codeSelected}"/>
                         <!--G1_11-->
-                        <button id="btn-register" data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
+                        <button id="btn-register" tabindex="3"
+                                data-bind="click: register">#{i18n.getText('QMM019_110')}</button>
                     </div>
                 </div>
                 <div class="cell valign-top">
@@ -79,18 +80,22 @@
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_105')}</div>
                         </div>
                         <div class="cell valign-center">
-                            <!--G2_2-->
-                            <div class="label" data-bind="text: itemNameSelected().code"/>
+                            <com:ko-if bind="screenControl().visibleG2_2()">
+                                <!--G2_2-->
+                                <div class="label" data-bind="text: dataScreen().itemNameCode"/>
+                            </com:ko-if>
                         </div>
                         <div class="cell valign-center">
-                            <!--G2_3-->
-                            <div class="label" data-bind="text: itemNameSelected().name"/>
+                            <com:ko-if bind="screenControl().visibleG2_2()">
+                                <!--G2_3-->
+                                <div class="label" data-bind="text: dataScreen().name"/>
+                            </com:ko-if>
                         </div>
                     </div>
                 </div>
                 <div class="cell valign-top">
                     <!--G2_4-->
-                    <div data-bind="ntsAccordion: { }">
+                    <div data-bind="ntsAccordion: { enable: screenControl().enableG2_4() }">
                         <h3>#{i18n.getText('QMM019_113')}</h3>
                         <div class="acc-content">
                             <!--G4_1-->
@@ -107,6 +112,7 @@
                                         </th>
                                         <td>
                                             <!--G4_6-->
+                                            <div class="label limited-label" data-bind="text: dataScreen().name"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -116,6 +122,7 @@
                                         </th>
                                         <td>
                                             <!--G4_7-->
+                                            <div class="label" data-bind="text: categoryAtrText"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -124,10 +131,33 @@
                     </div>
                 </div>
             </div>
+            <!--G1_10-->
+            <div class="userguide-register" data-toggle="userguide-register" data-target="#btn-register"
+                 data-direction="right">
+                <div data-target="#btn-register" data-direction="right">
+                    #{i18n.getText('QMM019_144')}
+                </div>
+            </div>
+            <!--G1_11-->
+            <div class="userguide-exist" data-toggle="userguide-exist" data-target="#G1_6_container"
+                 data-direction="right">
+                <div data-target="#G1_6_container" data-direction="right">
+                    #{i18n.getText('QMM019_145')}
+                </div>
+            </div>
+            <!--G1_12-->
+            <div class="userguide-not-register" data-toggle="userguide-not-register" data-target="#G1_6_container"
+                 data-direction="right">
+                <div data-target="#G1_6_container" data-direction="right">
+                    #{i18n.getText('QMM019_146')}
+                </div>
+            </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
-            <button data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
+            <button tabindex="16"
+                    data-bind="click: decide, enable: screenControl().enableG3_1() &amp;&amp; $root.errors.isEmpty"
+                    class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="17" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>
 </ui:composition>

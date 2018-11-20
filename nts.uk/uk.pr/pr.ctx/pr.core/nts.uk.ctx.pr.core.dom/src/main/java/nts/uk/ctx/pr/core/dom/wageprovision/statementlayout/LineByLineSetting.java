@@ -29,7 +29,7 @@ public class LineByLineSetting extends DomainObject
     */
     private List<SettingByItem> listSetByItem;
     
-    public LineByLineSetting(int printSet, int lineNumber,List<SettingByItem> listSetByItem ) {
+    public LineByLineSetting(int printSet, int lineNumber, List<SettingByItem> listSetByItem) {
         this.printSet = EnumAdaptor.valueOf(printSet, StatementPrintAtr.class);
         this.lineNumber = lineNumber;
         this.listSetByItem = listSetByItem;

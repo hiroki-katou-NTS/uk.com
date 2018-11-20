@@ -34,8 +34,9 @@ public class StateCorrelationHisSalaryService {
         stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
-    public void updateHistorySalary(List<StateLinkSettingMaster> stateLinkSettingMaster){
-        stateLinkSettingMasterRepository.updateAll(stateLinkSettingMaster);
+    public void updateHistorySalary(List<StateLinkSettingMaster> stateLinkSettingMaster, String hisId){
+        stateLinkSettingMasterRepository.removeAll(hisId);
+        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
     private void updateItemBefore(StateCorrelationHisSalary stateCorrelationHisSalary, YearMonthHistoryItem item, String cId){

@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.enums.EnumAdaptor;
 
@@ -10,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 * 明細書レイアウト設定
 */
 @Getter
+@Setter
 public class StatementLayoutSet extends AggregateRoot {
     
     /**

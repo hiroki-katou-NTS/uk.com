@@ -31,11 +31,9 @@ public class AddOrUpdateStateCorrelationHisEmployeeCommandHandler extends Comman
         //convert to domain
         List<StateLinkSettingMaster> stateLinkSettingMaster = new ArrayList<StateLinkSettingMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
-            stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item ->{
-                return new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
-                        item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
-                        item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()));
-            }).collect(Collectors.toList());
+            stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
+                    item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
+                    item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()))).collect(Collectors.toList());
         }
         StateCorrelationHisEmployeeCommand stateCorrelationHisEmployeeCommand = context.getCommand().getStateCorrelationHisEmployeeCommand();
         int mode = context.getCommand().getMode();

@@ -40,9 +40,7 @@ public class StateCorrelationHisEmployeeDto {
     public static List<StateCorrelationHisEmployeeDto> fromDomain(String cid, StateCorrelationHisEmployee domain)
     {
         List<StateCorrelationHisEmployeeDto> stateCorrelationHisEmployeeDto = new ArrayList<>();
-        stateCorrelationHisEmployeeDto = domain.getHistory().stream().map(item ->{
-            return new StateCorrelationHisEmployeeDto(cid, item.identifier(), item.start().v(),item.end().v());
-        }).collect(Collectors.toList());
+        stateCorrelationHisEmployeeDto = domain.getHistory().stream().map(item -> new StateCorrelationHisEmployeeDto(cid, item.identifier(), item.start().v(),item.end().v())).collect(Collectors.toList());
         return stateCorrelationHisEmployeeDto;
     }
     

@@ -27,6 +27,8 @@ public class EmployeeInformationAcquisitionProcessingFinder {
     public SetDaySupportDto getEmpExtRefDate() {
         PerProcesClsSetDto perProcesClsSetDto = perProcesClsSetFinder.getPerProcesClsSetbyUIDAndCID();
         CurrProcessDateDto currProcessDateDto = currProcessDateFinder.getCurrProcessDateByID(Objects.isNull(perProcesClsSetDto) ? DEFAULT_PROCESS_CATE_NO : perProcesClsSetDto.getProcessCateNo());
+        if(Objects.isNull(currProcessDateDto))
+            return null;
         SetDaySupportDto setDaySupportDto = setDaySupportFinder.getEmployeeExtractionReferenceDateByIdAndProcessDate(currProcessDateDto.getProcessCateNo(), currProcessDateDto.getGiveCurrTreatYear());
         return setDaySupportDto;
     }

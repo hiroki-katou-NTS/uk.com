@@ -2,9 +2,13 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statementbindingsetting;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddOrUpdateStateCorrelationHisCompanyCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanySettingCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisCompanyFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StatementLayoutDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -13,8 +17,10 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
+import java.util.Optional;
 
 
 @Path("core/wageprovision/statementbindingsetting")
@@ -26,6 +32,12 @@ public class StateCorrelationHisCompanyWebService extends WebService {
 
     @Inject
     private StateCorrelationHistoryService mStateCorrelationHistoryService;
+
+    @Inject
+    private StateLinkSettingCompanyFinder stateLinkSettingCompanyFinder;
+
+    @Inject
+    private AddOrUpdateStateCorrelationHisCompanyCommandHandler addOrUpdateStateCorrelationHisCompanyCommandHandler;
 
     @POST
     @Path("getStateCorrelationHisCompanyById")
@@ -45,5 +57,22 @@ public class StateCorrelationHisCompanyWebService extends WebService {
                         command.getHistoryID(),
                         new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth()))),
                 command.isUpdate());
+    }
+
+    @POST
+    @Path("getStateLinkSettingCompanyById/{hisId}/{startYearMonth}")
+    public StatementLayoutDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId, @PathParam("startYearMonth") int startYearMonth){
+        String cid = AppContexts.user().companyId();
+        Optional<StatementLayoutDto> statementLayoutDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(cid,hisId,startYearMonth);
+        if(statementLayoutDto.isPresent()){
+            return statementLayoutDto.get();
+        }
+        return null;
+    }
+
+    @POST
+    @Path("registerStateLinkSettingCompany")
+    public void registerStateLinkSettingCompany(StateCorrelationHisCompanySettingCommand command){
+        addOrUpdateStateCorrelationHisCompanyCommandHandler.handle(command);
     }
 }

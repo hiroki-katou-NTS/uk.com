@@ -281,6 +281,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                             employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName,
                             workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
                         };
+                        self.employeeInputList.removeAll();
                         self.employeeInputList.push(new Employee(emp.sid,
                             emp.employeeCode, emp.employeeName, wp.name, wp.name));
                         self.loadKCP009();

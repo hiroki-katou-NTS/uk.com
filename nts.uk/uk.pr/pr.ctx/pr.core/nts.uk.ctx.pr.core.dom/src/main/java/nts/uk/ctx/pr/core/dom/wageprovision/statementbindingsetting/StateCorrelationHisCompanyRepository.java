@@ -10,8 +10,6 @@ import java.util.Optional;
 */
 public interface StateCorrelationHisCompanyRepository {
 
-    Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid, String hisId);
-
     Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid);
 
     Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyByDate(String cid,GeneralDate baseDate);

@@ -38,20 +38,20 @@
                     <!--H1_2-->
                     <div id="H1_2" tabindex="1" data-bind="ntsRadioBoxGroup: {
                         name: '#[QMM019_177]',
-                        options: itemList,
+                        options: cloneList,
                         optionsValue: 'id',
                         optionsText: 'name',
-                        value: selectedId,
+                        value: isClone,
                         enable: true}"/>
                 </div>
                 <div class="cell valign-center">
                     <!--H1_5-->
                     <div id="H1_5" tabindex="2" data-bind="ntsComboBox: {
                         name: '#[QMM019_180]',
-                        options: existingSpecs,
+                        options: statementLayoutList,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
-                        value: existingSpecCode,
+                        value: statementLayoutCodeSelected,
                         optionsText: 'name',
                         enable: isEnable,
                         columns: [
@@ -61,7 +61,7 @@
                 </div>
                 <div class="cell valign-center">
                     <!--H1_7-->
-                    <div class="label" data-bind="text: specInfo"/>
+                    <div class="label" data-bind="text: layoutPatternCloneText"/>
                 </div>
             </div>
             <div class="table table2">
@@ -73,20 +73,20 @@
             <div class="table table3">
                 <div class="cell valign-center">
                     <!--H1_9-->
-                    <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_7')}</div>
+                    <div data-bind="ntsFormLabel: { required: true, constraint: ['StatementCode', 'StatementName']}">#{i18n.getText('QMM019_7')}</div>
                 </div>
                 <div class="cell valign-center">
                     <!--H1_10-->
                     <input id="H1_10" tabindex="3" data-bind="ntsTextEditor: {
                         name: '#[QMM019_15]',
-                        value: specCode,
-                        constraint: 'SpecCode',
+                        value: statementCode,
+                        constraint: 'StatementCode',
                         required: true }"/>
                     <!--H1_11-->
                     <input tabindex="4" data-bind="ntsTextEditor: {
                         name: '#[QMM019_16]',
                         value: specName,
-                        constraint: 'SpecName',
+                        constraint: 'StatementName',
                         required: true }"/>
                 </div>
             </div>

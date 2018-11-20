@@ -30,7 +30,7 @@ public class QpbmtWageTableHistPk implements Serializable {
      */
     @Basic(optional = false)
     @Column(name = "WAGE_TABLE_CODE")
-    private String wageTblCode;
+    public String wageTblCode;
     /**
      * 履歴ID
      */

@@ -119,7 +119,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             }).always(() => {
                 block.clear();
             });
-            block.clear();
         }
 
         registerClassification(){

@@ -32,16 +32,16 @@ public class JpaPaymentItemDetailSetRepository extends JpaRepository implements 
 
     @Override
     public void add(PaymentItemDetailSet domain){
-        this.commandProxy().insert(QpbmtPayItemDetailSet.toEntity(domain));
+        //this.commandProxy().insert(QpbmtPayItemDetailSet.toEntity(domain));
     }
 
     @Override
     public void update(PaymentItemDetailSet domain){
-        this.commandProxy().update(QpbmtPayItemDetailSet.toEntity(domain));
+        //this.commandProxy().update(QpbmtPayItemDetailSet.toEntity(domain));
     }
 
     @Override
     public void remove(String histId){
-        this.commandProxy().remove(QpbmtPayItemDetailSet.class, new QpbmtPayItemDetailSetPk(histId));
+        //this.commandProxy().remove(QpbmtPayItemDetailSet.class, new QpbmtPayItemDetailSetPk(histId));
     }
 }
