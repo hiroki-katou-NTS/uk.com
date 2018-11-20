@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.ac.nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
+package nts.uk.ctx.pr.core.ac.employment;
 
 import java.util.List;
 import java.util.stream.Collectors;
