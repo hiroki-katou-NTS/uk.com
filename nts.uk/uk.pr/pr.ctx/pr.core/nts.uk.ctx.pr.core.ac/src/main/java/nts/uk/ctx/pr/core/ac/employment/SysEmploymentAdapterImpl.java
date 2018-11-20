@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SysEmploymentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employment.SysEmploymentAdapter;
 
 @Stateless
 public class SysEmploymentAdapterImpl implements SysEmploymentAdapter {
