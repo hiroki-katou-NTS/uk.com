@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.IndividualEmpSalUnitPrice;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.IndEmpSalUnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.WorkIndividualPrice;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.empsalunitprice.QpbmtEmpSalPriHis;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.empsalunitprice.QpbmtEmpSalPriHisPk;
@@ -69,19 +69,10 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     }
 
     @Override
-    public List<IndividualEmpSalUnitPrice> getIndividualEmpSalUnitPrices(String perUnitPriceCode, String employeeId) {
+    public List<IndEmpSalUnitPriceHistory> getAllIndividualEmpSalUnitPriceHistory(String perUnitPriceCode, String employeeId) {
         return this.queryProxy().query(SELECT_BY_CODE_STRING, QpbmtEmpSalPriHis.class)
                 .setParameter("personalUnitPriceCode", perUnitPriceCode)
-                .setParameter("employeeId", employeeId).getList().stream().map(QpbmtEmpSalPriHis::toDomain).collect(Collectors.toList());
-    }
-
-    @Override
-    public void add(IndividualEmpSalUnitPrice domain) {
-        this.commandProxy().insert(QpbmtEmpSalPriHis.toEntity(domain));
-    }
-
-    @Override
-    public void update(IndividualEmpSalUnitPrice domain) {
-        this.commandProxy().update(QpbmtEmpSalPriHis.toEntity(domain));
+                .setParameter("employeeId", employeeId)
+                .getList().stream().map(QpbmtEmpSalPriHis::toDomain).collect(Collectors.toList());
     }
 }

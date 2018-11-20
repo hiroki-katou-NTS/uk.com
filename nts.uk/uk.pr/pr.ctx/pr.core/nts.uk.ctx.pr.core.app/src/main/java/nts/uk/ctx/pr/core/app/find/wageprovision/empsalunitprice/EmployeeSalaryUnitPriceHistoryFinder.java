@@ -7,17 +7,24 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmployeeSalaryUnitPriceHistoryFinder {
 
     @Inject
-    private EmployeeSalaryUnitPriceHistoryRepository employeeSalaryUnitPriceHistoryRepository;
+    private EmployeeSalaryUnitPriceHistoryRepository repository;
 
     @Inject
     private EmployeeInfoAdapter employeeInfoAdapter;
 
     public EmployeeSalaryUnitPriceDto getEmployeeSalaryUnitPriceDto(String personalUnitPriceCode, List<String> employeeIds) {
-        return new EmployeeSalaryUnitPriceDto(this.employeeSalaryUnitPriceHistoryRepository.getEmployeeSalaryUnitPriceHistory(personalUnitPriceCode, employeeIds), this.employeeInfoAdapter.getByListSid(employeeIds));
+        return new EmployeeSalaryUnitPriceDto(this.repository.getEmployeeSalaryUnitPriceHistory(personalUnitPriceCode, employeeIds), this.employeeInfoAdapter.getByListSid(employeeIds));
+    }
+
+    public List<IndEmpSalUnitPriceHistoryDto> getAllIndividualEmpSalUnitPriceHistoryDto(IndEmpSalUnitPriceHistoryDto dto) {
+        return repository.getAllIndividualEmpSalUnitPriceHistory(dto.getPersonalUnitPrice(), dto.getEmployeeId())
+                .stream().map(IndEmpSalUnitPriceHistoryDto::fromDomainToDto)
+                .collect(Collectors.toList());
     }
 }

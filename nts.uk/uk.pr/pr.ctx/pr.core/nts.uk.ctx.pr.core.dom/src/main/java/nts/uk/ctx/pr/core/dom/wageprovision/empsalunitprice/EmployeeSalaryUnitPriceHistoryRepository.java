@@ -19,10 +19,6 @@ public interface EmployeeSalaryUnitPriceHistoryRepository
 
     void remove(String personalUnitPriceCode, String employeeId, String historyId);
 
-    List<IndividualEmpSalUnitPrice> getIndividualEmpSalUnitPrices(String perUnitPriceCode, String employeeId);
-
-    void add(IndividualEmpSalUnitPrice domain);
-
-    void update(IndividualEmpSalUnitPrice domain);
+    List<IndEmpSalUnitPriceHistory> getAllIndividualEmpSalUnitPriceHistory(String perUnitPriceCode, String employeeId);
 
 }
