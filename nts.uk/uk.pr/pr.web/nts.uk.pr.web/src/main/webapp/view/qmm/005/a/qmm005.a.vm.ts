@@ -1,7 +1,9 @@
 module nts.uk.pr.view.qmm005.a.viewmodel {
-    import model = nts.uk.pr.view.qmm005.share.model;
+    import model     = nts.uk.pr.view.qmm005.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block     = nts.uk.ui.block;
+    import dialog    = nts.uk.ui.dialog;
 
     import modal = nts.uk.ui.windows.sub.modal;
     import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
@@ -270,17 +272,26 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if (codeList.length > 0) {
                         commandData.empTiedProYearCommand.push({employmentCodes: codeList});
                     } else {
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_217", message: nts.uk.resource.getMessage("MsgQ_217",[i+1])});
+                        nts.uk.ui.dialog.alertError({
+                            messageId: "MsgQ_217",
+                            message: nts.uk.resource.getMessage("MsgQ_217", [i + 1])
+                        });
                         return;
                     }
+                } else {
+                    commandData.currProcessDateCommand.push({giveCurrTreatYear: null});
+                    commandData.empTiedProYearCommand.push({employmentCodes: []});
                 }
             }
+
+            block.invisible();
             service.registerProcessing(commandData).done(function (data) {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"});
             }).fail(function (error) {
+                dialog.alertError(error.message);
+            }).always(function () {
+                block.clear();
             });
-
-
         }
     }
 
@@ -311,8 +322,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             selfItemBinding.monthsSelectd = ko.observable(0);
             if(currentProcessDate){ selfItemBinding.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
 
-
-
             selfItemBinding.yaersSelected.subscribe(function (data) {
                 selfItemBinding.monthsSubcriceYear.removeAll();
                 selfItemBinding.monthsSubcriceYear(
@@ -320,8 +329,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         return parseInt(o.code / 100) == data;
                     })
                 )
-            })
-
+            });
 
              let currentYear =new Date().getFullYear();
             let startYearSelected=parseInt((selfItemBinding.currentYaerMonthSelected())/100);
