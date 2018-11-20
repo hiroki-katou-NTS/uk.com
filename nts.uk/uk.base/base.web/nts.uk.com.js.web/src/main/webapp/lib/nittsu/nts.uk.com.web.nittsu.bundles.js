@@ -4497,7 +4497,7 @@ var nts;
             (function (notify) {
                 var error;
                 (function (error) {
-                    ui.documentReady.add(function () {
+                    ui.viewModelApplied.add(function () {
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
@@ -15245,9 +15245,10 @@ var nts;
                     var $label = $(this);
                     if ($label[0].nodeName === "INPUT"
                         && (window.navigator.userAgent.indexOf("MSIE") > -1
-                            || !!window.navigator.userAgent.match(/trident/i))) {
+                            || !!window.navigator.userAgent.match(/trident/i)
+                            || window.navigator.userAgent.indexOf("Edge") > -1)) {
                         var $div = $("<div/>").appendTo($(document.body));
-                        var style = $label[0].currentStyle;
+                        var style = $label[0].currentStyle || $label[0].style;
                         if (style) {
                             for (var p in style) {
                                 $div[0].style[p] = style[p];
@@ -17696,20 +17697,143 @@ var nts;
                     }
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         _super.prototype.init.call(this, $input, data);
-                        $input.focus(function () {
+                        $input.on('focus', function () {
                             if (!$input.attr('readonly')) {
-                                // Remove separator (comma)
-                                var value = ko.toJS(data.value), numb = Number(value);
-                                if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
-                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
-                                }
-                                else {
-                                    $input.val(data.value());
-                                }
+                                $input.val(data.value());
                                 // If focusing is caused by Tab key, select text
                                 // this code is needed because removing separator deselects.
                                 if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
                                     $input.select();
+                                }
+                            }
+                        });
+                        $input.on('keydown', function (evt) {
+                            var rd = ko.toJS(data), target = evt.target, val = target.value, ss = target.selectionStart, se = target.selectionEnd, constraint = rd.constraint;
+                            // filter specs key
+                            if ([8, 9, 13, 16, 17, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46].indexOf(evt.keyCode) == -1) {
+                                if (!evt.key.match(/[\-\.0-9]/g)) {
+                                    evt.preventDefault();
+                                }
+                                else {
+                                    // calc new value after keypress
+                                    if (ss == se) {
+                                        if (se == 0) {
+                                            val = evt.key + val;
+                                        }
+                                        else if (se == val.length) {
+                                            val += evt.key;
+                                        }
+                                        else {
+                                            val = val.substring(0, ss) + evt.key + val.substring(se, val.length);
+                                        }
+                                    }
+                                    else {
+                                        val = val.replace(val.substring(ss, se), evt.key);
+                                    }
+                                    // accept negative key only first press
+                                    if (evt.key == '-' && (ss || target.value.indexOf('-') > -1)) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                    // accept only one pointer
+                                    if (evt.key == '.' && target.value.indexOf('.') > -1) {
+                                        evt.preventDefault();
+                                        return;
+                                    }
+                                    // case has constraint check value by type
+                                    if (constraint) {
+                                        var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        if (primitive) {
+                                            var nval = parseFloat(val), min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength;
+                                            // accept negative key if min < 0
+                                            if (evt.key == '-' && min >= 0) {
+                                                evt.preventDefault();
+                                                return;
+                                            }
+                                            // clear decimal in constraint (sync) if option not has decimallength
+                                            if (rd.option && rd.option.decimallength < 1) {
+                                                primitive.valueType = 'Integer';
+                                            }
+                                            switch (primitive.valueType) {
+                                                case "String":
+                                                    var maxL = primitive.maxLength;
+                                                    if (val.length > maxL || ['.', '-'].indexOf(evt.key) > -1) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                                case "Integer":
+                                                    if (evt.key == '.') {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (nval > max || nval < min) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                                case "HalfInt":
+                                                    var milen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+                                                    if (milen > 1 || (se == val.length - 1 && milen == 1 && ['0', '5'].indexOf(evt.key) == -1)) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (nval > max || nval < min) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                                case "Decimal":
+                                                    var mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+                                                    if (mdlen > primitive.mantissaMaxLength) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (nval > max || nval < min) {
+                                                        evt.preventDefault();
+                                                        return;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        var dlen = rd.option.decimallength, mdlen = val.replace('-', '').replace(/\d+/, '').replace('.', '').length;
+                                        if (dlen < mdlen) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            else if ([8, 46].indexOf(evt.keyCode) > -1 && constraint) {
+                                var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                // if value after delete out of range, preventDefault
+                                if (primitive) {
+                                    var min = primitive.min, max = primitive.max;
+                                    if (ss == se) {
+                                        if (evt.keyCode == 8) {
+                                            var _num = parseFloat(val.substring(0, ss - 1) + val.substring(se, val.length));
+                                            if (_num < min || _num > max) {
+                                                evt.preventDefault();
+                                                return;
+                                            }
+                                        }
+                                        else {
+                                            var _num = parseFloat(val.substring(0, ss) + val.substring(se + 1, val.length));
+                                            if (_num < min || _num > max) {
+                                                evt.preventDefault();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        var _num = parseFloat(val.substring(0, ss) + val.substring(se, val.length));
+                                        if (_num < min || _num > max) {
+                                            evt.preventDefault();
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         });
@@ -18807,6 +18931,7 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: isMultiSelect });
                         var maxWidthCharacter = 15;
+                        var SCROLL_WIDTH = 20;
                         var gridFeatures = ko.unwrap(data.features);
                         var width = 0;
                         var iggridColumns = [];
@@ -18818,12 +18943,16 @@ var nts;
                         }
                         else {
                             var isHaveKey_1 = false;
-                            iggridColumns = _.map(columns, function (c) {
+                            iggridColumns = _.map(columns, function (c, index, columns) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
-                                c["width"] = c["length"] * maxWidthCharacter + 20;
+                                var columnWidth = c["length"] * maxWidthCharacter + 20;
+                                if (index = columns.length - 1) {
+                                    columnWidth += SCROLL_WIDTH;
+                                }
+                                c["width"] = columnWidth;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
-                                width += c["length"] * maxWidthCharacter + 20;
+                                width += columnWidth;
                                 if (optionValue === c["key"]) {
                                     isHaveKey_1 = true;
                                 }
@@ -24186,8 +24315,10 @@ var nts;
                             };
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                            if (!trg)
+                            if (!trg) {
                                 event.preventDefault();
+                                event.stopPropagation();
+                            }
                         };
                         /**
                          * Cursor move shift.
@@ -26194,7 +26325,7 @@ var nts;
                             return;
                         }
                         if (su.afterCollertar)
-                            su.afterCollertar.focus({ preventScroll: true });
+                            setTimeout(function () { return su.afterCollertar.focus({ preventScroll: true }); }, 1);
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
@@ -28983,6 +29114,32 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            var action;
+            (function (action) {
+                var content;
+                (function (content) {
+                    ui.documentReady.add(function () {
+                        $('#functions-area').addClass("disappear");
+                        $('#functions-area-bottom').addClass("disappear");
+                        $('#contents-area').addClass("disappear");
+                    });
+                    ui.viewModelApplied.add(function () {
+                        $('#functions-area').removeClass("disappear");
+                        $('#functions-area-bottom').removeClass("disappear");
+                        $('#contents-area').removeClass("disappear");
+                    });
+                })(content || (content = {}));
+            })(action = ui.action || (ui.action = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var file;
             (function (file_1) {
                 var FileDownload = (function () {
@@ -29753,7 +29910,7 @@ var nts;
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
                         if (action === ui.DATA_HAS_ERROR) {
-                            return _.some($control, function (c) { return hasError($(c)); });
+                            return _.some($control, function (c) { return hasError($(c)); }) || _.some($control.find("*"), function (c) { return hasError($(c)); });
                         }
                         else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
@@ -32942,11 +33099,11 @@ var nts;
                                     var rId = rowObj[$grid.igGrid("option", "primaryKey")];
                                     var $gridCell = internal.getCellById($grid, rId, column.key);
                                     if ($gridCell && $($gridCell.children()[0]).children().length === 0) {
-                                        var action = void 0;
+                                        var action_1;
                                         if (column.click && _.isFunction(column.click)) {
-                                            action = function () { return column.click(rowId, column.key); };
+                                            action_1 = function () { return column.click(rowId, column.key); };
                                         }
-                                        $("." + controlCls).append(new Label(action).draw({ text: value }));
+                                        $("." + controlCls).append(new Label(action_1).draw({ text: value }));
                                         var cellElement = {
                                             id: rId,
                                             columnKey: column.key,
@@ -38103,11 +38260,11 @@ var nts;
                         }
                         var $startDateArea = self.$datePickerArea.find(".ntsStartDate");
                         var $endDateArea = self.$datePickerArea.find(".ntsEndDate");
-                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
-                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
+                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
                         self.$start = $startDateArea.find(".ntsStartDatePicker");
                         self.$end = $endDateArea.find(".ntsEndDatePicker");
-                        var $input = self.$container.find(".input");
+                        var $input = self.$container.find(".nts-input");
                         // Init Datepicker
                         //            $input.datepicker({
                         //                language: 'ja-JP',
@@ -38130,9 +38287,12 @@ var nts;
                             var $target = $(e.target);
                             var newText = $target.val();
                             var oldValue = self.value();
-                            $target.ntsError('clear');
-                            self.$ntsDateRange.ntsError("clear");
-                            self.validateProcess(newText, oldValue);
+                            //                $target.ntsError('clear');
+                            //                self.$ntsDateRange.ntsError("clear");
+                            if (!$target.ntsError('hasError')) {
+                                self.$ntsDateRange.ntsError("clear");
+                                self.validateProcess(newText, oldValue);
+                            }
                         }));
                         self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
@@ -39548,15 +39708,15 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
 var nts;
-(function (nts) {
+(function (nts_1) {
     var uk;
     (function (uk) {
         var ui;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var _ = window['_'], ko = window['ko'], nts = window['nts'], moment = window['moment'];
                 /**
                  * Dialog binding handler
                  */
@@ -39567,113 +39727,109 @@ var nts;
                      * Init.
                      */
                     NtsMonthDaysBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element), getComboBinding = function (originalBinding, value, source) {
+                        var data = valueAccessor(), childBindingContext = bindingContext.createChildContext(), getComboBinding = function (originalBinding, value, source) {
                             return _.extend(_.clone(originalBinding), {
                                 options: ko.observableArray(source),
                                 optionsValue: 'value',
                                 value: value,
                                 optionsText: 'text',
-                                width: '60px'
+                                width: '60px',
+                                enable: data.enable,
+                                name: _.size(source) == 13 ? (ko.toJS(data.name) + "の月") : (ko.toJS(data.name) + "の日"),
+                                required: _.size(source) == 13 ? data.required : ko.computed(function () { return !!ko.toJS(data.required) || !!ko.toJS(monthValueAccessor.value); })
                             });
-                        }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m }); }); };
-                        var value = ko.unwrap(data.value);
-                        var dataName = ko.unwrap(data.name);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = _.isNil(data.required) ? false : ko.unwrap(data.required);
-                        if (dataName) {
-                            dataName = nts.uk.resource.getControlName(dataName);
+                        }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, monthValueAccessor = getComboBinding(data, ko.observable(""), getMonths()), dayOfMonthValueAccessor = getComboBinding(data, ko.observable(""), [{ text: "", value: "" }]);
+                        // init binding element
+                        element.innerHTML = "\n                <div tabindex='" + (element.getAttribute('tabindex') || 0) + "' class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "' data-bind='ntsComboBox: $month'></div>\n                <div class='ntsMonthLabel ntsLabel ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "'><label data-bind=\"text: '\u6708'\"></label></div>\n                <div tabindex='" + (element.getAttribute('tabindex') || 0) + "' class='ntsDayPicker ntsComboBox ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "' data-bind='ntsComboBox: $dayOfMonth'></div>\n                <div class='ntsDayPicker ntsLabel ntsMonthDays_Component' id='" + nts.uk.util.randomId() + "'><label data-bind=\"text: '\u65E5'\"></label></div>\n                ";
+                        // set default attr to element
+                        element.removeAttribute('tabindex');
+                        if (!element.className) {
+                            element.className = 'ntsControl';
                         }
-                        $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
-                        $container.addClass("ntsControl ntsMonthDays_Container");
-                        var $control = $('<div>', { class: 'ntsMonthDays' }), $monthPicker = $("<div>", { "class": "ntsMonthPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }), $dayPicker = $("<div>", { "class": "ntsDayPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }), $monthLabel = $("<div>", {
-                            "class": "ntsMonthLabel ntsLabel ntsMonthDays_Component",
-                            id: nts.uk.util.randomId(),
-                            html: '<label>月</label>'
-                        }), $dayLabel = $("<div>", {
-                            "class": "ntsDayLabel ntsLabel ntsMonthDays_Component",
-                            id: nts.uk.util.randomId(),
-                            html: '<label>日</label>'
-                        });
-                        $control.append($monthPicker).append($monthLabel).append($dayPicker).append($dayLabel).appendTo($container);
-                        // trong custom control nay hinh nhu ngoai init va update, no hok nhan method khac dua a ok
-                        var monthValueAccessor = getComboBinding(data, ko.observable(1), getMonths()), dayValueAccessor = getComboBinding(data, ko.observable(1), getDaysInMonth(1));
+                        else {
+                            element.classList.add('ntsControl');
+                        }
+                        element.classList.add('ntsMonthDays_Container');
                         // month change
-                        monthValueAccessor.value.subscribe(function (v) {
-                            if (v === 0) {
-                                dayValueAccessor.value(0);
-                                dayValueAccessor.options([{ text: "", value: 0 }]);
+                        monthValueAccessor.value.subscribe(function (month) {
+                            if (!month) {
+                                dayOfMonthValueAccessor.options([{ text: "", value: "" }]);
+                                if (dayOfMonthValueAccessor.value()) {
+                                    dayOfMonthValueAccessor.value("");
+                                }
+                                else {
+                                    dayOfMonthValueAccessor.value.valueHasMutated();
+                                }
                             }
                             else {
                                 // change options of combobox days
-                                var days = getDaysInMonth(v), curentDay = ko.toJS(dayValueAccessor.value);
-                                dayValueAccessor.value(_.min([curentDay, days.length]));
-                                dayValueAccessor.options(days);
-                            }
-                        });
-                        // bind data out
-                        ko.computed({
-                            read: function () {
-                                var currentMonth = ko.toJS(monthValueAccessor.value), curentDay = ko.toJS(dayValueAccessor.value);
-                                data.value(currentMonth * 100 + curentDay);
-                                $container.trigger("validate");
-                            }
-                        });
-                        ko.computed({
-                            read: function () {
-                                var value = Number(ko.toJS(data.value));
-                                if (_.isNumber(value)) {
-                                    var month = Math.floor(value / 100), day = value % 100;
-                                    monthValueAccessor.value(month);
-                                    dayValueAccessor.value(day);
+                                var days = getDaysInMonth(month), curentDay = ko.toJS(dayOfMonthValueAccessor.value), day = _.min([curentDay, days.length - 1]);
+                                dayOfMonthValueAccessor.options(days);
+                                if (dayOfMonthValueAccessor.value() != day) {
+                                    dayOfMonthValueAccessor.value(day);
+                                }
+                                else {
+                                    dayOfMonthValueAccessor.value.valueHasMutated();
                                 }
                             }
                         });
-                        $container.on("validate", function (evt) {
-                            if (!$container.is(evt.target))
-                                return;
-                            var required = $container.data("required");
-                            if (required && (monthValueAccessor.value() === 0 || _.isNil(monthValueAccessor.value()))) {
-                                $monthPicker.addClass("error").ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [dataName + "の月"]), "FND_E_REQ_SELECT");
-                            }
-                            else {
-                                $monthPicker.removeClass("error").ntsError("clear");
-                            }
-                            if (required && (dayValueAccessor.value() === 0 || _.isNil(dayValueAccessor.value()))) {
-                                $dayPicker.addClass("error").ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [dataName + "の日"]), "FND_E_REQ_SELECT");
-                            }
-                            else {
-                                $dayPicker.removeClass("error").ntsError("clear");
+                        // data out
+                        // day change (bind new value to data.value)
+                        dayOfMonthValueAccessor.value.subscribe(function (day) {
+                            var month = ko.toJS(monthValueAccessor.value);
+                            if (day && month) {
+                                data.value(month * 100 + day);
                             }
                         });
-                        // day accessor cuar 2 cbox vao data
-                        $container.data("cusVal", { month: monthValueAccessor, day: dayValueAccessor });
-                        ko.bindingHandlers["ntsComboBox"].init($monthPicker[0], function () { return monthValueAccessor; }, allBindingsAccessor, viewModel, bindingContext);
-                        ko.bindingHandlers["ntsComboBox"].init($dayPicker[0], function () { return dayValueAccessor; }, allBindingsAccessor, viewModel, bindingContext);
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsMonthDaysBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $container = $(element), value = ko.unwrap(data.value), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = _.isNil(data.required) ? false : ko.unwrap(data.required), $monthPicker = $container.find(".ntsMonthPicker"), $dayPicker = $container.find(".ntsDayPicker"), bindedVal = $container.data("cusVal");
-                        //            if(enable !== false){
-                        //                $monthPicker.igCombo('option', 'disabled', false);
-                        //                $dayPicker.igCombo('option', 'disabled', false);    
-                        //                $container.find("input").attr("tabindex", $container.data("tabindex"));            
-                        //            } else {
-                        //                $monthPicker.igCombo('option', 'disabled', true);
-                        //                $dayPicker.igCombo('option', 'disabled', true); 
-                        $container.find("input").attr("tabindex", "-1");
-                        $container.data("required", required);
-                        ko.bindingHandlers["ntsComboBox"].update($monthPicker[0], function () { return bindedVal.month; }, allBindingsAccessor, viewModel, bindingContext);
-                        ko.bindingHandlers["ntsComboBox"].update($dayPicker[0], function () { return bindedVal.day; }, allBindingsAccessor, viewModel, bindingContext);
+                        // data in
+                        ko.computed({
+                            read: function () {
+                                var raw = ko.toJS(data.value), month = Math.floor(Number(raw) / 100), dayOfMonth = Math.floor(Number(raw) % 100), mno = monthValueAccessor.value.notifySubscribers, dno = dayOfMonthValueAccessor.value.notifySubscribers;
+                                // prevent notifiSubscribers when change values
+                                monthValueAccessor.value.notifySubscribers = function () { };
+                                monthValueAccessor.value(month || "");
+                                monthValueAccessor.value.notifySubscribers = mno;
+                                dayOfMonthValueAccessor.value.notifySubscribers = function () { };
+                                dayOfMonthValueAccessor.value(dayOfMonth || "");
+                                dayOfMonthValueAccessor.value.notifySubscribers = dno;
+                                // notifySubscribers
+                                monthValueAccessor.value.valueHasMutated();
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        // clear data
+                        ko.computed({
+                            read: function () {
+                                var required = ko.toJS(data.required), month = ko.toJS(monthValueAccessor.value), dayOfMonth = ko.toJS(dayOfMonthValueAccessor.value);
+                                if (!month && !required) {
+                                    data.value(0);
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        // attach two accessor to new context
+                        ko.utils.extend(childBindingContext, {
+                            $month: monthValueAccessor,
+                            $dayOfMonth: dayOfMonthValueAccessor
+                        });
+                        // binding data
+                        ko.applyBindingsToDescendants(childBindingContext, element);
+                        // validate event
+                        ko.utils.registerEventHandler(element, 'validate', function (evt) {
+                            if (element == evt.target) {
+                                var mpick = element.querySelector('.ntsMonthPicker.ntsComboBox'), dpick = element.querySelector('.ntsDayPicker.ntsComboBox');
+                                ko.utils.triggerEvent(mpick, 'validate');
+                                ko.utils.triggerEvent(dpick, 'validate');
+                            }
+                        });
+                        return { controlsDescendantBindings: true };
                     };
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
+    })(uk = nts_1.uk || (nts_1.uk = {}));
 })(nts || (nts = {}));
 var NtsSortableBindingHandler = (function () {
     function NtsSortableBindingHandler() {
@@ -40193,6 +40349,7 @@ var nts;
                                 });
                             }
                             else {
+                                $tree.igTree("clearSelection");
                                 var $selectingNode = $tree.igTree("nodesByValue", singleValue);
                                 if ($selectingNode.length > 0) {
                                     $tree.igTree("select", $selectingNode);
