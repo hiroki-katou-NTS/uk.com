@@ -60,6 +60,7 @@ module nts.uk.ui.koExtentions {
             features.push({ name: 'Selection', multipleSelection: isMultiSelect });
             
             var maxWidthCharacter = 15;
+            let SCROLL_WIDTH = 20;
             var gridFeatures = ko.unwrap(data.features);
             var width = 0;
             let iggridColumns = [];
@@ -70,12 +71,16 @@ module nts.uk.ui.koExtentions {
                 container.data("fullValue", true);
             } else {
                 let isHaveKey = false;
-                iggridColumns = _.map(columns, c => {
+                iggridColumns = _.map(columns, (c, index, columns) => {
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
-                    c["width"] = c["length"] * maxWidthCharacter + 20;
+                    let columnWidth  = c["length"] * maxWidthCharacter + 20;
+                    if (index = columns.length - 1) {
+                        columnWidth += SCROLL_WIDTH;
+                    }
+                    c["width"] = columnWidth;
                     c["headerText"] = '';
                     c["columnCssClass"] = 'nts-column';
-                    width += c["length"] * maxWidthCharacter + 20;
+                    width += columnWidth;
                     if (optionValue === c["key"]) {
                          isHaveKey = true;   
                     }

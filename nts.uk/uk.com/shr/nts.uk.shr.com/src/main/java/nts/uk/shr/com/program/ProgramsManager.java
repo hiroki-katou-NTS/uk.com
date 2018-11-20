@@ -2225,6 +2225,20 @@ public class ProgramsManager {
 			return Optional.empty();
 		return programsOpt.get().stream().filter(a -> programId.equals(a.getPId())).findFirst();
 	}
+	
+	/**
+	 * Finds program by Id.
+	 * 
+	 * @param programId programId
+	 * @return optional program
+	 */
+	public static Optional<Program> findById(String programId) {
+		return Optional.ofNullable(findById(WebAppId.COM, programId).orElseGet(() ->
+			findById(WebAppId.AT, programId).orElseGet(() ->
+				findById(WebAppId.PR, programId).orElse(null)
+			)
+		));
+	}
 
 	/**
 	 * Finds program Id.
