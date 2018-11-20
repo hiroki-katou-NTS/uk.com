@@ -56,7 +56,6 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
-            self.selectedCode("");
             self.listRsdTaxPayees = [];
             service.getAllResidentTaxPayee().done((data: Array<any>) => {
                 self.totalRtp(data.length);
@@ -82,7 +81,6 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                     listNodes.push(regionNode);
                 });
                 self.items2(listNodes);
-                self.selectedCode(self.listRsdTaxPayees.length > 0 ? self.listRsdTaxPayees[0].code : "");
                 dfd.resolve();
             }).fail(error => {
                 alertError(error);
@@ -110,10 +108,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                 service.register(command).done(() => {
                     self.startPage().done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
-                            if (self.selectedCode() == command.code)
-                                self.selectedCode.valueHasMutated();
-                            else
-                                self.selectedCode(command.code);
+                            self.setSelectedCode(command.code);
                         });
                     });
                 }).fail(error => {
@@ -141,10 +136,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                     service.remove(self.selectedCode()).done(() => {
                         self.startPage().done(() => {
                             info({ messageId: "Msg_16" }).then(() => {
-                                if (self.selectedCode() == nextSelectCode)
-                                    self.selectedCode.valueHasMutated();
-                                else
-                                    self.selectedCode(nextSelectCode);
+                                self.setSelectedCode(nextSelectCode);
                             });
                         });
                     }).fail(error => {
@@ -207,6 +199,14 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             self.selectedResidentTaxPayee().compileStationName(data == null ? null : data.compileStationName);
             self.selectedResidentTaxPayee().memo(data == null ? null : data.memo);
             self.selectedResidentTaxPayee().reportName(data == null ? null : data.reportName);
+        }
+        
+        setSelectedCode(value: string) {
+            let self = this;
+            if (self.selectedCode() == value)
+                self.selectedCode.valueHasMutated();
+            else 
+                self.selectedCode(value);
         }
 
     }

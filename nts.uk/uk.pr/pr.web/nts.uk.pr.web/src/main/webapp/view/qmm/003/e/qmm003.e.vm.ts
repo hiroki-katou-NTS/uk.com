@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
         
         source: KnockoutObservableArray<any>;
         destination: KnockoutObservableArray<any>;
-        selectedCodes: KnockoutObservableArray<string>;
+        sourceSelectedCode: KnockoutObservable<string>;
         selectedCode: KnockoutObservable<string>;
         headers: any;
         listRegions: Array<any> = constants.listRegions;
@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             let self = this;
             self.source = ko.observableArray([]);
             self.destination = ko.observableArray([]);
-            self.selectedCodes = ko.observableArray([]);
+            self.sourceSelectedCode = ko.observable("");
             self.selectedCode = ko.observable("");
             self.headers = ko.observableArray([getText("QMM003_9")]);
             self.listPrefectures = constants.listPrefectures;

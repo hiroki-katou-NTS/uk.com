@@ -46,20 +46,15 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
             });
         }
         
-        startPage(): JQueryPromise<any> {
+        startPage(code?: string): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
-            self.selectedSourceBankCode("");
             self.listSourceBank([]);
             service.getAllSourceBank().done((data: Array<any>) => {
                 let listSB = _.map(data, sb => {
                     return {code: sb.code, name: sb.name, accountType: self.accountTypes()[sb.accountType].name, accountNumber: sb.accountNumber};
                 });
                 self.listSourceBank(listSB);
-                if (self.listSourceBank().length > 0)
-                    self.selectedSourceBankCode(self.listSourceBank()[0].code);
-                else 
-                    self.selectedSourceBankCode.valueHasMutated()
                 dfd.resolve();
             }).fail(error => {
                 alertError(error);
@@ -72,10 +67,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
 
         createNew() {
             let self = this;
-            if (self.selectedSourceBankCode() == "")
-                self.selectedSourceBankCode.valueHasMutated();
-            else
-                self.selectedSourceBankCode("");
+            self.setSelectedCode("");
         }
 
         register() {
@@ -91,10 +83,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                 service.register(command).done(() => {
                     self.startPage().done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
-                            if (self.selectedSourceBankCode() == command.code)
-                                self.selectedSourceBankCode.valueHasMutated();
-                            else
-                                self.selectedSourceBankCode(command.code);
+                            self.setSelectedCode(command.code);
                         });
                     });
                 }).fail(error => {
@@ -122,10 +111,7 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
                     service.remove(self.selectedSourceBankCode()).done(() => {
                         self.startPage().done(() => {
                             info({ messageId: "Msg_16" }).then(() => {
-                                if (self.selectedSourceBankCode() == nextSelectCode)
-                                    self.selectedSourceBankCode.valueHasMutated();
-                                else
-                                    self.selectedSourceBankCode(nextSelectCode);
+                                self.setSelectedCode(nextSelectCode);
                             });
                         });
                     }).fail(error => {
@@ -169,6 +155,14 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
             self.selectedSourceBank().entrustorInforUse4(data != null ? data.entrustorInforUse4 : null);
             self.selectedSourceBank().entrustorInforCode5(data != null ? data.entrustorInforCode5 : null);
             self.selectedSourceBank().entrustorInforUse5(data != null ? data.entrustorInforUse5 : null);
+        }
+        
+        setSelectedCode(val: string) {
+            let self = this;
+            if (self.selectedSourceBankCode() == val)
+                self.selectedSourceBankCode.valueHasMutated();
+            else
+                self.selectedSourceBankCode(val);
         }
 
     }

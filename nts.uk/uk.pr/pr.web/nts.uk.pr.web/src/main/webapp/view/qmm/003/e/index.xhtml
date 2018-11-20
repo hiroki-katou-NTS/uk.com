@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 942, height: 660 };</script>
+			<script>var dialogSize = { width: 942, height: 690 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/constants.js"/>
 			<com:scriptfile path="qmm003.e.service.js" />
@@ -37,7 +37,7 @@
 						<!-- E2_3 -->
 						<div tabindex="2" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
 							targetKey: 'code', mode:'igTree', comId:'treegridsource', items: source, 
-							selected: selectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+							selected: sourceSelectedCode, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
 					</div>
 					<!-- E2_4 -->
 					<table id="treegridsource" tabindex="3"
@@ -46,15 +46,15 @@
 							rows: 15,
 							name: '#[QMM003_32]',
 							dataSource: source,
-							selectedValues: selectedCodes,
+							value: sourceSelectedCode,
 							headers: headers,
 							primaryKey: 'code',
 							childDataKey: 'children',
 							primaryText: 'nodeText',
-							multiple: true,
+							multiple: false,
 							enable: true,
 							initialExpandDepth: 1,
-							showCheckBox: true}"></table>
+							showCheckBox: false}"></table>
 				</div>
 				<div id="midsec" style="display: inline-block; width: 65px">
 					<!-- E1_5 -->
@@ -95,7 +95,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E4_1 -->
-				<button tabindex="6" class="x-large proceed" data-bind="click: execute, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
+				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: sourceSelectedCode().length > 2, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
 				<!-- E4_2 -->
 				<button tabindex="7" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>
