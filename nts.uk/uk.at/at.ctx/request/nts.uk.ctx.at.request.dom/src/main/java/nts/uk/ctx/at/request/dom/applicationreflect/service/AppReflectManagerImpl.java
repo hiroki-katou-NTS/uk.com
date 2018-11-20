@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
+/*import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.PriorStampRequestAtr;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheTimeReflectRequesAtr;*/
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

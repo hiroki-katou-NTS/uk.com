@@ -59,7 +59,8 @@ public class SingleWorkTime extends WorkTimeCondition {
 //		}
 		if (this.targetWorkTime != null) {
 			if(this.targetWorkTime.isUse() && !this.targetWorkTime.getLstWorkTime().isEmpty()){
-				if(this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode())){
+				if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode()) && 
+						this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode())){
 					return WorkCheckResult.ERROR;
 				}
 				return WorkCheckResult.NOT_ERROR;

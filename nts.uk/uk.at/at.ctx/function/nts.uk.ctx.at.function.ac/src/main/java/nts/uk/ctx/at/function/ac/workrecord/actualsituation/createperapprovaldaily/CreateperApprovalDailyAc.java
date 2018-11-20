@@ -17,8 +17,8 @@ public class CreateperApprovalDailyAc implements CreateperApprovalDailyAdapter {
 	
 	@Override
 	public boolean createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
-			int processExecType, Integer createNewEmp, GeneralDate startDateClosure) {
-		boolean check = createperApprovalDailyPub.createperApprovalDaily(companyId, executionId, employeeIDs, processExecType, createNewEmp, startDateClosure);
+			int processExecType, Integer createNewEmp, GeneralDate startDateClosure,GeneralDate endDateClosure) {
+		boolean check = createperApprovalDailyPub.createperApprovalDaily(companyId, executionId, employeeIDs, processExecType, createNewEmp, startDateClosure,endDateClosure);
 		return check;
 	}
 

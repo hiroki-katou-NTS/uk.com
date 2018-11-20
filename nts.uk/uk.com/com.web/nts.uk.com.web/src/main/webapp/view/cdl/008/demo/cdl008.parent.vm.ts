@@ -4,6 +4,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         //codes from parent screen
         canSelectWorkplaceIds: KnockoutObservable<string>;
         selectWorkplaceIds: KnockoutObservable<string>;
+        selectedBaseDate: KnockoutObservable<Date>;
         selectMode: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         listSystemType: KnockoutObservableArray<any>;        
@@ -19,6 +20,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
             self.canSelectWorkplaceIds = ko.observable('000000000000000000000000000000000002,000000000000000000000000000000000003');
             self.selectMode = ko.observable(true);
             self.selectWorkplaceIds = ko.observable('');
+            self.selectedBaseDate = ko.observable(new Date());
             self.baseDate = ko.observable(new Date());
             self.enable = ko.observable(true);
             self.listSystemType = ko.observableArray([
@@ -64,7 +66,9 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
                 }
                 //view all code of selected item 
                 var output = nts.uk.ui.windows.getShared('outputCDL008');
+                var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
                 self.selectWorkplaceIds(output);
+                self.selectedBaseDate(baseDateOutput);
             })
         }
     }

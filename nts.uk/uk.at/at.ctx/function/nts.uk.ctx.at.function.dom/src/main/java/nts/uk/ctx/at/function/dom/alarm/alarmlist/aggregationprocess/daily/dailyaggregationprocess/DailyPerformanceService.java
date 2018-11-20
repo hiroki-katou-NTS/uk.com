@@ -394,8 +394,10 @@ public class DailyPerformanceService {
 	}
 	
 	private String formatValueAttendance(String attendanceValue) {
-		if(attendanceValue.length()<4) attendanceValue = "0" + attendanceValue;
-		return attendanceValue.substring(0,  2) + ":" + attendanceValue.substring(2, 4);		
+		int att = Integer.parseInt(attendanceValue);
+		Integer hours = att / 60, minutes = att % 60;
+
+		return String.join("", hours < 10 ? "0" : "", hours.toString(), ":", minutes < 10 ? "0" : "", minutes.toString());
 	}
 
 }
