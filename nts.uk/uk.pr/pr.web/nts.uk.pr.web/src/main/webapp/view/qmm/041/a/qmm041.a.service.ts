@@ -6,9 +6,9 @@ module nts.uk.pr.view.qmm041.a.service {
     let paths: any = {
         getInfoEmpLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
         getWpName: "screen/com/kcp010/getLoginWorkPlace",
-        getIndividualEmpSalUnitPrices: "ctx/pr/core/wageprovision/empsalunitprice/getIndividualEmpSalUnitPrices/{code}",
+        getIndividualEmpSalUnitPrices: "ctx/pr/core/wageprovision/empsalunitprice/getIndividualEmpSalUnitPrices",
         getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
-        getSalPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
+        getSalaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
     }
 
     export function getInfoEmpLogin(): JQueryPromise<any> {
@@ -24,11 +24,11 @@ module nts.uk.pr.view.qmm041.a.service {
     }
 
     export function getSalPerUnitPriceName(): JQueryPromise<model.SalPerUnitPriceName> {
-        return ajax("pr", paths.getSalPerUnitPriceName);
+        return ajax("pr", paths.getSalaryPerUnitPriceName);
     }
 
-    export function getIndividualEmpSalUnitPrices(perUnitPriceCode: string): JQueryPromise<any> {
-        return ajax("pr", format(paths.getIndividualEmpSalUnitPrices, perUnitPriceCode));
+    export function getIndividualEmpSalUnitPrices(dto): JQueryPromise<any> {
+        return ajax("pr", paths.getIndividualEmpSalUnitPrices, dto);
     }
 
 }

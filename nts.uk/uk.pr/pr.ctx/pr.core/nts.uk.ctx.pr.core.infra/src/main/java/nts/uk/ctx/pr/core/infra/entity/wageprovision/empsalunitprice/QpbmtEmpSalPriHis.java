@@ -115,7 +115,7 @@ public class QpbmtEmpSalPriHis extends UkJpaEntity implements Serializable {
 
     public static QpbmtEmpSalPriHis toEntity(IndividualEmpSalUnitPrice domain) {
         return new QpbmtEmpSalPriHis(
-                new QpbmtEmpSalPriHisPk(domain.getPerUnitPriceCode().v(), domain.getEmployeeID(), domain.getHistoryID()),
+                new QpbmtEmpSalPriHisPk(domain.getPerUnitPriceCode().v(), domain.getEmployeeId(), domain.getHistoryId()),
                 domain.getStartYearMonth(),
                 domain.getEndYearMonth(),
                 domain.getAmountOfMoney().v());

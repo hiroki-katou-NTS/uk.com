@@ -42,7 +42,7 @@ public class SetDaySupportFinder {
         return SetDaySupportDto.fromDomain(setDaySupportRepository.getSetDaySupportByIdAndProcessDate(cid,processCateNo,processDate).orElse(null));
     }
 
-    public SetDaySupportDto getEmployeeExtractionReferenceDateByUIdAndCId() {
+    public GeneralDate getEmployeeExtractionReferenceDateByUIdAndCId() {
         String cid = AppContexts.user().companyId();
         String uid = AppContexts.user().userId();
         Optional<PerProcessClsSet> perProcessClsSet = perProcessClsSetRepository.getPerProcessClsSetByUIDAndCID(uid, cid);
@@ -50,6 +50,6 @@ public class SetDaySupportFinder {
         Optional<CurrProcessDate> currProcessDate = currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(cid, processCateNo);
         int processDate = currProcessDate.map(currProcessDate1 -> currProcessDate1.getGiveCurrTreatYear().v()).orElseGet(() -> GeneralDate.today().yearMonth().v());
         Optional<SetDaySupport> setDaySupport = setDaySupportRepository.getSetDaySupportByIdAndProcessDate(cid, processCateNo, processDate);
-        return setDaySupport.map(SetDaySupportDto::fromDomain).orElse(null);
+        return setDaySupport.isPresent() ? setDaySupport.get().getEmpExtraRefeDate() : null;
     }
 }

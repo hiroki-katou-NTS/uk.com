@@ -21,7 +21,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpSalPriHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId IN :employeeId";
-    private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId = :employeeId";
+    private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId = :employeeId ORDER BY f.startYearMonth desc";
     private static final String UPDATE_ALL_BY_KEY_HIS = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice =:indvidualUnitPrice WHERE f.empSalPriHisPk.historyId =:historyId";
 
     @Override

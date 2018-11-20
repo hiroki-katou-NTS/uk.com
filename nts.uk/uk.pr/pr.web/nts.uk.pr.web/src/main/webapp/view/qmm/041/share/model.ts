@@ -29,8 +29,8 @@ module nts.uk.pr.view.qmm041.share.model {
     }
 
     export enum INHERITANCE_CLS {
-        WITH_HISTORY = 0,
-        NO_HISTORY = 1
+        NO_HISTORY = 0,
+        WITH_HISTORY = 1
     }
 
     export enum MODIFY_METHOD {

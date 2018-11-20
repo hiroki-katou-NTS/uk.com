@@ -22,7 +22,7 @@ public class SalaryPerUnitPriceNameWebService {
 
     @POST
     @Path("/getSalaryPerUnitPriceName")
-    public List<SalaryPerUnitPriceNameDto> getSalaryPerUnitPriceNameDto() {
+    public List<SalaryPerUnitPriceNameDto> getAllSalaryPerUnitPriceNameDto() {
         return salaryPerUnitPriceFinder.getAllSalaryPerUnitPriceName();
     }
 }

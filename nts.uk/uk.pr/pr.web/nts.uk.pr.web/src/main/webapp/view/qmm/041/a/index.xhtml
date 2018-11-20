@@ -70,7 +70,7 @@
                                 value: selectedCode,
                                 name: '#[QMM041_8]',
                                 columns: [
-                                    {headerText: '#{i18n.getText('#QMM041_8')}', key:'code', width: 70},
+                                    {headerText: '#{i18n.getText('#QMM041_8')}', key: 'code', width: 50},
                                     {headerText: '#{i18n.getText('#QMM041_9')}', key: 'name', formatter: _.escape}
                                 ]}"/>
                         </div>
@@ -110,20 +110,20 @@
                         <!--A5_1 コード・名称-->
                         <div id="A5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM041_15')}</div>
                         <!--A5_2 コード-->
-                        <span class="label" data-bind="text: salPerUnitPriceCodeLabel"/>
+                        <span class="label" data-bind="text: salPerUnitPriceCode"/>
                         <!--A5_3 名称-->
-                        <span class="label" data-bind="text: salPerUnitPriceNameLabel"/>
+                        <span class="label" data-bind="text: salPerUnitPriceName"/>
 
                     </div>
                     <div class="control-group valign-center row">
                         <!--A5_4 期間-->
                         <div id="A5_4" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM041_16')}</div>
                         <!--A5_5 履歴開始年月-->
-                        <span class="label" data-bind="text: periodStartYM"/>
+                        <span class="label" data-bind="text: periodStartYm"/>
                         <!--A5_6 ～-->
                         <span class="label" data-bind="text: A5_6" />
                         <!--A5_7 履歴開始年月-->
-                        <span class="label" data-bind="text: periodEndYM"/>
+                        <span class="label" data-bind="text: periodEndYm"/>
                     </div>
                     <div class="control-group valign-center row">
                         <!--A5_8 金額-->
