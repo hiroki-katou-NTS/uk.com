@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.adapter.employment;
+package nts.uk.ctx.pr.core.dom.adapter.employee.employment;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
 

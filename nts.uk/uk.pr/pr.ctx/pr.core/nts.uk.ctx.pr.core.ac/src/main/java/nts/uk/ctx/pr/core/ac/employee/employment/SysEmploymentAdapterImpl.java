@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.ac.employment;
+package nts.uk.ctx.pr.core.ac.employee.employment;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
-import nts.uk.ctx.pr.core.dom.adapter.employment.SysEmploymentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
 
 @Stateless
 public class SysEmploymentAdapterImpl implements SysEmploymentAdapter {
