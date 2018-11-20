@@ -200,23 +200,23 @@ public class OutputItemDailyWorkScheduleFinder {
 															.map(domain -> domain.getBusinessTypeCode().v())
 															.collect(Collectors.toSet());
 				
-//				// Get domain ドメインモデル「勤務種別」を取得する
-//				// businessTypeCode get from doamin 勤務種別日別実績の修正のフォーマット
-//				List<BusinessType> lstBusinessType = businessTypesRepository.findAll(companyId);
-//	
-//				lstData = lstBusinessType.stream()
-//					.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
-//					.map(domain -> {
-//						DataInforReturnDto dto = new DataInforReturnDto();
-//						dto.setCode(domain.getBusinessTypeCode().v());
-//						dto.setName(domain.getBusinessTypeName().v());
-//						return dto;
-//					})
-//				.collect(Collectors.toList());
-				if (setBusinessTypeFormatDailyCode.isEmpty()) {
+				// Get domain ドメインモデル「勤務種別」を取得する
+				// businessTypeCode get from doamin 勤務種別日別実績の修正のフォーマット
+				List<BusinessType> lstBusinessType = businessTypesRepository.findAll(companyId);
+	
+				lstData = lstBusinessType.stream()
+					.filter(domain -> setBusinessTypeFormatDailyCode.contains(domain.getBusinessTypeCode().v()))
+					.map(domain -> {
+						DataInforReturnDto dto = new DataInforReturnDto();
+						dto.setCode(domain.getBusinessTypeCode().v());
+						dto.setName(domain.getBusinessTypeName().v());
+						return dto;
+					})
+				.collect(Collectors.toList());
+				if (lstData.isEmpty()) {
 					throw new BusinessException("Msg_1410", new String[]{BUSINESS_TYPE_DEFINE});
 				}
-				return new ArrayList<>();
+				return lstData;
 			default:
 				return new ArrayList<>();
 		}
