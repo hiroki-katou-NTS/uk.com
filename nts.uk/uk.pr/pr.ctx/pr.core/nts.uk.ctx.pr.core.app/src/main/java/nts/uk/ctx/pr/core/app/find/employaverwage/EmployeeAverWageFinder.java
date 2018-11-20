@@ -69,7 +69,7 @@ public class EmployeeAverWageFinder {
                         false,
                         true,
                         false,
-                        false,
+                        true,
                         false,
                         false)).stream().map(x -> {
                     EmployeeInfoDto dto = new EmployeeInfoDto();
@@ -86,7 +86,7 @@ public class EmployeeAverWageFinder {
                     }else{
                         dto.setDepartmentName("");
                     }
-                    if(param.getGiveCurrTreatYear() != null) {
+                    if(param.getGiveCurrTreatYear() != null && !param.getGiveCurrTreatYear().equals("Invalid date")) {
                         Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(),Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/","")));
                         if(employAverWage.isPresent())
                             dto.setAverageWage(employAverWage.get().getAverageWage().v());
