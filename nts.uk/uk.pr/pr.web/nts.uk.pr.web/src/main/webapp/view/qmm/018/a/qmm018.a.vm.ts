@@ -86,7 +86,7 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
         getAllData(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            service.getStatemetItemData().done(function (dataDisplay: <IDisplayData>) {
+            service.getStatemetItemData().done(function (dataDisplay: IDisplayData) {
                 if (dataDisplay) {
                     self.displayData(new DisplayData(dataDisplay));
                     self.checkWage(self.displayData().averageWageCalculationSet().decimalPointCutoffSegment());
