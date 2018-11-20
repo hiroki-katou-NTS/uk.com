@@ -122,7 +122,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int EMPL_TITLE_INDEX = 7;
 
 	/** The Constant EMPL_WORKTYPE_INDEX. */
-	private static final int EMPL_WORKTYPE_INDEX = 10;
+	private static final int EMPL_WORKTYPE_INDEX = 13;
 
 	/** The Constant EMPL_YEARMONTH_INDEX. */
 	private static final int EMPL_YEARMONTH_INDEX = 0;
