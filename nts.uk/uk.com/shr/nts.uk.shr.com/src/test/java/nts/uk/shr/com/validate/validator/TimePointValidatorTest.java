@@ -24,30 +24,58 @@ public class TimePointValidatorTest {
 	}
 	
 	@Test
-	public void testTimePointStyleFalse() {
+	public void testTimePointStyleFalse00() {
 		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
 		Optional<String> result = TimePointValidator.validate(constraint, "30:25");
 		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 	
 	@Test
-	public void testTimePointStyleFalse1() {
+	public void testTimePointStyleFalse01() {
+		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
+		Optional<String> result = TimePointValidator.validate(constraint, ":25");
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
+	}
+	
+	@Test
+	public void testTimePointStyleFalse02() {
+		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
+		Optional<String> result = TimePointValidator.validate(constraint, "aa:01");
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
+	}
+	
+	@Test
+	public void testTimePointStyleFalse10() {
 		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
 		Optional<String> result = TimePointValidator.validate(constraint, "01:65");
 		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 	
 	@Test
-	public void testTimePointStyleFalse2() {
+	public void testTimePointStyleFalse11() {
 		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
-		Optional<String> result = TimePointValidator.validate(constraint, "30:65");
+		Optional<String> result = TimePointValidator.validate(constraint, "00:aa");
 		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 	
 	@Test
-	public void testTimePointStyleFalse3() {
+	public void testTimePointStyleFalse12() {
 		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
-		Optional<String> result = TimePointValidator.validate(constraint, ":25");
+		Optional<String> result = TimePointValidator.validate(constraint, "10:");
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
+	}
+	
+	@Test
+	public void testTimePointStyleFalse20() {
+		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
+		Optional<String> result = TimePointValidator.validate(constraint, "1001");
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
+	}
+	
+	@Test
+	public void testTimePointStyleFalse30() {
+		TimePointConstraint constraint = new TimePointConstraint(1, 60, 6030);
+		Optional<String> result = TimePointValidator.validate(constraint, "001:001");
 		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 
