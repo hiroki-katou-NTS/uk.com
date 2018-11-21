@@ -162,14 +162,14 @@ public class RegisterProcessing {
     }
 
 
-    public void addCurrProcessDate(ValPayDateSet valPayDateSet, List<SetDaySupport> arr) {
+    public void addCurrProcessDate(ValPayDateSet valPayDateSet, List<SetDaySupport> setDaySupportItems) {
         String cid = AppContexts.user().companyId();
         GeneralDate currentDay = GeneralDate.today();
         int processCateNo = valPayDateSet.getProcessCateNo();
         int currTreatYear = currentDay.yearMonth().v();
-        for (int i = 0; i < arr.size(); i++) {
-            if (arr.get(i).getPaymentDate().after(currentDay) || arr.get(i).getPaymentDate().equals(currentDay)) {
-                currTreatYear = arr.get(i).getPaymentDate().yearMonth().v();
+        for (SetDaySupport setDaySupport : setDaySupportItems) {
+            if (setDaySupport.getPaymentDate().afterOrEquals(currentDay)) {
+                currTreatYear = setDaySupport.getPaymentDate().yearMonth().v();
                 break;
             }
         }

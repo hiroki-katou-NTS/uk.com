@@ -18,6 +18,7 @@ module nts.uk.pr.view.qmm020.share.model {
     }
 
     export class StateLinkSettingMaster {
+        id: string;
         hisId: string;
         masterCode: string;
         categoryName: string;
@@ -35,7 +36,9 @@ module nts.uk.pr.view.qmm020.share.model {
 
     export function displayCodeAndName(code: string, name: string){
         let display : string;
-        display = code == null ? " " : code.toString();
+        display = "";
+        if(code != null)
+            display = display + code.toString();
         if(name != null) {
             display = display + "      " + name;
         }

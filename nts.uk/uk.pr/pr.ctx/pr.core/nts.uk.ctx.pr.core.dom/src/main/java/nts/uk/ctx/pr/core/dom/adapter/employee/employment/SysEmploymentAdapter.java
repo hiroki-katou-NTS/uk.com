@@ -1,4 +1,6 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
+package nts.uk.ctx.pr.core.dom.adapter.employee.employment;
+
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
 
 import java.util.List;
 
