@@ -519,14 +519,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.currencyeditor.value(parseInt(self.itemList()[0].amount));
                     }
                     let array = self.itemList();
-                    array.unshift([new ItemModel(
+                    array.unshift(new ItemModel(
                         0,
                         null,
                         params.periodStartYm,
                         params.periodEndYm,
                         format(getText("QMM039_18"), nts.uk.time.parseYearMonth(params.periodStartYm).format(), nts.uk.time.parseYearMonth(params.periodEndYm).format()),
                         self.currencyeditor.value()
-                    )]);
+                    ));
                     if (array.length > 1) {
 
                         array[1].periodEndYm = (params.periodStartYm - 1) % 100 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
