@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItem;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItemPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -202,7 +203,10 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				entity.id = rec.getString("ID");
 				if(rec.getInt("ATTENDANCE_ITEM_ID") != null) {
 					KrcdtErAttendanceItem krcdtErAttendanceItem = new KrcdtErAttendanceItem();
-					krcdtErAttendanceItem.krcdtErAttendanceItemPK.attendanceItemId = rec.getInt("ATTENDANCE_ITEM_ID");
+					KrcdtErAttendanceItemPK krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK();
+					krcdtErAttendanceItemPK.iD = rec.getString("ID");
+					krcdtErAttendanceItemPK.attendanceItemId = rec.getInt("ATTENDANCE_ITEM_ID");
+					krcdtErAttendanceItem.krcdtErAttendanceItemPK = krcdtErAttendanceItemPK;
 					entity.krcdtErAttendanceItem = krcdtErAttendanceItem;
 				}
 				
