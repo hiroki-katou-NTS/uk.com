@@ -274,7 +274,7 @@ public class DailyPerformanceService {
 		for (EmployeeDailyPerErrorImport eDaily : employeeDailyList) {
 			AttendanceResultImport attdResult = new AttendanceResultImport();
 			for(AttendanceResultImport attendanceResultImport :attdResoult) {
-				if(eDaily.getEmployeeID().equals(attendanceResultImport.getEmployeeId())) {
+				if(eDaily.getEmployeeID().equals(attendanceResultImport.getEmployeeId()) && eDaily.getDate().equals(attendanceResultImport.getWorkingDate())) {
 					attdResult = attendanceResultImport;
 					break;
 				}

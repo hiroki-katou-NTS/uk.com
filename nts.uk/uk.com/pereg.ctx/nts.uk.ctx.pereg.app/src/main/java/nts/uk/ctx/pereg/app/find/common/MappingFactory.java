@@ -91,7 +91,7 @@ public class MappingFactory {
 			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
 				
 				Object value = getValue(itemCodeValueMap, valueItem);
-				valueItem.setValue(value == null ? valueItem.getInitValue(): value);
+				valueItem.setValue(value);
 				
 				// update 2018/02/22 bug 87560
 				valueItem.setShowColor(false);
@@ -110,7 +110,7 @@ public class MappingFactory {
 			if(itemType == DataTypeValue.SELECTION.value || 
 					itemType == DataTypeValue.SELECTION_BUTTON.value || 
 					itemType == DataTypeValue.SELECTION_RADIO.value) {
-				value = value == null ? valueItem.getInitValue() : value.toString();
+				value = value == null ? null : value.toString();
 			}
 		}
 		return value;

@@ -73,13 +73,13 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 				DatePeriod resultPeriod = null;
 				// create 暫定データ取得期間
 				DatePeriod tempPeriod = null;
-				if (optionalTime.get().after(datePeriod.start())) {
+				if (optionalTime.get().before(datePeriod.start())) {
 					tempPeriod = datePeriod;
-				} else if (optionalTime.get().beforeOrEquals(datePeriod.start())
-						&& optionalTime.get().afterOrEquals(datePeriod.end())) {
+				} else if (optionalTime.get().afterOrEquals(datePeriod.start())
+						&& optionalTime.get().beforeOrEquals(datePeriod.end())) {
 					resultPeriod = new DatePeriod(datePeriod.start(), optionalTime.get().addDays(-1));
 					tempPeriod = new DatePeriod(optionalTime.get(), datePeriod.end());
-				} else if (optionalTime.get().before(datePeriod.end())) {
+				} else if (optionalTime.get().after(datePeriod.end())) {
 					resultPeriod = datePeriod;
 				}
 				
@@ -89,11 +89,11 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 							.findByPeriodOrderByYmd(employeeId, resultPeriod).stream()
 							.sorted((p1, p2) -> p1.getYmd().compareTo(p2.getYmd())).collect(Collectors.toList());
 
-					for (WorkTypeCode WorkTypeCode : workTypeList) {
+					for (WorkTypeCode workTypeCode : workTypeList) {
 						Double count = (double) 0;
 						if (!workInfoList.isEmpty()) {
 							List<WorkInfoOfDailyPerformance> workInfoListNew = workInfoList.stream()
-									.filter(item -> item.getRecordInfo().getWorkTypeCode().equals(WorkTypeCode))
+									.filter(item -> item.getRecordInfo().getWorkTypeCode().equals(workTypeCode.v()))
 									.collect(Collectors.toList());
 
 							count = new Double(workInfoListNew.size());
@@ -101,7 +101,7 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 
 						NumberOfWorkTypeUsed numberOfWorkTypeUsed = new NumberOfWorkTypeUsed();
 						numberOfWorkTypeUsed.setAttendanceDaysMonth(new AttendanceDaysMonth(count));
-						numberOfWorkTypeUsed.setWorkTypeCode(WorkTypeCode);
+						numberOfWorkTypeUsed.setWorkTypeCode(workTypeCode);
 						numberOfWorkTypeUsedList.add(numberOfWorkTypeUsed);
 					}
 				}
@@ -110,12 +110,12 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 				if (tempPeriod != null) {
 					List<TmpAnnualHolidayMng> interimRemains = this.tmpAnnualHolidayMngRepository.getBySidPeriod(employeeId, tempPeriod);
 					
-					for (WorkTypeCode WorkTypeCode : workTypeList) {
+					for (WorkTypeCode workTypeCode : workTypeList) {
 						Double count = (double) 0;
 						
 						if (!interimRemains.isEmpty()) {
 							List<TmpAnnualHolidayMng> listNew = interimRemains.stream()
-									.filter(item -> item.getWorkTypeCode().equals(WorkTypeCode))
+									.filter(item -> item.getWorkTypeCode().equals(workTypeCode.v()))
 									.collect(Collectors.toList());
 
 							count = new Double(listNew.size());
@@ -123,7 +123,7 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 
 						NumberOfWorkTypeUsed numberOfWorkTypeUsed = new NumberOfWorkTypeUsed();
 						numberOfWorkTypeUsed.setAttendanceDaysMonth(new AttendanceDaysMonth(count));
-						numberOfWorkTypeUsed.setWorkTypeCode(WorkTypeCode);
+						numberOfWorkTypeUsed.setWorkTypeCode(workTypeCode);
 						numberOfWorkTypeUsedList.add(numberOfWorkTypeUsed);
 					}
 				}
