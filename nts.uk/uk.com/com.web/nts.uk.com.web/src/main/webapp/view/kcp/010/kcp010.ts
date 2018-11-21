@@ -31,6 +31,8 @@ module kcp010.viewmodel {
             self.selectedItem = ko.observable("");
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
+            
+            self.systemDate = ko.observable(null);
         }
 
         // Initialize Component
@@ -40,7 +42,7 @@ module kcp010.viewmodel {
             ko.cleanNode($input[0]);
             var self = this;
             if(self.systemDate() == null){
-                self.systemDate(moment(new Date()).toDate());    
+                self.systemDate(moment(new Date()).toDate());   
             }
             service.findWorkplaceTree(self.systemDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
@@ -142,6 +144,9 @@ module kcp010.viewmodel {
         openDialogCDL008(){
             let self = this;
             block.grayout();
+            if(self.systemDate()==null){
+                self.systemDate(moment(new Date()).toDate());
+            }
             setShared('inputCDL008', { selectedCodes: self.workplaceId(), 
                                        baseDate: self.systemDate(), 
                                        isMultiple: false, 
@@ -154,10 +159,18 @@ module kcp010.viewmodel {
                 let data = getShared('outputCDL008');
                 if(data == null || data === undefined){
                     return;
-                }
-                self.workplaceId(data);
-                self.selectedItem(data);
-                self.systemDate();
+                } 
+                self.systemDate(moment(new Date(data.baseDate)).toDate());
+                let param = {
+                    targetBtnText: nts.uk.resource.getText("KCP010_3"),
+                    tabIndex: 1
+                };
+                self.init($("#wkp-component"), param).done(function(){
+                    //$('#wkp-component').ntsLoadListComponent(param);
+                    self.workplaceId(data.selectedCode);
+                    self.selectedItem(data.selectedCode);     
+                });
+                
             });
         }
 
