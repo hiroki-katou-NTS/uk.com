@@ -229,9 +229,8 @@ module nts.layout {
                 self.radio();
                 self.button();
                 self.combobox();
-               
-                self.grand_combobox();
                 self.grand_radio();
+                self.grand_combobox();
                 //self.relate_radio();
                 self.relate_button();
 
@@ -458,6 +457,10 @@ module nts.layout {
                         ctgCode: 'CS00058',
                         radioCode: 'IS00623',
                         relateCode: ['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628']
+                    }, {
+                        ctgCode: '',
+                        radioCode: '',
+                        relateCode: []
                     }],
                 comboboxs = ["IS00297", "IS00304", "IS00311", "IS00318", "IS00325", "IS00332", "IS00339", "IS00346", "IS00353", "IS00360",
                     "IS00561", "IS00568", "IS00575", "IS00582", "IS00589", "IS00596", "IS00603", "IS00610", "IS00617", "IS00624"],
@@ -499,47 +502,47 @@ module nts.layout {
                 comboboxs: Array<IGrandCombobox> = [{
                     ctgCode: 'CS00025',
                     comboboxCode: 'IS00297',
-                    relateCode: ['IS00296','IS00298', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00298', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         comboboxCode: 'IS00304',
-                        relateCode: ['IS00303','IS00305', 'IS00306', 'IS00307', 'IS00308']
+                        relateCode: ['IS00305', 'IS00306', 'IS00307', 'IS00308']
                     }, {
                         ctgCode: 'CS00027',
                         comboboxCode: 'IS00311',
-                        relateCode: ['IS00310','IS00312', 'IS00313', 'IS00314', 'IS00315']
+                        relateCode: ['IS00312', 'IS00313', 'IS00314', 'IS00315']
                     }, {
                         ctgCode: 'CS00028',
                         comboboxCode: 'IS00318',
-                        relateCode: ['IS00317','IS00319', 'IS00320', 'IS00321', 'IS00322']
+                        relateCode: ['IS00319', 'IS00320', 'IS00321', 'IS00322']
                     }, {
                         ctgCode: 'CS00029',
                         comboboxCode: 'IS00325',
-                        relateCode: ['IS00324','IS00326', 'IS00327', 'IS00328', 'IS00329']
+                        relateCode: ['IS00326', 'IS00327', 'IS00328', 'IS00329']
                     }, {
                         ctgCode: 'CS00030',
                         comboboxCode: 'IS00332',
-                        relateCode: ['IS00331','IS00333', 'IS00334', 'IS00335', 'IS00336']
+                        relateCode: ['IS00333', 'IS00334', 'IS00335', 'IS00336']
                     }, {
                         ctgCode: 'CS00031',
                         comboboxCode: 'IS00339',
-                        relateCode: ['IS00338','IS00340', 'IS00341', 'IS00342', 'IS00343']
+                        relateCode: ['IS00340', 'IS00341', 'IS00342', 'IS00343']
                     }, {
                         ctgCode: 'CS00032',
                         comboboxCode: 'IS00346',
-                        relateCode: ['IS00345','IS00347', 'IS00348', 'IS00349', 'IS00350']
+                        relateCode: ['IS00347', 'IS00348', 'IS00349', 'IS00350']
                     }, {
                         ctgCode: 'CS00033',
                         comboboxCode: 'IS00353',
-                        relateCode: ['IS00352','IS00354', 'IS00355', 'IS00356', 'IS00357']
+                        relateCode: ['IS00354', 'IS00355', 'IS00356', 'IS00357']
                     }, {
                         ctgCode: 'CS00034',
                         comboboxCode: 'IS00360',
-                        relateCode: ['IS00359','IS00361', 'IS00362', 'IS00363', 'IS00364']
+                        relateCode: ['IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00049',
                         comboboxCode: 'IS00561',
-                        relateCode: ['IS00560','IS00562', 'IS00563', 'IS00564', 'IS00565']
+                        relateCode: ['IS00562', 'IS00563', 'IS00564', 'IS00565']
                     }, {
                         ctgCode: 'CS00050',
                         comboboxCode: 'IS00568',
@@ -547,35 +550,39 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00051',
                         comboboxCode: 'IS00575',
-                        relateCode: ['IS00574','IS00576', 'IS00577', 'IS00578', 'IS00579']
+                        relateCode: ['IS00576', 'IS00577', 'IS00578', 'IS00579']
                     }, {
                         ctgCode: 'CS00052',
                         comboboxCode: 'IS00582',
-                        relateCode: ['IS00581','IS00583', 'IS00584', 'IS00585', 'IS00586']
+                        relateCode: ['IS00583', 'IS00584', 'IS00585', 'IS00586']
                     }, {
                         ctgCode: 'CS00053',
                         comboboxCode: 'IS00589',
-                        relateCode: ['IS00588','IS00590', 'IS00591', 'IS00592', 'IS00593']
+                        relateCode: ['IS00590', 'IS00591', 'IS00592', 'IS00593']
                     }, {
                         ctgCode: 'CS00054',
                         comboboxCode: 'IS00596',
-                        relateCode: ['IS00595','IS00597', 'IS00598', 'IS00599', 'IS00600']
+                        relateCode: ['IS00597', 'IS00598', 'IS00599', 'IS00600']
                     }, {
                         ctgCode: 'CS00055',
                         comboboxCode: 'IS00603',
-                        relateCode: ['IS00602', 'IS00604', 'IS00605', 'IS00606', 'IS00607']
+                        relateCode: [ 'IS00604', 'IS00605', 'IS00606', 'IS00607']
                     }, {
                         ctgCode: 'CS00056',
                         comboboxCode: 'IS00610',
-                        relateCode: ['IS00609','IS00611', 'IS00612', 'IS00613', 'IS00614']
+                        relateCode: ['IS00611', 'IS00612', 'IS00613', 'IS00614']
                     }, {
                         ctgCode: 'CS00057',
                         comboboxCode: 'IS00617',
-                        relateCode: ['IS00616','IS00618', 'IS00619', 'IS00620', 'IS00621']
+                        relateCode: ['IS00618', 'IS00619', 'IS00620', 'IS00621']
                     }, {
                         ctgCode: 'CS00058',
                         comboboxCode: 'IS00624',
-                        relateCode: ['IS00623','IS00625', 'IS00626', 'IS00627', 'IS00628']
+                        relateCode: ['IS00625', 'IS00626', 'IS00627', 'IS00628']
+                    }, {
+                        ctgCode: '',
+                        comboboxCode: '',
+                        relateCode: []
                     }],
               
                 validation = (combobox: IGrandCombobox) => {
@@ -583,13 +590,11 @@ module nts.layout {
                         ctrls: Array<IFindData> = _.map(combobox.relateCode, x => finder.find(combobox.ctgCode, x));
                     if (cb) {
                         cb.data.value.subscribe(v => {
-                            if (ctrls[0].data.value() == 1){
-                                for (i = 1; i < ctrls.length; i++) {
-                                    if (ctrls[i] && ctrls[i].data) {
-                                        ctrls[i].data.editable(v == 1);
-                                    }
+                            _.each(ctrls, c => {
+                                if (c && c.data) {
+                                    c.data.editable(v==1);
                                 }
-                            }
+                            });
                         });
                         cb.data.value.valueHasMutated();
                     }
