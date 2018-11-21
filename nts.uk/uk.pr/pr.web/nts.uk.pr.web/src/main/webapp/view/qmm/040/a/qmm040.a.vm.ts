@@ -118,7 +118,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         onSelectTab(param) {
             let self = this;
-            nts.uk.ui.errors.clearAll();
             switch (param) {
                 case 0:
                     //TODO
@@ -183,6 +182,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", 0);
                     break;
             }
+            setTimeout(function(){
+                nts.uk.ui.errors.clearAll();
+            }, 100)
         }
 
         public loadSalIndAmountName(cateIndicator: number): void {
@@ -200,6 +202,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                     else {
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
+                        nts.uk.ui.errors.clearAll();
                         self.individualPriceCode('');
                         self.individualPriceName('');
                     }
@@ -216,6 +219,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         filterData(): void {
             let self = this;
             self.yearMonthFilter();
+            if (/Edge/.test(navigator.userAgent)) {
+                $('.scroll-header').removeClass('edge_scroll_header');
+                $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+            } else {
+                $('.scroll-header').removeClass('ci_scroll_header');
+                $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+            }
             $('#A5_7').ntsError('check');
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -247,7 +257,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                 }
                 personalAmountData= personalAmountData.sort(function(a, b){
-                    return a.employeeCode() > b.employeeCode();
+                    return a.employeeCode().compareTo(b.employeeCode());
                 })
                 self.personalDisplay(personalAmountData);
                 setTimeout(function () {
@@ -261,7 +271,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                         }
 
                     }
-                }, 100);
+                }, 20);
 
             })
             // for(let i=0;i<self.personalAmount().length;i++){
@@ -336,7 +346,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     nts.uk.ui.errors.clearAll();
-                    $('#A5_7').ntsError('check');
                     //self.selectedEmployee(data.listEmployee);
                     if (data && data.listEmployee.length>0) {
                         self.employeeList=data.listEmployee;
