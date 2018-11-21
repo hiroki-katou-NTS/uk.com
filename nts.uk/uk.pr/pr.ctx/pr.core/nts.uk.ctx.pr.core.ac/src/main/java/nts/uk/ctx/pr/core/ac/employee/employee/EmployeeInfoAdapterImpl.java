@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.core.ac.wageprovision.individualwagecontract;
+package nts.uk.ctx.pr.core.ac.employee.employee;
 
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoImport;
 
 import javax.ejb.Stateless;
