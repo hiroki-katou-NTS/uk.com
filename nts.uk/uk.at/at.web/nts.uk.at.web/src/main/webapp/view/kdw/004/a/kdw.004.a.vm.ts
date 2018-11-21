@@ -19,18 +19,18 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             <a class='unapproved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
             <a class='cannotApproved' href='javascript:void(0);'>＿</a>
-            {{elseif \${${headerTxtId}} == '${ApprovalStatus.Disable}' }}
+            {{elseif \${${headerTxtId}} != '${ApprovalStatus.Approved}' && \${${headerTxtId}} != '${ApprovalStatus.UnApproved}' && \${${headerTxtId}} != '${ApprovalStatus.CannotApproved}'  }}
             <span class='disable'></span>
             {{/if}}`;
 
-    export class ScreenModelKDW004A {
+    export class ScreenModelKDW004A { 
         legendOptions: any = {
             items: [
                 { className: 'approved-img', labelText: text('KDW004_8') },
                 { className: 'cannotApproved-img', labelText: text('KDW004_9') },
                 { className: 'unapproved-img', labelText: text('KDW004_10') },
-                { className: 'disable-img', labelText: text('KDW004_11') },
-                { className: 'nodata-img', labelText: text('KDW004_12') }
+                { className: 'disable-img', labelText: text('KDW004_15') }
+                //{ className: 'nodata-img', labelText: text('KDW004_12') }
             ],
             template: '<div class="#{className}"></div><div class="legend-item-label">#{labelText}</div>'
         };
