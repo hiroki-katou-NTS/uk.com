@@ -21,15 +21,15 @@ public class StringValidator {
 	public static Optional<String> validate(StringConstraint constraint, String value) {
 		
 		if (!validateCharType(constraint.getCharType(), value)) {
-			return Optional.of(ErrorIdFactory.getCharTypeErrorId());
+			return Optional.of(ErrorIdFactory.CharTypeErrorId);
 		}
 		
 		if(!validateMaxLength(constraint.getMaxLenght(), value)) {
-			return Optional.of(ErrorIdFactory.getMaxLengthErrorId());
+			return Optional.of(ErrorIdFactory.MaxLengthErrorId);
 		}
 		
 		if (!validateRegEx(constraint.getRegExpression(), value)) {
-			return Optional.of(ErrorIdFactory.getRegExpErrorId());
+			return Optional.of(ErrorIdFactory.RegExpErrorId);
 		}
 		
 		return Optional.empty();

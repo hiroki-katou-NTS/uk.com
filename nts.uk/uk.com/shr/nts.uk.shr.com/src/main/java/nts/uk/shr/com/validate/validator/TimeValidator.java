@@ -20,7 +20,7 @@ public class TimeValidator extends TimeMinMaxValidator{
 
 		// validate style
 		if (!validateTimeStyle(value)) {
-			return Optional.of(ErrorIdFactory.getTimeStyleErrorId());
+			return Optional.of(ErrorIdFactory.TimeStyleErrorId);
 		}
 
 		return validateMinMax(constraint.getMin(), constraint.getMax(), value);
