@@ -157,18 +157,23 @@ module kcp010.viewmodel {
             modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                 block.clear();
                 let data = getShared('outputCDL008');
+                let baseDate = getShared('baseDateCDL008');  
                 if(data == null || data === undefined){
                     return;
                 } 
-                self.systemDate(moment(new Date(data.baseDate)).toDate());
+                if(baseDate != null && baseDate != undefined){
+                    self.systemDate(moment(new Date(baseDate)).toDate());    
+                }
+                
+                
                 let param = {
                     targetBtnText: nts.uk.resource.getText("KCP010_3"),
                     tabIndex: 1
                 };
                 self.init($("#wkp-component"), param).done(function(){
                     //$('#wkp-component').ntsLoadListComponent(param);
-                    self.workplaceId(data.selectedCode);
-                    self.selectedItem(data.selectedCode);     
+                    self.workplaceId(data);
+                    self.selectedItem(data);     
                 });
                 
             });
