@@ -8,7 +8,8 @@ module nts.uk.com.view.cps016.a.service {
         updateDataSelectionItem: "ctx/pereg/person/info/setting/selection/updateSelectionItem",
         checkUseSelectionItem: "ctx/pereg/person/info/setting/selection/checkUseSelectionItem",
         removeDataSelectionItem: "ctx/pereg/person/info/setting/selection/removeSelectionItem",
-        checkExistedSelectionItemId: "ctx/pereg/person/info/ctgItem/checkExistItem/{0}"
+        checkExistedSelectionItemId: "ctx/pereg/person/info/ctgItem/checkExistItem/{0}",
+        saveAsExcel: "file/at/seletionitemreport/saveAsExcel"
 
     }
 
@@ -39,5 +40,8 @@ module nts.uk.com.view.cps016.a.service {
     export function checkExistedSelectionItemId(selectionItemId: string) {
         let _path = format(paths.checkExistedSelectionItemId, selectionItemId);
         return nts.uk.request.ajax("com", _path);
+    }
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "EmployeeSystem", domainType: "就業システム", languageId: languageId, reportType: 0});
     }
 }

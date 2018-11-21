@@ -39,5 +39,7 @@ public interface IPerInfoSelectionItemRepository {
 	// Lanlt
 
 	List<PersonSelectionItemExportData> findAllSelection(String contractCode, String langId);
+	
+	List<SelectionItemReportData> findByContractCd(String contractCd);
 
 }
