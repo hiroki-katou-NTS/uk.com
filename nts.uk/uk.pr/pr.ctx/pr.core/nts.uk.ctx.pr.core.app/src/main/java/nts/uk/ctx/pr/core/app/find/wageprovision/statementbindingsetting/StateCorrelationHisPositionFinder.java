@@ -10,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -28,10 +29,7 @@ public class StateCorrelationHisPositionFinder {
     private SyJobTitleAdapter syJobTitleAdapter;
 
     @Inject
-    private StatementLayoutRepository statementLayoutFinder;
-
-    @Inject
-    private StateLinkSettingMasterRepository masterFinder;
+    private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
 
     @Inject
     private StateLinkSettingDateRepository stateLinkSettingDateFinder;
@@ -40,7 +38,7 @@ public class StateCorrelationHisPositionFinder {
         String cId = AppContexts.user().companyId();
         Optional<StateCorrelationHisPosition> hisPosition = finder.getStateCorrelationHisPositionByCid(cId);
         if (!hisPosition.isPresent()) {
-            return null;
+            Collections.emptyList();
         }
         return StateCorrelationHisPositionDto.fromDomain(hisPosition.get());
     }
@@ -57,14 +55,12 @@ public class StateCorrelationHisPositionFinder {
         String cId = AppContexts.user().companyId();
         List<JobTitle> listJobTitle = syJobTitleAdapter.findAll(cId, date);
         if(listJobTitle == null || listJobTitle.isEmpty()){
-            return null;
+            return Collections.emptyList();
         }
-        List<StatementLayout> statementLayout = statementLayoutFinder.getStatement(cId, startYearMonth);
-        List<StateLinkSettingMaster>  listStateLinkSettingMaster = masterFinder.getStateLinkSettingMasterByHisId(hisId);
-        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = listStateLinkSettingMaster.stream()
-                .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout)).collect(Collectors.toList());
+        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(hisId, startYearMonth) ;
         return listJobTitle.stream().map(i -> this.addCategoryName(i, listStateLinkSettingMasterDto)).collect(Collectors.toList());
     }
+
     private StateLinkSettingMasterDto addCategoryName(JobTitle job, List<StateLinkSettingMasterDto> stateLinkSettingMasterDto){
         Optional<StateLinkSettingMasterDto> jobtitle = stateLinkSettingMasterDto.stream().filter(i -> i.getMasterCode().equals(job.getJobTitleCode())).findFirst();
         if(jobtitle.isPresent()) {

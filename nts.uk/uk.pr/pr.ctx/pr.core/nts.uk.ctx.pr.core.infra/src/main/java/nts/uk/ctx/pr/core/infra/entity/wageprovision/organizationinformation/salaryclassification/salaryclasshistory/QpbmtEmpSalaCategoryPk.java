@@ -19,10 +19,18 @@ import java.io.Serializable;
 public class QpbmtEmpSalaCategoryPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
+
     /**
-    * 履歴ID
-    */
+     * 社員ID
+     */
+    @Basic(optional = false)
+    @Column(name = "SID")
+    public String sid;
+
+    /**
+     * 履歴ID
+     */
     @Basic(optional = false)
     @Column(name = "HIS_ID")
     public String hisId;

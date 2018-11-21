@@ -40,8 +40,8 @@ public class StateCorrelationHisPositionWebService extends WebService {
         registerStateCorrelationHisPositionCommandHandler.handle(command);
     }
 
-    @Path("getDateBase/{hisId}")
     @POST
+    @Path("getDateBase/{hisId}")
     public StateLinkSettingDateDto getDateBase(@PathParam("hisId") String hisId) {
         return stateCorrelationHisPositionFinder.getDateBase(hisId);
     }
