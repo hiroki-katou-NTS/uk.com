@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //A10_1 休日は除く
-        excludeHolidayAtr: KnockoutObservable<boolean> = ko.observable(false);
+        excludeHolidayAtr: KnockoutObservable<boolean> = ko.observable(true);
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         //menu-bar 

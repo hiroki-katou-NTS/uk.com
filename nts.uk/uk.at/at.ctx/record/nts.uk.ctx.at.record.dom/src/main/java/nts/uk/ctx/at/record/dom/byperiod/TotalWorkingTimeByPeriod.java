@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.H
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
@@ -95,12 +97,16 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 	 * 集計処理
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(
 			DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
-			MonAggrCompanySettings companySets){
+			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 就業時間の集計
 		{
@@ -128,7 +134,8 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		this.holidayWorkTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleHolidayWorkFrameMap);
 		
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
+				companySets, repositories);
 		this.vacationUseTime.aggregate(datePeriod);
 		
 		// 所定労働時間を集計する

@@ -366,7 +366,8 @@ public class RegularAndIrregularTimeOfMonthly {
 		val workInformationOfDailyMap = monthlyCalcDailys.getWorkInfoOfDailyMap();
 		
 		// 共有項目を集計する
-		prevTotalWorkingTime.aggregateSharedItem(lastWeekPeriod, attendanceTimeOfDailyMap);
+		prevTotalWorkingTime.aggregateSharedItem(lastWeekPeriod, attendanceTimeOfDailyMap,
+				monthlyCalcDailys.getWorkInfoOfDailyMap(), companySets, repositories);
 
 		GeneralDate procDate = lastWeekPeriod.start();
 		while (procDate.beforeOrEquals(lastWeekPeriod.end())){

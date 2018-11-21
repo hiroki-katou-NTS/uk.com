@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+/*import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;*/
 
 @Value
 @AllArgsConstructor

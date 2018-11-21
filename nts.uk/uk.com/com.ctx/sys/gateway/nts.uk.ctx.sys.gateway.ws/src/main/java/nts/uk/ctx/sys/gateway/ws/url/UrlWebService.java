@@ -15,8 +15,11 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
@@ -30,6 +33,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.url.UrlExecInfo;
 
 @Path("ctx/sys/gateway/url")
@@ -59,6 +63,9 @@ public class UrlWebService {
 	@Inject
 	private SubmitLoginFormTwoCommandHandler submitLoginFormTwoCommandHandler;
 	
+	@Inject
+	private LoginRecordRegistService loginRecordRegistService;
+	
 	/**
 	 * 埋込URL実行
 	 * @param screeenPath
@@ -87,7 +94,20 @@ public class UrlWebService {
 		UrlExecInfo urlExecInfoExport = opUrlExecInfo.get();
 		if(urlExecInfoExport.getExpiredDate().before(systemDateTime)){
 			// record login
-			// to do
+			String remark = TextResource.localize("Msg_1474")
+					+ " "
+					+ TextResource.localize("Msg_1095");
+			loginRecordRegistService.loginRecord(
+					new LoginRecordInput(
+							urlExecInfoExport.getProgramId(), 
+							urlExecInfoExport.getScreenId(), 
+							"", 
+							1, 
+							2, 
+							"", 
+							remark, 
+							null), 
+					"");
 			throw new BusinessException("Msg_1095");
 		}
 		
@@ -103,7 +123,17 @@ public class UrlWebService {
 		this.executionURLLogin(urlExecInfoExport.getScd(), urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract);
 		
 		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
-		// to do
+		loginRecordRegistService.loginRecord(
+				new LoginRecordInput(
+						urlExecInfoExport.getProgramId(), 
+						urlExecInfoExport.getScreenId(), 
+						"", 
+						0, 
+						2, 
+						"", 
+						"Msg_1474", 
+						null), 
+				"");
 		
 		// ドメインモデル「埋込URL実行情報」の「プログラムID」及び「遷移先の画面ID」に該当する画面へ遷移する
 		urlExecInfoExport.getTaskIncre().forEach(x -> {
