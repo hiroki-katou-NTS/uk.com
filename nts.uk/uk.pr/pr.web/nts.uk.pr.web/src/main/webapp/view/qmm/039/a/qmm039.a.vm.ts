@@ -41,6 +41,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         listComponentOption: ComponentOption;
         tabindex: number;
         enable: KnockoutObservable<boolean>;
+        A7_8: KnockoutObservable<string> = ko.observable(null);
+
         //_____CCG001________
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -318,6 +320,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
+                    self.A7_8('～');
                     self.isRegistrationable(true);
                     self.currencyeditor.enable(true);
                     self.mode(MODE.NORMAL);
@@ -341,6 +344,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.focusStartPage = false;
                     }
                 } else {
+                    self.A7_8(null);
                     self.itemList([]);
                     self.periodStartYM(null);
                     self.periodEndYM(null);
