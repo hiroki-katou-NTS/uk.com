@@ -86,9 +86,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     startDate: moment(result.startDate).format("YYYY/MM/DD"),
                     endDate: moment(result.endDate).format("YYYY/MM/DD")
                 });
-                if(result.lstEmployee != null)
-                self.lstData = self.convertToGridData(result.lstEmployee);
-                else {
+                if(result.lstEmployee != null){
+                    self.lstData = self.convertToGridData(result.lstEmployee);
+                } else {
                     nts.uk.ui.dialog.alert({ messageId: result.messageID  });
                 }
                 self.generateColumns();
@@ -120,8 +120,13 @@ module nts.uk.at.view.kdw004.a.viewmodel {
 
                 ko.cleanNode(approvalSttGrid_headers);
                 ko.cleanNode(approvalSttGrid);
-
-                self.lstData = self.convertToGridData(result.lstEmployee);
+    
+                //self.lstData = self.convertToGridData(result.lstEmployee);
+                if(result.lstEmployee != null){
+                    self.lstData = self.convertToGridData(result.lstEmployee);
+                } else {
+                    nts.uk.ui.dialog.alert({ messageId: result.messageID  });
+                }
                 self.generateColumns();
                 self.loadGrid();
                 self.setHeadersColor();
