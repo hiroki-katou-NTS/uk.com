@@ -2,9 +2,9 @@ package nts.uk.ctx.pr.core.ac.wageprovision.individualwagecontract;
 
 //import nts.uk.query.pub.employee.EmployeeInformationPub;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmployeeInformationAdapter;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmployeeInformationImport;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationQueryDtoImport;
 
 import javax.ejb.Stateless;
 import java.util.List;

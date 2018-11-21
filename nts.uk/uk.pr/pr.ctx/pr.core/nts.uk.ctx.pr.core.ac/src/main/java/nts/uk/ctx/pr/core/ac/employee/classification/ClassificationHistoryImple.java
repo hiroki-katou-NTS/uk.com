@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.core.ac.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.ac.employee.classification;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.ClassificationHisExportAdapter;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.ClassificationHistoryExport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationHisExportAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationHistoryExport;
 
 import javax.ejb.Stateless;
 import java.util.Optional;

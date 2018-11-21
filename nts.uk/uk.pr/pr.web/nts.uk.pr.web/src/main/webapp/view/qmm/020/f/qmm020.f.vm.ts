@@ -148,10 +148,10 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             let self = this;
             let data = {
                 hisId: hisId,
-                startYeaMonth: startYeaMonth,
+                startYearMonth: startYeaMonth,
                 date: moment.utc(date, 'YYYY/MM/DD').toISOString()
             };
-            service.getStateLinkSettingMasterPosition(data).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
+            service.getStateLinkSettingMasterPosition(data).done((stateLinkSettingMaster: Array<model.StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);

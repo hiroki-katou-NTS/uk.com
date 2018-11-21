@@ -1,6 +1,8 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
+
 import java.util.List;
 
 public interface SyJobTitleAdapter {

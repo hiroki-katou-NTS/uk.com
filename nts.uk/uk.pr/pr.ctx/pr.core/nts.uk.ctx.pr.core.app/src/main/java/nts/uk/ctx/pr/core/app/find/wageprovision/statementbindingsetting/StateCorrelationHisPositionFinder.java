@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;

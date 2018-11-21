@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.core.ac.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.ac.employee.employment;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmploymentHisExport;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.IEmploymentHistoryAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.EmploymentHisExport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.IEmploymentHistoryAdapter;
 
 import javax.ejb.Stateless;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.dom.adapter.employee.employment;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffDepartHistory {
-    /*部門コード*/
-    private String departmentCode;
+public class EmploymentHisExport {
+    /*雇用コード*/
+    private String employmentCode;
 }
