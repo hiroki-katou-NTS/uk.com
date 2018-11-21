@@ -188,25 +188,25 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
             service.findDisplayRegister().done(data => {
-                self.itemTable=new ItemTable();
+                self.itemTable = new ItemTable();
                 if (data) {
                     self.itemTable.setData(data);
                 }
 
-                let isExists:Array<number>=new Array();
-                for(let i=0;i<self.itemTable.processInfomations.length;i++){
+                let isExists: Array<number> = [];
+                for (let i = 0; i < self.itemTable.processInfomations.length; i++) {
                     isExists.push(self.itemTable.processInfomations[i].processCateNo)
                 }
-                let arrItemBindingProcessinformations:Array<model.ProcessInfomation>=new Array();
+                let arrItemBindingProcessinformations: Array<model.ProcessInfomation> = [];
                 for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
-                    if(_.includes(isExists,i+1)){
-                        let index=_.indexOf(isExists,i+1);
+                    if (_.includes(isExists, i + 1)) {
+                        let index = _.indexOf(isExists, i + 1);
                         arrItemBindingProcessinformations.push(self.itemTable.processInfomations[index]);
                     }
-                    else{
+                    else {
                         arrItemBindingProcessinformations.push(new model.ProcessInfomation({
                                 processCateNo: i + 1,
                                 processCls: '',
@@ -217,22 +217,31 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 }
 
                 for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
-                    let employeeString = '';
-                    let employeeList = [];
-                    let employeeSetting = _.find(self.itemTable.empTiedProYear, x => {
+                    let employeeString = '',
+                        employeeList = [],
+                        currentProcessDates,
+                        processCateNo = i + 1;
+
+                    let employeeSetting:any = _.find(self.itemTable.empTiedProYear, x => {
                         if (x != null) {
                             return x.processCateNo == i + 1;
                         }
-                    })
+                    });
+
                     if (employeeSetting) {
                         for (let j = 0; j < employeeSetting.getEmploymentCodes.length; j++) {
                             let obj = _.find(self.itemTable.empCdNameImports, x => {
                                 return x.code == employeeSetting.getEmploymentCodes[j];
-                            })
+                            });
                             employeeList.push(obj);
                             employeeString == '' ? employeeString += obj.name : employeeString += (', ' + obj.name);
                         }
                     }
+
+                    currentProcessDates = _.find(self.itemTable.currentProcessDates, x => {
+                        return x.processCateNo == processCateNo;
+                    });
+
                     self.itemBinding.push(new ItemBinding(
                         arrItemBindingProcessinformations[i],
                         _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
@@ -244,20 +253,15 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         employeeString, employeeList,
                         self.getYear(self.itemTable.setDaySupports, i),
                         self.getListMonth(self.itemTable.setDaySupports, i),
-                        self.itemTable.currentProcessDates[i]
-                    )
-                    );
-
+                        currentProcessDates
+                    ));
                 }
                 console.log(self.itemBinding());
                 console.log(self.itemTable);
 
                 dfd.resolve();
                 $('#A2_2 #button_update').eq(0).focus();
-
             });
-
-
             return dfd.promise();
         }
 
