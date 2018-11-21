@@ -303,10 +303,14 @@ module kcp009.viewmodel {
                     // Set Selected Item
                     self.selectedItem(existItem.id);
                     self.empDisplayCode(existItem.code);
-                    self.empBusinessName(existItem.businessName);
+//                    self.empBusinessName(existItem.businessName);
                     // Set OrganizationName
+//                    self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
+//                        existItem.workplaceName : existItem.depName);
+                    self.empBusinessName(employee.businessName);
                     self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
-                        existItem.workplaceName : existItem.depName);
+                        employee.wkpDisplayName : employee.deptDisplayName);
+                    
                 } else {
                     let newEmpList: Array<EmployeeModel> = [];
                     newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName, workplaceName: employee.wkpDisplayName, depName: employee.deptDisplayName });
@@ -315,7 +319,8 @@ module kcp009.viewmodel {
                     self.selectedItem(employee.employeeId);
                     self.empDisplayCode(employee.employeeCode);
                     self.empBusinessName(employee.businessName);
-                    self.organizationName(employee.wkpDisplayName);
+                    self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
+                        employee.wkpDisplayName : employee.deptDisplayName);
                 }
 
             }).fail(function(res) {

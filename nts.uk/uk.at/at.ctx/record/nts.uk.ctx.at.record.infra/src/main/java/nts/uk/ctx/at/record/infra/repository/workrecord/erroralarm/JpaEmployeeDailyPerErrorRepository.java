@@ -251,7 +251,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				GET_BY_LIST_EMP_AND_PERIOD = GET_BY_LIST_EMP_AND_PERIOD+")";
 				try (PreparedStatement statement = this.connection().prepareStatement(GET_BY_LIST_EMP_AND_PERIOD)) {
 					statement.setDate(1, Date.valueOf(processingDate.end().localDate()));
-					statement.setDate(2, Date.valueOf(processingDate.end().localDate()));
+					statement.setDate(2, Date.valueOf(processingDate.start().localDate()));
 					for(int i = 0;i<employeeID.size();i++) {
 						statement.setString(i+3, employeeID.get(i));
 					}
