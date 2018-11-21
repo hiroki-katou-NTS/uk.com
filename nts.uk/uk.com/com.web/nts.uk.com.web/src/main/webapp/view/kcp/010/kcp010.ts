@@ -19,9 +19,10 @@ module kcp010.viewmodel {
         keySearch: KnockoutObservable<string>;
         isDisplay: KnockoutObservable<boolean>;
         tabIndex: number;
-
+        systemDate : KnockoutObservable<any>;
         constructor() {
             var self = this;
+            self.systemDate = ko.observable(null);
             self.wkpList = ko.observableArray([]);
             self.targetBtnText = nts.uk.resource.getText("KCP010_3");
             self.workplaceId = ko.observable(null);
@@ -38,7 +39,10 @@ module kcp010.viewmodel {
             $(document).undelegate('#list-box_grid', 'iggriddatarendered');
             ko.cleanNode($input[0]);
             var self = this;
-            service.findWorkplaceTree(moment(new Date()).toDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
+            if(self.systemDate() == null){
+                self.systemDate(moment(new Date()).toDate());    
+            }
+            service.findWorkplaceTree(self.systemDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
                     self.wkpList(self.convertTreeToArray(dataList));
                     self.tabIndex = data.tabIndex;
@@ -139,7 +143,7 @@ module kcp010.viewmodel {
             let self = this;
             block.grayout();
             setShared('inputCDL008', { selectedCodes: self.workplaceId(), 
-                                       baseDate: moment(new Date()).toDate(), 
+                                       baseDate: self.systemDate(), 
                                        isMultiple: false, 
                                        selectedSystemType:2 , 
                                        isrestrictionOfReferenceRange:true , 
@@ -153,6 +157,7 @@ module kcp010.viewmodel {
                 }
                 self.workplaceId(data);
                 self.selectedItem(data);
+                self.systemDate();
             });
         }
 
