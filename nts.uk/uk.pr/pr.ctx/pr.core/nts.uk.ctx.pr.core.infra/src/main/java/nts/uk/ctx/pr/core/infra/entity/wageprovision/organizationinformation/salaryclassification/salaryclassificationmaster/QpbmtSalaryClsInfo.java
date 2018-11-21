@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationInformation;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -42,7 +44,6 @@ public class QpbmtSalaryClsInfo extends UkJpaEntity implements Serializable
     /**
     * メモ
     */
-    @Basic(optional = true)
     @Column(name = "MEMO")
     public String memo;
     
@@ -56,7 +57,7 @@ public class QpbmtSalaryClsInfo extends UkJpaEntity implements Serializable
         return new SalaryClassificationInformation(this.salaryClsInfoPk.cid, this.salaryClsInfoPk.salaryClsCd, this.salaryClsName, this.memo);
     }
     public static QpbmtSalaryClsInfo toEntity(SalaryClassificationInformation domain) {
-        return new QpbmtSalaryClsInfo(new QpbmtSalaryClsInfoPk(domain.getCompanyId(), domain.getSalaryClassificationCode().v()),domain.getSalaryClassificationName().v(), domain.getMemo().map(i->i.v()).orElse(null));
+        return new QpbmtSalaryClsInfo(new QpbmtSalaryClsInfoPk(domain.getCompanyId(), domain.getSalaryClassificationCode().v()), domain.getSalaryClassificationName().v(), domain.getMemo().map(PrimitiveValueBase::v).orElse(null));
     }
 
 }
