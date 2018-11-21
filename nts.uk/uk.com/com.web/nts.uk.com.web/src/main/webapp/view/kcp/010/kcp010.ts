@@ -197,8 +197,12 @@ module kcp010.viewmodel {
         // Search workplace
         private searchWkp(): void {
             let self = this;
+            let param = {
+                    baseDate : self.systemDate(),
+                    workplaceCode : self.keySearch()
+            }
             // Search
-            service.searchWorkplace(self.keySearch()).done(function(workplace: service.model.WorkplaceSearchData) {
+            service.searchWorkplace(param).done(function(workplace: service.model.WorkplaceSearchData) {
                 // find Exist workplace in List
                 let existItem = self.wkpList().filter((item) => {
                     return item.code == workplace.code;
@@ -302,8 +306,8 @@ module kcp010.viewmodel {
             return nts.uk.request.ajax('com', paths.findWorkplaceTree, { baseDate: baseDate });
         }
         
-        export function searchWorkplace(workplaceCode: string): JQueryPromise<model.WorkplaceSearchData> {
-            return nts.uk.request.ajax('com', paths.searchWorkplace + workplaceCode);
+        export function searchWorkplace(input :any): JQueryPromise<model.WorkplaceSearchData> {
+            return nts.uk.request.ajax('com', paths.searchWorkplace,input);
         }
         
         export function getWorkplaceBySid(): JQueryPromise<model.WorkplaceSearchData> {
