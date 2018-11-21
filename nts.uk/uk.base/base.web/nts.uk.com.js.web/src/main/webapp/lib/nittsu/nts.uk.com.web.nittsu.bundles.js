@@ -27511,9 +27511,9 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
                                 isSelecting = false;
                                 $grid.onselectstart = null;
