@@ -515,7 +515,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 if (params) {
                     self.selectedHisCode(0);
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
-                    self.periodEndYM(params.periodEndYm);
+                    self.A7_8('～');
+                    self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
 
                     if (params.takeoverMethod == 1) {
                         self.currencyeditor.value('');
