@@ -98,7 +98,9 @@ module nts.uk.com.view.cdl008.a {
                 if (!self.isMultipleSelect) {
                     selectedCode = self.selectedSelWorkplace();
                 }
-                nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
+                let param =  { selectedCode: selectedCode, 
+                                   baseDate: self.baseDate()};
+                nts.uk.ui.windows.setShared('outputCDL008', param);
                 nts.uk.ui.windows.close();
             }
             /**

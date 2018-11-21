@@ -19,7 +19,7 @@ module kcp010.viewmodel {
         keySearch: KnockoutObservable<string>;
         isDisplay: KnockoutObservable<boolean>;
         tabIndex: number;
-
+        systemDate : KnockoutObservable<any>;
         constructor() {
             var self = this;
             self.wkpList = ko.observableArray([]);
@@ -30,6 +30,8 @@ module kcp010.viewmodel {
             self.selectedItem = ko.observable("");
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
+            
+            self.systemDate = ko.observable(null);
         }
 
         // Initialize Component
@@ -38,7 +40,10 @@ module kcp010.viewmodel {
             $(document).undelegate('#list-box_grid', 'iggriddatarendered');
             ko.cleanNode($input[0]);
             var self = this;
-            service.findWorkplaceTree(moment(new Date()).toDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
+            if(self.systemDate() == null){
+            self.systemDate( moment(new Date()).toDate());    
+            }
+            service.findWorkplaceTree(self.systemDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
                     self.wkpList(self.convertTreeToArray(dataList));
                     self.tabIndex = data.tabIndex;
@@ -138,8 +143,11 @@ module kcp010.viewmodel {
         openDialogCDL008(){
             let self = this;
             block.grayout();
+            if(self.systemDate()==null){
+                self.systemDate(moment(new Date()).toDate());
+            }
             setShared('inputCDL008', { selectedCodes: self.workplaceId(), 
-                                       baseDate: moment(new Date()).toDate(), 
+                                       baseDate: self.systemDate(), 
                                        isMultiple: false, 
                                        selectedSystemType:2 , 
                                        isrestrictionOfReferenceRange:true , 
@@ -150,9 +158,19 @@ module kcp010.viewmodel {
                 let data = getShared('outputCDL008');
                 if(data == null || data === undefined){
                     return;
-                }
-                self.workplaceId(data);
-                self.selectedItem(data);
+                } 
+                self.systemDate(moment(new Date(data.baseDate)).toDate());
+                let param = {
+                    targetBtnText: nts.uk.resource.getText("KCP010_3"),
+                    tabIndex: 1
+                };
+                self.init($("#wkp-component"), param).done(function(){
+                    //$('#wkp-component').ntsLoadListComponent(param);
+                    self.workplaceId(data.selectedCode);
+                    self.selectedItem(data.selectedCode);     
+                });
+                
+                
             });
         }
 
