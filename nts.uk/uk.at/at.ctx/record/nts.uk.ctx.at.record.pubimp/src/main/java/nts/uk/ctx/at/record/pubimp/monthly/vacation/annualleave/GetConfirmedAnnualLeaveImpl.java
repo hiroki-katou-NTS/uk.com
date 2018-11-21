@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.monthly.vacation.annualleave;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-//import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.AnnualLeaveUsageExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetConfirmedAnnualLeave;
@@ -34,6 +36,8 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 	/** 年休月別残数データ */
 	@Inject
 	private AnnLeaRemNumEachMonthRepository annLeaRemNumEachMonthRepo;
+	@Inject
+	private RemainMergeRepository repoRemainMer;
 	
 	/** 社員の月毎の確定済み年休を取得する */
 	@Override
@@ -112,6 +116,86 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 		
 		// 年休月別残数データリストを返す
 		val resultList = results.values().stream().collect(Collectors.toList());
+		resultList.sort((a, b) -> a.getYearMonth().compareTo(b.getYearMonth()));
+		return resultList;
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList255 社員の月毎の確定済み年休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param period 年月期間
+	 * @return 年休利用状況リスト
+	 */
+	@Override
+	public List<AnnualLeaveUsageExport> getYearHdMonthlyVer2(String employeeId, YearMonthPeriod period) {
+		// 年月期間を取得
+		val yearMonths = ConvertHelper.yearMonthsBetween(period);
+
+		// 「年休月別残数データ」を取得
+		List<AnnLeaRemNumEachMonth> datas = repoRemainMer.findByYearMonthRQ255(Arrays.asList(employeeId), yearMonths);
+		Map<YearMonth, AnnualLeaveUsageExport> results = new HashMap<>();
+		Map<YearMonth, GeneralDate> saveDates = new HashMap<>();
+		for (AnnLeaRemNumEachMonth data : datas){
+			// 「締め済」でないデータは、除く
+			val yearMonth = data.getYearMonth();
+			val annualLeave = data.getAnnualLeave();
+			val usedNumber = annualLeave.getUsedNumber();
+			val remNumber = annualLeave.getRemainingNumber();
+			
+			AnnualLeaveUsedDayNumber usedDays =
+					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDays().v());
+			UsedMinutes usedTime = null;
+			if (usedNumber.getUsedTime().isPresent()){
+				usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
+			}
+			AnnualLeaveRemainingDayNumber remainingDays =
+					new AnnualLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());
+			RemainingMinutes remainingTime = null;
+			if (remNumber.getTotalRemainingTime().isPresent()){
+				remainingTime = new RemainingMinutes(remNumber.getTotalRemainingTime().get().v());
+			}
+			
+			// 同じ年月が複数ある時、合算する
+			if (results.containsKey(yearMonth)){
+				val oldResult = results.get(yearMonth);
+				val oldDate = saveDates.get(yearMonth);
+				
+				usedDays = new AnnualLeaveUsedDayNumber(usedDays.v() + oldResult.getUsedDays().v());
+				if (oldResult.getUsedTime().isPresent()){
+					if (usedTime == null){
+						usedTime = new UsedMinutes(oldResult.getUsedTime().get().v());
+					}
+					else {
+						usedTime = new UsedMinutes(usedTime.v() + oldResult.getUsedTime().get().v());
+					}
+				}
+				
+				// 年休残数に限り、締め期間．終了日の遅い方を保持する
+				if (data.getClosurePeriod().end().before(oldDate)){
+					remainingDays = new AnnualLeaveRemainingDayNumber(oldResult.getRemainingDays().v());
+					remainingTime = null;
+					if (oldResult.getRemainingTime().isPresent()){
+						remainingTime = new RemainingMinutes(oldResult.getRemainingTime().get().v());
+					}
+				}
+				else {
+					saveDates.put(yearMonth, data.getClosurePeriod().end());
+				}
+			}
+			
+			results.put(yearMonth, new AnnualLeaveUsageExport(
+					yearMonth,
+					usedDays,
+					Optional.ofNullable(usedTime),
+					remainingDays,
+					Optional.ofNullable(remainingTime)));
+			
+			saveDates.putIfAbsent(yearMonth, data.getClosurePeriod().end());
+		}
+		
+		// 年休月別残数データリストを返す
+		List<AnnualLeaveUsageExport> resultList = results.values().stream().collect(Collectors.toList());
 		resultList.sort((a, b) -> a.getYearMonth().compareTo(b.getYearMonth()));
 		return resultList;
 	}

@@ -72,5 +72,30 @@ public class MonthlyDayoffRemainFinder implements MonthlyDayoffRemainAdapter {
 		});
 		return lstCurrentHoliday;
 	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequesList259 社員の月毎の確定済み代休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param startMonth 年月期間
+	 * @param endMonth
+	 * @return
+	 */
+	@Override
+	public List<StatusHolidayImported> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonth startMonth,
+			YearMonth endMonth) {
+		List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonth = monthlyDayoffRemainExport
+				.lstDayoffCurrentMonthOfEmpVer2(employeeId, startMonth, endMonth);
+		if (lstDayoffCurrentMonth == null)
+			return null;
+		List<StatusHolidayImported> lstStatusHoliday = new ArrayList<>();
+		lstDayoffCurrentMonth.forEach(item -> {
+			StatusHolidayImported statusHoliday = new StatusHolidayImported(item.getYm(), item.getOccurrenceDays(),
+					item.getOccurrenceTimes(), item.getUseDays(), item.getUseTimes(), item.getUnUsedDays(),
+					item.getUnUsedTimes(), item.getRemainingDays(), item.getRemainingTimes());
+			lstStatusHoliday.add(statusHoliday);
+		});
+		return lstStatusHoliday;
+	}
 
 }

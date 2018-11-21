@@ -15,6 +15,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 
@@ -36,7 +41,11 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
 			+ "AND a.krcdtMonRemainPk.yearMonth IN :yearMonths "
 			+ "ORDER BY a.krcdtMonRemainPk.employeeId, a.startDate ";
-	
+	//hoatt
+	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
+			+ "ORDER BY a.startDate ";
 	/** 検索 */
 	@Override
 	public Optional<RemainMerge> find(MonthMergeKey key) {
@@ -104,5 +113,108 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				.setParameter("closureDay", key.getClosureDate().getClosureDay().v())
 				.setParameter("isLastDay", (key.getClosureDate().getLastDayOfMonth() ? 1 : 0))
 				.executeUpdate();
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ260
+	 * @param employeeId
+	 * @param yearMonth
+	 * @return
+	 */
+	@Override
+	public List<AbsenceLeaveRemainData> findByYearMonthRQ260(String employeeId, YearMonth yearMonth) {
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.getList(c -> c.toDomainAbsenceLeaveRemainData());
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ263
+	 * @param employeeId
+	 * @param yearMonth
+	 * @return
+	 */
+	@Override
+	public List<SpecialHolidayRemainData> findByYearMonthRQ263(String employeeId, YearMonth yearMonth) {
+		val entitys = this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.getList();
+		List<SpecialHolidayRemainData> results = new ArrayList<>();
+		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+		return results;
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ259
+	 * @param employeeId
+	 * @param yearMonth
+	 * @return
+	 */
+	@Override
+	public List<MonthlyDayoffRemainData> findByYearMonthRQ259(String employeeId, YearMonth yearMonth) {
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.getList(c -> c.toDomainMonthlyDayoffRemainData());
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ258
+	 * @param lstSID
+	 * @param lstYrMon
+	 * @return
+	 */
+	@Override
+	public List<RsvLeaRemNumEachMonth> findByYearMonthRQ258(List<String> lstSID, List<YearMonth> lstYrMon) {
+		if(lstSID.isEmpty() || lstYrMon.isEmpty()){
+			return new ArrayList<>();
+		}
+		val yearMonthVal = lstYrMon.stream().map(c -> c.v()).collect(Collectors.toList());
+		List<KrcdtMonRemain> results = new ArrayList<>();
+		CollectionUtil.split(lstSID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			CollectionUtil.split(yearMonthVal, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
+		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainRsvLeaRemNumEachMonth()).collect(Collectors.toList());
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ255
+	 * @param lstSID
+	 * @param lstYrMon
+	 * @return
+	 */
+	@Override
+	public List<AnnLeaRemNumEachMonth> findByYearMonthRQ255(List<String> lstSID, List<YearMonth> lstYrMon) {
+		if(lstSID.isEmpty() || lstYrMon.isEmpty()){
+			return new ArrayList<>();
+		}
+		val yearMonthValues = lstYrMon.stream().map(c -> c.v()).collect(Collectors.toList());
+		List<KrcdtMonRemain> results = new ArrayList<>();
+		CollectionUtil.split(lstSID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
+		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainAnnLeaRemNumEachMonth()).collect(Collectors.toList());
 	}
 }

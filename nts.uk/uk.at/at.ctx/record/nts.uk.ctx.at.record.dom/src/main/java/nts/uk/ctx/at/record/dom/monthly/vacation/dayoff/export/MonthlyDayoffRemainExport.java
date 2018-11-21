@@ -18,5 +18,15 @@ public interface MonthlyDayoffRemainExport {
 	 * @return
 	 */
 	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequesList259 社員の月毎の確定済み代休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param startMonth 年月期間
+	 * @param endMonth
+	 * @return
+	 */
+	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonth startMonth, YearMonth endMonth);
 
 }

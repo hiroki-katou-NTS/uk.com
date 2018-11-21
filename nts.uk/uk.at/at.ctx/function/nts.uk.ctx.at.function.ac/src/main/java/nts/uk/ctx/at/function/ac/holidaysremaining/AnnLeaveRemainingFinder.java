@@ -122,4 +122,24 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 		});
 		return lstHolidayRemainData;
 	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList255 社員の月毎の確定済み年休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param period 年月期間
+	 * @return 年休利用状況リスト
+	 */
+	@Override
+	public List<AnnualLeaveUsageImported> getYearHdMonthlyVer2(String employeeId, YearMonthPeriod period) {
+		List<AnnualLeaveUsageExport> lstAnnLea = getConfirmedAnnualLeave.getYearHdMonthlyVer2(employeeId, period);
+		List<AnnualLeaveUsageImported> lstHdRemainData = new ArrayList<>();
+		lstAnnLea.forEach(item -> {
+			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(item.getYearMonth(),
+					item.getUsedDays().v(), item.getUsedTime().map(i -> i.v()).orElse(null), item.getRemainingDays().v(),
+					item.getRemainingTime().map(i -> i.v()).orElse(null));
+			lstHdRemainData.add(HolidayRemainData);
+		});
+		return lstHdRemainData;
+	}
 }
