@@ -1,6 +1,5 @@
 package nts.uk.shr.com.validate.service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import nts.uk.shr.com.validate.constraint.DataConstraint;
@@ -17,19 +16,19 @@ import nts.uk.shr.com.validate.validator.TimeValidator;
 
 public class CellValidateService {
 	
-	public static Optional<String> validateValue(DataConstraint constraint, Object value) {
-
+	public static Optional<String> validateValue(DataConstraint constraint, String value) {
+		
 		switch (constraint.getConstraintType()) {
 		case STRING:
-			return StringValidator.validate((StringConstraint) constraint, (String) value);
+			return StringValidator.validate((StringConstraint) constraint, value);
 		case NUMERIC:
-			return NumericValidator.validate((NumericConstraint) constraint, new BigDecimal(value.toString()));
+			return NumericValidator.validate((NumericConstraint) constraint, value);
 		case DATE:
 			return DateValidator.validate((DateConstraint) constraint, value);
 		case TIME:
-			return TimeValidator.validate((TimeConstraint) constraint, (String) value);
+			return TimeValidator.validate((TimeConstraint) constraint, value);
 		case TIMEPOINT:
-			return TimePointValidator.validate((TimePointConstraint) constraint, (String) value);
+			return TimePointValidator.validate((TimePointConstraint) constraint, value);
 		}
 		return Optional.empty();
 	}
