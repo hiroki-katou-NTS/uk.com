@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationImport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentImport;
-import nts.uk.ctx.pr.core.dom.adapter.employee.employment.EmploymentImport;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.PositionImport;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.WorkplaceImport;
 
@@ -33,9 +32,6 @@ public class EmployeeInformationImport {
 
     /** The position. */
     PositionImport position; // 所属職位
-
-    /** The employment. */
-    EmploymentImport employment; // 所属雇用
 
     /** The employment cls. */
     Integer employmentCls; // 就業区分
