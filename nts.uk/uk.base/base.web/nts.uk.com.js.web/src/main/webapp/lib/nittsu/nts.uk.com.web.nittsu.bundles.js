@@ -4497,7 +4497,7 @@ var nts;
             (function (notify) {
                 var error;
                 (function (error) {
-                    ui.documentReady.add(function () {
+                    ui.viewModelApplied.add(function () {
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
