@@ -145,164 +145,164 @@ public class StateCorrelationHistoryService {
     private void historyDeletionProcessing(int type, String hisId, String cId, String employeeId) {
         switch (type) {
             case COMPANY: {
-                Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisCompany> stateCorreHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
+                if (!stateCorreHis.isPresent()) {
                     throw new RuntimeException("invalid StateCorrelationHisCompany");
                 }
-                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeDelete = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
                 if (!itemToBeDelete.isPresent()) {
                     return;
                 }
-                if (accInsurHis.get().getHistory().size() == 1) {
+                if (stateCorreHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisCompanyRepository.remove(cId, hisId);
                     return;
                 }
-                accInsurHis.get().remove(itemToBeDelete.get());
+                stateCorreHis.get().remove(itemToBeDelete.get());
                 mStateCorrelationHisCompanyRepository.remove(cId, hisId);
-                if (accInsurHis.get().getHistory().size() > 0) {
-                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                if (stateCorreHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
+                    stateCorreHis.get().exCorrectToRemove(lastestItem);
                     mStateCorrelationHisCompanyRepository.update(cId, lastestItem);
                 }
                 break;
             }
             case EMPLOYEE: {
-                Optional<StateCorrelationHisEmployee> accInsurHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisEmployee> stateCorreHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
+                if (!stateCorreHis.isPresent()) {
                     throw new RuntimeException("invalid StateCorrelationHisEmployee");
                 }
-                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeDelete = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
                 if (!itemToBeDelete.isPresent()) {
                     return;
                 }
-                if (accInsurHis.get().getHistory().size() == 1) {
+                if (stateCorreHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
                     return;
                 }
-                accInsurHis.get().remove(itemToBeDelete.get());
+                stateCorreHis.get().remove(itemToBeDelete.get());
                 mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
-                if (accInsurHis.get().getHistory().size() > 0) {
-                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                if (stateCorreHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
+                    stateCorreHis.get().exCorrectToRemove(lastestItem);
                     mStateCorrelationHisEmployeeRepository.update(cId, lastestItem);
                 }
                 break;
 
             }
             case DEPARMENT: {
-                Optional<StateCorrelationHisDeparment> accInsurHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisDeparment> stateCorreHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
+                if (!stateCorreHis.isPresent()) {
                     throw new RuntimeException("invalid StateCorrelationHisDeparment");
                 }
-                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeDelete = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
                 if (!itemToBeDelete.isPresent()) {
                     return;
                 }
-                if (accInsurHis.get().getHistory().size() == 1) {
+                if (stateCorreHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
                     return;
                 }
-                accInsurHis.get().remove(itemToBeDelete.get());
+                stateCorreHis.get().remove(itemToBeDelete.get());
                 mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
-                if (accInsurHis.get().getHistory().size() > 0) {
-                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                if (stateCorreHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
+                    stateCorreHis.get().exCorrectToRemove(lastestItem);
                     mStateCorrelationHisDeparmentRepository.update(cId, lastestItem);
                 }
                 break;
             }
             case CLASSIFICATION: {
-                Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisClassification> stateCorreHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
+                if (!stateCorreHis.isPresent()) {
                     throw new RuntimeException("invalid StateCorrelationHisClassification");
                 }
-                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeDelete = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
                 if (!itemToBeDelete.isPresent()) {
                     return;
                 }
-                if (accInsurHis.get().getHistory().size() == 1) {
+                if (stateCorreHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisClassificationRepository.remove(cId, hisId);
                     return;
                 }
-                accInsurHis.get().remove(itemToBeDelete.get());
+                stateCorreHis.get().remove(itemToBeDelete.get());
                 mStateCorrelationHisClassificationRepository.remove(cId, hisId);
-                if (accInsurHis.get().getHistory().size() > 0) {
-                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                if (stateCorreHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
+                    stateCorreHis.get().exCorrectToRemove(lastestItem);
                     mStateCorrelationHisClassificationRepository.update(cId, lastestItem);
                 }
                 break;
 
             }
             case POSITION: {
-                Optional<StateCorrelationHisPosition> accInsurHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisPosition> stateCorreHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
+                if (!stateCorreHis.isPresent()) {
                     throw new RuntimeException("invalid StateCorrelationHisPosition");
                 }
-                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeDelete = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
                 if (!itemToBeDelete.isPresent()) {
                     return;
                 }
-                if (accInsurHis.get().getHistory().size() == 1) {
+                if (stateCorreHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisPositionRepository.remove(cId, hisId);
                     return;
                 }
-                accInsurHis.get().remove(itemToBeDelete.get());
+                stateCorreHis.get().remove(itemToBeDelete.get());
                 mStateCorrelationHisPositionRepository.remove(cId, hisId);
-                if (accInsurHis.get().getHistory().size() > 0) {
-                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                if (stateCorreHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
+                    stateCorreHis.get().exCorrectToRemove(lastestItem);
                     mStateCorrelationHisPositionRepository.update(cId, lastestItem);
                 }
                 break;
             }
             case SALARY: {
-                Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisSalary> stateCorreHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
+                if (!stateCorreHis.isPresent()) {
                     throw new RuntimeException("invalid StateCorrelationHisSalary");
                 }
-                Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeDelete = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId))
                         .findFirst();
                 if (!itemToBeDelete.isPresent()) {
                     return;
                 }
-                if (accInsurHis.get().getHistory().size() == 1) {
+                if (stateCorreHis.get().getHistory().size() == 1) {
                     mStateCorrelationHisSalaryRepository.remove(cId, hisId);
                     return;
                 }
-                accInsurHis.get().remove(itemToBeDelete.get());
+                stateCorreHis.get().remove(itemToBeDelete.get());
                 mStateCorrelationHisSalaryRepository.remove(cId, hisId);
-                if (accInsurHis.get().getHistory().size() > 0) {
-                    YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
-                    accInsurHis.get().exCorrectToRemove(lastestItem);
+                if (stateCorreHis.get().getHistory().size() > 0) {
+                    YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
+                    stateCorreHis.get().exCorrectToRemove(lastestItem);
                     mStateCorrelationHisSalaryRepository.update(cId, lastestItem);
                 }
                 break;
             }
             case INDIVIDUAL : {
-                Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId,hisId);
-                if (!existHist.isPresent()){
-                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
-                }
-                Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getHistory().stream()
-                        .filter(h -> h.identifier().equals(hisId))
-                        .findFirst();
-                if (!itemToBeDelete.isPresent()){
-                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
-                }
-                existHist.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisIndividualRepository.remove(employeeId,hisId);
+//                Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId,hisId);
+//                if (!existHist.isPresent()){
+//                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
+//                }
+//                Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getHistory().stream()
+//                        .filter(h -> h.identifier().equals(hisId))
+//                        .findFirst();
+//                if (!itemToBeDelete.isPresent()){
+//                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
+//                }
+//                existHist.get().remove(itemToBeDelete.get());
+//                mStateCorrelationHisIndividualRepository.remove(employeeId,hisId);
                 break;
             }
         }
@@ -310,20 +310,20 @@ public class StateCorrelationHistoryService {
     private void historyCorrectionProcecessing(int type, String cId, String hisId, YearMonth start, YearMonth end,String employeeId) {
         switch (type) {
             case COMPANY: {
-                Optional<StateCorrelationHisCompany> accInsurHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisCompany> stateCorreHis = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cId);
+                if (!stateCorreHis.isPresent()) {
                     return;
                 }
-                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId)).findFirst();
                 if (!itemToBeUpdate.isPresent()) {
                     return;
                 }
-                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                stateCorreHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
                 //update history
                 mStateCorrelationHisCompanyRepository.update(cId, itemToBeUpdate.get());
                 // update item before
-                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorreHis.get().immediatelyBefore(itemToBeUpdate.get());
                 if (!itemToBeUpdated.isPresent()) {
                     return;
                 }
@@ -332,20 +332,20 @@ public class StateCorrelationHistoryService {
             }
             case EMPLOYEE: {
                 // // //
-                Optional<StateCorrelationHisEmployee> accInsurHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
+                Optional<StateCorrelationHisEmployee> stateCorreHis = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cId);
 
-                if (!accInsurHis.isPresent()) {
+                if (!stateCorreHis.isPresent()) {
                     return;
                 }
-                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId)).findFirst();
                 if (!itemToBeUpdate.isPresent()) {
                     return;
                 }
-                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                stateCorreHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
                 mStateCorrelationHisEmployeeRepository.update(cId, itemToBeUpdate.get());
                 // update item before
-                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorreHis.get().immediatelyBefore(itemToBeUpdate.get());
                 if (!itemToBeUpdated.isPresent()) {
                     return;
                 }
@@ -355,20 +355,20 @@ public class StateCorrelationHistoryService {
             }
             case DEPARMENT: {
                 // // //
-                Optional<StateCorrelationHisDeparment> accInsurHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
+                Optional<StateCorrelationHisDeparment> stateCorreHis = mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cId);
 
-                if (!accInsurHis.isPresent()) {
+                if (!stateCorreHis.isPresent()) {
                     return;
                 }
-                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId)).findFirst();
                 if (!itemToBeUpdate.isPresent()) {
                     return;
                 }
-                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                stateCorreHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
                 mStateCorrelationHisDeparmentRepository.update(cId, itemToBeUpdate.get());
                 // update item before
-                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorreHis.get().immediatelyBefore(itemToBeUpdate.get());
                 if (!itemToBeUpdated.isPresent()) {
                     return;
                 }
@@ -377,19 +377,19 @@ public class StateCorrelationHistoryService {
             }
             case CLASSIFICATION: {
                 // // //
-                Optional<StateCorrelationHisClassification> accInsurHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisClassification> stateCorreHis = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cId);
+                if (!stateCorreHis.isPresent()) {
                     return;
                 }
-                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId)).findFirst();
                 if (!itemToBeUpdate.isPresent()) {
                     return;
                 }
-                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                stateCorreHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
                 mStateCorrelationHisClassificationRepository.update(cId, itemToBeUpdate.get());
                 // update item before
-                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorreHis.get().immediatelyBefore(itemToBeUpdate.get());
                 if (!itemToBeUpdated.isPresent()) {
                     return;
                 }
@@ -399,19 +399,19 @@ public class StateCorrelationHistoryService {
             }
             case POSITION: {
                 // // //
-                Optional<StateCorrelationHisPosition> accInsurHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisPosition> stateCorreHis = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cId);
+                if (!stateCorreHis.isPresent()) {
                     return;
                 }
-                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId)).findFirst();
                 if (!itemToBeUpdate.isPresent()) {
                     return;
                 }
-                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                stateCorreHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
                 mStateCorrelationHisPositionRepository.update(cId, itemToBeUpdate.get());
                 // update item before
-                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorreHis.get().immediatelyBefore(itemToBeUpdate.get());
                 if (!itemToBeUpdated.isPresent()) {
                     return;
                 }
@@ -420,19 +420,19 @@ public class StateCorrelationHistoryService {
             }
             case SALARY: {
                 // // //
-                Optional<StateCorrelationHisSalary> accInsurHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
-                if (!accInsurHis.isPresent()) {
+                Optional<StateCorrelationHisSalary> stateCorreHis = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cId);
+                if (!stateCorreHis.isPresent()) {
                     return;
                 }
-                Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                Optional<YearMonthHistoryItem> itemToBeUpdate = stateCorreHis.get().getHistory().stream()
                         .filter(h -> h.identifier().equals(hisId)).findFirst();
                 if (!itemToBeUpdate.isPresent()) {
                     return;
                 }
-                accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+                stateCorreHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
                 mStateCorrelationHisSalaryRepository.update(cId, itemToBeUpdate.get());
                 // update item before
-                Optional<YearMonthHistoryItem> itemToBeUpdated = accInsurHis.get().immediatelyBefore(itemToBeUpdate.get());
+                Optional<YearMonthHistoryItem> itemToBeUpdated = stateCorreHis.get().immediatelyBefore(itemToBeUpdate.get());
                 if (!itemToBeUpdated.isPresent()) {
                     return;
                 }
@@ -443,20 +443,20 @@ public class StateCorrelationHistoryService {
                 // Update history table
                 // In case of date period are exist in the screen
                 if (start != null){
-                    Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId, hisId);
-                    if (!existHist.isPresent()) {
-                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
-                    }
-
-                    Optional<YearMonthHistoryItem> itemToBeUpdate = existHist.get().getHistory().stream()
-                            .filter(h -> h.identifier().equals(hisId)).findFirst();
-
-                    if (!itemToBeUpdate.isPresent()) {
-                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
-                    }
-                    existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,
-                            end != null ? end : new YearMonth(999912)));
-                    mStateCorrelationHisIndividualRepository.update(employeeId, itemToBeUpdate.get());
+//                    Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId, hisId);
+//                    if (!existHist.isPresent()) {
+//                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
+//                    }
+//
+//                    Optional<YearMonthHistoryItem> itemToBeUpdate = existHist.get().getHistory().stream()
+//                            .filter(h -> h.identifier().equals(hisId)).findFirst();
+//
+//                    if (!itemToBeUpdate.isPresent()) {
+//                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
+//                    }
+//                    existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,
+//                            end != null ? end : new YearMonth(999912)));
+//                    mStateCorrelationHisIndividualRepository.update(employeeId, itemToBeUpdate.get());
                 }
                 break;
             }
