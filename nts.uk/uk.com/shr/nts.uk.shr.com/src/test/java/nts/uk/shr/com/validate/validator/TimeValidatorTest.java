@@ -34,35 +34,35 @@ public class TimeValidatorTest {
 	public void testTimeStyleFalse() {
 		TimeConstraint constraint = new TimeConstraint(1, 60, 600);
 		Optional<String> result = TimeValidator.validate(constraint, "01:62");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getTimeStyleErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 
 	@Test
 	public void testTimeStyleFalse1() {
 		TimeConstraint constraint = new TimeConstraint(1, 60, 600);
 		Optional<String> result = TimeValidator.validate(constraint, "0130");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getTimeStyleErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 	
 	@Test
 	public void testTimeStyleFalse2() {
 		TimeConstraint constraint = new TimeConstraint(1, 60, 600);
 		Optional<String> result = TimeValidator.validate(constraint, ":30");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getTimeStyleErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeStyleErrorId);
 	}
 
 	@Test
 	public void testTimeMinFalse() {
 		TimeConstraint constraint = new TimeConstraint(1, 60, 600);
 		Optional<String> result = TimeValidator.validate(constraint, "00:30");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getTimeMinErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeMinErrorId);
 	}
 
 	@Test
 	public void testTimeMaxFalse() {
 		TimeConstraint constraint = new TimeConstraint(1, 60, 600);
 		Optional<String> result = TimeValidator.validate(constraint, "11:30");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getTimeMaxErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.TimeMaxErrorId);
 	}
 
 }

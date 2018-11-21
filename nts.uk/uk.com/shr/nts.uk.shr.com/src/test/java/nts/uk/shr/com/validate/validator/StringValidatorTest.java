@@ -22,28 +22,28 @@ public class StringValidatorTest {
 	public void testAlphabetFalse1() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHABET, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aBc1");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testAlphabetFalse2() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHABET, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aBcあ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testAlphabetFalse3() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHABET, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aBcカ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testAlphabetFalse4() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHABET, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aB c");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	// NUMERIC
@@ -59,28 +59,28 @@ public class StringValidatorTest {
 	public void testNumericFalse() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "a102");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testNumericFalse1() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "102あ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testNumericFalse2() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "a102カ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testNumericFalse3() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "102　");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	// ALPHA_NUMERIC
@@ -96,21 +96,21 @@ public class StringValidatorTest {
 	public void testAlphaNumericFalse() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHA_NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aBc102あ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testAlphaNumericFalse1() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHA_NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aBc102カ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testAlphaNumericFalse2() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ALPHA_NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "aBc102 ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	// HIRAGANA
@@ -124,25 +124,25 @@ public class StringValidatorTest {
 	public void testHiraganaFalse() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.HIRAGANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "ありがとうa");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	public void testHiraganaFalse1() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.HIRAGANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "ありがとう1");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	public void testHiraganaFalse2() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.HIRAGANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "ありがとうカ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	public void testHiraganaFalse3() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.HIRAGANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "ありがとう　");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	// KATAKANA
@@ -158,28 +158,28 @@ public class StringValidatorTest {
 	public void testKatakanaFalse() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.KATAKANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "アメリカa");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testKatakanaFalse1() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.KATAKANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "アメリカ1");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testKatakanaFalse2() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.KATAKANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "アメリカあ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testKatakanaFalse3() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.KATAKANA, 10);
 		Optional<String> result = StringValidator.validate(constraint, "アメリカ ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
@@ -193,14 +193,14 @@ public class StringValidatorTest {
 	public void testAnyHalfWidthFalse() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ANY_HALF_WIDTH, 10);
 		Optional<String> result = StringValidator.validate(constraint, "ｶa12あ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	@Test
 	public void testAnyHalfWidthFalse1() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.ANY_HALF_WIDTH, 10);
 		Optional<String> result = StringValidator.validate(constraint, "ｶa12カ");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getCharTypeErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.CharTypeErrorId);
 	}
 	
 	// max length
@@ -215,6 +215,6 @@ public class StringValidatorTest {
 	public void testMaxLengthFalse() {
 		StringConstraint constraint = new StringConstraint(1, StringCharType.NUMERIC, 10);
 		Optional<String> result = StringValidator.validate(constraint, "01234567891");
-		Assert.assertEquals(result.get(), ErrorIdFactory.getMaxLengthErrorId());
+		Assert.assertEquals(result.get(), ErrorIdFactory.MaxLengthErrorId);
 	}
 }
