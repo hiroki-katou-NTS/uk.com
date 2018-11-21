@@ -1,6 +1,7 @@
 module nts.uk.com.view.cps017.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import exportFile = nts.uk.request.exportFile;
     var paths = {
         getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll/true",
         getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
@@ -10,7 +11,8 @@ module nts.uk.com.view.cps017.a.service {
         updateDataSelection: "ctx/pereg/person/info/setting/selection/updateSelection",
         removeDataSelection: "ctx/pereg/person/info/setting/selection/removeSelection",
         removeHistory: "ctx/pereg/person/info/setting/selection/removeHistory",
-        reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp"
+        reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp",
+        saveAsExcel: "person/report/masterData"
     }
 
     export function getAllSelectionItems() {
@@ -26,7 +28,7 @@ module nts.uk.com.view.cps017.a.service {
         let _path = format(paths.getAllPerInfoHistorySelection, selectedId);
         return nts.uk.request.ajax("com", _path);
     }
-    
+
     export function getAllOrderItemSelection(histId: string) {
         let _path = format(paths.getAllOrderItemSelection, histId);
         return nts.uk.request.ajax("com", _path);
@@ -51,10 +53,15 @@ module nts.uk.com.view.cps017.a.service {
     export function removeHistory(command) {
         return ajax(paths.removeHistory, command);
     }
-    
+
     // Phan anh den cty:
     export function reflUnrComp(command) {
         return ajax(paths.reflUnrComp, command);
     }
+
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return exportFile('/masterlist/report/print', { domainId: "PersonSelectionItem", domainType: "個人情報の選択肢の登録", languageId: languageId, reportType: 0 });
+    }
+
 }
 

@@ -13,6 +13,8 @@
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
     
     export class ScreenModel {
+        langId: KnockoutObservable<string> = ko.observable('ja');
+        
         //listSelectionItem
         listItems: KnockoutObservableArray<SelectionItem> = ko.observableArray([]);
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
@@ -643,6 +645,21 @@
                 $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を超えない");
             }
             return allValid;
+        }
+        
+        /**
+         * Print file excel
+         */
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
         }
     }
 
