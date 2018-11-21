@@ -374,3 +374,6 @@
 #emp_reg_info_wizard .table_item {
 	display: inline-block;
 }
+.avatar {
+  background-image: url("images/avatar.svg");
+}

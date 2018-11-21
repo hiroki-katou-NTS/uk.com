@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.strategic.ContinuousHistory;
+import nts.uk.shr.com.history.strategic.PersistentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessTypeOfEmployeeHistory extends AggregateRoot
-		implements ContinuousHistory<DateHistoryItem, DatePeriod, GeneralDate> {
+		implements PersistentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	/** 会社ID */
 	String companyId;
 

@@ -135,11 +135,10 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			List<String> employeeId) {
 		List<AffWorkplaceHistoryItem> data = new ArrayList<>();
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT h.HIST_ID, h.SID, h.WORKPLACE_ID, h.NORMAL_WORKPLACE_ID from BSYMT_AFF_WPL_HIST_ITEM h"
 						+ " INNER JOIN BSYMT_AFF_WORKPLACE_HIST wh ON wh.HIST_ID = h.HIST_ID"
-						+ " WHERE wh.START_DATE <= ? and wh.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE wh.START_DATE <= ? and wh.END_DATE >= ? AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setDate(1, Date.valueOf(basedate.localDate()));
 				statement.setDate(2, Date.valueOf(basedate.localDate()));
 				for (int i = 0; i < subList.size(); i++) {

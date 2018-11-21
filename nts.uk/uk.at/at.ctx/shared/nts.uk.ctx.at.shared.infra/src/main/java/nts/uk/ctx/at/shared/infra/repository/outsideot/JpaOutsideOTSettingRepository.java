@@ -171,6 +171,115 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		}
 		
 	}
+	
+	@SneakyThrows
+	@Override
+	public Optional<OutsideOTSetting> findByIdV2(String companyId) {
+		
+		String sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_SET KOOS "
+				+ "WHERE KOOS.CID = ?";
+
+		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
+
+			stmt.setString(1, companyId);
+
+			Optional<KshstOutsideOtSet> kshstOutsideOtSet = new NtsResultSet(stmt.executeQuery())
+					.getSingle(rec -> {
+						KshstOutsideOtSet entity = new KshstOutsideOtSet();
+						entity.setCid(rec.getString("CID"));
+						entity.setNote(rec.getString("NOTE"));
+						entity.setCalculationMethod(rec.getInt("CALCULATION_METHOD"));
+						return entity;
+					});
+			
+			sqlJdbc = "SELECT * FROM KSHST_OVER_TIME KOT "
+					+ "WHERE KOT.CID = ? ORDER BY KOT.OVER_TIME_NO ASC";
+			List<KshstOverTime> entityOvertime = new ArrayList<>();
+			try (PreparedStatement stmt1 = this.connection().prepareStatement(sqlJdbc)) {
+
+				stmt1.setString(1, companyId);
+
+				entityOvertime = new NtsResultSet(stmt1.executeQuery())
+						.getList(rec1 -> {
+							KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
+							kshstOverTimePK.setCid(rec1.getString("CID"));
+							kshstOverTimePK.setOverTimeNo(rec1.getInt("OVER_TIME_NO"));
+
+							KshstOverTime entity = new KshstOverTime();
+							entity.setKshstOverTimePK(kshstOverTimePK);
+							entity.setIs60hSuperHd(rec1.getInt("IS_60H_SUPER_HD"));
+							entity.setUseAtr(rec1.getInt("USE_ATR"));
+							entity.setName(rec1.getString("NAME"));
+							entity.setOverTime(rec1.getInt("OVER_TIME"));
+
+							return entity;
+						});
+			}
+			
+			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD KOOB "
+					+ "WHERE KOOB.CID = ?  ORDER BY KOOB.BRD_ITEM_NO ASC";
+			List<KshstOutsideOtBrd> entityOvertimeBRDItem = new ArrayList<>();
+			try (PreparedStatement stmt2 = this.connection().prepareStatement(sqlJdbc)) {
+
+				stmt2.setString(1, companyId);
+
+				entityOvertimeBRDItem = new NtsResultSet(stmt2.executeQuery())
+						.getList(rec2 -> {
+							KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
+							kshstOutsideOtBrdPK.setCid(rec2.getString("CID"));
+							kshstOutsideOtBrdPK.setBrdItemNo(rec2.getInt("BRD_ITEM_NO"));
+
+							KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
+							entity.setKshstOutsideOtBrdPK(kshstOutsideOtBrdPK);
+							entity.setName(rec2.getString("NAME"));
+							entity.setUseAtr(rec2.getInt("USE_ATR"));
+							entity.setProductNumber(rec2.getInt("PRODUCT_NUMBER"));
+
+
+							return entity;
+						});
+			}
+			
+			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD_ATEN KOOBA "
+					+ "WHERE KOOBA.CID = ?";
+			List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten = new ArrayList<>();
+			try (PreparedStatement stmt3 = this.connection().prepareStatement(sqlJdbc)) {
+
+				stmt3.setString(1, companyId);
+
+				lstOutsideOtBrdAten = new NtsResultSet(stmt3.executeQuery())
+						.getList(rec3 -> {
+							KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK = new KshstOutsideOtBrdAtenPK();
+							kshstOutsideOtBrdAtenPK.setCid(rec3.getString("CID"));
+							kshstOutsideOtBrdAtenPK.setBrdItemNo(rec3.getInt("BRD_ITEM_NO"));
+							kshstOutsideOtBrdAtenPK.setAttendanceItemId(rec3.getInt("ATTENDANCE_ITEM_ID"));
+
+							KshstOutsideOtBrdAten entity = new KshstOutsideOtBrdAten();
+							entity.setKshstOutsideOtBrdAtenPK(kshstOutsideOtBrdAtenPK);
+
+							return entity;
+						});
+			}
+			
+			Map<Integer, List<KshstOutsideOtBrdAten>> lstOutsideOtBrdAtenMap = lstOutsideOtBrdAten
+					.stream().collect(Collectors
+							.groupingBy(item -> item.getKshstOutsideOtBrdAtenPK().getBrdItemNo()));
+			entityOvertimeBRDItem.forEach(item -> {
+				item.setLstOutsideOtBrdAten(lstOutsideOtBrdAtenMap.getOrDefault(
+						item.getKshstOutsideOtBrdPK().getBrdItemNo(), Collections.emptyList()));
+			});
+			
+			// check exist data
+			if (kshstOutsideOtSet.isPresent()) {
+				return Optional
+						.ofNullable(this.toDomain(kshstOutsideOtSet.get(), entityOvertimeBRDItem, entityOvertime));
+			}
+			// default data
+			return Optional.ofNullable(
+					this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
+		}
+		
+	}
 
 	/*
 	 * (non-Javadoc)

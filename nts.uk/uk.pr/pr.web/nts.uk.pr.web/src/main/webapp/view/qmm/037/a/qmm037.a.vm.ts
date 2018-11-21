@@ -167,6 +167,7 @@ module nts.uk.pr.view.qmm037.a.viewmodel {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["individualPriceCode"]);
                     self.lstSalIndAmountName(dataSort);
+                    self.currentCode('');
                     self.currentCode(self.lstSalIndAmountName()[0].individualPriceCode);
                 }
                 else {

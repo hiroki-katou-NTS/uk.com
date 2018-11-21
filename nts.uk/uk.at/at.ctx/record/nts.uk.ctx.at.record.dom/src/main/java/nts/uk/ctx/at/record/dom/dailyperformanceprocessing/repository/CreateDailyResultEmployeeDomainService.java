@@ -33,7 +33,7 @@ public interface CreateDailyResultEmployeeDomainService {
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
 
 	ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
-			List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
+			GeneralDate executedDate, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace,
 			boolean reCreateRestTime, EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,

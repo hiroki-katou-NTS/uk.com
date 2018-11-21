@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -10,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
@@ -47,10 +49,34 @@ public class SingleWorkType extends WorkTypeCondition {
 	@Override
 	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
 		if (this.isUse() && this.targetWorkType != null) {
-			if(this.targetWorkType.contains(workInfo.getRecordInfo().getWorkTypeCode())){
+			if (this.targetWorkType.contains(workInfo.getRecordInfo().getWorkTypeCode())) {
 				return WorkCheckResult.ERROR;
 			}
 		}
 		return WorkCheckResult.NOT_ERROR;
+	}
+
+	@Override
+	public void clearDuplicate() {
+		if (this.targetWorkType != null) {
+			this.targetWorkType.clearDuplicate();
+		}
+	}
+
+	@Override
+	public void addWorkType(WorkTypeCode plan, WorkTypeCode actual){ 
+		if (this.targetWorkType != null && plan != null) {
+			this.targetWorkType.getLstWorkType().add(plan);
+		}
+	}
+
+	@Override
+	public void setupWorkType(boolean usePlan, boolean useActual){
+		this.targetWorkType = TargetWorkType.createFromJavaType(usePlan, new ArrayList<>());
+	}
+	
+	@Override
+	public SingleWorkType chooseOperator(Integer operator) {
+		return this;
 	}
 }

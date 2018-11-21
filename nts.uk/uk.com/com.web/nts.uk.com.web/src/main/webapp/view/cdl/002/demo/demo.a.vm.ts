@@ -71,6 +71,7 @@ module demo.a.viewmodel {
                 }
                 var output = getShared('CDL002Output');
                 self.valueReturn(output);
+                self.selectedItem(output);
             });
         }
         

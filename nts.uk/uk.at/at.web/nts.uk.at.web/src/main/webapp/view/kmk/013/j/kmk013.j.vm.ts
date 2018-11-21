@@ -173,26 +173,20 @@ module nts.uk.at.view.kmk013.j {
                     data: any = {};
                 blockUI.grayout();
                 data.attendanceItemCountingMethod = self.selectedItem();
-                
-                service.registerVertical(data).done(function() {
-                    var workType = ko.toJS(self.currentItem());
-                    var workTypeAttendance = ko.toJS(self.currentItemAttendance());
-                    if (workType.workTypeList.length > 0) {
-                        var workTypeData: any = {
-                            payAttendanceDays: workTypeAttendance.workTypeList,
-                            payAbsenceDays: workType.workTypeList
-                        };
-    
-                        service.registerPayItem(workTypeData).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                var workType = ko.toJS(self.currentItem());
+                var workTypeAttendance = ko.toJS(self.currentItemAttendance());
+                var workTypeData: any = {
+                    payAttendanceDays: workTypeAttendance.workTypeList,
+                    payAbsenceDays: workType.workTypeList
+                };
+                $.when(service.registerVertical(data),service.registerPayItem(workTypeData)).done(()=>{
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $('#trans-attend').focus();
-                            });
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message);
-                        }).always(() => {
-                            blockUI.clear();
-                        });
-                    }
+                    });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    blockUI.clear();
                 });
             }
         }

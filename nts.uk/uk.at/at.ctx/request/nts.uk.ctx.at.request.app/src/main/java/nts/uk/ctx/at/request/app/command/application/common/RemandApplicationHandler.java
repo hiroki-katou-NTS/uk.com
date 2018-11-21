@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterRemand;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,6 +38,6 @@ public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCom
 		}
 		//共通アルゴリズム「詳細画面差し戻し後の処理」を実行する(xử lý màn hình chi tiết sau khi refer back)
 		//11-2.詳細画面差し戻し後の処理
-		return detailAfterRemand.doRemand(companyID, lstAppID, remandCommand.getVersion(), remandCommand.getOrder(), remandCommand.getReturnReason());
+		return detailAfterRemand.doRemand(companyID, remandCommand);
 	}
 }

@@ -1,26 +1,32 @@
-#left-content {
+#left {
+    width: 350px;
     margin-top: 10px;
     margin-left: 10px;
 }
 
-#right-content {
+#right {
+    width: 700px;
     margin-top: 10px;
     margin-left: 10px;
 }
 
-#lbl-01-code-name, #lbl-02-memo {
+#A2_2 {
+    width: 300px;
+}
+
+#A3_1, #A3_4 {
     width: 200px;
 }
 
-#inp-01-code {
+#A3_2 {
     width: 85px;
 }
 
-#inp-02-name {
-
+#A3_3 {
+    width: 200px;
 }
 
-#txa-01-memo {
+#A3_5 {
     width: 350px;
-    height: 100px;
+    height: 135px;
 }

@@ -15,7 +15,7 @@ module nts.custom.component {
         get_list: (ids) => ajax('com', 'bs/employee/person/get-list-emps', ids),
         avartar: (id: string) => ajax(`basic/organization/empfilemanagement/find/getAvaOrMap/${id}/0`)
     },
-        DEF_AVATAR = 'images/avatar.png',
+        DEF_AVATAR = 'images/avatar.svg',
         style = `<style type="text/css" rel="stylesheet" id="header_style">
             .header-info .avatar-group,
             .header-info .person-group,

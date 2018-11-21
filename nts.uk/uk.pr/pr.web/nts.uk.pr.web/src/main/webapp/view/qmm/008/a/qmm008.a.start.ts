@@ -10,25 +10,25 @@ module nts.uk.pr.view.qmm008.a {
         };
         __viewContext.bind(__viewContext.viewModel);
         viewmodelB.startPage().done(function() {
-            $("#B1_5").focus();
+            $('#B1_2').find('.ntsSearchBox').focus();
             $(".tab-b-sidebar").click(function() {
                 viewmodelB.isSelectFirstOfficeAndHistory = true;
                 viewmodelB.startPage().done(function() {
-                    $('#B1_5').focus();
+                    $('#B1_2').find('.ntsSearchBox').focus();
                     nts.uk.ui.errors.clearAll();
                 });
             });
             $(".tab-c-sidebar").click(function() {
                 viewmodelC.isSelectFirstOfficeAndHistory = true;
                 viewmodelC.startPage().done(function() {
-                    $('#C1_5').focus();
+                    $('#C1_2').find('.ntsSearchBox').focus();
                     nts.uk.ui.errors.clearAll();
                 });
             });
             $(".tab-i-sidebar").click(function() {
                 viewmodelI.isOnStartUp = true;
                 viewmodelI.startPage().done(function() {
-                    $("#I1_5").focus();
+                    $('#I1_2').find('.ntsSearchBox').focus();
                     nts.uk.ui.errors.clearAll();
                 });
             });
