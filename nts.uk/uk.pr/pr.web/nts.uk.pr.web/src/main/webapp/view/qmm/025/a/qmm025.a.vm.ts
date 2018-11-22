@@ -108,6 +108,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                 autoFitWindow: false,
                 preventEditInError: false,
                 hidePrimaryKey: true,
+                showErrorsOnPage: false,
                 columns: [
                     {headerText: "ID", key: 'sid', dataType: 'string', ntsControl: 'Label'},
                     {
@@ -146,116 +147,117 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         ntsControl: 'CheckInputAtr'
                     },
 
-                    /*{
-                        headerText: getText("QMM025_15"), key: 'amountJune', dataType: 'string', width: '100px',
+                    {
+                        headerText: getText("QMM025_15"), key: 'amountJune', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
+                            // primitiveValue: "ResidentTax",
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_16"), key: 'amountJuly', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_16"), key: 'amountJuly', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_17"), key: 'amountAugust', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_17"), key: 'amountAugust', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_18"), key: 'amountSeptember', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_18"), key: 'amountSeptember', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_19"), key: 'amountOctober', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_19"), key: 'amountOctober', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_20"), key: 'amountNovember', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_20"), key: 'amountNovember', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_21"), key: 'amountDecember', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_21"), key: 'amountDecember', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_22"), key: 'amountJanuary', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_22"), key: 'amountJanuary', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_23"), key: 'amountFebruary', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_23"), key: 'amountFebruary', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_24"), key: 'amountMarch', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_24"), key: 'amountMarch', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_25"), key: 'amountApril', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_25"), key: 'amountApril', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
                     },
                     {
-                        headerText: getText("QMM025_26"), key: 'amountMay', dataType: 'string', width: '100px',
+                        headerText: getText("QMM025_26"), key: 'amountMay', dataType: 'string', width: '120px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 3, max: 9,
-                            required: true
+                            min: 0, max: 10,
+                            required: false
                         }
-                    }*/
+                    }
 
-                    // A3_8
+                    /*// A3_8
                     {
                         headerText: getText("QMM025_15"), key: 'amountJune', width: "120px", dataType: 'string',
                         ntsControl: 'TaxAmount'
@@ -314,7 +316,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                     {
                         headerText: getText("QMM025_26"), key: 'amountMay', width: "120px", dataType: 'string',
                         ntsControl: 'TaxAmount'
-                    }
+                    }*/
                 ],
                 ntsControls: [
                     {
@@ -357,13 +359,13 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                             $("#A2_3").ntsError("check");
                         }
                     },
-                    /*{
+                    {
                         name: "Selection",
-                        mode: "row",
+                        mode: "cell",
                         multipleSelection: true,
                         activation: true
-                    },*/
-                    /*{
+                    },
+                    {
                         name: "ColumnFixing",
                         showFixButtons: false,
                         fixingDirection: 'left',
@@ -397,27 +399,29 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                                 isFixed: true
                             }
                         ]
-                    }*/
+                    }
                 ],
                 ntsFeatures: [
-                    /*{name: 'CellEdit'},*/
+                    {name: 'CellEdit'},
                     {
                         name: 'CellState',
                         rowId: 'rowId',
                         columnKey: 'columnKey',
                         state: 'state',
-                        //states: cellStates
+                        states: cellStates
                     },
-                ],
-                dataRendered: function(evt, ui) {
-                    debugger;
-                },
-                rendered: function(evt, ui) {
-                    debugger;
-                },
-                rowsRendered: function(evt, ui) {
-                    debugger;
-                }
+                    {
+                        name: "Sheet",
+                        initialDisplay: "sheet1",
+                        sheets: [
+                            {
+                                name: "sheet1",
+                                text: "Sheet 1",
+                                columns: ["inputAtr", "amountJune", "amountJuly", "amountAugust", "amountSeptember", "amountOctober", "amountNovember", "amountDecember", "amountJanuary", "amountFebruary", "amountMarch", "amountApril", "amountMay"]
+                            },
+                        ]
+                    },
+                ]
             })
 
             // self.initControlStatus();
@@ -428,9 +432,15 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let result = [];
             _.each(self.empAmountItems, (item: RsdtTaxPayAmountDto) => {
                 let rowId = item.sid;
+                if (item.sid == "d973be23-a360-44ad-9530-0205f820e46d") {
+                    result.push(new CellState(rowId, 'sid', ['delete']));
+                    result.push(new CellState(rowId, 'selectedEmp', ['delete']));
+                    result.push(new CellState(rowId, 'empCd', ['delete']));
+                    result.push(new CellState(rowId, 'departmentName', ['delete']));
 
+                }
                 //result.push(new CellState(rowId, 'selectedEmp', ['']));
-                result.push(new CellState(rowId, 'empCd', ['']));
+
             });
             return result;
         }
@@ -438,7 +448,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         setCellStates() {
             let self = this;
             _.each(self.empAmountItems, (item: RsdtTaxPayAmountDto) => {
-                if (item.sid == "d973be23-a360-44ad-9530-0205f820e46d") {
+                if (item.sid == "4f0b9f7d-0883-42df-9c2a-9a34406ab7dd") {
                     $("#grid").ntsGrid("setState", item.sid, "sid", ['delete']);
                     $("#grid").ntsGrid("setState", item.sid, "selectedEmp", ['delete']);
                     $("#grid").ntsGrid("setState", item.sid, "departmentName", ['delete']);
@@ -469,7 +479,10 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let result = [];
             _.each(self.empAmountItems, (item: RsdtTaxPayAmountDto) => {
                 let rowId = item.sid;
-                if (!item.inputAtr) {
+                if (item.sid == "d973be23-a360-44ad-9530-0205f820e46d") {
+                    self.disableControl(rowId, "inputAtr", "CheckBox");
+                    self.disableControl(rowId, "amountJune", "TextEditor");
+                    self.disableControl(rowId, "amountJuly", "TextEditor");
                     self.disableControl(rowId, "amountAugust", "TextEditor");
                     self.disableControl(rowId, "amountSeptember", "TextEditor");
                     self.disableControl(rowId, "amountOctober", "TextEditor");
@@ -740,6 +753,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         test() {
             let self = this;
             self.setCellStates();
+            self.initControlStatus();
+            let sss = $("#grid").ntsGrid("errors");
         }
     }
 
