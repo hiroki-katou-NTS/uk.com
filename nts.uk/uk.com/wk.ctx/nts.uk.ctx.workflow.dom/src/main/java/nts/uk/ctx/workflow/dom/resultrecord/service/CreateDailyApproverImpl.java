@@ -104,7 +104,8 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 				return new AppRootInstanceContent(appRootInstanceConflict, errorFlag, errorMsgID);
 			} else {
 				// 履歴の開始日を取得する
-				GeneralDate startHistDate = this.getHistoryStartDate(companyID, employeeID, rootType, recordDate, closureStartDate, appRootInstanceConflict);
+				// GeneralDate startHistDate = this.getHistoryStartDate(companyID, employeeID, rootType, recordDate, closureStartDate, appRootInstanceConflict);
+				GeneralDate startHistDate = recordDate;
 				appRootInstance.setDatePeriod(new DatePeriod(startHistDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")));
 				// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
 				DatePeriod oldPeriod = appRootInstanceConflict.getDatePeriod();
