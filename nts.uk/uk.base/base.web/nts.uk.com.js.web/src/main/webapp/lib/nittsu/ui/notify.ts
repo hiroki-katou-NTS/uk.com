@@ -4,7 +4,7 @@ module nts.uk.ui.notify {
 
     module error {
 
-        ui.documentReady.add(() => {
+        ui.viewModelApplied.add(() => {
             var $functionsArea = $('#functions-area');
             var $functionsAreaBottom = $('#functions-area-bottom');
             if ($functionsArea.length > 0) {
