@@ -9,12 +9,12 @@ public class TimeMinMaxValidator {
 		
 		// validate minimum
 		if (minutes < min) {
-			return Optional.of(ErrorIdFactory.getTimeMinErrorId());
+			return Optional.of(ErrorIdFactory.TimeMinErrorId);
 		}
 
 		// validate maximum
 		if (minutes > max) {
-			return Optional.of(ErrorIdFactory.getTimeMaxErrorId());
+			return Optional.of(ErrorIdFactory.TimeMaxErrorId);
 		}
 
 		return Optional.empty();

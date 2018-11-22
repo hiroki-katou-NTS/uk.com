@@ -36,6 +36,8 @@ public enum StringCharType {
 	 * Katakana (accepts Hiragana and Half-Katakana, then those will be convert
 	 * to Katakana automatically)
 	 */
-	KANA
+	KANA,
+	
+	ANY
 
 }
