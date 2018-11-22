@@ -9,11 +9,16 @@ module nts.uk.pr.view.ccg007.d {
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
             nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo: any) {
-                if (loginInfo) {
-                    $('#password-input').focus();
+                if (!loginInfo || !loginInfo.companyCode) {
+                    $('#company-code-select').focus();
                 }
                 else {
-                    $('#employee-code-inp').focus();
+                    if (!loginInfo.employeeCode) {
+                        $('#employee-code-inp').focus();
+                    }
+                    else {
+                        $('#password-input').focus();
+                    }
                 }
             });
             
