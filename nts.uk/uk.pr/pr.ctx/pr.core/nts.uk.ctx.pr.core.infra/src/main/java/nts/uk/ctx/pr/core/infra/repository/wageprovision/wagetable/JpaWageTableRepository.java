@@ -1,16 +1,15 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.wagetable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable.QpbmtWageTable;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable.QpbmtWageTablePk;
+
+import javax.ejb.Stateless;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 
@@ -30,8 +29,7 @@ public class JpaWageTableRepository extends JpaRepository implements WageTableRe
 
 	@Override
 	public Optional<WageTable> getWageTableById(String companyId, String code) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().find(new QpbmtWageTablePk(companyId, code), QpbmtWageTable.class).map(i -> i.toDomain());
 	}
 
 	@Override

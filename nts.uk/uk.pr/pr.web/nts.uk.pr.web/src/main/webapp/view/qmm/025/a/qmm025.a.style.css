@@ -14,7 +14,11 @@
     padding-right: 10px;
 }
 
-#A2_8{
+#A2_8 {
     margin-top: 5px;
     margin-bottom: 10px;
+}
+
+#grid .delete {
+    background-color: #ff0000;
 }

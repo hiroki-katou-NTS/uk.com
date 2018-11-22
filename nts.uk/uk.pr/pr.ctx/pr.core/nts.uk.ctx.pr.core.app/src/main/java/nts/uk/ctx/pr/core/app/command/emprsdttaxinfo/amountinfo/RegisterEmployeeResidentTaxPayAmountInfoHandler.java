@@ -23,7 +23,7 @@ public class RegisterEmployeeResidentTaxPayAmountInfoHandler
     protected void handle(CommandHandlerContext<RegisterEmployeeResidentTaxPayAmountInfoCommand> commandHandlerContext) {
         RegisterEmployeeResidentTaxPayAmountInfoCommand cmd = commandHandlerContext.getCommand();
         List<EmployeeResidentTaxPayAmountInfo> listEmpRsdtTaxPayAmountInfo = cmd.getListEmpPayAmount()
-                .stream().map(x -> x.toDomain()).collect(Collectors.toList());
+                .stream().map(x -> x.toDomain(cmd.getYear())).collect(Collectors.toList());
         empRsdtTaxPayAmountInfoService.registerTaxPayAmount(listEmpRsdtTaxPayAmountInfo, cmd.getYear());
     }
 
