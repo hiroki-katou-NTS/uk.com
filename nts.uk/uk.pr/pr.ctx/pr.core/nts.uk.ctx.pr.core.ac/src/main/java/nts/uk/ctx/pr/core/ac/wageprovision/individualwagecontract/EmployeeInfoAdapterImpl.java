@@ -1,25 +1,62 @@
 package nts.uk.ctx.pr.core.ac.wageprovision.individualwagecontract;
 
-//import nts.uk.query.pub.employee.EmployeeInformationPub;
 
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.core.dom.adapter.employee.EmploymentImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.PositionImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentImport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationImport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.WorkplaceImport;
+import nts.uk.query.pub.employee.EmployeeInformationExport;
+import nts.uk.query.pub.employee.EmployeeInformationPub;
+import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class EmployeeInfoAdapterImpl implements EmployeeInformationAdapter {
+    @Inject
+    EmployeeInformationPub employeeInformationPub;
+
     @Override
     public List<EmployeeInformationImport> getEmployeeInfo(EmployeeInformationQueryDtoImport param) {
-        return null;
+        // TODO Auto-generated method stub
+        EmployeeInformationQueryDto employeeInformationQueryDto =
+                EmployeeInformationQueryDto.builder()
+                        .employeeIds(param.getEmployeeIds())
+                        .referenceDate(param.getReferenceDate())
+                        .toGetWorkplace(param.isToGetWorkplace())
+                        .toGetDepartment(param.isToGetDepartment())
+                        .toGetPosition(param.isToGetPosition())
+                        .toGetEmployment(param.isToGetEmployment())
+                        .toGetClassification(param.isToGetClassification())
+                        .toGetEmploymentCls(param.isToGetEmploymentCls())
+                        .build();
+        List<EmployeeInformationExport> employeeInformationExport = employeeInformationPub.find(employeeInformationQueryDto);
+        if(CollectionUtil.isEmpty(employeeInformationExport)) {
+            return Collections.emptyList();
+        }
+
+        return employeeInformationExport.stream()
+                .map(f -> new EmployeeInformationImport(
+                        f.getEmployeeId(),
+                        f.getEmployeeCode(),
+                        f.getBusinessName(),
+                        f.getWorkplace() == null? null : new WorkplaceImport(f.getWorkplace().getWorkplaceCode(), f.getWorkplace().getWorkplaceGenericName(), f.getWorkplace().getWorkplaceName()),
+                        f.getClassification() == null? null : new ClassificationImport(f.getClassification().getClassificationCode(), f.getClassification().getClassificationName()),
+                        f.getDepartment() == null? null : new DepartmentImport(f.getDepartment().getDepartmentCode(), f.getDepartment().getDepartmentName(), f.getDepartment().getDepartmentGenericName()),
+                        f.getPosition() == null? null : new PositionImport(f.getPosition().getPositionId(), f.getPosition().getPositionCode(), f.getPosition().getPositionName()),
+                        f.getEmployment() == null? null : new EmploymentImport(f.getEmployment().getEmploymentCode(), f.getEmployment().getEmploymentName()),
+                        f.getEmploymentCls()
+                ))
+                .collect(Collectors.toList());
     }
-//    @Inject
-//    EmployeeInformationPub employeeInformationPub;
 //
-//    @Override
-//    public List<EmployeeInfoImport> getByListSid(List<String> sIds) {
-//        return syEmployeePub.getByListSid(sIds).stream().map(x -> new EmployeeInfoImport(x.getSid(), x.getScd(), x.getBussinessName())).collect(Collectors.toList());
-//    }
 }

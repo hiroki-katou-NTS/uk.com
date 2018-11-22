@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividual;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividualRepository;
@@ -49,6 +50,16 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
                 .getList();
         return this.toDomain(listStateCorHisIndi);
     }
+
+    @Override
+    public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualByDate(String empId,GeneralDate date) {
+        List<QpbmtStateCorHisIndi> listStateCorHisIndi = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisIndi.class)
+                .setParameter("empId", empId)
+                .setParameter("date", date)
+                .getList();
+        return this.toDomain(listStateCorHisIndi);
+    }
+
 
     @Override
     public void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode){

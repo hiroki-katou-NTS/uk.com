@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmploymentCodeAndPeriod;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class EmploymentHisExport {
-    /*雇用コード*/
-    private String employmentCode;
+    private String employeeId;
+    public List<EmploymentCodeAndPeriod> lstEmpCodeandPeriod;
 }

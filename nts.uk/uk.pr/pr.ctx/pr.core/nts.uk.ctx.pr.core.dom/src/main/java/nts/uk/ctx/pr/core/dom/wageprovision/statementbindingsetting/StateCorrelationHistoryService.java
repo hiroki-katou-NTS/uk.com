@@ -292,18 +292,18 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case INDIVIDUAL : {
-//                Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId,hisId);
-//                if (!existHist.isPresent()){
-//                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
-//                }
-//                Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getHistory().stream()
-//                        .filter(h -> h.identifier().equals(hisId))
-//                        .findFirst();
-//                if (!itemToBeDelete.isPresent()){
-//                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
-//                }
-//                existHist.get().remove(itemToBeDelete.get());
-//                mStateCorrelationHisIndividualRepository.remove(employeeId,hisId);
+                Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId,hisId);
+                if (!existHist.isPresent()){
+                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                }
+                Optional<YearMonthHistoryItem> itemToBeDelete = existHist.get().getHistory().stream()
+                        .filter(h -> h.identifier().equals(hisId))
+                        .findFirst();
+                if (!itemToBeDelete.isPresent()){
+                    throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                }
+                existHist.get().remove(itemToBeDelete.get());
+                mStateCorrelationHisIndividualRepository.remove(employeeId,hisId);
                 break;
             }
         }
@@ -444,20 +444,20 @@ public class StateCorrelationHistoryService {
                 // Update history table
                 // In case of date period are exist in the screen
                 if (start != null){
-//                    Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId, hisId);
-//                    if (!existHist.isPresent()) {
-//                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
-//                    }
-//
-//                    Optional<YearMonthHistoryItem> itemToBeUpdate = existHist.get().getHistory().stream()
-//                            .filter(h -> h.identifier().equals(hisId)).findFirst();
-//
-//                    if (!itemToBeUpdate.isPresent()) {
-//                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
-//                    }
-//                    existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,
-//                            end != null ? end : new YearMonth(999912)));
-//                    mStateCorrelationHisIndividualRepository.update(employeeId, itemToBeUpdate.get());
+                    Optional<StateCorrelationHisIndividual> existHist = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(employeeId, hisId);
+                    if (!existHist.isPresent()) {
+                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                    }
+
+                    Optional<YearMonthHistoryItem> itemToBeUpdate = existHist.get().getHistory().stream()
+                            .filter(h -> h.identifier().equals(hisId)).findFirst();
+
+                    if (!itemToBeUpdate.isPresent()) {
+                        throw new RuntimeException("invalid StateCorrelationHisIndividual");
+                    }
+                    existHist.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start,
+                            end != null ? end : new YearMonth(999912)));
+                    mStateCorrelationHisIndividualRepository.update(employeeId, itemToBeUpdate.get());
                 }
                 break;
             }

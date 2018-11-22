@@ -4,8 +4,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
 import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import java.util.List;
@@ -15,7 +13,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.HEAD;
 
 @Stateless
 /**
