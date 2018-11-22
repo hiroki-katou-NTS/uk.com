@@ -12,6 +12,8 @@ import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 @Getter
 @Setter
 public class StopSettingDto {
+	
+	private boolean isAdmin;
 
 	private StopBySystemDto system;
 	

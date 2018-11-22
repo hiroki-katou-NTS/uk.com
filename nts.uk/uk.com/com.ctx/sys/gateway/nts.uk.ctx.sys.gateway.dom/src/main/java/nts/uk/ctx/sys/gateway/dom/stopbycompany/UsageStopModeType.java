@@ -7,17 +7,13 @@ package nts.uk.ctx.sys.gateway.dom.stopbycompany;
 public enum UsageStopModeType {
 
 	/**
-	 * 業務運用中
+	 * 担当者モード
 	 */
-	RUNNING(0),
+	PERSON_MODE(1),
 	/**
-	 * 利用停止前段階
+	 * 管理者モード
 	 */
-	IN_PROGRESS(1),
-	/**
-	 * 利用停止中
-	 */
-	STOP(2);
+	ADMIN_MODE(2);
 
 	public final int value;
 

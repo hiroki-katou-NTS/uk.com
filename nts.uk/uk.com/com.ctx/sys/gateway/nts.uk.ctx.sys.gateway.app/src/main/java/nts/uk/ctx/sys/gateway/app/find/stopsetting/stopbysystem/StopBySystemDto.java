@@ -14,21 +14,21 @@ public class StopBySystemDto {
 	/** 契約コード */
 	private String contractCd;
 
-	/** 利用停止モード */
-	private Integer usageStopMode;
-
-	/** 利用停止のメッセージ */
-	private String usageStopMessage;
-
 	/** システム利用状態 */
 	private Integer systemStatus;
 
 	/** 停止予告のメッセージ */
 	private String stopMessage;
 
+	/** 利用停止モード */
+	private Integer usageStopMode;
+
+	/** 利用停止のメッセージ */
+	private String usageStopMessage;
+
 	public static StopBySystemDto fromDomain(StopBySystem domain) {
-		return new StopBySystemDto(domain.getContractCd(), domain.getUsageStopMode().value,
-				domain.getUsageStopMessage().v(), domain.getSystemStatus().value, domain.getStopMessage().v());
+		return new StopBySystemDto(domain.getContractCd(), domain.getSystemStatus().value, domain.getStopMessage().v(),
+				domain.getUsageStopMode().value, domain.getUsageStopMessage().v());
 
 	}
 }
