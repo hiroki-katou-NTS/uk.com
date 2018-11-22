@@ -19,24 +19,23 @@ public class StopBySystem extends AggregateRoot {
 
 	/** 契約コード */
 	private String contractCd;
+	/** システム利用状態 */
+	private SystemStatusType systemStatus;
+
+	/** 利用停止のメッセージ */
+	private StopMessage stopMessage;
 
 	/** 利用停止モード */
 	private UsageStopModeType usageStopMode;
 
-	/** 利用停止のメッセージ */
+	/** 停止予告のメッセージ */
 	private StopMessage usageStopMessage;
 
-	/** システム利用状態 */
-	private SystemStatusType systemStatus;
-
-	/** 停止予告のメッセージ */
-	private StopMessage stopMessage;
-
-	public static StopBySystem createFromJavaType(String contractCd, Integer usageStopMode, String usageStopMessage,
-			Integer systemStatus, String stopMessage) {
-		return new StopBySystem(contractCd, EnumAdaptor.valueOf(usageStopMode, UsageStopModeType.class),
-				new StopMessage(usageStopMessage), EnumAdaptor.valueOf(systemStatus, SystemStatusType.class),
-				new StopMessage(stopMessage));
+	public static StopBySystem createFromJavaType(String contractCd, Integer systemStatus, String stopMessage,
+			Integer usageStopMode, String usageStopMessage) {
+		return new StopBySystem(contractCd, EnumAdaptor.valueOf(systemStatus, SystemStatusType.class),
+				new StopMessage(stopMessage), EnumAdaptor.valueOf(usageStopMode, UsageStopModeType.class),
+				new StopMessage(usageStopMessage));
 	}
 
 }

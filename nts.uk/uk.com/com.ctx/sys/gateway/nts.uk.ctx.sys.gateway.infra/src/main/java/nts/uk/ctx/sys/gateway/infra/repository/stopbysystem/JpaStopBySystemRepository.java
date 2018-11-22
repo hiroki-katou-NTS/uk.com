@@ -27,8 +27,8 @@ public class JpaStopBySystemRepository extends JpaRepository implements StopBySy
 	}
 
 	private SgwdtStopBySystem toEntity(StopBySystem domain) {
-		return new SgwdtStopBySystem(domain.getContractCd(), domain.getUsageStopMode().value,
-				domain.getUsageStopMessage().v(), domain.getSystemStatus().value, domain.getStopMessage().v());
+		return new SgwdtStopBySystem(domain.getContractCd(), domain.getSystemStatus().value,
+				domain.getStopMessage().v(), domain.getUsageStopMode().value, domain.getUsageStopMessage().v());
 	}
 
 	@Override
@@ -38,8 +38,8 @@ public class JpaStopBySystemRepository extends JpaRepository implements StopBySy
 	}
 
 	private StopBySystem toDomain(SgwdtStopBySystem entity) {
-		return StopBySystem.createFromJavaType(entity.contractCd, entity.usageStopMode, entity.usageStopMessage,
-				entity.systemStatus, entity.stopMessage);
+		return StopBySystem.createFromJavaType(entity.contractCd, entity.systemStatus, entity.stopMessage,
+				entity.usageStopMode, entity.usageStopMessage);
 	}
 
 }

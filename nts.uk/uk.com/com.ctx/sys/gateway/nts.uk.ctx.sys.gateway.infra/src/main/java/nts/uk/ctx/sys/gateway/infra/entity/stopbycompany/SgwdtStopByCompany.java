@@ -29,17 +29,9 @@ public class SgwdtStopByCompany extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public SgwdtStopByCompanyPK pk;
-
-	/** 利用停止モード */
-	@Column(name = "USAGE_STOP_MODE_TYPE")
-	public Integer usageStopMode;
-
-	/** 利用停止のメッセージ */
-	@Column(name = "USAGE_STOP_MESSAGE")
-	public String usageStopMessage;
 
 	/** システム利用状態 */
 	@Column(name = "SYSTEM_STATUS_TYPE")
@@ -48,6 +40,14 @@ public class SgwdtStopByCompany extends UkJpaEntity implements Serializable {
 	/** 停止予告のメッセージ */
 	@Column(name = "STOP_MESSAGE")
 	public String stopMessage;
+
+	/** 利用停止モード */
+	@Column(name = "USAGE_STOP_MODE_TYPE")
+	public Integer usageStopMode;
+
+	/** 利用停止のメッセージ */
+	@Column(name = "USAGE_STOP_MESSAGE")
+	public String usageStopMessage;
 
 	@Override
 	protected Object getKey() {

@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.gateway.app.find.stopsetting.stopbycompany.StopByCompanyDt
 import nts.uk.ctx.sys.gateway.app.find.stopsetting.stopbysystem.StopBySystemDto;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
-import nts.uk.ctx.sys.gateway.dom.stopbycompany.UsageStopModeType;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,6 +22,7 @@ public class StopSettingFinder {
 
 	public StopSettingDto find(int isSystem) {
 		StopSettingDto result = new StopSettingDto();
+		result.setAdmin(AppContexts.user().roles().have().systemAdmin());
 		String contractCd = AppContexts.user().contractCode();
 		// 選択された停止対象を判別
 		if (isSystem == 1) {
@@ -32,11 +33,11 @@ public class StopSettingFinder {
 
 			// ドメインモデル「会社単位の利用停止の設定」を取得し会社の「停止状況」を取得する
 			List<StopByCompany> stopCompanys = this.companyRepo.findByContractCodeAndState(contractCd,
-					UsageStopModeType.STOP.value);
+					SystemStatusType.STOP.value);
 			result.setStopCompanys(stopCompanys);
 			// ドメインモデル「会社単位の利用停止の設定」を取得し会社の「前段階状況」を取得する
 			List<StopByCompany> inProgressCompanys = this.companyRepo.findByContractCodeAndState(contractCd,
-					UsageStopModeType.IN_PROGRESS.value);
+					SystemStatusType.IN_PROGRESS.value);
 			result.setInProgressCompanys(inProgressCompanys);
 		} else {
 			String companyCd = AppContexts.user().companyCode();

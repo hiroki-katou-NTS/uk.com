@@ -18,21 +18,21 @@ public class StopByCompanyDto {
 	/** 会社コード */
 	private String companyCd;
 
-	/** 利用停止モード */
-	private Integer usageStopMode;
-
-	/** 利用停止のメッセージ */
-	private String usageStopMessage;
-
 	/** システム利用状態 */
 	private Integer systemStatus;
 
-	/** 停止予告のメッセージ */
+	/** 利用停止のメッセージ */
 	private String stopMessage;
 
+	/** 利用停止モード */
+	private Integer usageStopMode;
+
+	/** 停止予告のメッセージ */
+	private String usageStopMessage;
+
 	public static StopByCompanyDto fromDomain(StopByCompany domain) {
-		return new StopByCompanyDto(domain.getContractCd(), domain.getCompanyCd(), domain.getUsageStopMode().value,
-				domain.getUsageStopMessage().v(), domain.getSystemStatus().value, domain.getStopMessage().v());
+		return new StopByCompanyDto(domain.getContractCd(), domain.getCompanyCd(), domain.getSystemStatus().value,
+				domain.getStopMessage().v(), domain.getUsageStopMode().value, domain.getUsageStopMessage().v());
 
 	}
 }
