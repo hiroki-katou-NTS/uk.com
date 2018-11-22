@@ -1,0 +1,13 @@
+#content-left {
+    margin-top: 20px;
+    margin-left: 10px;
+}
+.fixed-flex-layout > .fixed-flex-layout-left {
+    margin-right: -10px;
+}
+#fixed-flex-layout-right {
+    margin-top: 20px;
+}
+.row {
+    margin-top: 10px;
+}

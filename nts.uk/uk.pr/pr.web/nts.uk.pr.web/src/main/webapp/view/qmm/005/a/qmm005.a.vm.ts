@@ -1,7 +1,9 @@
 module nts.uk.pr.view.qmm005.a.viewmodel {
-    import model = nts.uk.pr.view.qmm005.share.model;
+    import model     = nts.uk.pr.view.qmm005.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block     = nts.uk.ui.block;
+    import dialog    = nts.uk.ui.dialog;
 
     import modal = nts.uk.ui.windows.sub.modal;
     import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
@@ -186,25 +188,25 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
             service.findDisplayRegister().done(data => {
-                self.itemTable=new ItemTable();
+                self.itemTable = new ItemTable();
                 if (data) {
                     self.itemTable.setData(data);
                 }
 
-                let isExists:Array<number>=new Array();
-                for(let i=0;i<self.itemTable.processInfomations.length;i++){
+                let isExists: Array<number> = [];
+                for (let i = 0; i < self.itemTable.processInfomations.length; i++) {
                     isExists.push(self.itemTable.processInfomations[i].processCateNo)
                 }
-                let arrItemBindingProcessinformations:Array<model.ProcessInfomation>=new Array();
+                let arrItemBindingProcessinformations: Array<model.ProcessInfomation> = [];
                 for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
-                    if(_.includes(isExists,i+1)){
-                        let index=_.indexOf(isExists,i+1);
+                    if (_.includes(isExists, i + 1)) {
+                        let index = _.indexOf(isExists, i + 1);
                         arrItemBindingProcessinformations.push(self.itemTable.processInfomations[index]);
                     }
-                    else{
+                    else {
                         arrItemBindingProcessinformations.push(new model.ProcessInfomation({
                                 processCateNo: i + 1,
                                 processCls: '',
@@ -215,22 +217,31 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 }
 
                 for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
-                    let employeeString = '';
-                    let employeeList = [];
-                    let employeeSetting = _.find(self.itemTable.empTiedProYear, x => {
+                    let employeeString = '',
+                        employeeList = [],
+                        currentProcessDates,
+                        processCateNo = i + 1;
+
+                    let employeeSetting:any = _.find(self.itemTable.empTiedProYear, x => {
                         if (x != null) {
                             return x.processCateNo == i + 1;
                         }
-                    })
+                    });
+
                     if (employeeSetting) {
                         for (let j = 0; j < employeeSetting.getEmploymentCodes.length; j++) {
                             let obj = _.find(self.itemTable.empCdNameImports, x => {
                                 return x.code == employeeSetting.getEmploymentCodes[j];
-                            })
+                            });
                             employeeList.push(obj);
                             employeeString == '' ? employeeString += obj.name : employeeString += (', ' + obj.name);
                         }
                     }
+
+                    currentProcessDates = _.find(self.itemTable.currentProcessDates, x => {
+                        return x.processCateNo == processCateNo;
+                    });
+
                     self.itemBinding.push(new ItemBinding(
                         arrItemBindingProcessinformations[i],
                         _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
@@ -242,20 +253,15 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         employeeString, employeeList,
                         self.getYear(self.itemTable.setDaySupports, i),
                         self.getListMonth(self.itemTable.setDaySupports, i),
-                        self.itemTable.currentProcessDates[i]
-                    )
-                    );
-
+                        currentProcessDates
+                    ));
                 }
                 console.log(self.itemBinding());
                 console.log(self.itemTable);
 
                 dfd.resolve();
                 $('#A2_2 #button_update').eq(0).focus();
-
             });
-
-
             return dfd.promise();
         }
 
@@ -270,17 +276,26 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if (codeList.length > 0) {
                         commandData.empTiedProYearCommand.push({employmentCodes: codeList});
                     } else {
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_217", message: nts.uk.resource.getMessage("MsgQ_217",[i+1])});
+                        nts.uk.ui.dialog.alertError({
+                            messageId: "MsgQ_217",
+                            message: nts.uk.resource.getMessage("MsgQ_217", [i + 1])
+                        });
                         return;
                     }
+                } else {
+                    commandData.currProcessDateCommand.push({giveCurrTreatYear: null});
+                    commandData.empTiedProYearCommand.push({employmentCodes: []});
                 }
             }
+
+            block.invisible();
             service.registerProcessing(commandData).done(function (data) {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"});
             }).fail(function (error) {
+                dialog.alertError(error.message);
+            }).always(function () {
+                block.clear();
             });
-
-
         }
     }
 
@@ -311,8 +326,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             selfItemBinding.monthsSelectd = ko.observable(0);
             if(currentProcessDate){ selfItemBinding.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
 
-
-
             selfItemBinding.yaersSelected.subscribe(function (data) {
                 selfItemBinding.monthsSubcriceYear.removeAll();
                 selfItemBinding.monthsSubcriceYear(
@@ -320,8 +333,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         return parseInt(o.code / 100) == data;
                     })
                 )
-            })
-
+            });
 
              let currentYear =new Date().getFullYear();
             let startYearSelected=parseInt((selfItemBinding.currentYaerMonthSelected())/100);

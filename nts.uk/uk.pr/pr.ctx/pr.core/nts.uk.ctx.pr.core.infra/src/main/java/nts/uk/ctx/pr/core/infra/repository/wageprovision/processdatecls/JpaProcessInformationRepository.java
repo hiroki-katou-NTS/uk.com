@@ -18,7 +18,7 @@ public class JpaProcessInformationRepository extends JpaRepository implements Pr
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.processInformationPk.cid =:cid AND  f.processInformationPk.processCateNo =:processCateNo ";
 	private static final String SELECT_BY_DEPRECATED_CATEGORY = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.processInformationPk.cid =:cid AND  f.deprecatCate =:deprecatedCategory ";
+			+ " WHERE  f.processInformationPk.cid =:cid AND  f.deprecatCate =:deprecatedCategory ORDER BY f.processInformationPk.processCateNo ASC";
 
 	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.processInformationPk.cid =:cid ORDER BY f.processInformationPk.processCateNo ASC";
@@ -55,12 +55,12 @@ public class JpaProcessInformationRepository extends JpaRepository implements Pr
 		// TODO Auto-generated method stub SELECT_BY_DEPRECATED_CATEGORY
 		return this.queryProxy().query(SELECT_BY_DEPRECATED_CATEGORY, QpbmtProcessInformation.class)
 				.setParameter("cid", cid).setParameter("deprecatedCategory", deprecatedCategory)
-				.getList(c -> c.toDomain());
+				.getList(QpbmtProcessInformation::toDomain);
 	}
 
 	@Override
 	public List<ProcessInformation> getProcessInformationByCid(String cid) {
 		return this.queryProxy().query(SELECT_BY_COMPANY_ID, QpbmtProcessInformation.class).setParameter("cid", cid)
-				.getList(c -> c.toDomain());
+				.getList(QpbmtProcessInformation::toDomain);
 	}
 }

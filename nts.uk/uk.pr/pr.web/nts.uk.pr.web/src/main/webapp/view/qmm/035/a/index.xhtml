@@ -49,8 +49,8 @@
             <button  id="A1_4" tabindex="4" data-bind="enable: $vm.isEnableBtnPdf() " >#{i18n.getText('QMM035_5')}</button>
             <button id="A1_5" class="danger" tabindex="5" data-bind="click: deleteCompany ,enable: $vm.isEnableBtnDelete()" >#{i18n.getText('QMM035_6')}</button>
         </div>
-        <div id="contents-area" class="fixed-flex-layout" style="margin-left: 10px;">
-            <div id="content-left" class="fixed-flex-layout-left">
+        <div id="contents-area" class="fixed-flex-layout" >
+            <div id="content-left" class="fixed-flex-layout-left" style="margin-left: 10px;">
                 <div data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
                      id="A2_1" style="margin-left: 10px;">
                     <div id="A2_2" style="width: 330px" tabindex="6"

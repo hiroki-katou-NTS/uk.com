@@ -41,6 +41,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         listComponentOption: ComponentOption;
         tabindex: number;
         enable: KnockoutObservable<boolean>;
+        A7_8: KnockoutObservable<string> = ko.observable(null);
+
         //_____CCG001________
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -318,6 +320,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
+                    self.A7_8('～');
                     self.isRegistrationable(true);
                     self.currencyeditor.enable(true);
                     self.mode(MODE.NORMAL);
@@ -341,6 +344,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.focusStartPage = false;
                     }
                 } else {
+                    self.A7_8(null);
                     self.itemList([]);
                     self.periodStartYM(null);
                     self.periodEndYM(null);
@@ -511,7 +515,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 if (params) {
                     self.selectedHisCode(0);
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
-                    self.periodEndYM(params.periodEndYm);
+                    self.A7_8('～');
+                    self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
 
                     if (params.takeoverMethod == 1) {
                         self.currencyeditor.value('');
@@ -519,14 +524,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.currencyeditor.value(parseInt(self.itemList()[0].amount));
                     }
                     let array = self.itemList();
-                    array.unshift([new ItemModel(
+                    array.unshift(new ItemModel(
                         0,
                         null,
                         params.periodStartYm,
                         params.periodEndYm,
                         format(getText("QMM039_18"), nts.uk.time.parseYearMonth(params.periodStartYm).format(), nts.uk.time.parseYearMonth(params.periodEndYm).format()),
                         self.currencyeditor.value()
-                    )]);
+                    ));
                     if (array.length > 1) {
 
                         array[1].periodEndYm = (params.periodStartYm - 1) % 100 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;

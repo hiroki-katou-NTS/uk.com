@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
 * 賃金テーブル名
 */
-@StringMaxLength(20)
+@StringMaxLength(30)
 public class WageTableName extends StringPrimitiveValue<WageTableName>
 {
     

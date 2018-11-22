@@ -20,17 +20,17 @@ import lombok.NoArgsConstructor;
 public class QpbmtFormulaPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * 会社ID
-    */
+     * 会社ID
+     */
     @Basic(optional = false)
     @Column(name = "CID")
     public String cid;
-    
+
     /**
-    * 計算式コード
-    */
+     * 計算式コード
+     */
     @Basic(optional = false)
     @Column(name = "FORMULA_CODE")
     public String formulaCode;

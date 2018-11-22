@@ -2,13 +2,12 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
 
 import nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract.SalIndAmountByPerValCodeCommand;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Stateless
 public class SalIndAmountHissAndSalIndAmountFinder {
