@@ -108,10 +108,10 @@
     vertical-align: top;
     display: inline-block;
 }
+
 #contents-area .drag-panel .item-classification>hr {
     padding: 0;
-    margin: 6px 0;
-    margin-right: 20px;
+    margin: 6px 20px 6px 0;
 }
 
 #contents-area .drag-panel .item-classification textarea.nts-editor {
@@ -149,11 +149,11 @@
 
 #statementLayoutSet .caret-right {
     color: #97D155;
+    cursor: pointer;
 }
 
 #statementLayoutSet .panel {
-    padding: 0;
-    padding-top: 5px;
+    padding: 5px 0 0 0;
 }
 
 #statementLayoutSet hr {

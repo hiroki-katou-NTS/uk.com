@@ -1,5 +1,3 @@
-import defaults = require("lodash/defaults");
-
 module nts.uk.pr.view.qmm019.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
@@ -398,14 +396,35 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         public openSetting(): void {
             let self = this;
 
+            let listItemSetting: Array<string> = [];
+            let listLineInCtg = self.parent.parent.listLineByLineSet();
+
+            for (let lineByLine: LineByLineSetting of listLineInCtg) {
+                for(let item: SettingByItem of lineByLine.listSetByItem) {
+                    if (item.itemId() != null) listItemSetting.push(item.itemId());
+                }
+            }
+
             switch (self.parent.parent.ctgAtr) {
                 case CategoryAtr.PAYMENT_ITEM: {
+                    setShared("QMM019_A_TO_D_PARAMS", {
+                        listItemSetting: listItemSetting,
+                        itemId: self.itemId(),
+                        detail: self.paymentItemDetailSet
+                    });
+
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
 
                     });
                     break;
                 }
                 case CategoryAtr.DEDUCTION_ITEM: {
+                    setShared("QMM019_E_TO_D_PARAMS", {
+                        listItemSetting: listItemSetting,
+                        itemId: self.itemId(),
+                        detail: self.deductionItemDetailSet
+                    });
+
                     nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
 
                     });
@@ -418,6 +437,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     break;
                 }
                 case CategoryAtr.REPORT_ITEM: {
+                    setShared("QMM019_E_TO_G_PARAMS", {
+                        listItemSetting: listItemSetting,
+                        itemId: self.itemId()
+                    });
                     nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
 
                     });
