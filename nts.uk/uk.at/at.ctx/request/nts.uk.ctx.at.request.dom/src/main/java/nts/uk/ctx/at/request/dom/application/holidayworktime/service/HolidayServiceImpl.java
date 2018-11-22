@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -229,13 +230,13 @@ public class HolidayServiceImpl implements HolidayService {
 		if(buOptional.isPresent()) {
 			if (HolidayClsImport.STATUTORY_HOLIDAYS.equals(buOptional.get().holidayCls)) {
 				// 法定内休日 : filter for STATUTORY_HOLIDAYS
-				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayClsImport.STATUTORY_HOLIDAYS)).collect(Collectors.toList());
+				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayAtr.STATUTORY_HOLIDAYS)).collect(Collectors.toList());
 			} else if (HolidayClsImport.NON_STATUTORY_HOLIDAYS.equals(buOptional.get().holidayCls)) {
 				// 法定外休日
-				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayClsImport.NON_STATUTORY_HOLIDAYS)).collect(Collectors.toList());
+				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayAtr.NON_STATUTORY_HOLIDAYS)).collect(Collectors.toList());
 			} else if (HolidayClsImport.PUBLIC_HOLIDAY.equals(buOptional.get().holidayCls)) {
 				// 祝日
-				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayClsImport.PUBLIC_HOLIDAY)).collect(Collectors.toList());
+				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayAtr.PUBLIC_HOLIDAY)).collect(Collectors.toList());
 			}else{
 				// 取得できない場合
 				return getWorkTypeForLeaveApp(workTypeHolidayWorks,companyID);
