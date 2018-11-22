@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.adapter.employee;
+package nts.uk.ctx.pr.core.dom.adapter.query.employee;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;

@@ -109,7 +109,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
 
                 $('#A5_7').focus();
-            })
+            });
 
             dfd.resolve(self);
             return dfd.promise();
@@ -118,7 +118,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         onSelectTab(param) {
             let self = this;
-            nts.uk.ui.errors.clearAll();
             switch (param) {
                 case 0:
                     //TODO
@@ -183,6 +182,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", 0);
                     break;
             }
+            setTimeout(function(){
+                nts.uk.ui.errors.clearAll();
+            }, 100)
         }
 
         public loadSalIndAmountName(cateIndicator: number): void {
@@ -200,58 +202,58 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                     else {
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
+                        nts.uk.ui.errors.clearAll();
                         self.individualPriceCode('');
                         self.individualPriceName('');
                     }
-
-
                 }
 
             });
         }
 
 
-
-
         filterData(): void {
             let self = this;
             self.yearMonthFilter();
+            if (/Edge/.test(navigator.userAgent)) {
+                $('.scroll-header').removeClass('edge_scroll_header');
+                $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+            } else {
+                $('.scroll-header').removeClass('ci_scroll_header');
+                $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+            }
             $('#A5_7').ntsError('check');
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             if (!self.employeeList) return;
-            let temp = new Array();
+
             service.salIndAmountHisByPeValCode({
-                //     self.cateIndicator = ko.observable(0);
-                // self.salBonusCate = ko.observable(0);
                 perValCode: self.individualPriceCode(),
                 cateIndicator: self.cateIndicator(),
                 salBonusCate: self.salBonusCate(),
+                standardYearMonth: self.yearMonthFilter(),
                 employeeIds: self.employeeList.map(x => x.employeeId)
-
             }).done(function (dataNameAndAmount) {
-                self.employeeInfoImports=dataNameAndAmount.employeeInfoImports;
-                let personalAmountData:Array<any>=new Array();
-                personalAmountData=dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
-
+                self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
+                personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
                 console.log(dataNameAndAmount);
                 self.personalAmount(personalAmountData);
-                for(let i=0;i<self.personalAmount().length;i++){
-                    let index=_.findIndex(self.employeeInfoImports,function (o) {
-                        return o.sid==self.personalAmount()[i].empId
+                for (let i = 0; i < self.personalAmount().length; i++) {
+                    let index = _.findIndex(self.employeeInfoImports, function (o) {
+                        return o.sid == self.personalAmount()[i].empId
                     });
-                    if(index != -1){
+                    if (index != -1) {
                         self.personalAmount()[i].employeeCode(self.employeeInfoImports[index].scd);
                         self.personalAmount()[i].businessName(self.employeeInfoImports[index].businessName);
                     }
                 }
-                personalAmountData= personalAmountData.sort(function(a, b){
-                    return a.employeeCode() > b.employeeCode();
-                })
+                let personalAmountData = personalAmountData.sort(function (a, b) {
+                    return a.employeeCode().compareTo(b.employeeCode());
+                });
                 self.personalDisplay(personalAmountData);
                 setTimeout(function () {
-                    if( self.personalDisplay().length > 10) {
+                    if (self.personalDisplay().length > 10) {
                         if (/Edge/.test(navigator.userAgent)) {
                             $('.scroll-header').addClass('edge_scroll_header');
                             $('.nts-fixed-body-container').addClass('edge_scroll_body');
@@ -261,27 +263,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                         }
 
                     }
-                }, 100);
-
+                }, 20);
             })
-            // for(let i=0;i<self.personalAmount().length;i++){
-            //     if(self.personalAmount()[i].startYearMonth <= this.yearMonthFilter() && self.personalAmount()[i].endYearMonth >= this.yearMonthFilter()){
-            //         temp.push(self.personalAmount()[i])
-            //     }
-            // }
-            //
-            // //self.workIndividualPricesDisplay(_.sortBy(temp, ['employeeCode', 'startYaerMonth']));
-            //
-            // self.personalDisplay(_.sortBy(temp, ['employeeCode', 'startYearMonth']));
-            // if(self.personalDisplay().length<=10){
-            //     if (/Edge/.test(navigator.userAgent)) {
-            //         $('.scroll-header').removeClass('edge_scroll_header');
-            //     } else {
-            //         $('.scroll-header').removeClass('ci_scroll_header');
-            //     }
-            // }
-
-
         }
 
         registerAmount(): void {
@@ -336,14 +319,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     nts.uk.ui.errors.clearAll();
-                    $('#A5_7').ntsError('check');
                     //self.selectedEmployee(data.listEmployee);
-                    if (data && data.listEmployee.length>0) {
-                        self.employeeList=data.listEmployee;
+                    if (data && data.listEmployee.length > 0) {
+                        self.employeeList = data.listEmployee;
                         console.log(data.listEmployee);
                     }
                 }
-            }
+            };
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
     }

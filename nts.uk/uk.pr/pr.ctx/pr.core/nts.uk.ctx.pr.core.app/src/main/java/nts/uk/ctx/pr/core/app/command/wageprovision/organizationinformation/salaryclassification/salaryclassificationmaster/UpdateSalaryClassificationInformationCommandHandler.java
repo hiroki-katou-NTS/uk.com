@@ -24,7 +24,7 @@ public class UpdateSalaryClassificationInformationCommandHandler extends Command
                 AppContexts.user().companyId(),
                 command.getSalaryClassificationCode(),
                 command.getSalaryClassificationName(),
-                command.getMemo().isEmpty() ? null : command.getMemo()
+                command.getMemo()
         ));
     }
 }

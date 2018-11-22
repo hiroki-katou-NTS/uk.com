@@ -13,6 +13,8 @@ public interface EmployAverWageRepository
 
     Optional<EmployAverWage> getEmployAverWageById(String employeeId, int targetDate);
 
+    List<EmployAverWage> getEmployByIds(List<String> employeeIds, int targetDate);
+
     void add(EmployAverWage domain);
 
     void update(EmployAverWage domain);

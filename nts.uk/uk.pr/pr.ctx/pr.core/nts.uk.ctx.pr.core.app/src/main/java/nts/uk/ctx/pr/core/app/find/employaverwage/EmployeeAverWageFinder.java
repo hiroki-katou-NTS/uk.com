@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.app.find.employaverwage;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.app.command.employaverwage.EmployeeComand;
-import nts.uk.ctx.pr.core.dom.adapter.employee.EmployeeInfoAverAdapter;
-import nts.uk.ctx.pr.core.dom.adapter.employee.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInfoAverAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWage;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWageRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.*;
@@ -11,9 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -64,34 +62,38 @@ public class EmployeeAverWageFinder {
 
     public List<EmployeeInfoDto> getEmpInfoDept(EmployeeComand param) {
         // ドメインモデル「所属部門」をすべて取得する
+        List<String> employeeIds = new ArrayList<>();
+        if (param.getGiveCurrTreatYear() != null && !param.getGiveCurrTreatYear().equals("Invalid date")) {
+            List<EmployAverWage> employAverWages = employAverWageRepository.getEmployByIds(param.getEmployeeIds(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
+            employAverWages.stream().map(x -> {
+                return employeeIds.add(x.getEmployeeId());
+            }).collect(Collectors.toList());
+        }
         return employeeInfoAverAdapter
-                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(param.getEmployeeIds(), GeneralDate.fromString(param.getBaseDate(),"yyyy/MM/dd"),
+                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, GeneralDate.fromString(param.getBaseDate(),"yyyy/MM/dd"),
                         false,
                         true,
                         false,
+                        true,
                         false,
-                        false,
-                        false)).stream().map(x -> {
+                        false)).stream().map( x-> {
                     EmployeeInfoDto dto = new EmployeeInfoDto();
                     dto.setEmployeeId(x.getEmployeeId());
                     dto.setEmployeeCode(x.getEmployeeCode());
                     dto.setBusinessName(x.getBusinessName());
-                    if(x.getEmployment() != null) {
+                    if (x.getEmployment() != null) {
                         dto.setEmploymentName(x.getEmployment().getEmploymentName());
                     } else {
                         dto.setEmploymentName("");
                     }
-                    if(x.getDepartment() != null){
+                    if (x.getDepartment() != null) {
                         dto.setDepartmentName(x.getDepartment().getDepartmentName());
-                    }else{
+                    } else {
                         dto.setDepartmentName("");
                     }
-                    if(param.getGiveCurrTreatYear() != null) {
-                        Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(),Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/","")));
-                        if(employAverWage.isPresent())
-                            dto.setAverageWage(employAverWage.get().getAverageWage().v());
-                    }
-                    return dto;
+                    Optional<EmployAverWage> employAverWage = employAverWageRepository.getEmployAverWageById(x.getEmployeeId(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
+                    dto.setAverageWage(employAverWage.get().getAverageWage().v());
+                    return  dto;
                 }).collect(Collectors.toList());
     }
 
@@ -103,4 +105,18 @@ public class EmployeeAverWageFinder {
     }
 
 
+    public EmploymentCodeDto getEmploymentCodeByEmpIdAndBaseDate(String employeeId) {
+        return employeeInfoAverAdapter
+                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(Collections.singletonList(employeeId), GeneralDate.today(),
+                        false,
+                        false,
+                        false,
+                        true,
+                        false,
+                        false))
+                .stream().map(x -> {
+                    if(Objects.isNull(x.getEmployment())) return new EmploymentCodeDto(null);
+                    return new EmploymentCodeDto(x.getEmployment().getEmploymentCode());
+                }).findFirst().orElse(null);
+    }
 }

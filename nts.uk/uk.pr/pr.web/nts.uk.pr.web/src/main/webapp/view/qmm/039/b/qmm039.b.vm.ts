@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
         endDateString: KnockoutObservable<string>;
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
-        yearMonthStart:KnockoutObservable<number>=ko.observable('');
+        yearMonthStart: KnockoutObservable<number> = ko.observable('');
 
 
         constructor() {
@@ -41,10 +41,11 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 if (period && Object.keys(period).length > 0) {
                     let startYM = period.periodStartYm;
                     let endYM = period.periodEndYm;
+                    let baseYM = period.baseYm;
                     displayLastestStartHistory = String(startYM).substring(0, 4) + "/" + String(startYM).substring(4, 6);
                     self.startDateString(startYM);
                     self.endDateString(endYM);
-                    self.yearMonthStart(startYM);
+                    self.yearMonthStart(baseYM);
                 }
 
                 if (params.historyID) {
@@ -67,13 +68,10 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
                 return;
             }
 
-
-
-                if (self.startDateString() >= self.yearMonthStart()) {
-                    dialog.alertError({messageId: "Msg_79"});
-                    return;
-                }
-
+            if (self.startDateString() >= self.yearMonthStart()) {
+                dialog.alertError({messageId: "Msg_79"});
+                return;
+            }
 
             let historyID = getShared("QMM039_A_PARAMS").historyID;
             setShared('QMM039_B_RES_PARAMS', {
