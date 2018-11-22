@@ -7,7 +7,7 @@ module nts.uk.pr.view.qmm017.a.service {
         getFormulaSettingByHistoryID: parentPath + "/getFormulaSettingByHistoryID/{0}",
         addFormula: parentPath + "/addFormula",
         addFormulaHistory: parentPath + "/addFormulaHistory",
-        updateFormulaSetting: parentPath + "/updateFormula",
+        updateFormulaSetting: parentPath + "/updateFormulaSetting",
     }
     /**
      * get all

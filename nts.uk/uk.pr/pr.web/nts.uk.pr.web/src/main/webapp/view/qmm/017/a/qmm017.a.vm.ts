@@ -106,7 +106,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                         itemToBeFocus = '#D1_4';
                     }
                 } else {
-                    if (self.screenMode() != model.SCREEN_MODE.NEW); itemToBeFocus = '#A3_4';
+                    if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
                 }
 
                 setTimeout(function(){
@@ -152,8 +152,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             command.formulaSettingCommand = self.updateHistoryID(command.formulaSettingCommand);
             service.addFormula(command).done(function(data) {
                 block.clear();
+                self.getListFormula();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
-                    self.selectedFormulaIdentifier.valueHasMutated();
+                    self.selectedFormulaIdentifier(command.formulaCode + command.formulaSettingCommand.yearMonth.historyID);
                 });
             }).fail(function(err) {
                 block.clear();
@@ -376,15 +377,18 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             })
         }
 
-
-        startPage(): JQueryPromise<any> {
+        getListFormula(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getAllFormula().done(function(data){
                 self.convertToTreeList(data);
-                self.initBasicCalculationFormula();
-            })
-            dfd.resolve();
+                dfd.resolve();
+            });
             return dfd.promise();
+        }
+
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            return self.getListFormula();
         }
 
         createNewHistory () {

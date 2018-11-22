@@ -24,8 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_SALARY_CLS_INFO")
-public class QpbmtSalaryClsInfo extends UkJpaEntity implements Serializable
-{
+public class QpbmtSalaryClsInfo extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**

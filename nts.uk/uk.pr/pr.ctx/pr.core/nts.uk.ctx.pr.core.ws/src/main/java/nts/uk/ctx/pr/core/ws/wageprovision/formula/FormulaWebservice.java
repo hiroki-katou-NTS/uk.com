@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.ws.wageprovision.formula;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.formula.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.formula.MasterUseDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -82,5 +83,11 @@ public class FormulaWebservice extends WebService {
     @Path("deleteFormulaHistory")
     public void deleteFormulaHistory(FormulaCommand command) {
         removeFormulaHistoryCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("getMasterUseInfo/{masterUseClassification}")
+    public List<MasterUseDto> getMasterUseInfo(@PathParam("masterUseClassification")int masterUseClassification) {
+        return formulaFinder.getMasterUseInfo(masterUseClassification);
     }
 }

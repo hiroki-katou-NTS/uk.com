@@ -1,6 +1,13 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationInformationRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.SyJobTitleAdapter;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.arc.time.YearMonth;
@@ -8,6 +15,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +34,21 @@ public class FormulaService {
 
     @Inject
     private BasicCalculationFormulaRepository basicCalculationFormulaRepository;
+
+    @Inject
+    private SysEmploymentAdapter sysEmploymentAdapter;
+
+    @Inject
+    private SyJobTitleAdapter syJobTitleAdapter;
+
+    @Inject
+    private SalaryClassificationInformationRepository salaryClassificationInformationRepository;
+
+    @Inject
+    private CurrProcessDateRepository currProcessDateRepository;
+
+    @Inject
+    private SetDaySupportRepository setDaySupportRepository;
 
     public void addFormula (Formula formula, BasicFormulaSetting basicFormulaSetting, YearMonthHistoryItem yearMonthHistoryItem) {
         if (formulaRepository.getFormulaById(formula.getFormulaCode().v()).isPresent()) throw new BusinessException("Msg_3");
@@ -102,6 +126,60 @@ public class FormulaService {
                 .stream().map(x -> x.getFormulaCode().v()).collect(Collectors.toList());
         // ドメインモデル「計算式」を取得する
         return formulaRepository.getFormulaByCodes(cid, formulaCodes);
+    }
+
+    public GeneralDate getBaseDate () {
+        /*【条件】
+        会社ID＝ログイン会社
+        処理日区分NO＝1 */
+        GeneralDate [] generalDate = {GeneralDate.today()};
+        currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(AppContexts.user().companyId(), 1).ifPresent(processDate -> {
+            setDaySupportRepository.getSetDaySupportByIdAndProcessDate(AppContexts.user().companyId(), 1, processDate.getGiveCurrTreatYear().v()).ifPresent(setDaySupport -> {
+                generalDate[0] = setDaySupport.getEmpExtraRefeDate();
+            });
+        });
+        return generalDate[0];
+    }
+
+    public List<MasterUseDto> getMasterUseInfo (int masterUseClassification) {
+        MasterUse masterUse = EnumAdaptor.valueOf(masterUseClassification, MasterUse.class);
+        GeneralDate baseDate = this.getBaseDate();
+        switch (masterUse) {
+            case EMPLOYMENT: {
+                return sysEmploymentAdapter.findAll(AppContexts.user().companyId()).stream().map(item -> {
+                    return new MasterUseDto(item.getCode(), item.getName());
+                }).collect(Collectors.toList());
+            }
+            case DEPARTMENT: {
+                // TODO
+                return Collections.emptyList();
+            }
+            case CLASSIFICATION: {
+                // TODO
+                return Collections.emptyList();
+            }
+            case JOB_TITLE: {
+                return syJobTitleAdapter.findAll(AppContexts.user().companyId(), baseDate).stream().map(item -> {
+                    return new MasterUseDto(item.getJobTitleCode(), item.getJobTitleName());
+                }).collect(Collectors.toList());
+            }
+            case SALARY_CLASSIFICATION: {
+                return salaryClassificationInformationRepository.getAllSalaryClassificationInformation(AppContexts.user().companyId()).stream().map(item -> {
+                    return new MasterUseDto(item.getSalaryClassificationCode().v(), item.getSalaryClassificationName().v());
+                }).collect(Collectors.toList());
+            }
+            case SALARY_FORM: {
+                final String FIXED_PREFIX = "000000000", FIRST_LINE = "月給", SECOND_LINE = "日給月給", THIRD_LINE = "日給", FOURTH_LINE = "時給";
+
+                ArrayList<MasterUseDto> masterUseList = new ArrayList<>();
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 0, FIRST_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 1, SECOND_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 2, THIRD_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 3, FOURTH_LINE));
+                return masterUseList;
+            }
+        }
+        return Collections.emptyList();
     }
 
 }
