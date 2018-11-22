@@ -1,8 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
+
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementNameLayoutHistDto;
-import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployee;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployeeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
@@ -30,9 +29,6 @@ public class StateCorrelationHisEmployeeFinder {
 
     @Inject
     private StateCorrelationHisEmployeeRepository finder;
-
-    @Inject
-    private SysEmploymentAdapter sysEmploymentAdapter;
 
     @Inject
     private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
@@ -89,8 +85,9 @@ public class StateCorrelationHisEmployeeFinder {
     }
 
     public List<EmpCdNameImportDto> findEmploymentAll(String cid){
-        List<EmpCdNameImport> empCdNameImport = sysEmploymentAdapter.findAll(cid);
-        return EmpCdNameImportDto.fromDomain(empCdNameImport);
+        /*List<EmpCdNameImport> empCdNameImport = sysEmploymentAdapter.findAll(cid);
+        return EmpCdNameImportDto.fromDomain(empCdNameImport);*/
+        return null;
     }
 
     public List<StatementNameLayoutHistDto> getAllStatementLayoutHis(int startYearMonth) {

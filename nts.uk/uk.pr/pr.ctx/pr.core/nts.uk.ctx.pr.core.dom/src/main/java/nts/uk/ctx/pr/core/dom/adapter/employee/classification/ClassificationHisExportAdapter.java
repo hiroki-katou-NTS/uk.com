@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.dom.adapter.employee.classification;
 
 import nts.arc.time.GeneralDate;
 

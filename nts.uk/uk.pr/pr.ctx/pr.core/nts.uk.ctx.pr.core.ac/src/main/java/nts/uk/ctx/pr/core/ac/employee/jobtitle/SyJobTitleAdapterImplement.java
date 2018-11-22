@@ -1,9 +1,9 @@
-package nts.uk.ctx.pr.core.ac.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.ac.employee.jobtitle;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.JobTitle;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.SyJobTitleAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +18,7 @@ public class SyJobTitleAdapterImplement implements SyJobTitleAdapter{
 
     @Override
     public List<JobTitle> findAll(String companyId, GeneralDate baseDate) {
+
         return syJobTitlePub.findAll(companyId, baseDate).stream().map(i -> {return new JobTitle(
                 i.getCompanyId(),
                 i.getJobTitleId(),

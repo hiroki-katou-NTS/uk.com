@@ -2,6 +2,10 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.AffDepartHistory;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.AffDepartHistoryAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.Department;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 

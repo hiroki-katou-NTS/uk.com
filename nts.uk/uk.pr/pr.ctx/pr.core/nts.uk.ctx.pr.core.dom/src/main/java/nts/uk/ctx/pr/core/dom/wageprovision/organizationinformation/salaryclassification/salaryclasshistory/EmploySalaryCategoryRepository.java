@@ -6,8 +6,9 @@ import java.util.List;
 /**
 * 社員給与分類項目
 */
-public interface EmploySalaryCategoryRepository
-{
+public interface EmploySalaryCategoryRepository {
+
+    Optional<EmploySalaryClassHistory> getEmploySalaryClassHistoryById(String employeeId, String hisId);
 
     List<EmploySalaryCategory> getAllEmploySalaryClassHistory();
 

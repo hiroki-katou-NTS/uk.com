@@ -1,8 +1,8 @@
-package nts.uk.ctx.pr.core.ac.wageprovision.statementbindingsetting;
+package nts.uk.ctx.pr.core.ac.employee.department;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.Department;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.DepartmentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.Department;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentAdapter;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
