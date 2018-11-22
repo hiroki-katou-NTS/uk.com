@@ -24,7 +24,7 @@ public class JpaQualificationGroupSettingRepository extends JpaRepository implem
 
     @Override
     public List<QualificationGroupSetting> getQualificationGroupSettingByCompanyID() {
-        return QpbmtQualificationGroupSetting.toDomain(this.queryProxy().query(FIND_BY_COMPANY, QpbmtQualificationGroupSetting.class).setParameter("cid", AppContexts.user().companyId()).getList().stream().filter(distinctByKey(item -> item.qualificationGroupSettingPk.qualificationGroupCode)).collect(Collectors.toList()));
+        return QpbmtQualificationGroupSetting.toDomain(this.queryProxy().query(FIND_BY_COMPANY, QpbmtQualificationGroupSetting.class).setParameter("cid", AppContexts.user().companyId()).getList().stream().filter(distinctByKey(item -> item.pk.qualificationGroupCode)).collect(Collectors.toList()));
     }
 
     @Override

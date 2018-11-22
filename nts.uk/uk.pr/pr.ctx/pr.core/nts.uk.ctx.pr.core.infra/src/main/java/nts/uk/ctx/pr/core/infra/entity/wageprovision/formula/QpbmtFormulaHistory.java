@@ -1,8 +1,9 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.formula;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.formula.BasicCalculationFormula;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -67,5 +67,22 @@ public class QpbmtFormulaHistory extends UkJpaEntity implements Serializable
     }
     public static List<QpbmtFormulaHistory> toEntity(FormulaHistory domain) {
         return domain.getHistory().stream().map(item -> new QpbmtFormulaHistory(new QpbmtFormulaHistoryPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), item.identifier()), item.start().v(), item.end().v())).collect(Collectors.toList());
+    }
+
+    public static List<FormulaHistory> toDomainFromList(List<QpbmtFormulaHistory> entities) {
+        List<FormulaHistory> domains = new ArrayList<>();
+        Map<String, List<QpbmtFormulaHistory>> mapEntities = entities.stream()
+                .collect(Collectors.groupingBy(i -> i.formulaHistoryPk.formulaCode));
+        for (Map.Entry<String, List<QpbmtFormulaHistory>> map : mapEntities.entrySet()) {
+            String cid = map.getValue().get(0).formulaHistoryPk.cid;
+            String formulaCode = map.getKey();
+            List<YearMonthHistoryItem> historyItems = new ArrayList<>();
+            for (QpbmtFormulaHistory entity : map.getValue()) {
+                historyItems.add(new YearMonthHistoryItem(entity.formulaHistoryPk.historyID,
+                        new YearMonthPeriod(new YearMonth(entity.startMonth), new YearMonth(entity.endMonth))));
+            }
+            domains.add(new FormulaHistory(cid, new FormulaCode(formulaCode), historyItems));
+        }
+        return domains;
     }
 }
