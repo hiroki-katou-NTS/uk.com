@@ -104,7 +104,8 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 				return new AppRootInstanceContent(appRootInstanceConflict, errorFlag, errorMsgID);
 			} else {
 				// 履歴の開始日を取得する
-				GeneralDate startHistDate = this.getHistoryStartDate(companyID, employeeID, rootType, recordDate, closureStartDate, appRootInstanceConflict);
+				// GeneralDate startHistDate = this.getHistoryStartDate(companyID, employeeID, rootType, recordDate, closureStartDate, appRootInstanceConflict);
+				GeneralDate startHistDate = recordDate;
 				appRootInstance.setDatePeriod(new DatePeriod(startHistDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")));
 				// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
 				DatePeriod oldPeriod = appRootInstanceConflict.getDatePeriod();
@@ -155,6 +156,16 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 		return oldList.containsAll(newList) && newList.containsAll(oldList);
 	}
 
+	/**
+	 * 履歴の開始日を取得する
+	 * @param companyID
+	 * @param employeeID
+	 * @param rootType
+	 * @param date
+	 * @param closureStartDate
+	 * @param appRootInstance
+	 * @return
+	 */
 	private GeneralDate getHistoryStartDate(String companyID, String employeeID, RecordRootType rootType, GeneralDate date, 
 			GeneralDate closureStartDate, AppRootInstance appRootInstance){
 		if(rootType==RecordRootType.CONFIRM_WORK_BY_MONTH){
@@ -163,12 +174,13 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 		// input．年月日－１日～締め開始日まで－１日ずつループする
 		GeneralDate loopDate = date.addDays(-1);
 		do {
+			AppRootInstance compareAppIns = appRootInstance;
 			// 承認ルートを取得する（確認）
 			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootConfirm(
 					companyID, 
 					employeeID, 
 					EnumAdaptor.valueOf(rootType.value-1, ConfirmationRootType.class), 
-					date);
+					loopDate);
 			AppRootInstance appRootInsRs = new AppRootInstance(
 					approvalRootContentOutput.getApprovalRootState().getRootStateID(), 
 					companyID, 
@@ -187,9 +199,16 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 									.collect(Collectors.toList())))
 						.collect(Collectors.toList())))
 					.collect(Collectors.toList()));
+			if(appRootInstance.getDatePeriod().start().after(loopDate)){
+				// ドメインモデル「承認ルート中間データ」を取得する
+				Optional<AppRootInstance> opAppIns = appRootInstanceRepository.findByContainDate(companyID, employeeID, loopDate, rootType);
+				if(opAppIns.isPresent()){
+					compareAppIns = opAppIns.get();
+				}
+			}
 			// output．承認ルートの内容は取得したドメインモデル「承認ルート中間データ」を比較する
-			boolean isSame = compareAppRootContent(appRootInsRs, appRootInstance)
-					&& compareAppRootContent(appRootInstance, appRootInsRs);
+			boolean isSame = compareAppRootContent(appRootInsRs, compareAppIns)
+					&& compareAppRootContent(compareAppIns, appRootInsRs);
 			if(isSame){
 				// 履歴開始日＝ループ中の年月日+1日
 				return loopDate.addDays(1);
