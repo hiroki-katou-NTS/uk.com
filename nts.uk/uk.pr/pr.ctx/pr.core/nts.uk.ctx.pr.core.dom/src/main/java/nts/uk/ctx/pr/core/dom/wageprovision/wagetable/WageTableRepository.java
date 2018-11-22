@@ -1,22 +1,21 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
-* 賃金テーブル
-*/
-public interface WageTableRepository
-{
+ * 賃金テーブル
+ */
+public interface WageTableRepository {
 
-    List<WageTable> getAllWageTable();
+	public List<WageTable> getAllWageTable(String companyId);
 
-    Optional<WageTable> getWageTableById();
+	public Optional<WageTable> getWageTableById(String companyId, String code);
 
-    void add(WageTable domain);
+	public void add(WageTable domain);
 
-    void update(WageTable domain);
+	public void update(WageTable domain);
 
-    void remove();
+	public void remove(String companyId, String code);
 
 }
