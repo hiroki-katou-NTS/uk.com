@@ -64,4 +64,5 @@ public class JpaQualificationGroupSettingRepository extends JpaRepository
 		Set<Object> seen = ConcurrentHashMap.newKeySet();
 		return t -> seen.add(keyExtractor.apply(t));
 	}
+
 }

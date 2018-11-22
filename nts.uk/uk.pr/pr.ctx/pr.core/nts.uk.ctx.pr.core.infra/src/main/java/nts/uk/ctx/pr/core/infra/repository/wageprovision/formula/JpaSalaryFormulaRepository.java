@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.Formula;
-import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaRepository;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -28,9 +27,9 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
             " f.formulaPk.formulaCode IN :formulaCodes" +
             " ORDER BY f.formulaPk.formulaCode ASC";
 
-    private static final String SELECT_ALL_HIS_QUERY_STRING = "SELECT f FROM QpbmtFormulaHist f";
-    private static final String SELECT_BY_YM = SELECT_ALL_HIS_QUERY_STRING + " WHERE  f.formulaHistPk.cid =:cid AND" +
-            " f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
+    private static final String SELECT_ALL_HIS_QUERY_STRING = "SELECT f FROM QpbmtFormulaHistory f";
+    private static final String SELECT_BY_YM = SELECT_ALL_HIS_QUERY_STRING + " WHERE  f.formulaHistoryPk.cid =:cid AND" +
+            " f.startMonth <= :yearMonth AND f.endMonth >= :yearMonth ";
 
     private static final String DELETE_FORMULA_HISTORY_BY_ID = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.historyID =:historyID";
     private static final String DELETE_FORMULA_HISTORY_BY_CODE = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode";
@@ -97,9 +96,9 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
     }
 
     @Override
-    public List<FormulaHist> getFormulaHistByYearMonth(YearMonth yearMonth) {
+    public List<FormulaHistory> getFormulaHistByYearMonth(YearMonth yearMonth) {
         String cid = AppContexts.user().companyId();
-        return QpbmtFormulaHist.toDomain(this.queryProxy().query(SELECT_BY_YM, QpbmtFormulaHist.class)
+        return QpbmtFormulaHistory.toDomainFromList(this.queryProxy().query(SELECT_BY_YM, QpbmtFormulaHistory.class)
                 .setParameter("cid", cid)
                 .setParameter("yearMonth", yearMonth.v())
                 .getList());

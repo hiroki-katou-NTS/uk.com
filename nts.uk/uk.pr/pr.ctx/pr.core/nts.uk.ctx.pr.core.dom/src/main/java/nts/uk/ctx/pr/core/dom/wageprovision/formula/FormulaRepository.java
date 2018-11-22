@@ -35,6 +35,6 @@ public interface FormulaRepository
 
     void removeByFormulaCode (String formulaCode);
 
-    List<FormulaHist> getFormulaHistByYearMonth(YearMonth yearMonth);
+    List<FormulaHistory> getFormulaHistByYearMonth(YearMonth yearMonth);
 
 }
