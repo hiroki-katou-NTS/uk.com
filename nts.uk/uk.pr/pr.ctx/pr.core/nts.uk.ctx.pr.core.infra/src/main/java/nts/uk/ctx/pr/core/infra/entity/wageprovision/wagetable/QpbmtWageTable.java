@@ -99,16 +99,16 @@ public class QpbmtWageTable extends UkJpaEntity {
 		return new QpbmtWageTable(new QpbmtWageTablePk(domain.getCid(), domain.getWageTableCode().v()),
 				domain.getWageTableName().v(), domain.getElementSetting().value,
 				domain.getRemarkInformation().isPresent() ? domain.getRemarkInformation().get().v() : null,
-				elementInfor.getOneDimensionalElement().getMasterNumericInformation().isPresent()
-						? elementInfor.getOneDimensionalElement().getMasterNumericInformation().get().value : null,
+				elementInfor.getOneDimensionalElement().getMasterNumericAtr().isPresent()
+						? elementInfor.getOneDimensionalElement().getMasterNumericAtr().get().value : null,
 				elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().isPresent()
 						? elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().get().v() : null,
 				elementInfor.getOneDimensionalElement().getFixedElement().isPresent()
 						? elementInfor.getOneDimensionalElement().getFixedElement().get().value : null,
 
 				elementInfor.getTwoDimensionalElement().isPresent()
-						? (elementInfor.getTwoDimensionalElement().get().getMasterNumericInformation().isPresent()
-								? elementInfor.getTwoDimensionalElement().get().getMasterNumericInformation()
+						? (elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr().isPresent()
+								? elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr()
 										.get().value
 								: null)
 						: null,
@@ -123,8 +123,8 @@ public class QpbmtWageTable extends UkJpaEntity {
 						: null,
 
 				elementInfor.getThreeDimensionalElement().isPresent()
-						? (elementInfor.getThreeDimensionalElement().get().getMasterNumericInformation().isPresent()
-								? elementInfor.getThreeDimensionalElement().get().getMasterNumericInformation()
+						? (elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr().isPresent()
+								? elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr()
 										.get().value
 								: null)
 						: null,

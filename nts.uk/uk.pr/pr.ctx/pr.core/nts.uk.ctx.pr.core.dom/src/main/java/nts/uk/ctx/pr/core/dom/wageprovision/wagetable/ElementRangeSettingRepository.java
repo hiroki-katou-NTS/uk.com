@@ -4,19 +4,18 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 要素範囲設定
-*/
-public interface ElementRangeSettingRepository
-{
+ * 要素範囲設定
+ */
+public interface ElementRangeSettingRepository {
 
-    List<ElementRangeSetting> getAllElementRangeSetting();
+	public List<ElementRangeSetting> getAllElementRangeSetting(List<String> historyIds);
 
-    Optional<ElementRangeSetting> getElementRangeSettingById();
+	public Optional<ElementRangeSetting> getElementRangeSettingById(String historyId);
 
-    void add(ElementRangeSetting domain);
+	public void add(ElementRangeSetting domain);
 
-    void update(ElementRangeSetting domain);
+	public void update(ElementRangeSetting domain);
 
-    void remove();
+	public void remove(String historyId);
 
 }

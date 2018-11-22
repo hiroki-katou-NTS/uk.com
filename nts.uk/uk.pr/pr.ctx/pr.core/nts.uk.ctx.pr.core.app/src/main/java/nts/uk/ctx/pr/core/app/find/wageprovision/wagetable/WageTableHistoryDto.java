@@ -51,7 +51,7 @@ public class WageTableHistoryDto {
         dto.cid = wageTable.getCid();
         dto.wageTableCode = wageTable.getWageTableCode().v();
         dto.wageTableName = wageTable.getWageTableName().v();
-        dto.history = wageTableHistory.map(i -> i.getHistory().stream().map(YearMonthHistoryItemDto::fromDomainToDto).collect(Collectors.toList())).orElse(Collections.emptyList());
+        dto.history = wageTableHistory.map(i -> i.getValidityPeriods().stream().map(YearMonthHistoryItemDto::fromDomainToDto).collect(Collectors.toList())).orElse(Collections.emptyList());
         return dto;
     }
 }
