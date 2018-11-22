@@ -161,7 +161,7 @@ public class ConfirmOfIndividualSetSttFinder {
             case POSITION: {
                 List<JobTitle> mJobTitleInfo = mJobTitleInfoAdapter.findAll(cid, baseDate);
                 Optional<StateCorrelationHisPosition> mStateCorrelationHisPosition = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionById(cid, hisId);
-                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisPositionRepository.getStateLinkSettingMasterById(cid,hisId, mJobTitleInfo.get().getJobTitleCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisPositionRepository.getStateLinkSettingMasterById(cid,hisId, mJobTitleInfo.get(0).getJobTitleCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
                 }
