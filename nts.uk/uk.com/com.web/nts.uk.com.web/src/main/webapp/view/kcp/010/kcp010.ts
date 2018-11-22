@@ -33,6 +33,11 @@ module kcp010.viewmodel {
             self.isDisplay = ko.observable(true);
             
             self.systemDate = ko.observable(null);
+            // SelectedItem Subscribe
+            self.selectedItem.subscribe(function(value: string) {
+                self.bindWorkplace(value);
+            });
+                    
         }
 
         // Initialize Component
@@ -54,21 +59,6 @@ module kcp010.viewmodel {
                                 0 : (left.code < right.code ? -1 : 1)
                         });
                     }
-                    
-                    // SelectedItem Subscribe
-                    self.selectedItem.subscribe(function(value: string) {
-                        self.bindWorkplace(value);
-                    });
-                    
-                    service.getWorkplaceBySid().done(function(workplace: service.model.WorkplaceSearchData) {
-                        if  (workplace && workplace != null) {
-                            self.selectedItem(workplace.workplaceId);
-                        } else {
-                            self.selectedItem(self.wkpList()[0].workplaceId);
-                        }
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
-                    });
                     
                     self.targetBtnText = data.targetBtnText;
                     
@@ -134,6 +124,20 @@ module kcp010.viewmodel {
             
             return dfd.promise();
         }
+        
+        public getWorkplaceBySid(): void {
+            let self = this;
+            service.getWorkplaceBySid().done(function(workplace: service.model.WorkplaceSearchData) {
+                if (workplace && workplace != null) {
+                    self.selectedItem(workplace.workplaceId);
+                } else {
+                    self.selectedItem(self.wkpList()[0].workplaceId);
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
+            });
+        }
+       
         
         /**
          * open dialog CDL008
@@ -343,6 +347,7 @@ interface JQuery {
     $.fn.ntsLoadListComponent = function(option: kcp010.viewmodel.ComponentOption): kcp010.viewmodel.ScreenModel {
         var modelkcp010 = new kcp010.viewmodel.ScreenModel();
         modelkcp010.init(this, option);
+        modelkcp010.getWorkplaceBySid();
         // Return.
         return modelkcp010;
     }
