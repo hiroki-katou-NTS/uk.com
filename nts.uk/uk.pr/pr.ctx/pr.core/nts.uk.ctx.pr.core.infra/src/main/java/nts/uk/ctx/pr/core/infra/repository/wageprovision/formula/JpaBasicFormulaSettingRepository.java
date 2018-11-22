@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.formula;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.formula;
 
 import java.util.Collections;
 import java.util.Optional;
