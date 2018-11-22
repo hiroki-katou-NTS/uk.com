@@ -1,18 +1,18 @@
-package nts.uk.ctx.pr.core.infra.repository.formula;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.formula;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.Formula;
+import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaRepository;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtFormula;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtFormulaHistory;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtFormulaHistoryPk;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtFormulaPk;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
@@ -24,6 +24,13 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.formulaPk.cid =:cid AND f.formulaPk.formulaCode =:formulaCode";
     private static final String SELECT_BY_COMPANY = SELECT_ALL_QUERY_STRING + "WHERE f.formulaPk.cid =:cid ORDER BY f.formulaPk.formulaCode";
     private static final String SELECT_FORMULA_HISTORY_BY_CODE = "SELECT f FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode ORDER BY f.startMonth DESC";
+    private static final String SELECT_BY_FORMULA_CDS = SELECT_ALL_QUERY_STRING + " WHERE  f.formulaPk.cid =:cid AND" +
+            " f.formulaPk.formulaCode IN :formulaCodes" +
+            " ORDER BY f.formulaPk.formulaCode ASC";
+
+    private static final String SELECT_ALL_HIS_QUERY_STRING = "SELECT f FROM QpbmtFormulaHist f";
+    private static final String SELECT_BY_YM = SELECT_ALL_HIS_QUERY_STRING + " WHERE  f.formulaHistPk.cid =:cid AND" +
+            " f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
 
     private static final String DELETE_FORMULA_HISTORY_BY_ID = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.historyID =:historyID";
     private static final String DELETE_FORMULA_HISTORY_BY_CODE = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode";
@@ -78,5 +85,23 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
     public void removeByFormulaCode(String formulaCode) {
         this.commandProxy().remove(new QpbmtFormula(new QpbmtFormulaPk(AppContexts.user().companyId(), formulaCode)));
         this.getEntityManager().createQuery(DELETE_FORMULA_HISTORY_BY_CODE).setParameter("cid", AppContexts.user().companyId()).setParameter("formulaCode", formulaCode).executeUpdate();
+    }
+
+    @Override
+    public List<Formula> getFormulaByCodes(String cid, List<String> formulaCodes) {
+        if (formulaCodes == null || formulaCodes.isEmpty()) return Collections.emptyList();
+        return this.queryProxy().query(SELECT_BY_FORMULA_CDS, QpbmtFormula.class)
+                .setParameter("cid", cid)
+                .setParameter("formulaCodes", formulaCodes)
+                .getList(QpbmtFormula::toDomain);
+    }
+
+    @Override
+    public List<FormulaHist> getFormulaHistByYearMonth(YearMonth yearMonth) {
+        String cid = AppContexts.user().companyId();
+        return QpbmtFormulaHist.toDomain(this.queryProxy().query(SELECT_BY_YM, QpbmtFormulaHist.class)
+                .setParameter("cid", cid)
+                .setParameter("yearMonth", yearMonth.v())
+                .getList());
     }
 }
