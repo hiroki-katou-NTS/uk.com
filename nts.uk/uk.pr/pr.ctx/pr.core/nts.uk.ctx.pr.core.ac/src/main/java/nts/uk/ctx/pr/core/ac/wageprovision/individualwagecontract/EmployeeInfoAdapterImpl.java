@@ -1,21 +1,25 @@
 package nts.uk.ctx.pr.core.ac.wageprovision.individualwagecontract;
 
-import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoAdapter;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoImport;
+//import nts.uk.query.pub.employee.EmployeeInformationPub;
+
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationQueryDtoImport;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
-public class EmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
-    @Inject
-    private SyEmployeePub syEmployeePub;
-
+public class EmployeeInfoAdapterImpl implements EmployeeInformationAdapter {
     @Override
-    public List<EmployeeInfoImport> getByListSid(List<String> sIds) {
-        return syEmployeePub.getByListSid(sIds).stream().map(x -> new EmployeeInfoImport(x.getSid(), x.getScd(), x.getBussinessName())).collect(Collectors.toList());
+    public List<EmployeeInformationImport> getEmployeeInfo(EmployeeInformationQueryDtoImport param) {
+        return null;
     }
+//    @Inject
+//    EmployeeInformationPub employeeInformationPub;
+//
+//    @Override
+//    public List<EmployeeInfoImport> getByListSid(List<String> sIds) {
+//        return syEmployeePub.getByListSid(sIds).stream().map(x -> new EmployeeInfoImport(x.getSid(), x.getScd(), x.getBussinessName())).collect(Collectors.toList());
+//    }
 }

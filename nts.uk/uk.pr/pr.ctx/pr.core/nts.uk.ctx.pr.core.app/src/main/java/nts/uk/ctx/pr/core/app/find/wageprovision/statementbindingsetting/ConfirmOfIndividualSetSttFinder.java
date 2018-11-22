@@ -1,6 +1,17 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationHisExportAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationHistoryExport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.AffDepartHistory;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.AffDepartHistoryAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.Department;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.EmploymentHisExport;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.IEmploymentHistoryAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryCategory;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryCategoryRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryClassHistory;
@@ -12,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -54,7 +66,7 @@ public class ConfirmOfIndividualSetSttFinder {
     private StateCorrelationHisPositionRepository mStateCorrelationHisPositionRepository;
 
     @Inject
-    private JobTitleInfoAdapter mJobTitleInfoAdapter;
+    private SyJobTitleAdapter mJobTitleInfoAdapter;
 
     @Inject
     private EmploySalaryClassHistoryRepository mEmploySalaryClassHistoryRepository;
@@ -78,25 +90,21 @@ public class ConfirmOfIndividualSetSttFinder {
     private static final int SALARY = 4;
 
 
-    public void indiTiedStatAcquiProcess(int type,String empID, String hisId, GeneralDate baseDate) {
+    public void indiTiedStatAcquiProcess(int type,String empID, String hisId, GeneralDate baseDate,EmployeeInformationQueryDtoImport param) {
         String cid = AppContexts.user().companyId();
-        /*return for I2_15*/
         Optional<StateUseUnitSetting> mStateUseUnitSetting = mStateUseUnitSettingRepository.getStateUseUnitSettingById(cid);
         if (mStateUseUnitSetting.get().getIndividualUse().value == SettingUseClassification.USE.value) {
             Optional<StateCorrelationHisIndividual> mStateCorrelationHisIndividual = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(empID, hisId);
             if (mStateCorrelationHisIndividual.isPresent()) {
-                /*return for I2_9 and I2_11*/
                 Optional<StateLinkSettingIndividual> mStateLinkSettingIndividual = mStateCorrelationHisIndividualRepository.getStateLinkSettingIndividualById(empID,mStateCorrelationHisIndividual.get().getHistory().get(0).identifier());
                 if (mStateLinkSettingIndividual.isPresent() && mStateLinkSettingIndividual.get().getBonusCode().isPresent() && mStateLinkSettingIndividual.get().getSalaryCode().isPresent()) {
                     return;
                 }
             }
-            getAcquireMasterLinkedStatement(type, empID,baseDate, hisId);
+            getAcquireMasterLinkedStatement(type, empID,baseDate, hisId,param);
         }
         Optional<StateCorrelationHisCompany> mSStateCorrelationHisCompany = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyByDate(cid, baseDate);
-        /*return for I2_9 and I2_11*/
         Optional<StateLinkSettingCompany> mStateLinkSettingCompany = mStateCorrelationHisCompanyRepository.getStateLinkSettingCompanyById(cid,mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
-        /*return for I2_10*/
         Optional<StatementLayout> mOptionalStatementLayout = mStatementLayoutRepository.getStatementLayoutById(cid, mStateLinkSettingCompany.get().getSalaryCode().get().v());
 
 
@@ -104,33 +112,25 @@ public class ConfirmOfIndividualSetSttFinder {
     }
 
     /*マスタ紐付け明細書取得*/ /*return for I2_14 */
-    private Optional<StateLinkSettingMaster> getAcquireMasterLinkedStatement(int type, String employeeId, GeneralDate baseDate, String hisId) {
+    private Optional<StateLinkSettingMaster> getAcquireMasterLinkedStatement(int type, String employeeId, GeneralDate baseDate, String hisId,EmployeeInformationQueryDtoImport param) {
         String cid = AppContexts.user().companyId();
         switch (type) {
             case DEPARMENT: {
-                /*Imported(給与)「所属部門履歴」を取得する*/
                 AffDepartHistory mAffDepartHistory = mAffDepartHistoryAdapter.getDepartmentByBaseDate(employeeId, baseDate).get();
-                /*ドメインモデル「明細書紐付け履歴（部門）」を取得する*/
                 mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentByDate(cid, baseDate);
-                /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/ /*return for I2_9 and I2_11 */
                 Optional<StateLinkSettingMaster> mStateLinkSettingMaster = mStateCorrelationHisDeparmentRepository.getStateLinkSettingMasterById(cid,hisId, mAffDepartHistory.getDepartmentCode());
                 if (!mStateLinkSettingMaster.isPresent()) {
                     return Optional.empty();
                 }
-                /*Imported(給与)「部門」を取得する */
                 Optional<Department> mDepartment = mDepartmentAdapter.getDepartmentByBaseDate(employeeId, baseDate);
                 if (!mDepartment.isPresent()) {
                     return Optional.empty();
                 }
-                /*階層コードを編集する*/
                 editDepartmentCode(mDepartment.get().getHierarchyCd());
-
-                /*Imported(給与)「部門」を取得する */
                 Optional<Department> mDepartmentUpper = mDepartmentAdapter.getDepartmentByDepartmentId(mDepartment.get().getDepartmentId());
                 if (!mDepartmentUpper.isPresent()) {
                     return Optional.empty();
                 }
-                /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
                 Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisDeparmentRepository.getStateLinkSettingMasterById(cid,hisId, mDepartmentUpper.get().getDepartmentId());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
@@ -139,11 +139,8 @@ public class ConfirmOfIndividualSetSttFinder {
 
             }
             case EMPLOYEE: {
-                /*Imported(給与)「雇用履歴」を取得する */
                 Optional<EmploymentHisExport> mEmploymentHisExport = mIEmploymentHistoryAdapter.getEmploymentHistory(employeeId, hisId);
-                /*ドメインモデル「明細書紐付け履歴（雇用）」を取得する*/
                 Optional<StateCorrelationHisEmployee> mStateCorrelationHisEmployee = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid, hisId);
-                /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
                 Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisEmployeeRepository.getStateLinkSettingMasterById(cid,hisId, mEmploymentHisExport.get().getEmploymentCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
@@ -152,11 +149,8 @@ public class ConfirmOfIndividualSetSttFinder {
 
             }
             case CLASSIFICATION: {
-                /*Imported(給与)「分類履歴」を取得する */
                 Optional<ClassificationHistoryExport> mEmploymentHisExport = mClassificationHisExportAdapter.getClassificationHisByBaseDate(employeeId);
-                /*ドメインモデル「明細書紐付け履歴（分類）」を取得する*/
                 Optional<StateCorrelationHisClassification> mStateCorrelationHisEmployee = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationById(cid, hisId);
-                /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
                 Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisClassificationRepository.getStateLinkSettingMasterById(cid,hisId, mEmploymentHisExport.get().getClassificationCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
@@ -165,11 +159,8 @@ public class ConfirmOfIndividualSetSttFinder {
 
             }
             case POSITION: {
-                /*Imported(給与)「職位履歴」を取得する */
-                Optional<JobTitleInfo> mJobTitleInfo = mJobTitleInfoAdapter.getJobTitleInfoByBaseDate(cid, baseDate);
-                /*ドメインモデル「明細書紐付け履歴（職位）」を取得する*/
+                List<JobTitle> mJobTitleInfo = mJobTitleInfoAdapter.findAll(cid, baseDate);
                 Optional<StateCorrelationHisPosition> mStateCorrelationHisPosition = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionById(cid, hisId);
-                /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
                 Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisPositionRepository.getStateLinkSettingMasterById(cid,hisId, mJobTitleInfo.get().getJobTitleCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
@@ -178,12 +169,9 @@ public class ConfirmOfIndividualSetSttFinder {
 
             }
             case SALARY: {
-                /*Imported(給与)「給与分類履歴」を取得する */
                 Optional<EmploySalaryClassHistory> mEmploySalaryClassHistory = mEmploySalaryClassHistoryRepository.getEmploySalaryClassHistoryById(employeeId, hisId);
                 Optional<EmploySalaryCategory> mEmploySalaryCategory = mEmploySalaryCategoryRepository.getEmploySalaryClassHistoryById(mEmploySalaryClassHistory.get().getHistory().get(0).identifier());
-                /*ドメインモデル「明細書紐付け履歴（給与分類）」を取得する*/
-                 Optional<StateCorrelationHisSalary> mStateCorrelationHisSalary = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
-                /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
+                Optional<StateCorrelationHisSalary> mStateCorrelationHisSalary = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
                 Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisSalaryRepository.getStateLinkSettingMasterById(cid,hisId, mEmploySalaryCategory.get().getSalaryClassCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();

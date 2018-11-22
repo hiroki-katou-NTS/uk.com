@@ -25,6 +25,21 @@ public class QpbmtEmpSalaCategory extends UkJpaEntity implements Serializable {
     public QpbmtEmpSalaCategoryPk empSalaCategoryPk;
 
     /**
+     * 開始年月
+     */
+    @Basic(optional = false)
+    @Column(name = "START_YEAR_MONTH")
+    public int startYearMonth;
+
+    /**
+     * 終了年月
+     */
+    @Basic(optional = false)
+    @Column(name = "END_YEAR_MONTH")
+    public int endYearMonth;
+
+
+    /**
      * 給与分類コード
      */
     @Basic(optional = false)
@@ -35,7 +50,6 @@ public class QpbmtEmpSalaCategory extends UkJpaEntity implements Serializable {
     protected Object getKey() {
         return empSalaCategoryPk;
     }
-
 
 
 }

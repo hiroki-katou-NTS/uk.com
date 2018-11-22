@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 
 @Stateless
 /**
@@ -25,6 +26,9 @@ public class StateCorrelationHisSalaryFinder {
 
     @Inject
     private StatementLayoutRepository statementLayoutFinder;
+
+    private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
+
 
     @Inject
     private SalaryClassificationInformationRepository salaryClassificationInformationRepository;
@@ -41,10 +45,7 @@ public class StateCorrelationHisSalaryFinder {
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){
         String cId = AppContexts.user().companyId();
         List<SalaryClassificationInformation> salaryClassificationInformation = salaryClassificationInformationRepository.getAllSalaryClassificationInformation(cId);
-        List<StatementLayout> statementLayout = statementLayoutFinder.getStatement(cId, startYearMonth);
-        List<StateLinkSettingMaster>  listStateLinkSettingMaster = finder.getStateLinkSettingMasterByHisId(cId,hisId);
-        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = listStateLinkSettingMaster.stream()
-                .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout)).collect(Collectors.toList());
+        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(hisId, startYearMonth);
         return salaryClassificationInformation.stream().map(i -> this.addCategoryName(i, listStateLinkSettingMasterDto)).collect(Collectors.toList());
     }
 

@@ -6,12 +6,14 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 
 @Stateless
 /**
@@ -29,7 +31,7 @@ public class StateCorrelationHisClassificationFinder {
         String cId = AppContexts.user().companyId();
         Optional<StateCorrelationHisClassification> hisClassification = classificationFinder.getStateCorrelationHisClassificationByCid(cId);
         if(!hisClassification.isPresent()) {
-            return null;
+            return Collections.emptyList();
         }
         return StateCorrelationHisClassificationDto.fromDomain(hisClassification.get());
     }
@@ -40,7 +42,6 @@ public class StateCorrelationHisClassificationFinder {
         return classificationFinder.getStateLinkSettingMasterByHisId(cId, hisId).stream()
                 .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout))
                 .collect(Collectors.toList());
-
     }
 
 
