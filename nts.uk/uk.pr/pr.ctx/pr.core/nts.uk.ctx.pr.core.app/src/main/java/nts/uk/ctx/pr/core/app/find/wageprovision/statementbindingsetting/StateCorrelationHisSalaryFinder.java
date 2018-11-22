@@ -25,8 +25,6 @@ public class StateCorrelationHisSalaryFinder {
     private StateCorrelationHisSalaryRepository finder;
 
     @Inject
-    private StatementLayoutRepository statementLayoutFinder;
-
     private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
 
 
@@ -45,7 +43,8 @@ public class StateCorrelationHisSalaryFinder {
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){
         String cId = AppContexts.user().companyId();
         List<SalaryClassificationInformation> salaryClassificationInformation = salaryClassificationInformationRepository.getAllSalaryClassificationInformation(cId);
-        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(hisId, startYearMonth);
+        List<StateLinkSettingMaster> listStateLinkSettingMaster =  finder.getStateLinkSettingMasterByHisId(cId, hisId);
+        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(startYearMonth, listStateLinkSettingMaster);
         return salaryClassificationInformation.stream().map(i -> this.addCategoryName(i, listStateLinkSettingMasterDto)).collect(Collectors.toList());
     }
 

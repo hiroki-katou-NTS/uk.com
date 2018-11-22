@@ -7,7 +7,6 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.Stat
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisCompanySettingCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisCompanyDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorrelationHisCompanyFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSettingCompanyFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StatementLayoutDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHistoryService;
 import nts.uk.shr.com.context.AppContexts;

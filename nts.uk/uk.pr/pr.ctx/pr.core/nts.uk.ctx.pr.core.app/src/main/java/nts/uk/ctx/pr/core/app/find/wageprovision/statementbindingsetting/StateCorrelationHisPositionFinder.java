@@ -32,18 +32,14 @@ public class StateCorrelationHisPositionFinder {
     public List<StateCorrelationHisPositionDto> getStateCorrelationHisPositionByCid() {
         String cId = AppContexts.user().companyId();
         Optional<StateCorrelationHisPosition> hisPosition = finder.getStateCorrelationHisPositionByCid(cId);
-        if (!hisPosition.isPresent()) {
-            Collections.emptyList();
-        }
-        return StateCorrelationHisPositionDto.fromDomain(hisPosition.get());
+        hisPosition.ifPresent(i -> StateCorrelationHisPositionDto.fromDomain(hisPosition.get()));
+        return Collections.emptyList();
     }
 
     public StateLinkSettingDateDto getDateBase(String hisId){
         String cId = AppContexts.user().companyId();
         Optional<StateLinkSettingDate>  stateLinkSettingDate = finder.getStateLinkSettingDateById(cId,hisId);
-        if(stateLinkSettingDate.isPresent()) {
-            return StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get());
-        }
+        stateLinkSettingDate.ifPresent(i -> StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get()) );
         return null;
     }
 
@@ -53,7 +49,8 @@ public class StateCorrelationHisPositionFinder {
         if(listJobTitle == null || listJobTitle.isEmpty()){
             return Collections.emptyList();
         }
-        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(hisId, startYearMonth) ;
+        List<StateLinkSettingMaster> listStateLinkSettingMaster = finder.getStateLinkSettingMasterByHisId(cId, hisId);
+        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(startYearMonth , listStateLinkSettingMaster) ;
         return listJobTitle.stream().map(i -> this.addCategoryName(i, listStateLinkSettingMasterDto)).collect(Collectors.toList());
     }
 

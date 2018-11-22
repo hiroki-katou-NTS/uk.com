@@ -159,7 +159,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
                 }
-                if(hisId == HIS_ID_TEMP) {
+                if(self.hisIdSelected() == HIS_ID_TEMP ) {
                     self.mode(model.MODE.NEW);
                 }
                 self.loadGird();
