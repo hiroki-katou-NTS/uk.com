@@ -17,14 +17,14 @@ module nts.uk.ui.action {
         });
         
          ui.viewModelApplied.add(function () {
-            if(!nts.uk.util.isNullOrUndefined(__viewContext.program.operationMode) 
-                && (__viewContext.program.operationMode == 1 || __viewContext.program.operationMode == 2)){
+            if(!nts.uk.util.isNullOrUndefined(__viewContext.program.operationSetting) 
+                && (__viewContext.program.operationSetting.state == 1 || __viewContext.program.operationSetting.state == 2)){
                 let operationInfo = $("<div>", { 'class': 'operation-info-container marquee', 'id': 'operation-info' }),
                     moving = $("<div>"), text = $("<label>"), text2 = $("<label>");
                 moving.append(text).append(text2);
                 operationInfo.append(moving).css({ right: ($("#manual").outerWidth() + 5) + "px" });
-                text.text(__viewContext.program.operationWarning);
-                text2.text(__viewContext.program.operationWarning);
+                text.text(__viewContext.program.operationSetting.message);
+                text2.text(__viewContext.program.operationSetting.message);
                 $("#pg-area").append(operationInfo);
                 
                 operationInfo.hover(
