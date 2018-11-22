@@ -25,14 +25,14 @@ public class StopByCompanyDto {
 	private String stopMessage;
 
 	/** 利用停止モード */
-	private Integer usageStopMode;
+	private Integer stopMode;
 
 	/** 停止予告のメッセージ */
 	private String usageStopMessage;
 
 	public static StopByCompanyDto fromDomain(StopByCompany domain) {
 		return new StopByCompanyDto(domain.getContractCd(), domain.getCompanyCd(), domain.getSystemStatus().value,
-				domain.getStopMessage().v(), domain.getUsageStopMode().value, domain.getUsageStopMessage().v());
+				domain.getStopMessage().v(), domain.getStopMode().value, domain.getUsageStopMessage().v());
 
 	}
 }

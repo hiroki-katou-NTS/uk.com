@@ -28,7 +28,7 @@ public class JpaStopBySystemRepository extends JpaRepository implements StopBySy
 
 	private SgwdtStopBySystem toEntity(StopBySystem domain) {
 		return new SgwdtStopBySystem(domain.getContractCd(), domain.getSystemStatus().value,
-				domain.getStopMessage().v(), domain.getUsageStopMode().value, domain.getUsageStopMessage().v());
+				domain.getStopMessage().v(), domain.getStopMode().value, domain.getUsageStopMessage().v());
 	}
 
 	@Override

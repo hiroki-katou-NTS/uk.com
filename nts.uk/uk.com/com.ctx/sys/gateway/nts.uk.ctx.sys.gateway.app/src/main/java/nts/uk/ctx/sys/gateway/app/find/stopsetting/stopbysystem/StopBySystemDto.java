@@ -28,7 +28,7 @@ public class StopBySystemDto {
 
 	public static StopBySystemDto fromDomain(StopBySystem domain) {
 		return new StopBySystemDto(domain.getContractCd(), domain.getSystemStatus().value, domain.getStopMessage().v(),
-				domain.getUsageStopMode().value, domain.getUsageStopMessage().v());
+				domain.getStopMode().value, domain.getUsageStopMessage().v());
 
 	}
 }

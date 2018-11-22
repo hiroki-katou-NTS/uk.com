@@ -27,7 +27,7 @@ public class StopByCompany extends AggregateRoot {
 	private StopMessage stopMessage;
 
 	/** 利用停止モード */
-	private UsageStopModeType usageStopMode;
+	private StopModeType stopMode;
 
 	/** 停止予告のメッセージ */
 	private StopMessage usageStopMessage;
@@ -35,7 +35,7 @@ public class StopByCompany extends AggregateRoot {
 	public static StopByCompany createFromJavaType(String contractCd, String companyCd, Integer systemStatus,
 			String stopMessage, Integer usageStopMode, String usageStopMessage) {
 		return new StopByCompany(contractCd, companyCd, EnumAdaptor.valueOf(systemStatus, SystemStatusType.class),
-				new StopMessage(stopMessage), EnumAdaptor.valueOf(usageStopMode, UsageStopModeType.class),
+				new StopMessage(stopMessage), EnumAdaptor.valueOf(usageStopMode, StopModeType.class),
 				new StopMessage(usageStopMessage));
 	}
 }

@@ -17,15 +17,16 @@ public class StopByCompanyCommand {
 	/** 会社コード */
 	private String companyCd;
 
-	/** 利用停止モード */
-	private Integer usageStopMode;
-
-	/** 利用停止のメッセージ */
-	private String usageStopMessage;
-
 	/** システム利用状態 */
 	private Integer systemStatus;
 
 	/** 停止予告のメッセージ */
 	private String stopMessage;
+
+	/** 利用停止モード */
+	private Integer stopMode;
+
+	/** 利用停止のメッセージ */
+	private String usageStopMessage;
+
 }

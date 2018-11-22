@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopMessage;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
-import nts.uk.ctx.sys.gateway.dom.stopbycompany.UsageStopModeType;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
 
 @Getter
 @Setter
@@ -26,15 +26,15 @@ public class StopBySystem extends AggregateRoot {
 	private StopMessage stopMessage;
 
 	/** 利用停止モード */
-	private UsageStopModeType usageStopMode;
+	private StopModeType stopMode;
 
 	/** 停止予告のメッセージ */
 	private StopMessage usageStopMessage;
 
 	public static StopBySystem createFromJavaType(String contractCd, Integer systemStatus, String stopMessage,
-			Integer usageStopMode, String usageStopMessage) {
+			Integer stopMode, String usageStopMessage) {
 		return new StopBySystem(contractCd, EnumAdaptor.valueOf(systemStatus, SystemStatusType.class),
-				new StopMessage(stopMessage), EnumAdaptor.valueOf(usageStopMode, UsageStopModeType.class),
+				new StopMessage(stopMessage), EnumAdaptor.valueOf(stopMode, StopModeType.class),
 				new StopMessage(usageStopMessage));
 	}
 

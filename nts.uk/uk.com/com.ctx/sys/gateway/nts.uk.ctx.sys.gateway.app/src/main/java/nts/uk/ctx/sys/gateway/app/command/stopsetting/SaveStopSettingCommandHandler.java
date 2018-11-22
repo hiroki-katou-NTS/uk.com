@@ -29,8 +29,8 @@ public class SaveStopSettingCommandHandler extends CommandHandler<SaveStopSettin
 			StopBySystemCommand systemCmd = cmd.getSystemCommand();
 			// 「システム全体」の場合
 			Optional<StopBySystem> systemOpt = this.systemRepo.findByKey(contractCd);
-			StopBySystem systemDomain = StopBySystem.createFromJavaType(contractCd, systemCmd.getUsageStopMode(),
-					systemCmd.getUsageStopMessage(), systemCmd.getSystemStatus(), systemCmd.getStopMessage());
+			StopBySystem systemDomain = StopBySystem.createFromJavaType(contractCd, systemCmd.getSystemStatus(),
+					systemCmd.getStopMessage(), systemCmd.getStopMode(), systemCmd.getUsageStopMessage());
 			// 対象レコードの存在を判別
 			if (systemOpt.isPresent()) {
 				// ドメインモデル「システム全体の利用停止の設定」にデータを更新する
@@ -46,8 +46,8 @@ public class SaveStopSettingCommandHandler extends CommandHandler<SaveStopSettin
 			// 「システム全体」の場合
 			Optional<StopByCompany> companyOpt = this.companyRepo.findByKey(contractCd, companyCd);
 			StopByCompany systemDomain = StopByCompany.createFromJavaType(contractCd, companyCd,
-					companyCmd.getUsageStopMode(), companyCmd.getUsageStopMessage(), companyCmd.getSystemStatus(),
-					companyCmd.getStopMessage());
+					companyCmd.getSystemStatus(), companyCmd.getStopMessage(), companyCmd.getStopMode(),
+					companyCmd.getUsageStopMessage());
 			// 対象レコードの存在を判別
 			if (companyOpt.isPresent()) {
 				// ドメインモデル「システム全体の利用停止の設定」にデータを更新する
