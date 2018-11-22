@@ -21,8 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_STATE_USE_UNIT_SET")
-public class QpbmtStateUseUnitSet extends UkJpaEntity implements Serializable
-{
+public class QpbmtStateUseUnitSet extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**

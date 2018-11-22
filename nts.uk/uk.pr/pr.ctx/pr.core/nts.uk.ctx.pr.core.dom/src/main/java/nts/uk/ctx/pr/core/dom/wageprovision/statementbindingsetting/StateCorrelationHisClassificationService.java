@@ -18,8 +18,6 @@ public class StateCorrelationHisClassificationService {
     @Inject
     private StateCorrelationHisClassificationRepository stateCorrelationHisClassificationRepository;
 
-    @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
 
     public void addHistoryClassification(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
         String cId = AppContexts.user().companyId();
@@ -30,14 +28,13 @@ public class StateCorrelationHisClassificationService {
             hisClassification = itemtoBeAdded.get();
         }
         hisClassification.add(yearMonthItem);
-        stateCorrelationHisClassificationRepository.add(cId, yearMonthItem);
         this.updateItemBefore(hisClassification, yearMonthItem, cId);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
-    public void updateHistoryClassification(List<StateLinkSettingMaster> stateLinkSettingMaster, String hisId){
-        stateLinkSettingMasterRepository.removeAll(hisId);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+    public void updateHistoryClassification(String hisId, List<StateLinkSettingMaster> stateLinkSettingMaster, YearMonth start, YearMonth end){
+        String cId = AppContexts.user().companyId();
+        stateCorrelationHisClassificationRepository.removeAll(cId,hisId);
+        stateCorrelationHisClassificationRepository.addAll(cId,stateLinkSettingMaster,start.v(),end.v());
     }
 
     private void updateItemBefore(StateCorrelationHisClassification stateCorrelationHisClassification, YearMonthHistoryItem item, String cId){

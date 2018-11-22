@@ -34,9 +34,6 @@ public class StateCorrelationHisCompanyWebService extends WebService {
     private StateCorrelationHistoryService mStateCorrelationHistoryService;
 
     @Inject
-    private StateLinkSettingCompanyFinder stateLinkSettingCompanyFinder;
-
-    @Inject
     private AddOrUpdateStateCorrelationHisCompanyCommandHandler addOrUpdateStateCorrelationHisCompanyCommandHandler;
 
     @POST
@@ -63,7 +60,7 @@ public class StateCorrelationHisCompanyWebService extends WebService {
     @Path("getStateLinkSettingCompanyById/{hisId}/{startYearMonth}")
     public StatementLayoutDto getStateLinkSettingCompanyById(@PathParam("hisId") String hisId, @PathParam("startYearMonth") int startYearMonth){
         String cid = AppContexts.user().companyId();
-        Optional<StatementLayoutDto> statementLayoutDto = stateLinkSettingCompanyFinder.getStateLinkSettingCompanyById(cid,hisId,startYearMonth);
+        Optional<StatementLayoutDto> statementLayoutDto = stateCorrelationHisCompanyFinder.getStateLinkSettingCompanyById(cid,hisId,startYearMonth);
         if(statementLayoutDto.isPresent()){
             return statementLayoutDto.get();
         }

@@ -9,6 +9,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 import java.util.Optional;
 
 @SuppressWarnings("Duplicates")
@@ -34,14 +35,6 @@ public class StateCorrelationHistoryService {
 
     private static final int MODE_UPDATE = 1 ;
 
-    @Inject
-    private StateLinkSettingCompanyRepository mStateLinkSettingCompanyRepository;
-    @Inject
-    private StateLinkSettingMasterRepository masterRepository;
-    @Inject
-    private StateLinkSettingDateRepository mStateLinkSettingDateRepository;
-    @Inject
-    private StateLinkSettingIndividualRepository mStateLinkSettingIndividualRepository;
     @Inject
     private StateCorrelationHisCompanyRepository mStateCorrelationHisCompanyRepository;
     @Inject
@@ -69,7 +62,8 @@ public class StateCorrelationHistoryService {
         }
         switch (type){
             case COMPANY : {
-                    mStateLinkSettingCompanyRepository.remove(hisId);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisCompanyRepository.remove(cid,hisId);
 //                    if (mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyById(cid).get().items().size() == 1) {
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -78,7 +72,8 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case EMPLOYEE : {
-                    masterRepository.remove(hisId,masterCode);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisEmployeeRepository.removeAll(cid,hisId);
 //                    if(mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -87,8 +82,10 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case DEPARMENT : {
-                    masterRepository.remove(hisId,masterCode);
-                    mStateLinkSettingDateRepository.remove(hisId);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisDeparmentRepository.removeAll(cid,hisId);
+                   // masterRepository.remove(hisId,masterCode);
+                    //mStateLinkSettingDateRepository.remove(hisId);
 //                    if(mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentById(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -97,7 +94,8 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case CLASSIFICATION : {
-                    masterRepository.remove(hisId,masterCode);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisClassificationRepository.removeAll(cid,hisId);
 //                    if(mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationByCid(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -106,8 +104,9 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case POSITION : {
-                    masterRepository.remove(hisId,masterCode);
-                    mStateLinkSettingDateRepository.remove(hisId);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisPositionRepository.removeAll(cid,hisId);
+                //mStateLinkSettingDateRepository.remove(hisId);
 //                    if(mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionByCid(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -119,7 +118,8 @@ public class StateCorrelationHistoryService {
 
             }
             case SALARY : {
-                    masterRepository.remove(hisId,masterCode);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisSalaryRepository.removeAll(cid,hisId);
 //                    if(mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByCid(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -128,7 +128,8 @@ public class StateCorrelationHistoryService {
                 break;
             }
             case INDIVIDUAL : {
-                    mStateLinkSettingIndividualRepository.remove(hisId);
+                historyDeletionProcessing(type, hisId, cid, employeeId);
+                mStateCorrelationHisIndividualRepository.remove(cid,hisId);
 //                    if(mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(cid).get().items().size() == 1){
 //                        historyDeletionProcessing(type, cid, hisId);
 //                        return;
@@ -139,7 +140,7 @@ public class StateCorrelationHistoryService {
             }
         }
 
-        historyDeletionProcessing(type, hisId, cid, employeeId);
+
     }
 
     private void historyDeletionProcessing(int type, String hisId, String cId, String employeeId) {
@@ -180,11 +181,11 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (stateCorreHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
+                    mStateCorrelationHisEmployeeRepository.removeAll(cId, hisId);
                     return;
                 }
                 stateCorreHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisEmployeeRepository.remove(cId, hisId);
+                mStateCorrelationHisEmployeeRepository.removeAll(cId, hisId);
                 if (stateCorreHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
                     stateCorreHis.get().exCorrectToRemove(lastestItem);
@@ -205,11 +206,11 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (stateCorreHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
+                    mStateCorrelationHisDeparmentRepository.removeAll(cId, hisId);
                     return;
                 }
                 stateCorreHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisDeparmentRepository.remove(cId, hisId);
+                mStateCorrelationHisDeparmentRepository.removeAll(cId, hisId);
                 if (stateCorreHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
                     stateCorreHis.get().exCorrectToRemove(lastestItem);
@@ -229,11 +230,11 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (stateCorreHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                    mStateCorrelationHisClassificationRepository.removeAll(cId, hisId);
                     return;
                 }
                 stateCorreHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisClassificationRepository.remove(cId, hisId);
+                mStateCorrelationHisClassificationRepository.removeAll(cId, hisId);
                 if (stateCorreHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
                     stateCorreHis.get().exCorrectToRemove(lastestItem);
@@ -254,11 +255,11 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (stateCorreHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisPositionRepository.remove(cId, hisId);
+                    mStateCorrelationHisPositionRepository.removeAll(cId, hisId);
                     return;
                 }
                 stateCorreHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisPositionRepository.remove(cId, hisId);
+                mStateCorrelationHisPositionRepository.removeAll(cId, hisId);
                 if (stateCorreHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
                     stateCorreHis.get().exCorrectToRemove(lastestItem);
@@ -278,11 +279,11 @@ public class StateCorrelationHistoryService {
                     return;
                 }
                 if (stateCorreHis.get().getHistory().size() == 1) {
-                    mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                    mStateCorrelationHisSalaryRepository.removeAll(cId, hisId);
                     return;
                 }
                 stateCorreHis.get().remove(itemToBeDelete.get());
-                mStateCorrelationHisSalaryRepository.remove(cId, hisId);
+                mStateCorrelationHisSalaryRepository.removeAll(cId, hisId);
                 if (stateCorreHis.get().getHistory().size() > 0) {
                     YearMonthHistoryItem lastestItem = stateCorreHis.get().getHistory().get(0);
                     stateCorreHis.get().exCorrectToRemove(lastestItem);

@@ -116,6 +116,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             }else if(self.mode() === model.MODE.UPDATE){
                 historyID = self.currentSelectedHis();
             }
+            let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             let listStateLinkSettingMaster: Array<IStateLinkSettingMaster> = [];
             self.convertToCommand(historyID,self.items(),listStateLinkSettingMaster);
             let data = {
@@ -123,8 +124,8 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 stateCorrelationHisEmployeeCommand:{
                     cid: '',
                     hisId: historyID,
-                    startYearMonth: self.startYearMonth(),
-                    endYearMonth: 999912
+                    startYearMonth : rs ? rs.startYearMonth : 0,
+                    endYearMonth:  self.mode() === model.MODE.NEW ? 999912 : rs.endYearMonth ,
                 },
                 mode: self.mode(),
             }

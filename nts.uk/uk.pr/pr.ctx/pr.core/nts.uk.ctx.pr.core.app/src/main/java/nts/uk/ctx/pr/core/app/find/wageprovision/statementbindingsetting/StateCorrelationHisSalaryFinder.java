@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 
 @Stateless
 /**
@@ -24,7 +25,10 @@ public class StateCorrelationHisSalaryFinder {
     private StateCorrelationHisSalaryRepository finder;
 
     @Inject
+    private StatementLayoutRepository statementLayoutFinder;
+
     private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
+
 
     @Inject
     private SalaryClassificationInformationRepository salaryClassificationInformationRepository;

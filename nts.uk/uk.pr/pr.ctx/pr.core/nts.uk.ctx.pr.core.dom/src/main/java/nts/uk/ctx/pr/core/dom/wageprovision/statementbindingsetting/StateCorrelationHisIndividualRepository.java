@@ -16,10 +16,15 @@ public interface StateCorrelationHisIndividualRepository {
 
     Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualByDate(String empId,GeneralDate date);
 
-    void add(String empId, YearMonthHistoryItem history);
+    Optional<StateLinkSettingIndividual> getStateLinkSettingIndividualById(String empId, String hisId);
 
-    void update(String empId, YearMonthHistoryItem history);
 
-    void remove(String empId, String hisId);
+    void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
+
+    void update(String cid, YearMonthHistoryItem history);
+
+    void update(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
+
+    void remove(String cid, String hisId);
 
 }

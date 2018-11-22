@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 
 @Stateless
 /**
@@ -31,9 +32,6 @@ public class StateCorrelationHisPositionFinder {
     @Inject
     private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
 
-    @Inject
-    private StateLinkSettingDateRepository stateLinkSettingDateFinder;
-
     public List<StateCorrelationHisPositionDto> getStateCorrelationHisPositionByCid() {
         String cId = AppContexts.user().companyId();
         Optional<StateCorrelationHisPosition> hisPosition = finder.getStateCorrelationHisPositionByCid(cId);
@@ -44,7 +42,8 @@ public class StateCorrelationHisPositionFinder {
     }
 
     public StateLinkSettingDateDto getDateBase(String hisId){
-        Optional<StateLinkSettingDate>  stateLinkSettingDate = stateLinkSettingDateFinder.getStateLinkSettingDateById(hisId);
+        String cId = AppContexts.user().companyId();
+        Optional<StateLinkSettingDate>  stateLinkSettingDate = finder.getStateLinkSettingDateById(cId,hisId);
         if(stateLinkSettingDate.isPresent()) {
             return StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get());
         }

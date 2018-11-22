@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisClassification;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisClassificationRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMasterRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 
 @Stateless
 /**
@@ -25,8 +25,7 @@ public class StateCorrelationHisClassificationFinder {
     private StateCorrelationHisClassificationRepository classificationFinder;
 
     @Inject
-    private StateLinkSettingMasterFinder stateLinkSettingMasterFinder;
-
+    private StatementLayoutRepository statementLayoutFinder;
 
     public List<StateCorrelationHisClassificationDto> getStateCorrelationHisClassificationByCid(){
         String cId = AppContexts.user().companyId();
@@ -38,7 +37,11 @@ public class StateCorrelationHisClassificationFinder {
     }
 
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){
-        return stateLinkSettingMasterFinder.getStateLinkSettingMaster(hisId, startYearMonth);
+        String cId = AppContexts.user().companyId();
+        List<StatementLayout> statementLayout = statementLayoutFinder.getStatement(cId, startYearMonth);
+        return classificationFinder.getStateLinkSettingMasterByHisId(cId, hisId).stream()
+                .map(i -> StateLinkSettingMasterDto.fromDomain(i, statementLayout))
+                .collect(Collectors.toList());
     }
 
 

@@ -7,8 +7,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisClassification;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisClassificationRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisClass;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisClassPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -21,8 +21,11 @@ public class JpaStateCorrelationHisClassificationRepository extends JpaRepositor
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisClass f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND  f.stateCorHisClassPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND  f.stateCorHisClassPk.hisId =:hisId AND f.stateCorHisClassPk.masterCode = :masterCode";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid ORDER BY f.startYearMonth";
-
+    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisClass f WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
+    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisClass f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
+    
     @Override
     public Optional<StateCorrelationHisClassification> getStateCorrelationHisClassificationById(String cid, String hisId){
         List<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisClass.class)
@@ -37,22 +40,65 @@ public class JpaStateCorrelationHisClassificationRepository extends JpaRepositor
         List<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisClass.class)
                 .setParameter("cid", cid)
                 .getList();
-        return this.toDomain(listStateCorHisClass);
+        if(listStateCorHisClass == null || listStateCorHisClass.isEmpty()){
+            return Optional.empty();
+        }
+
+        StateCorrelationHisClassification stateCorrelationHisClassification = new StateCorrelationHisClassification(cid,QpbmtStateCorHisClass.toDomainYearMonth(listStateCorHisClass));
+        return Optional.of(stateCorrelationHisClassification);
     }
 
     @Override
-    public void add(String cid, YearMonthHistoryItem history){
-        this.commandProxy().insert(QpbmtStateCorHisClass.toEntity(cid,history));
+    public List<StateLinkSettingMaster> getStateLinkSettingMasterByHisId(String cid, String hisId) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisClass.class)
+                .setParameter("cid", cid)
+                .setParameter("hisId", hisId)
+                .getList(item -> item.toDomain());
     }
 
     @Override
-    public void update(String cid, YearMonthHistoryItem history){
-        this.commandProxy().update(QpbmtStateCorHisClass.toEntity(cid,history));
+    public Optional<StateLinkSettingMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode) {
+        Optional<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_CID_HISID_MASTERCODE, QpbmtStateCorHisClass.class)
+                .setParameter("cid",cid)
+                .setParameter("hisId", hisId)
+                .setParameter("masterCode",masterCode)
+                .getSingle();
+
+        if(!listStateCorHisClass.isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(listStateCorHisClass.get().toDomain());
+    }
+
+
+    @Override
+    public void update(String cid, YearMonthHistoryItem history) {
+        this.getEntityManager().createQuery(UPDATE_BY_HISID)
+                .setParameter("startYearMonth",history.start().v())
+                .setParameter("endYearMonth",history.end().v())
+                .setParameter("cid",cid)
+                .setParameter("hisId",history.identifier())
+                .executeUpdate();
     }
 
     @Override
-    public void remove(String cid, String hisId){
-        this.commandProxy().remove(QpbmtStateCorHisClass.class, new QpbmtStateCorHisClassPk(cid, hisId));
+    public void updateAll(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth) {
+        this.commandProxy().updateAll(QpbmtStateCorHisClass.toEntity(cid, stateLinkSettingMasters, startYearMonth, endYearMonth));
+    }
+
+    @Override
+    public void addAll(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth) {
+        this.commandProxy().insertAll(QpbmtStateCorHisClass.toEntity(cid, stateLinkSettingMasters, startYearMonth, endYearMonth));
+    }
+
+
+    @Override
+    public void removeAll(String cid, String hisId) {
+        this.getEntityManager().createQuery(REMOVE_BY_HISID)
+                .setParameter("cid",cid)
+                .setParameter("hisId",hisId)
+                .executeUpdate();
     }
 
     private Optional<StateCorrelationHisClassification> toDomain(List<QpbmtStateCorHisClass> stateCorHisClass){

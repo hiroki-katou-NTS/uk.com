@@ -14,22 +14,15 @@ import java.util.Optional;
 public class StateCorrelationHisDeparmentService {
 
     @Inject
-    private StateLinkSettingDateRepository stateLinkSettingDateRepository;
-
-    @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
-
-    @Inject
     private StateCorrelationHisDeparmentRepository stateCorrelationHisDeparmentRepository;
 
     public void addOrUpdate(String cid, String hisId,YearMonth start, YearMonth end, int mode, StateLinkSettingDate stateLinkSettingDate, List<StateLinkSettingMaster> stateLinkSettingMaster){
         if(mode == RegisterMode.NEW.value){
-            stateLinkSettingDateRepository.add(stateLinkSettingDate);
-            stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
             this.addStateCorrelationHisDeparment(cid,hisId,start,end);
+            stateCorrelationHisDeparmentRepository.addAll(cid,stateLinkSettingMaster,start.v(),end.v(),stateLinkSettingDate.getDate());
         }else if(mode == RegisterMode.UPDATE.value){
-            stateLinkSettingMasterRepository.removeAll(hisId);
-            stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+            stateCorrelationHisDeparmentRepository.removeAll(cid,hisId);
+            stateCorrelationHisDeparmentRepository.addAll(cid,stateLinkSettingMaster,start.v(),end.v(),stateLinkSettingDate.getDate());
         }
     }
 
@@ -40,8 +33,8 @@ public class StateCorrelationHisDeparmentService {
         if(oStateCorrelationHisDeparment.isPresent()){
             stateCorrelationHisDeparment = oStateCorrelationHisDeparment.get();
         }
+
         stateCorrelationHisDeparment.add(yearMonthItem);
-        stateCorrelationHisDeparmentRepository.add(cid,yearMonthItem);
         this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisDeparment);
     }
 
@@ -50,6 +43,7 @@ public class StateCorrelationHisDeparmentService {
         if (!itemToBeUpdated.isPresent()){
             return;
         }
+
         stateCorrelationHisDeparmentRepository.update(cId, itemToBeUpdated.get());
     }
 }

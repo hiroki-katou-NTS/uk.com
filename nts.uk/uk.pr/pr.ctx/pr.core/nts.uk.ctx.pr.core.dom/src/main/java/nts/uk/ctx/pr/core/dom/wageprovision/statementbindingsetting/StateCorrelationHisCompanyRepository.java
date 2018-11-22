@@ -12,11 +12,15 @@ public interface StateCorrelationHisCompanyRepository {
 
     Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid);
 
+    Optional<StateLinkSettingCompany>  getStateLinkSettingCompanyById(String cid,String hisId);
+
     Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyByDate(String cid,GeneralDate baseDate);
 
-    void add(String cid, YearMonthHistoryItem history);
+    void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
 
     void update(String cid, YearMonthHistoryItem history);
+
+    void update(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
 
     void remove(String cid, String hisId);
 

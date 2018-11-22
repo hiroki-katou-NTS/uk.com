@@ -5,6 +5,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,12 +35,13 @@ public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLin
             stateCorrelationHisIndividualService.addHistoryIndividual(hisId, start, end, stateLinkSettingIndividual, command.getEmpId());
         } else {
             String hisId = command.getHisId();
+            YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,new YearMonthPeriod(start,end));
             stateLinkSettingIndividual = new StateLinkSettingIndividual(
                     hisId,
                     command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
                     command.getBonus() != null ? new StatementCode(command.getBonus()) : null
             );
-            stateCorrelationHisIndividualService.updateHistoryIndividual(stateLinkSettingIndividual);
+            stateCorrelationHisIndividualService.updateHistoryIndividual(history,stateLinkSettingIndividual);
         }
     }
 }

@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisDeparment;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisDeparmentRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingDate;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -27,6 +29,15 @@ public class StateCorrelationHisDeparmentFinder {
             stateCorrelationHisDeparmentDto = StateCorrelationHisDeparmentDto.fromDomain(cid,stateCorrelationHisDeparment.get());
         }
         return stateCorrelationHisDeparmentDto;
+    }
+
+    public StateLinkSettingDateDto getDateBase(String hisId){
+        String cId = AppContexts.user().companyId();
+        Optional<StateLinkSettingDate>  stateLinkSettingDate = finder.getStateLinkSettingDateById(cId,hisId);
+        if(stateLinkSettingDate.isPresent()) {
+            return StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get());
+        }
+        return null;
     }
 
 }

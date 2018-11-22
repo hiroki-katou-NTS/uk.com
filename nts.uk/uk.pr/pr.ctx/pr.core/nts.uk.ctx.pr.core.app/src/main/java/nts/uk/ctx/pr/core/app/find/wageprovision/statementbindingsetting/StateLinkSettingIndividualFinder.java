@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividualRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingIndividual;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingIndividualRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -19,17 +19,17 @@ import nts.uk.shr.com.context.AppContexts;
 public class StateLinkSettingIndividualFinder {
 
     @Inject
-    private StateLinkSettingIndividualRepository stateLinkSettingIndividual;
+    private StateCorrelationHisIndividualRepository stateCorrelationHisIndividualRepository;
 
     @Inject
     private StatementLayoutRepository statementLayout;
 
-    public StateLinkSettingIndividualDto  getStatementLinkingSetting(String empId, int start){
-        Optional<StateLinkSettingIndividual> statementLinkingSetting = stateLinkSettingIndividual.getStateLinkSettingIndividualById(empId);
+    public StateLinkSettingIndividualDto  getStatementLinkingSetting(String empId, String hisId, int start){
+        String cId = AppContexts.user().companyId();
+        Optional<StateLinkSettingIndividual> statementLinkingSetting = stateCorrelationHisIndividualRepository.getStateLinkSettingIndividualById(empId, hisId);
         if(!statementLinkingSetting.isPresent()) {
             return null;
         }
-        String cId = AppContexts.user().companyId();
         List<StatementLayout> listStatementLayout = statementLayout.getStatement(cId, start);
         return StateLinkSettingIndividualDto.fromDomain(statementLinkingSetting.get(), listStatementLayout);
     }

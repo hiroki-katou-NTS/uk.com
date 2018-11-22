@@ -8,7 +8,6 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -16,10 +15,6 @@ public class StateCorrelationHisIndividualService {
 
     @Inject
     private StateCorrelationHisIndividualRepository stateCorrelationHisIndividualRepository;
-
-    @Inject
-    private StateLinkSettingIndividualRepository stateLinkSettingIndividualRepository;
-
 
     public void addHistoryIndividual(String newHistID, YearMonth start, YearMonth end, StateLinkSettingIndividual stateLinkSettingIndividual, String empId){
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
@@ -29,12 +24,12 @@ public class StateCorrelationHisIndividualService {
             hisIndividual = itemtoBeAdded.get();
         }
         hisIndividual.add(yearMonthItem);
-        stateCorrelationHisIndividualRepository.add(empId, yearMonthItem);
-        stateLinkSettingIndividualRepository.add(stateLinkSettingIndividual);
+        stateCorrelationHisIndividualRepository.add(empId, yearMonthItem,stateLinkSettingIndividual.getSalaryCode().get().v(),stateLinkSettingIndividual.getBonusCode().get().v());
     }
 
-    public void updateHistoryIndividual(StateLinkSettingIndividual stateLinkSettingIndividual){
-        stateLinkSettingIndividualRepository.update(stateLinkSettingIndividual);
+    public void updateHistoryIndividual(YearMonthHistoryItem history,StateLinkSettingIndividual stateLinkSettingIndividual){
+        String cid = AppContexts.user().companyId();
+        stateCorrelationHisIndividualRepository.update(cid,history,stateLinkSettingIndividual.getSalaryCode().get().v(),stateLinkSettingIndividual.getBonusCode().get().v());
     }
 
     
