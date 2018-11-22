@@ -17,7 +17,7 @@ public class ElementAttributeCommand {
     /**
      * 固定の要素
      */
-    private String fixedElement;
+    private Integer fixedElement;
 
     /**
      * 任意追加の要素
