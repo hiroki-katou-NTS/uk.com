@@ -15,22 +15,14 @@ public class StringConstraint extends DataConstraint {
 	
 	private String regExpression;
 	
-	public StringConstraint(int column, StringCharType charType, int maxLenght, boolean fixed, String regExpression) {
+	public StringConstraint(int column, int maxLenght, String regExpression) {
 		super(column, ValidatorType.STRING);
-		this.charType = charType;
+		this.charType = StringCharType.ANY;
 		this.maxLenght = maxLenght;
-		this.fixed = fixed;
+		this.fixed = false;
 		this.regExpression = regExpression;
 	}
 
-	public StringConstraint(int column, StringCharType charType, int maxLenght, boolean fixed) {
-		super(column, ValidatorType.STRING);
-		this.charType = charType;
-		this.maxLenght = maxLenght;
-		this.fixed = fixed;
-		this.regExpression = "";
-	}
-	
 	public StringConstraint(int column, StringCharType charType, int maxLenght) {
 		super(column, ValidatorType.STRING);
 		this.charType = charType;
