@@ -103,7 +103,7 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
                         for (let i = 0; i < data.length; i++) {
                             for (let j = 0; j < data[i].period.length; j++) {
                                 array.push(new ItemModel(data[i].empId,data[i].perValCode, data[i].perValName,
-                                    format(getText("QMM039_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney + "¥"
+                                    format(getText("QMM039_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney
                                 ))
                             }
                         }

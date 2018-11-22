@@ -41,6 +41,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         listComponentOption: ComponentOption;
         tabindex: number;
         enable: KnockoutObservable<boolean>;
+        A7_8: KnockoutObservable<string> = ko.observable(null);
+
         //_____CCG001________
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
@@ -318,6 +320,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             }
             service.getSalIndAmountHis(dto).done(function (data) {
                 if (data != null) {
+                    self.A7_8('～');
                     self.isRegistrationable(true);
                     self.currencyeditor.enable(true);
                     self.mode(MODE.NORMAL);
@@ -329,7 +332,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                                 data.period[i].historyID,
                                 data.period[i].periodStartYm,
                                 data.period[i].periodEndYm,
-                                format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney + "¥"))
+                                format(getText("QMM039_18"), self.formatYM(data.period[i].periodStartYm), self.formatYM(data.period[i].periodEndYm)), data.salIndAmountList[i].amountOfMoney))
                     }
 
                     self.itemList(array);
@@ -341,6 +344,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         self.focusStartPage = false;
                     }
                 } else {
+                    self.A7_8(null);
                     self.itemList([]);
                     self.periodStartYM(null);
                     self.periodEndYM(null);
@@ -448,7 +452,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedEmployeeCode([]);
             for (let i = 0; i < dataList.length; i++) {
                 let employeeSearch = dataList[i];
-                let employee: UnitModel = {
+                let employee = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
                     workplaceName: employeeSearch.workplaceName,
@@ -475,32 +479,43 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 params = {
                     historyID: self.itemList()[0].historyID,
                     period: {
+                        baseYm: self.itemList()[0].periodStartYm,
                         periodStartYm: self.itemList()[0].periodStartYm,
                         periodEndYm: self.itemList()[0].periodEndYm
                     }
-                }
+                };
                 $('#A5_3').focus();
                 self.openModalB(params);
             } else {
-                service.processYearFromEmp(self.individualPriceCode()).done(function (data) {
-                    if (data) {
-                        params = {
-                            period: {
-                                periodStartYm: data,
-                                periodEndYm: 999912
-                            }
-                        }
+                service.getEmploymentCode(self.selectedItem()).done((dto) => {
+                    if (dto) {
+                        service.processYearFromEmp(dto.employmentCode).done((data) => {
+                            params = {
+                                period: {
+                                    baseYm: data,
+                                    periodStartYm: null,
+                                    periodEndYm: 999912
+                                }
+                            };
+                            self.openModalB(params);
+                        }).fail((err) => {
+                            nts.uk.ui.dialog.alertError(err.message);
+                        });
                     } else {
                         params = {
                             period: {
+                                baseYm: self.formatYMToInt(moment().format("YYYY/MM")),
                                 periodStartYm: null,
                                 periodEndYm: 999912
                             }
-                        }
+                        };
+                        self.openModalB(params);
                     }
-                    self.openModalB(params);
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(err.message);
                 });
             }
+
         }
 
         openModalB(params) {
@@ -511,7 +526,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 if (params) {
                     self.selectedHisCode(0);
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
-                    self.periodEndYM(params.periodEndYm);
+                    self.A7_8('～');
+                    self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
 
                     if (params.takeoverMethod == 1) {
                         self.currencyeditor.value('');
@@ -525,7 +541,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         params.periodStartYm,
                         params.periodEndYm,
                         format(getText("QMM039_18"), nts.uk.time.parseYearMonth(params.periodStartYm).format(), nts.uk.time.parseYearMonth(params.periodEndYm).format()),
-                        self.currencyeditor.value() + "¥"
+                        self.currencyeditor.value()
                     ));
                     if (array.length > 1) {
 
@@ -638,7 +654,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         yearMonthHistoryItem: [{
                             historyId: historyId,
                             startMonth: self.formatYMToInt(self.periodStartYM()),
-                            endMonth: self.periodEndYM(),
+                            endMonth: self.formatYMToInt(self.periodEndYM()),
                         }],
                         salBonusCate: self.salaryBonusCategory()
                     },

@@ -1,8 +1,12 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice;
 
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryRepository;
+<<<<<<< HEAD
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.EmployeeInfoAdapter;
 import nts.uk.shr.com.context.AppContexts;
+=======
+import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInfoAdapter;
+>>>>>>> pj/pr/team_G/all_in_one
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

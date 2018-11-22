@@ -135,7 +135,7 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
 
 
             if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm ) {
-                nts.uk.ui.dialog.info({messageId: "Msg_107"});
+                nts.uk.ui.dialog.info({messageId: "Msg_127"});
                 return;
             }
 

@@ -99,7 +99,7 @@
                         </div>
                         <!--A5_1 履歴選択パネル-->
                         <div class="panel cf"
-                             data-bind="ntsPanel:{width: '270px', height: '215px', direction: 'none', visible: true}">
+                             data-bind="ntsPanel:{width: '270px', direction: 'none', visible: true}">
                             <div class="row margin-bottom-12">
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
@@ -122,7 +122,7 @@
                                     multiple: false,
                                     value: selectedHisCode,
                                     enable: true,
-                                    rows: 6,
+                                    rows: 5,
                                     columns: columns
                                     }"/>
                         </div>
@@ -166,7 +166,7 @@
                                 <!--A7_7 履歴開始年月-->
                                 <span class="label" data-bind="text: periodStartYM"/>
                                 <!--A7_8 ～-->
-                                <span class="label">#{i18n.getText('QMM039_24')}</span>
+                                <span class="label" data-bind="text: A7_8"/>
                                 <!--A7_9 履歴開始年月-->
                                 <span class="label" data-bind="text: periodEndYM"/>
                             </div>
@@ -188,10 +188,7 @@
                                             enable: enable,
                                             readonly: readonly,
                                             immediate: false,
-                                            option: {
-                                                grouplength: 3,
-                                                currencyformat: 'JPY'
-                                                }
+                                            option: {grouplength: 3}
                                             }"/>
                                 </div>
                             </div>
