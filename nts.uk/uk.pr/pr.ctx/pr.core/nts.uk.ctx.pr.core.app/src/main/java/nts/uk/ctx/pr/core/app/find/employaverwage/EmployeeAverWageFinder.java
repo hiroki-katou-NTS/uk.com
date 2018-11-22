@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.app.find.employaverwage;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.app.command.employaverwage.EmployeeComand;
-import nts.uk.ctx.pr.core.dom.adapter.employee.EmployeeInfoAverAdapter;
-import nts.uk.ctx.pr.core.dom.adapter.employee.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInfoAverAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWage;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWageRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.*;

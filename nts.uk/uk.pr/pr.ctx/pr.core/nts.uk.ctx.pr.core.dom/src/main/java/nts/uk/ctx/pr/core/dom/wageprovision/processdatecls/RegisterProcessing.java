@@ -169,7 +169,7 @@ public class RegisterProcessing {
         int currTreatYear = currentDay.yearMonth().v();
         for (SetDaySupport setDaySupport : setDaySupportItems) {
             if (setDaySupport.getPaymentDate().afterOrEquals(currentDay)) {
-                currTreatYear = setDaySupport.getPaymentDate().yearMonth().v();
+                currTreatYear = setDaySupport.getEmpExtraRefeDate().yearMonth().v();
                 break;
             }
         }
