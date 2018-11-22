@@ -1,9 +1,15 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 import java.util.List;
 
+@Value
+@Getter
+@Setter
 public class EmployeeInformationQueryDtoImport {
     /** The employee ids. */
     List<String> employeeIds; // 社員一覧

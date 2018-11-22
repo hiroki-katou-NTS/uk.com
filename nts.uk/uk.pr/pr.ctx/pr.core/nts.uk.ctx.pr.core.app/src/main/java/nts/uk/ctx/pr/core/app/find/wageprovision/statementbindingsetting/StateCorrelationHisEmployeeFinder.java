@@ -1,10 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistDto;
-
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementNameLayoutHistDto;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SysEmploymentAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployee;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployeeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
@@ -15,14 +13,13 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistR
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 
 /**

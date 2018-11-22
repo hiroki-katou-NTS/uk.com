@@ -1,18 +1,17 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-
+import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class EmploymentHisExport {
-    private String employeeId;
-    public List<EmploymentCodeAndPeriod> lstEmpCodeandPeriod;
+public class EmploymentHisOfEmployee {
+    private String sId;
+    private GeneralDate startDate;
+    private GeneralDate endDate;
+    private String employmentCD;
 }
