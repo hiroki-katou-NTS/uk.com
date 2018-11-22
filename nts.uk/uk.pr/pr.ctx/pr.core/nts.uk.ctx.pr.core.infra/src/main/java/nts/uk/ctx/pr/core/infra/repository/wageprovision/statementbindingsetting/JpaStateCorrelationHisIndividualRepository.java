@@ -5,6 +5,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividual;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividualRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingIndividual;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisIndi;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisIndiPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -21,6 +22,8 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisIndi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId AND  f.stateCorHisIndiPk.hisId =:hisId ";
     private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId  ORDER BY f.startYearMonth DESC";
+    private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisIndi f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisComPk.cid =:cid AND f.stateCorHisComPk.hisId =:hisId";
+
 
     @Override
     public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualById(String empId, String hisId){
@@ -32,6 +35,14 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     }
 
     @Override
+    public Optional<StateLinkSettingIndividual> getStateLinkSettingIndividualById(String empId, String hisId){
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisIndi.class)
+                .setParameter("hisId", hisId)
+                .getSingle(c->c.toDomain());
+    }
+
+
+    @Override
     public Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualByEmpId(String empId) {
         List<QpbmtStateCorHisIndi> listStateCorHisIndi = this.queryProxy().query(SELECT_BY_EMP_ID, QpbmtStateCorHisIndi.class)
                 .setParameter("empId", empId)
@@ -40,18 +51,28 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     }
 
     @Override
-    public void add(String empId, YearMonthHistoryItem history){
-        this.commandProxy().insert(QpbmtStateCorHisIndi.toEntity(empId,history));
+    public void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode){
+        this.commandProxy().insert(QpbmtStateCorHisIndi.toEntity(cid,history,salaryCode,bonusCode));
     }
 
     @Override
-    public void update(String empId, YearMonthHistoryItem history){
-        this.commandProxy().update(QpbmtStateCorHisIndi.toEntity(empId,history));
+    public void update(String cid, YearMonthHistoryItem history){
+        this.getEntityManager().createQuery(UPDATE_BY_HISID)
+                .setParameter("startYearMonth",history.start().v())
+                .setParameter("endYearMonth",history.end().v())
+                .setParameter("cid",cid)
+                .setParameter("hisId",history.identifier())
+                .executeUpdate();
     }
 
     @Override
-    public void remove(String empId, String hisId){
-        this.commandProxy().remove(QpbmtStateCorHisIndi.class, new QpbmtStateCorHisIndiPk(empId, hisId));
+    public void update(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode){
+        this.commandProxy().update(QpbmtStateCorHisIndi.toEntity(cid, history,salaryCode,bonusCode));
+    }
+
+    @Override
+    public void remove(String cid, String hisId){
+        this.commandProxy().remove(QpbmtStateCorHisIndi.class, new QpbmtStateCorHisIndiPk(cid, hisId));
     }
 
     private Optional<StateCorrelationHisIndividual> toDomain(List<QpbmtStateCorHisIndi> stateCorHisIndi){

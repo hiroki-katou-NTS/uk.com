@@ -22,8 +22,6 @@ public class ConfirmOfIndividualSetSttFinder {
     @Inject
     private StateCorrelationHisIndividualRepository mStateCorrelationHisIndividualRepository;
 
-    @Inject
-    private StateLinkSettingIndividualRepository mStateLinkSettingIndividualRepository;
 
     @Inject
     private AffDepartHistoryAdapter mAffDepartHistoryAdapter;
@@ -32,16 +30,10 @@ public class ConfirmOfIndividualSetSttFinder {
     private StateCorrelationHisDeparmentRepository mStateCorrelationHisDeparmentRepository;
 
     @Inject
-    private StateLinkSettingMasterRepository mStateLinkSettingMasterRepository;
-
-    @Inject
     private DepartmentAdapter mDepartmentAdapter;
 
     @Inject
     private StateCorrelationHisCompanyRepository mStateCorrelationHisCompanyRepository;
-
-    @Inject
-    private StateLinkSettingCompanyRepository mStateLinkSettingCompanyRepository;
 
     @Inject
     private StatementLayoutRepository mStatementLayoutRepository;
@@ -94,7 +86,7 @@ public class ConfirmOfIndividualSetSttFinder {
             Optional<StateCorrelationHisIndividual> mStateCorrelationHisIndividual = mStateCorrelationHisIndividualRepository.getStateCorrelationHisIndividualById(empID, hisId);
             if (mStateCorrelationHisIndividual.isPresent()) {
                 /*return for I2_9 and I2_11*/
-                Optional<StateLinkSettingIndividual> mStateLinkSettingIndividual = mStateLinkSettingIndividualRepository.getStateLinkSettingIndividualById(mStateCorrelationHisIndividual.get().getHistory().get(0).identifier());
+                Optional<StateLinkSettingIndividual> mStateLinkSettingIndividual = mStateCorrelationHisIndividualRepository.getStateLinkSettingIndividualById(empID,mStateCorrelationHisIndividual.get().getHistory().get(0).identifier());
                 if (mStateLinkSettingIndividual.isPresent() && mStateLinkSettingIndividual.get().getBonusCode().isPresent() && mStateLinkSettingIndividual.get().getSalaryCode().isPresent()) {
                     return;
                 }
@@ -103,7 +95,7 @@ public class ConfirmOfIndividualSetSttFinder {
         }
         Optional<StateCorrelationHisCompany> mSStateCorrelationHisCompany = mStateCorrelationHisCompanyRepository.getStateCorrelationHisCompanyByDate(cid, baseDate);
         /*return for I2_9 and I2_11*/
-        Optional<StateLinkSettingCompany> mStateLinkSettingCompany = mStateLinkSettingCompanyRepository.getStateLinkSettingCompanyById(mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
+        Optional<StateLinkSettingCompany> mStateLinkSettingCompany = mStateCorrelationHisCompanyRepository.getStateLinkSettingCompanyById(cid,mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
         /*return for I2_10*/
         Optional<StatementLayout> mOptionalStatementLayout = mStatementLayoutRepository.getStatementLayoutById(cid, mStateLinkSettingCompany.get().getSalaryCode().get().v());
 
@@ -121,7 +113,7 @@ public class ConfirmOfIndividualSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（部門）」を取得する*/
                 mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentByDate(cid, baseDate);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/ /*return for I2_9 and I2_11 */
-                Optional<StateLinkSettingMaster> mStateLinkSettingMaster = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mAffDepartHistory.getDepartmentCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMaster = mStateCorrelationHisDeparmentRepository.getStateLinkSettingMasterById(cid,hisId, mAffDepartHistory.getDepartmentCode());
                 if (!mStateLinkSettingMaster.isPresent()) {
                     return Optional.empty();
                 }
@@ -139,7 +131,7 @@ public class ConfirmOfIndividualSetSttFinder {
                     return Optional.empty();
                 }
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mDepartmentUpper.get().getDepartmentId());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisDeparmentRepository.getStateLinkSettingMasterById(cid,hisId, mDepartmentUpper.get().getDepartmentId());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
                 }
@@ -152,7 +144,7 @@ public class ConfirmOfIndividualSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（雇用）」を取得する*/
                 Optional<StateCorrelationHisEmployee> mStateCorrelationHisEmployee = mStateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mEmploymentHisExport.get().getEmploymentCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisEmployeeRepository.getStateLinkSettingMasterById(cid,hisId, mEmploymentHisExport.get().getEmploymentCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
                 }
@@ -165,7 +157,7 @@ public class ConfirmOfIndividualSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（分類）」を取得する*/
                 Optional<StateCorrelationHisClassification> mStateCorrelationHisEmployee = mStateCorrelationHisClassificationRepository.getStateCorrelationHisClassificationById(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mEmploymentHisExport.get().getClassificationCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisClassificationRepository.getStateLinkSettingMasterById(cid,hisId, mEmploymentHisExport.get().getClassificationCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
                 }
@@ -178,7 +170,7 @@ public class ConfirmOfIndividualSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（職位）」を取得する*/
                 Optional<StateCorrelationHisPosition> mStateCorrelationHisPosition = mStateCorrelationHisPositionRepository.getStateCorrelationHisPositionById(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mJobTitleInfo.get().getJobTitleCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisPositionRepository.getStateLinkSettingMasterById(cid,hisId, mJobTitleInfo.get().getJobTitleCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
                 }
@@ -192,7 +184,7 @@ public class ConfirmOfIndividualSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（給与分類）」を取得する*/
                  Optional<StateCorrelationHisSalary> mStateCorrelationHisSalary = mStateCorrelationHisSalaryRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mEmploySalaryCategory.get().getSalaryClassCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMasterVer2 = mStateCorrelationHisSalaryRepository.getStateLinkSettingMasterById(cid,hisId, mEmploySalaryCategory.get().getSalaryClassCode());
                 if(!mStateLinkSettingMasterVer2.isPresent()){
                     return Optional.empty();
                 }

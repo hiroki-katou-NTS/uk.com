@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtStateCorHisIndiPk implements Serializable
-{
+public class QpbmtStateCorHisIndiPk implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**

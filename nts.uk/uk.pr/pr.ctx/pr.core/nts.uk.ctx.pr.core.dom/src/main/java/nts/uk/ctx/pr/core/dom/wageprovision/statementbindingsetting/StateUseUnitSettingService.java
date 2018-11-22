@@ -16,14 +16,12 @@ public class StateUseUnitSettingService {
     private StateUseUnitSettingRepository mStateUseUnitSettingRepository;
     @Inject
     private StateCorrelationHisIndividualRepository mStateCorrelationHisIndividualRepository;
-    @Inject
-    private StateLinkSettingIndividualRepository mStateLinkSettingIndividualRepository;
+
     @Inject
     private AffDepartHistoryAdapter mAffDepartHistoryAdapter;
     @Inject
     private StateCorrelationHisDeparmentRepository mStateCorrelationHisDeparmentRepository;
-    @Inject
-    private StateLinkSettingMasterRepository mStateLinkSettingMasterRepository;
+
     @Inject
     private DepartmentAdapter mDepartmentAdapter;
 
@@ -83,7 +81,7 @@ public class StateUseUnitSettingService {
             case DEPARMENT: {
                 AffDepartHistory mAffDepartHistory = mAffDepartHistoryAdapter.getDepartmentByBaseDate(employeeId, baseDate).get();
                // mStateCorrelationHisDeparmentRepository.getStateCorrelationHisDeparmentByDate(cid, baseHistory);
-                Optional<StateLinkSettingMaster> mStateLinkSettingMaster = mStateLinkSettingMasterRepository.getStateLinkSettingMasterById(hisId, mAffDepartHistory.getDepartmentCode());
+                Optional<StateLinkSettingMaster> mStateLinkSettingMaster = mStateCorrelationHisDeparmentRepository.getStateLinkSettingMasterById(cid,hisId, mAffDepartHistory.getDepartmentCode());
                 if (!mStateLinkSettingMaster.isPresent()) {
                     return;
                 }

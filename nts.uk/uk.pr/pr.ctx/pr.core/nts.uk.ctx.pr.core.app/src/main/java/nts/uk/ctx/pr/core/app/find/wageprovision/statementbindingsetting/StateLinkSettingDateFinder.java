@@ -5,8 +5,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisPositionRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingDate;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingDateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -16,10 +17,11 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSet
 public class StateLinkSettingDateFinder {
 
     @Inject
-    private StateLinkSettingDateRepository finder;
+    private StateCorrelationHisPositionRepository finder;
 
     public Optional<StateLinkSettingDateDto> getStateLinkSettingDateById(String hisId){
-        Optional<StateLinkSettingDate>  stateLinkSettingDate = finder.getStateLinkSettingDateById(hisId);
+        String cId = AppContexts.user().companyId();
+        Optional<StateLinkSettingDate>  stateLinkSettingDate = finder.getStateLinkSettingDateById(cId,hisId);
         if(stateLinkSettingDate.isPresent()){
             return Optional.of(StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get()));
         }

@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,10 +14,16 @@ public interface StateCorrelationHisSalaryRepository {
 
     Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryByKey(String cid,String hisId);
 
-    void add(String cid, YearMonthHistoryItem history);
+    List<StateLinkSettingMaster> getStateLinkSettingMasterByHisId(String cId, String hisId);
 
-    void update(String cid, YearMonthHistoryItem history);
+    Optional<StateLinkSettingMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
-    void remove(String cid, String hisId);
+    void update (String cid, YearMonthHistoryItem history);
+
+    void updateAll(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth);
+
+    void addAll(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth );
+
+    void removeAll(String cid, String hisId);
 
 }

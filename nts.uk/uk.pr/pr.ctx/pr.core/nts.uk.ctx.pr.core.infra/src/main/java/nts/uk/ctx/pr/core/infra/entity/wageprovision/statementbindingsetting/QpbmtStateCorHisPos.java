@@ -1,7 +1,10 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,8 +14,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisPosition;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -22,8 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_STATE_COR_HIS_POS")
-public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable
-{
+public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -31,6 +36,7 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtStateCorHisPosPk stateCorHisPosPk;
+
     
     /**
     * 開始年月
@@ -45,7 +51,28 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "END_YEAR_MONTH")
     public int endYearMonth;
-    
+
+    /**
+     * マスタ基準日
+     */
+    @Basic(optional = false)
+    @Column(name = "BASE_DATE")
+    public GeneralDate baseDate;
+
+    /**
+     * 給与明細書
+     */
+    @Basic(optional = true)
+    @Column(name = "SALARY")
+    public String salaryCode;
+
+    /**
+     * 賞与明細書
+     */
+    @Basic(optional = true)
+    @Column(name = "BONUS")
+    public String bonusCode;
+
     @Override
     protected Object getKey()
     {
@@ -53,10 +80,46 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable
     }
 
     public StateCorrelationHisPosition toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisPosition(this.stateCorHisPosPk.cid, history);
-    }
-    public static QpbmtStateCorHisPos toEntity(String cid,  YearMonthHistoryItem history) {
-        return new QpbmtStateCorHisPos(new QpbmtStateCorHisPosPk(cid, history.identifier()),history.start().v(), history.end().v());
+        return new StateCorrelationHisPosition(this.stateCorHisPosPk.cid,history);
     }
 
+    public StateLinkSettingMaster toDomain() {
+        return new StateLinkSettingMaster(this.stateCorHisPosPk.hisId,
+                new MasterCode(this.stateCorHisPosPk.masterCode),
+                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
+                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
+    }
+    public static Optional<StateLinkSettingDate> getBaseDate(List<QpbmtStateCorHisPos> entity){
+        if(entity == null || entity.isEmpty())
+            return Optional.empty();
+        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(entity.get(0).stateCorHisPosPk.hisId,entity.get(0).baseDate);
+        return Optional.of(stateLinkSettingDate);
+    }
+    public static List<YearMonthHistoryItem> toDomainYearMonth(List<QpbmtStateCorHisPos> entity){
+
+        List<YearMonthHistoryItem> history = new ArrayList<>();
+        if(entity == null || entity.isEmpty())
+            return history;
+
+        return entity.stream().map(item ->{
+            return new YearMonthHistoryItem(
+                    item.stateCorHisPosPk.hisId,
+                    new YearMonthPeriod(new YearMonth(item.startYearMonth),new YearMonth(item.endYearMonth)));
+        }).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+    }
+
+    public static List<QpbmtStateCorHisPos> toEntity(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate) {
+        List<QpbmtStateCorHisPos> listStateCorHisPos = new ArrayList<>();
+        if(stateLinkSettingMasters == null || stateLinkSettingMasters.isEmpty()){
+            return listStateCorHisPos;
+        }
+        listStateCorHisPos = stateLinkSettingMasters.stream().map(item -> new QpbmtStateCorHisPos(new QpbmtStateCorHisPosPk(cid,item.getHistoryID(),item.getMasterCode().v()),
+                startYearMonth,
+                endYearMonth,
+                baseDate,
+                item.getSalaryCode().isPresent() ? item.getSalaryCode().get().v() : null,
+                item.getBonusCode().isPresent() ? item.getBonusCode().get().v() : null))
+                .collect(Collectors.toList());
+        return listStateCorHisPos;
+    }
 }

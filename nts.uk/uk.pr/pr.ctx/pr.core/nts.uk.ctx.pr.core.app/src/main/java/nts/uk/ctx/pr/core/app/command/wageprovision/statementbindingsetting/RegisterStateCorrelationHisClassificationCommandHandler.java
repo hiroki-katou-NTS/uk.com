@@ -50,7 +50,7 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
                             i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
                             }).collect(Collectors.toList());
             }
-            stateCorrelationHisClassificationService.updateHistoryClassification(listStateLinkSettingMaster, hisId);
+            stateCorrelationHisClassificationService.updateHistoryClassification(hisId,listStateLinkSettingMaster,start,end);
         }
     }
 }

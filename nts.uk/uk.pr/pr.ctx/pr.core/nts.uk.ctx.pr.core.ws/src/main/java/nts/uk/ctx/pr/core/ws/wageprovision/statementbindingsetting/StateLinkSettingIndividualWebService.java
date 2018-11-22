@@ -41,9 +41,9 @@ public class StateLinkSettingIndividualWebService extends WebService {
     }
 
     @POST
-    @Path("getStateLinkSettingMasterIndividual/{hisId}/{start}")
-    public StateLinkSettingIndividualDto getStatementLinkingSetting(@PathParam("hisId") String hisId, @PathParam("start") int start){
-        return stateLinkSettingIndividualFinder.getStatementLinkingSetting(hisId, start);
+    @Path("getStateLinkSettingMasterIndividual/{empId}/{hisId}/{start}")
+    public StateLinkSettingIndividualDto getStatementLinkingSetting(@PathParam("empId") String empId, @PathParam("hisId") String hisId, @PathParam("start") int start){
+        return stateLinkSettingIndividualFinder.getStatementLinkingSetting(empId, hisId, start);
     }
 
     @POST

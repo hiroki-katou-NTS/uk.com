@@ -17,9 +17,6 @@ public class StateCorrelationHisSalaryService {
     @Inject
     private StateCorrelationHisSalaryRepository stateCorrelationHisSalaryRepository;
 
-    @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
-
     public void addHistorySalary(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
         String cId = AppContexts.user().companyId();
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
@@ -29,14 +26,14 @@ public class StateCorrelationHisSalaryService {
             hisSalary = itemtoBeAdded.get();
         }
         hisSalary.add(yearMonthItem);
-        stateCorrelationHisSalaryRepository.add(cId, yearMonthItem);
+        stateCorrelationHisSalaryRepository.addAll(cId, stateLinkSettingMaster,start.v(), end.v());
         this.updateItemBefore(hisSalary, yearMonthItem, cId);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
     }
 
-    public void updateHistorySalary(List<StateLinkSettingMaster> stateLinkSettingMaster, String hisId){
-        stateLinkSettingMasterRepository.removeAll(hisId);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+    public void updateHistorySalary(String hisId, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster){
+        String cId = AppContexts.user().companyId();
+        stateCorrelationHisSalaryRepository.removeAll(cId,hisId);
+        stateCorrelationHisSalaryRepository.addAll(cId, stateLinkSettingMaster,start.v(), end.v());
     }
 
     private void updateItemBefore(StateCorrelationHisSalary stateCorrelationHisSalary, YearMonthHistoryItem item, String cId){

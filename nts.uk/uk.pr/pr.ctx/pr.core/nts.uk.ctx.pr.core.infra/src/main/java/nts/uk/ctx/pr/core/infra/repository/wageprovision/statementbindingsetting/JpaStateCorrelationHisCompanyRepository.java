@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisCompany;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisCompanyRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompany;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisCom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisComPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -21,7 +22,9 @@ public class JpaStateCorrelationHisCompanyRepository extends JpaRepository imple
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisCom f";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid ORDER BY f.endYearMonth DESC";
+    private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND f.stateCorHisComPk.hisId =:hisId";
     private static final String SELECT_BY_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND f.startYearMonth <=:basedate AND f.endYearMonth >=:basedate";
+    private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisCom f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisComPk.cid =:cid AND f.stateCorHisComPk.hisId =:hisId";
 
     @Override
     public Optional<StateCorrelationHisCompany> getStateCorrelationHisCompanyById(String cid) {
@@ -29,6 +32,14 @@ public class JpaStateCorrelationHisCompanyRepository extends JpaRepository imple
                 .setParameter("cid", cid)
                 .getList();
         return this.toDomain(listStateCorHisCom);
+    }
+
+    @Override
+    public Optional<StateLinkSettingCompany> getStateLinkSettingCompanyById(String cid,String hisId){
+        return this.queryProxy().query(SELECT_BY_HISID, QpbmtStateCorHisCom.class)
+                .setParameter("cid",cid)
+                .setParameter("hisId", hisId)
+                .getSingle(c->c.toDomain());
     }
 
     @Override
@@ -41,13 +52,23 @@ public class JpaStateCorrelationHisCompanyRepository extends JpaRepository imple
     }
 
     @Override
-    public void add(String cid, YearMonthHistoryItem history){
-        this.commandProxy().insert(QpbmtStateCorHisCom.toEntity(cid,history));
+    public void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode){
+        this.commandProxy().insert(QpbmtStateCorHisCom.toEntity(cid,history,salaryCode,bonusCode));
     }
 
     @Override
     public void update(String cid, YearMonthHistoryItem history){
-        this.commandProxy().update(QpbmtStateCorHisCom.toEntity(cid, history));
+        this.getEntityManager().createQuery(UPDATE_BY_HISID)
+                .setParameter("startYearMonth",history.start().v())
+                .setParameter("endYearMonth",history.end().v())
+                .setParameter("cid",cid)
+                .setParameter("hisId",history.identifier())
+                .executeUpdate();
+    }
+
+    @Override
+    public void update(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode){
+        this.commandProxy().update(QpbmtStateCorHisCom.toEntity(cid, history,salaryCode,bonusCode));
     }
 
     @Override

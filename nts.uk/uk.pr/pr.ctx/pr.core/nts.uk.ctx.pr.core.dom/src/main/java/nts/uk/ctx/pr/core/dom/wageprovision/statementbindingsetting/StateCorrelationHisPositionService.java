@@ -18,11 +18,6 @@ public class StateCorrelationHisPositionService {
     @Inject
     private StateCorrelationHisPositionRepository stateCorrelationHisPositionRepository;
 
-    @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
-
-    @Inject
-    private StateLinkSettingDateRepository stateLinkSettingDateRepository;
 
     public void addHistoryPosition(String newHistID, YearMonth start, YearMonth end, List<StateLinkSettingMaster> stateLinkSettingMaster, StateLinkSettingDate baseDate){
         String cId = AppContexts.user().companyId();
@@ -33,15 +28,14 @@ public class StateCorrelationHisPositionService {
             hisPosition = itemtoBeAdded.get();
         }
         hisPosition.add(yearMonthItem);
-        stateCorrelationHisPositionRepository.add(cId, yearMonthItem);
         this.updateItemBefore(hisPosition, yearMonthItem, cId);
-        stateLinkSettingDateRepository.add(baseDate);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+        stateCorrelationHisPositionRepository.addAll(cId, stateLinkSettingMaster,start.v(), end.v(),baseDate.getDate());
     }
 
-    public void updateHistoryPosition(List<StateLinkSettingMaster> stateLinkSettingMaster, String hisId){
-        stateLinkSettingMasterRepository.removeAll(hisId);
-        stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+    public void updateHistoryPosition(String hisId, List<StateLinkSettingMaster> stateLinkSettingMaster,  YearMonth start, YearMonth end, StateLinkSettingDate baseDate){
+        String cId = AppContexts.user().companyId();
+        stateCorrelationHisPositionRepository.removeAll(cId,hisId);
+        stateCorrelationHisPositionRepository.addAll(cId, stateLinkSettingMaster,start.v(), end.v(),baseDate.getDate());
     }
 
     private void updateItemBefore(StateCorrelationHisPosition stateCorrelationHisPosition, YearMonthHistoryItem item, String cId){

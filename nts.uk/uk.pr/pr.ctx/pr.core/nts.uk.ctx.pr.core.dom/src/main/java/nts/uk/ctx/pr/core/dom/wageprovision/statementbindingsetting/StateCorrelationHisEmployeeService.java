@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
-
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -17,16 +16,14 @@ public class StateCorrelationHisEmployeeService {
     @Inject
     private StateCorrelationHisEmployeeRepository stateCorrelationHisEmployeeRepository;
 
-    @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
 
     public void addOrUpdate(String cid, String hisId,YearMonth start, YearMonth end, int mode, List<StateLinkSettingMaster> stateLinkSettingMaster){
         if(mode == RegisterMode.NEW.value){
-            stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
             this.addStateCorrelationHisEmployee(cid,hisId,start,end);
+            stateCorrelationHisEmployeeRepository.addAll(cid,stateLinkSettingMaster,start.v(), end.v());
         }else if(mode == RegisterMode.UPDATE.value){
-            stateLinkSettingMasterRepository.removeAll(hisId);
-            stateLinkSettingMasterRepository.addAll(stateLinkSettingMaster);
+            stateCorrelationHisEmployeeRepository.removeAll(cid,hisId);
+            stateCorrelationHisEmployeeRepository.addAll(cid,stateLinkSettingMaster,start.v(), end.v());
         }
     }
 
@@ -38,7 +35,6 @@ public class StateCorrelationHisEmployeeService {
             stateCorrelationHisEmployee = oStateCorrelationHisEmployee.get();
         }
         stateCorrelationHisEmployee.add(yearMonthItem);
-        stateCorrelationHisEmployeeRepository.add(cid,yearMonthItem);
         this.updateItemBefore(cid,yearMonthItem,stateCorrelationHisEmployee);
     }
 

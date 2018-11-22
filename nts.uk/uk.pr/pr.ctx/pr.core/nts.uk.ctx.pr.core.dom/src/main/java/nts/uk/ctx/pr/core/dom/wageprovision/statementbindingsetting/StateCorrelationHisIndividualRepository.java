@@ -13,10 +13,14 @@ public interface StateCorrelationHisIndividualRepository {
 
     Optional<StateCorrelationHisIndividual> getStateCorrelationHisIndividualByEmpId(String empId);
 
-    void add(String empId, YearMonthHistoryItem history);
+    Optional<StateLinkSettingIndividual> getStateLinkSettingIndividualById(String empId, String hisId);
 
-    void update(String empId, YearMonthHistoryItem history);
+    void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
 
-    void remove(String empId, String hisId);
+    void update(String cid, YearMonthHistoryItem history);
+
+    void update(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
+
+    void remove(String cid, String hisId);
 
 }

@@ -8,7 +8,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SysEmploymentAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployee;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployeeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMasterRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
@@ -32,13 +31,11 @@ import javax.inject.Inject;
 public class StateCorrelationHisEmployeeFinder {
 
     @Inject
-    private StateCorrelationHisEmployeeRepository finder;
+    private StateCorrelationHisEmployeeRepository stateCorrelationHisEmployeeRepository;
 
     @Inject
     private SysEmploymentAdapter sysEmploymentAdapter;
 
-    @Inject
-    private StateLinkSettingMasterRepository stateLinkSettingMasterRepository;
 
     @Inject
     private StatementLayoutRepository statementLayoutRepository;
@@ -48,7 +45,7 @@ public class StateCorrelationHisEmployeeFinder {
 
     public List<StateCorrelationHisEmployeeDto> getStateCorrelationHisEmployeeById(String cid){
         List<StateCorrelationHisEmployeeDto> stateCorrelationHisEmployeeDto = new ArrayList<>();
-        Optional<StateCorrelationHisEmployee> stateCorrelationHisEmployee = finder.getStateCorrelationHisEmployeeById(cid);
+        Optional<StateCorrelationHisEmployee> stateCorrelationHisEmployee = stateCorrelationHisEmployeeRepository.getStateCorrelationHisEmployeeById(cid);
         if(stateCorrelationHisEmployee.isPresent()){
             stateCorrelationHisEmployeeDto = StateCorrelationHisEmployeeDto.fromDomain(cid,stateCorrelationHisEmployee.get());
         }
@@ -61,7 +58,7 @@ public class StateCorrelationHisEmployeeFinder {
         if(listEmployee == null || listEmployee.isEmpty()){
             return stateCorrelationHisEmployeeSettingDto;
         }
-        List<StateLinkSettingMaster> listStateLinkSettingMaster = stateLinkSettingMasterRepository.getStateLinkSettingMasterByHisId(hisId);
+        List<StateLinkSettingMaster> listStateLinkSettingMaster = stateCorrelationHisEmployeeRepository.getStateLinkSettingMasterByHisId(cid,hisId);
         List<StatementNameLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
         if(listStateLinkSettingMaster.size() > 0){
             stateCorrelationHisEmployeeSettingDto = listEmployee.stream().map(item ->{
@@ -69,20 +66,28 @@ public class StateCorrelationHisEmployeeFinder {
                 String salaryLayoutName = null;
                 String bonusCode = null;
                 String bonusLayoutName = null;
-                StateLinkSettingMaster stateLinkSettingMaster = listStateLinkSettingMaster.stream().filter(o -> o.getMasterCode().v().equals(item.getCode())).findFirst().get();
-                Optional<StatementNameLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().equals(stateLinkSettingMaster.getSalaryCode().get().v())).findFirst();
-                if(salaryLayout.isPresent()){
-                    salaryCode = salaryLayout.get().getStatementCode();
-                    salaryLayoutName = salaryLayout.get().getStatementName();
+                Optional<StateLinkSettingMaster> oStateLinkSettingMaster = listStateLinkSettingMaster.stream().filter(o -> o.getMasterCode().v().equals(item.getCode())).findFirst();
+                if(oStateLinkSettingMaster.isPresent()){
+                    StateLinkSettingMaster stateLinkSettingMaster = oStateLinkSettingMaster.get();
+
+                    if(stateLinkSettingMaster.getSalaryCode().isPresent()){
+                        Optional<StatementNameLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().equals(stateLinkSettingMaster.getSalaryCode().get().v())).findFirst();
+                        if(salaryLayout.isPresent()){
+                            salaryCode = salaryLayout.get().getStatementCode();
+                            salaryLayoutName = salaryLayout.get().getStatementName();
+                        }
+                    }
+
+                    if(stateLinkSettingMaster.getBonusCode().isPresent()){
+                        Optional<StatementNameLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().equals(stateLinkSettingMaster.getBonusCode().get().v())).findFirst();
+                        if(bonusLayout.isPresent()){
+                            bonusCode = bonusLayout.get().getStatementCode();
+                            bonusLayoutName = bonusLayout.get().getStatementName();
+                        }
+                    }
                 }
 
-                Optional<StatementNameLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().equals(stateLinkSettingMaster.getBonusCode().get().v())).findFirst();
-                if(bonusLayout.isPresent()){
-                    bonusCode = bonusLayout.get().getStatementCode();
-                    bonusLayoutName = bonusLayout.get().getStatementName();
-                }
-
-                return new StateCorrelationHisEmployeeSettingDto(item.getCode(),item.getName(),stateLinkSettingMaster.getHistoryID(),stateLinkSettingMaster.getMasterCode().v(),salaryCode,salaryLayoutName,bonusCode,bonusLayoutName);
+                return new StateCorrelationHisEmployeeSettingDto(item.getCode(),item.getName(),hisId,item.getCode(),salaryCode,salaryLayoutName,bonusCode,bonusLayoutName);
             }).sorted(Comparator.comparing(StateCorrelationHisEmployeeSettingDto::getCode)).collect(Collectors.toList());
         }else{
             stateCorrelationHisEmployeeSettingDto = listEmployee.stream().map(item -> new StateCorrelationHisEmployeeSettingDto(item.getCode(),item.getName(),hisId,null,null,null,null,null)).sorted(Comparator.comparing(StateCorrelationHisEmployeeSettingDto::getCode)).collect(Collectors.toList());
