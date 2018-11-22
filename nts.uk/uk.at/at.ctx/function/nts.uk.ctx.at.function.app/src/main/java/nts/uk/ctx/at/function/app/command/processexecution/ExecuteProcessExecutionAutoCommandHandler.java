@@ -1865,6 +1865,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			calStartDate = closurePeriod.start().addMonths(1);
 			calEndDate = closurePeriod.end().addMonths(1);
 			break;
+		default:
+			break;
 		}
 		DailyCreatAndCalOutput dailyCreatAndCalOutput = new DailyCreatAndCalOutput();
 		dailyCreatAndCalOutput.setDailyCreationPeriod(new DatePeriod(crtStartDate, crtEndDate));

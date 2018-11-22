@@ -137,6 +137,8 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		case DATE:
 			dateValue = domain.getDataState().getDateValue();
 			break;
+		default:
+			break;
 		}
 		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
@@ -156,6 +158,8 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			break;
 		case DATE:
 			entity.dateVal = domain.getDataState().getDateValue();
+			break;
+		default:
 			break;
 		}
 	}
