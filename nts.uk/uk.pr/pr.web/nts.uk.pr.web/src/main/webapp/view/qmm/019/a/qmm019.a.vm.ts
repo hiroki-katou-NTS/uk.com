@@ -1,3 +1,5 @@
+import defaults = require("lodash/defaults");
+
 module nts.uk.pr.view.qmm019.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
@@ -18,6 +20,9 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import YearMonthHistory = nts.uk.pr.view.qmm019.share.model.YearMonthHistory;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import _viewModel = nts.uk.ui._viewModel;
+    import StatementPrintAtr = nts.uk.pr.view.qmm019.share.model.StatementPrintAtr;
+    import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
 
     export class ScreenModel {
 
@@ -25,92 +30,20 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         currentHistoryId: KnockoutObservable<string>;
         currentStatementLayoutCode: KnockoutObservable<string>;
         statementLayoutHistData: KnockoutObservable<StatementLayoutHistData>;
-        headers: any;
-        columns: KnockoutObservableArray<any>;
 
         constructor() {
             let self = this;
 
-            self.statementLayoutList = ko.observableArray([
-                new StatementLayout({
-                    statementCode: "1",
-                    statementName: "1",
-                    history: [
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "a"
-                        },
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "b"
-                        },
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "c"
-                        },
-                    ]
-                }),
-                new StatementLayout({
-                    statementCode: "2",
-                    statementName: "2",
-                    history: [
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "d"
-                        },
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "e"
-                        },
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "f"
-                        },
-                    ]
-                }),
-                new StatementLayout({
-                    statementCode: "3",
-                    statementName: "3",
-                    history: [
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "g"
-                        },
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "h"
-                        },
-                        {
-                            startMonth: "startMonth",
-                            endMonth: "endMonth",
-                            historyId: "j"
-                        },
-                    ]
-                })
-            ]);
-
+            self.statementLayoutList = ko.observableArray([]);
             self.currentHistoryId = ko.observable(null);
             self.currentStatementLayoutCode = ko.observable(null);
             self.statementLayoutHistData = ko.observable(null);
-            self.headers = ko.observableArray(["Item Value Header","Item Text Header"]);
-
-            this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'nodeText', width: 100 }
-            ]);
 
             self.currentHistoryId.subscribe(x => {
                 if(x && (x != "")) {
                     let data: YearMonthHistory;
 
-                    for(let statementLayout: StatementLayout in self.statementLayoutList()) {
+                    for(let statementLayout: StatementLayout of self.statementLayoutList()) {
                         let mapData = _.filter(statementLayout.history, function(o) {
                             return x == o.historyId;
                         });
@@ -245,10 +178,14 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         historyId: string;
         startMonth: KnockoutObservable<number>;
         endMonth: KnockoutObservable<number>;
-        statementLayoutSet: StatementLayoutSet;
+        statementLayoutSet: KnockoutObservable<StatementLayoutSet>;
 
         // mode of screen
         checkCreate: KnockoutObservable<boolean>;
+
+        // not submit
+        startMonthText: KnockoutObservable<string>;
+        endMonthText: KnockoutObservable<string>;
 
         constructor(data: IStatementLayoutHistData) {
             let self = this;
@@ -260,15 +197,21 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.startMonth = ko.observable(data.startMonth);
                 self.endMonth = ko.observable(data.endMonth);
                 self.statementLayoutSet = ko.observable(new StatementLayoutSet(data.statementLayoutSet));
+
                 self.checkCreate = ko.observable(false);
+                self.startMonthText = ko.observable(nts.uk.time.parseYearMonth(data.startMonth).format());
+                self.endMonthText = ko.observable(nts.uk.time.parseYearMonth(data.endMonth).format());
             } else {
                 self.statementCode = null;
                 self.statementName = ko.observable(null);
                 self.historyId = null;
                 self.startMonth = ko.observable(null);
                 self.endMonth = ko.observable(null);
-                self.statementLayoutSet = ko.observable(null);
+                self.statementLayoutSet = ko.observable(new StatementLayoutSet(null));
+
                 self.checkCreate = ko.observable(true);
+                self.startMonthText = ko.observable(null);
+                self.endMonthText = ko.observable(null);
             }
 
             nts.uk.ui.errors.clearAll();
@@ -278,7 +221,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     class StatementLayoutSet {
         histId: string;
         layoutPattern: KnockoutObservable<number>;
-        listSettingByCtg: Array<SettingByCtg> ;
+        listSettingByCtg: KnockoutObservableArray<SettingByCtg>;
 
         constructor(data: IStatementLayoutSet) {
             let self = this;
@@ -286,7 +229,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             if(data) {
                 self.histId = data.histId;
                 self.layoutPattern = ko.observable(data.layoutPattern);
-                self.listSettingByCtg = ko.observableArray(data.listSettingByCtg.map(i => new SettingByCtg(i)));
+                self.listSettingByCtg = ko.observableArray(data.listSettingByCtg.map(i => new SettingByCtg(i, self)));
             } else {
                 self.histId = null;
                 self.layoutPattern = ko.observable(null);
@@ -298,17 +241,57 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     class SettingByCtg {
         ctgAtr: number;
         listLineByLineSet: KnockoutObservableArray<LineByLineSetting>;
+        parent: StatementLayoutSet;
 
-        constructor(data: ISettingByCtg) {
+        constructor(data: ISettingByCtg, parent: StatementLayoutSet) {
             let self = this;
 
             if(data) {
                 self.ctgAtr = data.ctgAtr;
-                self.listLineByLineSet = ko.observableArray(data.listLineByLineSet.map(i => new LineByLineSetting(i)));
+                self.listLineByLineSet = ko.observableArray(data.listLineByLineSet.map(i => new LineByLineSetting(i, null, self)));
             } else {
                 self.ctgAtr = null;
                 self.listLineByLineSet = ko.observableArray([]);
             }
+
+            self.parent = parent;
+        }
+
+        public addLine(): void {
+            let self = this;
+            let totalLine = 0;
+            let printLineInCtg = 0;
+            let noPrintLineInCtg = 0;
+
+            for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
+                totalLine += settingByCtg.listLineByLineSet().length;
+            }
+
+            for(let lineByLineSetting: LineByLineSetting of self.listLineByLineSet()) {
+                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                    printLineInCtg++;
+                } else {
+                    noPrintLineInCtg++;
+                }
+            }
+
+            setShared("QMM019_A_TO_J_PARAMS", {
+                layoutPattern: self.parent.layoutPattern(),
+                totalLine: totalLine,
+                ctgAtr: self.ctgAtr,
+                printLineInCtg: printLineInCtg,
+                noPrintLineInCtg: noPrintLineInCtg
+            });
+
+            nts.uk.ui.windows.sub.modal('../j/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_J_TO_A_PARAMS");
+
+                if(params && params.isRegistered) {
+                    self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
+                }
+
+                //TODO $("#C3_8").focus();
+            });
         }
     }
 
@@ -316,19 +299,71 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         printSet: KnockoutObservable<number>;
         lineNumber: KnockoutObservable<number>;
         listSetByItem: KnockoutObservableArray<SettingByItem>;
+        parent: SettingByCtg;
 
-        constructor(data: ILineByLineSetting) {
+        constructor(data: ILineByLineSetting, newPrintSet: number, parent: SettingByCtg) {
             let self = this;
+            let listFullItem: Array<ISettingByItem>;
 
             if(data) {
                 self.printSet = ko.observable(data.printSet);
                 self.lineNumber = ko.observable(data.lineNumber);
-                self.listSetByItem = ko.observableArray(data.listSetByItem.map(i => new SettingByItem(i)));
+                listFullItem = data.listSetByItem;
             } else {
-                self.printSet = ko.observable(null);
+                self.printSet = ko.observable(newPrintSet);
                 self.lineNumber = ko.observable(null);
-                self.listSetByItem = ko.observableArray([]);
+                listFullItem = [];
             }
+
+            self.parent = parent;
+
+            self.listSetByItem = ko.observableArray([]);
+            for(let i = 1; i <= 9; i++) {
+                let itemInPosition:Array<ISettingByItem> = listFullItem.filter(item => item.itemPosition == i);
+                self.listSetByItem.push(itemInPosition.length > 0 ? new SettingByItem(itemInPosition[0], self) : new SettingByItem(null, self));
+            }
+        }
+
+        public editLine(): void {
+            let self = this;
+            let totalLine = 0;
+            let printLineInCtg = 0;
+            let noPrintLineInCtg = 0;
+
+            for(let settingByCtg: SettingByCtg of self.parent.parent.listSettingByCtg()) {
+                totalLine += settingByCtg.listLineByLineSet().length;
+            }
+
+            for(let lineByLineSetting: LineByLineSetting of self.parent.listLineByLineSet()) {
+                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                    printLineInCtg++;
+                } else {
+                    noPrintLineInCtg++;
+                }
+            }
+
+            setShared("QMM019_A_TO_K_PARAMS", {
+                layoutPattern: self.parent.parent.layoutPattern(),
+                totalLine: totalLine,
+                ctgAtr: self.parent.ctgAtr,
+                printLineInCtg: printLineInCtg,
+                noPrintLineInCtg: noPrintLineInCtg,
+                printSet: self.printSet()
+            });
+
+            nts.uk.ui.windows.sub.modal('../k/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_K_TO_A_PARAMS");
+
+                if(params && params.isRegistered) {
+                    if((params.printSet == StatementPrintAtr.PRINT) || (params.printSet == StatementPrintAtr.DO_NOT_PRINT)) {
+                        self.printSet(params.printSet);
+                    } else {
+                        self.parent.listLineByLineSet.remove(self);
+                    }
+                }
+
+                //TODO $("#C3_8").focus();
+            });
         }
     }
 
@@ -338,8 +373,9 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         shortName: KnockoutObservable<string>;
         paymentItemDetailSet: IPaymentItemDetail;
         deductionItemDetailSet: IDeductionItemDetail;
+        parent: LineByLineSetting;
 
-        constructor(data: ISettingByItem) {
+        constructor(data: ISettingByItem, parent: LineByLineSetting) {
             let self = this;
 
             if(data) {
@@ -349,11 +385,47 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.paymentItemDetailSet = data.paymentItemDetailSet;
                 self.deductionItemDetailSet = data.deductionItemDetailSet;
             } else {
-                self.itemPosition = ko.observable(null);
+                self.itemPosition = ko.observable("+");
                 self.itemId = ko.observable(null);
                 self.shortName = ko.observable(null);
                 self.paymentItemDetailSet = null;
                 self.deductionItemDetailSet = null;
+            }
+
+            self.parent = parent;
+        }
+
+        public openSetting(): void {
+            let self = this;
+
+            switch (self.parent.parent.ctgAtr) {
+                case CategoryAtr.PAYMENT_ITEM: {
+                    nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+
+                    });
+                    break;
+                }
+                case CategoryAtr.DEDUCTION_ITEM: {
+                    nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
+
+                    });
+                    break;
+                }
+                case CategoryAtr.ATTEND_ITEM: {
+                    nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
+
+                    });
+                    break;
+                }
+                case CategoryAtr.REPORT_ITEM: {
+                    nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
+
+                    });
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         }
     }

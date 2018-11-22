@@ -4,6 +4,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
     import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
     import block = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
 
@@ -20,6 +21,8 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
         statementName: KnockoutObservable<string>;
         startDate: KnockoutObservable<number>;
         startDateJp: KnockoutObservable<string>;
+        layoutPatternData: KnockoutObservableArray<any>;
+        layoutPatternColumns: Array<any>;
         layoutPatternSelected: KnockoutObservable<number>;
 
         constructor() {
@@ -39,20 +42,33 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             self.statementName = ko.observable(null);
             self.startDate = ko.observable(null);
             self.startDateJp = ko.observable(null);
+
+            self.layoutPatternData = ko.observableArray(shareModel.getLayoutPatternData());
             self.layoutPatternSelected = ko.observable(0);
+            self.layoutPatternColumns = [
+                {headerText: '', key: 'id', dataType: 'string', width: '50px', hidden: true},
+                {headerText: getText('QMM019_50'), key: 'printerType', dataType: 'string', width: '130px'},
+                {headerText: getText('QMM019_51'), key: 'paper', dataType: 'string', width: '70px'},
+                {headerText: getText('QMM019_52'), key: 'direction', dataType: 'string', width: '70px'},
+                {headerText: getText('QMM019_53'), key: 'numberPersonInPage', dataType: 'string', width: '120px'},
+                {headerText: getText('QMM019_54'), key: 'numberOfDisplayItem', dataType: 'string', width: '300px'},
+                {headerText: getText('QMM019_55'), key: 'remarks', dataType: 'string', width: '100px'}
+            ];
 
             self.isClone.subscribe(value => {
                 self.isEnable(value == shareModel.SpecCreateAtr.COPY);
             });
 
             self.statementLayoutCodeSelected.subscribe(value => {
-                if(value != null) {
+                if(!_.isEmpty(value)) {
                     let statementLayout: IStatementLayout = _.find(self.statementLayoutList(), (item: IStatementLayout) => {
                         return item.statementCode == value;
                     });
 
-                    self.layoutPatternClone(statementLayout.history[0].layoutPattern);
-                    self.layoutPatternCloneText(getLayoutPatternText(statementLayout.history[0].layoutPattern));
+                    if(statementLayout) {
+                        self.layoutPatternClone(statementLayout.history[0].layoutPattern);
+                        self.layoutPatternCloneText(getLayoutPatternText(statementLayout.history[0].layoutPattern));
+                    }
                 }
             });
 
@@ -91,12 +107,13 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             let self = this;
             block.invisible();
 
-            let histIdNew = nts.uk.util.randomId();
-            let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
-                    self.layoutPatternClone(), self.statementCode(), self.statementName(), self.startDate(), self.layoutPatternSelected());
-
             //TODO $("#B1_6").trigger("validate");
             if(!nts.uk.ui.errors.hasError()) {
+                let histIdNew = nts.uk.util.randomId();
+                let startDate = nts.uk.time.formatDate(new Date( self.startDate()), "yyyyMM");
+                let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
+                    self.layoutPatternClone(), self.statementCode(), self.statementName(), startDate, self.layoutPatternSelected());
+
                 service.addStatementLayout(command).done(() => {
                     setShared("QMM019_H_TO_A_PARAMS", { isRegistered: false, histID: histIdNew});
                     nts.uk.ui.windows.close();

@@ -11,8 +11,8 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
         statementCode: KnockoutObservable<string>;
         statementName: KnockoutObservable<string>;
         histId: KnockoutObservable<string>;
-        startMonth: KnockoutObservable<number>;
-        endMonth: KnockoutObservable<number>;
+        startMonth: KnockoutObservable<string>;
+        endMonth: KnockoutObservable<string>;
         newStartMonth: KnockoutObservable<number>;
 
         // ItemHistoryDivision  switch button
@@ -21,11 +21,11 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
 
         constructor() {
             let self = this;
-            let params = getShared("QMM019_A_TO_B_PARAMS");
+            let params = getShared("QMM019_A_TO_C_PARAMS");
 
-            self.statementCode = ko.observable(null);
+            self.statementCode = ko.observable(params ? params.code : null);
             self.statementName = ko.observable(null);
-            self.histId = ko.observable(null);
+            self.histId = ko.observable(params ? params.histId : null);
             self.startMonth = ko.observable(null);
             self.endMonth = ko.observable(null);
             self.newStartMonth = ko.observable(null);
@@ -52,8 +52,9 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                     self.statementName(data.statementName);
 
                     if (data.history.length > 0) {
-                        self.startMonth(data.history[0].startMonth);
-                        self.endMonth(data.history[0].endMonth);
+                        self.startMonth(nts.uk.time.parseYearMonth(data.history[0].startMonth).format());
+                        self.endMonth(nts.uk.time.parseYearMonth(data.history[0].endMonth).format());
+                        self.newStartMonth(data.history[0].startMonth);
                     }
                 }
 
@@ -70,7 +71,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
         decide(){
             let self = this;
             if(self.itemHistoryEdit() == 0) {
-                let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), self.startMonth(), self.endMonth());
+                let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), null, null);
                 dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     block.invisible();
                     service.deleteStatementLayoutHist(command).done(function() {
@@ -85,7 +86,8 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                     });
                 })
             } else {
-                let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), self.newStartMonth(), self.endMonth());
+                let newStartDate = nts.uk.time.parseYearMonth(self.newStartMonth()).toValue();
+                let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), newStartDate, 999912);
 
                 if(!nts.uk.ui.errors.hasError()) {
                     service.updateStatementLayoutHist(command).done(function() {

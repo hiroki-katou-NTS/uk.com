@@ -101,14 +101,14 @@ public class StatementLayoutWebService {
     @POST
     @Path("getDeductionItemStById/{categoryAtr}/{itemNameCode}")
     public DeductionItemSetDto getDeductionItemStById(@PathParam("categoryAtr") int categoryAtr,
-                                                  @PathParam("itemNameCode") String itemNameCode) {
+                                                      @PathParam("itemNameCode") String itemNameCode) {
         return statementLayoutFinder.getDeductionItemStById(categoryAtr, itemNameCode);
     }
 
     @POST
     @Path("getAttendanceItemStById/{categoryAtr}/{itemNameCode}")
     public AttendanceItemSetDto getAttendanceItemStById(@PathParam("categoryAtr") int categoryAtr,
-                                                      @PathParam("itemNameCode") String itemNameCode) {
+                                                        @PathParam("itemNameCode") String itemNameCode) {
         return statementLayoutFinder.getAttendanceItemStById(categoryAtr, itemNameCode);
     }
 
@@ -177,4 +177,12 @@ public class StatementLayoutWebService {
     public void deleteStatementLayoutHist(StatementLayoutHistCommand command) {
         this.deleteStatementLayoutHistCommandHandler.handle(command);
     }
+
+    @POST
+    @Path("getAllStatementLayoutHist/{startYearMonth}")
+    public List<StatementNameLayoutHistDto> getAllStatementLayoutHist(@PathParam("startYearMonth") String startYearMonth) {
+        List<StatementNameLayoutHistDto> stateUseUnitSettingDto = statementLayoutHistFinder.getAllStatementLayoutHist(Integer.valueOf(startYearMonth));
+        return stateUseUnitSettingDto;
+    }
+
 }

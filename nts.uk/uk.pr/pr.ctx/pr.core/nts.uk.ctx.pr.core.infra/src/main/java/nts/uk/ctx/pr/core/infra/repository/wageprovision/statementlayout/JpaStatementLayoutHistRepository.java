@@ -11,6 +11,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaStatementLayoutHistRepository extends JpaRepository implements StatementLayoutHistRepository {
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f";
+
     private static final String SELECT_BY_CID_AND_CODE = SELECT_ALL_QUERY_STRING +
             " WHERE f.statementLayoutHistPk.cid = :cid AND f.statementLayoutHistPk.statementCd = :statementCd ";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING +
@@ -29,6 +31,8 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
             " WHERE o.statementLayoutHistPk.cid = :cid AND o.statementLayoutHistPk.statementCd = :statementCd) ";
     private static final String ORDER_BY_START_DATE = " ORDER BY f.startYearMonth DESC";
 
+    private static final String SELECT_BY_CID_KEY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f Where f.startYearMonth <= :startYearMonth AND f.endYearMonth >= :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
+
     @Override
     public List<StatementLayoutHist> getAllStatementLayoutHist() {
         return null;
@@ -39,6 +43,20 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
         return this.queryProxy().query(SELECT_BY_ID, QpbmtStatementLayoutHist.class)
                 .setParameter("histId", histId)
                 .getSingle(c -> toYearMonthDomain(c));
+    }
+
+    @Override
+    public List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid, int startYearMonth) {
+        List<StatementLayoutHist> statementLayoutHist = toDomains(this.queryProxy().query(SELECT_BY_CID_KEY_STRING, QpbmtStatementLayoutHist.class)
+                .setParameter("startYearMonth", startYearMonth)
+                .setParameter("cid", cid)
+                .getList());
+        return statementLayoutHist;
+    }
+
+    @Override
+    public Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int specCd, String histId) {
+        return Optional.empty();
     }
 
     @Override
@@ -84,7 +102,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
         Optional<QpbmtStatementLayoutHist> statementLayoutHistEntity = this.queryProxy().query(SELECT_BY_ID, QpbmtStatementLayoutHist.class)
                 .setParameter("histId", domain.identifier())
                 .getSingle();
-        if(statementLayoutHistEntity.isPresent()) {
+        if (statementLayoutHistEntity.isPresent()) {
             this.commandProxy().update(yearMonthToEntity(cid, code, domain, statementLayoutHistEntity.get().layoutPattern));
         }
     }
@@ -104,7 +122,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
         String code = entityList.get(0).statementLayoutHistPk.statementCd;
         List<YearMonthHistoryItem> yearMonthHistoryItemList = entityList.stream().map(
                 i -> new YearMonthHistoryItemCustom(i.statementLayoutHistPk.histId,
-                new YearMonthPeriod(new YearMonth(i.startYearMonth), new YearMonth(i.endYearMonth)), i.layoutPattern))
+                        new YearMonthPeriod(new YearMonth(i.startYearMonth), new YearMonth(i.endYearMonth)), i.layoutPattern))
                 .collect(Collectors.toList());
         return new StatementLayoutHist(cid, code, yearMonthHistoryItemList);
     }
@@ -116,5 +134,25 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
 
     private QpbmtStatementLayoutHist yearMonthToEntity(String cid, String code, YearMonthHistoryItem domain, int layoutPattern) {
         return new QpbmtStatementLayoutHist(new QpbmtStatementLayoutHistPk(cid, code, domain.identifier()), domain.start().v(), domain.end().v(), layoutPattern);
+    }
+
+    private List<StatementLayoutHist> toDomains(List<QpbmtStatementLayoutHist> entities) {
+        if (entities == null || entities.isEmpty()) {
+            return new ArrayList<StatementLayoutHist>();
+        }
+        List<StatementLayoutHist> arrDataResulf = new ArrayList<StatementLayoutHist>();
+        entities.forEach(item -> {
+            List<YearMonthHistoryItem> history = new ArrayList<YearMonthHistoryItem>();
+            history.add(new YearMonthHistoryItem(item.statementLayoutHistPk.histId, new YearMonthPeriod(
+                    new YearMonth(item.startYearMonth),
+                    new YearMonth(item.endYearMonth)
+            )));
+            arrDataResulf.add(new StatementLayoutHist(
+                    item.statementLayoutHistPk.cid,
+                    item.statementLayoutHistPk.statementCd,
+                    history
+            ));
+        });
+        return arrDataResulf;
     }
 }

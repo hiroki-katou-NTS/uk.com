@@ -102,15 +102,22 @@ public class StatementLayoutService {
 
         //控除項目
         List<LineByLineSetting> deducationLineList = new ArrayList<>();
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 1, F101, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 2, F102, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 3, F103, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 4, F104, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 5, F105, DeductionTotalObjAtr.OUTSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 6, F106, DeductionTotalObjAtr.OUTSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 7, F107, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 8, F108, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 2, 9, F114, DeductionTotalObjAtr.OUTSIDE.value));
+        List<SettingByItem> itemsInLine1 = new ArrayList<>();
+        List<SettingByItem> itemsInLine2 = new ArrayList<>();
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 1, F101, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 2, F102, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  3, F103, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  4, F104, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  5, F105, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  6, F106, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  7, F107, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  8, F108, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine2.add(getNewItemTypeDeduction(histIdNew,  9, F114, DeductionTotalObjAtr.OUTSIDE.value));
+
+        LineByLineSetting line1 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, itemsInLine1);
+        LineByLineSetting line2 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, itemsInLine2);
+        deducationLineList.add(line1);
+        deducationLineList.add(line2);
 
         SettingByCtg deducationCtgSetting = new SettingByCtg(CategoryAtr.DEDUCTION_ITEM.value, deducationLineList);
         listSettingByCtg.add(deducationCtgSetting);
@@ -167,14 +174,12 @@ public class StatementLayoutService {
         return new LineByLineSetting(StatementPrintAtr.PRINT.value, lineNumber, listSetByItem);
     }
 
-    private LineByLineSetting getNewLineTypeDeduction(String histId, int lineNumber, int position, String statementCode, int totalObj) {
+    private SettingByItem getNewItemTypeDeduction(String histId, int position, String statementCode, int totalObj) {
         DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, statementCode, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
         SettingByItem item = new SettingByItemCustom(position, statementCode, null, detail, null);
-        List<SettingByItem> listSetByItem = new ArrayList<>();
-        listSetByItem.add(item);
 
-        return new LineByLineSetting(StatementPrintAtr.PRINT.value, lineNumber, listSetByItem);
+        return item;
     }
 
     //新規作成時チェック処理
@@ -213,9 +218,9 @@ public class StatementLayoutService {
             case LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
                 return 10;
             case LASER_CRIMP_PORTRAIT_ONE_PERSON:
-                return 11111111;
-            case LASER_CRIMP_LANDSCAPE_ONE_PERSON:
                 return 17;
+            case LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                return 11111111;
             case DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
                 return 11111111;
             default:

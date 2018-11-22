@@ -46,7 +46,7 @@ public class StatementLayoutHistFinder {
         Optional<YearMonthHistoryItem> yearMonthHistoryItemOptional = statementLayoutHistRepo.getStatementLayoutHistById(histId);
         Optional<StatementLayoutSet> statementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(histId);
 
-        if(statementLayoutOptional.isPresent() && yearMonthHistoryItemOptional.isPresent() && statementLayoutSetOptional.isPresent()) {
+        if (statementLayoutOptional.isPresent() && yearMonthHistoryItemOptional.isPresent() && statementLayoutSetOptional.isPresent()) {
             StatementLayout statementLayout = statementLayoutOptional.get();
             YearMonthHistoryItem yearMonthHistoryItem = yearMonthHistoryItemOptional.get();
             StatementLayoutSet statementLayoutSet = statementLayoutSetOptional.get();
@@ -65,7 +65,7 @@ public class StatementLayoutHistFinder {
         StatementLayoutHist statementLayoutHist = statementLayoutHistRepo.getLayoutHistByCidAndCode(cid, code);
         Optional<YearMonthHistoryItem> yearMonthHistoryItemLastOptional = statementLayoutHist.latestStartItem();
 
-        if(statementLayoutOptional.isPresent() && yearMonthHistoryItemLastOptional.isPresent()) {
+        if (statementLayoutOptional.isPresent() && yearMonthHistoryItemLastOptional.isPresent()) {
             StatementLayout statementLayout = statementLayoutOptional.get();
             YearMonthHistoryItem yearMonthHistoryItemLast = yearMonthHistoryItemLastOptional.get();
             String histId = yearMonthHistoryItemLast.identifier();
@@ -79,5 +79,21 @@ public class StatementLayoutHistFinder {
         } else {
             return Optional.empty();
         }
+    }
+
+    public List<StatementNameLayoutHistDto> getAllStatementLayoutHist(int startYearMonth) {
+        String cid = AppContexts.user().companyId();
+        List<StatementNameLayoutHistDto> resulf = new ArrayList<StatementNameLayoutHistDto>();
+        List<StatementLayoutHist> listStatementLayoutHistory = statementLayoutHistRepo.getAllStatementLayoutHistByCid(cid, startYearMonth);
+        List<StatementLayout> listStatementLayout = statementLayoutRepo.getStatementLayoutByCId(cid);
+        listStatementLayoutHistory.forEach(item -> {
+            resulf.add(new StatementNameLayoutHistDto(item.getCid(), item.getStatementCode().v(),
+                    listStatementLayout.stream().filter(elementToSearch -> elementToSearch.getStatementCode().v().equals(item.getStatementCode().v())).findFirst().get().getStatementName().v(),
+                    item.getHistory().get(0).identifier(),
+                    item.getHistory().get(0).start().v(),
+                    item.getHistory().get(0).end().v()
+            ));
+        });
+        return resulf;
     }
 }

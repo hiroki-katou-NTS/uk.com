@@ -7,6 +7,10 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementCode
+            nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementName
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="qmm019.a.style.css"/>
         <com:scriptfile path="../share/model.js"/>
@@ -77,20 +81,20 @@
                         </table>
                     </div>
                 </div>
-                <div class="cell valign-top panel-frame" style="width: 840px;">
+                <div class="cell valign-top panel-frame" style="width: 875px;" data-bind="with: statementLayoutHistData">
                     <div class="panel panel-frame">
                         <div class="valign-center control-group">
                             <!-- コード/名称 -->
-                            <div id="A3_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_7')}</div>
+                            <div id="A3_2" data-bind="ntsFormLabel: {required: true, constraint: ['StatementCode', 'StatementName']}">#{i18n.getText('QMM019_7')}</div>
                             <!-- 明細書コード -->
-                            <label id="A3_3">#{i18n.getText('QMM019_41')}</label>
+                            <label id="A3_3" data-bind="text: statementCode"></label>
                             <!-- 明細書名称 -->
                             <input id="A3_4" class="check-validate" tabindex="12"
                                    data-bind="ntsTextEditor :{
 											name: '#[QMM019_16]',
-											value: currentHistoryId,
-											constraint: '',
-											option: {width: '40px'},
+											value: statementName,
+											constraint: 'StatementName',
+											option: {width: '200px'},
 											required: true,
 											enable: true,
 											readonly: false}"/>
@@ -101,9 +105,10 @@
                             <!-- 有効期間 -->
                             <div id="A3_6" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_17')}</div>
                             <!-- 開始年月日 -->
-                            <label id="A3_7">#{i18n.getText('QMM019_18')}</label>
+                            <label id="A3_7" data-bind="text: startMonthText"></label>
+                            <label> ~ </label>
                             <!-- 終了年月日 -->
-                            <label id="A3_8">#{i18n.getText('QMM019_19')}</label>
+                            <label id="A3_8" data-bind="text: endMonthText"></label>
                         </div>
                         <div class="valign-center control-group">
                             <!-- 現在使用行数/最大行数 -->
@@ -121,56 +126,75 @@
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
                             <!-- 印刷プレビュー -->
                             <button id="A3_14" tabindex="13" class=""
-                                    data-bind="click: create, enable: true">#{i18n.getText('QMM019_22')}</button>
+                                    data-bind="enable: true">#{i18n.getText('QMM019_22')}</button>
                         </div>
                         <hr/>
-                        <!-- 支給 -->
-                        <div id="A4_1" class="panel panel-frame">
-                            <!-- 開始年月日 -->
-                            <label id="A4_2">#{i18n.getText('QMM019_23')}</label>
-                            <table id="payment-table">
-
-                            </table>
-                            <div class="valign-center control-group">
-                                <!-- 支給行追加 -->
-                                <button id="A4_8" tabindex="17" class=""
-                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_24')}</button>
+                        <div id="statementLayoutSet" data-bind="with: statementLayoutSet">
+                            <!-- 支給 -->
+                            <div id="A4_1" class="panel panel-frame" data-bind="with: listSettingByCtg()[0]">
+                                <!-- 開始年月日 -->
+                                <label id="A4_2" class="category-text">#{i18n.getText('QMM019_23')}</label>
+                                <hr/>
+                                <div id="payment-table" class="drag-panel">
+                                    <div class="line-sort" data-bind="ntsSortable: {
+                                                                    data: listLineByLineSet,
+                                                                    isEnabled: true }">
+                                        <div class="form-group item-classification">
+                                            <span class="caret-right"></span>
+                                            <button id="A4_4" tabindex="18" class=""
+                                                    data-bind="enable: true, click: editLine"></button>
+                                            <div class="item-sort" data-bind="ntsSortable: {
+                                                                        data: listSetByItem,
+                                                                        isEnabled: true }">
+                                                <div class="item" data-bind="text: itemPosition, click: openSetting"> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group">
+                                    <!-- 支給行追加 -->
+                                    <button id="A4_8" tabindex="17" class="add-line-btn"
+                                            data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_24')}</button>
+                                </div>
                             </div>
-                        </div>
-                        <!-- 控除設定パネル -->
-                        <div id="A5_1" class="panel panel-frame">
-                            <!-- 控除 -->
-                            <label id="A5_2">#{i18n.getText('QMM019_25')}</label>
-                            <div class="valign-center control-group">
-                                <!-- 控除行追加 -->
-                                <button id="A5_8" tabindex="17" class=""
-                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_24')}</button>
+                            <!-- 控除設定パネル -->
+                            <div id="A5_1" class="panel panel-frame">
+                                <!-- 控除 -->
+                                <label id="A5_2" class="category-text">#{i18n.getText('QMM019_25')}</label>
+                                <hr/>
+                                <div class="valign-center control-group">
+                                    <!-- 控除行追加 -->
+                                    <button id="A5_8" tabindex="17" class="add-line-btn"
+                                            data-bind="enable: true">#{i18n.getText('QMM019_24')}</button>
+                                </div>
                             </div>
-                        </div>
-                        <!-- 勤怠設定パネル -->
-                        <div id="A7_1" class="panel panel-frame">
-                            <!-- 勤怠設定 -->
-                            <button id="A7_2" tabindex="18" class=""
-                                    data-bind="click: create, enable: true"></button>
-                            <!-- 勤怠 -->
-                            <label id="A7_3">#{i18n.getText('QMM019_29')}</label>
-                            <div class="valign-center control-group">
-                                <!-- 勤怠行追加 -->
-                                <button id="A7_9" tabindex="22" class=""
-                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_30')}</button>
+                            <!-- 勤怠設定パネル -->
+                            <div id="A7_1" class="panel panel-frame">
+                                <!-- 勤怠設定 -->
+                                <button id="A7_2" tabindex="18" class=""
+                                        data-bind="enable: true"></button>
+                                <!-- 勤怠 -->
+                                <label id="A7_3" class="category-text">#{i18n.getText('QMM019_29')}</label>
+                                <hr/>
+                                <div class="valign-center control-group">
+                                    <!-- 勤怠行追加 -->
+                                    <button id="A7_9" tabindex="22" class="add-line-btn"
+                                            data-bind="enable: true">#{i18n.getText('QMM019_30')}</button>
+                                </div>
                             </div>
-                        </div>
-                        <!-- 記事設定パネル -->
-                        <div id="A8_1" class="panel panel-frame">
-                            <!-- 記事設定 -->
-                            <button id="A8_2" tabindex="23" class=""
-                                    data-bind="click: create, enable: true"></button>
-                            <!-- 記事 -->
-                            <label id="A8_3">#{i18n.getText('QMM019_31')}</label>
-                            <div class="valign-center control-group">
-                                <!-- 記事行追加 -->
-                                <button id="A8_9" tabindex="27" class=""
-                                        data-bind="click: create, enable: true">#{i18n.getText('QMM019_32')}</button>
+                            <!-- 記事設定パネル -->
+                            <div id="A8_1" class="panel panel-frame">
+                                <!-- 記事設定 -->
+                                <button id="A8_2" tabindex="23" class=""
+                                        data-bind="enable: true"></button>
+                                <!-- 記事 -->
+                                <label id="A8_3" class="category-text">#{i18n.getText('QMM019_31')}</label>
+                                <hr/>
+                                <div class="valign-center control-group">
+                                    <!-- 記事行追加 -->
+                                    <button id="A8_9" tabindex="27" class="add-line-btn"
+                                            data-bind="enable: true">#{i18n.getText('QMM019_32')}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
