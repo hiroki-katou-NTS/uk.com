@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.dom.adapter.employee;
+package nts.uk.ctx.pr.transfer.dom.adapter.query.employee;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.transfer.ac.employee;
+package nts.uk.ctx.pr.transfer.ac.query.employee;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.*;
+import nts.uk.ctx.pr.transfer.dom.adapter.query.employee.*;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
