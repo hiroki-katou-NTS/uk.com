@@ -11,9 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -103,4 +101,18 @@ public class EmployeeAverWageFinder {
     }
 
 
+    public EmploymentCodeDto getEmploymentCodeByEmpIdAndBaseDate(String employeeId) {
+        return employeeInfoAverAdapter
+                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(Collections.singletonList(employeeId), GeneralDate.today(),
+                        false,
+                        false,
+                        false,
+                        true,
+                        false,
+                        false))
+                .stream().map(x -> {
+                    if(Objects.isNull(x.getEmployment())) return new EmploymentCodeDto(null);
+                    return new EmploymentCodeDto(x.getEmployment().getEmploymentCode());
+                }).findFirst().orElse(null);
+    }
 }
