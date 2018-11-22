@@ -22,6 +22,10 @@ public interface StatementItemRepository {
 
 	List<StatementItemCustom> getItemCustomByDeprecated(String cid, boolean isIncludeDeprecated);
 
+	List<StatementItemCustom> getItemCustomByCtgAndExcludeCodes(String cid,  int categoryAtr, int deprecatedAtr,
+                                                                List<String> itemNameCdFixedList,
+                                                                String itemNameCdSelected, List<String> itemNameCdExs);
+
 	void add(StatementItem domain);
 
 	void update(StatementItem domain);

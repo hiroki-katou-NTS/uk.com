@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
+ * 
  * @author HungTT
  *
  */
@@ -18,11 +19,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class QpbmtWageTablePk {
-	
+
+	/**
+	 * 会社ID
+	 */
 	@Column(name = "CID")
 	public String companyId;
 
+	/**
+	 * 賃金テーブルコード
+	 */
 	@Column(name = "CD")
 	public String code;
-	
+
 }

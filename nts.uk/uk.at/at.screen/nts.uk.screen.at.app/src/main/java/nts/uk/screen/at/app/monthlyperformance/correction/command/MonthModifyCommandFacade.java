@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.app.command.monthly.MonthlyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -66,7 +67,9 @@ public class MonthModifyCommandFacade {
 			if(q == null){
 				return null;
 			}
-			MonthlyRecordWorkDto dto = AttendanceItemUtil.fromItemValues(v, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
+			IntegrationOfMonthly domain = v.toDomain(v.employeeId(), v.yearMonth(), v.getClosureID(), v.getClosureDate());
+			MonthlyRecordWorkDto dtoNew = MonthlyRecordWorkDto.fromOnlyAttTime(domain);
+			MonthlyRecordWorkDto dto = AttendanceItemUtil.fromItemValues(dtoNew, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
 			return createCommand(dto, q);
 		}).filter(v -> v != null).collect(Collectors.toList());
 	}

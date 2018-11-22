@@ -1,124 +1,182 @@
 module nts.uk.pr.view.cmm015.a.viewmodel {
 
-    import SalaryClsInfoDto = nts.uk.pr.view.cmm015.a.viewmodel.model.SalaryClsInfoDto;
+    import getText = nts.uk.resource.getText
 
     export class ScreenModel {
-        dataSource: KnockoutObservableArray<model.SalaryClsInfoDto>;
-        currentCode: KnockoutObservable<number>;
-        currentItem: KnockoutObservable<model.SalaryClsInfoModel>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        memo: KnockoutObservable<string>;
+        dataSource: KnockoutObservableArray<model.ISalaryClassificationInformation>;
+        selectedCode: KnockoutObservable<string>;
+        selectedItem: KnockoutObservable<model.SalaryClassificationInformation>;
+        columns: KnockoutObservableArray<any>;
         isDeleteEnable: KnockoutObservable<boolean>;
+        isCodeEnable: KnockoutObservable<boolean>;
+        isUpdateMode: KnockoutObservable<boolean>;
 
         constructor() {
-            var self = this;
+            let self = this;
+            self.isCodeEnable = ko.observable(false);
             self.dataSource = ko.observableArray([]);
-            self.currentCode = ko.observable();
+            self.selectedCode = ko.observable();
             self.columns = ko.observableArray([
-                {headerText: 'コード', key: 'salaryClsCode', width: 90},
-                {headerText: '名称', key: 'salaryClsName'}
+                {headerText: getText("CMM015_7"), key: 'salaryClassificationCode'},
+                {headerText: getText("CMM015_8"), key: 'salaryClassificationName', formatter: _.escape}
             ]);
-            self.memo = ko.observable();
             self.isDeleteEnable = ko.observable(false);
-            self.currentItem = ko.observable(new model.SalaryClsInfoModel(new model.SalaryClsInfoDto(), false));
+            self.selectedItem = ko.observable(new model.SalaryClassificationInformation(null));
+            self.isUpdateMode = ko.observable(true);
+            self.selectedCode.subscribe((code) => {
+                if (code) {
+                    self.selectedItem(new model.SalaryClassificationInformation(self.find(code)));
+                    self.isUpdateMode(true);
+                    self.setUpdateMode();
+                } else {
+                    self.selectedItem(new model.SalaryClassificationInformation(null));
+                    self.isUpdateMode(false);
+                    self.setNewMode();
+                }
+            });
+
         }
 
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            service.findAllSalaryClsInfo().done(function (data) {
-                self.dataSource(data);
-                if(self.dataSource().length === 0) {
-                    self.setNewMode();
+            let self = this;
+            let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+            service.getAllSalaryClassificationInformation().done(function (data: any) {
+                if (data.length > 0) {
+                    self.isUpdateMode(true);
+                    self.dataSource(data);
+                    self.selectedCode(data[0].salaryClassificationCode);
                 } else {
-                    self.setUpdateMode();
-                    self.currentCode(self.dataSource()[0].salaryClsCode);
-                    self.currentItem(self.find(self.currentCode));
+                    self.isUpdateMode(false);
                 }
                 dfd.resolve();
+                nts.uk.ui.block.clear();
             }).fail(function (res) {
-
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.bundledErrors(res);
+                dfd.reject();
             });
             return dfd.promise();
         }
 
         setNewMode() {
-            var self = this;
-            self.currentItem().reset();
-            self.currentCode(null);
+            let self = this;
+            self.selectedCode(null);
+            self.selectedItem(new model.SalaryClassificationInformation(null));
             self.isDeleteEnable(false);
-            $('#inp-01-code').focus();
+            self.isCodeEnable(true);
+            $('#A3_2').focus();
+            nts.uk.ui.errors.clearAll();
         }
 
         setUpdateMode() {
-            var self = this;
+            let self = this;
             self.isDeleteEnable(true);
-            $('#inp-02-name').focus();
+            self.isCodeEnable(false);
+            $('#A3_3').focus();
+            nts.uk.ui.errors.clearAll();
         }
 
-        registerSalaryClsInfo() {
-            var self = this;
-
+        registerSalaryClassificationInformation() {
+            let self = this;
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            let item = self.selectedItem();
+            if (self.isUpdateMode()) {
+                nts.uk.ui.block.invisible();
+                service.updateSalaryClassificationInformation(ko.toJS(item)).done(function () {
+                    service.getAllSalaryClassificationInformation().done(function (data: any) {
+                        self.dataSource(data);
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                    }).fail(function (res) {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.bundledErrors(res);
+                    });
+                }).fail(function (res) {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.bundledErrors(res);
+                });
+            } else {
+                nts.uk.ui.block.invisible();
+                service.addSalaryClassificationInformation(ko.toJS(item)).done(function () {
+                    service.getAllSalaryClassificationInformation().done(function (data: any) {
+                        self.dataSource(data);
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                            self.selectedCode(item.salaryClassificationCode());
+                        });
+                    }).fail(function (res) {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.bundledErrors(res);
+                    });
+                }).fail(function (res) {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.bundledErrors(res);
+                });
+            }
         }
 
-        deleteSalaryClsInfo() {
-            var self = this;
-        }
+        removeSalaryClassificationInformation() {
+            let self = this;
+            nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
+                nts.uk.ui.block.invisible();
+                let code = self.selectedCode();
+                let index = self.dataSource().indexOf(self.find(code));
+                service.removeSalaryClassificationInformation(code).done(function () {
+                    service.getAllSalaryClassificationInformation().done(function (data: any) {
+                        self.dataSource(data);
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(() => {
+                            let dataLength = self.dataSource().length;
+                            if (dataLength > 0) {
+                                if (index == dataLength) {
+                                    self.selectedCode(self.dataSource()[index - 1].salaryClassificationCode);
+                                } else {
+                                    self.selectedCode(self.dataSource()[index].salaryClassificationCode);
+                                }
+                            } else {
+                                self.selectedCode(null);
+                            }
+                        });
 
-        getSalaryClsInfo(salaryClsCode: string) {
-            var self = this;
-            service.getSalaryClsInfo(salaryClsCode).done(function(salaryClsInfo: viewmodel.model.SalaryClsInfoDto) {
-                if (salaryClsInfo) {
-                    self.currentCode(salaryClsInfo.salaryClsCode);
-                    self.currentItem(salaryClsInfo, true);
-                }
+                    }).fail(function (res) {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.bundledErrors(res);
+                    });
+                }).fail(function (res) {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.bundledErrors(res);
+                });
             });
         }
 
-        find(code: string) {
-            var self = this;
-            return _.find(self.dataSource, function (salaryClsInfo: SalaryClsInfoDto) {
-                return salaryClsInfo.salaryClsCode == code;
-            })
+        find(code: string): any {
+            let self = this;
+            return _.find(self.dataSource(), x => code === x.salaryClassificationCode);
         }
     }
 
     export module model {
-        export class SalaryClsInfoModel {
-            salaryClsCode: KnockoutObservable<string>;
-            salaryClsName: KnockoutObservable<string>;
-            memo: KnockoutObservable<string>;
-            isCodeEnable: KnockoutObservable<boolean>;
-
-            constructor(dto: SalaryClsInfoDto, enable: boolean) {
-                var self = this;
-                self.salaryClsCode = ko.observable(dto.salaryClsCode);
-                self.salaryClsName = ko.observable(dto.salaryClsName);
-                self.memo = ko.observable(dto.memo);
-                self.isCodeEnable = ko.observable(enable);
-            }
-
-            reset() {
-                var self = this;
-                self.salaryClsCode("");
-                self.salaryClsName("");
-                self.memo("");
-                self.isCodeEnable(true);
-            }
+        export interface ISalaryClassificationInformation {
+            salaryClassificationCode: string;
+            salaryClassificationName: string;
+            memo: string;
         }
 
-        export class SalaryClsInfoDto {
-            salaryClsCode: string;
-            salaryClsName: string;
-            memo: string;
+        export class SalaryClassificationInformation {
+            salaryClassificationCode: KnockoutObservable<string> = ko.observable(null);
+            salaryClassificationName: KnockoutObservable<string> = ko.observable(null);
+            memo: KnockoutObservable<string> = ko.observable(null);
 
-            constructor(salaryClsCode?: string, salaryClsName?: string, memo?: string) {
-                var self = this;
-                self.salaryClsCode = salaryClsCode;
-                self.salaryClsName = salaryClsName;
-                self.memo = memo;
+            constructor(params: ISalaryClassificationInformation) {
+                if (!params) return;
+                this.salaryClassificationCode(params.salaryClassificationCode);
+                this.salaryClassificationName(params.salaryClassificationName);
+                this.memo(params.memo);
             }
         }
     }
-
 }

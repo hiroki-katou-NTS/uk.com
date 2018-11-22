@@ -23,7 +23,7 @@ public class RegisterIndividualWageContractCommandHandler extends CommandHandler
     protected void handle(CommandHandlerContext<SalIndAmountCommand> commandHandlerContext) {
         SalIndAmountCommand command = commandHandlerContext.getCommand();
         String historyId = command.getHistoryId();
-        int amountOfMoney = command.getAmountOfMoney();
+        long amountOfMoney = command.getAmountOfMoney();
         SalIndAmount salIndAmount = new SalIndAmount(historyId, amountOfMoney);
         salIndAmountRepository.update(salIndAmount);
 

@@ -328,7 +328,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																		 workNo,
 																		 workTimezoneLateEarlySet,
 																		 predetermineTimeForSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo),
-																		 coreTimeSetting,breakTimeList,workType,predetermineTimeForSet,commonSetting, specificDateAttrSheets));
+																		 coreTimeSetting,breakTimeList,workType,predetermineTimeForSet,commonSetting, specificDateAttrSheets,
+																		 duplicateTimeSheet.getWorkingHoursTimeNo().v().intValue() == 1,
+																		 duplicateTimeSheet.getWorkingHoursTimeNo().v().intValue() == withinWorkTimeFrame.size()));
 		}
 		/*所定内割増時間の時間帯作成*/
 		return predetermineWithinPremiumTime(dailyUnit.getDailyTime(),predetermineTimeForSet.getAdditionSet().getPredTime().getPredetermineWorkTime(),timeFrames, 

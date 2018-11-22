@@ -87,8 +87,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     self.texteditorA5_4.value(currentItem.height());
                     let listType = []
                     for(let x of _.orderBy(currentItem.listType())){
-                        //remove 「子の看護休残数」 và 「看護休残数」
-                        if(x != 22 && x != 23){
+                        //remove 「子の看護休残数」 và 「看護休残数」,計画年休残数
+                        if(x != 22 && x != 23 && x != 18){
                             listType.push(x.toString());
                         }    
                     }
@@ -110,8 +110,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             var listWidgets = _.remove(__viewContext.enums.WidgetDisplayItemType, function(n){
-                //remove 「子の看護休残数」 và 「看護休残数」
-                return (n.value != 22 && n.value != 23); 
+                //remove 「子の看護休残数」 và 「看護休残数」, 計画年休残数
+                return (n.value != 22 && n.value != 23 && n.value != 18); 
                 });
             var widgets = []; 
             listWidgets.forEach(function (value) {
@@ -185,7 +185,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         });
                     }
                 }));
-                displayItemTypes.push({'displayItemType': '22', 'notUseAtr': 0},{'displayItemType': '23', 'notUseAtr': 0});
+                displayItemTypes.push({'displayItemType': '18', 'notUseAtr': 0},{'displayItemType': '22', 'notUseAtr': 0},{'displayItemType': '23', 'notUseAtr': 0});
                 if (optionalWidget) {
                     let data: any = {};
                     data.topPagePartID = optionalWidget.topPagePartID;

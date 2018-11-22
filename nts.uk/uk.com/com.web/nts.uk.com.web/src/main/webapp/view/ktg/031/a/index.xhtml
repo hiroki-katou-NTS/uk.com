@@ -25,7 +25,7 @@
 												optionsText: 'name',
 												value: selectedRuleCode}"></div>
 				<div>
-					<table class="table1" style = "float: left">
+					<table class="table1" style = "float: left" data-bind="if: listToppage().length > 0">
 						<thead>
 						</thead>
 						<tbody data-bind="foreach: listToppage">
@@ -46,8 +46,18 @@
 							</td>
 						</tbody>
 					</table>
+					
+					<table class="table2" style = "float: left" data-bind="if: listToppage().length == 0">
+						<thead>
+						</thead>
+						<tbody >
+							<td style="position: relative;">
+								<span id = "listEmpLb" data-bind="text: '#{i18n.getText('KTG031_17')}'"></span>
+							</td>
+						</tbody>
+					</table>
 			
-					<div style = "padding-top: 5px; margin-left: 415px;">
+					<div style = "padding-top: 5px; margin-left: 387px;">
 						<!-- A3_1 -->
 						<a class="hyperlink" data-bind="click: function(){changeTime(3);}" href="#">#{i18n.getText('KTG031_14')}</a>
 						<br/>

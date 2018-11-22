@@ -63,8 +63,11 @@ module nts.uk.at.view.kal001.b {
             exportExcel(): void {
                 let self = this;
                 block.invisible();
-                service.saveAsExcel(self.dataSource).done(()=>{
-                    
+                let params = {
+                    data: self.dataSource
+                };
+                service.exportAlarmData(params).done(() => {
+
                 }).fail((errExcel) =>{
                     alertError(errExcel);
                 }).always(()=>{

@@ -18,7 +18,7 @@ module cps001.a.vm {
     import vc = nts.layout.validation;
     import permision = service.getCurrentEmpPermision;
 
-    const DEF_AVATAR = 'images/avatar.png',
+    const DEF_AVATAR = 'images/avatar.svg',
         __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],

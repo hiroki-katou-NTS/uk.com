@@ -89,7 +89,7 @@ public class CompareSingleValue<V> extends CheckedCondition {
 	}
 
 	private boolean check(Double target, Double compare) {
-		if(target == null) {
+		if(target == null || compare == null) {
 			return false;
 		}
 		switch (this.compareOpertor) {

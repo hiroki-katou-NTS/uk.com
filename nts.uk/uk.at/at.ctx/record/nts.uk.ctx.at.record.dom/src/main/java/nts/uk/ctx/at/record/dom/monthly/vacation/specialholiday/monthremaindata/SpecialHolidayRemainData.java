@@ -106,13 +106,13 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		val remainDays = inPeriod.getRemainDays();
 
 		// 実特別休暇：残数
-		SpecialLeaveRemain actualRemainBefore = new SpecialLeaveRemain(
-				new SpecialLeaveRemainDay(remainDays.getGrantDetailBefore().getRemainDays()),
+		ActualSpecialLeaveRemain actualRemainBefore = new ActualSpecialLeaveRemain(
+				new ActualSpecialLeaveRemainDay(remainDays.getGrantDetailBefore().getRemainDays()),
 				Optional.empty());
-		SpecialLeaveRemain actualRemainAfter = null;
+		ActualSpecialLeaveRemain actualRemainAfter = null;
 		if (remainDays.getGrantDetailAfter().isPresent()){
-			actualRemainAfter = new SpecialLeaveRemain(
-					new SpecialLeaveRemainDay(remainDays.getGrantDetailAfter().get().getRemainDays()),
+			actualRemainAfter = new ActualSpecialLeaveRemain(
+					new ActualSpecialLeaveRemainDay(remainDays.getGrantDetailAfter().get().getRemainDays()),
 					Optional.empty());
 		}
 		

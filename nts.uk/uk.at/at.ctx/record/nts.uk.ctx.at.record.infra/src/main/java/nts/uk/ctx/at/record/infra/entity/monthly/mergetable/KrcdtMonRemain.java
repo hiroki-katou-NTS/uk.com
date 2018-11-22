@@ -59,6 +59,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndige
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeaveRemain;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeaveRemainDay;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeave;
@@ -3560,24 +3562,24 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 					new SpecialLeavaRemainTime(beforeFactUseMinutes),
 					Optional.ofNullable(valAfterFactUseTimes));
 		}
-		SpecialLeaveRemain actualAfterRemainGrant = null;
+		ActualSpecialLeaveRemain actualAfterRemainGrant = null;
 		if (afterFactRemainDays != null){
 			SpecialLeavaRemainTime valAfterFactRemainTimes = null;
 			if (afterFactRemainMinutes != null){
 				valAfterFactRemainTimes = new SpecialLeavaRemainTime(afterFactRemainMinutes);
 			}
-			actualAfterRemainGrant = new SpecialLeaveRemain(
-					new SpecialLeaveRemainDay(afterFactRemainDays),
+			actualAfterRemainGrant = new ActualSpecialLeaveRemain(
+					new ActualSpecialLeaveRemainDay(afterFactRemainDays),
 					Optional.ofNullable(valAfterFactRemainTimes));
 		}
 		
 		// 実特別休暇
 		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(
-				new SpecialLeaveRemain(
-						new SpecialLeaveRemainDay(factRemainDays),
+				new ActualSpecialLeaveRemain(
+						new ActualSpecialLeaveRemainDay(factRemainDays),
 						Optional.ofNullable(valFactRemainTimes)),
-				new SpecialLeaveRemain(
-						new SpecialLeaveRemainDay(beforeFactRemainDays),
+				new ActualSpecialLeaveRemain(
+						new ActualSpecialLeaveRemainDay(beforeFactRemainDays),
 						Optional.ofNullable(valBeforeFactRemainTimes)),
 				new SpecialLeaveUseNumber(
 						new SpecialLeaveUseDays(

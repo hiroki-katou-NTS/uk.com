@@ -1,22 +1,37 @@
 package nts.uk.ctx.bs.employee.pubimp.employment;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentHistoryPubImp implements IEmploymentHistoryPub{
 	
+	/** The employment history item repository. */
 	@Inject
 	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
+	
+	/** The employment history repository. */
+	@Inject
+	private EmploymentHistoryRepository employmentHistoryRepo;
 	
 	@Override
 	public List<EmploymentHisOfEmployee> getEmploymentHisBySid(String sID) {
@@ -29,7 +44,30 @@ public class EmploymentHistoryPubImp implements IEmploymentHistoryPub{
 		}
 		return Collections.emptyList();
 	}
-	
-	
 
+	@Override
+	public List<EmploymentHisExport> getEmploymentHistoryItem(String cid, GeneralDate baseDate) {
+		List<EmploymentHistoryItem> historyItems = this.employmentHistoryItemRepository.getEmploymentHistoryItem(cid, baseDate);
+		List<EmploymentHisExport> output = historyItems.stream().map(c -> {
+			return new EmploymentHisExport(c.getEmployeeId(),
+					Arrays.asList(new EmploymentCodeAndPeriod(c.getHistoryId(), null, c.getEmploymentCode().v())));
+		}).collect(Collectors.toList());
+		return output;
+	}
+
+	@Override
+	public Optional<EmploymentHisExport> getEmploymentHistory(String historyId, String employmentCode) {
+		Optional<EmploymentHistory> optionaldata = this.employmentHistoryRepo.getEmploymentHistory(historyId, employmentCode);
+		if(optionaldata.isPresent()) {
+			EmploymentHistory history = optionaldata.get();
+			List<EmploymentCodeAndPeriod> lst = history.getHistoryItems().stream()
+					.map(c -> new EmploymentCodeAndPeriod(c.identifier(), new DatePeriod(c.start(), c.end()),
+							employmentCode))
+					.collect(Collectors.toList());
+			return Optional.of(new EmploymentHisExport(history.getEmployeeId(),lst));
+		}
+		return Optional.empty();
+	}
+	
+	
 }

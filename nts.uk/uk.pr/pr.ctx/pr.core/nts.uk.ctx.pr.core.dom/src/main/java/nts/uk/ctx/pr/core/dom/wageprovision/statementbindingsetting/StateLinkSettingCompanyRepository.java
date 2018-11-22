@@ -1,0 +1,20 @@
+package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
+
+import java.util.Optional;
+
+/**
+* 明細書紐付け設定（会社）
+*/
+public interface StateLinkSettingCompanyRepository {
+
+    Optional<StateLinkSettingCompany> getStateLinkSettingCompanyById(String hisId);
+    
+    Optional<StateLinkSettingCompany> getStateLinkSettingCompanyByCode(String hisId,String departmentCode);
+
+    void add(StateLinkSettingCompany domain);
+
+    void update(StateLinkSettingCompany domain);
+
+    void remove(String hisId);
+
+}

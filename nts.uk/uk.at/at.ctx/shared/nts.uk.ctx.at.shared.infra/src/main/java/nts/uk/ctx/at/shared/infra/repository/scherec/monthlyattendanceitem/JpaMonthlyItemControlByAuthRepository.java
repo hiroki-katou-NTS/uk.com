@@ -133,10 +133,12 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 			List<Integer> itemMonthlyIDs, int toUse) {
 		List<DisplayAndInputMonthly> data = new ArrayList<>();
 		CollectionUtil.split(itemMonthlyIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try {
-				PreparedStatement statement = this.connection().prepareStatement(
+			try (PreparedStatement statement = this.connection().prepareStatement(
 						"SELECT * from KSHST_MON_SER_TYPE_CTR h"
-						+ " WHERE h.CID = ? and h.AUTHORITY_MON_ID = ? AND h.USE_ATR = ?  AND h.ITEM_MONTHLY_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+						+ " WHERE h.CID = ?"
+						+ " and h.AUTHORITY_MON_ID = ?"
+						+ " AND h.USE_ATR = ?"
+						+ " AND h.ITEM_MONTHLY_ID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setString(1, companyID);
 				statement.setString(2, authorityMonthlyId);
 				statement.setInt(3, toUse);

@@ -106,6 +106,6 @@ public interface SpecialLeaveManagementService {
 	 * @param grantDetailBefore
 	 * @return
 	 */
-	SpecialHolidayRemainInfor grantDetailAfter(List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails, SpecialHolidayRemainInfor grantDetailAfter);
+	InPeriodOfSpecialLeave grantDetailAfter(SpecialHolidayRemainInfor grantDetailAfter, InPeriodOfSpecialLeave getOffsetDay);
 	
 }

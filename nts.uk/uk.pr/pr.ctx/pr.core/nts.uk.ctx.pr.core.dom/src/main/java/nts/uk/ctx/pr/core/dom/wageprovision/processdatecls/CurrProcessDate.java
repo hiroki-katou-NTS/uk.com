@@ -31,7 +31,7 @@ public class CurrProcessDate extends AggregateRoot {
 		super();
 		this.cid = cid;
 		this.processCateNo = processCateNo;
-		this.giveCurrTreatYear =new YearMonth(giveCurrTreatYear);
+		this.giveCurrTreatYear = new YearMonth(giveCurrTreatYear);
 	}
 
 }

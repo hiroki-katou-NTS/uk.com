@@ -30,5 +30,10 @@ public class FunctionAuthWebservice extends WebService {
 	public List<PersonInfoAuthDto> getAllFunctionAuth(String roleId) {
 		return authFinder.getListAuthWithRole(roleId);
 	}
-
+	
+	@POST
+	@Path("find-with-role-person-info")
+	public PersonInfoAuthDto getAllFunctionAuthByPersonInfo() {
+		return authFinder.getAllFunctionAuthByPersonInfo();
+	}
 }
