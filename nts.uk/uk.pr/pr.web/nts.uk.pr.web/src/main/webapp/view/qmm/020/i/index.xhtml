@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 1000,
+                height : 600
+            };
+        </script>
+        <!--<com:ValidatorScript>-->
+
+        <!--</com:ValidatorScript>-->
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:stylefile path="qmm020.i.style.css" />
+        <com:scriptfile path="qmm020.i.service.js" />
+        <com:scriptfile path="qmm020.i.vm.js" />
+        <com:scriptfile path="qmm020.i.start.js" />
+        <!--include ccg001-->
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+    </ui:define>
+    <ui:define name="content">
+            <div id="contents-area">
+                <div id="com-ccg001"></div>
+                <table style="width: 97% ; height: 100% ;">
+                    <tr style="">
+                        <td style="width: 10%"></td>
+                        <td style="width: 40%"><div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_47')}</div></td>
+                        <td style="width: 25%">i1_3, <span>#{i18n.getText('QMM020_48')}</span></td>
+                        <td style="width: 25%; text-align: right">
+                            <span>#{i18n.getText('QMM020_12')}</span>
+                            <button id="help" class="small" data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'right top', enable: true }">?</button>
+                        </td>
+                    </tr>
+                    <tr style="">
+                        <td></td>
+                        <td colspan="3">
+                            <div class="set-row" style="width: 100%">
+                                <hr/>
+                            </div>
+                            <table id="fixed-table" style="">
+                                <colgroup>
+                                    <col width="10%"/>
+                                    <col width="20%"/>
+                                    <col width="10%"/>
+                                    <col width="15%"/>
+                                    <col width="55%"/>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th class="ui-widget-header">依頼者</th>
+                                    <th class="ui-widget-header">所属職場コード</th>
+                                    <th class="ui-widget-header">所属職場名</th>
+                                    <th class="ui-widget-header">職位</th>
+                                    <th class="ui-widget-header">代行開始日</th>
+                                </tr>
+                                </thead>
+                                <tbody data-bind="">
+                                <tr>
+                                    <td>2017/08/08</td>
+                                    <td>2017/08/08</td>
+                                    <td>就業承認</td>
+                                    <td>000000000001</td>
+                                    <td>HoangNK</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td></td>
+                        <td colspan="3" style="text-align: center">
+                            <div class="set-row" style="width: 100%">
+                                <hr/>
+                            </div>
+                            <button id="I3_1" tabindex="3" data-bind="click: cancel, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_344')}</button>
+                        </td>
+
+                    </tr>
+
+
+                </table>
+
+            </div>
+
+
+    </ui:define>
+</ui:composition>
+</body>
+</html>

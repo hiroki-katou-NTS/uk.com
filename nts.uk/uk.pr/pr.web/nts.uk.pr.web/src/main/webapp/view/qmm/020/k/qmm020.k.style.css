@@ -1,0 +1,15 @@
+#A{
+    margin-left: 100px;
+    margin-top: 8px;
+}
+
+.sidebar-content{
+    overflow:inherit !important;
+}
+.ntsRadioBox {
+    margin-bottom: 10px;
+}
+#center {
+    margin: auto;
+    padding: 10px;
+}

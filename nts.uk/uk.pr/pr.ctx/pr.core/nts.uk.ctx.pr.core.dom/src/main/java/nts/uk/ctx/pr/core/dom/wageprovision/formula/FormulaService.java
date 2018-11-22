@@ -1,18 +1,28 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
+<<<<<<< HEAD
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+=======
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.context.AppContexts;
+>>>>>>> pj/pr/team_G/QMM019
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.stream.Collectors;
+>>>>>>> pj/pr/team_G/QMM019
 
 @Stateless
 public class FormulaService {
 
     @Inject
+<<<<<<< HEAD
     private FormulaRepository formulaRepository;
 
     @Inject
@@ -91,6 +101,20 @@ public class FormulaService {
                 return;
             }
         });
+=======
+    private FormulaRepository formulaRepo;
+
+    @Inject
+    private FormulaHistRepository formulaHistRepo;
+
+    public List<Formula> getFormulaByYearMonth(YearMonth yearMonth) {
+        String cid = AppContexts.user().companyId();
+        // ドメインモデル「計算式履歴」を取得する
+        List<String> formulaCodes = formulaHistRepo.getFormulaHistByYearMonth(cid, yearMonth)
+                .stream().map(x -> x.getFormulaCode().v()).collect(Collectors.toList());
+        // ドメインモデル「計算式」を取得する
+        return formulaRepo.getFormulaByCodes(cid, formulaCodes);
+>>>>>>> pj/pr/team_G/QMM019
     }
 
 }
