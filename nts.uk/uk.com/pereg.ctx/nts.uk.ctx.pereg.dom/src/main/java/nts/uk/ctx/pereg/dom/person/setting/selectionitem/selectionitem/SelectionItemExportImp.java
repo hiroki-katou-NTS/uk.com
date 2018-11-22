@@ -21,7 +21,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 @Stateless
-@DomainID("EmployeeSystem")
+@DomainID("SelectionItem")
 public class SelectionItemExportImp implements MasterListData {
 	
 	private String CPS016_27 = "名称";
@@ -39,20 +39,19 @@ public class SelectionItemExportImp implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(CPS016_27, TextResource.localize("CPS016_27"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(CPS016_28, TextResource.localize("CPS016_28"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(CPS016_29, TextResource.localize("CPS016_29"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(CPS016_30, TextResource.localize("CPS016_30"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(CPS016_31, TextResource.localize("CPS016_31"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(CPS016_32, TextResource.localize("CPS016_32"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(CPS016_33, TextResource.localize("CPS016_33"),
-				ColumnTextAlign.CENTER, "", true));
-		
+		        ColumnTextAlign.LEFT, "", true));
+		        columns.add(new MasterHeaderColumn(CPS016_28, TextResource.localize("CPS016_28"),
+		        ColumnTextAlign.LEFT, "", true));
+		        columns.add(new MasterHeaderColumn(CPS016_29, TextResource.localize("CPS016_29"),
+		        ColumnTextAlign.RIGHT, "", true));
+		        columns.add(new MasterHeaderColumn(CPS016_30, TextResource.localize("CPS016_30"),
+		        ColumnTextAlign.RIGHT, "", true));
+		        columns.add(new MasterHeaderColumn(CPS016_31, TextResource.localize("CPS016_31"),
+		        ColumnTextAlign.RIGHT, "", true));
+		        columns.add(new MasterHeaderColumn(CPS016_32, TextResource.localize("CPS016_32"),
+		        ColumnTextAlign.LEFT, "", true));
+		        columns.add(new MasterHeaderColumn(CPS016_33, TextResource.localize("CPS016_33"),
+		        ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
 	

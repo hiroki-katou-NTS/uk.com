@@ -6,7 +6,8 @@ module nts.uk.com.view.cas001.a.service {
         getCategoryAuth: "/ctx/pereg/roles/auth/category/find/{0}/{1}",
         getPersonRoleItemList: "/ctx/pereg/roles/auth/item/findAllItem/{0}/{1}",
         savePersonRole: "/ctx/pereg/roles/auth/save",
-        getAllItemIdRequired: "ctx/pereg/person/info/ctgItem/layout/findAll/required"
+        getAllItemIdRequired: "ctx/pereg/person/info/ctgItem/layout/findAll/required",
+        saveAsExcel: "file/at/personrole/saveAsExcel"
     }
     
     export function getCategoryRoleList(roleID) {
@@ -28,6 +29,9 @@ module nts.uk.com.view.cas001.a.service {
 
     export function getAllItemIdRequired(){
        return ajax(paths.getAllItemIdRequired);
+    }
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonRole", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
     }
 
 }

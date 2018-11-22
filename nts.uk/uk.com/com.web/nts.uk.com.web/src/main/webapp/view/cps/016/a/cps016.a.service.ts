@@ -42,6 +42,6 @@ module nts.uk.com.view.cps016.a.service {
         return nts.uk.request.ajax("com", _path);
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "EmployeeSystem", domainType: "就業システム", languageId: languageId, reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SelectionItem", domainType: "就業システム", languageId: languageId, reportType: 0});
     }
 }

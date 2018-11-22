@@ -22,6 +22,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import block = nts.uk.ui.block;
     
     export class ScreenModel {
+        langId: KnockoutObservable<string> = ko.observable('ja');
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "0001", 
         roleCode: "001", name: "A", 
@@ -214,7 +215,20 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
             });
         }
+        
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
 
+        
         openCModal() {
 
             let self = this,
