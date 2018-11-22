@@ -4,7 +4,7 @@ package nts.uk.ctx.sys.gateway.dom.stopbycompany;
  * システム利用状態
  * @author sonnlb
  */
-public enum UsageStopModeType {
+public enum StopModeType {
 
 	/**
 	 * 担当者モード
@@ -17,7 +17,7 @@ public enum UsageStopModeType {
 
 	public final int value;
 
-	private UsageStopModeType(int value) {
+	private StopModeType(int value) {
 		this.value = value;
 	}
 
