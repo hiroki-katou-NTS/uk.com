@@ -32,7 +32,7 @@ public class StopByCompanyDto {
 
 	public static StopByCompanyDto fromDomain(StopByCompany domain) {
 		return new StopByCompanyDto(domain.getContractCd(), domain.getCompanyCd(), domain.getUsageStopMode().value,
-				domain.getUsageStopMessage(), domain.getSystemStatus().value, domain.getStopMessage());
+				domain.getUsageStopMessage().v(), domain.getSystemStatus().value, domain.getStopMessage().v());
 
 	}
 }
