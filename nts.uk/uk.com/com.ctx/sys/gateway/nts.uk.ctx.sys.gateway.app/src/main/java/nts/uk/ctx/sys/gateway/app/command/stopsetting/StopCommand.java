@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.stopsetting.stopbysystem;
+package nts.uk.ctx.sys.gateway.app.command.stopsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StopBySystemCommand {
-	/** 契約コード */
-	private String contractCd;
+public class StopCommand {
 
 	/** システム利用状態 */
 	private Integer systemStatus;
