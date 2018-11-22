@@ -76,22 +76,27 @@
                             </div>
                             <div style = "margin-left: 115px;">
                                 <!--E3_4; E2_5-->
-                                <div data-bind = "visible: standardAmountClassification() != 0">
+                                <div data-bind = "if: standardAmountClassification() != 0">
                                     <button data-bind = "click: function(){$vm.selectTargetItem()}" tabindex = "4">#{i18n.getText('QMM017_107')}</button>
                                     <input data-bind="ntsNumberEditor: {
                                 value: $vm.baseAmountTargetItem,
                                 enable: false}" />
                                 </div>
                                 <!--E2_6-->
-                                <div style = "height: 33px;"  data-bind = "visible: standardAmountClassification() == 0">
-                                    <input tabindex="5" data-bind="ntsNumberEditor: {
-                                        value: standardFixedValue,
-                                        constraint: 'BasePriceFixedAmount',
-                                        name: '#[QMM017_108]',
-                                        required: true}" />
+                                <div  data-bind = "if: standardAmountClassification() == 0">
+                                    <div style = "height: 33px;" >
+                                        <input tabindex="5" data-bind="ntsNumberEditor: {
+                                            value: standardFixedValue,
+                                            option: {
+                                                unitID: 'JPY'
+                                            },
+                                            constraint: 'BasePriceFixedAmount',
+                                            name: '#[QMM017_108]',
+                                            required: true}" />
+                                    </div>
                                 </div>
                             </div>
-                            <div style="margin-top: 10px;" data-bind = "visible: formulaType() == 2">
+                            <div style="margin-top: 10px;" data-bind = "if: formulaType() == 2">
                                 <!--E3_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_110')}</div>
@@ -119,7 +124,7 @@
                                         required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; " data-bind = "visible: formulaType() == 1">
+                            <div style="margin-top: 10px; " data-bind = "if: formulaType() == 1">
                                 <!--E4_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true, constraint: 'PremiumRate'}">#{i18n.getText('QMM017_113')}</div>
@@ -135,7 +140,7 @@
                                         required: true}" />
                                 </div>
                             </div>
-                            <div style="margin-top: 10px;" data-bind = "visible: formulaType() == 1">
+                            <div style="margin-top: 10px;" data-bind = "if: formulaType() == 1">
                                 <!--E5_1-->
                                 <div style="width: 110px; display: inline-block;"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_115')}</div>

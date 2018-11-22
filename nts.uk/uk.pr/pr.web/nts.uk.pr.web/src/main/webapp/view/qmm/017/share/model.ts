@@ -649,7 +649,7 @@ module nts.uk.pr.view.qmm017.share.model {
         basicCalculationFormula: KnockoutObservable<number> = ko.observable(null);
         standardAmountClassification: KnockoutObservable<number> = ko.observable(null);
         standardFixedValue: KnockoutObservable<number> = ko.observable(null);
-        targetItemCodeList: Array<string> = [];
+        targetItemCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
         attendanceItem: KnockoutObservable<string> = ko.observable(null);
         coefficientClassification: KnockoutObservable<number> = ko.observable(null);
         coefficientFixedValue: KnockoutObservable<number> = ko.observable(null);
@@ -691,7 +691,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.coefficientClassification(params ? params.coefficientClassification : null);
             this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
             this.historyID(params ? params.historyID : null);
-            this.targetItemCodeList = params ? params.targetItemCodeList : [];
+            this.targetItemCodeList(params ? params.targetItemCodeList : []);
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
             }, this);
@@ -699,6 +699,10 @@ module nts.uk.pr.view.qmm017.share.model {
                 if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1) return "../resource/QMM017_1.png";
                 if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_2) return "../resource/QMM017_2.png";
                 return "../resource/QMM017_3.png";
+            }, this);
+            ko.computed(function() {
+                this.formulaType(), this.standardAmountClassification(), this.baseItemClassification(), this.coefficientClassification(), this.adjustmentClassification();
+                nts.uk.ui.errors.clearAll();
             }, this);
         }
     }

@@ -28,7 +28,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
         basicFormulaSetting: KnockoutObservable<model.BasicFormulaSetting> = ko.observable(new model.BasicFormulaSetting(null));
         detailFormulaSetting: KnockoutObservable<model.DetailFormulaSetting> = ko.observable(new model.DetailFormulaSetting(null));
+        // for case screen C
         basicCalculationFormulaList: KnockoutObservableArray<model.BasicCalculationFormula> = ko.observableArray([]);
+        // fixed formula
+        fixedBasicCalculationFormula: KnockoutObservable<model.BasicCalculationFormula> = ko.observable(new model.BasicCalculationFormula(null));
 
         // tab 2, screen D
         screenDViewModel = new nts.uk.pr.view.qmm017.d.viewmodel.ScreenModel();
@@ -37,6 +40,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         screenDSelectedTab: KnockoutObservable<string>;
         constructor() {
             var self = this;
+            self.initFixedElement();
             self.initTabPanel();
             self.initComponents();
             self.doFirstFocus();
@@ -53,6 +57,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.changeToNewMode();
                 }
             });
+        }
+
+        initFixedElement () {
+            var self = this;
+            // fixed formula, master use code: 0000000000
+            self.fixedBasicCalculationFormula().masterUseCode("0000000000");
         }
 
         initComponents () {
@@ -441,19 +451,23 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         doMasterConfiguration () {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_PARAMS", {originalScreen: 'B'});
+            setShared("QMM017_E_PARAMS", {basicCalculationFormula: ko.toJS(self.fixedBasicCalculationFormula), originalScreen: 'B'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
-
+                let params = getShared("QMM017_E_RES_PARAMS");
+                if (params) self.fixedBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
             });
 
         };
-        doConfiguration () {
+        doConfiguration (index) {
             let self = this;
             let self = this;
             // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_PARAMS", {originalScreen: 'C', basicCalculationFormula: this});
+            setShared("QMM017_E_PARAMS", {fixedBasicCalculationFormula: ko.toJS(self.fixedBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList[index]), originalScreen: 'C', basicCalculationFormula: this});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
-
+                let params = getShared("QMM017_E_RES_PARAMS");
+                if (params){
+                    self.basicCalculationFormulaList.replace(self.basicCalculationFormulaList[index], new model.BasicCalculationFormula(params.basicCalculationFormula));
+                }
             });
 
         };

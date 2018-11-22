@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm017.f.viewmodel {
             if (params) {
                 self.basicCalculationFormula = params.basicCalculationFormula;
                 self.targetItemCodeList(params.basicCalculationFormula.targetItemCodeList);
+                self.targetItemCodeListItem(params.targetItemCodeListItem);
             }
         }
 
