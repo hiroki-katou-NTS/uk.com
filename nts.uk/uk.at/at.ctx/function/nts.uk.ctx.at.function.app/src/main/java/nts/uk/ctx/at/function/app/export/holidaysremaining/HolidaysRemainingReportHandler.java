@@ -19,6 +19,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
@@ -56,7 +57,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
-//import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -106,8 +106,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private VariousVacationControlService variousVacationControlService;
 	@Inject
 	private CompanyAdapter companyRepo;
-//	@Inject
-//	private ManagedParallelWithContext parallel;
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -307,7 +307,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		Map<Integer, SpecialVacationImported> tmpCurrMon = Collections.synchronizedMap(new HashMap<Integer, SpecialVacationImported>());
 		Map<Integer, SpecialVacationImported> tmpSpeVaca = Collections.synchronizedMap(new HashMap<Integer, SpecialVacationImported>());
 		Map<Integer, List<SpecialHolidayImported>> tmpSpeHd = Collections.synchronizedMap(new HashMap<Integer, List<SpecialHolidayImported>>());
-		for (val specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
+		parallel.forEach(variousVacationControl.getListSpecialHoliday(), specialHolidayDto ->{
 			int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
 			// Call RequestList273
 			SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
@@ -329,7 +329,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
 	            tmpCurrMon.put(sphdCode, spVaImported);
 			}
-		}
+		});
 		//convert
 		// RequestList273
 		Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.annualleave;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,9 +11,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
@@ -84,6 +87,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	/** 社員 */
 	@Inject
 	private EmpEmployeeAdapter empEmployee;
+	@Inject
+	private ManagedParallelWithContext parallel;
 	
 	/** 年休付与テーブル設定 */
 //	@Inject
@@ -199,20 +204,21 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				listClosurePeriodEachYear.add(new ClosurePeriodEachYear(item.getKey(), new DatePeriod(start, end)));
 			}
 
-			List<AggrResultOfAnnualLeaveEachMonth> result = new ArrayList<AggrResultOfAnnualLeaveEachMonth>();
-
-			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = Optional.empty();
-			for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
+			MutableValue<AggrResultOfAnnualLeave> aggrResult = new MutableValue<>();
+			List<AggrResultOfAnnualLeaveEachMonth> tmp = Collections.synchronizedList(new ArrayList<>());
+			parallel.forEach(listClosurePeriodEachYear, item -> {
 				// 期間中の年休残数を取得
-				aggrResultOfAnnualLeave = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
+				Optional<AggrResultOfAnnualLeave> arrTmp = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 						item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, false,
-						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, Optional.empty());
+						Optional.empty(), Optional.empty(), aggrResult.optional(), Optional.empty());
+				aggrResult.set(arrTmp.isPresent() ? arrTmp.get() : null);
 				// 結果をListに追加
-				if (aggrResultOfAnnualLeave.isPresent()) {
-					result.add(
-							new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResultOfAnnualLeave.get()));
+				if (arrTmp.isPresent()) {
+					tmp.add(new AggrResultOfAnnualLeaveEachMonth(item.getYearMonth(), aggrResult.get()));
 				}
-			}
+			});
+			List<AggrResultOfAnnualLeaveEachMonth> result = new ArrayList<AggrResultOfAnnualLeaveEachMonth>();
+			result.addAll(tmp);
 			return result;
 		} catch (Exception e) {
 			return null;

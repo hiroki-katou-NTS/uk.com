@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
@@ -51,6 +52,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	private SpecialHolidayRepository holidayRepo;
 	@Inject
 	private SpecialLeaveBasicInfoRepository leaveBasicInfoRepo;
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	@Override
 	public InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param) {
@@ -553,9 +556,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//パラメータ．特別休暇の残数．未消化数=未消化数
 		useInfor.setUnDisgesteDays(undigested);
 		//特別休暇付与残数データ一覧を特別休暇パラメータに追加する
-		List<SpecialLeaveGrantDetails> lstSpecialLeaveGrantDetails = new ArrayList<>();
 		Map<GeneralDate, Double> limitDays = adjustCarryForward.getMapGrantDays();
-		expiredData.getLstGrantData().forEach(x -> {
+		List<SpecialLeaveGrantDetails> lstTmp = Collections.synchronizedList(new ArrayList<>());
+		parallel.forEach( expiredData.getLstGrantData(), x -> {
 			SpecialLeaveGrantDetails grantDetail = new SpecialLeaveGrantDetails();
 			grantDetail.setCode(x.getSpecialLeaveCode().v());
 			Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(x.getSpecialId());
@@ -594,9 +597,11 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					&& grantNumberData.getTimeOfGrant().get() != null
 					? Optional.of(grantNumberData.getTimeOfGrant().get().v()) : Optional.empty());
 			grantDetail.setDetails(inforSevice);
-			lstSpecialLeaveGrantDetails.add(grantDetail);
+			lstTmp.add(grantDetail);
 		});
-		return new InPeriodOfSpecialLeave(lstSpecialLeaveGrantDetails, useInfor, subtractUseDays.getSpeLeaveResult().getUseOutPeriod(), Collections.emptyList());
+		List<SpecialLeaveGrantDetails> lstSpeLeaGrant = new ArrayList<>();
+		lstSpeLeaGrant.addAll(lstTmp);
+		return new InPeriodOfSpecialLeave(lstSpeLeaGrant, useInfor, subtractUseDays.getSpeLeaveResult().getUseOutPeriod(), Collections.emptyList());
 	}
 
 	@Override

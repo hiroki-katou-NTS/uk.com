@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AsbRemainTotalInfor;
@@ -47,23 +49,30 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	private ComDayOffManaDataRepository leaveDayOffRepo;
 	@Inject
 	private LeaveComDayOffManaRepository typingConfirmMng;
+	@Inject
+	private ManagedParallelWithContext parallel;
+	
 	@Override
 	public List<InterimRemainAggregateOutputData> getInterimRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
-		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
+		
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
 		if(closureData == null) {
-			return lstData;
+			return new ArrayList<>();
 		}
 		//残数算出対象年月を設定する
-		
-		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
+		List<YearMonth> lstYM = new ArrayList<>();
+		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)){
+			lstYM.add(ym);
+		}
+		List<InterimRemainAggregateOutputData> lstTmp = Collections.synchronizedList(new ArrayList<>());
+		parallel.forEach(lstYM, ym -> {
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, 0, 0, 0, 0, 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
 			if(dateData == null) {
-				continue;
+				return;
 			}
 			//アルゴリズム「期間内の代休発生数合計を取得」を実行する
 			double occurrentDays = this.getTotalOccurrenceDays(employeeId, dateData);
@@ -81,8 +90,10 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				//月末代休残数：月初代休残数＋代休発生数合計－代休使用数合計－代休消滅数合計
 				outPutData.setMonthEndRemain(outPutData.getMonthStartRemain() + occurrentDays - useDays - outPutData.getMonthExtinction());
 			}
-			lstData.add(outPutData);
-		}
+			lstTmp.add(outPutData);
+		});
+		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
+		lstData.addAll(lstTmp);
 		return lstData;
 	}
 	@Override

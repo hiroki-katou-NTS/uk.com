@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
@@ -17,6 +19,9 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 	private MonthlyDayoffRemainDataRepository remainDataRepos;
 	@Inject
 	private RemainMergeRepository repoRemainMer;
+	@Inject
+	private ManagedParallelWithContext parallel;
+	
 	@Override
 	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
@@ -70,13 +75,17 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 	@Override
 	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
-		List<DayoffCurrentMonthOfEmployee> lstOutput = new ArrayList<DayoffCurrentMonthOfEmployee>();
+		List<DayoffCurrentMonthOfEmployee> lstTmp = Collections.synchronizedList(new ArrayList<>());
+		List<YearMonth> lstYM = new ArrayList<>();
+		for(YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)){
+			lstYM.add(ym);
+		}
 		//年月期間．開始年月から終了年月まで1か月ずつループ
-		for (YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)) {			
+		parallel.forEach(lstYM, ym -> {			
 			//ドメインモデル「代休月別残数データ」を取得
 			List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus = repoRemainMer.findByYearMonthRQ259(employeeId, ym);
 			if(getDayOffDataBySidYmStatus.isEmpty()) {
-				continue;
+				return;
 			}
 			DayoffCurrentMonthOfEmployee dataOutput = new DayoffCurrentMonthOfEmployee(employeeId, ym, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
@@ -111,11 +120,11 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 				if(data.getUnUsedDayTimes().getTime().isPresent()) {
 					dataOutput.setUnUsedTimes(dataOutput.getUnUsedTimes() + data.getUnUsedDayTimes().getTime().get().v());	
 				}
-				
 			}
-			lstOutput.add(dataOutput);
-		}
+			lstTmp.add(dataOutput);
+		});
+		List<DayoffCurrentMonthOfEmployee> lstOutput = new ArrayList<DayoffCurrentMonthOfEmployee>();
+		lstOutput.addAll(lstTmp);
 		return lstOutput;
 	}
-
 }
