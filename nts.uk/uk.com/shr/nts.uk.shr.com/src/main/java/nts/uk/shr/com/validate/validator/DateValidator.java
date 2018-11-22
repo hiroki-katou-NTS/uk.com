@@ -17,7 +17,18 @@ public class DateValidator {
 	private static final Pattern datePattern = Pattern
 			.compile("^\\d{4}\\/(0?[1-9]|1[012])\\/(0?[1-9]|[12][0-9]|3[01])$");
 
-	public static Optional<String> validate(DateConstraint constraint, String stringValue) {
+	public static Optional<String> validate(DateConstraint constraint, ValueWithType value) {
+		switch (value.getType()) {
+		case TEXT:
+			return this.validateString();
+		case DATE:
+			return Optional.empty();
+		default:
+			return Optional.of(ErrorIdFactory.DateErrorId);
+		}
+	}
+
+	private static Optional<String> validateString(DateConstraint constraint, String stringValue) {
 
 		if (stringValue.isEmpty()) {
 			return Optional.empty();
