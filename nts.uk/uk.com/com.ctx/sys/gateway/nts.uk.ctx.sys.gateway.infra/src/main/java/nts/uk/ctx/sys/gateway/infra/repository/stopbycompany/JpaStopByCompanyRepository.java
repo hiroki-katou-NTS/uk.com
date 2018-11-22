@@ -25,8 +25,8 @@ public class JpaStopByCompanyRepository extends JpaRepository implements StopByC
 
 	private SgwdtStopByCompany toEntity(StopByCompany domain) {
 		SgwdtStopByCompanyPK pk = new SgwdtStopByCompanyPK(domain.getContractCd(), domain.getCompanyCd());
-		return new SgwdtStopByCompany(pk, domain.getUsageStopMode().value, domain.getUsageStopMessage(),
-				domain.getSystemStatus().value, domain.getStopMessage());
+		return new SgwdtStopByCompany(pk, domain.getUsageStopMode().value, domain.getUsageStopMessage().v(),
+				domain.getSystemStatus().value, domain.getStopMessage().v());
 	}
 
 	@Override

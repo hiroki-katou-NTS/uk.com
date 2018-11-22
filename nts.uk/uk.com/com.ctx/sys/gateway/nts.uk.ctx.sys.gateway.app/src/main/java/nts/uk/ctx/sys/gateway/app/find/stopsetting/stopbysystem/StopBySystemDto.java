@@ -25,9 +25,10 @@ public class StopBySystemDto {
 
 	/** 停止予告のメッセージ */
 	private String stopMessage;
-	
+
 	public static StopBySystemDto fromDomain(StopBySystem domain) {
-	return new StopBySystemDto(domain.getContractCd(), domain.getUsageStopMode().value, domain.getUsageStopMessage(), domain.getSystemStatus().value, domain.getStopMessage());
-		
+		return new StopBySystemDto(domain.getContractCd(), domain.getUsageStopMode().value,
+				domain.getUsageStopMessage().v(), domain.getSystemStatus().value, domain.getStopMessage().v());
+
 	}
 }
