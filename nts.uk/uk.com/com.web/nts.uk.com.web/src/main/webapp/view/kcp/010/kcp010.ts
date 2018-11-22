@@ -7,7 +7,7 @@ module kcp010.viewmodel {
     export class ScreenModel {
         wkpList: KnockoutObservableArray<WorkplaceModel>;
         targetBtnText: string;
-
+        flag: boolean = true;
         selectedItem: KnockoutObservable<string>;
         workplaceId: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
@@ -52,6 +52,12 @@ module kcp010.viewmodel {
             service.findWorkplaceTree(self.systemDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
                     self.wkpList(self.convertTreeToArray(dataList));
+                    
+                    if(self.flag){
+                        self.flag = false;
+                        self.getWorkplaceBySid();
+                    }
+                    
                     self.tabIndex = data.tabIndex;
                     if (self.wkpList().length > 1) {
                         self.wkpList().sort(function(left, right) {
@@ -347,7 +353,6 @@ interface JQuery {
     $.fn.ntsLoadListComponent = function(option: kcp010.viewmodel.ComponentOption): kcp010.viewmodel.ScreenModel {
         var modelkcp010 = new kcp010.viewmodel.ScreenModel();
         modelkcp010.init(this, option);
-        modelkcp010.getWorkplaceBySid();
         // Return.
         return modelkcp010;
     }
