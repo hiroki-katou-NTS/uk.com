@@ -19,8 +19,15 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator ORDER BY f.periodStartYm DESC";
     private static final String SELECT_BY_KEY_STRING_DISPLAY = SELECT_ALL_QUERY_STRING + " WHERE f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId AND f.salBonusCate = :salBonusCate AND f.cateIndicator = :cateIndicator and f.periodStartYm <= :currentProcessYearMonth and f.periodEndYm >= :currentProcessYearMonth ORDER BY f.periodStartYm DESC";
-    private static final String SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT = " SELECT f.salIndAmountHisPk.empId, f.salIndAmountHisPk.historyId, f.periodStartYm , f.periodEndYm , s.amountOfMoney FROM QpbmtSalIndAmountHis f LEFT JOIN QpbmtSalIndAmount s ON s.salIndAmountPk.historyId = f.salIndAmountHisPk.historyId " +
-            "WHERE f.salIndAmountHisPk.perValCode =:perValCode AND f.salIndAmountHisPk.empId IN :empId AND  f.cateIndicator =:cateIndicator AND f.salBonusCate=:salBonusCate ";
+    private static final String SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT =
+            " SELECT f.salIndAmountHisPk.empId, f.salIndAmountHisPk.historyId, f.periodStartYm , f.periodEndYm , s.amountOfMoney " +
+             " FROM QpbmtSalIndAmountHis f LEFT JOIN QpbmtSalIndAmount s ON s.salIndAmountPk.historyId = f.salIndAmountHisPk.historyId " +
+            " WHERE f.salIndAmountHisPk.perValCode =:perValCode " +
+            " AND f.salIndAmountHisPk.empId IN :empId " +
+            " AND f.cateIndicator =:cateIndicator" +
+            " AND f.periodStartYm <=:standardYearMonth" +
+            " AND f.periodEndYm >=:standardYearMonth" +
+            " AND f.salBonusCate=:salBonusCate ";
     private static final String UPDATE_OLD_HISTORY=" UPDATE QpbmtSalIndAmountHis f set f.periodEndYm =:periodEndYm WHERE f.salIndAmountHisPk.historyId =:historyId ";
 
     private Optional<SalIndAmountHis> toDomain(List<QpbmtSalIndAmountHis> entity) {
@@ -69,18 +76,15 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     }
 
     @Override
-    public List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, List<String> empIds) {
+    public List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, int standardYearMonth, List<String> empIds) {
         List<Object[]> data = this.queryProxy().query(SELECT_ALL_SAL_IND_AMOUNT_HIS_AND_SAL_AMOUNT, Object[].class)
                 .setParameter("perValCode", perValCode)
                 .setParameter("cateIndicator", cateIndicator)
                 .setParameter("salBonusCate", salBonusCate)
+                .setParameter("standardYearMonth", standardYearMonth)
                 .setParameter("empId", empIds)
                 .getList();
-
-        List<PersonalAmount> personalAmount = data.stream().map(x -> new PersonalAmount(x[0].toString(), x[1].toString(), "", "", (Integer) x[2], (Integer) x[3], (Long) x[4])).collect(Collectors.toList());
-
-        return personalAmount;
-
+        return data.stream().map(x -> new PersonalAmount(x[0].toString(), x[1].toString(), "", "", (Integer) x[2], (Integer) x[3], (Long) x[4])).collect(Collectors.toList());
     }
 
     @Override
@@ -88,8 +92,6 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
         this.getEntityManager().createQuery(UPDATE_OLD_HISTORY,QpbmtSalIndAmountHis.class)
                 .setParameter("periodEndYm",newEndMonthOfOldHistory)
                 .setParameter("historyId",historyId).executeUpdate();
-
-
     }
 
     @Override
