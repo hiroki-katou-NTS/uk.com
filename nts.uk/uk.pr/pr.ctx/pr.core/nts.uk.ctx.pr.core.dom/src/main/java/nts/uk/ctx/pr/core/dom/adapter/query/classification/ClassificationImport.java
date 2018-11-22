@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.adapter.employee;
+package nts.uk.ctx.pr.core.dom.adapter.query.classification;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
