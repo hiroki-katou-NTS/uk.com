@@ -79,15 +79,15 @@ public class GetAgreementTimeProc {
 		if (aggrPeriod == null) return results;
 		
 		CopyOnWriteArrayList<String> errorMessages = new CopyOnWriteArrayList<>();
-		for (val employeeId : employeeIds){
-			if (errorMessages.size() > 0) break;
+		this.repositories.getParallel().forEach(employeeIds, employeeId -> {
+			if (errorMessages.size() > 0) return;
 			
 			// 月別集計で必要な社員別設定を取得
 			MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(
 					companyId, employeeId, aggrPeriod, this.repositories);
 			if (employeeSets.getErrorInfos().size() > 0){
 				errorMessages.add(employeeSets.getErrorInfos().values().stream().findFirst().get().v());
-				break;
+				return;
 			}
 			
 			// 36協定時間一覧を作成
@@ -115,7 +115,7 @@ public class GetAgreementTimeProc {
 				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null,
 						confirmed.getConfirmedErrorMessage());
 				results.add(employeeError);
-				continue;
+				return;
 			}
 			
 			// 社員の申請を反映　（反映結果の取得）
@@ -129,7 +129,7 @@ public class GetAgreementTimeProc {
 			
 			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect, null);
 			results.add(aggrTimeDetail);
-		}
+		});
 		
 		return results;
 	}

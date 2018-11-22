@@ -360,6 +360,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 let param = getShared('QMM007_C_PARAMS_OUTPUT');
                 if(param){
                     self.createGridList().done(()=>{
+
                         if(param.methodEditing === EDIT_METHOD.DELETE){
                             if(self.dataSource().length == 0) {
                                 self.create();
@@ -374,6 +375,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             }
 
                         }else{
+                          /*  let temp = self.singleSelectedCode();
+                            self.singleSelectedCode('');
+                            self.singleSelectedCode(temp);*/
+                            service.getPayrollUnitPriceHistoryByCidCode(code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>) => {
+                                self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
+                            });
                             self.newYearMonth(param.startYearMonth);
                             self.yearMonth(self.newYearMonth());
                         }

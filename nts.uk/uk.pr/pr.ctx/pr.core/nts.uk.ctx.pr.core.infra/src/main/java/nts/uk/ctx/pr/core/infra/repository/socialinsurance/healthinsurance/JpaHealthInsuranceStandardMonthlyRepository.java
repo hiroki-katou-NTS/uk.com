@@ -44,18 +44,19 @@ public class JpaHealthInsuranceStandardMonthlyRepository extends JpaRepository i
      * @param details List<QpbmtHealthInsuranceStandardGradePerMonth>
      * @return HealthInsuranceStandardMonthly
      */
-    private HealthInsuranceStandardMonthly toDomainHealth (List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
+    private HealthInsuranceStandardMonthly toDomainHealth(List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
         return new HealthInsuranceStandardMonthly(
+                details.get(0).healthStdGraMonPk.historyId,
                 details.get(0).targetStartYm,
                 details.get(0).targetEndYm,
                 details.stream().map(x -> new HealthInsuranceStandardGradePerMonth(x.healthStdGraMonPk.healthInsuranceGrade, x.standardMonthlyFee)).collect(Collectors.toList()));
     }
 
-    private MonthlyHealthInsuranceCompensation toDomainMon (List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
+    private MonthlyHealthInsuranceCompensation toDomainMon(List<QpbmtHealthInsuranceStandardGradePerMonth> details) {
         return new MonthlyHealthInsuranceCompensation(
+                details.get(0).healthStdGraMonPk.historyId,
                 details.get(0).targetStartYm,
                 details.get(0).targetEndYm,
-                details.stream().map(x -> new HealthInsuranceGradePerRewardMonthlyRange(x.healthStdGraMonPk.healthInsuranceGrade,x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
+                details.stream().map(x -> new HealthInsuranceGradePerRewardMonthlyRange(x.healthStdGraMonPk.healthInsuranceGrade, x.rewardMonthlyLowerLimit, x.rewardMonthlyUpperLimit)).collect(Collectors.toList()));
     }
-
 }

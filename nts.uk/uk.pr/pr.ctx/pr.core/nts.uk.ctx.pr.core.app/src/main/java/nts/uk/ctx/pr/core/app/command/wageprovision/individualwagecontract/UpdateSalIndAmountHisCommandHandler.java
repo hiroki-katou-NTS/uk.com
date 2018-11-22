@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
@@ -29,5 +30,10 @@ public class UpdateSalIndAmountHisCommandHandler extends CommandHandler<SalIndAm
         List<GenericHistYMPeriod> period = command.getYearMonthHistoryItem().stream().map(item -> new GenericHistYMPeriod(item.historyId, item.startMonth, item.endMonth)).collect(Collectors.toList());
         SalIndAmountHis salIndAmountHis = new SalIndAmountHis(perValCode, empId, cateIndicator, period, salBonusCate);
         salIndAmountHisRepository.update(salIndAmountHis);
+
+        if(command.getLastHistoryId() != null){
+            this.salIndAmountHisRepository.updateOldHistorty(command.getLastHistoryId(),new YearMonth(command.getYearMonthHistoryItem().get(0).startMonth).addMonths(-1).v());
+        }
+
     }
 }

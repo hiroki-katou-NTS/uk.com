@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting;
 
 import java.util.Optional;
-import java.util.List;
 
 /**
 * 明細書紐付け設定（会社）
@@ -9,6 +8,8 @@ import java.util.List;
 public interface StateLinkSettingCompanyRepository {
 
     Optional<StateLinkSettingCompany> getStateLinkSettingCompanyById(String hisId);
+    
+    Optional<StateLinkSettingCompany> getStateLinkSettingCompanyByCode(String hisId,String departmentCode);
 
     void add(StateLinkSettingCompany domain);
 

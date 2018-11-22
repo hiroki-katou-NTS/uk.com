@@ -9,8 +9,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSet
 */
 @AllArgsConstructor
 @Value
-public class StateLinkSettingCompanyDto
-{
+public class StateLinkSettingCompanyDto {
     
     /**
     * 履歴ID
@@ -21,11 +20,13 @@ public class StateLinkSettingCompanyDto
     * 給与明細書
     */
     private String salaryCode;
+
     
     /**
     * 賞与明細書
     */
     private String bonusCode;
+
     
     
     public static StateLinkSettingCompanyDto fromDomain(StateLinkSettingCompany domain)

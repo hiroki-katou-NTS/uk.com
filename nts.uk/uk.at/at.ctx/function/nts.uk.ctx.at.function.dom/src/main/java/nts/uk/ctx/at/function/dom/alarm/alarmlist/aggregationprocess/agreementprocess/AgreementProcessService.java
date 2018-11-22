@@ -66,7 +66,6 @@ public class AgreementProcessService {
 		
 		List<ValueExtractAlarm> result = new ArrayList<ValueExtractAlarm>();
 		List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
-		List<DatePeriod> periods = periodAlarms.stream().map(e -> new DatePeriod(e.getStartDate(), e.getEndDate())).collect(Collectors.toList());
 		String comId = AppContexts.user().companyId();
 		List<Closure> closureList = new ArrayList<>();
 		Map<String,Integer> mapEmpIdClosureID = new HashMap<>();
@@ -144,7 +143,7 @@ public class AgreementProcessService {
 				if(Period.Yearly.value == periodAlarm.getPeriod36Agreement()){
 					List<DatePeriod> periodsYear = new ArrayList<>();
 					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
-					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds, periods,
+					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds, periodsYear,
 							alarmChkCon36.getListCondOt());
 					for (CheckedOvertimeImport check : checkOvertimes) {
 

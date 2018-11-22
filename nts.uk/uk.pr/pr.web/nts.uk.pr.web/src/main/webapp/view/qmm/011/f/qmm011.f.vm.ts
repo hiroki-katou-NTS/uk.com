@@ -1,133 +1,180 @@
-module nts.uk.pr.view.qmm020.f.viewmodel {
-
+module nts.uk.pr.view.qmm011.f.viewmodel {
+    import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
+    import dialog  = nts.uk.ui.dialog;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import model = qmm020.share.model;
     import error = nts.uk.ui.errors;
-
+    import model = qmm011.share.model;
     export class ScreenModel {
-
-        listStateCorrelationHis: KnockoutObservableArray<StateCorrelationHisClassification> =  ko.observableArray([]);
-        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        hisIdSelected: KnockoutObservable<string> = ko.observable();
-        currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectButton: KnockoutObservable<string> = ko.observable("");
-        mode: KnockoutObservable<number> = ko.observable();
-        listStateLinkSettingMaster: KnockoutObservableArray<StateLinkSettingMaster> =  ko.observableArray([]);
-
-        constructor(){
-            let self = this;
-            self.initScreen();
-            /*            let select = getText("QMM020_21");
-                        select = "<button>" + select + "</button>";
-                        self.selectButton(select);
-                        for(let i = 1; i < 100; i++) {
-                            self.items.push(new ItemModel('00' + i, '基本給', self.selectButton() + "  " + 'TamNX  '+ i,i + 'Demo'));
-                        }*/
-            self.hisIdSelected.subscribe((data) => {
-                nts.uk.ui.errors.clearAll();
-                let self = this;
-                self.getStateLinkSettingMaster(data);
-
-            });
-
-        }
-        initScreen(){
-            let self = this;
+        startYearMonth:         KnockoutObservable<number> = ko.observable();
+        endYearMonth:           KnockoutObservable<number> = ko.observable();
+        startLastYearMonth:     KnockoutObservable<number> = ko.observable();
+        itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
+        selectedId:             KnockoutObservable<string> = ko.observable('');
+        methodEditing:          KnockoutObservable<number> = ko.observable(1);
+        insurrance:             KnockoutObservable<number> = ko.observable();
+        hisId:                  KnockoutObservable<string> = ko.observable('');
+        canDelete:              KnockoutObservable<boolean> = ko.observable('');
+        insuranceName:          KnockoutObservable<string> = ko.observable('');
+        constructor() {
             block.invisible();
-            service.getStateCorrelationHisClassification().done((listStateCorrelationHis: Array<StateCorrelationHisClassification>) => {
-                if (listStateCorrelationHis && listStateCorrelationHis.length > 0) {
-                    self.listStateCorrelationHis(StateCorrelationHisClassification.convertToDisplay(listStateCorrelationHis));
-                    self.hisIdSelected(self.listStateCorrelationHis()[FIRST].hisId);
+            let self = this;
+            self.startYearMonth();
+            let params = getShared('QMM011_F_PARAMS_INPUT');
+            let to = getText('QMM011_9');
+            if (params) {
+                self.insuranceName(params.insuranceName);
+                self.insurrance(params.insurrance);
+                self.startYearMonth(params.startYearMonth);
+                self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
+                self.startLastYearMonth(params.startLastYearMonth);
+                self.canDelete(params.canDelete);
+                self.hisId(params.hisId);
+            }
+            block.clear();
+        }
+
+        update() {
+            let self = this;
+            if (self.validateYearMonth()) {
+                return;
+            }
+            let param: any = {
+                hisId: self.hisId(),
+                methodEditing: self.methodEditing(),
+                startMonthYear: $("#F1_9")[0].disabled ? 0 : self.startYearMonth(),
+                endMonthYear: self.convertStringToYearMonth(self.endYearMonth())
+            }
+            block.invisible();
+            if (self.insurrance() == INSURRANCE.EMPLOYMENT_INSURRANCE_RATE) {
+                if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                    dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        service.updateEmpInsurHis(param).done(() => {
+                            dialog.info({messageId: "Msg_16"}).then(() => {
+                                setShared('QMM011_F_PARAMS_OUTPUT', {
+                                    methodEditing: self.methodEditing()
+                                });
+                                close();
+                            });
+                        }).fail(function (res: any) {
+                            if (res)
+                                dialog.alertError(res);
+                        });
+                    });
                 } else {
-                    self.mode(MODE.NEW);
+                    service.updateEmpInsurHis(param).done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
+                        });
+                    }).fail(function (res: any) {
+                        if (res)
+                            dialog.alertError(res);
+                    });
                 }
-            }).always(() => {
-                block.clear();
-            });
+            } else {
+                if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                    dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        service.updateAccInsurHis(param).done(() => {
+                            dialog.info({messageId: "Msg_16"}).then(() => {
+                                setShared('QMM011_F_PARAMS_OUTPUT', {
+                                    methodEditing: self.methodEditing()
+                                });
+                                close();
+                            });
+                        }).fail(function (res: any) {
+                            if (res)
+                                dialog.alertError(res);
+                        });
+                    });
+                } else {
+                    service.updateAccInsurHis(param).done(() => {
+                        dialog.info({messageId: "Msg_15"}).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
+                        });
+                    }).fail(function (res: any) {
+                        if (res)
+                            dialog.alertError(res);
+                    });
+                }
+
+            }
             block.clear();
 
         }
 
-        getStateLinkSettingMaster(hisId: string){
+        hasRequired(){
+            if(this.methodEditing() != EDIT_METHOD.UPDATE) {
+                $('#F1_9').ntsError('clear');
+                return false;
+            }
+            return true;
+        }
+
+        validateYearMonth(){
             let self = this;
-            service.getStateLinkSettingMaster(hisId).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
-                if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
-                    self.listStateLinkSettingMaster(stateLinkSettingMaster);
-                    self.mode(MODE.UPDATE);
-                } else {
-                    self.mode(MODE.NEW);
-                }
-            }).always(() => {
-                block.clear();
-            });
+            nts.uk.ui.errors.clearAll();
+            $("#F1_9").trigger("validate");
+            if($("#F1_9")[0].disabled){
+                $("#F1_9").ntsError('clear');
+                nts.uk.ui.errors.removeByElement($("#F1_9"));
+                return false;
+            }
+            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) ||
+                (Number(self.startLastYearMonth()) > Number(self.startYearMonth()) && (this.methodEditing() == EDIT_METHOD.UPDATE))){
+                $('#F1_9').ntsError('set', { messageId: "Msg_107" });
+                return true;
+            }
+            return error.hasError();
         }
 
-    }
-    export  class ItemModel {
-        empCode: string;
-        empName: string;
-        display1: string;
-        display2: string;
-        constructor(empCode: string, empName: string, display1: string, display2: string) {
-            this.empCode = empCode;
-            this.empName = empName;
-            this.display1 = display1;
-            this.display2 = display2;
+        cancel(){
+            close();
         }
-    }
 
-    export class StateCorrelationHisClassification {
-        hisId: string;
-        startYearMonth: string;
-        endYearMonth: string;
-        display: string;
-        constructor() {
-
-        }
-        static convertToDisplay(item){
-            let to = getText('QMM020_9');
-            let listClassification = [];
-            _.each(item, (item) => {
-                let dto: StateCorrelationHisClassification = new StateCorrelationHisClassification();
-                dto.hisId = item.hisId;
-                dto.startYearMonth = item.startYearMonth;
-                dto.endYearMonth = item.endYearMonth;
-                dto.display = getText('QMM020_9', [item.startYearMonth], [item.endYearMonth]);
-                listClassification.push(dto);
-            });
-            return listClassification;
-        }
-        static convertMonthYearToString(yearMonth: any) {
+        convertMonthYearToString(yearMonth: any) {
+            let self = this;
             let year: string, month: string;
             yearMonth = yearMonth.toString();
             year = yearMonth.slice(0, 4);
             month = yearMonth.slice(4, 6);
             return year + "/" + month;
         }
-    }
-    export class StateLinkSettingMaster {
-        hisId: string;
-        masterCode: string;
-        salaryCode: string;
-        bonusCode: string;
-        name:string;
-        constructor(master: StateLinkSettingMaster) {
-            this.hisId = master.hisId;
-            this.masterCode = master.masterCode;
-            this.salaryCode = master.salaryCode;
-            this.bonusCode = master.bonusCode;
-            this.name = master.name;
+
+        convertStringToYearMonth(yearMonth: any){
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.substring(3);
+            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
+            return yearMonth;
         }
+        // 「初期データ取得処理
     }
 
-    export enum MODE {
-        NEW = 0,
+    export function getHistoryEditMethod(): Array<model.ItemModel> {
+        return [
+            new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM011_54')),
+            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM011_55'))
+        ];
+    }
+
+    export enum EDIT_METHOD {
+        DELETE = 0,
         UPDATE = 1
     }
 
-    export const FIRST = 0;
+    export enum INSURRANCE {
+        EMPLOYMENT_INSURRANCE_RATE = 1,
+        ACCIDENT_INSURRANCE_RATE = 0
+    }
+
+
 
 }

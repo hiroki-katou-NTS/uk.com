@@ -29,31 +29,23 @@
 					<span id="F1_3" class="label"  style="margin-left: 89px" data-bind = "text: insuranceName"></span>
 				</div>
 				<!-- F1_4 編集方法の選択 -->
-				<div id="F1_4" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
-					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM011_52')}</span>
+				<div class=" table table-col-2" style="width: 380px">
+					<div class ="cell valign-top">
+						<div id="F1_4" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+							<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM011_52')}</span>
+						</div>
+					</div>
 					<!-- F1_5 履歴編集方法 -->
-					<div id = "F1_5" tabindex = "1" style= "display: inline-block;text-align: left;margin-left: 30px">
-						<div id="F1_6"  class="cell" tabIndex = "-1"
-										data-bind="ntsRadioButton: {
-										checked: methodEditing, 
-										option: itemList()[0], 
-										optionValue: 'code',
+					<div class ="cell valign-top">
+						<div id="F1_5"  class="cell" tabIndex = "1" style= "display: inline-block;text-align: left;margin-left: 30px"
+										data-bind="ntsRadioBoxGroup: {
+										value: methodEditing,
+										options: itemList,
+										optionsValue: 'code',
 										enable: canDelete, 
-										optionText: 'name',
-										group: 'periodOption'}">
+										optionsText: 'name'}">
 						</div>
-						<br/>
-						<div id="F1_7"  class="cell" tabIndex = "-1"
-							data-bind="ntsRadioButton: {
-										checked: methodEditing, 
-										option: itemList()[1], 
-										optionValue: 'code',
-										enable: canDelete, 
-										optionText: 'name',
-										group: 'periodOption'}">
-						</div>
-				</div>
-						
+					</div>
 				</div>
 				<div class = "F1_8">
 					<!-- F1_8 期間 -->

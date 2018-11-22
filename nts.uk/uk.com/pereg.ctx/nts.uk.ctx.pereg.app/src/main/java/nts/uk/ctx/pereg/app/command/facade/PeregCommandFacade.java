@@ -780,10 +780,12 @@ public class PeregCommandFacade {
 						ItemValue _endDate = endDate.get();
 						rInfo = startDate.map(m -> {
 							GeneralDate date = GeneralDate.fromString(m.valueBefore(), "yyyy/MM/dd").addDays(-1);
-							return new ReviseInfo(_endDate.itemName(), Optional.ofNullable(date), Optional.empty(),
+							return new ReviseInfo(_endDate.itemName(), ctype == 3? Optional.ofNullable(GeneralDate.fromString(valueEndate, "yyyy/MM/dd")): Optional.ofNullable(date), Optional.empty(),
 									Optional.empty());
 						});
 					}
+					
+					
 				}
 				break;
 			}

@@ -15,14 +15,13 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class AlarmListExportGenerator extends AsposeCellsReportGenerator
-		implements AlarmListGenerator {
+public class AlarmListExportGenerator extends AsposeCellsReportGenerator implements AlarmListGenerator {
 
-private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト(個人別).xlsx";
-	
-		@Override
+	private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト(個人別).xlsx";
+
+	@Override
 	public AlarmExportDto generate(FileGeneratorContext generatorContext, List<ValueExtractAlarmDto> dataSource) {
-		
+
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 
 			// set data source named "item"
@@ -34,12 +33,31 @@ private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
 			String dateTime = dateNow.toString("yyyyMMddHHmmss");
-			String fileName = "AlarmList_"+dateTime+".xlsx";
+			String fileName = "AlarmList_" + dateTime + ".xlsx";
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 			WorkingFile workingFile = generatorContext.getWorkingFiles().get(0);
-			AlarmExportDto alarmExportDto = new AlarmExportDto(workingFile.getTempFile().getPath(),fileName);
+			AlarmExportDto alarmExportDto = new AlarmExportDto(workingFile.getTempFile().getPath(), fileName);
 			return alarmExportDto;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void generateExcelScreen(FileGeneratorContext generatorContext, List<ValueExtractAlarmDto> dataSource) {
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
+
+			// set data source named "item"
+			reportContext.setDataSource("item", dataSource);
+			// process data binginds in template
+			reportContext.processDesigner();
+			// save as Excel file
+			GeneralDateTime dateNow = GeneralDateTime.now();
+			String dateTime = dateNow.toString("yyyyMMddHHmmss");
+			String fileName = "AlarmList_" + dateTime + ".xlsx";
+			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
+			reportContext.saveAsExcel(outputStream);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

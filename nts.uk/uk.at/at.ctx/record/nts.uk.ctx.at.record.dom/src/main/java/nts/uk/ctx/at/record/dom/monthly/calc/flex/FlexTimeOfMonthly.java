@@ -855,7 +855,7 @@ public class FlexTimeOfMonthly {
 				if (statutoryAfterDeduct < 0) statutoryAfterDeduct = 0;
 				
 				// 法定内として扱う時間を求める
-				int treatLegal = statutoryAfterDeduct - compensatoryLeaveAfterDudection.v();
+				int treatLegal = statutoryAfterDeduct - compensatoryLeaveAfterDudection.v() - this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v();
 				if (treatLegal < 0) treatLegal = 0;
 				
 				// 「月次法定内のみ加算」を確認する
@@ -1016,7 +1016,8 @@ public class FlexTimeOfMonthly {
 
 		// 繰越時間相殺前をフレックス時間に加算する
 		this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(
-				carryforwardTimeBeforeOffset.v(), 0));
+                carryforwardTimeBeforeOffset.v(), 0));
+//				afterAddVacation.v(), 0));
 		
 		return addedVacationUseTime;
 	}

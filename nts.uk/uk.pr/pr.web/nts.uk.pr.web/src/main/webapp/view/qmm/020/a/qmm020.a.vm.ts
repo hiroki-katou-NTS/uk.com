@@ -5,40 +5,30 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
         masterUse: KnockoutObservable<number> = ko.observable();
         individualUse: KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservable<number> = ko.observable();
-        viewmodelC: any;
-        viewmodelD: any;
         constructor(){
+
+        }
+
+        startPage (): JQueryPromise<any>{
             block.invisible();
             let self = this;
+            let dfd = $.Deferred();
             service.getStateUseUnitSettingById().done((data:any)=>{
                 if(data){
                     self.masterUse(data.masterUse);
                     self.individualUse(data.individualUse);
                     self.usageMaster(data.usageMaster);
                 }
+                dfd.resolve(data);
             }).fail((err)=>{
+                dfd.reject();
                 if (err)
                     dialog.alertError(err);
+            }).always(()=>{
+                block.clear();
             });
-            block.clear();
+            return dfd.promise();
         }
 
-        initScreenC(){
-            block.invisible();
-            let self = this;
-            self.viewmodelC = new nts.uk.pr.view.qmm020.c.viewmodel.ScreenModel();
-            __viewContext.viewModel.viewmodelC = self.viewmodelC;
-            block.clear();
-            return true;
-        }
-
-        initScreenD(){
-            block.invisible();
-            let self = this;
-            self.viewmodelD = new nts.uk.pr.view.qmm020.d.viewmodel.ScreenModel();
-            __viewContext.viewModel.viewmodelD = self.viewmodelD;
-            block.clear();
-            return true;
-        }
     }
 }

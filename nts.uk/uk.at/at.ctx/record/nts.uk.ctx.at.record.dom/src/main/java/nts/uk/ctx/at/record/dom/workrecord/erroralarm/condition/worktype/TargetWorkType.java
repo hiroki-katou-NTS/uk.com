@@ -46,4 +46,8 @@ public class TargetWorkType extends DomainObject {
 	public boolean isUse() {
 		return this.filterAtr;
 	}
+	
+	public void clearDuplicate() {
+		this.lstWorkType = this.lstWorkType.stream().distinct().collect(Collectors.toList());
+	}
 }

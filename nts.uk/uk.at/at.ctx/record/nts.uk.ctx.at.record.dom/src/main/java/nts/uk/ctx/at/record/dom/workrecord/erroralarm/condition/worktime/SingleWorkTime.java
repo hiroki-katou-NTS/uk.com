@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -10,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * @author hungnm
@@ -63,5 +65,28 @@ public class SingleWorkTime extends WorkTimeCondition {
 		return WorkCheckResult.NOT_ERROR;
 
 	}
-
+	
+	@Override
+	public void clearDuplicate() {
+		if(this.targetWorkTime != null){
+			this.targetWorkTime.clearDuplicate();
+		}
+	}
+	
+	@Override
+	public void addWorkTime(WorkTimeCode plan, WorkTimeCode actual) {
+		if(this.targetWorkTime != null && plan != null){
+			this.targetWorkTime.getLstWorkTime().add(plan);
+		}
+	}
+	
+	@Override
+	public void setupWorkTime(boolean usePlan, boolean useActual) { 
+		this.targetWorkTime = TargetWorkTime.createFromJavaType(usePlan, new ArrayList<>());
+	}
+	
+	@Override
+	public SingleWorkTime chooseOperator(int operator) {
+		return this;
+	}
 }

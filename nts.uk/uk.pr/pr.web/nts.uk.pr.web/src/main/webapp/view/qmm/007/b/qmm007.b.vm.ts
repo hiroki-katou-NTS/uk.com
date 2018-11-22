@@ -68,14 +68,12 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
                 endYearMonth:  self.endYearMonth()
             }
             service.addPayrollUnitPriceHis(data).done((historyId: any) => {
-                dialog.info({ messageId: "Msg_15" }).then(() => {
                     setShared('QMM007_B_PARAMS_OUTPUT', {
                         hisId: historyId,
                         startYearMonth: self.startYearMonth(),
                         takeOver: self.takeOver()
                     });
                     close();
-                });
             }).fail(function(res: any) {
                 if (res)
                     dialog.alertError(res);

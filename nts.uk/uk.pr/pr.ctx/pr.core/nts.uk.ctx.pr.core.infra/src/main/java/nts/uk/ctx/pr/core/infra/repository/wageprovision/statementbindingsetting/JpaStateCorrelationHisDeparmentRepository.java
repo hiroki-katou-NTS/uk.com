@@ -1,8 +1,7 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsetting;
 
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisDeparment;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisDeparmentRepository;
@@ -11,16 +10,18 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.Qpb
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
-public class JpaStateCorrelationHisDeparmentRepository extends JpaRepository implements StateCorrelationHisDeparmentRepository
-{
+public class JpaStateCorrelationHisDeparmentRepository extends JpaRepository implements StateCorrelationHisDeparmentRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisDep f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid AND  f.stateCorHisDepPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid ORDER BY f.endYearMonth DESC";
+    private static final String SELECT_BY_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid AND f.startYearMonth <=:basedate AND f.endYearMonth >=:basedate ";
 
     @Override
     public Optional<StateCorrelationHisDeparment> getStateCorrelationHisDeparmentById(String cid, String hisId){
@@ -30,6 +31,23 @@ public class JpaStateCorrelationHisDeparmentRepository extends JpaRepository imp
                 .setParameter("hisId", hisId)
                 .getList();
 
+        return this.toDomain(listStateCorHisDep);
+    }
+
+    @Override
+    public Optional<StateCorrelationHisDeparment> getStateCorrelationHisDeparmentById(String cid) {
+        List<QpbmtStateCorHisDep> listStateCorHisDep = this.queryProxy().query(SELECT_BY_CID, QpbmtStateCorHisDep.class)
+                .setParameter("cid", cid)
+                .getList();
+        return this.toDomain(listStateCorHisDep);
+    }
+
+    @Override
+    public Optional<StateCorrelationHisDeparment> getStateCorrelationHisDeparmentByDate(String cid, GeneralDate baseDate) {
+        List<QpbmtStateCorHisDep> listStateCorHisDep = this.queryProxy().query(SELECT_BY_DATE, QpbmtStateCorHisDep.class)
+                .setParameter("cid", cid)
+                .setParameter("basedate", baseDate.yearMonth().toString())
+                .getList();
         return this.toDomain(listStateCorHisDep);
     }
 

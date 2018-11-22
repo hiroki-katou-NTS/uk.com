@@ -17,7 +17,7 @@ public class StateCorrelationHisClassificationDto {
     /**
     * 履歴ID
     */
-    private String historyID;
+    private String hisId;
     
     /**
     * 開始年月
