@@ -109,7 +109,7 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
             block.clear();
 
         }
-        
+
         hasRequired(){
             if(this.methodEditing() != EDIT_METHOD.UPDATE) {
                 $('#F1_9').ntsError('clear');
@@ -117,7 +117,7 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
             }
             return true;
         }
-        
+
         validateYearMonth(){
             let self = this;
             nts.uk.ui.errors.clearAll();
@@ -127,14 +127,14 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
                 nts.uk.ui.errors.removeByElement($("#F1_9"));
                 return false;
             }
-            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || 
-                    (Number(self.startLastYearMonth()) > Number(self.startYearMonth()) && (this.methodEditing() == EDIT_METHOD.UPDATE))){
+            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) ||
+                (Number(self.startLastYearMonth()) > Number(self.startYearMonth()) && (this.methodEditing() == EDIT_METHOD.UPDATE))){
                 $('#F1_9').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }
-            return error.hasError();      
+            return error.hasError();
         }
-        
+
         cancel(){
             close();
         }
@@ -155,26 +155,26 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
             yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
             return yearMonth;
         }
-       // 「初期データ取得処理
+        // 「初期データ取得処理
     }
-    
+
     export function getHistoryEditMethod(): Array<model.ItemModel> {
         return [
             new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM011_54')),
             new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM011_55'))
         ];
     }
-    
+
     export enum EDIT_METHOD {
         DELETE = 0,
         UPDATE = 1
     }
-    
+
     export enum INSURRANCE {
         EMPLOYMENT_INSURRANCE_RATE = 1,
         ACCIDENT_INSURRANCE_RATE = 0
     }
 
 
-    
+
 }

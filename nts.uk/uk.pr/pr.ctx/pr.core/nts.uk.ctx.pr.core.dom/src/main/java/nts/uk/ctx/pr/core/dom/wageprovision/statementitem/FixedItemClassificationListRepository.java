@@ -4,14 +4,13 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 固定項目区分一覧
-*/
-public interface FixedItemClassificationListRepository
-{
+ * 固定項目区分一覧
+ */
+public interface FixedItemClassificationListRepository {
 
-    List<FixedItemClassificationList> getAllFixedItemClassificationList();
+    Optional<FixedItemClassificationList> getFixedItemClassificationListById(String itemNameCd);
 
-    Optional<FixedItemClassificationList> getFixedItemClassificationListById();
+    List<FixedItemClassificationList> getFixedItemClassificationListBySpecOutPutCls(int specOutPutCls);
 
     void add(FixedItemClassificationList domain);
 

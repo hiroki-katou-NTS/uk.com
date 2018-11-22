@@ -13,6 +13,8 @@ public interface WageTableRepository
 
     Optional<WageTable> getWageTableById();
 
+    List<WageTable> getWageTableByCodes(String cid, List<String> wageTableCodes);
+
     void add(WageTable domain);
 
     void update(WageTable domain);

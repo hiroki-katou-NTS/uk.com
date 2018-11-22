@@ -3,8 +3,11 @@ package nts.uk.ctx.pr.core.ws.wageprovision.unitpricename;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.unitpricename.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.unitpricename.*;
+<<<<<<< HEAD
 import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SalaryPerUnitPriceName;
 import nts.uk.shr.com.context.AppContexts;
+=======
+>>>>>>> pj/pr/team_G/QMM019
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
