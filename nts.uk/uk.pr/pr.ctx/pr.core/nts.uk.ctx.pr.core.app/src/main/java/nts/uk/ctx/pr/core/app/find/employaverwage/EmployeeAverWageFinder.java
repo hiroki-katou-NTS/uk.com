@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.app.find.employaverwage;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.app.command.employaverwage.EmployeeComand;
-import nts.uk.ctx.pr.core.dom.adapter.employee.EmployeeInfoAverAdapter;
-import nts.uk.ctx.pr.core.dom.adapter.employee.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInfoAverAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWage;
 import nts.uk.ctx.pr.core.dom.employaverwage.EmployAverWageRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.*;
@@ -11,9 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -103,4 +101,18 @@ public class EmployeeAverWageFinder {
     }
 
 
+    public EmploymentCodeDto getEmploymentCodeByEmpIdAndBaseDate(String employeeId) {
+        return employeeInfoAverAdapter
+                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(Collections.singletonList(employeeId), GeneralDate.today(),
+                        false,
+                        false,
+                        false,
+                        true,
+                        false,
+                        false))
+                .stream().map(x -> {
+                    if(Objects.isNull(x.getEmployment())) return new EmploymentCodeDto(null);
+                    return new EmploymentCodeDto(x.getEmployment().getEmploymentCode());
+                }).findFirst().orElse(null);
+    }
 }

@@ -479,32 +479,43 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 params = {
                     historyID: self.itemList()[0].historyID,
                     period: {
+                        baseYm: self.itemList()[0].periodStartYm,
                         periodStartYm: self.itemList()[0].periodStartYm,
                         periodEndYm: self.itemList()[0].periodEndYm
                     }
-                }
+                };
                 $('#A5_3').focus();
                 self.openModalB(params);
             } else {
-                service.processYearFromEmp(self.individualPriceCode()).done(function (data) {
-                    if (data) {
-                        params = {
-                            period: {
-                                periodStartYm: data,
-                                periodEndYm: 999912
-                            }
-                        }
+                service.getEmploymentCode(self.selectedItem()).done((dto) => {
+                    if (dto) {
+                        service.processYearFromEmp(dto.employmentCode).done((data) => {
+                            params = {
+                                period: {
+                                    baseYm: data,
+                                    periodStartYm: null,
+                                    periodEndYm: 999912
+                                }
+                            };
+                            self.openModalB(params);
+                        }).fail((err) => {
+                            nts.uk.ui.dialog.alertError(err.message);
+                        });
                     } else {
                         params = {
                             period: {
+                                baseYm: self.formatYMToInt(moment().format("YYYY/MM")),
                                 periodStartYm: null,
                                 periodEndYm: 999912
                             }
-                        }
+                        };
+                        self.openModalB(params);
                     }
-                    self.openModalB(params);
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(err.message);
                 });
             }
+
         }
 
         openModalB(params) {
@@ -643,7 +654,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                         yearMonthHistoryItem: [{
                             historyId: historyId,
                             startMonth: self.formatYMToInt(self.periodStartYM()),
-                            endMonth: self.periodEndYM(),
+                            endMonth: self.formatYMToInt(self.periodEndYM()),
                         }],
                         salBonusCate: self.salaryBonusCategory()
                     },
