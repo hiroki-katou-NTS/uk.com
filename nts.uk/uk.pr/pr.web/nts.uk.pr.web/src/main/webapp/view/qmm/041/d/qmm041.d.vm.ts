@@ -13,7 +13,7 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
 
         constructor() {
             var self = this;
-            self.referenceYear = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+            self.referenceYear = ko.observable(parseInt(moment().format("YYYY/MM")));
             self.items = ko.observableArray();
             this.currentCode = ko.observable();
 
@@ -50,7 +50,7 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
             var self = this;
 
             service.processYearFromEmp(self.params.personalValCode).done(function (data) {
-                if(data != 0){
+                if (data != 0) {
                     self.referenceYear(data);
                 }
                 let dto = {
@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
                     if (data != null) {
                         for (let i = 0; i < data.length; i++) {
                             for (let j = 0; j < data[i].period.length; j++) {
-                                array.push(new ItemModel(data[i].empId,data[i].perValCode, data[i].perValName,
+                                array.push(new ItemModel(data[i].empId, data[i].perValCode, data[i].perValName,
                                     format(getText("QMM041_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney + "¥"
                                 ))
                             }
@@ -83,21 +83,19 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
         }
 
         formatYM(intYM) {
-            return intYM.toString().substr(0, 4) + '/' + intYM.toString().substr(4, intYM.length);
+            return nts.uk.time.parseYearMonth(intYM).format();
         }
     }
+
     class ItemModel {
-        empId:string;
+        empId: string;
         code: string;
-        //D3_6 コード
         name: string;
-        //D3_7 名称
         period: string;
-        //D3_8 期間
         amount: string;
-        //D3_9 金額
-        constructor(empId:string,code: string, name: string, period: string, amount: string) {
-            this.empId=empId;
+
+        constructor(empId: string, code: string, name: string, period: string, amount: string) {
+            this.empId = empId;
             this.code = code;
             this.name = name;
             this.period = period;

@@ -16,13 +16,13 @@ import java.util.Collections;
 
 @Stateless
 @Transactional
-public class AddIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandler<IndEmpSalUnitPriceHistoryCommand> {
+public class AddIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandler<AddIndEmpSalUnitPriceHistoryCommand> {
     @Inject
     EmployeeSalaryUnitPriceHistoryRepository employeeSalaryUnitPriceHistoryRepository;
 
     @Override
-    protected void handle(CommandHandlerContext<IndEmpSalUnitPriceHistoryCommand> commandHandlerContext) {
-        IndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
+    protected void handle(CommandHandlerContext<AddIndEmpSalUnitPriceHistoryCommand> commandHandlerContext) {
+        AddIndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
         employeeSalaryUnitPriceHistoryRepository.addHistory(
                 new EmployeeSalaryUnitPriceHistory(
                         command.getPersonalUnitPriceCode(),

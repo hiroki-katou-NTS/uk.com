@@ -9,3 +9,7 @@
 #B1_4 {
     margin-right: 5px;
 }
+
+#B1_7 label:first-child {
+    margin-bottom: 10px;
+}

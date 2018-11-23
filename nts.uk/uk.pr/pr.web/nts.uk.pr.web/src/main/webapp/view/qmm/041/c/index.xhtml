@@ -25,7 +25,7 @@
                     #{i18n.getText('QMM041_27')}
                 </div>
 
-                <div style="margin-top: 20px;">
+                <div style="margin-top: 20px; margin-left: 10px;">
                     <!--C1_2 編集方法の選択-->
                     <div id="C1_2" data-bind="ntsFormLabel: {required: false}">
                         #{i18n.getText('QMM041_28')}
@@ -55,20 +55,20 @@
                         <!--C1_9 期間終了-->
                         <div tabindex="2"
                              data-bind="ntsDatePicker: {
-                                 value: yearMonthStart,
+                                 value: startYearMonth,
                                  dateFormat: 'yearmonth',
                                  required: true,
                                  name : '#[QMM041_16]'}"
                         />
-                        <span style="padding-left: 5px; padding-right: 5px">～</span>
-                        <span data-bind="text: yearMonthEnd()"/>
+                        <span style="padding:0 5px;">～</span>
+                        <span data-bind="text: endYearMonth()"/>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
             <!--C2_1 実行-->
-            <button tabindex="3" class="x-large proceed" data-bind="click: editHistory, enable: $root.errors.isEmpty">
+            <button tabindex="3" class="x-large proceed" data-bind="click: updateHistory, enable: $root.errors.isEmpty">
                 #{i18n.getText('QMM041_32')}
             </button>
             <!--C2_2 キャンセル-->

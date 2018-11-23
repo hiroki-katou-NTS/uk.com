@@ -47,26 +47,26 @@ public class EmployeeSalaryUnitPriceHistoryWebService extends WebService {
 
     @POST
     @Path("updateAmount")
-    public void updateUnitPrice(IndEmpSalUnitPriceHistoryCommand command) {
+    public void updateUnitPrice(UpdateAmountIndEmpSalUnitPriceHistoryCommand command) {
         updateAmountIndEmpSalUnitPriceHistoryCommandHandler.handle(command);
     }
 
     @POST
     @Path("addHistory")
-    public void addHistory(IndEmpSalUnitPriceHistoryCommand command) {
+    public void addHistory(AddIndEmpSalUnitPriceHistoryCommand command) {
         addIndEmpSalUnitPriceHistoryCommandHandler.handle(command);
     }
 
     @POST
     @Path("updateHistory")
-    public void updateHistory(IndEmpSalUnitPriceHistoryCommand command) {
-        addIndEmpSalUnitPriceHistoryCommandHandler.handle(command);
+    public void updateHistory(UpdateIndEmpSalUnitPriceHistoryCommand command) {
+        updateIndEmpSalUnitPriceHistoryCommandHandler.handle(command);
     }
 
     @POST
     @Path("deleteHistory")
-    public void deleteHistory(IndEmpSalUnitPriceHistoryCommand command) {
-        deleteIndEmpSalUnitPriceHistoryCommandHandler.handle(command);
+    public void deleteHistory(String historyId) {
+        deleteIndEmpSalUnitPriceHistoryCommandHandler.handle(historyId);
     }
 
 }

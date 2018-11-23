@@ -11,14 +11,14 @@ import javax.transaction.Transactional;
 
 @Stateless
 @Transactional
-public class UpdateAmountIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandler<IndEmpSalUnitPriceHistoryCommand> {
+public class UpdateAmountIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandler<UpdateAmountIndEmpSalUnitPriceHistoryCommand> {
 
     @Inject
     EmployeeSalaryUnitPriceHistoryRepository employeeSalaryUnitPriceHistoryRepository;
 
     @Override
-    protected void handle(CommandHandlerContext<IndEmpSalUnitPriceHistoryCommand> commandHandlerContext) {
-        IndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
+    protected void handle(CommandHandlerContext<UpdateAmountIndEmpSalUnitPriceHistoryCommand> commandHandlerContext) {
+        UpdateAmountIndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
         employeeSalaryUnitPriceHistoryRepository.updateUnitPriceAmount(new PayrollInformation(command.getHistoryId(), command.getAmountOfMoney()));
     }
 }

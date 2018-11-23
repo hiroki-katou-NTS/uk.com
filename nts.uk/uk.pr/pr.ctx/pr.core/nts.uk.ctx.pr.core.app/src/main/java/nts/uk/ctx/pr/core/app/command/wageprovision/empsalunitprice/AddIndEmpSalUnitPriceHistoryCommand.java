@@ -5,7 +5,7 @@ import lombok.Value;
 import java.math.BigDecimal;
 
 @Value
-public class IndEmpSalUnitPriceHistoryCommand {
+public class AddIndEmpSalUnitPriceHistoryCommand {
 
     private String personalUnitPriceCode;
 

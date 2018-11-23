@@ -7,41 +7,18 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
     import model = nts.uk.pr.view.qmm041.share.model;
 
     export class ScreenModel {
-        modifyMethod: KnockoutObservable<number> = ko.observable(1);
+        modifyMethod: KnockoutObservable<number> = ko.observable(model.MODIFY_METHOD.UPDATE);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
-        startMonth: KnockoutObservable<string> = ko.observable('');
-        dateValue: KnockoutObservable<any>;
-        startDateString: KnockoutObservable<string>;
-        endDateString: KnockoutObservable<string>;
-        selectedHistory: any = null;
-        selectedEmployee: any = null;
-        cateIndicator: KnockoutObservable<number> = ko.observable(0);
-        salBonusCate: KnockoutObservable<number> = ko.observable(0);
-        yearMonthStart: KnockoutObservable<number> = ko.observable(201812);
-        yearMonthEnd: KnockoutObservable<string> = ko.observable('');
+        baseYearMonth: KnockoutObservable<number> = ko.observable(null);
+        startYearMonth: KnockoutObservable<number> = ko.observable(null);
+        endYearMonth: KnockoutObservable<number> = ko.observable(null);
         isDeletable: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
             block.invisible();
-            self.startDateString = ko.observable("");
-            self.endDateString = ko.observable("");
-            self.dateValue = ko.observable({});
-
-            self.startDateString.subscribe( (value) => {
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();
-            });
-
-            self.endDateString.subscribe((value) => {
-                self.dateValue().endDate = value;
-                self.dateValue.valueHasMutated();
-            });
-
             let params = getShared("QMM041_C_PARAMS");
             if (params) {
-                block.invisible();
-                let period = params.period;
                 self.selectedHistory = params.period;
                 self.selectedEmployee = params.employeeInfo;
                 if (period && Object.keys(period).length > 0) {
@@ -80,8 +57,6 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
             newHistory.endMonth = params.period.periodEndYm;
 
             let newEmployee = self.selectedEmployee;
-            newEmployee.cateIndicator = self.cateIndicator();
-            newEmployee.salBonusCate = self.salBonusCate();
 
 
             if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm) {
@@ -118,8 +93,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
             newHistory.endMonth = self.dateValue().endDate;
 
             let newEmployee = self.selectedEmployee;
-            newEmployee.cateIndicator = self.cateIndicator();
-            newEmployee.salBonusCate = self.salBonusCate();
+
             let command = {
                 //emp history
                 yearMonthHistoryItem: [newHistory],

@@ -1,15 +1,11 @@
 module nts.uk.pr.view.qmm041.a.viewmodel {
 
-    import MODE = nts.uk.pr.view.qmm041.share.model.MODE;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     import format = nts.uk.text.format;
     import getShared = nts.uk.ui.windows.getShared;
-    import MODIFY_METHOD = nts.uk.pr.view.qmm041.share.model.MODIFY_METHOD;
     import model = nts.uk.pr.view.qmm041.share.model;
-    import HISTORY_STATUS = nts.uk.pr.view.qmm041.share.model.HISTORY_STATUS;
-    import INHERITANCE = nts.uk.pr.view.qmm041.share.model.INHERITANCE;
     import hasError = nts.uk.ui.errors.hasError;
     import block = nts.uk.ui.block;
 
@@ -25,7 +21,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         columns: any;
         currencyValue: KnockoutObservable<number> = ko.observable(null);
         currencyEnable: KnockoutObservable<boolean> = ko.observable(false);
-        mode: KnockoutObservable<number> = ko.observable(MODE.NORMAL);
+        mode: KnockoutObservable<number> = ko.observable(model.MODE.NORMAL);
         startYearMonth: KnockoutObservable<string> = ko.observable(null);
         endYearMonth: KnockoutObservable<string> = ko.observable(null);
         personalUnitPriceName: KnockoutObservable<string> = ko.observable(null);
@@ -42,83 +38,18 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
         listComponentOption: ComponentOption;
-        selectedItem: KnockoutObservable<string> = ko.observable(null);
+        selectedItem: KnockoutObservable<string>;
         tabindex: number;
 
         constructor() {
             let self = this;
+
             //VM
             self.columns = [
                 {key: 'historyId', length: 0, hidden: true},
                 {key: 'period', length: 8},
                 {key: 'amountOfMoney', length: 6, template: "<div style='text-align: right'>${amountOfMoney}</div>"}
             ];
-
-            //subscribe
-            self.selectedHistoryCode.subscribe((historyCode) => {
-                if (historyCode) {
-                    let index = _.findIndex(self.dataSource(), (obj) => {
-                        return obj.code === self.selectedCode();
-                    });
-                    let historyIndex = self.findHistoryIndex(historyCode);
-                    self.personalUnitPriceCode(self.dataSource()[index].code);
-                    self.personalUnitPriceName(self.dataSource()[index].name);
-                    self.A5_6(' ～ ');
-                    self.endYearMonth(self.formatYM(self.historyList()[historyIndex].endYearMonth));
-                    self.startYearMonth(self.formatYM(self.historyList()[historyIndex].startYearMonth));
-                    self.currencyValue(self.historyList()[historyIndex].amountOfMoney);
-                    self.currencyEnable(true);
-                } else {
-                    self.personalUnitPriceCode(null);
-                    self.personalUnitPriceName(null);
-                    self.A5_6(null);
-                    self.endYearMonth(null);
-                    self.startYearMonth(null);
-                    self.currencyValue(null);
-                    self.currencyEnable(false);
-                }
-                if (self.mode() === MODE.ADD_HISTORY) {
-                    self.selectedCode.valueHasMutated();
-                }
-            });
-
-            self.selectedCode.subscribe((code) => {
-                let dto = {
-                    personalUnitPriceCode: code,
-                    employeeId: self.selectedItem()
-                };
-                self.getAllIndEmpSalUnitPriceHistory(dto);
-            });
-
-            self.selectedItem.subscribe((item) => {
-                let dto = {
-                    personalUnitPriceCode: self.selectedCode(),
-                    employeeId: item
-                };
-                self.getAllIndEmpSalUnitPriceHistory(dto);
-            });
-
-            self.mode.subscribe((mode) => {
-                if (mode === MODE.NORMAL) {
-                    self.isRegistrable(true);
-                    self.isEditableHis(true);
-                    self.isAddableHis(true);
-                    self.currencyEnable(true);
-                }
-                if (mode === MODE.HISTORY_UNREGISTERED) {
-                    self.isRegistrable(false);
-                    self.isEditableHis(false);
-                    self.isAddableHis(true);
-                    self.currencyEnable(false);
-                    self.selectedHistoryCode(null);
-                }
-                if (mode === MODE.ADD_HISTORY) {
-                    self.isRegistrable(true);
-                    self.isEditableHis(false);
-                    self.isAddableHis(false);
-                    self.currencyEnable(true);
-                }
-            });
 
             //CCG001
             self.selectedEmployee = ko.observableArray([]);
@@ -168,7 +99,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
 
-            }
+            };
 
             //KCP009
             self.employeeInputList = ko.observableArray([]);
@@ -187,6 +118,76 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 selectedItem: self.selectedItem,
                 tabIndex: self.tabindex
             };
+
+
+            //subscribe
+            self.selectedCode.subscribe((code) => {
+                let dto = {
+                    personalUnitPriceCode: code,
+                    employeeId: self.selectedItem()
+                };
+                self.getAllIndEmpSalUnitPriceHistory(dto);
+            });
+
+            self.selectedItem.subscribe((item) => {
+                let dto = {
+                    personalUnitPriceCode: self.selectedCode(),
+                    employeeId: item
+                };
+                self.getAllIndEmpSalUnitPriceHistory(dto);
+            });
+
+            self.selectedHistoryCode.subscribe((historyCode) => {
+                if (historyCode) {
+                    let index = _.findIndex(self.dataSource(), (obj) => {
+                        return obj.code === self.selectedCode();
+                    });
+                    let historyIndex = self.findHistoryIndex(historyCode);
+                    self.personalUnitPriceCode(self.dataSource()[index].code);
+                    self.personalUnitPriceName(self.dataSource()[index].name);
+                    self.A5_6(' ～ ');
+                    self.endYearMonth(self.formatYM(self.historyList()[historyIndex].endYearMonth));
+                    self.startYearMonth(self.formatYM(self.historyList()[historyIndex].startYearMonth));
+                    self.currencyValue(self.historyList()[historyIndex].amountOfMoney);
+                    self.currencyEnable(true);
+                    self.isEditableHis(true);
+                } else {
+                    self.personalUnitPriceCode(null);
+                    self.personalUnitPriceName(null);
+                    self.A5_6(null);
+                    self.endYearMonth(null);
+                    self.startYearMonth(null);
+                    self.currencyValue(null);
+                    self.currencyEnable(false);
+                    self.isEditableHis(false);
+                }
+                if (self.mode() === model.MODE.ADD_HISTORY) {
+                    self.selectedCode.valueHasMutated();
+                }
+            });
+
+            self.mode.subscribe((mode) => {
+                if (mode === model.MODE.NORMAL) {
+                    self.isRegistrable(true);
+                    self.isEditableHis(true);
+                    self.isAddableHis(true);
+                    self.currencyEnable(true);
+                }
+                if (mode === model.MODE.HISTORY_UNREGISTERED) {
+                    self.isRegistrable(false);
+                    self.isEditableHis(false);
+                    self.isAddableHis(true);
+                    self.currencyEnable(false);
+                    self.selectedHistoryCode(null);
+                }
+                if (mode === model.MODE.ADD_HISTORY) {
+                    self.isRegistrable(true);
+                    self.isEditableHis(false);
+                    self.isAddableHis(false);
+                    self.currencyEnable(true);
+                }
+            });
+
         }
 
         formatYM(intYM) {
@@ -257,7 +258,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 self.historyList([]);
                 if (data.length > 0) {
                     let array = [];
-                    for(let i = 0; i < data.length; i++) {
+                    for (let i = 0; i < data.length; i++) {
                         array.push(new HistoryModel({
                             personalUnitPriceCode: data[i].personalUnitPriceCode,
                             employeeId: data[i].employeeId,
@@ -270,9 +271,9 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     }
                     self.historyList(array);
                     self.selectedHistoryCode(self.historyList()[0].historyId);
-                    self.mode(MODE.NORMAL);
+                    self.mode(model.MODE.NORMAL);
                 } else {
-                    self.mode(MODE.HISTORY_UNREGISTERED);
+                    self.mode(model.MODE.HISTORY_UNREGISTERED);
                 }
                 block.clear();
             }).fail((res) => {
@@ -305,10 +306,10 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         public toScreenB(): void {
             let self = this;
             let params = {};
-            if (self.mode() === MODE.NORMAL) {
+            if (self.mode() === model.MODE.NORMAL) {
                 params = {
-                    startYm: self.historyList()[0].startYearMonth,
-                    historyStatus: HISTORY_STATUS.WITH_HISTORY
+                    startYearMonth: self.historyList()[0].startYearMonth,
+                    historyStatus: model.HISTORY_STATUS.WITH_HISTORY
                 };
                 self.openModalB(params);
             } else {
@@ -316,8 +317,8 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     if (dto) {
                         service.processYearFromEmp(dto.employmentCode).done((data) => {
                             params = {
-                                startYm: data,
-                                historyStatus: HISTORY_STATUS.NO_HISTORY
+                                startYearMonth: data,
+                                historyStatus: model.HISTORY_STATUS.NO_HISTORY
                             };
                             self.openModalB(params);
                         }).fail((err) => {
@@ -325,8 +326,8 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                         });
                     } else {
                         params = {
-                            startYm: self.formatYMToInt(moment().format("YYYY/MM")),
-                            historyStatus: HISTORY_STATUS.NO_HISTORY
+                            startYearMonth: self.formatYMToInt(moment().format("YYYY/MM")),
+                            historyStatus: model.HISTORY_STATUS.NO_HISTORY
                         };
                         self.openModalB(params);
                     }
@@ -345,10 +346,10 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     self.startYearMonth(nts.uk.time.parseYearMonth(params.startYearMonth).format());
                     self.endYearMonth("9999/12");
 
-                    if (params.takeOverMethod === INHERITANCE.NO) {
+                    if (params.takeOverMethod === model.INHERITANCE.NO) {
                         self.currencyValue(null);
                     } else {
-                        self.currencyValue(parseInt(self.historyList()[0].amountOfMoney));
+                        self.currencyValue(self.historyList()[0].amountOfMoney);
                     }
                     let history: any = new HistoryModel({
                         personalUnitPriceCode: self.selectedCode(),
@@ -368,41 +369,33 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     }
                     self.historyList(array);
                     self.selectedHistoryCode(history.historyId);
-                    self.mode(MODE.ADD_HISTORY);
+                    self.mode(model.MODE.ADD_HISTORY);
                 }
             });
         }
 
         public toScreenC(): void {
             let self = this;
+            let index = self.findHistoryIndex(self.selectedHistoryCode());
             let params = {
-                employeeInfo: {
-                    empId: self.selectedItem(),
-                    personalValode: self.individualPriceCode(),
-                    itemClass: self.itemClas()
-                },
-                period: {
-                    historyId: self.selectedHis().historyID,
-                    startYearMonth: self.selectedHis().startYearMonth,
-                    endYearMonth: self.selectedHis().endYearMonth
-                },
-
-                lastHistoryId: self.historyList().length == (self.historyList()[self.selectedHistoryCode()].index + 1) ? null : self.historyList()[parseInt(self.selectedHistoryCode()) + 1].historyID,
-                lastPeriodEndYm: self.historyList().length == (self.historyList()[self.selectedHistoryCode()].index + 1) ? null : self.historyList()[parseInt(self.selectedHistoryCode()) + 1].endYearMonth,
-                lastPeriodStartYm: self.historyList().length == (self.historyList()[self.selectedHistoryCode()].index + 1) ? null : self.historyList()[parseInt(self.selectedHistoryCode()) + 1].startYearMonth
-
-            }
+                personalUnitPriceCode: self.selectedCode(),
+                employeeId: self.selectedItem(),
+                historyId: self.historyList()[index].historyId,
+                startYearMonth: self.historyList()[index].startYearMonth,
+                endYearMonth: self.historyList()[index].endYearMonth,
+                lastHistoryId: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].historyID,
+                lastStartYearMonth: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].startYearMonth,
+                lastEndYearMonth: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].endYearMonth
+            };
             setShared("QMM041_C_PARAMS", params);
             modal('/view/qmm/041/c/index.xhtml').onClosed(() => {
                 let params = getShared('QMM041_C_RES_PARAMS');
                 if (params) {
-                    if (params.modifyMethod == MODIFY_METHOD.DELETE) {
-                        self.historyProcess(self.individualPriceCode(), 0);
-                    } else {
-                        self.historyProcess(self.individualPriceCode(), self.selectedHis().index);
+                    self.selectedCode.valueHasMutated();
+                    if (params.modifyMethod == model.MODIFY_METHOD.UPDATE) {
+                        self.selectedHistoryCode(self.historyList()[index].historyId);
                     }
                 }
-                self.mode(MODE.NORMAL);
             });
         }
 
@@ -433,16 +426,17 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         register(): void {
             let self = this;
             $('.nts-input').trigger("validate");
-            if(hasError()) return;
-            if (self.mode() == MODE.NORMAL) {
+            if (hasError()) return;
+            if (self.mode() == model.MODE.NORMAL) {
                 let command = {
                     historyId: self.selectedHistoryCode(),
                     amountOfMoney: self.currencyValue()
                 };
                 service.updateAmount(command).done(() => {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
+
                 });
-            } else if (self.mode() == MODE.ADD_HISTORY) {
+            } else if (self.mode() == model.MODE.ADD_HISTORY) {
                 let command = {
                     personalUnitPriceCode: self.selectedCode(),
                     employeeId: self.selectedItem(),
@@ -461,8 +455,11 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
 
                 service.addHistory(command).done(() => {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                    self.mode(MODE.NORMAL);
-                    self.historyList()[0].amountOfMoney = self.currencyValue();
+                    self.mode(model.MODE.NORMAL);
+                    let array = self.historyList();
+                    let index = self.findHistoryIndex(self.selectedHistoryCode());
+                    array[index].amountOfMoney = self.currencyValue();
+                    self.historyList(array);
                 });
             }
         }

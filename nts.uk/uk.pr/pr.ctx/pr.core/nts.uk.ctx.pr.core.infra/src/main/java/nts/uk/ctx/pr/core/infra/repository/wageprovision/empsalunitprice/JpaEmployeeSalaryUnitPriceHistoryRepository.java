@@ -81,7 +81,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     public void updateUnitPriceAmount(PayrollInformation domain) {
         this.getEntityManager().createQuery(UPDATE_AMOUNT_BY_HISTORY_ID,QpbmtEmpSalPriHis.class)
                 .setParameter("historyId", domain.getHistoryID())
-                .setParameter("indvidualUnitPrice", domain.getIndividualUnitPrice())
+                .setParameter("indvidualUnitPrice", domain.getIndividualUnitPrice().v())
                 .executeUpdate();
     }
 

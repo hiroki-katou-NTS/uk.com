@@ -6,14 +6,12 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qmm041.share.model;
     import dialog = nts.uk.ui.dialog;
-    import HISTORY_STATUS = nts.uk.pr.view.qmm041.share.model.HISTORY_STATUS;
-    import INHERITANCE = nts.uk.pr.view.qmm041.share.model.INHERITANCE;
 
     export class ScreenModel {
         takeOverMethod: KnockoutObservable<number> = ko.observable(0);
         takeOverItem: KnockoutObservableArray<number> = ko.observableArray([]);
-        startYm: KnockoutObservable<number> = ko.observable(null);
-        baseYm: number = 0;
+        startYearMonth: KnockoutObservable<number> = ko.observable(null);
+        baseYearMonth: number = 0;
         historyStatus: number = 0;
 
         constructor() {
@@ -21,14 +19,14 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
             block.invisible();
             let params = getShared("QMM041_A_PARAMS");
             if (params) {
-                self.baseYm = params.startYm;
-                self.startYm(params.startYm);
+                self.baseYearMonth = params.startYearMonth;
+                self.startYearMonth(params.startYearMonth);
                 self.historyStatus = params.historyStatus;
-                if (params.historyStatus == HISTORY_STATUS.WITH_HISTORY) {
-                    self.takeOverItem.push(new model.EnumModel(INHERITANCE.YES, getText('QMM041_23', self.formatYM(self.startYm()))));
-                    self.takeOverMethod(INHERITANCE.YES);
+                if (params.historyStatus == model.HISTORY_STATUS.WITH_HISTORY) {
+                    self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.YES, getText('QMM041_23', self.formatYM(self.startYearMonth()))));
+                    self.takeOverMethod(model.INHERITANCE.YES);
                 }
-                self.takeOverItem.push(new model.EnumModel(INHERITANCE.NO, getText('QMM041_23')));
+                self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.NO, getText('QMM041_23')));
             }
             block.clear();
         }
@@ -41,14 +39,14 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $('.nts-input').trigger("validate");
-            if (self.historyStatus === HISTORY_STATUS.WITH_HISTORY && self.baseYm >= self.startYm()) {
+            if (self.historyStatus === model.HISTORY_STATUS.WITH_HISTORY && self.baseYearMonth >= self.startYearMonth()) {
                 dialog.alertError({messageId: "Msg_79"});
                 return;
             }
             let historyId = nts.uk.util.randomId();
             setShared('QMM041_B_RES_PARAMS', {
                 historyId: historyId,
-                startYearMonth: self.startYm(),
+                startYearMonth: self.startYearMonth(),
                 takeOverMethod: self.takeOverMethod()
             });
             close();
