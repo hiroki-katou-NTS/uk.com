@@ -180,12 +180,12 @@ public class DailyPerformanceErrorCodeProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, true);
 				// Seperate Error and Alarm
 				if(lstErrorSetting.isEmpty()) {
 					lstError = new ArrayList<>();
 				}
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, true);
 			}
 		}
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
@@ -199,15 +199,15 @@ public class DailyPerformanceErrorCodeProcessor {
 				dateRange);
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
 		// set error, alarm
-		if (screenDto.getLstEmployee().size() > 0) {
-			if (lstError.size() > 0) {
-				// Get list error setting
-				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
-				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
-			}
-		}
+//		if (screenDto.getLstEmployee().size() > 0) {
+//			if (lstError.size() > 0) {
+//				// Get list error setting
+//				List<DPErrorSettingDto> lstErrorSetting = this.repo
+//						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
+//				// Seperate Error and Alarm
+//				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+//			}
+//		}
 
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
 				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
@@ -265,7 +265,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 			DailyModifyResult resultOfOneRow = dailyProcessor.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			if (resultOfOneRow != null && !data.getError().equals("")) {
+			if (resultOfOneRow != null && data.isErrorOther()) {
 				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
 
 				boolean lockDaykWpl = dailyProcessor.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
