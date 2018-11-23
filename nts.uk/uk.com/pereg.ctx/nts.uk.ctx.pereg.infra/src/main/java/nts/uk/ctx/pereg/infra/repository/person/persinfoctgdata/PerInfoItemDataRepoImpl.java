@@ -31,11 +31,11 @@ import nts.uk.shr.pereg.app.ItemValueType;
 @Stateless
 public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerInfoItemData id"
-			+ " INNER JOIN PpemtPerInfoItem pi"
-			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+//	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerInfoItemData id"
+//			+ " INNER JOIN PpemtPerInfoItem pi"
+//			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+//			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
+//			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	private static final String GET_BY_RID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
 			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
