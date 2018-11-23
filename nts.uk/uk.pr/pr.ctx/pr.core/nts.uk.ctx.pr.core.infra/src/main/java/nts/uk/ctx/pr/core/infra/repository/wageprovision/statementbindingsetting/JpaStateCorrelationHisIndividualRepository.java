@@ -23,7 +23,7 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisIndi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId AND  f.stateCorHisIndiPk.hisId =:hisId ";
     private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId  ORDER BY f.startYearMonth DESC";
-    private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisIndi f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisComPk.cid =:cid AND f.stateCorHisComPk.hisId =:hisId";
+    private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisIndi f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisIndiPk.empId =:empId AND f.stateCorHisIndiPk.hisId =:hisId";
 
 
     @Override
@@ -38,6 +38,7 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     @Override
     public Optional<StateLinkSettingIndividual> getStateLinkSettingIndividualById(String empId, String hisId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisIndi.class)
+                .setParameter("empId", empId)
                 .setParameter("hisId", hisId)
                 .getSingle(c->c.toDomain());
     }
@@ -67,11 +68,11 @@ public class JpaStateCorrelationHisIndividualRepository extends JpaRepository im
     }
 
     @Override
-    public void update(String cid, YearMonthHistoryItem history){
+    public void update(String empId, YearMonthHistoryItem history){
         this.getEntityManager().createQuery(UPDATE_BY_HISID)
                 .setParameter("startYearMonth",history.start().v())
                 .setParameter("endYearMonth",history.end().v())
-                .setParameter("cid",cid)
+                .setParameter("empId",empId)
                 .setParameter("hisId",history.identifier())
                 .executeUpdate();
     }

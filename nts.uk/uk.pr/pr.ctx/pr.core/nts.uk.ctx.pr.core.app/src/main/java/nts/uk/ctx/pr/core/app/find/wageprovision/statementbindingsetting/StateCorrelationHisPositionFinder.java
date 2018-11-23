@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Collections;
@@ -31,16 +32,17 @@ public class StateCorrelationHisPositionFinder {
 
     public List<StateCorrelationHisPositionDto> getStateCorrelationHisPositionByCid() {
         String cId = AppContexts.user().companyId();
-        Optional<StateCorrelationHisPosition> hisPosition = finder.getStateCorrelationHisPositionByCid(cId);
-        hisPosition.ifPresent(i -> StateCorrelationHisPositionDto.fromDomain(hisPosition.get()));
-        return Collections.emptyList();
+        StateCorrelationHisPosition hisPosition = finder.getStateCorrelationHisPositionByCid(cId).orElse(new StateCorrelationHisPosition(cId, new ArrayList<>()));
+        return StateCorrelationHisPositionDto.fromDomain(hisPosition);
     }
 
     public StateLinkSettingDateDto getDateBase(String hisId){
         String cId = AppContexts.user().companyId();
         Optional<StateLinkSettingDate>  stateLinkSettingDate = finder.getStateLinkSettingDateById(cId,hisId);
-        stateLinkSettingDate.ifPresent(i -> StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get()) );
-        return null;
+        if(!stateLinkSettingDate.isPresent()){
+            return null;
+        }
+        return StateLinkSettingDateDto.fromDomain(stateLinkSettingDate.get());
     }
 
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth, GeneralDate date){
@@ -50,21 +52,21 @@ public class StateCorrelationHisPositionFinder {
             return Collections.emptyList();
         }
         List<StateLinkSettingMaster> listStateLinkSettingMaster = finder.getStateLinkSettingMasterByHisId(cId, hisId);
-        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(startYearMonth , listStateLinkSettingMaster) ;
+        List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = stateLinkSettingMasterFinder.getStateLinkSettingMaster(startYearMonth, listStateLinkSettingMaster) ;
         return listJobTitle.stream().map(i -> this.addCategoryName(i, listStateLinkSettingMasterDto)).collect(Collectors.toList());
     }
 
     private StateLinkSettingMasterDto addCategoryName(JobTitle job, List<StateLinkSettingMasterDto> stateLinkSettingMasterDto){
-        Optional<StateLinkSettingMasterDto> jobtitle = stateLinkSettingMasterDto.stream().filter(i -> i.getMasterCode().equals(job.getJobTitleCode())).findFirst();
-        if(jobtitle.isPresent()) {
+        Optional<StateLinkSettingMasterDto> jobTitle = stateLinkSettingMasterDto.stream().filter(i -> i.getMasterCode().equals(job.getJobTitleCode())).findFirst();
+        if(jobTitle.isPresent()) {
         	return new StateLinkSettingMasterDto(
-        			jobtitle.get().getHistoryID(), 
-        			jobtitle.get().getMasterCode(),
+                    jobTitle.get().getHistoryID(),
+                    jobTitle.get().getMasterCode(),
         			job.getJobTitleName(),
-        			jobtitle.get().getSalaryCode(),
-        			jobtitle.get().getBonusCode(),
-        			jobtitle.get().getBonusName(),
-        			jobtitle.get().getSalaryName()
+                    jobTitle.get().getSalaryCode(),
+                    jobTitle.get().getBonusCode(),
+                    jobTitle.get().getBonusName(),
+                    jobTitle.get().getSalaryName()
         			);
         }
         return new StateLinkSettingMasterDto(

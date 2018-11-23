@@ -89,10 +89,9 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
                 this.salaryCode == null ? null : new StatementCode(this.salaryCode),
                 this.bonusCode == null ? null : new StatementCode(this.bonusCode));
     }
-    public static Optional<StateLinkSettingDate> getBaseDate(List<QpbmtStateCorHisPos> entity){
-        if(entity == null || entity.isEmpty())
-            return Optional.empty();
-        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(entity.get(0).stateCorHisPosPk.hisId,entity.get(0).baseDate);
+    public static Optional<StateLinkSettingDate> toBaseDate(Object[] resultQuery){
+        GeneralDate date = GeneralDate.fromString(resultQuery[1].toString(), "yyyy-MM-dd");
+        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(resultQuery[0].toString(), date);
         return Optional.of(stateLinkSettingDate);
     }
     public static List<YearMonthHistoryItem> toDomainYearMonth(List<QpbmtStateCorHisPos> entity){

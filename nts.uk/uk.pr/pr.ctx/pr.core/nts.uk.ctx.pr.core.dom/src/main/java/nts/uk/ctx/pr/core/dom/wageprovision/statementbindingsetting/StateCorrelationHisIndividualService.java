@@ -27,9 +27,8 @@ public class StateCorrelationHisIndividualService {
         stateCorrelationHisIndividualRepository.add(empId, yearMonthItem,stateLinkSettingIndividual.getSalaryCode().get().v(),stateLinkSettingIndividual.getBonusCode().get().v());
     }
 
-    public void updateHistoryIndividual(YearMonthHistoryItem history,StateLinkSettingIndividual stateLinkSettingIndividual){
-        String cid = AppContexts.user().companyId();
-        stateCorrelationHisIndividualRepository.update(cid,history,stateLinkSettingIndividual.getSalaryCode().get().v(),stateLinkSettingIndividual.getBonusCode().get().v());
+    public void updateHistoryIndividual(YearMonthHistoryItem history,StateLinkSettingIndividual stateLinkSettingIndividual, String empId){
+        stateCorrelationHisIndividualRepository.update(empId,history,stateLinkSettingIndividual.getSalaryCode().get().v(),stateLinkSettingIndividual.getBonusCode().get().v());
     }
 
     

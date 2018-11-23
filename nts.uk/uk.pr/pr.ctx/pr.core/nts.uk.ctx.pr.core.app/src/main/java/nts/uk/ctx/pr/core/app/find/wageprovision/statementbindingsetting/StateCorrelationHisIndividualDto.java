@@ -22,9 +22,8 @@ public class StateCorrelationHisIndividualDto {
 
     
     public static List<StateCorrelationHisIndividualDto> fromDomain(StateCorrelationHisIndividual domain) {
-        return domain.getHistory().stream().map(item -> {
-            return new StateCorrelationHisIndividualDto(item.identifier(), item.start().v(), item.end().v());
-        }).collect(Collectors.toList());
+        return domain.getHistory().stream().map(item -> new StateCorrelationHisIndividualDto(
+                item.identifier(), item.start().v(), item.end().v())).collect(Collectors.toList());
     }
     
 }

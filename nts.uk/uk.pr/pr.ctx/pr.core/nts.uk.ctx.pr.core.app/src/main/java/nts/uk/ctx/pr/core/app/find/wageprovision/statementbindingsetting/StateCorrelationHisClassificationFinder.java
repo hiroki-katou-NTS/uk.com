@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +30,9 @@ public class StateCorrelationHisClassificationFinder {
 
     public List<StateCorrelationHisClassificationDto> getStateCorrelationHisClassificationByCid(){
         String cId = AppContexts.user().companyId();
-        Optional<StateCorrelationHisClassification> hisClassification = classificationFinder.getStateCorrelationHisClassificationByCid(cId);
-        if(!hisClassification.isPresent()) {
-            return Collections.emptyList();
-        }
-        return StateCorrelationHisClassificationDto.fromDomain(hisClassification.get());
+        StateCorrelationHisClassification hisClassification = classificationFinder.getStateCorrelationHisClassificationByCid(cId)
+                .orElse(new StateCorrelationHisClassification(cId, new ArrayList<>()));
+        return StateCorrelationHisClassificationDto.fromDomain(hisClassification);
     }
 
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){

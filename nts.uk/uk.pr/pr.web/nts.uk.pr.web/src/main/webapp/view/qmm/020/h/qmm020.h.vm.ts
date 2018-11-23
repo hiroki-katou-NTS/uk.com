@@ -46,9 +46,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 self.index(self.getIndex(data));
                 if (data != '') {
                     if(self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
-                       self.getStateLinkSettingMasterIndividual(self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
+                       self.getStateLinkSettingMasterIndividual(self.selectedItem(), self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
                     } else {
-                        self.getStateLinkSettingMasterIndividual(data, self.listStateCorrelationHis()[self.index()].startYearMonth);
+                        self.getStateLinkSettingMasterIndividual(self.selectedItem(), data, self.listStateCorrelationHis()[self.index()].startYearMonth);
                     }
                 }
             });
@@ -227,9 +227,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             });
         }
 
-        getStateLinkSettingMasterIndividual(hisId: string, start: number){
+        getStateLinkSettingMasterIndividual(empId: string,hisId: string, start: number){
             let self = this;
-            service.getStateLinkSettingMasterIndividual(hisId, start).done((item: StateLinkSettingMasterIndividual) => {
+            service.getStateLinkSettingMasterIndividual(empId, hisId, start).done((item: StateLinkSettingMasterIndividual) => {
                 self.clearStateLinkSettingMasterIndividual();
                 if(item) {
                     self.salaryCode(item.salaryCode);

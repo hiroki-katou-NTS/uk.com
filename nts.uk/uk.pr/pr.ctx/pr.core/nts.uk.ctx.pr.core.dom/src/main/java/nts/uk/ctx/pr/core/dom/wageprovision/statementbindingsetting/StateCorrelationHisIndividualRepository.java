@@ -21,9 +21,9 @@ public interface StateCorrelationHisIndividualRepository {
 
     void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
 
-    void update(String cid, YearMonthHistoryItem history);
+    void update(String empId, YearMonthHistoryItem history);
 
-    void update(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
+    void update(String empId, YearMonthHistoryItem history, String salaryCode, String bonusCode);
 
     void remove(String cid, String hisId);
 
