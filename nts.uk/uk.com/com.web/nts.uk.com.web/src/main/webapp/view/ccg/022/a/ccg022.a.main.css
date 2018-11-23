@@ -1,0 +1,61 @@
+@import url("common.css");
+
+.contents-area {
+	padding: 20px 0px 0px 50px;
+}
+
+#group-mode {
+	width: calc(100% - 90px);
+	margin-left: 25px;
+}
+
+#group-mode .ntsRadioBox {
+	width: 100%;
+}
+
+#group-mode .ntsRadioBox:NTH-CHILD(2) {
+	margin-top: 120px;
+}
+
+#group-mode .ntsRadioBox:NTH-CHILD(3) {
+	margin-top: 220px;
+}
+
+.info-group {
+	margin-left: 20px;
+}
+
+#starting-group {
+	top: 190px;
+	left: 230px;
+}
+
+#in-progress-group {
+	top: 340px;
+	left: 215px;
+}
+
+#stop-group {
+	top: 580px;
+	left: 215px;
+}
+
+.info-group {
+	position: absolute;
+}
+
+#in_progress_message_txt, #stop_message_txt {
+	margin-left: 15px;
+}
+
+#system-mode .ntsRadioBox {
+	width: 100%;
+}
+
+#system-mode .ntsRadioBox:NTH-CHILD(2) {
+	margin-top: 20px;
+}
+
+#system-mode {
+	margin-left: 30px;
+}

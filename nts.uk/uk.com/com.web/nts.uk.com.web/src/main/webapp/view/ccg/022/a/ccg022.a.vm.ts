@@ -1,0 +1,197 @@
+module nts.uk.com.view.ccg022.a.screenModel {
+
+    import dialog = nts.uk.ui.dialog.info;
+    import text = nts.uk.resource.getText;
+    import formatDate = nts.uk.time.formatDate;
+    import common = nts.uk.at.view.kaf011.shr.common;
+    import service = nts.uk.at.view.kaf011.shr.service;
+    import block = nts.uk.ui.block;
+    import jump = nts.uk.request.jump;
+    import alError = nts.uk.ui.dialog.alertError;
+    import modal = nts.uk.ui.windows.sub.modal;
+
+    export class ViewModel {
+        
+        isSystemSelected: KnockoutObservable<number> = ko.observable(1);
+        title: KnockoutObservable<string> = ko.observable(text("CCG022_10"));
+        isAdmin: KnockoutObservable<boolean> = ko.observable(false);
+        systemMode = ko.observableArray([
+            //A2_1
+            { id: 0, name: text('CCG022_13') },
+            //A3_1
+            { id: 1, name: text('CCG022_14') },
+            //A4_1
+            { id: 2, name: text('CCG022_21') },
+        ]);
+        selectedSystemMode: KnockoutObservable<number> = ko.observable(0);
+        infoLbl1: KnockoutObservable<string> = ko.observable("");
+        infoLbl2: KnockoutObservable<string> = ko.observable("");
+        usageStopMessage: KnockoutObservable<string> = ko.observable("");
+        stopMode = ko.observableArray([
+            //A4_2
+            { id: 1, name: text('CCG022_22') },
+            //A4_3
+            { id: 2, name: text('CCG022_23') }
+        ]);
+        selectedStopMode: KnockoutObservable<number> = ko.observable(1);
+        stopMessage: KnockoutObservable<string> = ko.observable("");
+        constructor() {
+            let self = this;
+            self.isSystemSelected.subscribe((state) => {
+                self.title(state ? text("CCG022_10") : text("CCG022_11"));
+                if (self.isAdmin()) {
+                    block.invisible();
+                    service.find(state).done((data) => {
+                        self.setData(state, data);
+                    }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                        .always(() => {
+                            block.clear();
+                        }); 
+                }
+            });
+        }
+
+        setData(state: number, data: IStopSetting) {
+            let self = this;
+            if (data) {
+                let setting: IStopBySystem = state == 1 ? data.system : data.company;
+                self.isAdmin(data.isAdmin);
+                if (!data.isAdmin) {
+                    self.isSystemSelected(0);
+                }
+                self.selectedSystemMode(setting.systemStatus);
+                if (state == 1) {
+                    self.infoLbl1(self.genLbl(true, data.stopCompanys));
+                    self.infoLbl2(self.genLbl(false, data.inProgressCompanys));
+                } else {
+                    self.infoLbl1(self.genStopText(data, setting));
+                }
+                self.usageStopMessage(setting.usageStopMessage);
+                self.selectedStopMode(setting.stopMode);
+                self.stopMessage(setting.stopMessage);
+            }
+        }
+
+        saveData() {
+            let self = this,
+                command: ISaveStopSettingCommand = {
+                    isSystem: self.isSystemSelected(),
+                    stopCommand: {
+                        systemStatus: self.selectedSystemMode(),
+                        stopMessage: self.stopMessage(),
+                        stopMode: self.selectedStopMode(),
+                        usageStopMessage: self.usageStopMessage(),
+                    }
+                };
+            block.invisible();
+            service.save(command).done(() => {
+                dialog({ messageId: 'Msg_15' }).then(function() { });
+            }).always(() => {
+                block.clear();
+            });
+
+        }
+        genLbl(isStop: boolean, data: Array<IStopByCompany>) {
+
+            let inputText = isStop == true ? text("CCG022_30") : text("CCG022_31");
+            if (data) {
+                text(inputText, _.map(data, (item) => { return item.companyCd; }));
+            }
+            return "";
+        }
+        genStopText(data, setting) {
+            let status;
+            if (setting != null) {
+                status = data.company.systemStatus;
+            } else {
+                status = data.system.systemStatus;
+            }
+            if (status == 1) {
+                return text("CCG022_32");
+            }
+            if (status == 2) {
+                return text("CCG022_33");
+            }
+            return "";
+        }
+
+
+
+        startPage(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                state = self.isSystemSelected();
+            block.invisible();
+            service.find(state).done((data) => {
+                self.setData(state, data);
+            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                .always(() => {
+                    block.clear();
+                });
+            dfd.resolve();
+            return dfd.promise();
+        }
+        findSystem() {
+            let self = this;
+            self.isSystemSelected(1);
+        }
+
+        findCompany() {
+            let self = this;
+            self.isSystemSelected(0);
+        }
+
+    }
+    export interface IStopSetting {
+        isAdmin: boolean;
+        system: IStopBySystem;
+        company: IStopByCompany;
+        stopCompanys: Array<IStopByCompany>;
+        inProgressCompanys: Array<IStopByCompany>;
+    }
+
+    export interface IStopBySystem {
+        /** 契約コード */
+        contractCd: string;
+        /** 利用停止モード */
+        stopMode: number;
+        /** 利用停止のメッセージ */
+        usageStopMessage: string;
+        /** システム利用状態 */
+        systemStatus: number;
+        /** 停止予告のメッセージ */
+        stopMessage: string;
+    }
+    export interface IStopByCompany {
+        /** 契約コード */
+        contractCd: string;
+        /** 会社コード */
+        companyCd: string
+        /** 利用停止モード */
+        stopMode: number;
+        /** 利用停止のメッセージ */
+        usageStopMessage: string;
+        /** システム利用状態 */
+        systemStatus: number;
+        /** 停止予告のメッセージ */
+        stopMessage: string;
+
+    }
+    export interface ISaveStopSettingCommand {
+        isSystem: number;
+        stopCommand: IStopCommand;
+
+    }
+    export interface IStopCommand {
+        /** システム利用状態 */
+        systemStatus: number;
+        /** 停止予告のメッセージ */
+        stopMessage: string;
+        /** 利用停止モード */
+        stopMode: number;
+        /** 利用停止のメッセージ */
+        usageStopMessage: string;
+    }
+
+
+}
