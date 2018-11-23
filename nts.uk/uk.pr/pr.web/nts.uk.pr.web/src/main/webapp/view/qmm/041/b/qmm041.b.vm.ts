@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
                 self.historyStatus = params.historyStatus;
                 if (params.historyStatus == HISTORY_STATUS.WITH_HISTORY) {
                     self.takeOverItem.push(new model.EnumModel(INHERITANCE.YES, getText('QMM041_23', self.formatYM(self.startYm()))));
-                    self.takeOverMethod(1);
+                    self.takeOverMethod(INHERITANCE.YES);
                 }
                 self.takeOverItem.push(new model.EnumModel(INHERITANCE.NO, getText('QMM041_23')));
             }
@@ -41,14 +41,14 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $('.nts-input').trigger("validate");
-            if (self.historyStatus == HISTORY_STATUS.WITH_HISTORY && self.baseYm > self.startYm()) {
+            if (self.historyStatus === HISTORY_STATUS.WITH_HISTORY && self.baseYm >= self.startYm()) {
                 dialog.alertError({messageId: "Msg_79"});
                 return;
             }
             let historyId = nts.uk.util.randomId();
             setShared('QMM041_B_RES_PARAMS', {
                 historyId: historyId,
-                periodStartYm: self.startYm(),
+                startYearMonth: self.startYm(),
                 takeOverMethod: self.takeOverMethod()
             });
             close();

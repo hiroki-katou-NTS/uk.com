@@ -31,7 +31,7 @@ module nts.uk.pr.view.qmm041.a.service {
         return ajax("pr", paths.getSalaryPerUnitPriceName);
     }
 
-    export function getIndividualEmpSalUnitPrices(dto): JQueryPromise<any> {
+    export function getAllIndEmpSalUnitPriceHistory(dto): JQueryPromise<any> {
         return ajax("pr", paths.getAllIndEmpSalUnitPriceHistory, dto);
     }
 

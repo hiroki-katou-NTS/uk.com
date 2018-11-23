@@ -11,14 +11,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.*;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.empsalunitprice.QpbmtEmpSalPriHis;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.empsalunitprice.QpbmtEmpSalPriHisPk;
+import nts.uk.shr.com.history.GeneralHistoryItem;
 
 @Stateless
 public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository implements EmployeeSalaryUnitPriceHistoryRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpSalPriHis f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId IN :employeeId";
-    private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId = :employeeId ORDER BY f.startYearMonth desc";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND f.empSalPriHisPk.employeeId IN :employeeId";
+    private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND f.empSalPriHisPk.employeeId = :employeeId ORDER BY f.startYearMonth desc";
     private static final String UPDATE_AMOUNT_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice = :indvidualUnitPrice WHERE f.empSalPriHisPk.historyId = :historyId";
     private static final String UPDATE_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.startYearMonth = :startYearMonth AND f.endYearMonth = :endYearMonth WHERE f.empSalPriHisPk.historyId = :historyId";
     private static final String DELETE_HISTORY_BY_HISTORY_ID = "DELETE FROM QpbmtEmpSalPriHis f WHERE f.empSalPriHisPk.historyId = :historyId";
@@ -94,7 +95,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
         this.getEntityManager().createQuery(UPDATE_HISTORY_BY_HISTORY_ID, QpbmtEmpSalPriHis.class)
                 .setParameter("startYearMonth", domain.items().stream().map(item -> item.start().v()).findFirst().orElse(null))
                 .setParameter("endYearMonth", domain.items().stream().map(item -> item.end().v()).findFirst().orElse(null))
-                .setParameter("historyId", domain.items().stream().map(item -> item.identifier()).findFirst().orElse(null))
+                .setParameter("historyId", domain.items().stream().map(GeneralHistoryItem::identifier).findFirst().orElse(null))
                 .executeUpdate();
     }
 
@@ -107,7 +108,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
 
     @Override
     public void updateOldHistory(String historyId, int newEndYearMonth) {
-        this.getEntityManager().createQuery(UPDATE_HISTORY_BY_HISTORY_ID, QpbmtEmpSalPriHis.class)
+        this.getEntityManager().createQuery(UPDATE_OLD_HISTORY_BY_HISTORY_ID, QpbmtEmpSalPriHis.class)
                 .setParameter("endYearMonth", newEndYearMonth)
                 .setParameter("historyId", historyId)
                 .executeUpdate();

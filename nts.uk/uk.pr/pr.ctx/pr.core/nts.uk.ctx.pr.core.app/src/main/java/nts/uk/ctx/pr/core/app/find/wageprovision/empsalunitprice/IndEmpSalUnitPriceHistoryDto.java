@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class IndEmpSalUnitPriceHistoryDto {
 
-    private String personalUnitPrice;
+    private String personalUnitPriceCode;
 
     private String employeeId;
 
@@ -24,7 +24,7 @@ public class IndEmpSalUnitPriceHistoryDto {
 
     public static IndEmpSalUnitPriceHistoryDto fromDomainToDto(IndEmpSalUnitPriceHistory domain) {
         return new IndEmpSalUnitPriceHistoryDto(
-                domain.getPersonalUnitPrice(),
+                domain.getPersonalUnitPriceCode(),
                 domain.getEmployeeId(),
                 domain.getHistoryId(),
                 domain.getStartYearMonth(),

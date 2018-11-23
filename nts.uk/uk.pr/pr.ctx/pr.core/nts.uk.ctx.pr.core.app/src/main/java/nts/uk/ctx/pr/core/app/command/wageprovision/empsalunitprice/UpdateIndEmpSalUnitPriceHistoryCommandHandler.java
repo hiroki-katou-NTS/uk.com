@@ -25,7 +25,7 @@ public class UpdateIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandle
         IndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
         employeeSalaryUnitPriceHistoryRepository.updateHistory(
                 new EmployeeSalaryUnitPriceHistory(
-                        command.getPersonalUnitPrice(),
+                        command.getPersonalUnitPriceCode(),
                         command.getEmployeeId(),
                         Collections.singletonList(new YearMonthHistoryItem(command.getHistoryId(), new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth())))))
         );

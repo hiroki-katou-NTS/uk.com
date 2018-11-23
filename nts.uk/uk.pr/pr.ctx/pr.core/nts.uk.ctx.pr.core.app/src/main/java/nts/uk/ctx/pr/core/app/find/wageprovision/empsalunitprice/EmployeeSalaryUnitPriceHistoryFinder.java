@@ -22,7 +22,7 @@ public class EmployeeSalaryUnitPriceHistoryFinder {
     }
 
     public List<IndEmpSalUnitPriceHistoryDto> getAllIndividualEmpSalUnitPriceHistoryDto(IndEmpSalUnitPriceHistoryDto dto) {
-        return repository.getAllIndividualEmpSalUnitPriceHistory(dto.getPersonalUnitPrice(), dto.getEmployeeId())
+        return repository.getAllIndividualEmpSalUnitPriceHistory(dto.getPersonalUnitPriceCode(), dto.getEmployeeId())
                 .stream().map(IndEmpSalUnitPriceHistoryDto::fromDomainToDto)
                 .collect(Collectors.toList());
     }

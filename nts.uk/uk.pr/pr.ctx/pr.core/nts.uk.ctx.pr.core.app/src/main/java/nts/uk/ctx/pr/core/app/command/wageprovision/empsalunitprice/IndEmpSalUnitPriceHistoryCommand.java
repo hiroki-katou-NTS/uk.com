@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Value
 public class IndEmpSalUnitPriceHistoryCommand {
 
-    private String personalUnitPrice;
+    private String personalUnitPriceCode;
 
     private String employeeId;
 

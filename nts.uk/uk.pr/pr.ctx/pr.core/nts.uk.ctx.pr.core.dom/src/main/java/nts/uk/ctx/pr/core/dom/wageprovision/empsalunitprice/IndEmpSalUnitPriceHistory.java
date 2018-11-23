@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class IndEmpSalUnitPriceHistory {
 
-    String personalUnitPrice;
+    String personalUnitPriceCode;
 
     String employeeId;
 
