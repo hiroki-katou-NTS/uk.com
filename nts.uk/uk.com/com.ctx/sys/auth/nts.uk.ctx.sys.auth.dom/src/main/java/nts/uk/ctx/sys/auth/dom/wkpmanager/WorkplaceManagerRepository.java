@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.dom.wkpmanager;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 
 public interface WorkplaceManagerRepository {
 	// Get workplace manager list by workplace id
@@ -24,4 +25,10 @@ public interface WorkplaceManagerRepository {
 	List<WorkplaceManager> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate);
 	
 	List<WorkplaceManager> findByWkpDateAndManager(String wkpID, GeneralDate baseDate, List<String> wkpManagerIDLst);
+
+	//Export Data
+	List<WorkPlaceSelectionExportData> findAllWorkPlaceSelection(String companyId, String workplaceId, String languageId);
+
+
+
 }

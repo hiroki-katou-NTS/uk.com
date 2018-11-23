@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.primitive.InitSelection;
 
 @Data
 @AllArgsConstructor

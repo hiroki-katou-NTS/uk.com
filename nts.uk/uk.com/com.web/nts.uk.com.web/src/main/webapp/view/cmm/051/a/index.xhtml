@@ -35,6 +35,8 @@
 					tabindex="2">#{i18n.getText('CMM044_3')}</button>
 				<button class="danger"
 					data-bind="click: delWkpManager, enable: !isNewMode()" tabindex="3">#{i18n.getText('CMM044_6')}</button>
+				<!-- export excel -->
+				<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="wkp-component"></div>

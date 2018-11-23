@@ -10,6 +10,7 @@ module nts.uk.com.view.cmm051.a {
         import model = nts.uk.com.view.ccg026.component.model;
         
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
             // KCP010
             kcp010Model : kcp010.viewmodel.ScreenModel;
             listComponentOption: ComponentOption;
@@ -349,6 +350,24 @@ module nts.uk.com.view.cmm051.a {
 
                 return command;
             }
+            
+            /**
+         * Print file excel
+         */
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            let wkpId = self.selectedWkpId();
+            let roleId = self.selectedWpkManagerId();
+            service.saveAsExcel(langId, wkpId, roleId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+            
         }
         
         /**
