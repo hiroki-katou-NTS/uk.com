@@ -9,7 +9,6 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.HEAD;
 import java.util.Optional;
 
 @SuppressWarnings("Duplicates")
@@ -17,17 +16,17 @@ import java.util.Optional;
 public class StateCorrelationHistoryService {
 
     /* 会社*/
-    private static final int COMPANY = 0;
+    private static final int EMPLOYEE = 0;
     /*部門*/
-    private static final int EMPLOYEE = 1;
+    private static final int DEPARMENT = 1;
     /*部門*/
-    private static final int DEPARMENT = 2;
+    private static final int CLASSIFICATION = 2;
     /*分類*/
-    private static final int CLASSIFICATION = 3;
+    private static final int POSITION = 3;
     /*職位*/
-    private static final int POSITION  = 4;
+    private static final int SALARY  = 4;
     /*給与分類*/
-    private static final int SALARY = 5 ;
+    private static final int COMPANY = 5 ;
     /*個人*/
     private static final int INDIVIDUAL = 6 ;
 
