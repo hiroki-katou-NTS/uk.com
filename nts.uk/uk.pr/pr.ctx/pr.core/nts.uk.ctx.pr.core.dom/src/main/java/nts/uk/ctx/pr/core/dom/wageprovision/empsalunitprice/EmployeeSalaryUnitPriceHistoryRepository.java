@@ -21,4 +21,13 @@ public interface EmployeeSalaryUnitPriceHistoryRepository
 
     List<IndEmpSalUnitPriceHistory> getAllIndividualEmpSalUnitPriceHistory(String perUnitPriceCode, String employeeId);
 
+    void updateUnitPriceAmount(PayrollInformation domain);
+
+    void addHistory(EmployeeSalaryUnitPriceHistory domain1, PayrollInformation domain2);
+
+    void updateHistory(EmployeeSalaryUnitPriceHistory domain);
+
+    void deleteHistory(String historyId);
+
+    void updateOldHistory(String historyId, int newEndYearMonth);
 }

@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPr
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.IndEmpSalUnitPriceHistory;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.PayrollInformation;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -111,5 +112,14 @@ public class QpbmtEmpSalPriHis extends UkJpaEntity implements Serializable {
         )).collect(Collectors.toList());
     }
 
-
+    public static QpbmtEmpSalPriHis toEntity(EmployeeSalaryUnitPriceHistory domain, PayrollInformation domain2) {
+        val employeeId = domain.getEmployeeID();
+        val personalUnitPriceCode = domain.getPersonalUnitPriceCode();
+        return domain.items().stream().map(item -> new QpbmtEmpSalPriHis(
+                new QpbmtEmpSalPriHisPk(personalUnitPriceCode.v(), employeeId, item.identifier()),
+                item.start().v(),
+                item.end().v(),
+                domain2.getIndividualUnitPrice().v()
+        )).findFirst().orElse(null);
+    }
 }

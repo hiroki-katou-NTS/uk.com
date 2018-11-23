@@ -28,9 +28,14 @@ module nts.uk.pr.view.qmm041.share.model {
         }
     }
 
-    export enum INHERITANCE_CLS {
+    export enum HISTORY_STATUS {
         NO_HISTORY = 0,
         WITH_HISTORY = 1
+    }
+
+    export enum INHERITANCE {
+        NO = 0,
+        YES = 1
     }
 
     export enum MODIFY_METHOD {

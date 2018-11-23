@@ -28,7 +28,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1 登録-->
-            <button class="proceed" tabindex="1" data-bind="enable: isRegistrable &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM041_5')}</button>
+            <button class="proceed" tabindex="1" data-bind="click: register, enable: isRegistrable() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM041_5')}</button>
             <!--A1_2 社員給与単価（項目別）-->
             <a id="A1_2" class="goout" data-bind="ntsLinkButton: {jump: '../../042/a/index.xhtml'}"
                tabindex="11">#{i18n.getText('QMM041_41')}</a>
@@ -90,12 +90,12 @@
                             <!--A4_4 履歴リスト-->
                             <div class="history-box" id="list-box" tabindex="9" data-bind="ntsListBox: {
                                     options: historyList,
-                                    optionsValue: 'index',
+                                    optionsValue: 'historyId',
                                     optionsText: 'period',
                                     multiple: false,
                                     value: selectedHistoryCode,
                                     enable: true,
-                                    rows: 6,
+                                    rows: 5,
                                     columns: columns,
                                     name: '#[QMM041_12]'}"/>
                         </div>

@@ -3,38 +3,32 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import hasError = nts.uk.ui.errors.hasError;
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qmm041.share.model;
     import dialog = nts.uk.ui.dialog;
+    import HISTORY_STATUS = nts.uk.pr.view.qmm041.share.model.HISTORY_STATUS;
+    import INHERITANCE = nts.uk.pr.view.qmm041.share.model.INHERITANCE;
 
     export class ScreenModel {
-        startDateString: KnockoutObservable<string> = ko.observable(null);
-        endDateString: KnockoutObservable<string> = ko.observable(null);
-        takeoverMethod: KnockoutObservable<number> = ko.observable(0);
-        takeoverItem: KnockoutObservableArray<number> = ko.observableArray([]);
-        yearMonthStart: KnockoutObservable<number> = ko.observable(null);
-
+        takeOverMethod: KnockoutObservable<number> = ko.observable(0);
+        takeOverItem: KnockoutObservableArray<number> = ko.observableArray([]);
+        startYm: KnockoutObservable<number> = ko.observable(null);
+        baseYm: number = 0;
+        historyStatus: number = 0;
 
         constructor() {
             let self = this;
             block.invisible();
             let params = getShared("QMM041_A_PARAMS");
             if (params) {
-                let period = params.period, displayLatestStartHistory = "";
-                if (period && Object.keys(period).length > 0) {
-                    let startYM = period.periodStartYm;
-                    let endYM = period.periodEndYm;
-                    displayLatestStartHistory = self.formatYM(startYM);
-                    self.startDateString(startYM);
-                    self.endDateString(endYM);
-                    self.yearMonthStart(startYM);
+                self.baseYm = params.startYm;
+                self.startYm(params.startYm);
+                self.historyStatus = params.historyStatus;
+                if (params.historyStatus == HISTORY_STATUS.WITH_HISTORY) {
+                    self.takeOverItem.push(new model.EnumModel(INHERITANCE.YES, getText('QMM041_23', self.formatYM(self.startYm()))));
+                    self.takeOverMethod(1);
                 }
-                if (params.historyId) {
-                    self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.WITH_HISTORY, getText('QMM041_23', [displayLatestStartHistory])));
-                    self.takeoverMethod(1);
-                }
-                self.takeoverItem.push(new model.EnumModel(model.INHERITANCE_CLS.NO_HISTORY, getText('QMM041_23')));
+                self.takeOverItem.push(new model.EnumModel(INHERITANCE.NO, getText('QMM041_23')));
             }
             block.clear();
         }
@@ -47,19 +41,15 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $('.nts-input').trigger("validate");
-            if (hasError()) {
-                return;
-            }
-            if (self.startDateString() >= self.yearMonthStart()) {
+            if (self.historyStatus == HISTORY_STATUS.WITH_HISTORY && self.baseYm > self.startYm()) {
                 dialog.alertError({messageId: "Msg_79"});
                 return;
             }
-            let historyId = getShared("QMM041_A_PARAMS").historyId;
+            let historyId = nts.uk.util.randomId();
             setShared('QMM041_B_RES_PARAMS', {
                 historyId: historyId,
-                periodStartYm: self.yearMonthStart(),
-                periodEndYm: 999912,
-                takeoverMethod: self.takeoverMethod()
+                periodStartYm: self.startYm(),
+                takeOverMethod: self.takeOverMethod()
             });
             close();
         }

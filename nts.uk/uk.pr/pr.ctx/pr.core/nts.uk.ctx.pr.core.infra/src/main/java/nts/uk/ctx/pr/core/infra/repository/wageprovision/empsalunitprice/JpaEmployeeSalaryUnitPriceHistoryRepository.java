@@ -8,10 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistory;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.IndEmpSalUnitPriceHistory;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.WorkIndividualPrice;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.*;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.empsalunitprice.QpbmtEmpSalPriHis;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.empsalunitprice.QpbmtEmpSalPriHisPk;
 
@@ -22,11 +19,14 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpSalPriHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId IN :employeeId";
     private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND  f.empSalPriHisPk.employeeId = :employeeId ORDER BY f.startYearMonth desc";
-    private static final String UPDATE_ALL_BY_KEY_HIS = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice =:indvidualUnitPrice WHERE f.empSalPriHisPk.historyId =:historyId";
+    private static final String UPDATE_AMOUNT_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice = :indvidualUnitPrice WHERE f.empSalPriHisPk.historyId = :historyId";
+    private static final String UPDATE_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.startYearMonth = :startYearMonth AND f.endYearMonth = :endYearMonth WHERE f.empSalPriHisPk.historyId = :historyId";
+    private static final String DELETE_HISTORY_BY_HISTORY_ID = "DELETE FROM QpbmtEmpSalPriHis f WHERE f.empSalPriHisPk.historyId = :historyId";
+    private static final String UPDATE_OLD_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.endYearMonth = :endYearMonth WHERE f.empSalPriHisPk.historyId = :historyId";
 
     @Override
     public void updateAllHistory(String historyId, BigDecimal UnitPrice) {
-        this.getEntityManager().createQuery(UPDATE_ALL_BY_KEY_HIS,QpbmtEmpSalPriHis.class)
+        this.getEntityManager().createQuery(UPDATE_AMOUNT_BY_HISTORY_ID,QpbmtEmpSalPriHis.class)
                 .setParameter("historyId",historyId)
                 .setParameter("indvidualUnitPrice",UnitPrice)
                 .executeUpdate();
@@ -64,7 +64,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     }
 
     @Override
-    public void remove(String personalUnitPriceCode, String employeeId, String historyId){
+    public void remove(String personalUnitPriceCode, String employeeId, String historyId) {
         this.commandProxy().remove(QpbmtEmpSalPriHis.class, new QpbmtEmpSalPriHisPk(personalUnitPriceCode, employeeId, historyId));
     }
 
@@ -74,5 +74,42 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
                 .setParameter("personalUnitPriceCode", perUnitPriceCode)
                 .setParameter("employeeId", employeeId)
                 .getList().stream().map(QpbmtEmpSalPriHis::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateUnitPriceAmount(PayrollInformation domain) {
+        this.getEntityManager().createQuery(UPDATE_AMOUNT_BY_HISTORY_ID,QpbmtEmpSalPriHis.class)
+                .setParameter("historyId", domain.getHistoryID())
+                .setParameter("indvidualUnitPrice", domain.getIndividualUnitPrice())
+                .executeUpdate();
+    }
+
+    @Override
+    public void addHistory(EmployeeSalaryUnitPriceHistory domain1, PayrollInformation domain2) {
+        this.commandProxy().insert(QpbmtEmpSalPriHis.toEntity(domain1, domain2));
+    }
+
+    @Override
+    public void updateHistory(EmployeeSalaryUnitPriceHistory domain) {
+        this.getEntityManager().createQuery(UPDATE_HISTORY_BY_HISTORY_ID, QpbmtEmpSalPriHis.class)
+                .setParameter("startYearMonth", domain.items().stream().map(item -> item.start().v()).findFirst().orElse(null))
+                .setParameter("endYearMonth", domain.items().stream().map(item -> item.end().v()).findFirst().orElse(null))
+                .setParameter("historyId", domain.items().stream().map(item -> item.identifier()).findFirst().orElse(null))
+                .executeUpdate();
+    }
+
+    @Override
+    public void deleteHistory(String historyId) {
+        this.getEntityManager().createQuery(DELETE_HISTORY_BY_HISTORY_ID, QpbmtEmpSalPriHis.class)
+                .setParameter("historyId", historyId)
+                .executeUpdate();
+    }
+
+    @Override
+    public void updateOldHistory(String historyId, int newEndYearMonth) {
+        this.getEntityManager().createQuery(UPDATE_HISTORY_BY_HISTORY_ID, QpbmtEmpSalPriHis.class)
+                .setParameter("endYearMonth", newEndYearMonth)
+                .setParameter("historyId", historyId)
+                .executeUpdate();
     }
 }
