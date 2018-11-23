@@ -43,6 +43,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     self.listStateCorrelationHis(listStateCorrelationHis);
                     firstHistory = _.head(self.listStateCorrelationHis());
                     self.currentSelectedHis(firstHistory.hisId);
+                    self.loadGrid();
                 }else{
                     self.listStateCorrelationHis([]);
                     self.items([]);
