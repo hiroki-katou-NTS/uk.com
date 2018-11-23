@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.stopbycompany.SgwdtStopByCompanyPK;
 @Stateless
 public class JpaStopByCompanyRepository extends JpaRepository implements StopByCompanyRepository {
 
-	private static final String FIND_BY_KEY = "SELECT s FROM SgwdtStopByCompany s WHERE s.pk.contractCd=:contractCd AND s.pk.companyCd";
+	private static final String FIND_BY_KEY = "SELECT s FROM SgwdtStopByCompany s WHERE s.pk.contractCd=:contractCd AND s.pk.companyCd = :companyCd";
 
 	private static final String FIND_BY_CONTRACTCD_AND_STATE = "SELECT s FROM SgwdtStopByCompany s WHERE s.pk.contractCd=:contractCd AND s.systemStatus=:systemStatus";
 
