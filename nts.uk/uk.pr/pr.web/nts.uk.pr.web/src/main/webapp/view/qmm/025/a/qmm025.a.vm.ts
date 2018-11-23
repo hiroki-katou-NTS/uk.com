@@ -21,8 +21,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
         constructor() {
             let self = this;
-            self.year = ko.observable("2018");
-            self.japanYear = ko.observable("");
+            self.year = ko.observable(null);
+            self.japanYear = ko.observable(null);
             self.empDeptItems = [];
             self.year.subscribe(newYear => {
                 let year = self.formatYear(newYear);
@@ -87,6 +87,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             block.invisible();
             // Start component
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+            self.year(self.formatYear(new Date()));
             self.loadGrid();
             block.clear();
             dfd.resolve();
@@ -97,8 +98,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let self = this;
             let cellStates = self.getCellStates();
             $("#grid").ntsGrid({
-                width: "1180px",
-                height: '420px',
+                width: "1170px",
+                height: '424px',
                 dataSource: self.empAmountItems,
                 primaryKey: 'sid',
                 rowVirtualization: true,
@@ -148,7 +149,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                     },
 
                     {
-                        headerText: getText("QMM025_15"), key: 'amountJune', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_15"), key: 'amountJune', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             // primitiveValue: "ResidentTax",
@@ -158,7 +159,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_16"), key: 'amountJuly', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_16"), key: 'amountJuly', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -167,7 +168,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_17"), key: 'amountAugust', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_17"), key: 'amountAugust', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -176,7 +177,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_18"), key: 'amountSeptember', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_18"), key: 'amountSeptember', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -185,7 +186,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_19"), key: 'amountOctober', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_19"), key: 'amountOctober', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -194,7 +195,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_20"), key: 'amountNovember', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_20"), key: 'amountNovember', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -203,7 +204,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_21"), key: 'amountDecember', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_21"), key: 'amountDecember', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -212,7 +213,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_22"), key: 'amountJanuary', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_22"), key: 'amountJanuary', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -221,7 +222,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_23"), key: 'amountFebruary', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_23"), key: 'amountFebruary', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -230,7 +231,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_24"), key: 'amountMarch', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_24"), key: 'amountMarch', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -239,7 +240,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_25"), key: 'amountApril', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_25"), key: 'amountApril', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -248,7 +249,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         }
                     },
                     {
-                        headerText: getText("QMM025_26"), key: 'amountMay', dataType: 'string', width: '120px',
+                        headerText: getText("QMM025_26"), key: 'amountMay', dataType: 'string', width: '160px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
@@ -338,7 +339,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                     },
                     {
                         name: 'Paging',
-                        pageSize: 10,
+                        pageSize: 20,
                         currentPageIndex: 0,
                         pageIndexChanging: function (evt, ui) {
                             self.validateForm();
@@ -736,10 +737,14 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         }
 
         setError(id: string, key: string, messageId: any, message: any) {
-            $("#grid").find(".nts-grid-control-" + key + "-" + id + " input").ntsError('set', {
+            $("#grid").find("tr[data-id='" + id + "']").find("td[aria-describedby='grid_" + key + "']").ntsError('set', {
                 messageId: messageId,
                 message: message
             });
+            /*$("#grid").find(".nts-grid-control-" + key + "-" + id + " input").ntsError('set', {
+                messageId: messageId,
+                message: message
+            });*/
         }
 
         jumpToCps001() {
