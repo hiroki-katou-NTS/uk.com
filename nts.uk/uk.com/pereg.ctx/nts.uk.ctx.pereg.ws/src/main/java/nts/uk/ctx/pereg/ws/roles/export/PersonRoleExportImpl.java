@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.role.personrole;
+package nts.uk.ctx.pereg.ws.roles.export;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,18 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
+import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthDto;
+import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthFinder;
+import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryDetailDto;
+import nts.uk.ctx.pereg.app.find.roles.auth.item.ItemAuth;
+import nts.uk.ctx.pereg.app.find.roles.auth.item.PersonInfoItemAuthFinder;
+import nts.uk.ctx.pereg.app.find.roles.auth.item.PersonInfoItemDetailDto;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -55,7 +67,17 @@ public class PersonRoleExportImpl implements MasterListData {
 	private RoleRepository roleRepo;
     
     @Inject
-	private PersonRoleRepository personRoleRepository;
+	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
+    
+    @Inject
+	private PerInfoItemDefRepositoty itemInfoRepo;
+    
+    @Inject
+	PersonInfoCategoryAuthFinder personInfoCategoryAuthFinder;
+    
+    @Inject
+	PersonInfoItemAuthFinder personInfoItemAuthFinder;
+    
     
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -119,39 +141,142 @@ public class PersonRoleExportImpl implements MasterListData {
         
         //
         for (Role role : roles) {
-        	List<PersonInfoCategoryExportDetailDto> personInfoCategoryExportDetailDto = this.getAllCategory(role.getRoleId());
+        	List<PersonInfoCategoryDetailDto> personInfoCategoryExportDetailDto = this.getAllCategory(role.getRoleId());
         	personInfoCategoryExportDetailDto.stream().forEach(x -> {
-        		Map<String, Object> data = new HashMap<>();
-                data.put(CAS001_77, role.getRoleCode().v());
-                data.put(CAS001_78, role.getName().v());
-                data.put(CAS001_79, x.getCategoryName());
-                data.put(CAS001_80, "");
-                data.put(CAS001_81, x.getCategoryType());
-                data.put(CAS001_82, "");
-                data.put(CAS001_83, "");
-                data.put(CAS001_84, "");
-                data.put(CAS001_85, "");
-                data.put(CAS001_86, "");
-                data.put(CAS001_87, "");
-                data.put(CAS001_88, "");
-                data.put(CAS001_89, "");
-                data.put(CAS001_90, "");
-                data.put(CAS001_91, "");
-                data.put(CAS001_92, "");
-                data.put(CAS001_93, "");
-                data.put(CAS001_94, "");
-                data.put(CAS001_95, "");
-                data.put(CAS001_96, "");
-                data.put(CAS001_97, "");
-                data.put(CAS001_98, "");
-                data.put(CAS001_99, "");
-                datas.add(new MasterData(data, null, ""));
+        		PersonInfoCategoryAuthDto personInfoCategoryAuthDto = personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(role.getRoleId(), x.getCategoryId());
+        		if(personInfoCategoryAuthDto != null) {
+        			ItemAuth itemAuth = personInfoItemAuthFinder.getAllItemDetail(role.getRoleId(), personInfoCategoryAuthDto.getPersonInfoCategoryAuthId());
+            		itemAuth.getItemLst().stream().forEach(y -> {
+                        datas.add(new MasterData(dataContent(role,x,personInfoCategoryAuthDto,y), null, ""));
+            		});
+            		
+        		}
+        		
         	});
         }
         return datas;
 	}
 	
-	private List<PersonInfoCategoryExportDetailDto> getAllCategory(String roleId) {
+	private Map<String, Object> dataContent(Role role,PersonInfoCategoryDetailDto x, 
+			PersonInfoCategoryAuthDto personInfoCategoryAuthDto,
+			PersonInfoItemDetailDto y) {
+		Map<String, Object> data = new HashMap<>();
+		// A6_1
+        data.put(CAS001_77, role.getRoleCode().v());
+        // A6_2
+        data.put(CAS001_78, role.getName().v());
+        // A6_3
+        data.put(CAS001_79, x.getCategoryName());
+        // A6_4
+        data.put(CAS001_80, x.isSetting() ? "●" : "");
+        // A6_5
+        data.put(CAS001_81, getTypeName(x.getCategoryType()));
+        // A6_6
+        data.put(CAS001_82, x.getAllowOtherRef() == 1 ? "○" : "ー");
+        // A6_7
+        data.put(CAS001_83, x.getCategoryType() != 2 ? "ー" : personInfoCategoryAuthDto.getSelfAllowAddMulti() == 1 ? "○" : "ー");
+        // A6_8
+        data.put(CAS001_84, x.getCategoryType() != 2 ? "ー" : personInfoCategoryAuthDto.getSelfAllowDelMulti() == 1 ? "○" : "ー");
+        // A6_9
+        data.put(CAS001_85, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_10
+        data.put(CAS001_86, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_11
+        data.put(CAS001_87, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_12
+        data.put(CAS001_88, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_13
+        data.put(CAS001_89, "");
+        // A6_14
+        data.put(CAS001_90, checkValue1(x.getCategoryType()) != null ? checkValue1(x.getCategoryType()) : "○");
+        // A6_15
+        data.put(CAS001_91, checkValue1(x.getCategoryType()) != null ? checkValue1(x.getCategoryType()) : "○");
+        // A6_16
+        data.put(CAS001_92, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_17
+        data.put(CAS001_93, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_18
+        data.put(CAS001_94, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_19
+        data.put(CAS001_95, checkValue2(x.getCategoryType()) != null ? checkValue2(x.getCategoryType()) : "○");
+        // A6_20
+        data.put(CAS001_96, y.isSetting() ? "●" : "");
+        // A6_21
+        data.put(CAS001_97, y.getItemName());
+        // A6_22
+        String A6_22 = null;
+        if(personInfoCategoryAuthDto.getAllowOtherRef() == 0) {
+        	A6_22 = "ー";
+        } else if(y.getOtherAuth() == 1) {
+        	A6_22 = I18NText.getText("CAS001_49");
+        } else if(y.getOtherAuth() == 2) {
+        	A6_22 = I18NText.getText("CAS001_50");
+        } else {
+        	A6_22 = I18NText.getText("CAS001_51");
+        }
+        data.put(CAS001_98, A6_22);
+        // A6_23
+        String A6_23 = null;
+        if(personInfoCategoryAuthDto.getAllowPersonRef() == 0) {
+        	A6_23 = "ー";
+        } else if(y.getSelfAuth() == 1) {
+        	A6_23 = I18NText.getText("CAS001_49");
+        } else if(y.getSelfAuth() == 2) {
+        	A6_23 = I18NText.getText("CAS001_50");
+        } else {
+        	A6_23 = I18NText.getText("CAS001_51");
+        }
+        data.put(CAS001_99,A6_23);
+        return data;
+	}
+	
+	private String checkValue1(int categoryType) {
+		String value = null;
+        CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
+        if(type.value == 1) {
+        	value = "ー";
+        }
+     return value;
+	}
+	
+	private String checkValue2(int categoryType) {
+		 String value = null;
+	        CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
+	        if(type.value == 3 || type.value == 4) {
+	        	value = "ー";
+	        }
+	     return value;
+	}
+	
+	private String getTypeName(int categoryType) {
+		String nameType = null;
+		CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
+        switch (type) {
+		case SINGLEINFO:
+			nameType = I18NText.getText("Enum_CategoryType_SINGLE_INFO");
+			break;
+		case MULTIINFO:
+			nameType = I18NText.getText(" Enum_CategoryType_MULTI_INFO");
+			break;
+		case CONTINUOUSHISTORY:
+			nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
+			break;
+		case NODUPLICATEHISTORY:
+			nameType = I18NText.getText("Enum_CategoryType_NODUPLICATE_HISTORY");
+			break;
+		case DUPLICATEHISTORY:
+			nameType = I18NText.getText("Enum_CategoryType_DUPLICATE_HISTORY");
+			break;
+		case CONTINUOUS_HISTORY_FOR_ENDDATE:
+			nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
+			break;
+		default :
+			break;
+		}
+		return nameType;
+	}
+	
+	private List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
 		String contractCd = AppContexts.user().contractCode();
 		int payroll = NotUseAtr.NOT_USE.value;
 		int personnel = NotUseAtr.NOT_USE.value;
@@ -172,22 +297,22 @@ public class PersonRoleExportImpl implements MasterListData {
 				break;
 			}
 		}
-		List<PersonInfoCategoryExportDetail> ctgSourceLst = this.personRoleRepository.getAllCategory(roleId,
+		List<PersonInfoCategoryDetail> ctgSourceLst = this.personCategoryAuthRepository.getAllCategory(roleId,
 				AppContexts.user().contractCode(), AppContexts.user().companyId(), payroll, personnel, atttendance);
 		List<String> ctgLstId = ctgSourceLst.stream().map(c -> {
 			return c.getCategoryId();
 		}).collect(Collectors.toList());
 
-		Map<String, List<Object[]>> itemByCtgId = this.personRoleRepository.getAllPerInfoItemDefByListCategoryId(ctgLstId,
+		Map<String, List<Object[]>> itemByCtgId = this.itemInfoRepo.getAllPerInfoItemDefByListCategoryId(ctgLstId,
 				contractCd);
 
-		List<PersonInfoCategoryExportDetailDto> ctgResultLst = new ArrayList<>();
-		for (PersonInfoCategoryExportDetail i : ctgSourceLst) {
+		List<PersonInfoCategoryDetailDto> ctgResultLst = new ArrayList<>();
+		for (PersonInfoCategoryDetail i : ctgSourceLst) {
 			List<Object[]> item = itemByCtgId.get(i.getCategoryId());
 			if (item == null)
 				continue;
 			if (item.size() > 0)
-				ctgResultLst.add(PersonInfoCategoryExportDetailDto.fromDomain(i));
+				ctgResultLst.add(PersonInfoCategoryDetailDto.fromDomain(i));
 		}
 		return ctgResultLst;
 	}
