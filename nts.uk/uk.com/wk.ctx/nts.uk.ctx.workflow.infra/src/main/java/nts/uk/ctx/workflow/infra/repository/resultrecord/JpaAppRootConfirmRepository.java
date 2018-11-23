@@ -107,28 +107,28 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.RECORD_DATE = 'recordDate'";
 	
-	private final String DELETE_APP_ROOT_CONFIRM = 
-			"DELETE FROM WWFDT_APP_ROOT_CONFIRM  "+
-			"WHERE CID = 'companyID' " +
-			"AND EMPLOYEE_ID = 'employeeID' " +
-			"AND ROOT_TYPE = rootType " +
-			"AND RECORD_DATE = 'recordDate' ";
-	
-	private final String DELETE_PHASE_APPROVER_FOR_424 = 
-			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
-			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
-			"WHERE appRoot.CID = 'companyID' " +
-			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
-			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE = 'recordDate' )";
-	
-	private final String DELETE_FRAME_APPROVER_FOR_424 = 
-			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
-			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
-			"WHERE appRoot.CID = 'companyID' " +
-			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
-			"AND appRoot.ROOT_TYPE = rootType " +
-			"AND appRoot.RECORD_DATE = 'recordDate' )";
+//	private final String DELETE_APP_ROOT_CONFIRM = 
+//			"DELETE FROM WWFDT_APP_ROOT_CONFIRM  "+
+//			"WHERE CID = 'companyID' " +
+//			"AND EMPLOYEE_ID = 'employeeID' " +
+//			"AND ROOT_TYPE = rootType " +
+//			"AND RECORD_DATE = 'recordDate' ";
+//	
+//	private final String DELETE_PHASE_APPROVER_FOR_424 = 
+//			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
+//			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+//			"WHERE appRoot.CID = 'companyID' " +
+//			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+//			"AND appRoot.ROOT_TYPE = rootType " +
+//			"AND appRoot.RECORD_DATE = 'recordDate' )";
+//	
+//	private final String DELETE_FRAME_APPROVER_FOR_424 = 
+//			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
+//			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+//			"WHERE appRoot.CID = 'companyID' " +
+//			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+//			"AND appRoot.ROOT_TYPE = rootType " +
+//			"AND appRoot.RECORD_DATE = 'recordDate' )";
 	
 	private final String FIND_BY_EMP_MONTH = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
