@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+/*import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 /**
  * 勤務予定に反映の反映状態

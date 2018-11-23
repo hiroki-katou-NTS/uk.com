@@ -480,6 +480,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 			val holidayWorkFrameNo = holidayWorkFrameTimeSrc.getHolidayFrameNo();
 			
 			// 「設定．残業を含める」を確認する
+			// ※　本来は、「法定外休出時間をフレックス時間に含める」を確認する仕様だが、クラス属性が未実装のため、仮対応　2018.11.17 shuichi_ishida
 			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
 
 				// 処理中のNOが「法定外休出」に一致するか

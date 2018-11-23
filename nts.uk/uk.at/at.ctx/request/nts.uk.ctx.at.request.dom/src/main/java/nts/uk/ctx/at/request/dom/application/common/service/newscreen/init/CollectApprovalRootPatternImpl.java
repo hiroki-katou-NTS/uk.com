@@ -1,5 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.init;
-
+/*import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outpu
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+
 /**
  * 
  * @author Doan Duy Hung

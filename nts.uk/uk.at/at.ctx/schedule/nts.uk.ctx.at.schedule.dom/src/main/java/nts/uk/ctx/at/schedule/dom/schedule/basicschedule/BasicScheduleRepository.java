@@ -48,36 +48,12 @@ public interface BasicScheduleRepository {
 	 */
 	void insert(BasicSchedule bSchedule);
 	
-//	void insertKSU001(BasicSchedule bSchedule);
-	
-	void insertAll(List<BasicSchedule> listBSchedule);
-	
-	void insertScheTimeZone(BasicSchedule bSchedule);
-	
-	void insertScheTime(BasicSchedule bSchedule);
-	
-	void insertScheBreak(BasicSchedule listBSchedule);
-	
-	void insertRelateToWorkTimeCd(BasicSchedule bSchedule);
-
 	/**
 	 * update Basic Schedule
 	 * 
 	 * @param bSchedule
 	 */
 	void update(BasicSchedule bSchedule);
-	
-//	void updateKSUKSC001(BasicSchedule bSchedule, boolean isUpdateTimeZone, boolean isUpdateBreakTime, boolean isUpdateScheTime);
-	
-	void updateScheBasicState(BasicSchedule bSchedule);
-	
-//	void updateKSU001(BasicSchedule bSchedule);
-	
-	void updateScheTime(BasicSchedule listBSchedule);
-	
-	void updateScheBreak(BasicSchedule listBSchedule);
-	
-	void updateAll(List<BasicSchedule> listBSchedule);
 	
 	void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
 

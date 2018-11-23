@@ -210,7 +210,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				}
 				for (YearlyHolidaysTimeRemainingExport timeRemainingExport : yearlyHolidaysTimeRemainingExport) {
 					List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingData1 = annLeaGrantRemDataRepo.findByGrantDateAndDeadline(employeeId, timeRemainingExport.getAnnualHolidayGrantDay(), timeRemainingExport.getAnnualHolidayGrantDay());
-					Double annualRemainingGrantTime = 0.0;
+					Double annualRemainingGrantTime = timeRemainingExport.getAnnualRemainingGrantTime();
 					for (AnnualLeaveGrantRemainingData annualLeaveGrantRemainingData : listAnnualLeaveGrantRemainingData1) {
 						annualRemainingGrantTime += annualLeaveGrantRemainingData.getDetails().getRemainingNumber().getDays().v();
 					}
