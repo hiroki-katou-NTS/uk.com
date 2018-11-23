@@ -37,7 +37,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRep
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -599,8 +598,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	@Override
 	public List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate) {
 
-		List<AffAtWorkplaceExport> result = new ArrayList<AffAtWorkplaceExport>();
-
 		if (sids.isEmpty() || baseDate == null)
 			return Collections.emptyList();
 
@@ -629,7 +626,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWorkplaceHistoryItemRepository.findByHistIds(historyIds);
 
-		return result = affWrkPlcItems.stream().map(x -> {
+		return affWrkPlcItems.stream().map(x -> {
 			AffAtWorkplaceExport affWkp = new AffAtWorkplaceExport();
 			affWkp.setEmployeeId(x.getEmployeeId());
 			affWkp.setHistoryID(x.getHistoryId());
