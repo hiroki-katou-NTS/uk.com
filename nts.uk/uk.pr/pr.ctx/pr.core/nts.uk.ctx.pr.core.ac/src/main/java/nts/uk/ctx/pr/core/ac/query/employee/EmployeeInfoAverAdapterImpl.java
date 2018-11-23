@@ -1,7 +1,12 @@
-package nts.uk.ctx.pr.core.ac.employee;
+package nts.uk.ctx.pr.core.ac.query.employee;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pr.core.dom.adapter.employee.*;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.*;
+import nts.uk.ctx.pr.core.dom.adapter.query.classification.ClassificationImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.department.DepartmentImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.employement.EmploymentImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.position.PositionImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.workplace.WorkplaceImport;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;

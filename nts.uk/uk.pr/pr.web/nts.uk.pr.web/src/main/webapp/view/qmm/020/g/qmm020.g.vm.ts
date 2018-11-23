@@ -137,7 +137,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
-                    if(hisId == HIS_ID_TEMP) {
+                    if(self.hisIdSelected() == HIS_ID_TEMP ) {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
@@ -255,7 +255,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 isPerson: false,
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION
             });
-            modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
+            modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());

@@ -1,7 +1,12 @@
-package nts.uk.ctx.pr.core.dom.adapter.employee;
+package nts.uk.ctx.pr.core.dom.adapter.query.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.adapter.query.classification.ClassificationImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.department.DepartmentImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.employement.EmploymentImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.position.PositionImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.workplace.WorkplaceImport;
 
 /**
  * 社員情報

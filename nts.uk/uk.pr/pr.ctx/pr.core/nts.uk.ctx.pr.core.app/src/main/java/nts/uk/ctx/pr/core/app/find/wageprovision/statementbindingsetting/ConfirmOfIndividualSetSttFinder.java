@@ -7,12 +7,12 @@ import nts.uk.ctx.pr.core.dom.adapter.employee.classification.ClassificationHist
 import nts.uk.ctx.pr.core.dom.adapter.employee.department.AffDepartHistoryAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.department.Department;
 import nts.uk.ctx.pr.core.dom.adapter.employee.department.DepartmentAdapter;
-import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationAdapter;
-import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationImport;
-import nts.uk.ctx.pr.core.dom.adapter.employee.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.EmploymentHisExport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.IEmploymentHistoryAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInfoAverAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInformationImport;
+import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryCategory;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryCategoryRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryClassHistory;
@@ -82,7 +82,7 @@ public class ConfirmOfIndividualSetSttFinder {
     private EmploySalaryCategoryRepository mEmploySalaryCategoryRepository;
 
     @Inject
-    private EmployeeInformationAdapter employeeInformationAdapter;
+    private EmployeeInfoAverAdapter employeeInformationAdapter;
 
     @Inject
     private SalaryClassificationInformationRepository mSalaryClassificationInformationRepository;

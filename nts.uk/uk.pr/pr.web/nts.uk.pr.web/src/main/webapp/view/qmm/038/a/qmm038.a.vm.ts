@@ -74,18 +74,20 @@ module nts.uk.pr.view.qmm038.a {
                         let command = {
                             employeeIds: self.employeeIds,
                             baseDate: self.baseDate(),
-                            giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/MM")
+                            giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
                         };
                         nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function (response) {
                             self.statementItems = [];
-                            self.statementItems = _.sortBy(response, ["employeeCode"]);
-                            $("#gridStatement").ntsGrid("destroy");
-                            if (self.statementItems.length == 1) {
-                                self.loadGridLimit();
-                            } else {
-                                self.loadGrid();
-                            }
-                            $('#gridStatement .nts-editor').addClass('ntsEditorCus');
+                            //if(response.length > 0) {
+                                self.statementItems = _.sortBy(response, ["employeeCode"]);
+                                $("#gridStatement").ntsGrid("destroy");
+                                if (self.statementItems.length == 1) {
+                                    self.loadGridLimit();
+                                } else {
+                                    self.loadGrid();
+                                }
+                                $('#gridStatement .nts-editor').addClass('ntsEditorCus');
+                            //}
                             block.clear();
                         });
 
@@ -191,10 +193,11 @@ module nts.uk.pr.view.qmm038.a {
             findByEmployee() {
                 let self = this;
                 nts.uk.ui.errors.clearAll();
+                block.invisible();
                 let command = {
                     employeeIds: self.employeeIds,
                     baseDate: self.baseDate(),
-                    giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/MM")
+                    giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
                 };
                 nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function (response) {
                     self.statementItems = [];
@@ -206,6 +209,7 @@ module nts.uk.pr.view.qmm038.a {
                         self.loadGrid();
                     }
                     $("#gridStatement_container").focus();
+                    block.clear();
                 });
 
             }
@@ -226,7 +230,7 @@ module nts.uk.pr.view.qmm038.a {
                 })
                 let command = {
                     employeeDtoList: self.dataUpdate,
-                    giveCurrTreatYear: moment(self.giveCurrTreatYear()).format("YYYY/MM")
+                    giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
                 }
                 service.update(command).done(function (response) {
                     if (response[0] == "Msg_15") {

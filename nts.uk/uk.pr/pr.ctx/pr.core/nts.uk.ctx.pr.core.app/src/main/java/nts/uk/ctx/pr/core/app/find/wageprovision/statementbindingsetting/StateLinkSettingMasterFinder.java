@@ -21,8 +21,7 @@ public class StateLinkSettingMasterFinder {
     @Inject
     private StatementLayoutRepository statementLayoutFinder;
 
-    public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth,
-               List<StateLinkSettingMaster> listStateLinkSettingMaster){
+    public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(int startYearMonth, List<StateLinkSettingMaster> listStateLinkSettingMaster){
         String cId = AppContexts.user().companyId();
         List<StatementLayout> statementLayout = statementLayoutFinder.getStatement(cId, startYearMonth);
         List<StateLinkSettingMasterDto> listStateLinkSettingMasterDto = listStateLinkSettingMaster.stream()

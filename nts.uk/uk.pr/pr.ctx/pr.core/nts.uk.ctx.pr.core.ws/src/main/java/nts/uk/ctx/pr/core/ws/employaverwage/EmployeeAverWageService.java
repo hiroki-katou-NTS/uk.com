@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.core.app.command.employaverwage.EmployeeAverWageHandler;
 import nts.uk.ctx.pr.core.app.command.employaverwage.EmployeeComand;
 import nts.uk.ctx.pr.core.app.find.employaverwage.EmployeeAverWageFinder;
 import nts.uk.ctx.pr.core.app.find.employaverwage.EmployeeInfoDto;
+import nts.uk.ctx.pr.core.app.find.employaverwage.EmploymentCodeDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -40,6 +41,12 @@ public class EmployeeAverWageService {
             return null;
         }
 
+    }
+
+    @POST
+    @Path("getEmploymentCode")
+    public EmploymentCodeDto getEmploymentCodeByEmpIdAndBaseDate(String employeeId) {
+        return employeeAverWageFinder.getEmploymentCodeByEmpIdAndBaseDate(employeeId);
     }
 
     @POST

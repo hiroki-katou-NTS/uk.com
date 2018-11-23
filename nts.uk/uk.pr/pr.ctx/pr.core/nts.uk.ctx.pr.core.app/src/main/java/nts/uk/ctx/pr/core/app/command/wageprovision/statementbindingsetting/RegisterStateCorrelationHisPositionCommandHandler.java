@@ -27,23 +27,19 @@ public class RegisterStateCorrelationHisPositionCommandHandler extends CommandHa
         YearMonth end = new YearMonth(command.getEndYearMonth());
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
-            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                return new StateLinkSettingMaster(hisId,
-                        new MasterCode(i.getMasterCode()),
-                        i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
-                        i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
-                        }).collect(Collectors.toList());
+            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSettingMaster(hisId,
+                    new MasterCode(i.getMasterCode()),
+                    i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
+                    i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null)).collect(Collectors.toList());
             StateLinkSettingDate baseDate = new StateLinkSettingDate(hisId, command.getBaseDate());
             stateCorrelationHisPositionService.addHistoryPosition(hisId, start, end, listStateLinkSettingMaster, baseDate);
         } else {
             String hisId = command.getHisId();
-            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> {
-                return new StateLinkSettingMaster(
-                        hisId,
-                        new MasterCode(i.getMasterCode()),
-                        i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
-                        i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
-                        }).collect(Collectors.toList());
+            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSettingMaster(
+                    hisId,
+                    new MasterCode(i.getMasterCode()),
+                    i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
+                    i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null)).collect(Collectors.toList());
             StateLinkSettingDate baseDate = new StateLinkSettingDate(hisId, command.getBaseDate());
             stateCorrelationHisPositionService.updateHistoryPosition(hisId,listStateLinkSettingMaster,start, end,baseDate );
         }

@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.core.dom.adapter.employee.employee;
+package nts.uk.ctx.pr.core.dom.adapter.query.employee;
 
 import java.util.List;
 
-public interface EmployeeInformationAdapter {
+public interface EmployeeInfoAverAdapter {
     List<EmployeeInformationImport> getEmployeeInfo(EmployeeInformationQueryDtoImport param);
 }

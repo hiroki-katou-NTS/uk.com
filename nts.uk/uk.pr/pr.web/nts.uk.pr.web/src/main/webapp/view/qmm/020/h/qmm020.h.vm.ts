@@ -18,7 +18,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         columns: KnockoutObservableArray<string>;
         hisIdSelected: KnockoutObservable<string> = ko.observable();
         listStateCorrelationHis: KnockoutObservableArray<StateCorrelationHisInvidual> = ko.observableArray([]);
-        stateLinkIndividual: KnockoutObservable<StateCorrelationHisInvidual> = ko.observable();
         mode: KnockoutObservable<number> = ko.observable();
         transferMethod: KnockoutObservable<number> = ko.observable();
         selectedEmployeeObject: any;
@@ -38,7 +37,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         //-- CCG001 ---->
         periodEndDate: KnockoutObservable<any> =  ko.observable();
         ccg001ComponentOption: GroupOption;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -239,7 +237,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.bonusCode(item.bonusCode);
                     self.bonusName(item.bonusName);
                 }
-                if(hisId == HIS_ID_TEMP) {
+                self.mode(model.MODE.UPDATE);
+                if(self.hisIdSelected() == HIS_ID_TEMP ) {
                     self.mode(model.MODE.NEW);
                 }
 
@@ -265,7 +264,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             return 0;
         }
 
-        initScreen(hisId: string): JQueryPromise<any> {
+        initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
@@ -273,9 +272,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             service.getEmployee().done(function(emp) {
                 service.getWpName().done(function(wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
-                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        });
                     } else {
                         self.selectedEmployeeObject = {
                             employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName,

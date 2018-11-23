@@ -155,7 +155,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
-                    if (hisId == HIS_ID_TEMP) {
+                    if(self.hisIdSelected() == HIS_ID_TEMP ) {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
@@ -237,6 +237,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             }
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth: start,
+                baseDate: self.baseDateValue(),
                 isPerson: false,
                 modeScreen: model.MODE_SCREEN.POSITION
             });
