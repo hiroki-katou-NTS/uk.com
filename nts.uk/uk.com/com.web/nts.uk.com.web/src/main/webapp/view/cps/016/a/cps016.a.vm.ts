@@ -16,6 +16,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         closeUp: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean> = ko.observable(false);
         isMaCoLog: KnockoutObservable<boolean> = ko.observable(false);
+        langId: KnockoutObservable<string> = ko.observable('ja');
         param: any = getShared('CPS005B_PARAMS');
 
         constructor() {
@@ -257,7 +258,21 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 block.clear()
             });
         }
+        
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
 
+        
+        
         // 選択肢の登録ボタン
         OpenCPS017() {
             let self = this,

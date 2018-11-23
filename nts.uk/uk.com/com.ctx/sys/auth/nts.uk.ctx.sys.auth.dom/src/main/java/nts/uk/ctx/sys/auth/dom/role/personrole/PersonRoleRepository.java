@@ -1,7 +1,9 @@
 package nts.uk.ctx.sys.auth.dom.role.personrole;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
 
 public interface PersonRoleRepository {
 	/**
@@ -34,4 +36,10 @@ public interface PersonRoleRepository {
 	 * @param roleId
 	 */
 	void remove(String roleId);
+	
+	List<PersonInfoCategoryExportDetail> getAllCategory(String roleId, String contractCd, String companyId, int salaryUseAtr,
+			int personnelUseAtr, int employmentUseAtr);
+	
+	Map<String, List<Object[]>> getAllPerInfoItemDefByListCategoryId(List<String> lstPerInfoCategoryId,
+			String contractCd);
 }

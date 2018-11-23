@@ -5,13 +5,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.export.PersonSelectionItemExportData;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.primitive.InitSelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.SelectionItemReportData;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionItem;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionItemPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -163,6 +162,17 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 		String companyId = AppContexts.user().companyId();
 		return this.queryProxy().query(PERSON_SELECT_ALL, Object[].class).setParameter("contractCd", contractCd).setParameter("companyId", companyId)
 				.getList(x -> toReportData(x, langId));
+	}
+	
+	@Override
+	public List<SelectionItemReportData> findByContractCd(String contractCd) {
+		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
+				.setParameter("contractCode", contractCd)
+				.getList(c -> toReportData(c));
+	}
+	
+	private SelectionItemReportData toReportData (PpemtSelectionItem entity) {
+		return new SelectionItemReportData(entity.getSelectionItemName(), entity.getCharacterTypeAtr(), entity.getCodeLength(), entity.getNameLength(), entity.getExtCodeLength(), entity.getIntegrationCd(), entity.getMemo());
 	}
 
 	private PersonSelectionItemExportData toReportData(Object[] entity, String langId) {
