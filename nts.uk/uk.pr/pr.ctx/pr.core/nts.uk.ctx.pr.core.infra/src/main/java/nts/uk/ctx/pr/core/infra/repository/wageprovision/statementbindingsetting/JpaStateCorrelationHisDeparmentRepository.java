@@ -24,8 +24,8 @@ public class JpaStateCorrelationHisDeparmentRepository extends JpaRepository imp
     private static final String SELECT_BY_CID_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid AND f.stateCorHisDepPk.hisId = :hisId";
     private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid AND f.stateCorHisDepPk.hisId = :hisId AND f.stateCorHisDepPk.masterCode = :masterCode";
     private static final String SELECT_BY_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisDepPk.cid =:cid AND f.startYearMonth <=:basedate AND f.endYearMonth >=:basedate ";
-    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisDep f WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
-    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisDep f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
+    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisDep f WHERE f.stateCorHisDepPk.cid =:cid AND f.stateCorHisDepPk.hisId =:hisId";
+    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisDep f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisDepPk.cid =:cid AND f.stateCorHisDepPk.hisId =:hisId";
 
 
     @Override
