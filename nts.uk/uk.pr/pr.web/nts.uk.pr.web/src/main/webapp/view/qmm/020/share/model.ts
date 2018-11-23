@@ -95,12 +95,12 @@ module nts.uk.pr.view.qmm020.share.model {
     }
 
     export enum MODE_SCREEN {
-        COMPANY = 0,
-        EMPLOYEE = 1,
-        DEPARMENT = 2,
-        CLASSIFICATION = 3,
-        POSITION = 4,
-        SALARY = 5,
+        EMPLOYEE = 0,
+        DEPARMENT = 1,
+        CLASSIFICATION = 2,
+        POSITION = 3,
+        SALARY = 4,
+        COMPANY = 5,
         INDIVIDUAL = 6
 }
     export enum PARAMETERS_SCREEN_M {
