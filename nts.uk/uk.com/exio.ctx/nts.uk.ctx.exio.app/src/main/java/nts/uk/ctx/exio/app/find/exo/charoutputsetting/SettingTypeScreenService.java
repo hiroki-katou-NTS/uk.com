@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;

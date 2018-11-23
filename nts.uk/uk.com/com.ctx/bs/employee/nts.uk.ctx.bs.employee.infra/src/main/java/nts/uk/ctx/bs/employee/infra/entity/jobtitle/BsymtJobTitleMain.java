@@ -1,14 +1,9 @@
 package nts.uk.ctx.bs.employee.infra.entity.jobtitle;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.JpaEntity;

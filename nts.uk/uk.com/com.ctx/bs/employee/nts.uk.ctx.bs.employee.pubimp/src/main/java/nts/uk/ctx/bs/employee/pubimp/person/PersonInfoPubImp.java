@@ -18,7 +18,6 @@ import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PersonInfoPubImp implements IPersonInfoPub {
