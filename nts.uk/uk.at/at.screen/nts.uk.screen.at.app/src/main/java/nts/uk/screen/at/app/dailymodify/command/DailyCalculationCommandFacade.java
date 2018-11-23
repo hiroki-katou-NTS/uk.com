@@ -89,6 +89,9 @@ public class DailyCalculationCommandFacade {
 	@Inject
 	private DPLoadRowProcessor dpLoadRowProcessor;
 	
+	@Inject
+	private DailyModifyResCommandFacade dailyModifyResCommandFacade;
+	
 	public static final int MINUTES_OF_DAY = 24 * 60;
 
 	private static final String FORMAT_HH_MM = "%d:%02d";
@@ -100,13 +103,18 @@ public class DailyCalculationCommandFacade {
 		// chuan bi data
 		String companyId = AppContexts.user().companyId();
 		List<DailyRecordDto> editedDtos = dataParent.getDailyEdits();
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit = dataParent.getItemValues().stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+
+		List<DailyModifyQuery> querys = createQuerys(mapSidDateEdit);
+		dailyModifyResCommandFacade.toDto(querys, editedDtos);
 		//List<DailyRecordDto> oldDtos = dataParent.getDailyOlds();
 		val mapDtoOld = editedDtos.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		List<IntegrationOfDaily> editedDomains = editedDtos.stream()
 				.map(d -> d.toDomain(d.getEmployeeId(), d.getDate())).collect(Collectors.toList());
 
 		// check error truoc khi tinh toan
-		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues());
+		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues(), querys, mapSidDateEdit);
 		FlexShortageRCDto flexShortage = null;
 		if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 			// tinh toan daily result
@@ -175,12 +183,8 @@ public class DailyCalculationCommandFacade {
 	/**
 	 * 計算前エラーチェック
 	 */
-	private Map<Integer, List<DPItemValue>> errorCheckBeforeCalculation(List<DPItemValue> editedItems) {
+	private Map<Integer, List<DPItemValue>> errorCheckBeforeCalculation(List<DPItemValue> editedItems, List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit = editedItems.stream()
-				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
-
-		List<DailyModifyQuery> querys = createQuerys(mapSidDateEdit);
 		Pair<List<DailyRecordDto>, List<DailyRecordDto>> mergeDto = toDto(querys);
 		List<DailyRecordDto> dtoOlds = mergeDto.getLeft();
 		// map to list result -> check error;
