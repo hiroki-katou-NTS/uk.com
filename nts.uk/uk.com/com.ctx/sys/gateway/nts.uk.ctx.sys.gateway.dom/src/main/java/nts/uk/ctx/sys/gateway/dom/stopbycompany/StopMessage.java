@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 //エラーアラームメッセージ ,停止予告のメッセージ
-@StringMaxLength(400)
+@StringMaxLength(200)
 public class StopMessage extends StringPrimitiveValue<StopMessage> {
 
 	/** The Constant serialVersionUID. */

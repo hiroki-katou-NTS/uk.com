@@ -42,7 +42,7 @@ public class SgwdtStopByCompany extends UkJpaEntity implements Serializable {
 	public String stopMessage;
 
 	/** 利用停止モード */
-	@Column(name = "USAGE_STOP_MODE_TYPE")
+	@Column(name = "STOP_MODE_TYPE")
 	public Integer stopMode;
 
 	/** 利用停止のメッセージ */

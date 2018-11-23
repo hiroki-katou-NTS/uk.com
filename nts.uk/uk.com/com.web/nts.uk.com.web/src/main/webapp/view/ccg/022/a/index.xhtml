@@ -24,7 +24,7 @@
 					data-bind="click:findSystem,css:{active:isSystemSelected()==1}">#{i18n.getText('CCG022_10')}</a></li>
 				<li><a
 					data-bind="click: findCompany,css:{active:isSystemSelected()==0}"
-					data-id="4">#{i18n.getText('CCG022_11')}</a></li>
+					data-id="1">#{i18n.getText('CCG022_11')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -34,7 +34,7 @@
 					<!-- A1_2 A1_3 -->
 					<span class="title" data-bind="text:title">#{i18n.getText('CCG022_10')}</span>
 					<!-- A1_4 -->
-					<button class="proceed" data-bind="save">#{i18n.getText('CCG022_12')}</button>
+					<button class="proceed" data-bind="click:saveData">#{i18n.getText('CCG022_12')}</button>
 				</div>
 				<div class="contents-area">
 					<div id="group-mode"
@@ -69,7 +69,7 @@
 																name: '#[CCG022_20]', 
 																constraint: 'StopMessage', 
 																option: { width: '500px'},
-																enable:selectedMode()==1
+																enable:selectedSystemMode()==1
 																}"></textarea>
 						</div>
 					</div>
@@ -81,7 +81,7 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedStopMode ,
-											enable:selectedMode()==2
+											enable:selectedSystemMode()==2
 											 }"></div>
 
 						</div>
@@ -99,7 +99,7 @@
 																name: '#[CCG022_25]', 
 																constraint: 'StopMessage', 
 																option: { width: '500px'},
-																enable:selectedMode()==2
+																enable:selectedSystemMode()==2
 																}"></textarea>
 						</div>
 

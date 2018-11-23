@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf011.a.ccg022.a.service {
+module nts.uk.com.view.ccg022.a.service {
 
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;

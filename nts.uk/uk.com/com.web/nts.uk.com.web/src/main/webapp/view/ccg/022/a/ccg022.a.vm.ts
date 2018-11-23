@@ -3,15 +3,13 @@ module nts.uk.com.view.ccg022.a.screenModel {
     import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
     import formatDate = nts.uk.time.formatDate;
-    import common = nts.uk.at.view.kaf011.shr.common;
-    import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import alError = nts.uk.ui.dialog.alertError;
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ViewModel {
-        
+
         isSystemSelected: KnockoutObservable<number> = ko.observable(1);
         title: KnockoutObservable<string> = ko.observable(text("CCG022_10"));
         isAdmin: KnockoutObservable<boolean> = ko.observable(false);
@@ -42,33 +40,36 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 if (self.isAdmin()) {
                     block.invisible();
                     service.find(state).done((data) => {
-                        self.setData(state, data);
+                        self.setData(data);
                     }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
                         .always(() => {
                             block.clear();
-                        }); 
+                        });
                 }
             });
         }
 
-        setData(state: number, data: IStopSetting) {
+        setData(data: IStopSetting) {
             let self = this;
             if (data) {
-                let setting: IStopBySystem = state == 1 ? data.system : data.company;
-                self.isAdmin(data.isAdmin);
-                if (!data.isAdmin) {
+                if (!data.admin) {
                     self.isSystemSelected(0);
+                    $("#sidebar").ntsSideBar("disable", 0);
                 }
-                self.selectedSystemMode(setting.systemStatus);
+                let state = self.isSystemSelected();
+                let setting: IStopBySystem = state == 1 ? data.system : data.company;
+                self.isAdmin(data.admin);
+
+                self.selectedSystemMode(setting ? setting.systemStatus : 0);
                 if (state == 1) {
                     self.infoLbl1(self.genLbl(true, data.stopCompanys));
                     self.infoLbl2(self.genLbl(false, data.inProgressCompanys));
                 } else {
                     self.infoLbl1(self.genStopText(data, setting));
                 }
-                self.usageStopMessage(setting.usageStopMessage);
-                self.selectedStopMode(setting.stopMode);
-                self.stopMessage(setting.stopMessage);
+                self.usageStopMessage(setting ? setting.usageStopMessage : "");
+                self.selectedStopMode(setting ? setting.stopMode : 1);
+                self.stopMessage(setting ? setting.stopMessage : "");
             }
         }
 
@@ -123,7 +124,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 state = self.isSystemSelected();
             block.invisible();
             service.find(state).done((data) => {
-                self.setData(state, data);
+                self.setData(data);
             }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
                 .always(() => {
                     block.clear();
@@ -133,17 +134,21 @@ module nts.uk.com.view.ccg022.a.screenModel {
         }
         findSystem() {
             let self = this;
-            self.isSystemSelected(1);
+            if (self.isAdmin()) {
+                self.isSystemSelected(1);
+            }
         }
 
         findCompany() {
             let self = this;
-            self.isSystemSelected(0);
+            if (self.isAdmin()) {
+                self.isSystemSelected(0);
+            }
         }
 
     }
     export interface IStopSetting {
-        isAdmin: boolean;
+        admin: boolean;
         system: IStopBySystem;
         company: IStopByCompany;
         stopCompanys: Array<IStopByCompany>;
