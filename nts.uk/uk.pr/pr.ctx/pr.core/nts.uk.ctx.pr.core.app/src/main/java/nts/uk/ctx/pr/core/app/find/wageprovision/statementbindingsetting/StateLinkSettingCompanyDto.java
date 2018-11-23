@@ -32,8 +32,8 @@ public class StateLinkSettingCompanyDto {
     public static StateLinkSettingCompanyDto fromDomain(StateLinkSettingCompany domain)
     {
         return new StateLinkSettingCompanyDto(domain.getHistoryID(),
-                domain.getSalaryCode() == null ? null : domain.getSalaryCode().get().v(),
-                domain.getBonusCode() == null ? null :domain.getBonusCode().get().v());
+                domain.getSalaryCode().isPresent() ? domain.getSalaryCode().get().v() : null,
+                domain.getBonusCode().isPresent() ? domain.getBonusCode().get().v() : null);
     }
     
 }

@@ -1,24 +1,16 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
-
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementNameLayoutHistDto;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployee;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployeeRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -35,10 +27,8 @@ public class StateCorrelationHisEmployeeFinder {
     private SysEmploymentAdapter sysEmploymentAdapter;
 
     @Inject
-    private StatementLayoutRepository statementLayoutRepository;
+    private StatementLayoutRepository statementLayoutFinder;
 
-    @Inject
-    private StatementLayoutHistRepository statementLayoutHistRepository;
 
     public List<StateCorrelationHisEmployeeDto> getStateCorrelationHisEmployeeById(String cid){
         List<StateCorrelationHisEmployeeDto> stateCorrelationHisEmployeeDto = new ArrayList<>();
@@ -56,8 +46,8 @@ public class StateCorrelationHisEmployeeFinder {
             return stateCorrelationHisEmployeeSettingDto;
         }
         List<StateLinkSettingMaster> listStateLinkSettingMaster = stateCorrelationHisEmployeeRepository.getStateLinkSettingMasterByHisId(cid,hisId);
-        List<StatementNameLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
-        if(listStateLinkSettingMaster.size() > 0){
+        List<StatementLayout> listStatementLayout = this.getStatementLayout(cid,startYearMonth);
+        if(!listStateLinkSettingMaster.isEmpty()){
             stateCorrelationHisEmployeeSettingDto = listEmployee.stream().map(item ->{
                 String salaryCode = null;
                 String salaryLayoutName = null;
@@ -68,18 +58,18 @@ public class StateCorrelationHisEmployeeFinder {
                     StateLinkSettingMaster stateLinkSettingMaster = oStateLinkSettingMaster.get();
 
                     if(stateLinkSettingMaster.getSalaryCode().isPresent()){
-                        Optional<StatementNameLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().equals(stateLinkSettingMaster.getSalaryCode().get().v())).findFirst();
+                        Optional<StatementLayout> salaryLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().v().equals(stateLinkSettingMaster.getSalaryCode().get().v())).findFirst();
                         if(salaryLayout.isPresent()){
-                            salaryCode = salaryLayout.get().getStatementCode();
-                            salaryLayoutName = salaryLayout.get().getStatementName();
+                            salaryCode = salaryLayout.get().getStatementCode().v();
+                            salaryLayoutName = salaryLayout.get().getStatementName().v();
                         }
                     }
 
                     if(stateLinkSettingMaster.getBonusCode().isPresent()){
-                        Optional<StatementNameLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().equals(stateLinkSettingMaster.getBonusCode().get().v())).findFirst();
+                        Optional<StatementLayout> bonusLayout = listStatementLayout.stream().filter(o ->o.getStatementCode().v().equals(stateLinkSettingMaster.getBonusCode().get().v())).findFirst();
                         if(bonusLayout.isPresent()){
-                            bonusCode = bonusLayout.get().getStatementCode();
-                            bonusLayoutName = bonusLayout.get().getStatementName();
+                            bonusCode = bonusLayout.get().getStatementCode().v();
+                            bonusLayoutName = bonusLayout.get().getStatementName().v();
                         }
                     }
                 }
@@ -98,21 +88,9 @@ public class StateCorrelationHisEmployeeFinder {
         return EmpCdNameImportDto.fromDomain(empCdNameImport);
     }
 
-    public List<StatementNameLayoutHistDto> getAllStatementLayoutHis(int startYearMonth) {
-        String cid = AppContexts.user().companyId();
-        List<StatementNameLayoutHistDto> result = new ArrayList<>();
-        List<StatementLayoutHist> listStatementLayoutHistory = statementLayoutHistRepository.getAllStatementLayoutHistByCid(cid, startYearMonth);
-        List<StatementLayout> listStatementLayout = statementLayoutRepository.getStatementLayoutByCId(cid);
-        listStatementLayoutHistory.forEach(item -> {
-            String name = listStatementLayout.stream().filter(elementToSearch -> elementToSearch.getStatementCode().v().equals(item.getStatementCode().v())).findFirst().get().getStatementName().v();
-            result.add(new StatementNameLayoutHistDto(item.getCid(), item.getStatementCode().v(),
-                    name,
-                    item.getHistory().get(0).identifier(),
-                    item.getHistory().get(0).start().v(),
-                    item.getHistory().get(0).end().v()
-            ));
-        });
-        return result;
+    private  List<StatementLayout> getStatementLayout(String cid, int startYearMonth){
+        List<StatementLayout> statementLayout  = statementLayoutFinder.getStatement(cid,startYearMonth);
+        return statementLayout;
     }
 
 }

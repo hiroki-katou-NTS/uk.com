@@ -1,14 +1,10 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementNameLayoutHistDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisCompany;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisCompanyRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompany;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +24,7 @@ public class StateCorrelationHisCompanyFinder {
     private StateCorrelationHisCompanyRepository stateCorrelationHisCompanyRepository;
 
     @Inject
-    private StatementLayoutRepository statementLayoutRepository;
-
-    @Inject
-    private StatementLayoutHistRepository statementLayoutHistRepository;
+    private StatementLayoutRepository statementLayoutFinder;
 
 
     public List<StateCorrelationHisCompanyDto> getStateCorrelationHisCompanyById(String cid){
@@ -58,18 +51,19 @@ public class StateCorrelationHisCompanyFinder {
         }
 
         stateLinkSettingCompanyDto = StateLinkSettingCompanyDto.fromDomain(stateLinkSettingCompany.get());
-        List<StatementNameLayoutHistDto> listStatementLayout = this.getAllStatementLayoutHis(startYearMonth);
-        Optional<StatementNameLayoutHistDto> salaryLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getSalaryCode())).findFirst();
-        if(salaryLayout.isPresent()){
-            salaryCode = salaryLayout.get().getStatementCode();
-            salaryLayoutName = salaryLayout.get().getStatementName();
+        List<StatementLayout> listStatementLayout = this.getStatementLayout(cid,startYearMonth);
+        if(!listStatementLayout.isEmpty()){
+            Optional<StatementLayout> salaryLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().v().equals(stateLinkSettingCompanyDto.getSalaryCode())).findFirst();
+            if(salaryLayout.isPresent()){
+                salaryCode = salaryLayout.get().getStatementCode().v();
+                salaryLayoutName = salaryLayout.get().getStatementName().v();
+            }
+            Optional<StatementLayout> bonusLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().v().equals(stateLinkSettingCompanyDto.getBonusCode())).findFirst();
+            if(bonusLayout.isPresent()){
+                bonusCode = bonusLayout.get().getStatementCode().v();
+                bonusLayoutName = bonusLayout.get().getStatementName().v();
+            }
         }
-        Optional<StatementNameLayoutHistDto> bonusLayout = listStatementLayout.stream().filter(o -> o.getStatementCode().equals(stateLinkSettingCompanyDto.getBonusCode())).findFirst();
-        if(bonusLayout.isPresent()){
-            bonusCode = bonusLayout.get().getStatementCode();
-            bonusLayoutName = bonusLayout.get().getStatementName();
-        }
-
         return Optional.of(new StatementLayoutDto(hisId,
                 salaryCode,
                 salaryLayoutName,
@@ -78,20 +72,9 @@ public class StateCorrelationHisCompanyFinder {
 
     }
 
-    public List<StatementNameLayoutHistDto> getAllStatementLayoutHis(int startYearMonth) {
-        String cid = AppContexts.user().companyId();
-        List<StatementNameLayoutHistDto> result = new ArrayList<>();
-        List<StatementLayoutHist> listStatementLayoutHistory = statementLayoutHistRepository.getAllStatementLayoutHistByCid(cid, startYearMonth);
-        List<StatementLayout> listStatementLayout = statementLayoutRepository.getStatementLayoutByCId(cid);
-        listStatementLayoutHistory.forEach(item -> {
-            result.add(new StatementNameLayoutHistDto(item.getCid(), item.getStatementCode().v(),
-                    listStatementLayout.stream().filter(elementToSearch -> elementToSearch.getStatementCode().v().equals(item.getStatementCode().v())).findFirst().get().getStatementName().v(),
-                    item.getHistory().get(0).identifier(),
-                    item.getHistory().get(0).start().v(),
-                    item.getHistory().get(0).end().v()
-            ));
-        });
-        return result;
+    private  List<StatementLayout> getStatementLayout(String cid, int startYearMonth){
+        List<StatementLayout> statementLayout  = statementLayoutFinder.getStatement(cid,startYearMonth);
+        return statementLayout;
     }
 
 }

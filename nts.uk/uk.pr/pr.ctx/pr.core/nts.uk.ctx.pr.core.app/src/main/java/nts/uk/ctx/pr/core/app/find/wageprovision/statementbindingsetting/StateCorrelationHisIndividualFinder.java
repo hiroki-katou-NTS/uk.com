@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +20,8 @@ public class StateCorrelationHisIndividualFinder {
     private StateCorrelationHisIndividualRepository finderHisIndividual;
 
     public List<StateCorrelationHisIndividualDto> getLinkingHistoryIndividual(String emplId){
-        Optional<StateCorrelationHisIndividual>  stateCorrelationHisIndividual = finderHisIndividual.getStateCorrelationHisIndividualByEmpId(emplId);
-        if(!stateCorrelationHisIndividual.isPresent()) {
-            return null;
-        }
-        return StateCorrelationHisIndividualDto.fromDomain(stateCorrelationHisIndividual.get());
+        StateCorrelationHisIndividual  stateCorrelationHisIndividual = finderHisIndividual.getStateCorrelationHisIndividualByEmpId(emplId).orElse(new StateCorrelationHisIndividual(emplId, new ArrayList<>()));
+        return StateCorrelationHisIndividualDto.fromDomain(stateCorrelationHisIndividual);
     }
 
 }

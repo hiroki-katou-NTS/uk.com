@@ -7,6 +7,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
@@ -33,11 +35,8 @@ public class StateCorrelationHisSalaryFinder {
 
     public List<StateCorrelationHisSalaryDto> getStateCorrelationHisSalaryByCid(){
         String cId = AppContexts.user().companyId();
-        Optional<StateCorrelationHisSalary> stateCorrelationHisSalary = finder.getStateCorrelationHisSalaryByCid(cId);
-        if(!stateCorrelationHisSalary.isPresent()) {
-            return null;
-        }
-        return StateCorrelationHisSalaryDto.fromDomain(stateCorrelationHisSalary.get());
+        StateCorrelationHisSalary stateCorrelationHisSalary = finder.getStateCorrelationHisSalaryByCid(cId).orElse(new StateCorrelationHisSalary(cId, new ArrayList<>()));
+        return StateCorrelationHisSalaryDto.fromDomain(stateCorrelationHisSalary);
     }
 
     public List<StateLinkSettingMasterDto> getStateLinkSettingMaster(String hisId, int startYearMonth){

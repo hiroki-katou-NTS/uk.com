@@ -126,37 +126,50 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             }else if(self.mode() === model.MODE.UPDATE){
                 historyID = self.currentSelectedHis();
             }
-            let data: any = {
-                stateCorrelationHisCompanyCommand: {
-                    cid: '',
-                    historyID: historyID,
-                    startYearMonth: self.startYearMonth(),
-                    endYearMonth: 999912
-                },
-                stateLinkSettingCompanyCommand : {
-                    historyID: historyID,
-                    salaryCode: self.salaryCode() === '' ? null : self.salaryCode(),
-                    bonusCode: self.bonusCode() === '' ? null : self.bonusCode()
-                },
-                mode: self.mode()
 
-            }
-            service.registerStateLinkSettingCompany(data).done(()=>{
-                dialog.info({ messageId: "Msg_15" }).then(() => {
-                    service.getStateCorrelationHisCompanyById().done((data)=>{
-                        self.listStateCorrelationHis(self.convertToList(data));
-                        if(self.mode() === model.MODE.NEW){
-                            self.currentSelectedHis(historyID);
-                        }else{
-                            self.currentSelectedHis(self.currentSelectedHis());
-                        }
+            service.getStateCorrelationHisCompanyById().done((result)=>{
+
+                let listStateCorrelationHis = self.convertToList(result);
+                let rs = _.find(listStateCorrelationHis,{hisId: self.currentSelectedHis()});
+                let data: any = {
+                    stateCorrelationHisCompanyCommand: {
+                        cid: '',
+                        historyID: historyID,
+                        startYearMonth : self.mode() === model.MODE.NEW ? self.startYearMonth() : rs.startYearMonth,
+                        endYearMonth:  self.mode() === model.MODE.NEW ? 999912 : rs.endYearMonth ,
+                    },
+                    stateLinkSettingCompanyCommand : {
+                        historyID: historyID,
+                        salaryCode: self.salaryCode() === '' ? null : self.salaryCode(),
+                        bonusCode: self.bonusCode() === '' ? null : self.bonusCode()
+                    },
+                    mode: self.mode()
+
+                }
+                service.registerStateLinkSettingCompany(data).done(()=>{
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        service.getStateCorrelationHisCompanyById().done((data)=>{
+                            self.listStateCorrelationHis(self.convertToList(data));
+                            if(self.mode() === model.MODE.NEW){
+                                self.currentSelectedHis(historyID);
+                            }else{
+                                self.currentSelectedHis(self.currentSelectedHis());
+                            }
+                        });
+                        self.mode(model.MODE.UPDATE);
+                        self.newHistoryId(null);
+                        self.enableEditHisButton(true);
+                        self.enableAddHisButton(true);
                     });
-                    self.mode(model.MODE.UPDATE);
-                    self.newHistoryId(null);
-                    self.enableEditHisButton(true);
-                    self.enableAddHisButton(true);
+                }).fail((err) =>{
+                    if(err){
+                        dialog.alertError(err);
+                    }
+                }).always(()=>{
+                    block.clear();
                 });
-            }).fail((err) =>{
+
+            }).fail((err)=>{
                 if(err){
                     dialog.alertError(err);
                 }
@@ -165,6 +178,7 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             });
 
         }
+
         convertToList(data: any){
             let self = this;
             let list = [];

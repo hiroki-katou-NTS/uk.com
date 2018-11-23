@@ -23,8 +23,8 @@ public class JpaStateCorrelationHisSalaryRepository extends JpaRepository implem
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid ORDER BY f.startYearMonth DESC";
     private static final String SELECT_BY_KEY = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
     private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId AND f.stateCorHisSalPk.masterCode = :masterCode";
-    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisSal f WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
-    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisSal f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
+    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisSal f WHERE f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
+    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisSal f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
 
     @Override
     public  Optional<StateCorrelationHisSalary> getStateCorrelationHisSalaryByCid(String cid){
@@ -82,12 +82,12 @@ public class JpaStateCorrelationHisSalaryRepository extends JpaRepository implem
 
     @Override
     public void updateAll(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth) {
-        this.commandProxy().updateAll(QpbmtStateCorHisClass.toEntity(cid, stateLinkSettingMasters, startYearMonth, endYearMonth));
+        this.commandProxy().updateAll(QpbmtStateCorHisSal.toEntity(cid, stateLinkSettingMasters, startYearMonth, endYearMonth));
     }
 
     @Override
     public void addAll(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth) {
-        this.commandProxy().insertAll(QpbmtStateCorHisClass.toEntity(cid, stateLinkSettingMasters, startYearMonth, endYearMonth));
+        this.commandProxy().insertAll(QpbmtStateCorHisSal.toEntity(cid, stateLinkSettingMasters, startYearMonth, endYearMonth));
     }
 
 

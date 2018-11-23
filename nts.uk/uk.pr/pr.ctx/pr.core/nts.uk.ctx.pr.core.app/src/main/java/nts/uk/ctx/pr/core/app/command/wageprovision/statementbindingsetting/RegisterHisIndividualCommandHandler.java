@@ -41,7 +41,7 @@ public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLin
                     command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
                     command.getBonus() != null ? new StatementCode(command.getBonus()) : null
             );
-            stateCorrelationHisIndividualService.updateHistoryIndividual(history,stateLinkSettingIndividual);
+            stateCorrelationHisIndividualService.updateHistoryIndividual(history,stateLinkSettingIndividual, command.getEmpId());
         }
     }
 }

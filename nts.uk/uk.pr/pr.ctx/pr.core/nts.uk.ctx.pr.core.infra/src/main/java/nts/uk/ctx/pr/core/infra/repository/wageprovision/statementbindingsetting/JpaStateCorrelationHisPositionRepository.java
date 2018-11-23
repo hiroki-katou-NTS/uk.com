@@ -24,8 +24,9 @@ public class JpaStateCorrelationHisPositionRepository extends JpaRepository impl
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND  f.stateCorHisPosPk.hisId =:hisId ";
     private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND  f.stateCorHisPosPk.hisId =:hisId AND f.stateCorHisPosPk.masterCode = :masterCode";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid ORDER BY f.startYearMonth DESC";
-    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisPos f WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
-    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisPos f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
+    private static final String SELECT_BASE_DATE = "SELECT TOP (1) HIS_ID, BASE_DATE  FROM QPBMT_STATE_COR_HIS_POS WHERE  CID = ?cid AND  HIS_ID = ?hisId ";
+    private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisPos f WHERE f.stateCorHisPosPk.cid =:cid AND f.stateCorHisPosPk.hisId =:hisId";
+    private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisPos f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisPosPk.cid =:cid AND f.stateCorHisPosPk.hisId =:hisId";
 
     @Override
     public Optional<StateCorrelationHisPosition> getStateCorrelationHisPositionById(String cid, String hisId){
@@ -75,12 +76,12 @@ public class JpaStateCorrelationHisPositionRepository extends JpaRepository impl
     
     @Override
     public Optional<StateLinkSettingDate> getStateLinkSettingDateById(String cId, String hisId) {
-        List<QpbmtStateCorHisPos> result = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisPos.class)
+        Object[] resultQuery = null;
+        resultQuery = (Object[]) this.getEntityManager().createNativeQuery(SELECT_BASE_DATE)
                 .setParameter("cid",cId)
                 .setParameter("hisId", hisId)
-                .getList();
-
-        return QpbmtStateCorHisPos.getBaseDate(result);
+                .getSingleResult();
+        return QpbmtStateCorHisPos.toBaseDate(resultQuery);
     }
 
     @Override
