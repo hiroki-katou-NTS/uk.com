@@ -75,12 +75,12 @@ public class GetReserveLeaveNumbersFinder implements GetReserveLeaveNumbersAdpte
 	 */
 	@Override
 	public List<ReservedYearHolidayImported> getYearRsvMonthlyVer2(String employeeId, YearMonthPeriod period) {
-		List<ReserveLeaveUsageExport> lstRsvLeaUsage = getConfirmedReserveLeave.getYearRsvMonthlyVer2(employeeId, period);
+//		List<ReserveLeaveUsageExport> lstRsvLeaUsage = getConfirmedReserveLeave.getYearRsvMonthlyVer2(employeeId, period);
 		List<ReservedYearHolidayImported> lstRsvYearHd = new ArrayList<>();
-		lstRsvLeaUsage.forEach(item -> {
-			lstRsvYearHd.add(new ReservedYearHolidayImported(item.getYearMonth(),
-					item.getUsedDays().v(), item.getRemainingDays().v()));
-		});
+//		lstRsvLeaUsage.forEach(item -> {
+//			lstRsvYearHd.add(new ReservedYearHolidayImported(item.getYearMonth(),
+//					item.getUsedDays().v(), item.getRemainingDays().v()));
+//		});
 		return lstRsvYearHd;
 	}
 }

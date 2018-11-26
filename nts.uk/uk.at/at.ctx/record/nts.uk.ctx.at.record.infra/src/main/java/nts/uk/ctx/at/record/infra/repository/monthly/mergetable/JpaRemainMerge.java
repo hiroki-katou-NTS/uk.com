@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.mergetable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,10 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonRemain a "
 			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
 			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
+			+ "ORDER BY a.startDate ";
+	private static final String FIND_BY_LIST_YRMON = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth IN :lstyrMon "
 			+ "ORDER BY a.startDate ";
 	/** 検索 */
 	@Override
@@ -216,5 +222,25 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 			return o1.getStartDate().compareTo(o2.getStartDate());
 		});
 		return results.stream().map(c -> c.toDomainAnnLeaRemNumEachMonth()).collect(Collectors.toList());
+	}
+
+	@Override
+	public Map<YearMonth, List<RemainMerge>> findBySidsAndYrMons(String employeeId, List<YearMonth> lstYrMon) {
+		if(lstYrMon.isEmpty()){
+			return new HashMap<>();
+		}
+		val lstYrMonVal = lstYrMon.stream().map(c -> c.v()).collect(Collectors.toList());
+		Map<YearMonth, List<RemainMerge>> mapResult = new HashMap<>();
+		List<RemainMerge> lstTmp = this.queryProxy().query(FIND_BY_LIST_YRMON, KrcdtMonRemain.class)
+										.setParameter("employeeId", employeeId)
+										.setParameter("lstyrMon", lstYrMonVal)
+										.getList(c -> c.toDomain());
+		for (YearMonth yearMon : lstYrMon) {
+			List<RemainMerge> lstFl = lstTmp.stream()
+					.filter(c -> c.getMonthMergeKey().getYearMonth().equals(yearMon))
+					.collect(Collectors.toList());
+			mapResult.put(yearMon, lstFl);
+		}
+		return mapResult;
 	}
 }

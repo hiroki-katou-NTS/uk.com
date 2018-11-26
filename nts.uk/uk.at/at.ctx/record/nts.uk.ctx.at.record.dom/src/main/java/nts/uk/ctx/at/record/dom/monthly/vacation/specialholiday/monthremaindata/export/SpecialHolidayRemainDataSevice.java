@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface SpecialHolidayRemainDataSevice {
 	/**
@@ -33,5 +36,5 @@ public interface SpecialHolidayRemainDataSevice {
 	 * @param endMonth 年月期間
 	 * @return
 	 */
-	public List<SpecialHolidayRemainDataOutput> getSpeHdOfConfMonVer2(String sid, YearMonth startMonth, YearMonth endMonth);
+	public List<SpecialHolidayRemainDataOutput> getSpeHdOfConfMonVer2(String sid, YearMonthPeriod period, Map<YearMonth, List<RemainMerge>> mapRemainMer);
 }

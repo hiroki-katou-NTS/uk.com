@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface MonthlyAbsenceleaveRemainExport {
 	/**
@@ -22,5 +25,5 @@ public interface MonthlyAbsenceleaveRemainExport {
 	 * @param endMonth
 	 * @return
 	 */
-	List<AbsenceleaveCurrentMonthOfEmployee> getDataCurrMonOfEmpVer2(String employeeId, YearMonth startMonth, YearMonth endMonth);
+	List<AbsenceleaveCurrentMonthOfEmployee> getDataCurrMonOfEmpVer2(String employeeId, YearMonthPeriod period, Map<YearMonth, List<RemainMerge>> mapRemainMer);
 }

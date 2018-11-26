@@ -38,6 +38,8 @@ import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImpo
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveCurrentSituationImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMerEx;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMergeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveCurrentSituationImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
@@ -108,6 +110,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private CompanyAdapter companyRepo;
 	@Inject
 	private ManagedParallelWithContext parallel;
+	@Inject
+	private HolidayRemainMergeAdapter hdRemainAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -241,11 +245,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		if (!closureInforOpt.isPresent()) {
 			return null;
 		}
-
+		
 		val currentMonth = closureInforOpt.get().getCurrentMonth();
 		val cId = AppContexts.user().companyId();
 		val datePeriod = new DatePeriod(startDate, endDate);
-
+		//hoatt
+		YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(),currentMonth.previousMonth());
+		HolidayRemainMerEx hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
+		
 		if (variousVacationControl.isAnnualHolidaySetting()) {
 			// Call RequestList369
 			grantDate = getNextAnnLeaGrantDateAdapter.algorithm(cId, employeeId);
@@ -257,8 +264,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			annLeaveOfThisMonth = annLeaveAdapter.getAnnLeaveOfThisMonth(employeeId);
 			// Call RequestList255 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listAnnualLeaveUsage = annLeaveAdapter.getYearHdMonthlyVer2(employeeId,
-						new YearMonthPeriod(startDate.yearMonth(),currentMonth.previousMonth()));
+				listAnnualLeaveUsage = hdRemainMer.getResult255();
 			}
 			// Call RequestList363
 			if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
@@ -272,8 +278,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			reserveHoliday = reserveLeaveAdpter.algorithm(employeeId);
 			// Call RequestList258 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listReservedYearHoliday = reserveLeaveAdpter.getYearRsvMonthlyVer2(employeeId,
-						new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth()));
+				listReservedYearHoliday = hdRemainMer.getResult258();
 			}
 			// Call RequestList364
 			if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
@@ -288,8 +293,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					startDate.yearMonth(), endDate.yearMonth());
 			// Call RequestList259 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listStatusHoliday = monthlyDayoffAdapter.lstDayoffCurrentMonthOfEmpVer2(employeeId,
-						startDate.yearMonth(), currentMonth.previousMonth());
+				listStatusHoliday = hdRemainMer.getResult259();
 			}
 		}
 
@@ -299,8 +303,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					startDate.yearMonth(), endDate.yearMonth());
 			// Call RequestList260 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listStatusOfHoliday = absenceReruitmentAdapter.getDataCurrMonOfEmpVer2(employeeId,
-						startDate.yearMonth(), currentMonth.previousMonth());
+				listStatusOfHoliday = hdRemainMer.getResult260();
 			}
 		}
 		//hoatt
@@ -316,8 +319,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 			// Call RequestList263 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter
-						.getSpeHdOfConfMonVer2(employeeId, startDate.yearMonth(), currentMonth.previousMonth());
+				List<SpecialHolidayImported> specialHolidayList = hdRemainMer.getResult263();
 				tmpSpeHd.put(sphdCode, specialHolidayList);
 			} else {
 				tmpSpeHd.put(sphdCode, new ArrayList<SpecialHolidayImported>());

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.mergetable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
@@ -83,4 +84,11 @@ public interface RemainMergeRepository {
 	 * @return
 	 */
 	public List<AnnLeaRemNumEachMonth> findByYearMonthRQ255(List<String> lstSID, List<YearMonth> lstYearMonth);
+	/**
+	 * 
+	 * @param employeeId
+	 * @param lstYrMon
+	 * @return
+	 */
+	public Map<YearMonth, List<RemainMerge>> findBySidsAndYrMons(String employeeId, List<YearMonth> lstYrMon);
 }

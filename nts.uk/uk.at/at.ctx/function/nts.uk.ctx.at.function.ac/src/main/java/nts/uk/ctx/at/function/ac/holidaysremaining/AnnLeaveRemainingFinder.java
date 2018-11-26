@@ -132,14 +132,14 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 	 */
 	@Override
 	public List<AnnualLeaveUsageImported> getYearHdMonthlyVer2(String employeeId, YearMonthPeriod period) {
-		List<AnnualLeaveUsageExport> lstAnnLea = getConfirmedAnnualLeave.getYearHdMonthlyVer2(employeeId, period);
+//		List<AnnualLeaveUsageExport> lstAnnLea = getConfirmedAnnualLeave.getYearHdMonthlyVer2(employeeId, period);
 		List<AnnualLeaveUsageImported> lstHdRemainData = new ArrayList<>();
-		lstAnnLea.forEach(item -> {
-			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(item.getYearMonth(),
-					item.getUsedDays().v(), item.getUsedTime().map(i -> i.v()).orElse(null), item.getRemainingDays().v(),
-					item.getRemainingTime().map(i -> i.v()).orElse(null));
-			lstHdRemainData.add(HolidayRemainData);
-		});
+//		lstAnnLea.forEach(item -> {
+//			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(item.getYearMonth(),
+//					item.getUsedDays().v(), item.getUsedTime().map(i -> i.v()).orElse(null), item.getRemainingDays().v(),
+//					item.getRemainingTime().map(i -> i.v()).orElse(null));
+//			lstHdRemainData.add(HolidayRemainData);
+//		});
 		return lstHdRemainData;
 	}
 }

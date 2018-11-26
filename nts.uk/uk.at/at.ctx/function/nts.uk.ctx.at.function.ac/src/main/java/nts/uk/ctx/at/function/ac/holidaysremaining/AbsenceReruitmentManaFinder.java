@@ -83,15 +83,15 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	@Override
 	public List<StatusOfHolidayImported> getDataCurrMonOfEmpVer2(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
-		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrMonOfEmp = monAbleaRemainEx.getDataCurrMonOfEmpVer2(employeeId, startMonth, endMonth);
-		if (lstDataCurrMonOfEmp == null)
-			return null;
+//		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrMonOfEmp = monAbleaRemainEx.getDataCurrMonOfEmpVer2(employeeId, startMonth, endMonth);
+//		if (lstDataCurrMonOfEmp == null)
+//			return null;
 		List<StatusOfHolidayImported> lstSttOfHd = new ArrayList<>();
-		lstDataCurrMonOfEmp.forEach(item -> {
-			StatusOfHolidayImported sttOfHd = new StatusOfHolidayImported(item.getYm(), item.getOccurredDay(),
-					item.getUsedDays(), item.getUnUsedDays(), item.getRemainingDays());
-			lstSttOfHd.add(sttOfHd);
-		});
+//		lstDataCurrMonOfEmp.forEach(item -> {
+//			StatusOfHolidayImported sttOfHd = new StatusOfHolidayImported(item.getYm(), item.getOccurredDay(),
+//					item.getUsedDays(), item.getUnUsedDays(), item.getRemainingDays());
+//			lstSttOfHd.add(sttOfHd);
+//		});
 		return lstSttOfHd;
 	}
 

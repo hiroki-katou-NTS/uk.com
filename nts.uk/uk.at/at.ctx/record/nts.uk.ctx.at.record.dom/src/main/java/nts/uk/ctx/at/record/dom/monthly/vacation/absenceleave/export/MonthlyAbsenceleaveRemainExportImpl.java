@@ -1,26 +1,23 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainDataRepository;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveRemainExport{
 	@Inject
 	private AbsenceLeaveRemainDataRepository absenceLeaveRepos;
-	@Inject 
-	private RemainMergeRepository repoRemainMer;
-	@Inject
-	private ManagedParallelWithContext parallel;
 	
 	@Override
 	public List<AbsenceleaveCurrentMonthOfEmployee> getDataCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth) {
@@ -55,20 +52,18 @@ public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveR
 		return lstOutputData;
 	}
 	@Override
-	public List<AbsenceleaveCurrentMonthOfEmployee> getDataCurrMonOfEmpVer2(String employeeId, YearMonth startMonth,
-			YearMonth endMonth) {
-		List<AbsenceleaveCurrentMonthOfEmployee> lstTmp = Collections.synchronizedList(new ArrayList<>());
-		List<YearMonth> lstYM = new ArrayList<>();
-		for(YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)){
-			lstYM.add(ym);
-		}
+	public List<AbsenceleaveCurrentMonthOfEmployee> getDataCurrMonOfEmpVer2(String employeeId, YearMonthPeriod period, Map<YearMonth, List<RemainMerge>> mapRemainMer) {
 		//年月期間．開始年月から終了年月まで1か月ずつループ
-		parallel.forEach(lstYM, ym -> {	
+		List<AbsenceleaveCurrentMonthOfEmployee> lstOutputData = new ArrayList<AbsenceleaveCurrentMonthOfEmployee>();
+		for (Map.Entry<YearMonth, List<RemainMerge>> entry : mapRemainMer.entrySet()) {
 			//ドメインモデル「振休月別残数データ」を取得
-			List<AbsenceLeaveRemainData> lstAbsenData = repoRemainMer.findByYearMonthRQ260(employeeId, ym);
+			List<AbsenceLeaveRemainData> lstAbsenData = entry.getValue().stream()
+					.map(c -> c.getAbsenceLeaveRemainData())
+					.collect(Collectors.toList());
 			if(lstAbsenData.isEmpty()) {
-				return;
+				continue;
 			}
+			YearMonth ym = entry.getKey();
 			AbsenceleaveCurrentMonthOfEmployee dataOutput = new AbsenceleaveCurrentMonthOfEmployee(employeeId, ym, (double)0, (double)0, (double)0, (double)0, (double)0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
@@ -88,10 +83,8 @@ public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveR
 				dataOutput.setUsedDays(dataOutput.getUsedDays() + data.getUsedDays().v());
 				dataOutput.setUnUsedDays(dataOutput.getUnUsedDays() + data.getUnUsedDays().v());
 			}
-			lstTmp.add(dataOutput);
-		});
-		List<AbsenceleaveCurrentMonthOfEmployee> lstOutputData = new ArrayList<AbsenceleaveCurrentMonthOfEmployee>();
-		lstOutputData.addAll(lstTmp);
+			lstOutputData.add(dataOutput);
+		};
 		return lstOutputData;
 	}
 

@@ -1,26 +1,23 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 	@Inject
 	private MonthlyDayoffRemainDataRepository remainDataRepos;
-	@Inject
-	private RemainMergeRepository repoRemainMer;
-	@Inject
-	private ManagedParallelWithContext parallel;
 	
 	@Override
 	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth,
@@ -73,20 +70,19 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 		return lstOutput;
 	}
 	@Override
-	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonth startMonth,
-			YearMonth endMonth) {
-		List<DayoffCurrentMonthOfEmployee> lstTmp = Collections.synchronizedList(new ArrayList<>());
-		List<YearMonth> lstYM = new ArrayList<>();
-		for(YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)){
-			lstYM.add(ym);
-		}
+	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonthPeriod period, 
+			Map<YearMonth, List<RemainMerge>> mapRemainMer) {
+		List<DayoffCurrentMonthOfEmployee> lstOutput = new ArrayList<DayoffCurrentMonthOfEmployee>();
 		//年月期間．開始年月から終了年月まで1か月ずつループ
-		parallel.forEach(lstYM, ym -> {			
+		for (Map.Entry<YearMonth, List<RemainMerge>> entry : mapRemainMer.entrySet()) {		
 			//ドメインモデル「代休月別残数データ」を取得
-			List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus = repoRemainMer.findByYearMonthRQ259(employeeId, ym);
+			List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus = entry.getValue().stream()
+					.map(c -> c.getMonthlyDayoffRemainData())
+					.collect(Collectors.toList());
 			if(getDayOffDataBySidYmStatus.isEmpty()) {
-				return;
+				continue;
 			}
+			YearMonth ym = entry.getKey();
 			DayoffCurrentMonthOfEmployee dataOutput = new DayoffCurrentMonthOfEmployee(employeeId, ym, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0, (double)0, 0);
 			GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
 			GeneralDate endDatecarryMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
@@ -121,10 +117,8 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 					dataOutput.setUnUsedTimes(dataOutput.getUnUsedTimes() + data.getUnUsedDayTimes().getTime().get().v());	
 				}
 			}
-			lstTmp.add(dataOutput);
-		});
-		List<DayoffCurrentMonthOfEmployee> lstOutput = new ArrayList<DayoffCurrentMonthOfEmployee>();
-		lstOutput.addAll(lstTmp);
+			lstOutput.add(dataOutput);
+		}
 		return lstOutput;
 	}
 }

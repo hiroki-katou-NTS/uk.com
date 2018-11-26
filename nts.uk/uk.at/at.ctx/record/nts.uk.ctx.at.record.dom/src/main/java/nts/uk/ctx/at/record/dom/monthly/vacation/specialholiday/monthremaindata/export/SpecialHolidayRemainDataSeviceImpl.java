@@ -2,22 +2,22 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainDataSevice{
 	@Inject
 	private SpecialHolidayRemainDataRepository speRemainDataRepo;
-	@Inject
-	private RemainMergeRepository repoRemainMer;
 	
 	@Override
 	public List<SpecialHolidayRemainDataOutput> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
@@ -239,13 +239,15 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 	 * @return
 	 */
 	@Override
-	public List<SpecialHolidayRemainDataOutput> getSpeHdOfConfMonVer2(String sid, YearMonth startMonth,
-			YearMonth endMonth) {
+	public List<SpecialHolidayRemainDataOutput> getSpeHdOfConfMonVer2(String sid, YearMonthPeriod period, Map<YearMonth, List<RemainMerge>> mapRemainMer) {
 		List<SpecialHolidayRemainDataOutput> lstOutData = new ArrayList<>();
-		for (YearMonth month = startMonth; month.lessThanOrEqualTo(endMonth); month = month.addMonths(1)) {
-			
+		for (Map.Entry<YearMonth, List<RemainMerge>> entry : mapRemainMer.entrySet()) {
 			//ドメインモデル「特別休暇月別残数データ」を取得
-			List<SpecialHolidayRemainData> lstRemainData = repoRemainMer.findByYearMonthRQ263(sid, month);
+			List<SpecialHolidayRemainData> lstRemainData = new ArrayList<>();
+			for(RemainMerge speMer : entry.getValue()){
+				lstRemainData.addAll(speMer.getSpecialHolidayRemainList());
+			}
+			YearMonth month = entry.getKey();
 			for (SpecialHolidayRemainData remainData : lstRemainData) {
 				SpecialHolidayRemainDataOutput dataOut = new SpecialHolidayRemainDataOutput();
 				List<SpecialHolidayRemainDataOutput> lstTmp = new ArrayList<>();
