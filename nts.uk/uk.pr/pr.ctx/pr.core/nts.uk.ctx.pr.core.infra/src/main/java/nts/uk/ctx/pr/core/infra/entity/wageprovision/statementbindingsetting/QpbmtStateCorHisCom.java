@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisCompany;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingCompany;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisCom;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetCom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -61,12 +61,12 @@ public class QpbmtStateCorHisCom extends UkJpaEntity implements Serializable {
         return stateCorHisComPk;
     }
 
-    public StateCorrelationHisCompany toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisCompany(this.stateCorHisComPk.cid, history);
+    public StateCorreHisCom toDomain(List<YearMonthHistoryItem> history) {
+        return new StateCorreHisCom(this.stateCorHisComPk.cid, history);
     }
 
-    public StateLinkSettingCompany toDomain() {
-        return new StateLinkSettingCompany(this.stateCorHisComPk.hisId,
+    public StateLinkSetCom toDomain() {
+        return new StateLinkSetCom(this.stateCorHisComPk.hisId,
                 this.salaryCode == null ? null : new StatementCode(this.salaryCode),
                 this.bonusCode == null ? null : new StatementCode(this.bonusCode));
     }

@@ -1,21 +1,16 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
-import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividual;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingIndividual;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisIndivi;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetIndivi;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 /**
 * 明細書紐付け履歴（個人）
@@ -67,12 +62,12 @@ public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable {
         return stateCorHisIndiPk;
     }
 
-    public StateCorrelationHisIndividual toDomain(List<YearMonthHistoryItem> history ) {
-        return new StateCorrelationHisIndividual(this.stateCorHisIndiPk.empId ,history);
+    public StateCorreHisIndivi toDomain(List<YearMonthHistoryItem> history ) {
+        return new StateCorreHisIndivi(this.stateCorHisIndiPk.empId ,history);
     }
 
-    public StateLinkSettingIndividual toDomain() {
-        return new StateLinkSettingIndividual(this.stateCorHisIndiPk.hisId, new StatementCode(this.salaryCode), new StatementCode(this.bonusCode));
+    public StateLinkSetIndivi toDomain() {
+        return new StateLinkSetIndivi(this.stateCorHisIndiPk.hisId, new StatementCode(this.salaryCode), new StatementCode(this.bonusCode));
     }
     public static QpbmtStateCorHisIndi toEntity(String empID,  YearMonthHistoryItem history, String salaryLayoutCode, String bonusLayoutCode) {
         return new QpbmtStateCorHisIndi(new QpbmtStateCorHisIndiPk(empID, history.identifier()), history.start().v(), history.end().v(),salaryLayoutCode,bonusLayoutCode);

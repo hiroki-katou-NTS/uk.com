@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 public class AddOrUpdateStateCorrelationHisCompanyCommandHandler extends CommandHandler<StateCorrelationHisCompanySettingCommand> {
 
     @Inject
-    private StateCorrelationHisCompanyService stateCorrelationHisCompanyService;
+    private StateCorreHisComService stateCorreHisComService;
 
     @Override
     protected void handle(CommandHandlerContext<StateCorrelationHisCompanySettingCommand> commandHandlerContext) {
@@ -27,12 +27,12 @@ public class AddOrUpdateStateCorrelationHisCompanyCommandHandler extends Command
 
         int mode = commandHandlerContext.getCommand().getMode();
         if(mode == RegisterMode.NEW.value){
-            stateCorrelationHisCompanyService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),
+            stateCorreHisComService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),
                     new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()),
                     stateLinkSettingCompanyCommand.getSalaryCode(),
                     stateLinkSettingCompanyCommand.getBonusCode());
         }else if(mode == RegisterMode.UPDATE.value){
-            stateCorrelationHisCompanyService.updateStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),
+            stateCorreHisComService.updateStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),
                     new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()),
                     stateLinkSettingCompanyCommand.getSalaryCode(),
                     stateLinkSettingCompanyCommand.getBonusCode());

@@ -62,10 +62,10 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     let dataInput: any = {
                         type: params.modeScreen,
                         employeeIds: data.listEmployee,
-                        hissId: params.hisId,
+                        hisId: params.hisId,
                         baseDate: data.baseDate
-                    }
-                    nts.uk.pr.view.qmm020.i.service.indiTiedStatAcquiProcess(dataInput).done((resulf : Array<ConfirmOfIndividualSetSttDto>) => {
+                    };
+                    nts.uk.com.view.qmm020.i.service.acquiProcess(dataInput).done((resulf : Array<ConfirmOfIndividualSetSttDto>) => {
                         this.listConfirmOfIndividualSetStt(resulf);
                     }).fail((err) => {
                         if (err)

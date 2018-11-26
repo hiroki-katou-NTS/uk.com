@@ -17,31 +17,31 @@ import javax.transaction.Transactional;
 public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLinkSettingIndividualCommand> {
     
     @Inject
-    private StateCorrelationHisIndividualService stateCorrelationHisIndividualService;
+    private StateCorreHisIndiviService stateCorreHisIndiviService;
     
     @Override
     protected void handle(CommandHandlerContext<StateLinkSettingIndividualCommand> context) {
         StateLinkSettingIndividualCommand command = context.getCommand();
         YearMonth start = new YearMonth(command.getStart());
         YearMonth end = new YearMonth(command.getEnd());
-        StateLinkSettingIndividual stateLinkSettingIndividual;
+        StateLinkSetIndivi stateLinkSetIndivi;
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
-            stateLinkSettingIndividual = new StateLinkSettingIndividual(
+            stateLinkSetIndivi = new StateLinkSetIndivi(
                     hisId,
                     command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
                     command.getBonus() != null ? new StatementCode(command.getBonus()) : null
             );
-            stateCorrelationHisIndividualService.addHistoryIndividual(hisId, start, end, stateLinkSettingIndividual, command.getEmpId());
+            stateCorreHisIndiviService.addHistoryIndividual(hisId, start, end, stateLinkSetIndivi, command.getEmpId());
         } else {
             String hisId = command.getHisId();
             YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,new YearMonthPeriod(start,end));
-            stateLinkSettingIndividual = new StateLinkSettingIndividual(
+            stateLinkSetIndivi = new StateLinkSetIndivi(
                     hisId,
                     command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
                     command.getBonus() != null ? new StatementCode(command.getBonus()) : null
             );
-            stateCorrelationHisIndividualService.updateHistoryIndividual(history,stateLinkSettingIndividual, command.getEmpId());
+            stateCorreHisIndiviService.updateHistoryIndividual(history, stateLinkSetIndivi, command.getEmpId());
         }
     }
 }

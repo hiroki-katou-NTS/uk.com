@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.MasterCode;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployee;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisEm;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetMaster;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -66,12 +66,12 @@ public class QpbmtStateCorHisEmp extends UkJpaEntity implements Serializable {
         return stateCorHisEmpPk;
     }
 
-    public StateCorrelationHisEmployee toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisEmployee(this.stateCorHisEmpPk.cid, history);
+    public StateCorreHisEm toDomain(List<YearMonthHistoryItem> history) {
+        return new StateCorreHisEm(this.stateCorHisEmpPk.cid, history);
     }
 
-    public StateLinkSettingMaster toDomain() {
-        return new StateLinkSettingMaster(this.stateCorHisEmpPk.hisId,
+    public StateLinkSetMaster toDomain() {
+        return new StateLinkSetMaster(this.stateCorHisEmpPk.hisId,
                 new MasterCode(this.stateCorHisEmpPk.masterCode),
                 this.salaryCode == null ? null : new StatementCode(this.salaryCode),
                 this.bonusCode == null ? null : new StatementCode(this.bonusCode));
@@ -92,12 +92,12 @@ public class QpbmtStateCorHisEmp extends UkJpaEntity implements Serializable {
 
 
 
-    public static List<QpbmtStateCorHisEmp> toEntity(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth) {
+    public static List<QpbmtStateCorHisEmp> toEntity(String cid, List<StateLinkSetMaster> stateLinkSetMasters, int startYearMonth, int endYearMonth) {
         List<QpbmtStateCorHisEmp> listStateCorHisEmp = new ArrayList<>();
-        if (stateLinkSettingMasters == null || stateLinkSettingMasters.isEmpty()) {
+        if (stateLinkSetMasters == null || stateLinkSetMasters.isEmpty()) {
             return listStateCorHisEmp;
         }
-        listStateCorHisEmp = stateLinkSettingMasters.stream().map(item -> new QpbmtStateCorHisEmp(new QpbmtStateCorHisEmpPk(cid, item.getHistoryID(), item.getMasterCode().v()),
+        listStateCorHisEmp = stateLinkSetMasters.stream().map(item -> new QpbmtStateCorHisEmp(new QpbmtStateCorHisEmpPk(cid, item.getHistoryID(), item.getMasterCode().v()),
                 startYearMonth, endYearMonth,
                 item.getSalaryCode().isPresent() ? item.getSalaryCode().get().v() : null,
                 item.getBonusCode().isPresent() ? item.getBonusCode().get().v() : null))

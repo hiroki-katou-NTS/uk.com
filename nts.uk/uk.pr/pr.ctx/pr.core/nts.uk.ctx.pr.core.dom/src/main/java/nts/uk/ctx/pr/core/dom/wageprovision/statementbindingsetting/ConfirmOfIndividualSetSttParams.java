@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class ConfirmOfIndividualSetSttParams {
     private int type;
-    private List<String> employeeIds ;
+    private List<InformationEmployeeDto> employeeIds ;
     private String hisId;
     private GeneralDate baseDate;
 }

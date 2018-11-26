@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class RegisterStateCorrelationHisSalaryCommandHandler extends CommandHandler<StateCorrelationHisSalaryCommand> {
     
     @Inject
-    private StateCorrelationHisSalaryService stateCorrelationHisSalaryService;
+    private StateCorreHisSalaService stateCorreHisSalaService;
     
     @Override
     protected void handle(CommandHandlerContext<StateCorrelationHisSalaryCommand> context) {
@@ -27,20 +27,20 @@ public class RegisterStateCorrelationHisSalaryCommandHandler extends CommandHand
         YearMonth end = new YearMonth(command.getEndYearMonth());
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
-            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSettingMaster(
+            List<StateLinkSetMaster> listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSetMaster(
                     hisId,
                     new MasterCode(i.getMasterCode()),
                     i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
                     i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null)).collect(Collectors.toList());
-            stateCorrelationHisSalaryService.addHistorySalary(hisId, start, end, listStateLinkSettingMaster);
+            stateCorreHisSalaService.addHistorySalary(hisId, start, end, listStateLinkSetMaster);
         } else {
             String hisId = command.getHisId();
-            List<StateLinkSettingMaster> listStateLinkSettingMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSettingMaster(
+            List<StateLinkSetMaster> listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSetMaster(
                     hisId,
                     new MasterCode(i.getMasterCode()),
                     i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
                     i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null)).collect(Collectors.toList());
-            stateCorrelationHisSalaryService.updateHistorySalary(hisId, start, end, listStateLinkSettingMaster);
+            stateCorreHisSalaService.updateHistorySalary(hisId, start, end, listStateLinkSetMaster);
         }
     
     }

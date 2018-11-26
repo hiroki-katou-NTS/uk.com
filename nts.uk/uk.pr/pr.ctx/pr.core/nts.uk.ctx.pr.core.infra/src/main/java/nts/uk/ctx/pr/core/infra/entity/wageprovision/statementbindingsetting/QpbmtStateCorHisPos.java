@@ -79,20 +79,20 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
         return stateCorHisPosPk;
     }
 
-    public StateCorrelationHisPosition toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisPosition(this.stateCorHisPosPk.cid,history);
+    public StateCorreHisPo toDomain(List<YearMonthHistoryItem> history) {
+        return new StateCorreHisPo(this.stateCorHisPosPk.cid,history);
     }
 
-    public StateLinkSettingMaster toDomain() {
-        return new StateLinkSettingMaster(this.stateCorHisPosPk.hisId,
+    public StateLinkSetMaster toDomain() {
+        return new StateLinkSetMaster(this.stateCorHisPosPk.hisId,
                 new MasterCode(this.stateCorHisPosPk.masterCode),
                 this.salaryCode == null ? null : new StatementCode(this.salaryCode),
                 this.bonusCode == null ? null : new StatementCode(this.bonusCode));
     }
-    public static Optional<StateLinkSettingDate> toBaseDate(Object[] resultQuery){
+    public static Optional<StateLinkSetDate> toBaseDate(Object[] resultQuery){
         GeneralDate date = GeneralDate.fromString(resultQuery[1].toString(), "yyyy-MM-dd");
-        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(resultQuery[0].toString(), date);
-        return Optional.of(stateLinkSettingDate);
+        StateLinkSetDate stateLinkSetDate = new StateLinkSetDate(resultQuery[0].toString(), date);
+        return Optional.of(stateLinkSetDate);
     }
     public static List<YearMonthHistoryItem> toDomainYearMonth(List<QpbmtStateCorHisPos> entity){
 
@@ -107,12 +107,12 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
         }).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
     }
 
-    public static List<QpbmtStateCorHisPos> toEntity(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate) {
+    public static List<QpbmtStateCorHisPos> toEntity(String cid, List<StateLinkSetMaster> stateLinkSetMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate) {
         List<QpbmtStateCorHisPos> listStateCorHisPos = new ArrayList<>();
-        if(stateLinkSettingMasters == null || stateLinkSettingMasters.isEmpty()){
+        if(stateLinkSetMasters == null || stateLinkSetMasters.isEmpty()){
             return listStateCorHisPos;
         }
-        listStateCorHisPos = stateLinkSettingMasters.stream().map(item -> new QpbmtStateCorHisPos(new QpbmtStateCorHisPosPk(cid,item.getHistoryID(),item.getMasterCode().v()),
+        listStateCorHisPos = stateLinkSetMasters.stream().map(item -> new QpbmtStateCorHisPos(new QpbmtStateCorHisPosPk(cid,item.getHistoryID(),item.getMasterCode().v()),
                 startYearMonth,
                 endYearMonth,
                 baseDate,

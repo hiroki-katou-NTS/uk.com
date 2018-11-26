@@ -80,12 +80,12 @@ public class QpbmtStateCorHisDep extends UkJpaEntity implements Serializable
         return stateCorHisDepPk;
     }
 
-    public StateCorrelationHisDeparment toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisDeparment(this.stateCorHisDepPk.cid, history);
+    public StateCorreHisDepar toDomain(List<YearMonthHistoryItem> history) {
+        return new StateCorreHisDepar(this.stateCorHisDepPk.cid, history);
     }
 
-    public StateLinkSettingMaster toDomain() {
-        return new StateLinkSettingMaster(this.stateCorHisDepPk.hisId,
+    public StateLinkSetMaster toDomain() {
+        return new StateLinkSetMaster(this.stateCorHisDepPk.hisId,
                 new MasterCode(this.stateCorHisDepPk.masterCode),
                 this.salaryCode == null ? null : new StatementCode(this.salaryCode),
                 this.bonusCode == null ? null : new StatementCode(this.bonusCode));
@@ -104,11 +104,11 @@ public class QpbmtStateCorHisDep extends UkJpaEntity implements Serializable
         }).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
     }
 
-    public static Optional<StateLinkSettingDate> getBaseDate(List<QpbmtStateCorHisDep> entity){
+    public static Optional<StateLinkSetDate> getBaseDate(List<QpbmtStateCorHisDep> entity){
         if(entity == null || entity.isEmpty())
             return Optional.empty();
-        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(entity.get(0).stateCorHisDepPk.hisId,entity.get(0).baseDate);
-        return Optional.of(stateLinkSettingDate);
+        StateLinkSetDate stateLinkSetDate = new StateLinkSetDate(entity.get(0).stateCorHisDepPk.hisId,entity.get(0).baseDate);
+        return Optional.of(stateLinkSetDate);
     }
     public static QpbmtStateCorHisDep toEntity(String cid, YearMonthHistoryItem history, String masterCode, GeneralDate baseDate, String salaryLayoutCode, String bonusLayoutCode) {
         return new QpbmtStateCorHisDep(new QpbmtStateCorHisDepPk(cid, history.identifier(),masterCode),
@@ -119,12 +119,12 @@ public class QpbmtStateCorHisDep extends UkJpaEntity implements Serializable
                 bonusLayoutCode);
     }
 
-    public static List<QpbmtStateCorHisDep> toEntity(String cid, List<StateLinkSettingMaster> stateLinkSettingMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate) {
+    public static List<QpbmtStateCorHisDep> toEntity(String cid, List<StateLinkSetMaster> stateLinkSetMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate) {
         List<QpbmtStateCorHisDep> listStateCorHisDep = new ArrayList<>();
-        if(stateLinkSettingMasters == null || stateLinkSettingMasters.isEmpty()){
+        if(stateLinkSetMasters == null || stateLinkSetMasters.isEmpty()){
             return listStateCorHisDep;
         }
-        listStateCorHisDep = stateLinkSettingMasters.stream().map(item -> new QpbmtStateCorHisDep(new QpbmtStateCorHisDepPk(cid,item.getHistoryID(),item.getMasterCode().v()),
+        listStateCorHisDep = stateLinkSetMasters.stream().map(item -> new QpbmtStateCorHisDep(new QpbmtStateCorHisDepPk(cid,item.getHistoryID(),item.getMasterCode().v()),
                 startYearMonth,
                 endYearMonth,
                 baseDate,
